@@ -14,6 +14,7 @@ public:
 	float velocity = 10;
 	float X = 0;
 	float Y = 0;
+	int controllerNum = 1;
 };
 
 ALIEN_FACTORY TestMove* CreateTestMove() {
@@ -22,5 +23,6 @@ ALIEN_FACTORY TestMove* CreateTestMove() {
 	SHOW_IN_INSPECTOR_AS_INPUT_FLOAT(alien->velocity);
 	SHOW_IN_INSPECTOR_AS_INPUT_FLOAT(alien->X);
 	SHOW_IN_INSPECTOR_AS_INPUT_FLOAT(alien->Y);
+	SHOW_IN_INSPECTOR_AS_INPUT_INT(alien->controllerNum);
 	return alien;
 } 

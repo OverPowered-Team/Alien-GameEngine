@@ -1,6 +1,6 @@
 {
     "Layouts": {
-        "Number": 3,
+        "Number": 4,
         "Layout1": {
             "Number": 1,
             "Active": false,
@@ -47,9 +47,9 @@
             "Name": "Victor's Layout",
             "Path": "Configuration\/Layouts\/Victor's Layout3.ini",
             "About Alien Engine": false,
-            "Configuration": true,
+            "Configuration": false,
             "Console": true,
-            "Render Options": true,
+            "Render Options": false,
             "Panel Hierarchy": true,
             "Create Object": false,
             "Inspector": true,
@@ -58,6 +58,26 @@
             "Panel Project": true,
             "Save": true,
             "Game": true,
+            "Text Editor": false,
+            "Build": false
+        },
+        "Layout4": {
+            "Number": 4,
+            "Active": false,
+            "Name": "Jaume's Layout",
+            "Path": "Configuration\/Layouts\/Jaume's Layout4.ini",
+            "About Alien Engine": false,
+            "Configuration": false,
+            "Console": true,
+            "Panel Project": true,
+            "Render Options": false,
+            "Panel Hierarchy": true,
+            "Create Object": false,
+            "Inspector": true,
+            "Game": true,
+            "Scene": true,
+            "Layout Editor": false,
+            "Save": true,
             "Text Editor": false,
             "Build": false
         }
