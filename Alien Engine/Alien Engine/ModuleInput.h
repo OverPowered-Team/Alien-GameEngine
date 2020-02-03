@@ -3,9 +3,16 @@
 #include "Globals.h"
 #include "imgui/imgui.h"
 #include "SDL/include/SDL_scancode.h"
+#include "SDL\include\SDL_haptic.h"
+#include "SDL\include\SDL_gamecontroller.h"
 #include "MathGeoLib/include/MathGeoLib.h"
+#include <map>
 
+#define DEAD_ZONE 1000 // 0 - 32767
 #define MAX_MOUSE_BUTTONS 5
+#define MAX_GAMPAD_BUTTONS 17
+#define CONTROLLER_BUTTON_LEFTTRIGGER 15
+#define CONTROLLER_BUTTON_RIGHTTRIGGER 16
 
 enum KEY_STATE
 {
@@ -14,6 +21,20 @@ enum KEY_STATE
 	KEY_REPEAT,
 	KEY_UP
 };
+
+struct GamePad {
+	struct Joystick {
+		float valueX = 0;
+		float valueY = 0;
+	};
+	int number = 0;
+	Joystick joystick_left;
+	Joystick joystick_right;
+	KEY_STATE controller_buttons[MAX_GAMPAD_BUTTONS];
+	SDL_Haptic* haptic = nullptr;
+	SDL_GameController* controller = nullptr;
+};
+
 
 class ModuleInput : public Module
 {
@@ -29,6 +50,19 @@ public:
 	KEY_STATE GetKey(int id) const
 	{
 		return keyboard[id];
+	}
+
+	KEY_STATE GetControllerButton(int controller_index, int button)
+	{
+		return (IsControllerActive(controller_index)) ? game_pads[controller_index]->controller_buttons[button] : KEY_IDLE;
+	}
+
+	// strength 0 - 1 duration 1000 = 1s
+	void PlayRumble(int controller_index, float strength, float duration)
+	{
+		if (IsControllerActive(controller_index)) {
+			SDL_HapticRumblePlay(game_pads[controller_index]->haptic, strength, duration);
+		}
 	}
 
 	KEY_STATE GetMouseButton(int id) const
@@ -66,6 +100,7 @@ public:
 	bool IsMousePressed() const {
 		return mouse_pressed;
 	}
+	bool IsControllerActive(int controller_index);
 
 	float3 GetMousePosition();
 private:
@@ -80,11 +115,10 @@ private:
 	int mouse_z;
 	int mouse_x_motion;
 	int mouse_y_motion;
-	//int mouse_z_motion;
 	SDL_Scancode first_key_pressed = SDL_SCANCODE_UNKNOWN;
 	bool mouse_pressed = false;
 public:
 
 	ImGuiTextBuffer input;
-
+	std::map<int, GamePad*> game_pads;
 };

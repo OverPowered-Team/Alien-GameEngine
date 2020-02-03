@@ -34,6 +34,16 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
+	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+	{
+		LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
+	}
+	if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
+	{
+		LOG_ENGINE("SDL_GAMECONTROLLER HAPTIC could not initialize! SDL_Error: %s\n", SDL_GetError());
+		ret = false;
+	}
+
 	return ret;
 }
 
@@ -100,6 +110,76 @@ update_status ModuleInput::PreUpdate(float dt)
 				mouse_buttons[i] = KEY_IDLE;
 		}
 	}
+	
+	auto item = game_pads.begin();
+	for (; item != game_pads.end(); ++item) {
+		for (uint i = 0; i < MAX_GAMPAD_BUTTONS; ++i)
+		{
+			if ((*item).second != nullptr) {
+				if ((*item).second->controller_buttons[i] == KEY_DOWN) {
+					(*item).second->controller_buttons[i] = KEY_REPEAT;
+				}
+				if ((*item).second->controller_buttons[i] == KEY_UP) {
+					(*item).second->controller_buttons[i] = KEY_IDLE;
+				}
+			}
+		}
+		float value = SDL_GameControllerGetAxis((*item).second->controller, SDL_CONTROLLER_AXIS_RIGHTX);
+		if (value < -32767 + DEAD_ZONE) {
+			(*item).second->joystick_right.valueX = -1;
+		}
+		else if (value > 32767 - DEAD_ZONE) {
+			(*item).second->joystick_right.valueX = 1;
+		}
+		else if (value > -DEAD_ZONE && value < DEAD_ZONE) {
+			(*item).second->joystick_right.valueX = 0;
+		}
+		else {
+			(*item).second->joystick_right.valueX = (value - ((value > 0) ? DEAD_ZONE : -DEAD_ZONE)) / (32767 - 3 * DEAD_ZONE);
+		}
+
+		value = SDL_GameControllerGetAxis((*item).second->controller, SDL_CONTROLLER_AXIS_RIGHTY);
+		if (value < -32767 + DEAD_ZONE) {
+			(*item).second->joystick_right.valueY = -1;
+		}
+		else if (value > 32767 - DEAD_ZONE) {
+			(*item).second->joystick_right.valueY = 1;
+		}
+		else if (value > -DEAD_ZONE && value < DEAD_ZONE) {
+			(*item).second->joystick_right.valueY = 0;
+		}
+		else { // (value - DEAD_ZONE) / (32767 - 3*DEAD_ZONE);
+			(*item).second->joystick_right.valueY = (value - ((value > 0) ? DEAD_ZONE : -DEAD_ZONE)) / (32767 - 3 * DEAD_ZONE);
+		}
+
+		value = SDL_GameControllerGetAxis((*item).second->controller, SDL_CONTROLLER_AXIS_LEFTX);
+		if (value < -32767 + DEAD_ZONE) {
+			(*item).second->joystick_left.valueX = -1;
+		}
+		else if (value > 32767 - DEAD_ZONE) {
+			(*item).second->joystick_left.valueX = 1;
+		}
+		else if (value > -DEAD_ZONE && value < DEAD_ZONE) {
+			(*item).second->joystick_left.valueX = 0;
+		}
+		else {
+			(*item).second->joystick_left.valueX = (value - ((value > 0) ? DEAD_ZONE : -DEAD_ZONE)) / (32767 - 3 * DEAD_ZONE);
+		}
+
+		value = SDL_GameControllerGetAxis((*item).second->controller, SDL_CONTROLLER_AXIS_LEFTY);
+		if (value < -32767 + DEAD_ZONE) {
+			(*item).second->joystick_left.valueY = -1;
+		}
+		else if (value > 32767 - DEAD_ZONE) {
+			(*item).second->joystick_left.valueY = 1;
+		}
+		else if (value > -DEAD_ZONE && value < DEAD_ZONE) {
+			(*item).second->joystick_left.valueY = 0;
+		}
+		else {
+			(*item).second->joystick_left.valueY = (value - ((value > 0) ? DEAD_ZONE : -DEAD_ZONE)) / (32767 - 3 * DEAD_ZONE);
+		}
+	}
 
 	mouse_x_motion = mouse_y_motion = 0;
 
@@ -145,6 +225,77 @@ update_status ModuleInput::PreUpdate(float dt)
 			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
 				App->renderer3D->OnResize(e.window.data1, e.window.data2);
 			break; }
+		case SDL_CONTROLLERAXISMOTION: {
+			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && e.caxis.value > DEAD_ZONE) {
+				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_RIGHTTRIGGER] = KEY_DOWN;
+			}
+			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && e.caxis.value < DEAD_ZONE) {
+				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_RIGHTTRIGGER] = KEY_UP;
+			}
+			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && e.caxis.value > DEAD_ZONE) {
+				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_LEFTTRIGGER] = KEY_DOWN;
+			}
+			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && e.caxis.value < DEAD_ZONE) {
+				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_LEFTTRIGGER] = KEY_UP;
+			}
+			break; }
+		case SDL_CONTROLLERBUTTONUP: {
+			game_pads[e.cdevice.which + 1]->controller_buttons[e.cbutton.button] = KEY_UP; 
+			break; }
+		case SDL_CONTROLLERBUTTONDOWN: {
+			game_pads[e.cdevice.which + 1]->controller_buttons[e.cbutton.button] = KEY_DOWN;
+			break; }
+		case SDL_CONTROLLERDEVICEADDED: {
+			SDL_GameController* controller = SDL_GameControllerOpen(e.cdevice.which);
+			if (controller != nullptr) {
+				if (SDL_JoystickIsHaptic(SDL_GameControllerGetJoystick(controller)) > 0)
+				{
+					SDL_Haptic* haptic = SDL_HapticOpenFromJoystick(SDL_GameControllerGetJoystick(controller));
+
+					if (haptic != nullptr)
+					{
+						if (SDL_HapticRumbleInit(haptic) < 0) 
+						{
+							LOG_ENGINE("Warning: Unable to initialize rumble! SDL Error: %s\n", SDL_GetError());
+						}
+
+						if (SDL_HapticRumblePlay(haptic, 0.3f, 1000) < 0)
+						{
+							LOG_ENGINE("Error when rumbing the controller number %i", e.cdevice.which);
+						}
+					}
+					GamePad* pad = new GamePad();
+					pad->controller = controller;
+					pad->haptic = haptic;
+					pad->number = e.cdevice.which + 1;
+					game_pads.emplace(pad->number, pad);
+					LOG_ENGINE("Controller %i loaded correctly", pad->number);
+				}
+				else
+				{
+					LOG_ENGINE("haptic error! SDL_Error: %s\n", SDL_GetError());
+					LOG_ENGINE("haptic error! SDL_Error: %i\n", SDL_JoystickIsHaptic(SDL_GameControllerGetJoystick(controller)));
+				}
+			}
+			else {
+				LOG_ENGINE("Error when trying to open the controller number %i", e.cdevice.which);
+			}
+			break; }
+		case SDL_CONTROLLERDEVICEREMOVED: {
+			auto item = game_pads.begin();
+			for (; item != game_pads.end(); ++item) {
+				if ((*item).second != nullptr && (*item).first == e.cdevice.which + 1) {
+					SDL_HapticClose((*item).second->haptic);
+					(*item).second->haptic = nullptr;
+					SDL_GameControllerClose((*item).second->controller);
+					(*item).second->controller = nullptr;
+					delete (*item).second;
+					(*item).second = nullptr;
+					game_pads.erase(item);
+					break;
+				}
+			}
+			break; }
 		}
 	}
 
@@ -161,6 +312,17 @@ bool ModuleInput::CleanUp()
 	LOG_ENGINE("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+bool ModuleInput::IsControllerActive(int controller_index)
+{
+	auto item = game_pads.begin();
+	for (; item != game_pads.end(); ++item) {
+		if ((*item).second != nullptr && (*item).second->number == controller_index) {
+			return true;
+		}
+	}
+	return false;
 }
 
 float3 ModuleInput::GetMousePosition()
