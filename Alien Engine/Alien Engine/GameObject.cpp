@@ -1042,6 +1042,18 @@ void GameObject::ScaleNegative(const bool& is_negative)
 	}
 }
 
+bool GameObject::IsUpWardsEnabled() const
+{
+	GameObject* to_look = parent;
+	while (to_look != nullptr) {
+		if (!to_look->enabled) {
+			return false;
+		}
+		to_look = to_look->parent;
+	}
+	return true;
+}
+
 GameObject* GameObject::Find(const char* name)
 {
 	GameObject* ret = nullptr;

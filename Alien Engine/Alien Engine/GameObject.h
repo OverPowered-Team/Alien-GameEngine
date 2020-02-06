@@ -170,6 +170,8 @@ private:
 	// flip poly if scale negative
 	void ScaleNegative(const bool& is_negative);
 
+	bool IsUpWardsEnabled() const;
+
 	// render poly options
 	void ChangeWireframe(const bool& wireframe);
 	void ChangeMeshView(const bool& wireframe);
