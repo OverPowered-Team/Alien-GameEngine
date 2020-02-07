@@ -212,16 +212,13 @@ void ModuleUI::SaveConfig(JSONfilepack*& config)
 void ModuleUI::LoadLayouts()
 {
 	JSONfilepack* json_layout = App->GetJSONLayout();
-	
-	number_of_layouts = json_layout->GetNumber("Layouts.Number");
+	JSONArraypack* arr_layouts = json_layout->GetArray("Layouts");
 
-	for (uint i = 1; i <= number_of_layouts; ++i) {
+	for (uint i = 0; i < arr_layouts->GetArraySize(); ++i) {
 		Layout* layout = new Layout();
-		layout->number = i;
-		std::string json_path("Layouts.Layout" + std::to_string(i));
-		layout->name = json_layout->GetString(json_path + std::string(".Name"));
-		layout->path = json_layout->GetString(json_path + std::string(".Path"));
-		layout->active = json_layout->GetBoolean(json_path + std::string(".Active"));
+		layout->name = arr_layouts->GetString("Name");
+		layout->path = arr_layouts->GetString("Path");
+		layout->active = arr_layouts->GetBoolean("Active");
 
 		if (layout->active && active_layout == nullptr)
 			active_layout = layout;
@@ -231,46 +228,55 @@ void ModuleUI::LoadLayouts()
 		std::vector<Panel*>::iterator panel = panels.begin();
 		for (; panel != panels.end(); ++panel) {
 			if (*panel != nullptr) {
-				layout->panels_enabled.push_back(json_layout->GetBoolean(json_path + std::string(".") + (*panel)->GetPanelName()));
+				layout->panels_enabled.push_back(arr_layouts->GetBoolean((*panel)->GetPanelName()));
 			}
 		}
 
-		layouts.push_back(layout);
+		if (App->file_system->Exists(layout->path.data())) {
+			layouts.push_back(layout);
+		}
+		else {
+			delete layout;
+			layout = nullptr;
+			need_to_save_layouts = true;
+		}
+		arr_layouts->GetAnotherNode();
 	}
+
+	delete arr_layouts;
+	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveAllLayouts()
 {
 	JSONfilepack* json_layout = App->GetJSONLayout();
-	App->DeleteJSONfile(json_layout); 
+	App->DeleteJSONfile(json_layout);
 	App->file_system->Remove("Configuration/LayoutsInfo.json");
 	json_layout = App->CreateJSONFile("Configuration/LayoutsInfo.json");
-	
+
 	json_layout->StartSave();
 
-	json_layout->SetNumber("Layouts.Number", number_of_layouts);
-
+	JSONArraypack* arr_layouts = json_layout->InitNewArray("Layouts");
 	std::vector<Layout*>::iterator item = layouts.begin();
 	for (; item != layouts.end(); ++item) {
 		if (*item != nullptr) {
-			std::string json_path("Layouts.Layout" + std::to_string((item - layouts.begin()) + 1));
-			json_layout->SetNumber(json_path + std::string(".Number"), (item - layouts.begin()) + 1);
-			json_layout->SetBoolean(json_path + std::string(".Active"), (*item)->active);
-			json_layout->SetString(json_path + std::string(".Name"), (*item)->name);
-			json_layout->SetString(json_path + std::string(".Path"), (*item)->path);
+			arr_layouts->SetAnotherNode();
+			arr_layouts->SetBoolean("Active", (*item)->active);
+			arr_layouts->SetString("Name", (*item)->name);
+			arr_layouts->SetString("Path", (*item)->path);
 
 			std::vector<Panel*>::iterator panel = panels.begin();
 			for (; panel != panels.end(); ++panel) {
 				if (*panel != nullptr) {
 					bool enabled = (*panel)->IsEnabled();
-					json_layout->SetBoolean(json_path + std::string(".") + (*panel)->GetPanelName(), enabled);
+					arr_layouts->SetBoolean((*panel)->GetPanelName(), enabled);
 				}
 			}
-
 		}
 	}
-
+	delete arr_layouts;
 	json_layout->FinishSave();
+	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveLayout(Layout* layout, bool is_new)
@@ -278,32 +284,39 @@ void ModuleUI::SaveLayout(Layout* layout, bool is_new)
 	JSONfilepack* json_layout = App->GetJSONLayout();
 	json_layout->StartSave();
 
-	std::string json_path;
-	if (is_new) {
-		json_layout->SetNumber("Layouts.Number", number_of_layouts);
-		json_path = ("Layouts.Layout" + std::to_string(number_of_layouts));
-	}
-	else
-		json_path = ("Layouts.Layout" + std::to_string(layout->number));
+	JSONArraypack* arr_layout = json_layout->GetArray("Layouts");
 
-	json_layout->SetNumber(json_path + std::string(".Number"), layout->number);
-	json_layout->SetBoolean(json_path + std::string(".Active"), layout->active);
-	json_layout->SetString(json_path + std::string(".Name"), layout->name);
-	json_layout->SetString(json_path + std::string(".Path"), layout->path);
+	if (is_new) {
+		arr_layout->SetAnotherNode();
+	}
+	else {
+		for (uint i = 0; i < arr_layout->GetArraySize(); ++i) {
+			if (App->StringCmp(arr_layout->GetString("Name"), layout->name.data())) {
+				break;
+			}
+			arr_layout->GetAnotherNode();
+		}
+	}
+
+	arr_layout->SetBoolean("Active", layout->active);
+	arr_layout->SetString("Name", layout->name);
+	arr_layout->SetString("Path", layout->path);
 	layout->panels_enabled.clear();
 	std::vector<Panel*>::iterator panel = panels.begin();
 	for (; panel != panels.end(); ++panel) {
 		if (*panel != nullptr) {
 			bool enabled = (*panel)->IsEnabled();
-			json_layout->SetBoolean(json_path + std::string(".") + (*panel)->GetPanelName(), enabled);
+			arr_layout->SetBoolean((*panel)->GetPanelName(), enabled);
 			layout->panels_enabled.push_back(enabled);
 		}
 	}
 
 	json_layout->FinishSave();
-
-	if (!is_new)
+	delete arr_layout;
+	if (!is_new) {
 		ImGui::SaveIniSettingsToDisk(layout->path.data());
+	}
+	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveLayoutsActive()
@@ -313,16 +326,19 @@ void ModuleUI::SaveLayoutsActive()
 	JSONfilepack* json_layout = App->GetJSONLayout();
 	json_layout->StartSave();
 
+	JSONArraypack* arr_layout = json_layout->GetArray("Layouts");
+
 	std::vector<Layout*>::iterator item = layouts.begin();
 	for (; item != layouts.end(); ++item) {
 		if (*item != nullptr) {
-			std::string json_path("Layouts.Layout" + std::to_string((item - layouts.begin()) + 1));
-			json_layout->SetBoolean(json_path + std::string(".Active"), (*item)->active);
-			json_layout->SetString(json_path + std::string(".Name"), (*item)->name.data());
+			arr_layout->SetBoolean("Active", (*item)->active);
+			arr_layout->SetString("Name", (*item)->name.data());
+			arr_layout->GetAnotherNode();
 		}
 	}
-
+	delete arr_layout;
 	json_layout->FinishSave();
+	json_layout->ClearArrays();
 }
 
 void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* name)
@@ -1038,7 +1054,6 @@ void ModuleUI::DeleteLayout(Layout* layout)
 		if (*item != nullptr && *item == layout) {
 			App->file_system->Remove((*item)->path.data());
 			need_to_save_layouts = true;
-			number_of_layouts--;
 			delete* item;
 			*item = nullptr;
 			layouts.erase(item);
@@ -1177,9 +1192,19 @@ void ModuleUI::BackgroundDockspace()
 Layout::Layout(const char* name)
 {
 	this->name = std::string(name);
-	number = App->ui->number_of_layouts += 1;
-	
-	path = std::string(CONFIGURATION_LAYOUTS_FOLDER) + name + std::to_string(number) + std::string(".ini");
+
+	bool done = false;
+	path = std::string(CONFIGURATION_LAYOUTS_FOLDER) + name + std::string(".ini");
+	int number = 1;
+	while (!done) {
+		if (!App->file_system->Exists(path.data())) {
+			done = true;
+		}
+		else {
+			path = std::string(CONFIGURATION_LAYOUTS_FOLDER) + name + std::to_string(number) + std::string(".ini");
+			++number;
+		}
+	}
 
 	ImGui::SaveIniSettingsToDisk(path.data());
 }

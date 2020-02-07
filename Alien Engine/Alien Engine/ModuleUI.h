@@ -80,7 +80,7 @@ public:
 	// layout settings
 	void DeleteLayout(Layout* layout); // delete x layout
 	void SaveLayout(Layout* layout, bool is_new = true); // save x layout
-	void LoadActiveLayout(); // charge the active layout
+	void LoadActiveLayout(); // charge the active layout //
 
 private:
 
@@ -92,7 +92,7 @@ private:
 	void InitShortCuts();
 
 	// more layouts 
-	void LoadLayouts(); // read all layouts with json
+	void LoadLayouts(); // read all layouts with json //
 	void SaveAllLayouts(); // save all layout info again to json
 	void SaveLayoutsActive(); // when closing, save which layout was active
 
@@ -191,7 +191,6 @@ public:
 	std::vector<Layout*> layouts;
 	Layout* active_layout = nullptr;
 	bool need_to_save_layouts = false;
-	uint number_of_layouts = 0;
 
 	bool creating_script = false;
 	const char* actual_name="";

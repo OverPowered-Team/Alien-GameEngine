@@ -69,6 +69,9 @@ void PanelLayout::PanelLayoutEditor()
 						App->ui->LoadActiveLayout();
 						ImGui::NewFrame();
 					}
+					else {
+						App->ui->DeleteLayout(*item);
+					}
 					
 					return;
 				}

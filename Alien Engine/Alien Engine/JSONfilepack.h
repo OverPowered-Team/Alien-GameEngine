@@ -56,6 +56,8 @@ public:
 
 	JSONArraypack* GetArray(const std::string& name);
 
+	void ClearArrays();
+
 private:
 
 	std::string path;
