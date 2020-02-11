@@ -108,6 +108,7 @@ bool ComponentScript::DrawInspector()
 
 	if (ImGui::CollapsingHeader(data_name.data(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		RightClickMenu("Script");
 		if (!inspector_variables.empty()) {
 			ImGui::Spacing();
 			for (uint i = 0; i < inspector_variables.size(); ++i) {
@@ -261,6 +262,10 @@ bool ComponentScript::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 	}
+	else {
+		RightClickMenu("Script");
+	}
+
 	return true;
 }
 

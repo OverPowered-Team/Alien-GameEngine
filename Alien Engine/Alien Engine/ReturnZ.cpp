@@ -35,14 +35,18 @@ void ReturnZ::SetAction(const ReturnActions& type, void* data)
 		comp->type = ReturnActions::CHANGE_COMPONENT;
 		Component* component = (Component*)data;
 		CompZ::SetCompZ(component, &comp->comp);
-		action = comp;
+		if (comp->comp != nullptr) {
+			action = comp;
+		}
 		break; }
 	case ReturnActions::DELETE_COMPONENT: {
 		ActionComponent* comp = new ActionComponent();
 		comp->type = ReturnActions::DELETE_COMPONENT;
 		Component* component = (Component*)data;
 		CompZ::SetCompZ(component, &comp->comp);
-		action = comp;
+		if (comp->comp != nullptr) {
+			action = comp;
+		}
 		break; }
 	case ReturnActions::ADD_COMPONENT: {
 		ActionAddComponent* comp = new ActionAddComponent();
@@ -50,7 +54,6 @@ void ReturnZ::SetAction(const ReturnActions& type, void* data)
 		Component* component = (Component*)data;
 		comp->compID = component->ID;
 		comp->objectID = component->game_object_attached->ID;
-		action = comp;
 		break; }
 	case ReturnActions::REPARENT_HIERARCHY: {
 		ActionReparent* reparent = new ActionReparent();

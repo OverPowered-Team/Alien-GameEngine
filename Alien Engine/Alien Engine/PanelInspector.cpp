@@ -238,8 +238,7 @@ void PanelInspector::ButtonAddComponent()
 {
 	ImGui::Spacing();
 
-	// SCRIPT MUST BE THE LAST ONE 
-	if (component == 5) { SDL_assert((uint)ComponentType::UNKNOWN == 6); // component == 5 must be changed for the number of script
+	if (component == (uint)ComponentType::SCRIPT) { 
 		if (ImGui::BeginCombo("##Scriptss", std::get<0>(script_info)))
 		{
 			bool sel = App->StringCmp("Return To Components", std::get<0>(script_info));
@@ -315,14 +314,14 @@ void PanelInspector::ButtonAddComponent()
 		if (ImGui::Button("Add Component"))
 		{
 			Component* comp = nullptr;
-			switch (component)
+			switch ((ComponentType)component)
 			{
 
-			case 0: {
+			case (ComponentType)0: {
 				LOG_ENGINE("Select a Component!");
 				break; }
 
-			case 1: {
+			case ComponentType::MESH: {
 
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
 				{
@@ -335,7 +334,7 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case 2: {
+			case ComponentType::MATERIAL: {
 
 				if ((!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MATERIAL)) &&
 					App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
@@ -354,7 +353,7 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case 3: {
+			case ComponentType::LIGHT: {
 
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT))
 				{
@@ -367,7 +366,7 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case 4: {
+			case ComponentType::CAMERA: {
 
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CAMERA))
 				{

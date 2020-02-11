@@ -135,6 +135,16 @@ bool ResourceTexture::ReadBaseInfo(const char* assets_path)
 		return false;
 	}
 
+	struct stat fileMeta;
+	struct stat fileAssets;
+
+	if (stat(meta_data_path.c_str(), &fileMeta) == 0 && stat(path.c_str(), &fileAssets) == 0) {
+		if (fileAssets.st_mtime > fileMeta.st_mtime) {
+			remove(meta_data_path.data());
+			App->file_system->Copy(path.data(), meta_data_path.data());
+		}
+	}
+
 	App->resources->AddResource(this);
 
 	return ret;
