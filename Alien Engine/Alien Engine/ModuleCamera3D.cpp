@@ -60,13 +60,13 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		{
-			speed = camera_speed * 2 * dt;
-			zoom_speed = camera_zoom_speed * 2 * dt;
+			speed = camera_speed * 2.f * dt;
+			zoom_speed = camera_zoom_speed * 2.f * dt;
 		}
 		if (is_scene_hovered)
 		{
 			Zoom();
-			if ((App->objects->GetSelectedObjects().empty() || (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())) && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE) {
+			if ((App->objects->GetSelectedObjects().empty() || (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())) && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
 				CreateRay();
 			}
 
@@ -74,7 +74,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Movement();
 			}
 		}
-		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			Rotation(dt);
 		}
@@ -173,7 +173,7 @@ void ModuleCamera3D::Zoom()
 		zoom -= frustum->front;
 	}
 
-	frustum->Translate(zoom * mouse_speed);
+	frustum->Translate(zoom * zoom_speed);
 }
 
 void ModuleCamera3D::Rotation(float dt)
