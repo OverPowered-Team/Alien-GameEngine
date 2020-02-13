@@ -60,8 +60,8 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		{
-			speed = camera_speed * 2 * dt;
-			zoom_speed = camera_zoom_speed * 2 * dt;
+			speed = camera_speed * 2.f * dt;
+			zoom_speed = camera_zoom_speed * 2.f * dt;
 		}
 		if (is_scene_hovered)
 		{
@@ -173,7 +173,7 @@ void ModuleCamera3D::Zoom()
 		zoom -= frustum->front;
 	}
 
-	frustum->Translate(zoom * mouse_speed);
+	frustum->Translate(zoom * zoom_speed);
 }
 
 void ModuleCamera3D::Rotation(float dt)
