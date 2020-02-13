@@ -136,19 +136,21 @@ update_status ModuleObjects::PreUpdate(float dt)
 			}
 		}
 	}
-
+	base_game_object->PreUpdate();
 	ScriptsPreUpdate();
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleObjects::Update(float dt)
 {
+	base_game_object->Update();
 	ScriptsUpdate();
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleObjects::PostUpdate(float dt)
 {
+	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 #ifndef GAME_VERSION
 	if (App->renderer3D->SetCameraToDraw(App->camera->fake_camera)) {

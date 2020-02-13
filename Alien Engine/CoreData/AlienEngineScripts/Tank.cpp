@@ -213,5 +213,6 @@ void Tank::ControlCamera()
 
 void Tank::OnDrawGizmos()
 {
+	Invoke(std::bind(&Tank::Shoot, this), 10);
 	Gizmos::DrawLine(ray.a, ray.b, Color::Red());
 }

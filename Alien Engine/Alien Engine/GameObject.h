@@ -141,6 +141,10 @@ private:
 	void RemoveComponent(Component* component);
 	void AddComponent(Component* component);
 
+	void PreUpdate();
+	void Update();
+	void PostUpdate();
+
 	template <class Comp>
 	Comp* GetComponent();
 	template <class Comp>

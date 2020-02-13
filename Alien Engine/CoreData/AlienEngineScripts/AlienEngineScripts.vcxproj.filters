@@ -36,6 +36,9 @@
     <ClInclude Include="TestMove.h">
       <Filter>Archivos de recursos</Filter>
     </ClInclude>
+    <ClInclude Include="TestScript.h">
+      <Filter>Archivos de recursos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Move.cpp">
@@ -57,6 +60,9 @@
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
     <ClCompile Include="TestMove.cpp">
+      <Filter>Archivos de recursos</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScript.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
   </ItemGroup>

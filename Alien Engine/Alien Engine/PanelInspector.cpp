@@ -360,7 +360,6 @@ void PanelInspector::ButtonAddComponent()
 					comp = new ComponentLight(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
-
 				else
 					LOG_ENGINE("The selected object already has this component!");
 

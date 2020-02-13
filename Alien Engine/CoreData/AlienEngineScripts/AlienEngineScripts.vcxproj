@@ -173,6 +173,7 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="TestMove.h" />
+    <ClInclude Include="TestScript.h" />
     <ClInclude Include="Testtt.h" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="TestMove.cpp" />
+    <ClCompile Include="TestScript.cpp" />
     <ClCompile Include="Testtt.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
