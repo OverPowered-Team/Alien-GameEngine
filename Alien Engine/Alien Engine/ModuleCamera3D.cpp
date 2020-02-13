@@ -66,7 +66,7 @@ update_status ModuleCamera3D::Update(float dt)
 		if (is_scene_hovered)
 		{
 			Zoom();
-			if ((App->objects->GetSelectedObjects().empty() || (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())) && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE) {
+			if ((App->objects->GetSelectedObjects().empty() || (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())) && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
 				CreateRay();
 			}
 
@@ -74,7 +74,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Movement();
 			}
 		}
-		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			Rotation(dt);
 		}
