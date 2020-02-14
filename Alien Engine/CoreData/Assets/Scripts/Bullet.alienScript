@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "Bullet",
-            "UsesAlien": true
-        }
-    ]
-}

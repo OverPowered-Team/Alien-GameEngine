@@ -20,7 +20,30 @@ JSONfilepack::~JSONfilepack()
 	if (value != nullptr)
 		json_value_free(value);
 }
+
+JSONfilepack* JSONfilepack::CreateJSON(const char* path)
+{
+	JSON_Value* value = json_value_init_object();
+	JSON_Object* json_object = json_value_get_object(value);
+ 
+	json_serialize_to_file_pretty(value, path);
 
+	return new JSONfilepack(path, json_object, value);
+}
+
+JSONfilepack* JSONfilepack::GetJSON(const char* path)
+{
+	JSON_Value* value = json_parse_file(path);
+	JSON_Object* object = json_value_get_object(value);
+
+	return new JSONfilepack(path, object, value);
+}
+void JSONfilepack::FreeJSON(JSONfilepack* json)
+{
+	if (json != nullptr) {
+		delete json;
+	}
+}
 void JSONfilepack::StartSave()
 {
 	save_value = json_parse_file(path.data());
@@ -269,6 +292,7 @@ double JSONfilepack::GetArrayNumber(const std::string& name, const uint& index)
 	JSON_Array* arr = json_object_dotget_array(object, name.data());
 	return json_array_get_number(arr, index);
 }
+
 
 std::string* JSONfilepack::GetArrayString(const std::string& name)
 {

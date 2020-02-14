@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "Move2",
-            "UsesAlien": true
-        }
-    ]
-}

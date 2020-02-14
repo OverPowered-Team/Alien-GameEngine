@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "Tank",
-            "UsesAlien": true
-        }
-    ]
-}
