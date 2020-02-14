@@ -65,7 +65,7 @@ bool ModuleImporter::LoadModelFile(const char* path)
 	if (!App->resources->Exists(path, &model)) {
 		
 		const aiScene* scene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
-			aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
+			aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes | aiProcess_LimitBoneWeights);
 		
 		if (scene != nullptr) {
 			InitScene(path, scene);

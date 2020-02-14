@@ -285,7 +285,7 @@ void FileNode::SetIcon()
 			icon = App->resources->icons.tga_file;
 			type = FileDropType::TEXTURE;
 		}
-		else if (App->StringCmp(extension.data(), "fbx")) {
+		else if (App->StringCmp(extension.data(), "fbx") || App->StringCmp(extension.data(), "dae")) {
 			icon = App->resources->icons.model;
 			type = FileDropType::MODEL3D;
 		}
