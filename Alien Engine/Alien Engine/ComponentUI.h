@@ -18,6 +18,7 @@ enum UIState {
 };
 
 class ComponentUI :public Component {
+	friend class GameObject;
 public:
 	ComponentUI(GameObject* obj);
 
@@ -58,6 +59,12 @@ protected:
 	Color current_color = Color::White();
 	ComponentCanvas* canvas = nullptr;
 	ComponentTransform* canvas_trans = nullptr;
+
+private:
+
+	float scaled_width = 0;
+	float scaled_height = 0;
+
 };
 
 

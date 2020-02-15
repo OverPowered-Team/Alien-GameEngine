@@ -23,6 +23,12 @@ ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6 * 3, index, GL_STATIC_DRAW);
 
+	width = 1;
+	height = 1;
+
+	scaled_width = 1;
+	scaled_height = 1;
+
 	type = ComponentType::UI;
 }
 
@@ -83,11 +89,15 @@ void ComponentUI::Draw(bool isGame)
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
 
+	float3 scale = transform->GetGlobalScale();
+	scaled_width = width * scale.x;
+	scaled_height = height * scale.y;
+
 	glDisable(GL_CULL_FACE);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity(); 
+		glLoadIdentity();
 		#ifndef GAME_VERSION
 		glOrtho(0,App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
 		#else
@@ -96,12 +106,12 @@ void ComponentUI::Draw(bool isGame)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		float3 scale = transform->GetGlobalScale();
-
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
-		float3 canvasPivot = { canvas_trans->GetGlobalPosition().x - canvas->width * 0.5F, canvas_trans->GetGlobalPosition().y + canvas->height * 0.5F, 0 };
-		float2 origin = float2((transform->GetGlobalPosition().x - canvasPivot.x) / (canvas->width), (transform->GetGlobalPosition().y - canvasPivot.y) / (canvas->height));
+		float3 canvas_pos = canvas_trans->GetGlobalPosition();
+		float3 object_pos = transform->GetGlobalPosition();
+		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
 		
 		#ifndef GAME_VERSION
 		x = origin.x * App->ui->panel_game->width;
@@ -219,7 +229,7 @@ void ComponentUI::SetTexture(ResourceTexture* tex)
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	return (mouse_pos.x >= x - width * 0.5F && mouse_pos.x <= x + width * 0.5F && mouse_pos.y >= y - height * 0.5F && mouse_pos.y <= y + height * 0.5F);
+	return (mouse_pos.x >= x - scaled_width * 0.5F && mouse_pos.x <= x + scaled_width * 0.5F && mouse_pos.y >= y - scaled_height * 0.5F && mouse_pos.y <= y + scaled_height * 0.5F);
 }
 
 void ComponentUI::UILogic()

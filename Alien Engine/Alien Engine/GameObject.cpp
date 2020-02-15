@@ -1310,6 +1310,7 @@ AABB GameObject::GetBB() const
 		{
 			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
 			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
+			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
 			if (camera != nullptr) {
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1328,6 +1329,13 @@ AABB GameObject::GetBB() const
 				light->bulb->RecalculateAABB_OBB();
 				transform->global_transformation = to_save;
 				return light->bulb->GetGlobalAABB();
+			}
+			else if (ui != nullptr) {
+				AABB aabb_ui;
+				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+				float3 pos = transform->GetGlobalPosition();
+				aabb_ui.SetFromCenterAndSize(pos, { ui->scaled_width * 2,ui->scaled_height * 2,2 });
+				return aabb_ui;
 			}
 
 			AABB aabb_null;
