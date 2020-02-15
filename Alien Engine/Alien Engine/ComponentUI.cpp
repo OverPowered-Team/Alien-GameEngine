@@ -10,7 +10,7 @@
 
 ComponentUI::ComponentUI(GameObject* obj, ComponentCanvas* canvas_):Component(obj)
 {
-	canvas = App->objects->GetRoot(true)->children.back()->GetComponent<ComponentCanvas>();
+	canvas = canvas_;
 	canvas_trans = canvas->game_object_attached->GetComponent<ComponentTransform>();
 
 	x = 0;
@@ -25,7 +25,6 @@ ComponentUI::ComponentUI(GameObject* obj, ComponentCanvas* canvas_):Component(ob
 void ComponentUI::Update()
 {
 	UILogic();
-	Draw();
 
 	switch (state)
 	{

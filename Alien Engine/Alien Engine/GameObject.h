@@ -11,6 +11,7 @@
 enum class ResourceType;
 class Resource;
 class Prefab;
+class ComponentCanvas;
 class ComponentCamera;
 
 class __declspec(dllexport) GameObject
@@ -137,6 +138,8 @@ private:
 	void DrawScene();
 	void DrawGame();
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
+
+	ComponentCanvas* GetCanvas();
 
 	Component* GetComponentWithID(const u64& ID);
 	const Component* GetComponentWithID(const u64& ID) const;

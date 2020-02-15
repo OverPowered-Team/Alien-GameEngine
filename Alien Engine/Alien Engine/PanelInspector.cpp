@@ -393,8 +393,17 @@ void PanelInspector::ButtonAddComponent()
 			case ComponentType::UI_IMAGE: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
-					comp = new ComponentImage(App->objects->GetSelectedObjects().back(), nullptr);
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+					ComponentCanvas* canvas = App->objects->GetRoot(true)->GetCanvas();
+					if (canvas == nullptr) {
+						GameObject* obj = new GameObject(App->objects->GetRoot(false));
+						obj->AddComponent(new ComponentTransform(obj));
+						canvas = new ComponentCanvas(obj, 160, 90);
+						obj->AddComponent(canvas);
+					}
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentImage(selected, canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 				}
 
 				else

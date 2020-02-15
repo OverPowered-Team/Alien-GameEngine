@@ -584,6 +584,26 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	}
 }
 
+ComponentCanvas* GameObject::GetCanvas()
+{
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr) {
+		return canvas;
+	}
+
+	std::vector<GameObject*>::iterator item = children.begin();
+	for (; item != children.end(); ++item) {
+		if (*item != nullptr) {
+			canvas = (*item)->GetCanvas();
+			if (canvas != nullptr)
+				break;
+		}
+	}
+
+	return canvas;
+}
+
 void GameObject::AddComponent(Component* component)
 {
 	for (auto item = components.begin(); item != components.end(); ++item) {
