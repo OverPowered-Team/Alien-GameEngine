@@ -229,7 +229,7 @@ void ComponentUI::SetTexture(ResourceTexture* tex)
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	return (mouse_pos.x >= x - scaled_width * 0.5F && mouse_pos.x <= x + scaled_width * 0.5F && mouse_pos.y >= y - scaled_height * 0.5F && mouse_pos.y <= y + scaled_height * 0.5F);
+	return (mouse_pos.x >= x - scaled_width * 2 && mouse_pos.x <= x + scaled_width * 2 && mouse_pos.y >= y - scaled_height * 2 && mouse_pos.y <= y + scaled_height * 2);
 }
 
 void ComponentUI::UILogic()

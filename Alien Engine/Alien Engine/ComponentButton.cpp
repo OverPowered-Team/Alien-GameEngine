@@ -36,7 +36,7 @@ bool ComponentButton::DrawInspector()
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
 
-		ImGui::SameLine(85);
+		ImGui::SameLine(120);
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
@@ -80,13 +80,50 @@ bool ComponentButton::DrawInspector()
 		}
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Color");
-		ImGui::SameLine(85);
+		ImGui::Text("Idle Color");
+		ImGui::SameLine(120);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColor", &current_color, ImGuiColorEditFlags_Float)) {
+		if (ImGui::ColorEdit4("##RendererColorIdle", &idle_color, ImGuiColorEditFlags_Float)) {
+			current_color = idle_color;
+		}
+
+		ImGui::Spacing();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Hover Color");
+		ImGui::SameLine(120);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		if (ImGui::ColorEdit4("##RendererColorHover", &hover_color, ImGuiColorEditFlags_Float)) {
+
+		}
+		
+		ImGui::Spacing();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Click Color");
+		ImGui::SameLine(120);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		if (ImGui::ColorEdit4("##RendererColorClick", &clicked_color, ImGuiColorEditFlags_Float)) {
 
 		}
 		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Pressed Color");
+		ImGui::SameLine(120);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		if (ImGui::ColorEdit4("##RendererColorPressed", &pressed_color, ImGuiColorEditFlags_Float)) {
+
+		}
+		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Disabled Color");
+		ImGui::SameLine(120);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		if (ImGui::ColorEdit4("##RendererColorDisabled", &disabled_color, ImGuiColorEditFlags_Float)) {
+
+		}
+		ImGui::Spacing();
+
 
 
 		ImGui::Spacing();
@@ -103,28 +140,28 @@ bool ComponentButton::DrawInspector()
 bool ComponentButton::OnHover()
 {
 	if (active)
-		current_color = hover;
+		current_color = hover_color;
 	return true;
 }
 
 bool ComponentButton::OnClick()
 {
 	if (active)
-		current_color = clicked;
+		current_color = clicked_color;
 	return true;
 }
 
 bool ComponentButton::OnPressed()
 {
 	if (active)
-		current_color = pressed;
+		current_color = pressed_color;
 	return true;
 }
 
 bool ComponentButton::OnRelease()
 {
 	if (active)
-		current_color = idle;
+		current_color = idle_color;
 	return true;
 }
 
@@ -132,9 +169,9 @@ void ComponentButton::SetActive(bool active)
 {
 	this->active = active;
 	if (active) {
-		current_color = idle;
+		current_color = idle_color;
 	}
 	else {
-		current_color = disabled;
+		current_color = disabled_color;
 	}
 }
