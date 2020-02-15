@@ -45,6 +45,7 @@ class __declspec(dllexport) GameObject
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
 	friend class ModuleObjects;
+	friend class ComponentImage;
 	friend class ModuleUI;
 public:
 	GameObject(GameObject* parent);

@@ -96,3 +96,73 @@ bool ComponentImage::DrawInspector()
 
 	return true;
 }
+
+void ComponentImage::Reset()
+{
+	current_color = Color::White();
+	ClearTexture();
+}
+
+void ComponentImage::SetComponent(Component* component)
+{
+	enabled = component->enabled;
+	ComponentUI* ui = (ComponentUI*)component;
+	current_color = ui->current_color;
+	if (ui->texture != nullptr) {
+		SetTexture(ui->texture);
+	}
+	else {
+		ClearTexture();
+	}
+}
+
+void ComponentImage::Clone(Component* clone)
+{
+	clone->enabled = enabled;
+	ComponentUI* ui = (ComponentUI*)clone;
+	ui->current_color = current_color;
+	if (texture != nullptr) {
+		ui->SetTexture(texture);
+	}
+	else {
+		ui->ClearTexture();
+	}
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				ui->SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			ui->SetCanvas(nullptr);
+		}
+	}
+}
+
+void ComponentImage::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("UIType", (int)ui_type);
+	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
+	to_save->SetColor("Color", current_color);
+}
+
+void ComponentImage::LoadComponent(JSONArraypack* to_load)
+{
+	enabled = to_load->GetBoolean("Enabled");
+	current_color = to_load->GetColor("Color");
+	u64 textureID = std::stoull(to_load->GetString("TextureID"));
+	if (textureID != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+		if (tex != nullptr) {
+			SetTexture(tex);
+		}
+	}
+}

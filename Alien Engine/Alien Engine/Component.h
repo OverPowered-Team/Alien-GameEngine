@@ -30,6 +30,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentCanvas;
 	friend class ComponentUI;
 	friend class ComponentScript;
+	friend class ComponentImage;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class Prefab;
