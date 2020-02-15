@@ -70,7 +70,7 @@ void ComponentUI::Update()
 		OnClick();
 		break;
 	case Clicked:
-		OnClicked();
+		OnPressed();
 		break;
 	case Release:
 		OnRelease();
