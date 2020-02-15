@@ -324,6 +324,7 @@
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentScript.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="FileNode.cpp" />
     <ClCompile Include="Gizmos.cpp" />

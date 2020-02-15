@@ -881,6 +881,9 @@
     <ClCompile Include="ComponentCanvas.cpp">
       <Filter>Components\UI</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentUI.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\include\Geometry\KDTree.inl">

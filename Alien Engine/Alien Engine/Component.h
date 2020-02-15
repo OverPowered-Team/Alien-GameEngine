@@ -24,6 +24,8 @@ class __declspec(dllexport) Component {
 	friend class ComponentTransform;
 	friend class ComponentMesh;
 	friend class ComponentMaterial;
+	friend class ComponentCanvas;
+	friend class ComponentUI;
 	friend class ComponentScript;
 	friend class GameObject;
 	friend class ReturnZ;
@@ -70,7 +72,8 @@ protected:
 	ComponentType type = ComponentType::UNKNOWN;
 	bool enabled = true;
 	u64 ID = 0;
-	GameObject* game_object_attached = nullptr;
 	bool not_destroy = true;
 
+public:
+	GameObject* game_object_attached = nullptr;
 };
