@@ -10,6 +10,7 @@
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentImage.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -567,6 +568,13 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		canvas->Draw();
 	}
+	ComponentUI* ui = GetComponent<ComponentUI>();
+
+	if (ui != nullptr && ui->IsEnabled())
+	{
+		ui->Draw();
+	}
+
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {

@@ -17,6 +17,7 @@ ComponentUI::ComponentUI(GameObject* obj, ComponentCanvas* canvas_):Component(ob
 	y = 0;
 	width = 40;
 	height = 20;
+	CreatePanel();
 
 	type = ComponentType::UI;
 }
@@ -97,6 +98,8 @@ void ComponentUI::CreatePanel()
 	panel.uv[1] = float2(1, 1);
 	panel.uv[3] = float2(1, 0);
 	panel.uv[2] = float2(0, 0);
+	
+	panel.GenerateBuffer();
 }
 
 void ComponentUI::UILogic()
