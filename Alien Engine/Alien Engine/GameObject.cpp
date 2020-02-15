@@ -6,6 +6,7 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCanvas.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
@@ -559,6 +560,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 			light->DrawIconLight();
 		}
 	}
+
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr && canvas->IsEnabled())
+	{
+		canvas->Draw();
+	}
+
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {

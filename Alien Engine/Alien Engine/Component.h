@@ -11,7 +11,8 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
-	SCRIPT,
+	CANVAS,
+	SCRIPT, // SCRIPT MUST BE THE LAST
 
 	UNKNOWN
 };

@@ -6,6 +6,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ComponentCanvas.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -307,7 +308,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Canvas\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -378,7 +379,18 @@ void PanelInspector::ButtonAddComponent()
 					LOG_ENGINE("The selected object already has this component!");
 
 				break; }
+			case ComponentType::CANVAS: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CANVAS))
+				{
+					comp = new ComponentCanvas(App->objects->GetSelectedObjects().back(), 160, 90);
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has Component Canvas!");
+				break; }
 			}
+
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
