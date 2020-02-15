@@ -7,7 +7,7 @@ class GameObject;
 
 class ComponentCanvas :public Component {
 public:
-	ComponentCanvas(GameObject* obj, uint w, uint h);
+	ComponentCanvas(GameObject* obj);
 	~ComponentCanvas() {};
 
 	void PreUpdate() {};

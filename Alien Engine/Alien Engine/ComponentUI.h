@@ -31,7 +31,7 @@ public:
 	void SetCanvas(ComponentCanvas* canvas_);
 
 	void Update();
-	void Draw();
+	void Draw(bool isGame);
 
 private:
 	bool CheckMouseInside(float3 mouse_pos);
@@ -39,7 +39,7 @@ private:
 
 protected:
 	int x = 0, y = 0, width = 0, height = 0;
-	bool draggable = false;
+
 	ComponentType ui_type = ComponentType::UI;
 	UIState state = Idle;
 

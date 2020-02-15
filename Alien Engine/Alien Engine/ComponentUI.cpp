@@ -7,14 +7,10 @@
 #include "ComponentTransform.h"
 #include "ResourceTexture.h"
 #include "PanelGame.h"
+#include "PanelScene.h"
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {
-	x = 0;
-	y = 0;
-	width = 40;
-	height = 20;
-	
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
@@ -78,12 +74,47 @@ void ComponentUI::Update()
 	}
 }
 
-void ComponentUI::Draw()
+void ComponentUI::Draw(bool isGame)
 {
+	if (canvas == nullptr || canvas_trans == nullptr) {
+		return;
+	}
+
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	
+	float4x4 matrix = transform->global_transformation;
+
 	glDisable(GL_CULL_FACE);
 	
+	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity(); 
+		#ifndef GAME_VERSION
+		glOrtho(0,App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		#else
+		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		#endif
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		matrix[0][0] /= canvas->width * 0.5F;
+		matrix[1][1] /= canvas->height * 0.5F;
+		float3 canvasPivot = { canvas_trans->GetGlobalPosition().x - canvas->width * 0.5F, canvas_trans->GetGlobalPosition().y + canvas->height * 0.5F, 0 };
+		float2 origin = float2((transform->GetGlobalPosition().x - canvasPivot.x) / (canvas->width), (transform->GetGlobalPosition().y - canvasPivot.y) / (canvas->height));
+		
+		#ifndef GAME_VERSION
+		x = origin.x * App->ui->panel_game->width;
+		y = -origin.y * App->ui->panel_game->height;
+		#else
+		x = origin.x * App->window->width;
+		y = origin.y * App->window->height;
+		#endif
+		
+		origin.x = (origin.x - 0.5F) * 2;
+		origin.y = -(-origin.y - 0.5F) * 2;
+		matrix[0][3] = origin.x;
+		matrix[1][3] = origin.y;
+	}
+
 	if (texture != nullptr) {
 		glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -96,7 +127,7 @@ void ComponentUI::Draw()
 		glFrontFace(GL_CW);
 
 	glPushMatrix();
-	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+	glMultMatrixf(matrix.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -126,18 +157,18 @@ void ComponentUI::Draw()
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	return (mouse_pos.x >= x && mouse_pos.x <= x + width && mouse_pos.y >= y && mouse_pos.y <= y + height);
+	return (mouse_pos.x >= x - width * 0.5F && mouse_pos.x <= x + width * 0.5F && mouse_pos.y >= y + height * 0.5F && mouse_pos.y <= y - height * 0.5F);
 }
 
 void ComponentUI::UILogic()
 {
 	float3 mouse_pos;
 
-#ifndef GAME_VERSION
-	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY) - 19, App->input->GetMouseZ());
-#else
+	#ifndef GAME_VERSION
+	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
+	#else
 	mouse_pos = App->input->GetMousePosition();
-#endif
+	#endif
 
 	switch (state)
 	{

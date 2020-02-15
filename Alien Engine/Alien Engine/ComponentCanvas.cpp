@@ -6,7 +6,7 @@
 #include "ReturnZ.h"
 
 
-ComponentCanvas::ComponentCanvas(GameObject* obj, uint w, uint h):Component(obj)
+ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 {
 	width = 160;
 	height = 90;
@@ -53,10 +53,10 @@ void ComponentCanvas::Draw()
 
 	float3 pos = comp_trans->GetGlobalPosition();
 
-	float3 v1 = float3(pos.x, pos.y, pos.z);
-	float3 v2 = float3(pos.x + width, pos.y, pos.z);
-	float3 v3 = float3(pos.x + width, pos.y - height, pos.z);
-	float3 v4 = float3(pos.x, pos.y - height, pos.z);
+	float3 v1 = float3(pos.x - width * 0.5F, pos.y + height * 0.5F, pos.z);
+	float3 v2 = float3(pos.x + width * 0.5F, pos.y + height * 0.5F, pos.z);
+	float3 v3 = float3(pos.x + width * 0.5F, pos.y - height * 0.5F, pos.z);
+	float3 v4 = float3(pos.x - width * 0.5F, pos.y - height * 0.5F, pos.z);
 
 	glVertex3f(v1.x, v1.y, v1.z);
 	glVertex3f(v2.x, v2.y, v2.z);

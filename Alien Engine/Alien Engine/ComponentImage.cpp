@@ -9,6 +9,8 @@
 ComponentImage::ComponentImage(GameObject* obj) : ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_IMAGE;
+	width = 10;
+	height = 10;
 }
 
 bool ComponentImage::DrawInspector()
@@ -103,6 +105,9 @@ void ComponentImage::ClearTexture()
 		texture->DecreaseReferences();
 		texture = nullptr;
 
+		width = 10;
+		height = 10;
+
 		glDeleteBuffers(1, &verticesID);
 		glDeleteBuffers(1, &uvID);
 
@@ -134,12 +139,14 @@ void ComponentImage::SetTexture(ResourceTexture* tex)
 			texture->DecreaseReferences();
 		}
 		texture = tex;
-		float2 size = { (float)tex->width / 100, (float)tex->height / 100 };
+
+		width = (float)tex->width / 100;
+		height = (float)tex->height / 100;
 
 		glDeleteBuffers(1, &verticesID);
 
-		float halfWidth = size.x * 0.5F;
-		float halfHeight = size.y * 0.5F;
+		float halfWidth = width * 0.5F;
+		float halfHeight = height * 0.5F;
 
 		vertices[0] = { -halfWidth, halfHeight, 0 };
 		vertices[1] = { -halfWidth, -halfHeight, 0 };

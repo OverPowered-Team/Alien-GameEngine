@@ -383,7 +383,7 @@ void PanelInspector::ButtonAddComponent()
 			case ComponentType::CANVAS: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CANVAS))
 				{
-					comp = new ComponentCanvas(App->objects->GetSelectedObjects().back(), 160, 90);
+					comp = new ComponentCanvas(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 
@@ -423,7 +423,7 @@ ComponentCanvas* PanelInspector::GetCanvas()
 		GameObject* obj = new GameObject(App->objects->GetRoot(false));
 		obj->SetName("Canvas");
 		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
-		canvas = new ComponentCanvas(obj, 160, 90);
+		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}
 	return canvas;

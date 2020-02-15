@@ -572,7 +572,7 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 
 	if (ui != nullptr && ui->IsEnabled())
 	{
-		ui->Draw();
+		ui->Draw(!App->objects->printing_scene);
 	}
 
 
