@@ -69,7 +69,7 @@ void ComponentUI::Update()
 	case Click:
 		OnClick();
 		break;
-	case Clicked:
+	case Pressed:
 		OnPressed();
 		break;
 	case Release:
@@ -255,14 +255,15 @@ void ComponentUI::UILogic()
 			state = Release;
 		break;
 	case Click:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-			state = Clicked;
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+			state = Pressed;
 		break;
-	case Clicked:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInside(mouse_pos))
-			state = Release;
-		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInside(mouse_pos))
+	case Pressed:	
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInside(mouse_pos))
 			state = Hover;
+		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInside(mouse_pos))
+			state = Idle;
+
 		break;
 	case Release:
 		state = Idle;

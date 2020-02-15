@@ -311,7 +311,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Canvas\0Image\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Canvas\0Image\0Button\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
