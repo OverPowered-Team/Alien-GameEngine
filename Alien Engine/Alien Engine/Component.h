@@ -13,6 +13,7 @@ enum class ComponentType {
 	CAMERA,
 	CANVAS,
 	UI_IMAGE,
+	UI_BUTTON,
 	SCRIPT,
 	UI, // SCRIPT MUST BE THE LAST
 

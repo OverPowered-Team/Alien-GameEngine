@@ -8,6 +8,7 @@
 #include "ComponentLight.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
+#include "ComponentButton.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -397,6 +398,20 @@ void PanelInspector::ButtonAddComponent()
 					ComponentCanvas* canvas = GetCanvas();
 					GameObject* selected = App->objects->GetSelectedObjects().back();
 					comp = new ComponentImage(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has Component Canvas!");
+				break; }
+			case ComponentType::UI_BUTTON: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentButton(selected);
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);

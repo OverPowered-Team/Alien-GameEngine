@@ -155,6 +155,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentButton.h" />
     <ClInclude Include="ComponentCamera.h" />
     <ClInclude Include="ComponentCanvas.h" />
     <ClInclude Include="ComponentImage.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentButton.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentCanvas.cpp" />
     <ClCompile Include="ComponentImage.cpp" />
