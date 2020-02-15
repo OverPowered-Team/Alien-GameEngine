@@ -102,20 +102,24 @@ bool ComponentButton::DrawInspector()
 
 bool ComponentButton::OnHover()
 {
+	current_color = hover;
 	return true;
 }
 
 bool ComponentButton::OnClick()
 {
+	current_color = clicked;
 	return true;
 }
 
-bool ComponentButton::OnClicked()
+bool ComponentButton::OnPressed()
 {
+	current_color = pressed;
 	return true;
 }
 
 bool ComponentButton::OnRelease()
 {
+	current_color = idle;
 	return true;
 }

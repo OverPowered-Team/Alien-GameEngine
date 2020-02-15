@@ -25,7 +25,7 @@ public:
 
 	virtual bool OnHover() { return true; };
 	virtual bool OnClick() { return true; };
-	virtual bool OnClicked() { return true; };
+	virtual bool OnPressed() { return true; };
 	virtual bool OnRelease() { return true; };
 
 	void SetCanvas(ComponentCanvas* canvas_);

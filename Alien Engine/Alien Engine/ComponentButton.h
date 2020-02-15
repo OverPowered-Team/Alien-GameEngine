@@ -16,13 +16,14 @@ public:
 
 	bool OnHover();
 	bool OnClick();
-	bool OnClicked();
+	bool OnPressed();
 	bool OnRelease();
 
-	Color hover = { 0.0f,0.0f,0.0f,1.0f };
-	Color clicked = { 0.0f,0.0f,0.0f,1.0f };
-	Color pressed = { 0.0f,0.0f,0.0f,1.0f };
-	Color disabled = { 0.0f,0.0f,0.0f,1.0f };
+	Color idle = { 1.0f,1.0f,1.0f,0.8f };
+	Color hover = { 1.0f,1.0f,1.0f,1.0f };
+	Color clicked = { 1.0f,1.0f,1.0f,0.7f };
+	Color pressed = { 1.0f,1.0f,1.0f,0.75f };
+	Color disabled = { 1.0f,1.0f,1.0f,0.3f };
 };
 
 
