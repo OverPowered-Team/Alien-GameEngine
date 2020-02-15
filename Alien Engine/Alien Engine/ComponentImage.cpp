@@ -9,8 +9,6 @@
 ComponentImage::ComponentImage(GameObject* obj) : ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_IMAGE;
-	width = 10;
-	height = 10;
 }
 
 bool ComponentImage::DrawInspector()
