@@ -33,6 +33,9 @@ public:
 	void Update();
 	void Draw(bool isGame);
 
+	void ClearTexture();
+	void SetTexture(ResourceTexture* tex);
+
 private:
 	bool CheckMouseInside(float3 mouse_pos);
 	void UILogic();

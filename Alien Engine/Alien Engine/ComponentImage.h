@@ -12,8 +12,6 @@ public:
 	~ComponentImage() {};
 
 	bool DrawInspector();
-	void ClearTexture();
-	void SetTexture(ResourceTexture* tex);
 };
 
 #endif // !_COMPONENT_IMAGE_H_

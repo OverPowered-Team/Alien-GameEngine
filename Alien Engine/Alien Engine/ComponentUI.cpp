@@ -96,6 +96,8 @@ void ComponentUI::Draw(bool isGame)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
+		float3 scale = transform->GetGlobalScale();
+
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
 		float3 canvasPivot = { canvas_trans->GetGlobalPosition().x - canvas->width * 0.5F, canvas_trans->GetGlobalPosition().y + canvas->height * 0.5F, 0 };
@@ -155,10 +157,68 @@ void ComponentUI::Draw(bool isGame)
 	glEnable(GL_CULL_FACE);
 }
 
+void ComponentUI::ClearTexture()
+{
+	if (texture != nullptr) {
+		texture->DecreaseReferences();
+		texture = nullptr;
+
+		width = 10;
+		height = 10;
+
+		glDeleteBuffers(1, &verticesID);
+		glDeleteBuffers(1, &uvID);
+
+		vertices[0] = { -1,1,0 };
+		vertices[1] = { -1,-1,0 };
+		vertices[2] = { 1,-1,0 };
+		vertices[3] = { 1,1,0 };
+
+		uv[0] = { -1,-1 };
+		uv[1] = { -1,0 };
+		uv[2] = { 0,0 };
+		uv[3] = { 0,-1 };
+
+		glGenBuffers(1, &verticesID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+
+		glGenBuffers(1, &uvID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+	}
+}
+
+void ComponentUI::SetTexture(ResourceTexture* tex)
+{
+	if (tex != nullptr && tex != texture) {
+		tex->IncreaseReferences();
+		if (texture != nullptr) {
+			texture->DecreaseReferences();
+		}
+		texture = tex;
+
+		width = (float)tex->width / 100;
+		height = (float)tex->height / 100;
+
+		glDeleteBuffers(1, &verticesID);
+
+		float halfWidth = width * 0.5F;
+		float halfHeight = height * 0.5F;
+
+		vertices[0] = { -halfWidth, halfHeight, 0 };
+		vertices[1] = { -halfWidth, -halfHeight, 0 };
+		vertices[2] = { halfWidth, -halfHeight, 0 };
+		vertices[3] = { halfWidth, halfHeight, 0 };
+
+		glGenBuffers(1, &verticesID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+	}
+}
+
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	float width = this->width * game_object_attached->GetComponent<ComponentTransform>()->GetGlobalScale().x;
-	float height = this->height * game_object_attached->GetComponent<ComponentTransform>()->GetGlobalScale().y;
 	return (mouse_pos.x >= x - width * 0.5F && mouse_pos.x <= x + width * 0.5F && mouse_pos.y >= y - height * 0.5F && mouse_pos.y <= y + height * 0.5F);
 }
 
