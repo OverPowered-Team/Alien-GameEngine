@@ -157,7 +157,9 @@ void ComponentUI::Draw(bool isGame)
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	return (mouse_pos.x >= x - width * 0.5F && mouse_pos.x <= x + width * 0.5F && mouse_pos.y >= y + height * 0.5F && mouse_pos.y <= y - height * 0.5F);
+	float width = this->width * game_object_attached->GetComponent<ComponentTransform>()->GetGlobalScale().x;
+	float height = this->height * game_object_attached->GetComponent<ComponentTransform>()->GetGlobalScale().y;
+	return (mouse_pos.x >= x - width * 0.5F && mouse_pos.x <= x + width * 0.5F && mouse_pos.y >= y - height * 0.5F && mouse_pos.y <= y + height * 0.5F);
 }
 
 void ComponentUI::UILogic()

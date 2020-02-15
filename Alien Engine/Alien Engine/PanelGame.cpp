@@ -59,7 +59,7 @@ void PanelGame::PanelLogic()
 	ImGui::SetCursorPosY((ImGui::GetWindowHeight() - height) * 0.5f);
 
 	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
-	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
+	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY() - ImGui::GetCurrentWindow()->TitleBarHeight() - 10;
 
 	if (App->renderer3D->actual_game_camera != nullptr)
 	{
