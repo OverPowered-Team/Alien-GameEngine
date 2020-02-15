@@ -13,7 +13,7 @@ enum UIState {
 	Idle,
 	Hover,
 	Click,
-	Clicked,
+	Pressed,
 	Release
 };
 
