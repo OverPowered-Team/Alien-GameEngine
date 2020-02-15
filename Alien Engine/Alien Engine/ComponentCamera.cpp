@@ -427,6 +427,7 @@ void ComponentCamera::Clone(Component* clone)
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("VerticalFov", vertical_fov);
 	to_save->SetNumber("HoritzontalFov", horizontal_fov);
@@ -444,6 +445,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 {
+	enabled = to_load->GetBoolean("Enabled");
 	vertical_fov = to_load->GetNumber("VerticalFov");
 	horizontal_fov = to_load->GetNumber("HoritzontalFov");
 	far_plane = to_load->GetNumber("FarPlane");

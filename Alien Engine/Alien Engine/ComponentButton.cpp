@@ -10,8 +10,6 @@
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_BUTTON;
-	width = 20;
-	height = 10;
 }
 
 bool ComponentButton::DrawInspector()

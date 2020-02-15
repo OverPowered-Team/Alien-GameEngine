@@ -11,6 +11,7 @@
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentImage.h"
+#include "ComponentUI.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -992,7 +993,7 @@ void GameObject::SetNewParent(GameObject* new_parent)
 						ui->SetCanvas(canvas);
 						changed = false;
 					}
-					p = new_parent->parent;
+					p = p->parent;
 				}
 				else {
 					changed = false;
@@ -1469,6 +1470,20 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				script->LoadComponent(components_to_load);
 				// dont need to addcomponent, load script does it
 				break; }
+			case (int)ComponentType::UI: {
+				ComponentType typeUI = (ComponentType)(int)components_to_load->GetNumber("UIType");
+				switch (typeUI) {
+				case ComponentType::UI_IMAGE: {
+					ComponentImage* image = new ComponentImage(this);
+					image->ui_type = typeUI;
+					image->LoadComponent(components_to_load);
+					AddComponent(image);
+					break; }
+				default:
+					LOG_ENGINE("Unknown component UItype while loading");
+					break;
+				}
+				break; }
 			default:
 				LOG_ENGINE("Unknown component type while loading");
 				break;
@@ -1549,6 +1564,16 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentScript* script = new ComponentScript(clone);
 					(*item)->Clone(script);
 					// dont need to addcomponent, clone script does it
+					break; }
+				case ComponentType::UI: {
+					ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
+					switch (ui->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						ComponentImage* image = new ComponentImage(clone);
+						(*item)->Clone(image);
+						clone->AddComponent(image);
+						break; }
+					}
 					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");

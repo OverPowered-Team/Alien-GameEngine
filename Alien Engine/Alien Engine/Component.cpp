@@ -6,6 +6,8 @@
 #include "ComponentMaterial.h"
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
+#include "ComponentUI.h"
+#include "ComponentImage.h"
 #include "ComponentCamera.h"
 #include "ReturnZ.h"
 
@@ -72,6 +74,14 @@ void Component::RightClickMenu(const char* collapsing_header_name)
 			case ComponentType::CAMERA:
 				App->objects->component_in_copy = new ComponentCamera(nullptr);
 				break;
+			case ComponentType::UI: {
+				ComponentUI* ui = (ComponentUI*)game_object_attached->GetComponent(ComponentType::UI);
+				switch (ui->ui_type) {
+				case ComponentType::UI_IMAGE: {
+					App->objects->component_in_copy = new ComponentImage(nullptr);
+					break; }
+				}
+				break; }
 			}
 			App->objects->component_in_copy->SetComponent(this);
 		}
