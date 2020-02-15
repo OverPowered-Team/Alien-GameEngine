@@ -18,6 +18,7 @@ enum UIState {
 };
 
 class ComponentUI :public Component {
+	friend class GameObject;
 public:
 	ComponentUI(GameObject* obj);
 

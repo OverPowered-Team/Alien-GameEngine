@@ -23,11 +23,11 @@ ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6 * 3, index, GL_STATIC_DRAW);
 
-	width = 10;
-	height = 10;
+	width = 1;
+	height = 1;
 
-	scaled_width = 10;
-	scaled_height = 10;
+	scaled_width = 1;
+	scaled_height = 1;
 
 	type = ComponentType::UI;
 }
@@ -89,6 +89,10 @@ void ComponentUI::Draw(bool isGame)
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
 
+	float3 scale = transform->GetGlobalScale();
+	scaled_width = width * scale.x;
+	scaled_height = height * scale.y;
+
 	glDisable(GL_CULL_FACE);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
@@ -101,10 +105,6 @@ void ComponentUI::Draw(bool isGame)
 		#endif
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-
-		float3 scale = transform->GetGlobalScale();
-		scaled_width = width * scale.x;
-		scaled_height = height * scale.y;
 
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
