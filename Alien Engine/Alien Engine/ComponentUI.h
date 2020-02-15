@@ -6,13 +6,15 @@
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float2.h"
 
+class ResourceTexture;
+
 struct UIPanel {
 	float3 vertex[4];
 	float2 uv[4];
 	uint buffer[3];
 	uint index[6] = { 0,1,2,2,1,3 };
 
-	uint textureID;
+	ResourceTexture* resourceTexture = nullptr;
 
 	void GenerateBuffer();
 };
@@ -37,7 +39,7 @@ public:
 	virtual bool OnRelease() { return true; };
 
 	void Update();
-	virtual void Draw();
+	void Draw();
 
 private:
 	bool CheckMouseInside(float3 mouse_pos);
@@ -47,6 +49,7 @@ private:
 protected:
 	int x = 0, y = 0, width = 0, height = 0;
 	bool draggable = false;
+	ComponentType ui_type = ComponentType::UI;
 	UIState state = Idle;
 	UIPanel panel;
 

@@ -549,6 +549,9 @@
     <ClInclude Include="ComponentCanvas.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentImage.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -882,6 +885,9 @@
       <Filter>Components\UI</Filter>
     </ClCompile>
     <ClCompile Include="ComponentUI.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentImage.cpp">
       <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
