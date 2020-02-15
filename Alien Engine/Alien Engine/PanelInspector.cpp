@@ -11,6 +11,7 @@
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
+
 #include "mmgr/mmgr.h"
 
 PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
@@ -393,15 +394,10 @@ void PanelInspector::ButtonAddComponent()
 			case ComponentType::UI_IMAGE: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
-					ComponentCanvas* canvas = App->objects->GetRoot(true)->GetCanvas();
-					if (canvas == nullptr) {
-						GameObject* obj = new GameObject(App->objects->GetRoot(false));
-						obj->AddComponent(new ComponentTransform(obj));
-						canvas = new ComponentCanvas(obj, 160, 90);
-						obj->AddComponent(canvas);
-					}
+					ComponentCanvas* canvas = GetCanvas();
 					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentImage(selected, canvas);
+					comp = new ComponentImage(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 				}
@@ -418,5 +414,18 @@ void PanelInspector::ButtonAddComponent()
 			component = 0;
 		}
 	}
+}
+
+ComponentCanvas* PanelInspector::GetCanvas()
+{
+	ComponentCanvas* canvas = App->objects->GetRoot(true)->GetCanvas();
+	if (canvas == nullptr) {
+		GameObject* obj = new GameObject(App->objects->GetRoot(false));
+		obj->SetName("Canvas");
+		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+		canvas = new ComponentCanvas(obj, 160, 90);
+		obj->AddComponent(canvas);
+	}
+	return canvas;
 }
 

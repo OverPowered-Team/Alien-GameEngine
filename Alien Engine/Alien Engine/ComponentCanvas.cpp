@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "glew/include/glew.h"
+#include "imgui/imgui.h"
+#include "ReturnZ.h"
 
 
 ComponentCanvas::ComponentCanvas(GameObject* obj, uint w, uint h):Component(obj)
@@ -10,6 +12,36 @@ ComponentCanvas::ComponentCanvas(GameObject* obj, uint w, uint h):Component(obj)
 	height = 90;
 
 	type = ComponentType::CANVAS;
+}
+
+bool ComponentCanvas::DrawInspector()
+{
+	static bool check;
+
+	ImGui::PushID(this);
+	check = enabled;
+	if (ImGui::Checkbox("##CmpActive", &check)) {
+		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+		enabled = check;
+	}
+	ImGui::PopID();
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Canvas", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		RightClickMenu("Canvas");
+
+
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
+	else {
+		RightClickMenu("Canvas");
+	}
+
+	return true;
 }
 
 void ComponentCanvas::Draw()

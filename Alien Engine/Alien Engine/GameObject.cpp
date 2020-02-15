@@ -980,6 +980,26 @@ void GameObject::SetNewParent(GameObject* new_parent)
 		else {
 			transform->Reparent(transform->global_transformation);
 		}
+
+		ComponentUI* ui = GetComponent<ComponentUI>();
+		if (ui != nullptr) {
+			GameObject* p = new_parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent <ComponentCanvas>();
+					if (canvas != nullptr) {
+						ui->SetCanvas(canvas);
+						changed = false;
+					}
+					p = new_parent->parent;
+				}
+				else {
+					changed = false;
+					ui->SetCanvas(nullptr);
+				}
+			}
+		}
 	}
 	else {
 		LOG_ENGINE("NewParent was nullptr or NewParent was a child :O");

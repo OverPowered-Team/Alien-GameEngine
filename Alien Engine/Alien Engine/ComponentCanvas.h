@@ -14,6 +14,8 @@ public:
 	void Update() {};
 	void PostUpdate() {};
 
+	bool DrawInspector();
+
 	void Draw();
 
 public:

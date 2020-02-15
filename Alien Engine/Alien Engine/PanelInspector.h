@@ -2,6 +2,8 @@
 
 #include "Panel.h"
 
+class ComponentCanvas;
+
 class PanelInspector : public Panel {
 
 public:
@@ -13,6 +15,10 @@ public:
 	void DeleteComponentPopup();
 
 	void ButtonAddComponent();
+
+private:
+
+	ComponentCanvas* GetCanvas();
 
 private:
 

@@ -8,18 +8,49 @@
 #include "ResourceTexture.h"
 #include "PanelGame.h"
 
-ComponentUI::ComponentUI(GameObject* obj, ComponentCanvas* canvas_):Component(obj)
+ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {
-	canvas = canvas_;
-	canvas_trans = canvas->game_object_attached->GetComponent<ComponentTransform>();
-
 	x = 0;
 	y = 0;
 	width = 40;
 	height = 20;
-	CreatePanel();
+	
+	glGenBuffers(1, &verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &uvID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &indexID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6 * 3, index, GL_STATIC_DRAW);
 
 	type = ComponentType::UI;
+}
+
+ComponentUI::~ComponentUI()
+{
+	glDeleteBuffers(1, &uvID);
+	glDeleteBuffers(1, &verticesID);
+	glDeleteBuffers(1, &indexID);
+
+	if (texture != nullptr) {
+		texture->DecreaseReferences();
+	}
+}
+
+void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
+{
+	if (canvas_ != nullptr) {
+		canvas = canvas_;
+		canvas_trans = canvas->game_object_attached->GetComponent<ComponentTransform>();
+	}
+	else {
+		canvas = nullptr;
+		canvas_trans = nullptr;
+	}
 }
 
 void ComponentUI::Update()
@@ -50,55 +81,52 @@ void ComponentUI::Update()
 void ComponentUI::Draw()
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	
+	glDisable(GL_CULL_FACE);
+	
+	if (texture != nullptr) {
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+	}
+
+	glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
+
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CW);
 
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	if (panel.resourceTexture != nullptr) {
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, panel.resourceTexture->id);
-	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, panel.buffer[0]);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, panel.buffer[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	if (panel.resourceTexture != nullptr) {
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, panel.buffer[2]);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	}
+	glBindBuffer(GL_ARRAY_BUFFER, uvID);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
+	glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CCW);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	glPopMatrix();
+
+	glEnable(GL_CULL_FACE);
 }
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
 	return (mouse_pos.x >= x && mouse_pos.x <= x + width && mouse_pos.y >= y && mouse_pos.y <= y + height);
-}
-
-void ComponentUI::CreatePanel()
-{
-	panel.vertex[0] = float3(0, 1, 0);
-	panel.vertex[1] = float3(1, 1, 0);
-	panel.vertex[3] = float3(1, 0, 0);
-	panel.vertex[2] = float3(0, 0, 0);
-
-	panel.uv[0] = float2(0, 1);
-	panel.uv[1] = float2(1, 1);
-	panel.uv[3] = float2(1, 0);
-	panel.uv[2] = float2(0, 0);
-	
-	panel.GenerateBuffer();
 }
 
 void ComponentUI::UILogic()
@@ -110,8 +138,6 @@ void ComponentUI::UILogic()
 #else
 	mouse_pos = App->input->GetMousePosition();
 #endif
-
-	LOG_ENGINE("x: %f, y:%f", mouse_pos.x, mouse_pos.y);
 
 	switch (state)
 	{
@@ -140,22 +166,4 @@ void ComponentUI::UILogic()
 		break;
 
 	}
-}
-
-void UIPanel::GenerateBuffer()
-{
-	//Cube Vertex
-	glGenBuffers(1, &buffer[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * 4, vertex, GL_STATIC_DRAW);
-
-	//Cube Vertex definition
-	glGenBuffers(1, &buffer[1]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
-
-	//UVs definition
-	glGenBuffers(1, &buffer[2]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[2]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * 4, uv, GL_STATIC_DRAW);
 }

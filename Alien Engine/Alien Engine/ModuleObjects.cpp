@@ -67,10 +67,10 @@ bool ModuleObjects::Start()
 	}
 
 #ifndef GAME_VERSION
-	/*GameObject* light_test = new GameObject(base_game_object);
+	GameObject* light_test = new GameObject(base_game_object);
 	light_test->SetName("Light");
 	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));*/
+	light_test->AddComponent(new ComponentLight(light_test));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
 	App->camera->fake_camera->Look(float3(0, 0, 0));
