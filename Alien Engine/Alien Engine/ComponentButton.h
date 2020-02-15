@@ -24,6 +24,12 @@ public:
 	Color clicked = { 1.0f,1.0f,1.0f,0.7f };
 	Color pressed = { 1.0f,1.0f,1.0f,0.75f };
 	Color disabled = { 1.0f,1.0f,1.0f,0.3f };
+
+	void SetActive(bool active);
+
+private:
+
+	bool active = true;
 };
 
 
