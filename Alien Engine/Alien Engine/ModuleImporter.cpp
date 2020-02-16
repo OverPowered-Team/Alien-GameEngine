@@ -97,7 +97,13 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
 		LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
 	}
+	if (scene->HasAnimations())
+	{
+		for (int i = 0; i < scene->mNumAnimations; i++)
+		{
 
+		}
+	}
 	// create the meta data files like .alien
 	if (model->CreateMetaData()) {
 		App->resources->AddResource(model);

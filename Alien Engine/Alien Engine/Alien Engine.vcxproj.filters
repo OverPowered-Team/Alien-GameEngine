@@ -549,6 +549,12 @@
     <ClInclude Include="ResourceAnimation.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentAnimator.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceAnimatorController.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -885,6 +891,12 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="ResourceAnimation.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentAnimator.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceAnimatorController.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
