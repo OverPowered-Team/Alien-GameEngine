@@ -16,6 +16,7 @@
 #include "ModuleImporter.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleAudio.h"
 
 #include <string>
 #include <vector>
@@ -37,16 +38,17 @@ struct LogInfo {
 class Application
 {
 public:
-	ModuleWindow* window = nullptr;
-	ModuleInput* input = nullptr;
-	ModuleRenderer3D* renderer3D = nullptr;
-	ModuleCamera3D* camera = nullptr;
-	ModuleUI* ui = nullptr;
-	ModuleImporter* importer = nullptr;
-	ShortCutManager* shortcut_manager = nullptr;
-	ModuleObjects* objects = nullptr;
-	ModuleFileSystem* file_system = nullptr;
-	ModuleResources* resources = nullptr;
+	ModuleWindow*		window = nullptr;
+	ModuleInput*		input = nullptr;
+	ModuleRenderer3D*	renderer3D = nullptr;
+	ModuleCamera3D*		camera = nullptr;
+	ModuleUI*			ui = nullptr;
+	ModuleImporter*		importer = nullptr;
+	ShortCutManager*	shortcut_manager = nullptr;
+	ModuleObjects*		objects = nullptr;
+	ModuleFileSystem*	file_system = nullptr;
+	ModuleResources*	resources = nullptr;
+	ModuleAudio*		audio = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;

@@ -1,36 +1,38 @@
-#ifndef __ModuleAudio_H__
-#define __ModuleAudio_H__
+#ifndef __MODULEAUDIO_H__
+#define __MODULEAUDIO_H__
 
 #include "Module.h"
-#include "SDL_mixer\include\SDL_mixer.h"
+#include "Globals.h"
+#include "WwiseT.h"
+#include "ComponentAudioEmitter.h"
 
 #include <list>
-
-#define DEFAULT_MUSIC_FADE_TIME 2.0f
 
 class ModuleAudio : public Module
 {
 public:
-
-	ModuleAudio(Application* app, bool start_enabled = true);
+	ModuleAudio();
 	~ModuleAudio();
-
-	bool Init();
+	bool Start();
+	update_status Update(float dt);
+	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-	// Play a music file
-	bool PlayMusic(const char* path, float fade_time = DEFAULT_MUSIC_FADE_TIME);
-
-	// Load a WAV in memory
-	unsigned int LoadFx(const char* path);
-
-	// Play a previously loaded WAV
-	bool PlayFx(unsigned int fx, int repeat = 0);
-
+	// Utils
+	void Play();
+	void Stop();
+	void Pause()const;
+	void Resume()const;
+	void SetListener(WwiseT::AudioSource* new_listener);
+	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
 private:
-
-	Mix_Music*			music = nullptr;
-	std::list<Mix_Chunk*> fx;
+	//std::list<WwiseT::AudioSource*> event_list;
+	WwiseT::AudioSource* listener;
+	WwiseT::AudioSource* source;
+public:
+	std::list<AudioEmitter*> audios;
+	
+	bool is_playing = false;
 };
 
 #endif // __ModuleAudio_H__

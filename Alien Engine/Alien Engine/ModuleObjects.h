@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Color.h"
 #include <vector>
+#include <list>
 #include <map>
 #include <utility>
 #include "Octree.h"

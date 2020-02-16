@@ -15,6 +15,7 @@ Application::Application()
 	objects = new ModuleObjects();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
+	audio = new ModuleAudio();
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -28,6 +29,7 @@ Application::Application()
 	AddModule(camera);
 #endif
 	AddModule(input);
+	AddModule(audio);
 	AddModule(file_system);
 	AddModule(resources);
 	AddModule(importer);

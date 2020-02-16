@@ -11,6 +11,9 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
+	A_EMITTER,
+	A_LISTENER,
+	A_REVERB,
 	SCRIPT,
 
 	UNKNOWN

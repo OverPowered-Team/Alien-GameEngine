@@ -1,5 +1,6 @@
 #include "FileNode.h"
 #include "Application.h"
+#include "ModuleResources.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
 #include "ResourcePrefab.h"

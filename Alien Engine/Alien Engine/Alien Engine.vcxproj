@@ -152,6 +152,8 @@
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienEngine.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ComponentAudioEmitter.h" />
+    <ClInclude Include="ComponentAudioListener.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
@@ -257,6 +259,7 @@
     <ClInclude Include="mmgr\mmgr.h" />
     <ClInclude Include="mmgr\nommgr.h" />
     <ClInclude Include="Module.h" />
+    <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCamera3D.h" />
     <ClInclude Include="ModuleFileSystem.h" />
     <ClInclude Include="ModuleImporter.h" />
@@ -299,6 +302,7 @@
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="Resource_.h" />
     <ClInclude Include="ReturnZ.h" />
+    <ClInclude Include="ComponentReverbZone.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Shapes.h" />
@@ -307,11 +311,14 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WwiseT.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienEngine.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ComponentAudioEmitter.cpp" />
+    <ClCompile Include="ComponentAudioListener.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -373,6 +380,7 @@
     <ClCompile Include="MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Maths.cpp" />
     <ClCompile Include="mmgr\mmgr.cpp" />
+    <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCamera3D.cpp" />
     <ClCompile Include="ModuleFileSystem.cpp" />
     <ClCompile Include="ModuleImporter.cpp" />
@@ -410,6 +418,7 @@
     <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="Resource_.cpp" />
     <ClCompile Include="ReturnZ.cpp" />
+    <ClCompile Include="ComponentReverbZone.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Shapes.cpp" />
@@ -418,6 +427,7 @@
     <ClCompile Include="TextEdit\TextEditor.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WwiseT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json" />

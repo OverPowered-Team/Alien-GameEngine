@@ -64,6 +64,12 @@
     <Filter Include="Tools\TextEdit">
       <UniqueIdentifier>{987d3c13-1318-45bd-80aa-53653a15e71f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\Wwise">
+      <UniqueIdentifier>{123c976e-3536-4442-a984-c3d5a5b77e85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Audio">
+      <UniqueIdentifier>{88a873fb-8906-4a3b-8551-bbbc3a47e444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -540,6 +546,21 @@
     <ClInclude Include="ResourceScene.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleAudio.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="WwiseT.h">
+      <Filter>Tools\Wwise</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentAudioEmitter.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentAudioListener.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentReverbZone.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -868,6 +889,21 @@
     </ClCompile>
     <ClCompile Include="ResourceScene.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleAudio.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="WwiseT.cpp">
+      <Filter>Tools\Wwise</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentAudioEmitter.cpp">
+      <Filter>Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentAudioListener.cpp">
+      <Filter>Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentReverbZone.cpp">
+      <Filter>Components\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
