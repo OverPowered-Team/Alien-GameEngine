@@ -59,6 +59,7 @@ class FileNode;
 enum class FileDropType {
 	MODEL3D,
 	TEXTURE,
+	SHADER,
 	FOLDER,
 	SCRIPT,
 	SCENE,

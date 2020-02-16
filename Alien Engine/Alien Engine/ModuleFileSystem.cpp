@@ -597,6 +597,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::TEXTURE:
 		final_path = TEXTURES_FOLDER + final_path;
 		break;
+	case FileDropType::SHADER:
+		final_path = SHADERS_FOLDER + final_path;
+		break;
 	}
 
 	std::string normalized = extern_path;
@@ -613,6 +616,10 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::TEXTURE:
 		LOG_ENGINE("Start Loading Texture");
 		App->importer->LoadTextureFile(final_path.data(), true);
+		break;
+	case FileDropType::SHADER:
+		LOG_ENGINE("Start Loading Shader");
+		// App->importer->LoadShaderFile(final_path.data(), true); TODO
 		break;
 	}
 #endif
@@ -635,6 +642,8 @@ const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_
 		ext_type = FileDropType::TEXTURE;
 	else if (App->StringCmp(extension.data(), "tga"))
 		ext_type = FileDropType::TEXTURE;
+	else if (App->StringCmp(extension.data(), "shader"))
+		ext_type = FileDropType::SHADER;
 	else
 		LOG_ENGINE("Extension unknown!");
 

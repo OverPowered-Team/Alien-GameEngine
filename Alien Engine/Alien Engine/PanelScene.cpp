@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "imgui/imgui.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
 #include "PanelSceneSelector.h"
@@ -94,6 +95,20 @@ void PanelScene::PanelLogic()
 
 				if (texture_dropped != nullptr) {
 					App->importer->ApplyTextureToSelectedObject(texture_dropped);
+				}
+			}
+
+			// drop shader
+			if (node != nullptr && node->type == FileDropType::SHADER && !App->objects->GetSelectedObjects().empty()) {
+				std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+				path += "_meta.alien";
+
+				u64 ID = App->resources->GetIDFromAlienPath(path.data());
+
+				ResourceShader* shader_dropped = (ResourceShader*)App->resources->GetResourceWithID(ID);
+
+				if (shader_dropped != nullptr) {
+					//App->importer->ApplyShaderToSelectedObject(shader_dropped); TODO
 				}
 			}
 
