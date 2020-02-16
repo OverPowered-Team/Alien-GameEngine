@@ -1465,6 +1465,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
 				break; }
+			case (int)ComponentType::CANVAS: {
+				ComponentCanvas* canvas = new ComponentCanvas(this);
+				canvas->LoadComponent(components_to_load);
+				AddComponent(canvas);
+				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
@@ -1549,6 +1554,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentMaterial* material = new ComponentMaterial(clone);
 					(*item)->Clone(material);
 					clone->AddComponent(material);
+					break; }
+				case ComponentType::CANVAS: {
+					ComponentCanvas* canvas = new ComponentCanvas(clone);
+					(*item)->Clone(canvas);
+					clone->AddComponent(canvas);
 					break; }
 				case ComponentType::MESH: {
 					ComponentMesh* mesh = new ComponentMesh(clone);

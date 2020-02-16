@@ -225,6 +225,10 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					ComponentMesh* mesh = (ComponentMesh*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(mesh, comp->comp);
 					break; }
+				case ComponentType::CANVAS: {
+					ComponentCanvas* canvas = (ComponentCanvas*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(canvas, comp->comp);
+					break; }
 				case ComponentType::MATERIAL: {
 					ComponentMaterial* material = (ComponentMaterial*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(material, comp->comp);
@@ -351,6 +355,11 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompZ::SetCompZ((*item), (CompZ**)&meshZ);
 					comp = meshZ;
 					break; }
+				case ComponentType::CANVAS: {
+					CompZ* canvasZ = nullptr;
+					CompZ::SetCompZ((*item), (CompZ**)&canvasZ);
+					comp = canvasZ;
+					break; }
 				case ComponentType::MATERIAL: {
 					CompMaterialZ* materialZ = nullptr;
 					CompZ::SetCompZ((*item), (CompZ**)&materialZ);
@@ -447,6 +456,11 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						CompMeshZ* meshZ = (CompMeshZ*)(*item);
 						CompZ::SetComponent(mesh, meshZ);
 						new_obj->AddComponent(mesh);
+						break; }
+					case ComponentType::CANVAS: {
+						ComponentCanvas* canvas = new ComponentCanvas(new_obj);
+						CompZ::SetComponent(canvas, (*item));
+						new_obj->AddComponent(canvas);
 						break; }
 					case ComponentType::MATERIAL: {
 						ComponentMaterial* material = new ComponentMaterial(new_obj);
@@ -570,6 +584,11 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		lightZ->diffuse = light->diffuse;
 		lightZ->ambient = light->ambient;
 		lightZ->objectID = light->game_object_attached->ID;
+		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = (ComponentCanvas*)component;
+		CompZ* canvasZ = new CompZ();
+		*compZ = canvasZ;
 		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = (ComponentScript*)component;
@@ -696,6 +715,10 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		light->ambient = lightZ->ambient;
 		light->diffuse = lightZ->diffuse;
 		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = (ComponentCanvas*)component;
+		CompZ* canvasZ = (CompZ*)compZ;
+		break; }
 	case ComponentType::UI: {
 		switch (compZ->ui_type) {
 		case ComponentType::UI_IMAGE: {
@@ -788,6 +811,11 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		ComponentLight* light = new ComponentLight(obj);
 		CompZ::SetComponent(light, compZ);
 		obj->AddComponent(light);
+		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = new ComponentCanvas(obj);
+		CompZ::SetComponent(canvas, compZ);
+		obj->AddComponent(canvas);
 		break; }
 	case ComponentType::CAMERA: {
 		ComponentCamera* camera = new ComponentCamera(obj);

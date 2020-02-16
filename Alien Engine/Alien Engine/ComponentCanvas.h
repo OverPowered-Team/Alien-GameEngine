@@ -16,6 +16,9 @@ public:
 
 	bool DrawInspector();
 
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
+
 	void Draw();
 
 public:

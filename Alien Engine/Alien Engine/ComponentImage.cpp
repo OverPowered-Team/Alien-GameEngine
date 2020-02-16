@@ -176,4 +176,20 @@ void ComponentImage::LoadComponent(JSONArraypack* to_load)
 			SetTexture(tex);
 		}
 	}
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
 }

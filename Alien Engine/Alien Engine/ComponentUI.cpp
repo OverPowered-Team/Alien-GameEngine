@@ -267,7 +267,6 @@ void ComponentUI::UILogic()
 			state = Hover;
 		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInside(mouse_pos))
 			state = Idle;
-
 		break;
 	case Release:
 		state = Idle;

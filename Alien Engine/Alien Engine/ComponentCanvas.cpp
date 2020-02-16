@@ -27,21 +27,25 @@ bool ComponentCanvas::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Canvas", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Canvas", &not_destroy))
 	{
-		RightClickMenu("Canvas");
-
-
-
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
 	}
-	else {
-		RightClickMenu("Canvas");
-	}
 
 	return true;
+}
+
+void ComponentCanvas::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+}
+
+void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
+{
+	enabled = to_load->GetBoolean("Enabled");
 }
 
 void ComponentCanvas::Draw()
