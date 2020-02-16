@@ -21,6 +21,8 @@ class ComponentUI :public Component {
 	friend class GameObject;
 	friend class ComponentImage;
 	friend class Component;
+	friend class ReturnZ;
+	friend class CompZ;
 public:
 	ComponentUI(GameObject* obj);
 

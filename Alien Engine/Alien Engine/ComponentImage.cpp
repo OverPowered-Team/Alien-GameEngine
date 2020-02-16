@@ -57,6 +57,7 @@ bool ComponentImage::DrawInspector()
 					if (ID != 0) {
 						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 						if (texture != nullptr) {
+							ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 							SetTexture(texture);
 						}
 					}
@@ -71,6 +72,7 @@ bool ComponentImage::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
 			if (ImGui::Button("X") && texture != nullptr) {
+				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				ClearTexture();
 			}
 			ImGui::PopStyleColor(3);
@@ -80,8 +82,17 @@ bool ComponentImage::DrawInspector()
 		ImGui::Text("Color");
 		ImGui::SameLine(85);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColor", &current_color, ImGuiColorEditFlags_Float)) {
-
+		static bool set_Z = true;
+		static Color col;
+		col = current_color;
+		if (ImGui::ColorEdit4("##RendererColor", &col, ImGuiColorEditFlags_Float)) {
+			if (set_Z)
+				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			set_Z = false;
+			current_color = col;
+		}
+		else if (!set_Z && ImGui::IsMouseReleased(0)) {
+			set_Z = true;
 		}
 		ImGui::Spacing();
 

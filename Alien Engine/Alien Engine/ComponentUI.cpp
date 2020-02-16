@@ -229,7 +229,11 @@ void ComponentUI::SetTexture(ResourceTexture* tex)
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
-	return (mouse_pos.x >= x - ((scaled_width/ (canvas->width * 0.5F))*App->ui->panel_game->width)*0.5F && mouse_pos.x <= x + ((scaled_width / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((scaled_height / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((scaled_height / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
+#ifdef GAME_VERSION
+	return (mouse_pos.x >= x - ((scaled_width / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((scaled_width / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((scaled_height / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((scaled_height / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
+#else
+	return (mouse_pos.x >= x - ((scaled_width / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((scaled_width / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((scaled_height / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((scaled_height / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
+#endif
 }
 
 void ComponentUI::UILogic()

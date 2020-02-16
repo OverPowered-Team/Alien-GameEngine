@@ -10,6 +10,8 @@
 #include "Maths.h"
 #include "Octree.h"
 #include "PanelTextEditor.h"
+#include "ComponentImage.h"
+#include "ComponentUI.h"
 #include "ComponentScript.h"
 
 bool ReturnZ::eraseY = false;
@@ -239,6 +241,14 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					ComponentLight* light = (ComponentLight*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(light, comp->comp);
 					break; }
+				case ComponentType::UI: {
+					switch (comp->comp->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						ComponentImage* image = (ComponentImage*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(image, comp->comp);
+						break; }
+					}
+					break; }
 				}
 			}
 		}
@@ -361,6 +371,16 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompZ::SetCompZ((*item), (CompZ**)&scriptZ);
 					comp = scriptZ;
 					break; }
+				case ComponentType::UI: {
+					ComponentUI* ui = (ComponentUI*)*item;
+					switch (ui->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						CompImageZ* imageZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&imageZ);
+						comp = imageZ;
+						break; }
+					}
+					break; }
 				default:
 					LOG_ENGINE("A component hasn't been saved");
 					break;
@@ -450,6 +470,16 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						ComponentScript* script = new ComponentScript(new_obj);
 						CompScriptZ* scriptZ = (CompScriptZ*)(*item);
 						CompZ::SetComponent(script, scriptZ);
+						break; }
+					case ComponentType::UI: {
+						switch ((*item)->ui_type) {
+						case ComponentType::UI_IMAGE: {
+							ComponentImage* image = new ComponentImage(new_obj);
+							CompImageZ* imageZ = (CompImageZ*)(*item);
+							CompZ::SetComponent(image, imageZ);
+							new_obj->AddComponent(image);
+							break; }
+						}
 						break; }
 					default:
 						break;
@@ -561,6 +591,18 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		cameraZ->objectID = camera->game_object_attached->ID;
 		cameraZ->near_plane = camera->near_plane;
 		break; }
+	case ComponentType::UI: {
+		ComponentUI* ui = (ComponentUI*)component;
+		switch (ui->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			CompImageZ* imageZ = new CompImageZ();
+			*compZ = imageZ;
+			imageZ->color = ui->current_color;
+			imageZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			imageZ->ui_type = ComponentType::UI_IMAGE;
+			break; }
+		}
+		break; }
 	default: {
 		break;
 	}
@@ -654,6 +696,43 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		light->ambient = lightZ->ambient;
 		light->diffuse = lightZ->diffuse;
 		break; }
+	case ComponentType::UI: {
+		switch (compZ->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			ComponentImage* image = (ComponentImage*)component;
+			CompImageZ* imageZ = (CompImageZ*)compZ;
+			image->current_color = imageZ->color;
+			if (imageZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(imageZ->resourceID);
+				if (tex != nullptr) {
+					image->SetTexture(tex);
+				}
+				else {
+					image->ClearTexture();
+				}
+			}
+			else {
+				image->ClearTexture();
+			}
+			GameObject* p = image->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						image->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					image->SetCanvas(nullptr);
+				}
+			}
+			break; }
+		}
+		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = (ComponentScript*)component;
 		CompScriptZ* scriptZ = (CompScriptZ*)compZ;
@@ -714,6 +793,15 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		ComponentCamera* camera = new ComponentCamera(obj);
 		CompZ::SetComponent(camera, compZ);
 		obj->AddComponent(camera);
+		break; }
+	case ComponentType::UI: {
+		switch (compZ->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			ComponentImage* image = new ComponentImage(obj);
+			CompZ::SetComponent(image, compZ);
+			obj->AddComponent(image);
+			break; }
+		}
 		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = new ComponentScript(obj);

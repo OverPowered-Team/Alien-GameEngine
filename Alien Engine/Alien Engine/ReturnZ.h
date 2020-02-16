@@ -123,6 +123,7 @@ public:
 	static void AttachCompZToGameObject(CompZ* compZ);
 
 	ComponentType type = ComponentType::UNKNOWN;
+	ComponentType ui_type = ComponentType::UNKNOWN;
 	u64 objectID = 0;
 	u64 compID = 0;
 	bool enabled = true;
@@ -166,6 +167,12 @@ public:
 	std::string data_name;
 	u64 resourceID = 0;
 	bool need_alien = false;
+};
+
+class CompImageZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	Color color = Color::White();
 };
 
 class CompCameraZ : public CompZ {
