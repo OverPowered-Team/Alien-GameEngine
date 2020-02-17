@@ -619,7 +619,7 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		break;
 	case FileDropType::SHADER:
 		LOG_ENGINE("Start Loading Shader");
-		// App->importer->LoadShaderFile(final_path.data(), true); TODO
+		App->importer->LoadShaderFile(final_path.data(), true);
 		break;
 	}
 #endif

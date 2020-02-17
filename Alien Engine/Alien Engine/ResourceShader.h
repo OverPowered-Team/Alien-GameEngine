@@ -24,6 +24,7 @@ class ResourceShader : public Resource
 
 public:
 	ResourceShader(const char* path, const u64& id);
+	ResourceShader(const char* path);
 	virtual ~ResourceShader();
 
 	bool CreateMetaData(const u64& force_id = 0);

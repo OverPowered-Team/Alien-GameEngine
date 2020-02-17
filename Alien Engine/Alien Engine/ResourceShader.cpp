@@ -4,16 +4,24 @@
 
 #include "glew/include/glew.h"
 
+#include "Application.h"
 #include "ResourceShader.h"
 #include "Globals.h"
 
 ResourceShader::ResourceShader(const char* path, const u64& id) : Resource()
 {
-	this->path = path;
+	/*this->path = path;
 	type = ResourceType::RESOURCE_SHADER;
-	ID = id;
+	this->ID = id;
 
-	renderer_id = -1;
+	renderer_id = -1;*/
+}
+
+ResourceShader::ResourceShader(const char* path)
+{
+	name = App->file_system->GetBaseFileName(path);
+	this->path = std::string(path);
+	type = ResourceType::RESOURCE_SHADER;
 }
 
 ResourceShader::~ResourceShader()

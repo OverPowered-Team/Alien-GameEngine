@@ -28,6 +28,7 @@
 class ResourceModel;
 class ResourceMesh;
 class ResourceTexture;
+class ResourceShader;
 
 class ModuleImporter : public Module
 {
@@ -50,6 +51,10 @@ public:
 	ResourceTexture* LoadEngineTexture(const char* path);
 	void LoadTextureToResource(const char* path, ResourceTexture* texture);
 	void ApplyTextureToSelectedObject(ResourceTexture* texture);
+
+	// shaders
+	ResourceShader* LoadShaderFile(const char* path, bool has_been_dropped = false, bool is_custom = true); // when dropped
+	void ApplyShaderToSelectedObject(ResourceShader* shader);
 
 private:
 	

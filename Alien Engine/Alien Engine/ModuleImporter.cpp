@@ -15,6 +15,7 @@
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
@@ -400,6 +401,48 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture* texture)
 				LOG_ENGINE("Selected GameObject has no mesh");
 		}
 	}	
+}
+
+ResourceShader* ModuleImporter::LoadShaderFile(const char* path, bool has_been_dropped, bool is_custom)
+{
+	ResourceShader* shader = nullptr;
+
+	if (!has_been_dropped && !App->file_system->Exists(path)) {
+		return nullptr;
+	}
+
+	Resource* shad = nullptr;
+	if (App->resources->Exists(path, &shad)) {
+
+		std::string meta_path_in_assets = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
+		u64 ID = App->resources->GetIDFromAlienPath(meta_path_in_assets.data());
+
+		shader = (ResourceShader*)App->resources->GetResourceWithID(ID);
+
+		if (has_been_dropped && !App->objects->GetSelectedObjects().empty()) {
+			ApplyShaderToSelectedObject(shader);
+		}
+		LOG_ENGINE("This shader was already loaded");
+
+		return shader;
+	}
+	else {
+		shader = new ResourceShader(path);
+
+		shader->CreateMetaData();
+		App->resources->AddNewFileNode(path, true);
+
+		if (has_been_dropped && !App->objects->GetSelectedObjects().empty()) {
+			ApplyShaderToSelectedObject(shader);
+		}
+	}
+
+	return shader;
+}
+
+void ModuleImporter::ApplyShaderToSelectedObject(ResourceShader* shader)
+{
+	// TODO
 }
 
 void ModuleImporter::LoadParShapesMesh(par_shapes_mesh* shape, ResourceMesh* mesh)
