@@ -81,12 +81,13 @@ void ComponentCollider::Update()
 	AdjustShape();
 
 	// Body Logic -------------------------------------------
+	ComponentTransform* go_transform = game_object_attached->GetComponent<ComponentTransform>(); // AURELIO_TODO: set only once 
 
 	float3 world_center = GetWorldCenter();
-	btTransform transform = ToBtTransform(linked_go->transform->GetPosition() + world_center, linked_go->transform->GetQuatRotation());
+	btTransform transform = ToBtTransform(go_transform->GetGlobalPosition() + world_center, go_transform->GetGlobalRotation());
 	aux_body->setWorldTransform(transform);
 
-	if (App->time->GetGameState() == GameState::STOP) return true;
+	if (Time::GetGameState() == Time::GameState::PAUSE) return;
 
 	if (SearchRigidBody())
 	{
@@ -108,8 +109,6 @@ void ComponentCollider::Update()
 		SetFriction(friction);
 		SetAngularFriction(angular_friction);
 	}
-
-	return true;
 }
 
 bool ComponentCollider::Render()
@@ -124,7 +123,7 @@ bool ComponentCollider::Render()
 	return true;
 }
 
-void ComponentCollider::DrawPanelInfo()
+bool ComponentCollider::DrawInspector()
 {
 	bool last_is_trigger = is_trigger;
 
@@ -152,6 +151,8 @@ void ComponentCollider::DrawPanelInfo()
 	{
 		SetIsTrigger(last_is_trigger);
 	}
+
+	return true;
 }
 
 void ComponentCollider::SetIsTrigger(bool value)

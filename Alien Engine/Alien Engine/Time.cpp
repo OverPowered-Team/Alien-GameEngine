@@ -108,6 +108,11 @@ void Time::CleanUp()
 		delete game_timer;
 }
 
+Time::GameState Time::GetGameState()
+{
+	return state;
+}
+
 void Time::SetScaleTime(const float& scale)
 {
 	scale_time = scale;

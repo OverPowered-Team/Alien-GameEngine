@@ -51,7 +51,7 @@ public:
 
 private:
 
-	void  DrawPanelInfo();
+	bool  DrawInspector();
 
 	void SaveComponent(JSONArraypack* to_save);
 
@@ -63,35 +63,35 @@ protected:
 
 	// Virtual Functions ------------------------------
 
-	// Create specific shape
-	virtual void CreateShape(ComponentMesh* mesh) {};
+	virtual void Reset() {}
 
-	// Adjust shape to scale and other factors
-	virtual void AdjustShape() {};
+	virtual void SetComponent(Component* component) {}
+
+	virtual void Clone(Component* clone) {}
+
+	virtual void CreateShape(ComponentMesh* mesh) {}; // Create specific shape
+
+	virtual void AdjustShape() {}; 	// Adjust shape to scale and other factors
 
 	virtual void SaveCollider(JSONArraypack* config) {}
 
 	virtual void LoadCollider(JSONArraypack* config) {}
 
-	virtual void DrawPanelColliderInfo() {};
+	virtual void DrawInspectorCollider() {};
 
 protected:
-
-	bool is_trigger = false;
 
 	float3 center = float3(0.f, 0.f, 0.f);
 	float3 scaled_center = float3(0.f, 0.f, 0.f);
 
+	bool is_trigger = false;
 	float bouncing = 0.f;
 	float friction = 0.f;
 	float angular_friction = 0.f;
 
 	btCollisionShape* shape = nullptr;
-	// Used when GameObject has notrigid body in run time
-	btRigidBody* aux_body = nullptr; 
-	// Used when GameObject has notrigid body in run time
-	btDefaultMotionState* aux_motion_state = nullptr;
-	// Added to world
-	bool body_added = false;
+	btRigidBody* aux_body = nullptr;  // Used when GameObject has notrigid body in run time
+	btDefaultMotionState* aux_motion_state = nullptr; 	// Used when GameObject has notrigid body in run time
+	bool body_added = false; 	// Added to world
 
 };
