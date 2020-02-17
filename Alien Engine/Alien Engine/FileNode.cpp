@@ -305,7 +305,7 @@ void FileNode::SetIcon()
 			type = FileDropType::TEXTURE;
 		}
 		else if (App->StringCmp(extension.data(), "shader")) {
-			icon = App->resources->icons.global; // TODO change icon
+			icon = App->resources->icons.shader_file;
 			type = FileDropType::SHADER;
 		}
 		else if (App->StringCmp(extension.data(), "fbx")) {
