@@ -164,6 +164,7 @@
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentScript.h" />
+    <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="ComponentUI.h" />
     <ClInclude Include="Debug.h" />
@@ -296,6 +297,7 @@
     <ClInclude Include="RandomHelper.h" />
     <ClInclude Include="RayCreator.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourceModel.h" />
     <ClInclude Include="ResourcePrefab.h" />
@@ -329,6 +331,7 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentScript.cpp" />
+    <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -412,6 +415,7 @@
     <ClCompile Include="Parson\parson.c" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
+    <ClCompile Include="ResourceFont.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceModel.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />

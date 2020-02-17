@@ -51,26 +51,28 @@ void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
 
 void ComponentUI::Update()
 {
-	UILogic();
+	if (Time::IsPlaying()) {
+		UILogic();
 
-	switch (state)
-	{
-	case Idle:
-		break;
-	case Hover:
-		OnHover();
-		break;
-	case Click:
-		OnClick();
-		break;
-	case Pressed:
-		OnPressed();
-		break;
-	case Release:
-		OnRelease();
-		break;
-	default:
-		break;
+		switch (state)
+		{
+		case Idle:
+			break;
+		case Hover:
+			OnHover();
+			break;
+		case Click:
+			OnClick();
+			break;
+		case Pressed:
+			OnPressed();
+			break;
+		case Release:
+			OnRelease();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -221,6 +223,5 @@ void ComponentUI::UILogic()
 	case Release:
 		state = Idle;
 		break;
-
 	}
 }

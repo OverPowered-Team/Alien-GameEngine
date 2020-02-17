@@ -798,10 +798,20 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item) {
-		if (*item != nullptr && (*item)->GetType() == type) {
-			return *item;
+	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE) {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == ComponentType::UI && dynamic_cast<ComponentUI*>(*item)->ui_type == type) {
+				return *item;
+			}
+		}
+	}
+	else {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == type) {
+				return *item;
+			}
 		}
 	}
 	return nullptr;
