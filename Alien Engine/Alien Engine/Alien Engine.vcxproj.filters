@@ -555,6 +555,9 @@
     <ClInclude Include="ComponentButton.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentCheckbox.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -894,6 +897,9 @@
       <Filter>Components\UI</Filter>
     </ClCompile>
     <ClCompile Include="ComponentButton.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCheckbox.cpp">
       <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>

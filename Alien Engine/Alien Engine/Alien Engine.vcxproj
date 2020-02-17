@@ -158,6 +158,7 @@
     <ClInclude Include="ComponentButton.h" />
     <ClInclude Include="ComponentCamera.h" />
     <ClInclude Include="ComponentCanvas.h" />
+    <ClInclude Include="ComponentCheckbox.h" />
     <ClInclude Include="ComponentImage.h" />
     <ClInclude Include="ComponentLight.h" />
     <ClInclude Include="ComponentMaterial.h" />
@@ -322,6 +323,7 @@
     <ClCompile Include="ComponentButton.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentCanvas.cpp" />
+    <ClCompile Include="ComponentCheckbox.cpp" />
     <ClCompile Include="ComponentImage.cpp" />
     <ClCompile Include="ComponentLight.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
