@@ -7,7 +7,9 @@
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
 #include "ComponentCanvas.h"
+#include "ComponentUI.h"
 #include "ComponentImage.h"
+#include "ComponentText.h"
 #include "ComponentButton.h"
 #include "ReturnZ.h"
 #include "Alien.h"
@@ -311,7 +313,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Canvas\0Image\0Button\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Canvas\0Image\0Button\0Text\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -412,6 +414,20 @@ void PanelInspector::ButtonAddComponent()
 					ComponentCanvas* canvas = GetCanvas();
 					GameObject* selected = App->objects->GetSelectedObjects().back();
 					comp = new ComponentButton(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has Component Canvas!");
+				break; }
+			case ComponentType::UI_TEXT: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentText(selected);
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);

@@ -14,6 +14,7 @@ class ResourceModel;
 class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
+class ResourceFont;
 
 struct Icons {
 
@@ -82,6 +83,7 @@ public:
 	void ReloadScripts();
 
 	ResourceScene* GetSceneByName(const char* name);
+	ResourceFont* GetFontByName(const char* name);
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);

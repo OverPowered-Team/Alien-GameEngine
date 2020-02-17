@@ -3,17 +3,21 @@
 #include "Globals.h"
 #include "Module.h"
 
-
 #include "Assimp/include/assimp/cimport.h"
 #include "Assimp/include/assimp/scene.h"
 #include "Assimp/include/assimp/postprocess.h"
 #include "Assimp/include/assimp/cfileio.h"
 #include "Assimp/include/assimp/mesh.h"
+#include "FreeType/include/ft2build.h"
+#include "FreeType/include/freetype/freetype.h"
+
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
 #pragma comment (lib, "Devil/libx86/ILU.lib")
 #pragma comment (lib, "Devil/libx86/ILUT.lib")
+
+#pragma comment(lib, "Freetype/libx86/freetype.lib")
 
 #include <vector>
 #include "glew/include/glew.h"
@@ -63,8 +67,10 @@ private:
 	ResourceMesh* LoadNodeMesh(const aiScene * scene, const aiNode* node, const aiMesh* mesh, ResourceMesh* parent);
 
 private:
-
 	ResourceModel* model = nullptr;
+
+public:
+	FT_Library library;
 };
 
 

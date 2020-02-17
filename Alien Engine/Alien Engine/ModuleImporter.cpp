@@ -15,8 +15,10 @@
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
+#include "ResourceFont.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
+#include "FreeType/include/freetype/freetype.h"
 
 ModuleImporter::ModuleImporter(bool start_enabled) : Module(start_enabled)
 {
@@ -38,6 +40,12 @@ bool ModuleImporter::Init()
 	ilutInit();
 	LOG_ENGINE("Initing Devil");
 
+	if (FT_Init_FreeType(&library)) {
+		LOG_ENGINE("Error when it's initialization FreeType");
+	}
+	else
+		LOG_ENGINE("FreeType initialized!");
+
 	return true;
 }
 
@@ -50,7 +58,8 @@ bool ModuleImporter::Start()
 bool ModuleImporter::CleanUp()
 {
 	aiDetachAllLogStreams();
-	
+	FT_Done_FreeType(library);
+
 	return true;
 }
 
@@ -341,6 +350,16 @@ ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 ResourceFont* ModuleImporter::LoadFontFile(const char* path)
 {
 	ResourceFont* font = nullptr;
+	font = ResourceFont::ImportFontBySize(path, 12);
+
+	if (font != nullptr)
+	{
+		App->resources->AddResource(font);
+		return font;
+	}
+	else
+		LOG_ENGINE("Font not loaded! Error!");
+
 	return font;
 }
 

@@ -14,6 +14,7 @@ enum class ComponentType {
 	CANVAS,
 	UI_IMAGE,
 	UI_BUTTON,
+	UI_TEXT,
 	SCRIPT,
 	UI, // SCRIPT MUST BE THE LAST
 
@@ -31,6 +32,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentUI;
 	friend class ComponentScript;
 	friend class ComponentImage;
+	friend class ComponentText;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class Prefab;

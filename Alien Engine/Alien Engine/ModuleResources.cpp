@@ -3,6 +3,7 @@
 #include "Resource_.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "ResourceFont.h"
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
@@ -498,6 +499,19 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_SCENE) {
 			if (App->StringCmp((*item)->GetName(), name)) {
 				return dynamic_cast<ResourceScene*>(*item);
+			}
+		}
+	}
+	return nullptr;
+}
+
+ResourceFont* ModuleResources::GetFontByName(const char* name)
+{
+	auto item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_FONT) {
+			if (App->StringCmp((*item)->GetName(), name)) {
+				return dynamic_cast<ResourceFont*>(*item);
 			}
 		}
 	}

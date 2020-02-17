@@ -4,16 +4,18 @@
 #include "MathGeoLib/include/Math/float2.h"
 #include <map>
 
+typedef unsigned char uchar;
+
 struct FontImportSettings {
 	std::string fontPath;
 	std::vector<uint> sizes;
 };
 
 struct Character {
-	uint    TextureID;  // ID handle of the glyph texture
-	float2	Size;       // Size of glyph
-	float2	Bearing;    // Offset from baseline to left/top of glyph
-	uint    Advance;    // Offset to advance to next glyph
+	uint    textureID;  // ID handle of the glyph texture
+	float2	size;       // Size of glyph
+	float2	bearing;    // Offset from baseline to left/top of glyph
+	uint    advance;    // Offset to advance to next glyph
 };
 
 struct ResourceFontData {
@@ -26,9 +28,15 @@ struct ResourceFontData {
 class ResourceFont : public Resource {
 
 public:
-	ResourceFont() { type = ResourceType::RESOURCE_TEXTURE; }
+	ResourceFont(ResourceFontData fontData);
 	
 	Resource* ImportFile(const char* file);
+	static ResourceFont* ImportFontBySize(const char* file, uint size);
+	ResourceFont* LoadFile(const char* file);
+
+private:
+	static uint LoadTextureCharacter(uint width, uint height, uchar* buffer);
+	uint SaveFile(ResourceFontData& fontData);
 	/*ResourceFont(const char* path, const uint& id, const uint& width, const uint& height);
 	ResourceFont(const char* path);
 	virtual ~ResourceFont();*/
