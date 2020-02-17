@@ -45,16 +45,18 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 #ifndef GAME_VERSION
 	// Make sure standard paths exist
 	const char* dirs[] = {
-		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,
+		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER, FONTS_FOLDER
 		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER,
-		ASSETS_PREFAB_FOLDER, SCRIPTS_DLL_OUTPUT, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		ASSETS_PREFAB_FOLDER, SCRIPTS_DLL_OUTPUT, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
+		LIBRARY_FONTS_FOLDER
 	};
 #else
 	// Make sure standard paths exist
 	const char* dirs[] = {
 		LIBRARY_FOLDER, CONFIGURATION_FOLDER,
 		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
-		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
+		LIBRARY_FONTS_FOLDER
 	};
 #endif
 	for (uint i = 0; i < sizeof(dirs) / sizeof(const char*); ++i)
@@ -597,6 +599,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::TEXTURE:
 		final_path = TEXTURES_FOLDER + final_path;
 		break;
+	case FileDropType::FONT:
+		final_path = FONTS_FOLDER + final_path;
+		break;
 	}
 
 	std::string normalized = extern_path;
@@ -612,6 +617,10 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		break;
 	case FileDropType::TEXTURE:
 		LOG_ENGINE("Start Loading Texture");
+		App->importer->LoadTextureFile(final_path.data(), true);
+		break;
+	case FileDropType::FONT:
+		LOG_ENGINE("Start Loading Font");
 		App->importer->LoadTextureFile(final_path.data(), true);
 		break;
 	}
@@ -635,6 +644,10 @@ const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_
 		ext_type = FileDropType::TEXTURE;
 	else if (App->StringCmp(extension.data(), "tga"))
 		ext_type = FileDropType::TEXTURE;
+	else if (App->StringCmp(extension.data(), "ttf"))
+		ext_type = FileDropType::FONT;
+	else if (App->StringCmp(extension.data(), "otf"))
+		ext_type = FileDropType::FONT;
 	else
 		LOG_ENGINE("Extension unknown!");
 
