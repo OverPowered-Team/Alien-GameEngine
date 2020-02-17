@@ -975,6 +975,12 @@ void ModuleUI::ChangeStyle(const int& style_number)
 	case 3:
 		break;
 	}
+
+	ImGuiStyle& style =ImGui::GetStyle();
+	style.MaxColumnSeparation;
+	style.TitleSeparation;
+	style.SubTitleSeparation;
+
 }
 
 void ModuleUI::ChangeEnableDemo()

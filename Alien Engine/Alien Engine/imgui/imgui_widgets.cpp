@@ -7746,3 +7746,56 @@ void ImGui::Columns(int columns_count, const char* id, bool border)
 }
 
 //-------------------------------------------------------------------------
+// [SECTION] Widgets: Solid Team Implementations
+//-------------------------------------------------------------------------
+// - Title( const char* title); 
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+#include <string>
+
+void ImGui::Title(const char* title, int hierarchy) // Type 1: Panel | 2: Menu
+{
+    ImGuiStyle style = ImGui::GetStyle();
+    ImVec4 color;
+
+    if (hierarchy < 1)
+        hierarchy = 1;
+
+    ImGui::NewLine();
+
+    if (hierarchy == 1)
+    {
+        ImGui::SameLine(style.TitleSeparation);
+        color = { 1.f, 1.f ,1.f ,1.f };
+    }
+    else
+    {
+        ImGui::SameLine(style.TitleSeparation + style.SubTitleSeparation * (hierarchy - 1));
+        color = { .8f, .8f ,.8f ,.8f };
+    }
+
+    float window_width = ImGui::GetWindowContentRegionWidth();
+    float separation;
+
+    if (style.SeparationType == ImGuiSeparationType::ImGui_WindowSeparation)
+    {
+        if (window_width < 318)
+        {
+            separation = window_width - 168;
+        }
+        else
+        {
+            separation = 150;
+        }
+    }
+    else if (style.SeparationType == ImGuiSeparationType::ImGui_MenuSeparation)
+    {
+        separation = 150;
+    }
+
+    ImGui::AlignTextToFramePadding();
+    ImGui::TextColored(color, title); ImGui::SameLine(separation);   // Fake column
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());        // Next Item Width
+}
+//-------------------------------------------------------------------------

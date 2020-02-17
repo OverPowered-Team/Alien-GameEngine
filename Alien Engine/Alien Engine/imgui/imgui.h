@@ -215,9 +215,12 @@ struct ImVec4
 
 namespace ImGui
 {
+    IMGUI_API void          Title(const char* title, int hierarchy = 1);
+
     // Context creation and access
     // Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between imgui contexts.
     // All those functions are not reliant on the current context.
+
     IMGUI_API ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = NULL);
     IMGUI_API void          DestroyContext(ImGuiContext* ctx = NULL);   // NULL = destroy current context
     IMGUI_API ImGuiContext* GetCurrentContext();
@@ -1359,8 +1362,21 @@ struct ImVector
 // and ImGui::PushStyleColor(ImGuiCol_XXX)/PopStyleColor() for colors.
 //-----------------------------------------------------------------------------
 
+enum ImGuiSeparationType
+{
+    ImGui_MenuSeparation,
+    ImGui_WindowSeparation
+};
+
 struct ImGuiStyle
 {
+    // Team Solid ------------------
+    float       MaxColumnSeparation;
+    float       TitleSeparation;
+    float       SubTitleSeparation;
+    ImGuiSeparationType     SeparationType;
+    // ------------------------------
+
     float       Alpha;                      // Global alpha applies to everything in Dear ImGui.
     ImVec2      WindowPadding;              // Padding within a window.
     float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows.
