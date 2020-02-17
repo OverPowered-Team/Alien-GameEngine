@@ -16,6 +16,7 @@
 #include "ModuleImporter.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModulePhysics.h"
 
 #include <string>
 #include <vector>
@@ -47,6 +48,7 @@ public:
 	ModuleObjects* objects = nullptr;
 	ModuleFileSystem* file_system = nullptr;
 	ModuleResources* resources = nullptr;
+	ModulePhysics* physics = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;
