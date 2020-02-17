@@ -31,19 +31,19 @@ the specific language governing permissions and limitations under the License.
 #ifndef _IAK_PLUGIN_H_
 #define _IAK_PLUGIN_H_
 
-#include <AK/SoundEngine/Common/AkCommonDefs.h>
-#include <AK/SoundEngine/Common/IAkRTPCSubscriber.h>
-#include <AK/SoundEngine/Common/IAkPluginMemAlloc.h>
-#include <AK/SoundEngine/Common/AkFPUtilities.h>
-#include <AK/Tools/Common/AkLock.h>
-#include <AK/Tools/Common/AkPlatformFuncs.h>
-#include <AK/Tools/Common/AkMonitorError.h>
-#include <AK/SoundEngine/Common/AkSoundEngineExport.h>
-#include <AK/SoundEngine/Common/IAkProcessorFeatures.h>
-#include <AK/SoundEngine/Common/IAkPlatformContext.h>
-#include <AK/SoundEngine/Common/AkMidiTypes.h>
-#include <AK/SoundEngine/Common/AkCallback.h>
-#include <AK/AkWwiseSDKVersion.h>
+#include "../SoundEngine/Common/AkCommonDefs.h"
+#include "../SoundEngine/Common/IAkRTPCSubscriber.h"
+#include "../SoundEngine/Common/IAkPluginMemAlloc.h"
+#include "../SoundEngine/Common/AkFPUtilities.h"
+#include "../Tools/Common/AkLock.h"
+#include "../Tools/Common/AkPlatformFuncs.h"
+#include "../Tools/Common/AkMonitorError.h"
+#include "../SoundEngine/Common/AkSoundEngineExport.h"
+#include "../SoundEngine/Common/IAkProcessorFeatures.h"
+#include "../SoundEngine/Common/IAkPlatformContext.h"
+#include "../SoundEngine/Common/AkMidiTypes.h"
+#include "../SoundEngine/Common/AkCallback.h"
+#include "../AkWwiseSDKVersion.h"
 
 #include <math.h>
 

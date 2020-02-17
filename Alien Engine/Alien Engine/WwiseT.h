@@ -7,6 +7,7 @@
 //#include <AK\SoundEngine\Platforms\Windows\AkTypes.h>
 
 // Wwise libs
+#define _DEBUG
 #ifndef _DEBUG  // Profile build configuration must be loaded instead of Debug
 #define AK_OPTIMIZED
 #pragma comment( lib, "AK/Release(StaticCRT)/lib/AkSoundEngine.lib")

@@ -23,9 +23,9 @@ written agreement between you and Audiokinetic Inc.
 #ifndef _AK_FILE_HELPERS_H_
 #define _AK_FILE_HELPERS_H_
 
-#include <AK/Tools/Common/AkAssert.h>
+#include "../Tools/Common/AkAssert.h"
 #include <windows.h>
-#include <AK/SoundEngine/Common/AkStreamMgrModule.h>
+#include "../SoundEngine/Common/AkStreamMgrModule.h"
 
 class CAkFileHelpers
 {

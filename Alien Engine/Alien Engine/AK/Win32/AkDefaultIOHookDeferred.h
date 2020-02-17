@@ -90,9 +90,9 @@ written agreement between you and Audiokinetic Inc.
 #ifndef _AK_DEFAULT_IO_HOOK_DEFERRED_H_
 #define _AK_DEFAULT_IO_HOOK_DEFERRED_H_
 
-#include <AK/SoundEngine/Common/AkStreamMgrModule.h>
+#include "../SoundEngine/Common/AkStreamMgrModule.h"
 #include "../Common/AkMultipleFileLocation.h"
-#include <AK/Tools/Common/AkAssert.h>
+#include "../Tools/Common/AkAssert.h"
 
 //-----------------------------------------------------------------------------
 // Name: class CAkDefaultIOHookDeferred.
