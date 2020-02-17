@@ -6,6 +6,7 @@
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
 #include "PanelProject.h"
@@ -503,6 +504,37 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 		}
 	}
 	return nullptr;
+}
+
+u64 ModuleResources::Find(const char* assets_file) const
+{
+	for (auto i = resources.begin(); i != resources.end(); ++i) {
+		if (std::string((*i)->GetAssetsPath()).compare(assets_file) == 0)
+			return (*i)->GetID();
+	}
+
+	return 0u;
+}
+
+Resource* ModuleResources::Get(const u64& uid)
+{
+	for (auto it = resources.begin(); it != resources.end(); ++it)
+	{
+		if ((*it)->GetID() == uid)
+			return *it;
+	}
+
+	return nullptr;
+}
+
+bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
+{
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+			to_fill.push_back((ResourceShader*)(*res));
+	}
+
+	return !to_fill.empty();
 }
 
 FileNode* ModuleResources::GetFileNodeByPath(const std::string& path, FileNode* node)

@@ -14,6 +14,7 @@ class ResourceModel;
 class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
+class ResourceShader;
 
 struct Icons {
 
@@ -83,6 +84,13 @@ public:
 	void ReloadScripts();
 
 	ResourceScene* GetSceneByName(const char* name);
+
+	// Utils
+	u64 ModuleResources::Find(const char* assets_file) const;
+	Resource* Get(const u64& uid);
+
+	// Shaders
+	bool GetShaders(std::vector<ResourceShader*>& to_fill);
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
