@@ -3,11 +3,12 @@
 
 #include "ComponentUI.h"
 #include "Color.h"
+#include <functional>
 
 class ResourceTexture;
 class ComponentCanvas;
 
-class ComponentCheckbox :public ComponentUI
+class __declspec(dllexport) ComponentCheckbox :public ComponentUI
 {
 public:
 
@@ -29,11 +30,28 @@ public:
 
 	void SetActive(bool active);
 
+	void AddListenerOnHover(std::function<void()> funct);
+	void AddListenerOnClick(std::function<void()> funct);
+	void AddListenerOnClickRepeat(std::function<void()> funct);
+	void AddListenerOnRelease(std::function<void()> funct);
+
+	void SetCheckboxState(bool value);
+
+private:
+	void CallListeners(std::vector<std::function<void()>>* listeners);
+
 private:
 	bool active = true;
+
+public:
 	bool clicked = false;
 
 private:
+	std::vector<std::function<void()>> listenersOnHover;
+	std::vector<std::function<void()>> listenersOnClick;
+	std::vector<std::function<void()>> listenersOnClickRepeat;
+	std::vector<std::function<void()>> listenersOnRelease;
+
 	ComponentCanvas* GetCanvas();
 	GameObject* tick = nullptr;
 	GameObject* cross = nullptr;

@@ -20,6 +20,7 @@ ComponentCheckbox::ComponentCheckbox(GameObject* obj) :ComponentUI(obj)
 	tick->AddComponent(new ComponentTransform(tick, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
 	ComponentImage* comp = new ComponentImage(tick);
 	tick->AddComponent(comp);
+	tick->enabled = false;
 
 	//---------------------------------------------------------
 	cross = new GameObject(game_object_attached);
@@ -27,6 +28,7 @@ ComponentCheckbox::ComponentCheckbox(GameObject* obj) :ComponentUI(obj)
 	cross->AddComponent(new ComponentTransform(cross, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
 	ComponentImage* comp2 = new ComponentImage(cross);
 	cross->AddComponent(comp2);
+	cross->enabled = true;
 	
 
 }
@@ -161,6 +163,7 @@ bool ComponentCheckbox::OnHover()
 		current_color = hover_color;
 		tick->GetComponent<ComponentUI>()->current_color = hover_color;
 		cross->GetComponent<ComponentUI>()->current_color = hover_color;
+		CallListeners(&listenersOnHover);
 	}
 	return true;
 }
@@ -169,9 +172,14 @@ bool ComponentCheckbox::OnClick()
 {
 	if (active)
 	{ 
+		clicked = !clicked;
+		tick->enabled = !tick->enabled;
+		cross->enabled = !cross->enabled;
+		
 		current_color = clicked_color;
 		tick->GetComponent<ComponentUI>()->current_color = clicked_color;
 		cross->GetComponent<ComponentUI>()->current_color = clicked_color;
+		CallListeners(&listenersOnClick);
 	}
 	return true;
 }
@@ -183,6 +191,7 @@ bool ComponentCheckbox::OnPressed()
 		current_color = pressed_color;
 		tick->GetComponent<ComponentUI>()->current_color = pressed_color;
 		cross->GetComponent<ComponentUI>()->current_color = pressed_color;
+		CallListeners(&listenersOnClickRepeat);
 	}
 	return true;
 }
@@ -194,6 +203,7 @@ bool ComponentCheckbox::OnRelease()
 		current_color = idle_color;
 		tick->GetComponent<ComponentUI>()->current_color = idle_color;
 		cross->GetComponent<ComponentUI>()->current_color = idle_color;
+		CallListeners(&listenersOnRelease);
 	}
 	return true;
 }
@@ -210,6 +220,61 @@ void ComponentCheckbox::SetActive(bool active)
 		current_color = disabled_color;
 		tick->GetComponent<ComponentUI>()->current_color = disabled_color;
 		cross->GetComponent<ComponentUI>()->current_color = disabled_color;
+	}
+}
+
+void ComponentCheckbox::AddListenerOnHover(std::function<void()> funct)
+{
+	listenersOnHover.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnClick(std::function<void()> funct)
+{
+	listenersOnClick.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnClickRepeat(std::function<void()> funct)
+{
+	listenersOnClickRepeat.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnRelease(std::function<void()> funct)
+{
+	listenersOnRelease.push_back(funct);
+}
+
+void ComponentCheckbox::SetCheckboxState(bool value)
+{
+	clicked = value;
+	if (value)
+	{
+		tick->enabled = true;
+		cross->enabled = false;
+	}
+	else
+	{
+		tick->enabled = false;
+		cross->enabled = true;
+	}
+}
+
+void ComponentCheckbox::CallListeners(std::vector<std::function<void()>>* listeners)
+{
+	if (listeners != nullptr) {
+		auto item = listeners->begin();
+		for (; item != listeners->end(); ++item) {
+			if (*item != nullptr) {
+				try {
+					(*item)();
+				}
+				catch (...) {
+					#ifndef GAME_VERSION
+					LOG_ENGINE("Error when calling a listener function of a button");
+					App->ui->SetError();
+					#endif
+				}
+			}
+		}
 	}
 }
 
