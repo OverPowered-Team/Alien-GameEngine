@@ -9,6 +9,7 @@ ResourceAnimation::ResourceAnimation() : Resource()
 
 ResourceAnimation::~ResourceAnimation()
 {
+	
 }
 
 
@@ -34,8 +35,22 @@ uint ResourceAnimation::GetChannelIndex(std::string name)
 	return num_channels;
 }
 
-void ResourceAnimation::UnLoad()
+
+void ResourceAnimation::Load()
 {
+	//App->importer->animation->Load(this);
+}
+
+bool ResourceAnimation::CreateMetaData(const u64& force_id)
+{
+	return false;
+}
+
+bool ResourceAnimation::DeleteMetaData()
+{
+	if (channels == nullptr)
+		return;
+
 	LOG_ENGINE("Unloading Animation %s", name.c_str());
 
 	for (int i = 0; i < num_channels; i++)
@@ -46,9 +61,4 @@ void ResourceAnimation::UnLoad()
 	}
 
 	channels = nullptr;
-}
-
-void ResourceAnimation::Load()
-{
-	//App->importer->animation->Load(this);
 }

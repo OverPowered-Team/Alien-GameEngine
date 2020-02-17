@@ -4,6 +4,7 @@
 #include <vector>
 
 class ResourceMesh;
+class ResourceAnimation;
 
 class ResourceModel : public Resource {
 

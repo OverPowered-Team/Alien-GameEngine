@@ -37,8 +37,10 @@ public:
 
 	uint GetChannelIndex(std::string name);
 
-	void UnLoad();
 	void Load();
+
+	bool CreateMetaData(const u64& force_id = 0) override;
+	bool DeleteMetaData() override;
 
 public:
 	bool loops = false;
@@ -50,7 +52,7 @@ public:
 	uint max_tick = 0;
 
 	uint num_channels = 0;
-	Channel* channels;
+	Channel* channels  = nullptr;
 };
 
 

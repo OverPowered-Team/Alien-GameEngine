@@ -1,6 +1,7 @@
 #include "ResourceModel.h"
 #include "Globals.h"
 #include "ResourceMesh.h"
+#include "ResourceAnimation.h"
 #include "ModuleFileSystem.h"
 #include "Application.h"
 #include <algorithm>
@@ -235,6 +236,15 @@ bool ResourceModel::DeleteMetaData()
 	}
 	meshes_attached.clear();
 
+	std::vector<ResourceAnimation*>::iterator item_anim = animation_attached.begin();
+	for (; item_anim != animation_attached.end(); ++item_anim)
+	{
+		if ((*item_anim) != nullptr)
+		{
+			(*item_anim)->DeleteMetaData();
+		}
+	}
+	animation_attached.clear();
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 
 		App->resources->resources.erase(position);
