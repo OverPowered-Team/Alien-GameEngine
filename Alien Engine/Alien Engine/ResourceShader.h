@@ -54,7 +54,7 @@ private:
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
-	uint renderer_id;
+	uint renderer_id = 0u;
 };
 
 #endif /* __RESOURCE_SHADER_H__ */
