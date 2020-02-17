@@ -33,6 +33,9 @@ ResourceShader::~ResourceShader()
 bool ResourceShader::CreateMetaData(const u64& force_id)
 {
 	// TODO
+	ID = App->resources->GetRandomID(); // test
+	App->resources->AddResource(this);
+
 	return true;
 }
 
