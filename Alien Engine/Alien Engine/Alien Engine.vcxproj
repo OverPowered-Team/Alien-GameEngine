@@ -151,12 +151,22 @@
   <ItemGroup>
     <ClInclude Include="AK\AkPlatforms.h" />
     <ClInclude Include="AK\AkWwiseSDKVersion.h" />
+    <ClInclude Include="AK\Common\AkBuddyBlockPool.h" />
     <ClInclude Include="AK\Common\AkDefaultLowLevelIODispatcher.h" />
+    <ClInclude Include="AK\Common\AkDeviceBase.h" />
+    <ClInclude Include="AK\Common\AkDeviceBlocking.h" />
+    <ClInclude Include="AK\Common\AkDeviceDeferredLinedUp.h" />
     <ClInclude Include="AK\Common\AkFileLocationBase.h" />
     <ClInclude Include="AK\Common\AkFilePackage.h" />
     <ClInclude Include="AK\Common\AkFilePackageLowLevelIO.h" />
     <ClInclude Include="AK\Common\AkFilePackageLUT.h" />
+    <ClInclude Include="AK\Common\AkIOMemMgr.h" />
     <ClInclude Include="AK\Common\AkMultipleFileLocation.h" />
+    <ClInclude Include="AK\Common\AkStmDeferredLinedUpBase.h" />
+    <ClInclude Include="AK\Common\AkStmMemView.h" />
+    <ClInclude Include="AK\Common\AkStreamingDefaults.h" />
+    <ClInclude Include="AK\Common\AkStreamMgr.h" />
+    <ClInclude Include="AK\Common\AkTransferDeferred.h" />
     <ClInclude Include="AK\Comm\AkCommunication.h" />
     <ClInclude Include="AK\DSP\AkApplyGain.h" />
     <ClInclude Include="AK\DSP\AkDelayLineMemory.h" />
@@ -247,6 +257,20 @@
     <ClInclude Include="AK\SoundFrame\SFObjects.h" />
     <ClInclude Include="AK\SpatialAudio\Common\AkSpatialAudio.h" />
     <ClInclude Include="AK\SpatialAudio\Common\AkSpatialAudioTypes.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkBuddyBlockPool.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkDeviceBase.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkDeviceBlocking.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkDeviceDeferredLinedUp.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkIOMemMgr.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkStmDeferredLinedUpBase.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkStmMemView.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkStreamingDefaults.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkStreamMgr.h" />
+    <ClInclude Include="AK\StreamManager\Common\AkTransferDeferred.h" />
+    <ClInclude Include="AK\StreamManager\POSIX\AkIOThread.h" />
+    <ClInclude Include="AK\StreamManager\Win32\AkIOThread.h" />
+    <ClInclude Include="AK\StreamManager\Win32\AkPlatformStreamingDefaults.h" />
+    <ClInclude Include="AK\StreamManager\Win32\stdafx.h" />
     <ClInclude Include="AK\Tools\Common\AkAllocator.h" />
     <ClInclude Include="AK\Tools\Common\AkArray.h" />
     <ClInclude Include="AK\Tools\Common\AkAssert.h" />
@@ -475,10 +499,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AK\Common\AkDefaultLowLevelIODispatcher.cpp" />
+    <ClCompile Include="AK\Common\AkDeviceBase.cpp" />
+    <ClCompile Include="AK\Common\AkDeviceBlocking.cpp" />
+    <ClCompile Include="AK\Common\AkDeviceDeferredLinedUp.cpp" />
     <ClCompile Include="AK\Common\AkFileLocationBase.cpp" />
     <ClCompile Include="AK\Common\AkFilePackage.cpp" />
     <ClCompile Include="AK\Common\AkFilePackageLUT.cpp" />
+    <ClCompile Include="AK\Common\AkIOMemMgr.cpp" />
     <ClCompile Include="AK\Common\AkMultipleFileLocation.cpp" />
+    <ClCompile Include="AK\Common\AkStreamMgr.cpp" />
+    <ClCompile Include="AK\Common\AkTransferDeferred.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkDeviceBase.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkDeviceBlocking.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkDeviceDeferredLinedUp.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkIOMemMgr.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkStreamMgr.cpp" />
+    <ClCompile Include="AK\StreamManager\Common\AkTransferDeferred.cpp" />
+    <ClCompile Include="AK\StreamManager\POSIX\AkIOThread.cpp" />
+    <ClCompile Include="AK\StreamManager\Win32\AkIOThread.cpp" />
+    <ClCompile Include="AK\StreamManager\Win32\stdafx.cpp" />
     <ClCompile Include="AK\Win32\AkDefaultIOHookBlocking.cpp" />
     <ClCompile Include="AK\Win32\AkDefaultIOHookDeferred.cpp" />
     <ClCompile Include="AK\Win32\stdafx.cpp" />
@@ -600,6 +639,8 @@
   <ItemGroup>
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json" />
     <None Include="AK\Common\AkFilePackageLowLevelIO.inl" />
+    <None Include="AK\Common\AkStmDeferredLinedUpBase.inl" />
+    <None Include="AK\StreamManager\Common\AkStmDeferredLinedUpBase.inl" />
     <None Include="Game\Configuration\LayoutsInfo.json" />
     <None Include="MathGeoLib\include\Geometry\KDTree.inl" />
     <None Include="MathGeoLib\include\Geometry\QuadTree.inl" />

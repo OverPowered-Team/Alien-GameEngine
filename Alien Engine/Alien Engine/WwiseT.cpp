@@ -6,6 +6,7 @@
 #include "MathGeoLib/include/Math/float3.h"
 
 #include "AK/SoundEngine/Common/AkMemoryMgr.h"                  // Memory Manager
+
 #include "AK/SoundEngine/Common/AkModule.h"						// Default memory and stream managers
 #include "AK/Win32/AkFilePackageLowLevelIOBlocking.h"
 #include "AK/MusicEngine/Common/AkMusicEngine.h"                // Music Engine

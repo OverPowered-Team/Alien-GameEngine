@@ -33,14 +33,14 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_TOOLS_COMMON_AKPLATFORMFUNCS_H
 #define _AK_TOOLS_COMMON_AKPLATFORMFUNCS_H
 
-#include "../SoundEngine/Common/AkTypes.h"
-#include "../SoundEngine/Common/AkAtomic.h"
+#include "../../SoundEngine/Common/AkTypes.h"
+#include "../../SoundEngine/Common/AkAtomic.h"
 
 // Uncomment the following to enable built-in platform profiler markers in the sound engine
 //#define AK_ENABLE_INSTRUMENT
 
 #if defined(AK_WIN)
-#include "../Tools/Win32/AkPlatformFuncs.h"
+#include "../../Tools/Win32/AkPlatformFuncs.h"
 
 #elif defined (AK_XBOX)
 #include <AK/Tools/XboxOne/AkPlatformFuncs.h>
