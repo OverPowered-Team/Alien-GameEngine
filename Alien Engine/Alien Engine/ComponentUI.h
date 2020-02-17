@@ -46,7 +46,7 @@ private:
 	void UILogic();
 
 protected:
-	int x = 0, y = 0, width = 0, height = 0;
+	int x = 0, y = 0;
 
 	ComponentType ui_type = ComponentType::UI;
 	UIState state = Idle;
@@ -63,11 +63,6 @@ protected:
 	Color current_color = Color::White();
 	ComponentCanvas* canvas = nullptr;
 	ComponentTransform* canvas_trans = nullptr;
-
-private:
-
-	float scaled_width = 0;
-	float scaled_height = 0;
 
 };
 
