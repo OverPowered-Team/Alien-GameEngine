@@ -350,7 +350,7 @@ ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 ResourceFont* ModuleImporter::LoadFontFile(const char* path)
 {
 	ResourceFont* font = nullptr;
-	font = ResourceFont::ImportFontBySize(path, 12);
+	font = ResourceFont::ImportFontBySize(path, 60);
 
 	if (font != nullptr)
 	{
