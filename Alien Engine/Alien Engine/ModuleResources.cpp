@@ -63,8 +63,8 @@ bool ModuleResources::Start()
 
 	App->file_system->DiscoverEverythig(assets);
 
-	default_shader = App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
 #endif
+	default_shader = App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
@@ -602,6 +602,15 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceTexture* texture = new ResourceTexture();
 		texture->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// shaders
+	App->file_system->DiscoverFiles(LIBRARY_SHADERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		shader->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();

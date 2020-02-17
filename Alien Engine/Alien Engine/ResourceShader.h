@@ -23,6 +23,7 @@ class ResourceShader : public Resource
 	friend class ComponentMaterial;
 
 public:
+	ResourceTexture() { type = ResourceType::RESOURCE_SHADER; }
 	ResourceShader(const char* path, const u64& id);
 	ResourceShader(const char* path);
 	virtual ~ResourceShader();
