@@ -338,6 +338,12 @@ ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 	return texture;
 }
 
+ResourceFont* ModuleImporter::LoadFontFile(const char* path)
+{
+	ResourceFont* font = nullptr;
+	return font;
+}
+
 void ModuleImporter::LoadTextureToResource(const char* path, ResourceTexture* texture)
 {
 	ILuint new_image_id = 0;

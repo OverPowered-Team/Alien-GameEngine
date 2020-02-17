@@ -555,6 +555,12 @@
     <ClInclude Include="ComponentButton.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentText.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceFont.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -895,6 +901,12 @@
     </ClCompile>
     <ClCompile Include="ComponentButton.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentText.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceFont.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
