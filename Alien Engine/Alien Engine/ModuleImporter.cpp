@@ -280,51 +280,40 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];
 	for (uint i = 0u; i < resource_animation->num_channels; ++i)
 	{
-		ResourceAnimation::Channel channel;
+		ResourceAnimation::Channel& channel = resource_animation->channels[i];
 		channel.name = anim->mChannels[i]->mNodeName.C_Str();
 
-		//Load position keys
 		channel.num_position_keys = anim->mChannels[i]->mNumPositionKeys;
-		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys];
+		channel.num_scale_keys = anim->mChannels[i]->mNumScalingKeys;
+		channel.num_rotation_keys = anim->mChannels[i]->mNumRotationKeys;
 
+		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys];
+		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys];
+		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys];
+
+		//Load position keys
 		for (uint j = 0; j < channel.num_position_keys; j++)
 		{
-			float3 position = float3(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
+			channel.position_keys[j].value = float3(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
 				anim->mChannels[i]->mPositionKeys[j].mValue.z);
-			double value = anim->mChannels[i]->mPositionKeys[j].mTime;
-			KeyAnimation<float3> key(position, value);
-
-			memcpy(&channel.position_keys[j], &key, sizeof(KeyAnimation<float3>));
+			channel.position_keys[j].time = anim->mChannels[i]->mPositionKeys[j].mTime;
 		}
 
 		//Load scaling keys
-		channel.num_scale_keys = anim->mChannels[i]->mNumScalingKeys;
-		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys];
-
 		for (uint j = 0; j < channel.num_scale_keys; j++)
 		{
-			float3 scale = float3(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
+			channel.scale_keys[j].value = float3(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
 				anim->mChannels[i]->mScalingKeys[j].mValue.z);
-			double value = anim->mChannels[i]->mScalingKeys[j].mTime;
-			KeyAnimation<float3> key(scale, value);
-
-			memcpy(&channel.scale_keys[j], &key, sizeof(KeyAnimation<float3>));
+			channel.scale_keys[j].time = anim->mChannels[i]->mScalingKeys[j].mTime;
 		}
 
 		//Load rotation keys
-		channel.num_rotation_keys = anim->mChannels[i]->mNumRotationKeys;
-		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys];
-
 		for (uint j = 0; j < channel.num_rotation_keys; j++)
 		{
-			Quat rotation = { anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
+			channel.rotation_keys[j].value = { anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
 				anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w };
-			double value = anim->mChannels[i]->mRotationKeys[j].mTime;
-			KeyAnimation<Quat> key(rotation, value);
-
-			memcpy(&channel.rotation_keys[j], &key, sizeof(KeyAnimation<Quat>));
+			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
-		resource_animation->channels[i] = channel;
 	}
 
 }
