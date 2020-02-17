@@ -569,19 +569,19 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		canvas->Draw();
 	}
-	ComponentUI* ui = GetComponent<ComponentUI>();
-
-	if (ui != nullptr && ui->IsEnabled())
-	{
-		ui->Draw(!App->objects->printing_scene);
-	}
-
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
 			(*child)->SetDrawList(to_draw, camera);
 		}
+	}
+
+	ComponentUI* ui = GetComponent<ComponentUI>();
+
+	if (ui != nullptr && ui->IsEnabled())
+	{
+		ui->Draw(!App->objects->printing_scene);
 	}
 }
 

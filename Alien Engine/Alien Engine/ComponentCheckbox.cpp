@@ -14,12 +14,20 @@ ComponentCheckbox::ComponentCheckbox(GameObject* obj) :ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_CHECKBOX;
 
+	//---------------------------------------------------------
+	tick = new GameObject(game_object_attached);
+	tick->SetName("tick");
+	tick->AddComponent(new ComponentTransform(tick, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
+	ComponentImage* comp = new ComponentImage(tick);
+	tick->AddComponent(comp);
 
-	/*GameObject* image1 = new GameObject(game_object_attached);
-	image1->SetName("tick");
-	image1->AddComponent(new ComponentTransform(image1, { 0,0,0 }, Quat::identity(), { 1,1,1 }));
-	ComponentImage* comp = new ComponentImage(image1);
-	image1->AddComponent(comp);*/
+	//---------------------------------------------------------
+	cross = new GameObject(game_object_attached);
+	cross->SetName("cross");
+	cross->AddComponent(new ComponentTransform(cross, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
+	ComponentImage* comp2 = new ComponentImage(cross);
+	cross->AddComponent(comp2);
+	
 
 }
 
@@ -149,28 +157,44 @@ bool ComponentCheckbox::DrawInspector()
 bool ComponentCheckbox::OnHover()
 {
 	if (active)
+	{
 		current_color = hover_color;
+		tick->GetComponent<ComponentUI>()->current_color = hover_color;
+		cross->GetComponent<ComponentUI>()->current_color = hover_color;
+	}
 	return true;
 }
 
 bool ComponentCheckbox::OnClick()
 {
 	if (active)
+	{ 
 		current_color = clicked_color;
+		tick->GetComponent<ComponentUI>()->current_color = clicked_color;
+		cross->GetComponent<ComponentUI>()->current_color = clicked_color;
+	}
 	return true;
 }
 
 bool ComponentCheckbox::OnPressed()
 {
 	if (active)
+	{
 		current_color = pressed_color;
+		tick->GetComponent<ComponentUI>()->current_color = pressed_color;
+		cross->GetComponent<ComponentUI>()->current_color = pressed_color;
+	}
 	return true;
 }
 
 bool ComponentCheckbox::OnRelease()
 {
 	if (active)
+	{ 
 		current_color = idle_color;
+		tick->GetComponent<ComponentUI>()->current_color = idle_color;
+		cross->GetComponent<ComponentUI>()->current_color = idle_color;
+	}
 	return true;
 }
 
@@ -179,9 +203,13 @@ void ComponentCheckbox::SetActive(bool active)
 	this->active = active;
 	if (active) {
 		current_color = idle_color;
+		tick->GetComponent<ComponentUI>()->current_color = idle_color;
+		cross->GetComponent<ComponentUI>()->current_color = idle_color;
 	}
 	else {
 		current_color = disabled_color;
+		tick->GetComponent<ComponentUI>()->current_color = disabled_color;
+		cross->GetComponent<ComponentUI>()->current_color = disabled_color;
 	}
 }
 

@@ -30,11 +30,13 @@ public:
 	void SetActive(bool active);
 
 private:
-
 	bool active = true;
+	bool clicked = false;
 
 private:
 	ComponentCanvas* GetCanvas();
+	GameObject* tick = nullptr;
+	GameObject* cross = nullptr;
 };
 
 
