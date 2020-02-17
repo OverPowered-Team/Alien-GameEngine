@@ -23,12 +23,6 @@ ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6 * 3, index, GL_STATIC_DRAW);
 
-	width = 1;
-	height = 1;
-
-	scaled_width = 1;
-	scaled_height = 1;
-
 	type = ComponentType::UI;
 }
 
@@ -88,10 +82,6 @@ void ComponentUI::Draw(bool isGame)
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
-
-	float3 scale = transform->GetGlobalScale();
-	scaled_width = width * scale.x;
-	scaled_height = height * scale.y;
 
 	glDisable(GL_CULL_FACE);
 	
@@ -172,30 +162,6 @@ void ComponentUI::ClearTexture()
 	if (texture != nullptr) {
 		texture->DecreaseReferences();
 		texture = nullptr;
-
-		width = 10;
-		height = 10;
-
-		glDeleteBuffers(1, &verticesID);
-		glDeleteBuffers(1, &uvID);
-
-		vertices[0] = { -1,1,0 };
-		vertices[1] = { -1,-1,0 };
-		vertices[2] = { 1,-1,0 };
-		vertices[3] = { 1,1,0 };
-
-		uv[0] = { -1,-1 };
-		uv[1] = { -1,0 };
-		uv[2] = { 0,0 };
-		uv[3] = { 0,-1 };
-
-		glGenBuffers(1, &verticesID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
-
-		glGenBuffers(1, &uvID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 	}
 }
 
@@ -207,32 +173,16 @@ void ComponentUI::SetTexture(ResourceTexture* tex)
 			texture->DecreaseReferences();
 		}
 		texture = tex;
-
-		width = (float)tex->width / 100;
-		height = (float)tex->height / 100;
-
-		glDeleteBuffers(1, &verticesID);
-
-		float halfWidth = width * 0.5F;
-		float halfHeight = height * 0.5F;
-
-		vertices[0] = { -halfWidth, halfHeight, 0 };
-		vertices[1] = { -halfWidth, -halfHeight, 0 };
-		vertices[2] = { halfWidth, -halfHeight, 0 };
-		vertices[3] = { halfWidth, halfHeight, 0 };
-
-		glGenBuffers(1, &verticesID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
 	}
 }
 
 bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 {
+	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
 #ifdef GAME_VERSION
-	return (mouse_pos.x >= x - ((scaled_width / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((scaled_width / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((scaled_height / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((scaled_height / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
 #else
-	return (mouse_pos.x >= x - ((scaled_width / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((scaled_width / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((scaled_height / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((scaled_height / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
 #endif
 }
 

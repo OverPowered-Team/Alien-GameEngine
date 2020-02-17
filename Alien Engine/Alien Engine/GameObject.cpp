@@ -1335,7 +1335,8 @@ AABB GameObject::GetBB() const
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
-				aabb_ui.SetFromCenterAndSize(pos, { ui->scaled_width * 2,ui->scaled_height * 2,2 });
+				float3 scale = transform->GetGlobalScale();
+				aabb_ui.SetFromCenterAndSize(pos, { scale.x * 2,scale.y * 2,2 });
 				return aabb_ui;
 			}
 
