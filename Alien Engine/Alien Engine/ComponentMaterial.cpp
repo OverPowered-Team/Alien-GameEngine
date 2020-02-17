@@ -197,61 +197,64 @@ bool ComponentMaterial::DrawInspector()
 		ImGui::Spacing();
 
 		/* Shaders */
-		ImGui::Text("Current shader: "); ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), used_shader->path.c_str());
-		if (ImGui::Button("Select Shader"))
+		if (used_shader != nullptr)
 		{
-			select_shader = true;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Edit shader"))
-		{
+			ImGui::Text("Current shader: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), used_shader->path.c_str());
+			if (ImGui::Button("Select Shader"))
 			{
-				std::ifstream t(fileToEdit.c_str());
-				if (t.good())
-				{
-					std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-					shader_editor.SetText(str);
-				}
+				select_shader = true;
 			}
-
-			show_shader_text_editor = true;
-		}
-
-		if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
-		{
-			used_shader->ParseAndCreateShader();
-		}
-
-		// Can select desired shader in the shaders folder
-		if (select_shader)
-		{
-			if (ImGui::Begin("Select Shader", &select_shader))
+			ImGui::SameLine();
+			if (ImGui::Button("Edit shader"))
 			{
-				if (ImGui::Button("Close"))
 				{
-					select_shader = false;
-				}
-
-				std::vector<ResourceShader*> shaders;
-				App->resources->GetShaders(shaders);
-				for (auto i = shaders.begin(); i != shaders.end(); ++i) {
-					if (ImGui::Button((*i)->GetName()))
+					std::ifstream t(fileToEdit.c_str());
+					if (t.good())
 					{
-						u64 id_s = App->resources->Find((*i)->GetAssetsPath());
-						used_shader = (ResourceShader*)App->resources->Get(id_s);
-
-						fileToEdit = used_shader->path; // must test if it edits on library too in this engine
+						std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+						shader_editor.SetText(str);
 					}
 				}
 
-				ImGui::End();
+				show_shader_text_editor = true;
 			}
-		}
 
-		if (show_shader_text_editor)
-		{
-			ShowShaderTextEditor();
+			if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
+			{
+				used_shader->ParseAndCreateShader();
+			}
+
+			// Can select desired shader in the shaders folder
+			if (select_shader)
+			{
+				if (ImGui::Begin("Select Shader", &select_shader))
+				{
+					if (ImGui::Button("Close"))
+					{
+						select_shader = false;
+					}
+
+					std::vector<ResourceShader*> shaders;
+					App->resources->GetShaders(shaders);
+					for (auto i = shaders.begin(); i != shaders.end(); ++i) {
+						if (ImGui::Button((*i)->GetName()))
+						{
+							u64 id_s = App->resources->Find((*i)->GetAssetsPath());
+							used_shader = (ResourceShader*)App->resources->Get(id_s);
+
+							fileToEdit = used_shader->path; // must test if it edits on library too in this engine
+						}
+					}
+
+					ImGui::End();
+				}
+			}
+
+			if (show_shader_text_editor)
+			{
+				ShowShaderTextEditor();
+			}
 		}
 	}
 	else
