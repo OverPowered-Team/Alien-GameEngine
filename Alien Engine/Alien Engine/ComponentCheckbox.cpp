@@ -1,19 +1,39 @@
-#include "ComponentButton.h"
+#include "ComponentCheckbox.h"
+#include "ComponentCanvas.h"
 #include "ComponentImage.h"
+#include "GameObject.h"
 #include "imgui/imgui.h"
 #include "ComponentUI.h"
 #include "ReturnZ.h"
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
+#include "ComponentTransform.h"
 
-ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
+ComponentCheckbox::ComponentCheckbox(GameObject* obj) :ComponentUI(obj)
 {
-	ui_type = ComponentType::UI_BUTTON;
+	ui_type = ComponentType::UI_CHECKBOX;
+
+	//---------------------------------------------------------
+	tick = new GameObject(game_object_attached);
+	tick->SetName("tick");
+	tick->AddComponent(new ComponentTransform(tick, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
+	ComponentImage* comp = new ComponentImage(tick);
+	tick->AddComponent(comp);
+	tick->enabled = false;
+
+	//---------------------------------------------------------
+	cross = new GameObject(game_object_attached);
+	cross->SetName("cross");
+	cross->AddComponent(new ComponentTransform(cross, { 0,0,0 }, Quat::identity(), { 0.5f,0.5f,0.5f }));
+	ComponentImage* comp2 = new ComponentImage(cross);
+	cross->AddComponent(comp2);
+	cross->enabled = true;
+	
 
 }
 
-bool ComponentButton::DrawInspector()
+bool ComponentCheckbox::DrawInspector()
 {
 	static bool check;
 
@@ -26,9 +46,9 @@ bool ComponentButton::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Button", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Checkbox", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		RightClickMenu("Button");
+		RightClickMenu("Checkbox");
 
 		ImGui::Spacing();
 
@@ -94,7 +114,7 @@ bool ComponentButton::DrawInspector()
 		if (ImGui::ColorEdit4("##RendererColorHover", &hover_color, ImGuiColorEditFlags_Float)) {
 
 		}
-		
+
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Click Color");
@@ -130,49 +150,115 @@ bool ComponentButton::DrawInspector()
 		ImGui::Spacing();
 	}
 	else {
-		RightClickMenu("Button");
+		RightClickMenu("Checkbox");
 	}
 
 	return true;
 }
 
-bool ComponentButton::OnHover()
+bool ComponentCheckbox::OnHover()
 {
-	if (active) {
+	if (active)
+	{
 		current_color = hover_color;
+		tick->GetComponent<ComponentUI>()->current_color = hover_color;
+		cross->GetComponent<ComponentUI>()->current_color = hover_color;
 		CallListeners(&listenersOnHover);
 	}
 	return true;
 }
 
-bool ComponentButton::OnClick()
+bool ComponentCheckbox::OnClick()
 {
-	if (active) {
+	if (active)
+	{ 
+		clicked = !clicked;
+		tick->enabled = !tick->enabled;
+		cross->enabled = !cross->enabled;
+		
 		current_color = clicked_color;
+		tick->GetComponent<ComponentUI>()->current_color = clicked_color;
+		cross->GetComponent<ComponentUI>()->current_color = clicked_color;
 		CallListeners(&listenersOnClick);
 	}
 	return true;
 }
 
-bool ComponentButton::OnPressed()
+bool ComponentCheckbox::OnPressed()
 {
-	if (active) {
+	if (active)
+	{
 		current_color = pressed_color;
+		tick->GetComponent<ComponentUI>()->current_color = pressed_color;
+		cross->GetComponent<ComponentUI>()->current_color = pressed_color;
 		CallListeners(&listenersOnClickRepeat);
 	}
 	return true;
 }
 
-bool ComponentButton::OnRelease()
+bool ComponentCheckbox::OnRelease()
 {
-	if (active) {
+	if (active)
+	{ 
 		current_color = idle_color;
+		tick->GetComponent<ComponentUI>()->current_color = idle_color;
+		cross->GetComponent<ComponentUI>()->current_color = idle_color;
 		CallListeners(&listenersOnRelease);
 	}
 	return true;
 }
 
-void ComponentButton::CallListeners(std::vector<std::function<void()>>* listeners)
+void ComponentCheckbox::SetActive(bool active)
+{
+	this->active = active;
+	if (active) {
+		current_color = idle_color;
+		tick->GetComponent<ComponentUI>()->current_color = idle_color;
+		cross->GetComponent<ComponentUI>()->current_color = idle_color;
+	}
+	else {
+		current_color = disabled_color;
+		tick->GetComponent<ComponentUI>()->current_color = disabled_color;
+		cross->GetComponent<ComponentUI>()->current_color = disabled_color;
+	}
+}
+
+void ComponentCheckbox::AddListenerOnHover(std::function<void()> funct)
+{
+	listenersOnHover.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnClick(std::function<void()> funct)
+{
+	listenersOnClick.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnClickRepeat(std::function<void()> funct)
+{
+	listenersOnClickRepeat.push_back(funct);
+}
+
+void ComponentCheckbox::AddListenerOnRelease(std::function<void()> funct)
+{
+	listenersOnRelease.push_back(funct);
+}
+
+void ComponentCheckbox::SetCheckboxState(bool value)
+{
+	clicked = value;
+	if (value)
+	{
+		tick->enabled = true;
+		cross->enabled = false;
+	}
+	else
+	{
+		tick->enabled = false;
+		cross->enabled = true;
+	}
+}
+
+void ComponentCheckbox::CallListeners(std::vector<std::function<void()>>* listeners)
 {
 	if (listeners != nullptr) {
 		auto item = listeners->begin();
@@ -182,87 +268,25 @@ void ComponentButton::CallListeners(std::vector<std::function<void()>>* listener
 					(*item)();
 				}
 				catch (...) {
-				#ifndef GAME_VERSION
+					#ifndef GAME_VERSION
 					LOG_ENGINE("Error when calling a listener function of a button");
 					App->ui->SetError();
-				#endif
+					#endif
 				}
 			}
 		}
 	}
 }
 
-void ComponentButton::SetActive(bool active)
+ComponentCanvas* ComponentCheckbox::GetCanvas()
 {
-	this->active = active;
-	if (active) {
-		current_color = idle_color;
+	ComponentCanvas* canvas = App->objects->GetRoot(true)->GetCanvas();
+	if (canvas == nullptr) {
+		GameObject* obj = new GameObject(App->objects->GetRoot(false));
+		obj->SetName("Canvas");
+		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+		canvas = new ComponentCanvas(obj);
+		obj->AddComponent(canvas);
 	}
-	else {
-		current_color = disabled_color;
-	}
+	return canvas;
 }
-
-void ComponentButton::AddListenerOnHover(std::function<void()> funct)
-{
-	listenersOnHover.push_back(funct);
-}
-
-void ComponentButton::AddListenerOnClick(std::function<void()> funct)
-{
-	listenersOnClick.push_back(funct);
-}
-
-void ComponentButton::AddListenerOnClickRepeat(std::function<void()> funct)
-{
-	listenersOnClickRepeat.push_back(funct);
-}
-
-void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
-{
-	listenersOnRelease.push_back(funct);
-}
-
-//void ComponentButton::RemoveListenerOnHover(std::function<void()> funct)
-//{
-//	auto item = listenersOnHover.begin();
-//	for (; item != listenersOnHover.end(); ++item) {
-//		if (funct.target() == (*item).target()) {
-//			listenersOnHover.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClick(std::function<void()> funct)
-//{
-//	auto item = listenersOnClick.begin();
-//	for (; item != listenersOnClick.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClick.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClickRepeat(std::function<void()> funct)
-//{
-//	auto item = listenersOnClickRepeat.begin();
-//	for (; item != listenersOnClickRepeat.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClickRepeat.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnRelease(std::function<void()> funct)
-//{
-//	auto item = listenersOnRelease.begin();
-//	for (; item != listenersOnRelease.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnRelease.erase(item);
-//			break;
-//		}
-//	}
-//}

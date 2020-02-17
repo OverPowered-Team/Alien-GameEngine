@@ -15,6 +15,7 @@ enum class ComponentType {
 	UI_IMAGE,
 	UI_BUTTON,
 	UI_TEXT,
+	UI_CHECKBOX,
 	SCRIPT,
 	UI, // SCRIPT MUST BE THE LAST
 

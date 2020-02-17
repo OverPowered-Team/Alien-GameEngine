@@ -569,19 +569,19 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		canvas->Draw();
 	}
-	ComponentUI* ui = GetComponent<ComponentUI>();
-
-	if (ui != nullptr && ui->IsEnabled())
-	{
-		ui->Draw(!App->objects->printing_scene);
-	}
-
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
 			(*child)->SetDrawList(to_draw, camera);
 		}
+	}
+
+	ComponentUI* ui = GetComponent<ComponentUI>();
+
+	if (ui != nullptr && ui->IsEnabled())
+	{
+		ui->Draw(!App->objects->printing_scene);
 	}
 }
 
@@ -798,10 +798,20 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item) {
-		if (*item != nullptr && (*item)->GetType() == type) {
-			return *item;
+	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE) {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == ComponentType::UI && dynamic_cast<ComponentUI*>(*item)->ui_type == type) {
+				return *item;
+			}
+		}
+	}
+	else {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == type) {
+				return *item;
+			}
 		}
 	}
 	return nullptr;

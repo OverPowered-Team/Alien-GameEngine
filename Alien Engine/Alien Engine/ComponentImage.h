@@ -5,7 +5,7 @@
 
 class ResourceTexture;
 
-class ComponentImage :public ComponentUI
+class __declspec(dllexport) ComponentImage :public ComponentUI
 {
 public:
 	ComponentImage(GameObject* obj);

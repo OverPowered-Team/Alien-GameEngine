@@ -5,7 +5,7 @@
 
 class GameObject;
 
-class ComponentCanvas :public Component {
+class __declspec(dllexport) ComponentCanvas :public Component {
 public:
 	ComponentCanvas(GameObject* obj);
 	~ComponentCanvas() {};

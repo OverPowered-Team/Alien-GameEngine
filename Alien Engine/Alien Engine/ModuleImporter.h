@@ -12,7 +12,6 @@
 #include "FreeType/include/freetype/freetype.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
-
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
 #pragma comment (lib, "Devil/libx86/ILU.lib")
 #pragma comment (lib, "Devil/libx86/ILUT.lib")
