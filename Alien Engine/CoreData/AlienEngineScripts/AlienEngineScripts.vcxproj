@@ -167,9 +167,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ListenerButton.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ListenerButton.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

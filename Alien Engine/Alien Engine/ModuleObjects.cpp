@@ -1313,6 +1313,7 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
 //	auto item = invokes.begin();

@@ -8,6 +8,9 @@
 #include "..\..\..\Alien Engine\ComponentLight.h"
 #include "..\..\..\Alien Engine\ComponentMaterial.h"
 #include "..\..\..\Alien Engine\ComponentMesh.h"
+#include "..\..\..\Alien Engine\ComponentUI.h"
+#include "..\..\..\Alien Engine\ComponentButton.h"
+#include "..\..\..\Alien Engine\ComponentImage.h"
 /*-----------------COMPONENTS-------------------*/
 
 /*-----------------MATH-------------------*/

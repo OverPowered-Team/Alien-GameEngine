@@ -3,14 +3,12 @@
 #include "Globals.h"
 #include "Module.h"
 
-
 #include "Assimp/include/assimp/cimport.h"
 #include "Assimp/include/assimp/scene.h"
 #include "Assimp/include/assimp/postprocess.h"
 #include "Assimp/include/assimp/cfileio.h"
 #include "Assimp/include/assimp/mesh.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
-
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
 #pragma comment (lib, "Devil/libx86/ILU.lib")
 #pragma comment (lib, "Devil/libx86/ILUT.lib")

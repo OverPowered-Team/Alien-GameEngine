@@ -10,6 +10,7 @@
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_BUTTON;
+
 }
 
 bool ComponentButton::DrawInspector()
@@ -137,30 +138,58 @@ bool ComponentButton::DrawInspector()
 
 bool ComponentButton::OnHover()
 {
-	if (active)
+	if (active) {
 		current_color = hover_color;
+		CallListeners(&listenersOnHover);
+	}
 	return true;
 }
 
 bool ComponentButton::OnClick()
 {
-	if (active)
+	if (active) {
 		current_color = clicked_color;
+		CallListeners(&listenersOnClick);
+	}
 	return true;
 }
 
 bool ComponentButton::OnPressed()
 {
-	if (active)
+	if (active) {
 		current_color = pressed_color;
+		CallListeners(&listenersOnClickRepeat);
+	}
 	return true;
 }
 
 bool ComponentButton::OnRelease()
 {
-	if (active)
+	if (active) {
 		current_color = idle_color;
+		CallListeners(&listenersOnRelease);
+	}
 	return true;
+}
+
+void ComponentButton::CallListeners(std::vector<std::function<void()>>* listeners)
+{
+	if (listeners != nullptr) {
+		auto item = listeners->begin();
+		for (; item != listeners->end(); ++item) {
+			if (*item != nullptr) {
+				try {
+					(*item)();
+				}
+				catch (...) {
+				#ifndef GAME_VERSION
+					LOG_ENGINE("Error when calling a listener function of a button");
+					App->ui->SetError();
+				#endif
+				}
+			}
+		}
+	}
 }
 
 void ComponentButton::SetActive(bool active)
@@ -173,3 +202,67 @@ void ComponentButton::SetActive(bool active)
 		current_color = disabled_color;
 	}
 }
+
+void ComponentButton::AddListenerOnHover(std::function<void()> funct)
+{
+	listenersOnHover.push_back(funct);
+}
+
+void ComponentButton::AddListenerOnClick(std::function<void()> funct)
+{
+	listenersOnClick.push_back(funct);
+}
+
+void ComponentButton::AddListenerOnClickRepeat(std::function<void()> funct)
+{
+	listenersOnClickRepeat.push_back(funct);
+}
+
+void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
+{
+	listenersOnRelease.push_back(funct);
+}
+
+//void ComponentButton::RemoveListenerOnHover(std::function<void()> funct)
+//{
+//	auto item = listenersOnHover.begin();
+//	for (; item != listenersOnHover.end(); ++item) {
+//		if (funct.target() == (*item).target()) {
+//			listenersOnHover.erase(item);
+//			break;
+//		}
+//	}
+//}
+//
+//void ComponentButton::RemoveListenerOnClick(std::function<void()> funct)
+//{
+//	auto item = listenersOnClick.begin();
+//	for (; item != listenersOnClick.end(); ++item) {
+//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
+//			listenersOnClick.erase(item);
+//			break;
+//		}
+//	}
+//}
+//
+//void ComponentButton::RemoveListenerOnClickRepeat(std::function<void()> funct)
+//{
+//	auto item = listenersOnClickRepeat.begin();
+//	for (; item != listenersOnClickRepeat.end(); ++item) {
+//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
+//			listenersOnClickRepeat.erase(item);
+//			break;
+//		}
+//	}
+//}
+//
+//void ComponentButton::RemoveListenerOnRelease(std::function<void()> funct)
+//{
+//	auto item = listenersOnRelease.begin();
+//	for (; item != listenersOnRelease.end(); ++item) {
+//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
+//			listenersOnRelease.erase(item);
+//			break;
+//		}
+//	}
+//}

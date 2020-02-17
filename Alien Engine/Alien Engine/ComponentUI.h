@@ -17,7 +17,7 @@ enum UIState {
 	Release
 };
 
-class ComponentUI :public Component {
+class __declspec(dllexport) ComponentUI :public Component {
 	friend class GameObject;
 	friend class ComponentImage;
 	friend class Component;
