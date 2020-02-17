@@ -30,7 +30,7 @@ private:
 	static bool SortByFamilyNumber(const ResourceMesh* mesh1, const ResourceMesh* mesh2);
 
 public:
-
 	std::vector<ResourceMesh*> meshes_attached;
+	std::vector<ResourceAnimation*> animation_attached;
 
 };

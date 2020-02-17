@@ -3,7 +3,7 @@
 #include "ResourceAnimation.h"
 
 
-ResourceAnimation::ResourceAnimation(uint id) : Resource()
+ResourceAnimation::ResourceAnimation() : Resource()
 {
 }
 

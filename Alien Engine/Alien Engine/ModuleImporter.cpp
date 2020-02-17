@@ -15,6 +15,7 @@
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
+#include "ResourceAnimation.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
@@ -101,7 +102,7 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	{
 		for (int i = 0; i < scene->mNumAnimations; i++)
 		{
-
+			LoadAnimation(scene->mAnimations[i]);
 		}
 	}
 	// create the meta data files like .alien
@@ -268,6 +269,64 @@ ResourceMesh* ModuleImporter::LoadNodeMesh(const aiScene * scene, const aiNode* 
 	ret->name = std::string(node->mName.C_Str());
 
 	return ret;
+}
+
+void ModuleImporter::LoadAnimation(const aiAnimation* anim)
+{
+	ResourceAnimation* resource_animation = new ResourceAnimation();
+	resource_animation->name = anim->mName.C_Str();
+	resource_animation->ticks_per_second = anim->mTicksPerSecond;
+	resource_animation->num_channels = anim->mNumChannels;
+	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];
+	for (uint i = 0u; i < resource_animation->num_channels; ++i)
+	{
+		ResourceAnimation::Channel channel;
+		channel.name = anim->mChannels[i]->mNodeName.C_Str();
+
+		//Load position keys
+		channel.num_position_keys = anim->mChannels[i]->mNumPositionKeys;
+		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys];
+
+		for (uint j = 0; j < channel.num_position_keys; j++)
+		{
+			float3 position = float3(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
+				anim->mChannels[i]->mPositionKeys[j].mValue.z);
+			double value = anim->mChannels[i]->mPositionKeys[j].mTime;
+			KeyAnimation<float3> key(position, value);
+
+			memcpy(&channel.position_keys[j], &key, sizeof(KeyAnimation<float3>));
+		}
+
+		//Load scaling keys
+		channel.num_scale_keys = anim->mChannels[i]->mNumScalingKeys;
+		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys];
+
+		for (uint j = 0; j < channel.num_scale_keys; j++)
+		{
+			float3 scale = float3(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
+				anim->mChannels[i]->mScalingKeys[j].mValue.z);
+			double value = anim->mChannels[i]->mScalingKeys[j].mTime;
+			KeyAnimation<float3> key(scale, value);
+
+			memcpy(&channel.scale_keys[j], &key, sizeof(KeyAnimation<float3>));
+		}
+
+		//Load rotation keys
+		channel.num_rotation_keys = anim->mChannels[i]->mNumRotationKeys;
+		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys];
+
+		for (uint j = 0; j < channel.num_rotation_keys; j++)
+		{
+			Quat rotation = { anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
+				anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w };
+			double value = anim->mChannels[i]->mRotationKeys[j].mTime;
+			KeyAnimation<Quat> key(rotation, value);
+
+			memcpy(&channel.rotation_keys[j], &key, sizeof(KeyAnimation<Quat>));
+		}
+		resource_animation->channels[i] = channel;
+	}
+
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)

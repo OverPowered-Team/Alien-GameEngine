@@ -9,6 +9,8 @@ struct KeyAnimation
 {
 	double time;
 	TYPE value;
+	KeyAnimation() {};
+	KeyAnimation(TYPE value, double time) :value(value), time(time) {};
 };
 
 class ResourceAnimation : public Resource
@@ -27,7 +29,7 @@ public:
 
 public:
 
-	ResourceAnimation(uint id);
+	ResourceAnimation();
 	~ResourceAnimation();
 
 	std::string GetTypeString() const;
