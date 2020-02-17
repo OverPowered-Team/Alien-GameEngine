@@ -90,7 +90,7 @@ written agreement between you and Audiokinetic Inc.
 #ifndef _AK_DEFAULT_IO_HOOK_BLOCKING_H_
 #define _AK_DEFAULT_IO_HOOK_BLOCKING_H_
 
-#include "AK/SoundEngine/Common/AkStreamMgrModule.h"
+#include <AK/SoundEngine/Common/AkStreamMgrModule.h>
 #include "../Common/AkMultipleFileLocation.h"
 
 //-----------------------------------------------------------------------------

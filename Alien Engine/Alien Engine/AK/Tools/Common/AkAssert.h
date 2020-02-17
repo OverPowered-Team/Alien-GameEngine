@@ -51,7 +51,7 @@ the specific language governing permissions and limitations under the License.
 #endif
 
 #if !defined( AKASSERT )
-	#include "AK/SoundEngine/Common/AkTypes.h" //For AK_Fail/Success
+	#include <AK/SoundEngine/Common/AkTypes.h> //For AK_Fail/Success
 
 	#if defined( AK_ENABLE_ASSERTS )
 		extern AKSOUNDENGINE_API AkAssertHook g_pAssertHook;

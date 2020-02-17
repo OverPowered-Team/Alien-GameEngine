@@ -35,12 +35,12 @@ the specific language governing permissions and limitations under the License.
 
 // Platform-specific section.
 //----------------------------------------------------------------------------------------------------
-#include "AK/AkPlatforms.h"
+#include <AK/AkPlatforms.h>
 
 
 //----------------------------------------------------------------------------------------------------
 
-#include "AK/SoundEngine/Common/AkSoundEngineExport.h"
+#include <AK/SoundEngine/Common/AkSoundEngineExport.h>
 
 #ifndef NULL
 	#ifdef __cplusplus
