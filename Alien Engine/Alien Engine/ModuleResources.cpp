@@ -56,6 +56,8 @@ bool ModuleResources::Start()
 	camera_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/camera.FBX");
 	light_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/bulb.fbx");
 
+	default_shader = App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
+
 	assets = new FileNode();
 	assets->is_file = false;
 	assets->is_base_file = true;

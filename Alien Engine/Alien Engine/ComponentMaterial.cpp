@@ -12,6 +12,10 @@
 ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MATERIAL;
+
+	//u64 id_s = App->resources->Find(SHADERS_FOLDER "default.shader");
+	//used_shader = (ResourceShader*)App->resources->Get(id_s);
+	used_shader = App->resources->default_shader;
 }
 
 ComponentMaterial::~ComponentMaterial()

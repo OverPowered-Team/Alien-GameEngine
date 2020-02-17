@@ -22,6 +22,7 @@ ResourceShader::ResourceShader(const char* path)
 	name = App->file_system->GetBaseFileName(path);
 	this->path = std::string(path);
 	type = ResourceType::RESOURCE_SHADER;
+	ParseAndCreateShader();
 }
 
 ResourceShader::~ResourceShader()

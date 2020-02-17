@@ -430,7 +430,7 @@ ResourceShader* ModuleImporter::LoadShaderFile(const char* path, bool has_been_d
 		shader = new ResourceShader(path);
 
 		shader->CreateMetaData();
-		App->resources->AddNewFileNode(path, true);
+		//App->resources->AddNewFileNode(path, true);
 
 		if (has_been_dropped && !App->objects->GetSelectedObjects().empty()) {
 			ApplyShaderToSelectedObject(shader);

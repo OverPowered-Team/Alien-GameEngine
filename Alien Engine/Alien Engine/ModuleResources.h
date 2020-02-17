@@ -113,6 +113,7 @@ public:
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
 	FileNode* assets = nullptr;
+	ResourceShader* default_shader = nullptr;
 
 private:
 	ResourceMesh* cube = nullptr;
