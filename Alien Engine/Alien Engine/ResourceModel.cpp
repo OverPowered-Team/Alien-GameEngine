@@ -92,6 +92,26 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 					LOG_ENGINE("Created alienMesh file %s", (*item)->GetLibraryPath());
 				}
 			}
+
+			meta->SetNumber("Model.NumAnimations", animation_attached.size());
+			alien->SetNumber("Meta.NumAnimations", animation_attached.size());
+
+			std::string* animation_paths = new std::string[animation_attached.size()];
+			std::vector<ResourceAnimation*>::iterator item_anim = animation_attached.begin();
+			for (; item_anim != animation_attached.end(); ++item_anim) {
+				if ((*item) != nullptr) {
+					if (paths != nullptr) {
+						std::string path_ = App->file_system->GetBaseFileName(paths[item - meshes_attached.begin()].data()); //std::stoull().data());
+						(*item)->CreateMetaData(std::stoull(path_));
+					}
+					else {
+						(*item)->CreateMetaData();
+					}
+
+					meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
+					LOG_ENGINE("Created alienMesh file %s", (*item)->GetLibraryPath());
+				}
+			}
 			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());
 			alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
 			if (paths != nullptr)
@@ -245,6 +265,7 @@ bool ResourceModel::DeleteMetaData()
 		}
 	}
 	animation_attached.clear();
+
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 
 		App->resources->resources.erase(position);
