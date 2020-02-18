@@ -1779,7 +1779,7 @@ namespace ImGuizmo
          }
          else
          {
-            float scaleDelta = (io.MousePos.x - gContext.mSaveMousePosx)  * 0.f;
+            float scaleDelta = (io.MousePos.x - gContext.mSaveMousePosx)  * 0.01f;
             gContext.mScale.Set(scaleDelta);
          }
 
@@ -1792,7 +1792,7 @@ namespace ImGuizmo
 
          // no 0 allowed
          for (int i = 0; i < 3;i++)
-            gContext.mScale[i] = max(gContext.mScale[i], 0.f);
+            gContext.mScale[i] = max(gContext.mScale[i], 0.001f);
 
          // compute matrix & delta
          matrix_t deltaMatrixScale;
@@ -1803,7 +1803,16 @@ namespace ImGuizmo
 
          if (deltaMatrix)
          {
-            deltaMatrixScale.Scale(gContext.mScale);
+			 vec_t deltaScale = gContext.mScale * gContext.mScaleValueOrigin;
+
+			 vec_t originalScaleDivider;
+			 originalScaleDivider.x = 1 / gContext.mModelScaleOrigin.x;
+			 originalScaleDivider.y = 1 / gContext.mModelScaleOrigin.y;
+			 originalScaleDivider.z = 1 / gContext.mModelScaleOrigin.z;
+
+			 deltaScale = deltaScale * originalScaleDivider;
+
+			 deltaMatrixScale.Scale(deltaScale);
             memcpy(deltaMatrix, deltaMatrixScale.m16, sizeof(float) * 16);
          }
 
