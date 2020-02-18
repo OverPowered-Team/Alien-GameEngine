@@ -25,7 +25,6 @@ public:
 private:
 	std::string		text;
 	ResourceFont*	font;
-	uint			VAO, VBO;
 };
 
 #endif // !_COMPONENT_TEXT_H_
