@@ -32,28 +32,32 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 	else
 		ID = force_id;
 
-	std::string* paths = nullptr;
-
-	if (force_id != 0) {
+	std::string* meta_mesh_paths = nullptr;
+	std::string* meta_animation_paths = nullptr;
+	if (force_id != 0) 
+	{
 		JSON_Value* value = json_parse_file(meta_data_path.data());
 		JSON_Object* object = json_value_get_object(value);
 
 		if (value != nullptr && object != nullptr)
 		{
 			JSONfilepack* meta = new JSONfilepack(meta_data_path.data(), object, value);
-			paths = meta->GetArrayString("Meta.PathMeshes");
+
+			meta_mesh_paths = meta->GetArrayString("Meta.PathMeshes");
+			meta_animation_paths = meta->GetArrayString("Meta.PathAnimations");
 			delete meta;
 		}
 		remove(meta_data_path.data());
 	}
-	std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien").data();
+
+	std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
 
 	JSON_Value* alien_value = json_value_init_object();
 	JSON_Object* alien_object = json_value_get_object(alien_value);
 	json_serialize_to_file_pretty(alien_value, alien_path.data());
 
-	if (alien_value != nullptr && alien_object != nullptr) {
-
+	if (alien_value != nullptr && alien_object != nullptr) 
+	{
 		JSONfilepack* alien = new JSONfilepack(alien_path, alien_object, alien_value);
 		alien->StartSave();
 		alien->SetString("Meta.ID", std::to_string(ID));
@@ -64,24 +68,22 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		JSON_Object* model_object = json_value_get_object(model_value);
 		json_serialize_to_file_pretty(model_value, meta_data_path.data());
 
-		if (model_value != nullptr && model_object != nullptr) {
-
+		if (model_value != nullptr && model_object != nullptr) 
+		{
 			JSONfilepack* meta = new JSONfilepack(meta_data_path, model_object, model_value);
 
 			meta->StartSave();
-
 			meta->SetString("Model.Name", name);
-
 			meta->SetNumber("Model.NumMeshes", meshes_attached.size());
 			alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
 
 			std::string* meshes_paths = new std::string[meshes_attached.size()];
-
 			std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
 			for (; item != meshes_attached.end(); ++item) {
-				if ((*item) != nullptr) {
-					if (paths != nullptr) {
-						std::string path_ = App->file_system->GetBaseFileName(paths[item - meshes_attached.begin()].data()); //std::stoull().data());
+				if ((*item) != nullptr) 
+				{
+					if (meta_mesh_paths != nullptr) {
+						std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
 						(*item)->CreateMetaData(std::stoull(path_));
 					}
 					else {
@@ -98,24 +100,32 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 			std::string* animation_paths = new std::string[animation_attached.size()];
 			std::vector<ResourceAnimation*>::iterator item_anim = animation_attached.begin();
-			for (; item_anim != animation_attached.end(); ++item_anim) {
-				if ((*item) != nullptr) {
-					if (paths != nullptr) {
-						std::string path_ = App->file_system->GetBaseFileName(paths[item - meshes_attached.begin()].data()); //std::stoull().data());
-						(*item)->CreateMetaData(std::stoull(path_));
+			for (; item_anim != animation_attached.end(); ++item_anim) 
+			{
+				if ((*item_anim) != nullptr) 
+				{
+					if (meta_animation_paths != nullptr) 
+					{
+						std::string path_ = App->file_system->GetBaseFileName(meta_animation_paths[item_anim - animation_attached.begin()].data()); //std::stoull().data());
+						(*item_anim)->CreateMetaData(std::stoull(path_));
 					}
-					else {
-						(*item)->CreateMetaData();
+					else 
+					{
+						(*item_anim)->CreateMetaData();
 					}
 
-					meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
-					LOG_ENGINE("Created alienMesh file %s", (*item)->GetLibraryPath());
+					animation_paths[item_anim - animation_attached.begin()] = (*item_anim)->GetLibraryPath();
+					LOG_ENGINE("Created alienMesh file %s", (*item_anim)->GetLibraryPath());
 				}
 			}
+
 			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());
 			alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
-			if (paths != nullptr)
-				delete[] paths;
+			meta->SetArrayString("Model.PathAnimations", animation_paths, animation_attached.size());
+			alien->SetArrayString("Meta.PathAnimations", animation_paths, animation_attached.size());
+
+			if (meta_mesh_paths != nullptr)
+				delete[] meta_mesh_paths;
 			delete[] meshes_paths;
 			// Create the file
 			LOG_ENGINE("Created alien file %s", meta_data_path.data());
