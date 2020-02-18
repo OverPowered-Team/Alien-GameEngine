@@ -1,10 +1,7 @@
 #pragma once
-#ifndef _COMPONENT_ANIMATOR_H_
-#define _COMPONENT_ANIMATOR_H_
-
 #include "Component.h"
 #include <string>
-class ResourceAnimatorController;
+class resourceanimatorcontroller;
 
 
 class ComponentAnimator :
@@ -13,22 +10,21 @@ class ComponentAnimator :
 public:
 	ComponentAnimator(GameObject* gameobject);
 	virtual ~ComponentAnimator();
-	void Update();
+	//void update();
 
-	void PlayState(std::string name);
-	void UpdateAnimation(GameObject* go_to_update);
-	void OnPlay();
+	//void playstate(std::string name);
+	//void updateanimation(GameObject* go_to_update);
+	//void onplay();
 
-	ResourceAnimatorController* GetResourceAnimatorController();
-	void SetAnimatorController(ResourceAnimatorController* controller);
+	//resourceanimatorcontroller* getresourceanimatorcontroller();
+	//void setanimatorcontroller(resourceanimatorcontroller* controller);
 
-	//bool Save(const nlohmann::json::iterator& it);
-	//bool Load(const nlohmann::json comp);
+	//bool save(const nlohmann::json::iterator& it);
+	//bool load(const nlohmann::json comp);
 
 private:
-	ResourceAnimatorController* animator_controller;
+	resourceanimatorcontroller* animator_controller;
 
 };
 
-#endif // !_COMPONENT_ANIMATOR_H_
 

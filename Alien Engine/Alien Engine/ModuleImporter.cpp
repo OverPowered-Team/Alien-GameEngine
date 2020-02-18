@@ -315,6 +315,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
 	}
+	
 	model->animation_attached.push_back(resource_animation);
 }
 

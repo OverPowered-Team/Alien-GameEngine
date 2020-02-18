@@ -127,6 +127,10 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			if (meta_mesh_paths != nullptr)
 				delete[] meta_mesh_paths;
 			delete[] meshes_paths;
+
+			if (meta_animation_paths != nullptr)
+				delete[] meta_animation_paths;
+			delete[] animation_paths;
 			// Create the file
 			LOG_ENGINE("Created alien file %s", meta_data_path.data());
 			

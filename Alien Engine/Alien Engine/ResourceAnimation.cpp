@@ -50,7 +50,7 @@ bool ResourceAnimation::CreateMetaData(const u64& force_id)
 		ID = force_id;
 	}
 	
-	meta_data_path = std::string(LIBRARY_MESHES_FOLDER + std::to_string(ID) + ".alienMesh");
+	meta_data_path = std::string(LIBRARY_ANIMATION_FOLDER + std::to_string(ID) + ".alienAnimation");
 
 	uint size = sizeof(uint) + name.size() + sizeof(uint) * 6 + sizeof(bool);
 	for (uint i = 0; i < num_channels; i++)
@@ -135,7 +135,7 @@ bool ResourceAnimation::CreateMetaData(const u64& force_id)
 bool ResourceAnimation::DeleteMetaData()
 {
 	if (channels == nullptr)
-		return;
+		return false;
 
 	LOG_ENGINE("Unloading Animation %s", name.c_str());
 
@@ -147,4 +147,5 @@ bool ResourceAnimation::DeleteMetaData()
 	}
 
 	channels = nullptr;
+	return true;
 }
