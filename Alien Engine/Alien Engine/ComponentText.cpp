@@ -68,42 +68,6 @@ void ComponentText::Draw(bool isGame)
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	/*glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(VAO);
-
-	std::string::const_iterator c;
-	for (c = text.begin(); c != text.end(); c++) {
-		Character ch = font->fontData.charactersMap[*c];
-
-		float xpos = 0 + ch.bearing.x;
-		float ypos = 0 - (ch.size.y - ch.bearing.y);
-
-		float w = ch.size.x;
-		float h = ch.size.y;
-
-		float vertex[6][4] = {
-			{ xpos,	ypos + h,	0.0, 0.0 },
-			{ xpos,	ypos,		0.0, 0.0 },
-			{ xpos + w,	ypos,	0.0, 0.0 },
-
-			{ xpos,		ypos + h,	0.0, 0.0 },
-			{ xpos + w, ypos,		1.0, 1.0 },
-			{ xpos + w, ypos + h,	1.0, 0.0 }
-		};
-		glBindTexture(GL_TEXTURE_2D, ch.textureID);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		x += (ch.advance >> 6);
-	}
-
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);*/
 }
 
 

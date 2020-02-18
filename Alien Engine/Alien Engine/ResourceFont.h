@@ -36,13 +36,12 @@ public:
 
 private:
 	static uint LoadTextureCharacter(uint width, uint height, uchar* buffer);
-	uint SaveFile(ResourceFontData& fontData);
+	static uint SaveFile(ResourceFontData& fontData, const char* exported_path);
 	/*ResourceFont(const char* path, const uint& id, const uint& width, const uint& height);
 	ResourceFont(const char* path);
 	virtual ~ResourceFont();*/
 
-	/*bool CreateMetaData(const u64& force_id = 0);
-	bool LoadMemory();
+	/*bool LoadMemory();
 	void FreeMemory();
 	bool ReadBaseInfo(const char* assets_path);
 	void ReadLibrary(const char* meta_data);

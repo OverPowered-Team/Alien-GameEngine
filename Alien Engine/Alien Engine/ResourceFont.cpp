@@ -15,8 +15,9 @@ Resource* ResourceFont::ImportFile(const char* file)
 	if(!App->file_system->Exists(file))
 		return nullptr;
 
+	meta_data_path = std::string(LIBRARY_FONTS_FOLDER + std::to_string(ID) + ".fnt");
 	//Search for met associated
-
+	//char metaFile[]
 	//Check for meta file
 	
 }
@@ -76,8 +77,9 @@ ResourceFont* ResourceFont::ImportFontBySize(const char* file, uint size)
 		font = new ResourceFont(fontData);
 		font->path = file;
 		font->name = App->file_system->GetBaseFileName(file);
-		//font->exported_file;
-		//font->meta_data_path;
+		font->meta_data_path = LIBRARY_FONTS_FOLDER + std::string("/") + font->name + "_meta.fnt";
+
+		ResourceFont::SaveFile(fontData, font->meta_data_path.c_str());
 	}
 
 	return font;
@@ -153,13 +155,57 @@ uint ResourceFont::LoadTextureCharacter(uint width, uint height, uchar* buffer)
 	return texture;
 }
 
-uint ResourceFont::SaveFile(ResourceFontData& fontData)
+uint ResourceFont::SaveFile(ResourceFontData& fontData, const char* exported_path)
 {
 	uint sizeBuffer = 0;
 	for (uint i = 0; i < fontData.charactersMap.size(); ++i)
 	{
-
+		sizeBuffer += (fontData.charactersMap[i + 32].size.x * fontData.charactersMap[i + 32].size.y);
 	}
 
-	return true;
+	uint size = sizeof(uint) * 3 + sizeBuffer +
+		sizeof(Character) * fontData.charactersMap.size();
+
+	char* buffer = new char[size];
+	char* cursor = buffer;
+
+	uint bytes = sizeof(uint);
+	memcpy(cursor, &fontData.fontSize, bytes);
+	cursor += bytes;
+
+	memcpy(cursor, &fontData.maxCharHeight, bytes);
+	cursor += bytes;
+
+	uint listSize = fontData.charactersMap.size();
+	memcpy(cursor, &listSize, bytes);
+	cursor += bytes;
+
+	bytes = sizeof(Character);
+	for (std::map<char, Character>::iterator it = fontData.charactersMap.begin(); it != fontData.charactersMap.end(); ++it)
+	{
+		memcpy(cursor, &(*it).second, bytes);
+		cursor += bytes;
+	}
+
+	for (uint i = 0; i < listSize; ++i)
+	{
+		bytes = (fontData.charactersMap[i + 32].size.x * fontData.charactersMap[i + 32].size.y);
+		memcpy(cursor, fontData.fontBuffer[i], bytes);
+		cursor += bytes;
+	}
+	// --------------------------------------------------
+
+	// Save the file
+	uint ret = App->file_system->Save(exported_path, buffer, size);
+
+	if (ret > 0)
+	{
+		LOG_ENGINE("Resource Font: Successfully saved Font '%s'", exported_path);
+	}
+	else
+		LOG_ENGINE("Resource Font: Could not save Font '%s'", exported_path);
+
+	RELEASE_ARRAY(buffer);
+
+	return ret;
 }
