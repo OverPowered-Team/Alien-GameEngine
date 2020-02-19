@@ -386,9 +386,9 @@ bool ComponentSlider::CheckMouseInside(float3 mouse_pos)
 {
 	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
 #ifdef GAME_VERSION
-	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
 #else
-	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
 #endif
 	//return false;
 }
