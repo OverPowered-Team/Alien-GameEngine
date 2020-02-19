@@ -16,6 +16,7 @@ public:
 	bool DrawInspector();
 
 	void Draw(bool isGame) override;
+	void Update() override;
 
 	void DrawTexture(bool isGame, ResourceTexture* tex);
 
@@ -25,6 +26,14 @@ public:
 
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
+
+	bool OnHover();
+	bool OnClick();
+	bool OnPressed();
+	bool OnRelease();
+private:
+	void UILogic();
+	bool CheckMouseInside(float3 mouse_pos);
 
 public:
 

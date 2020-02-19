@@ -10,7 +10,9 @@
 #include "ReturnZ.h"
 #include "FileNode.h"
 #include "PanelProject.h"
+#include "ComponentTransform.h"
 #include "ComponentCamera.h"
+
 
 ComponentSlider::ComponentSlider(GameObject* obj) : ComponentUI(obj)
 {
@@ -192,6 +194,33 @@ void ComponentSlider::Draw(bool isGame)
 	DrawTexture(isGame, texture);
 }
 
+void ComponentSlider::Update()
+{
+	if (Time::IsPlaying()) {
+		UILogic();
+
+		switch (state)
+		{
+		case Idle:
+			break;
+		case Hover:
+			OnHover();
+			break;
+		case Click:
+			OnClick();
+			break;
+		case Pressed:
+			OnPressed();
+			break;
+		case Release:
+			OnRelease();
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
@@ -289,4 +318,73 @@ void ComponentSlider::SaveComponent(JSONArraypack* to_save)
 
 void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 {
+}
+
+bool ComponentSlider::OnHover()
+{
+	return false;
+}
+
+bool ComponentSlider::OnClick()
+{
+	return false;
+}
+
+bool ComponentSlider::OnPressed()
+{
+	return false;
+}
+
+bool ComponentSlider::OnRelease()
+{
+	return false;
+}
+
+void ComponentSlider::UILogic()
+{
+	float3 mouse_pos;
+
+#ifndef GAME_VERSION
+	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
+#else
+	mouse_pos = App->input->GetMousePosition();
+#endif
+
+	switch (state)
+	{
+	case Idle:
+		if (CheckMouseInside(mouse_pos))
+			state = Hover;
+		break;
+	case Hover:
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+			state = Click;
+		if (!CheckMouseInside(mouse_pos))
+			state = Release;
+		break;
+	case Click:
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+			state = Pressed;
+		break;
+	case Pressed:
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInside(mouse_pos))
+			state = Hover;
+		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInside(mouse_pos))
+			state = Idle;
+		break;
+	case Release:
+		state = Idle;
+		break;
+	}
+}
+
+bool ComponentSlider::CheckMouseInside(float3 mouse_pos)
+{
+	/*ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
+#ifdef GAME_VERSION
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
+#else
+	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
+#endif*/
+	return false;
 }

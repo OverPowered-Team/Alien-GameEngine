@@ -36,7 +36,7 @@ public:
 
 	void SetCanvas(ComponentCanvas* canvas_);
 
-	void Update();
+	virtual void Update();
 	virtual void Draw(bool isGame);
 
 	void ClearTexture();
