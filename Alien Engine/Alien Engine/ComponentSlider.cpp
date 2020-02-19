@@ -11,6 +11,7 @@
 #include "FileNode.h"
 #include "PanelProject.h"
 #include "ComponentTransform.h"
+#include "ModuleInput.h"
 #include "ComponentCamera.h"
 
 
@@ -336,7 +337,9 @@ bool ComponentSlider::OnClick()
 
 bool ComponentSlider::OnPressed()
 {
-	offsetX += 1.0f;
+	int x = App->input->GetMouseXMotion();
+	offsetX = offsetX + (x * 0.3f);
+
 	current_color = pressed_color;
 
 	return true;
