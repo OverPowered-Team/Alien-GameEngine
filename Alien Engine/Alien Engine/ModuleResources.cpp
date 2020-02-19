@@ -508,27 +508,6 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 	return nullptr;
 }
 
-u64 ModuleResources::Find(const char* assets_file) const
-{
-	for (auto i = resources.begin(); i != resources.end(); ++i) {
-		if (std::string((*i)->GetAssetsPath()).compare(assets_file) == 0)
-			return (*i)->GetID();
-	}
-
-	return 0u;
-}
-
-Resource* ModuleResources::Get(const u64& uid)
-{
-	for (auto it = resources.begin(); it != resources.end(); ++it)
-	{
-		if ((*it)->GetID() == uid)
-			return *it;
-	}
-
-	return nullptr;
-}
-
 bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
 {
 	for (auto res = resources.begin(); res != resources.end(); res++) {

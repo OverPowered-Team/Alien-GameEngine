@@ -13,9 +13,9 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MATERIAL;
 
-	u64 id_s = App->resources->Find(SHADERS_FOLDER "default.shader");
-	used_shader = (ResourceShader*)App->resources->Get(id_s);
-	//used_shader = App->resources->default_shader;
+	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default.shader"); // needs fix. meta is not created too...
+	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	//used_shader = App->resources->default_shader; default_shader pointer may be unnecessary as we get the shader resource like the 2 lines of code above
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -244,8 +244,8 @@ bool ComponentMaterial::DrawInspector()
 					for (auto i = shaders.begin(); i != shaders.end(); ++i) {
 						if (ImGui::Button((*i)->GetName()))
 						{
-							u64 id_s = App->resources->Find((*i)->GetAssetsPath());
-							used_shader = (ResourceShader*)App->resources->Get(id_s);
+							u64 id_s = App->resources->GetIDFromAlienPath((*i)->GetAssetsPath());
+							used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 
 							fileToEdit = used_shader->path; // must test if it edits on library too in this engine
 						}

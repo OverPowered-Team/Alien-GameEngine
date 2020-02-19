@@ -85,10 +85,6 @@ public:
 
 	ResourceScene* GetSceneByName(const char* name);
 
-	// Utils
-	u64 ModuleResources::Find(const char* assets_file) const;
-	Resource* Get(const u64& uid);
-
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
 
