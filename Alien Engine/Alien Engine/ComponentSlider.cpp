@@ -189,6 +189,8 @@ void ComponentSlider::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * sliderScaleX;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * sliderScaleY;
+	transform->global_transformation[0][3] = transform->global_transformation[0][3] + offsetX;
+	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY;
 	DrawTexture(isGame, sliderTexture);
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
@@ -334,7 +336,9 @@ bool ComponentSlider::OnClick()
 
 bool ComponentSlider::OnPressed()
 {
+	offsetX += 1.0f;
 	current_color = pressed_color;
+
 	return true;
 }
 

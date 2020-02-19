@@ -41,6 +41,9 @@ public:
 	float sliderScaleX = 0.2F;
 	float sliderScaleY = 0.9F;
 
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
+
 	Color idle_color = { 0.8f,0.8f,0.8f,1.0f };
 	Color hover_color = { 1.0f,1.0f,1.0f,1.0f };
 	Color clicked_color = { 0.7f,0.7f,0.7f,1.0f };
