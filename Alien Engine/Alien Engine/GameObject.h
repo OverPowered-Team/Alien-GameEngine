@@ -27,6 +27,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentUI;
 	friend class ComponentCanvas;
 	friend class ComponentCheckbox;
+	friend class ComponentText;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;

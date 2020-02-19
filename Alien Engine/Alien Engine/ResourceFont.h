@@ -29,10 +29,12 @@ class ResourceFont : public Resource {
 
 public:
 	ResourceFont(ResourceFontData fontData);
+
+	void CreateMeta();
+	static ResourceFont* ImportFile(const char* file, u64 forced_id = 0);
 	
-	Resource* ImportFile(const char* file);
-	static ResourceFont* ImportFontBySize(const char* file, uint size);
-	ResourceFont* LoadFile(const char* file);
+	static ResourceFont* ImportFont(const char* file, u64 forced_id);
+	static ResourceFont* LoadFile(const char* file);
 
 private:
 	static uint LoadTextureCharacter(uint width, uint height, uchar* buffer);

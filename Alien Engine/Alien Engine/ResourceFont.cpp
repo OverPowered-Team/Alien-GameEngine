@@ -10,19 +10,52 @@ ResourceFont::ResourceFont(ResourceFontData fontData):Resource(), fontData(fontD
 	type = ResourceType::RESOURCE_FONT;
 }
 
-Resource* ResourceFont::ImportFile(const char* file)
+void ResourceFont::CreateMeta()
 {
-	if(!App->file_system->Exists(file))
-		return nullptr;
+	JSON_Value* value = json_value_init_object();
+	JSON_Object* json_object = json_value_get_object(value);
 
-	meta_data_path = std::string(LIBRARY_FONTS_FOLDER + std::to_string(ID) + ".fnt");
-	//Search for met associated
-	//char metaFile[]
-	//Check for meta file
-	
+	std::string meta_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
+
+	json_serialize_to_file_pretty(value, meta_path.data());
+
+	if (value != nullptr && json_object != nullptr) {
+
+		JSONfilepack* file = new JSONfilepack(meta_path, json_object, value);
+		file->StartSave();
+		file->SetString("Meta.ID", std::to_string(ID));
+		file->SetString("Meta.name", name);
+		file->FinishSave();
+		delete file;
+	}
 }
 
-ResourceFont* ResourceFont::ImportFontBySize(const char* file, uint size)
+ResourceFont* ResourceFont::ImportFile(const char* file, u64 forced_id)
+{
+	u64 new_id = 0;
+	ResourceFont* font = nullptr;
+
+	if (forced_id == 0)
+	{
+		new_id = App->resources->GetRandomID();
+		font = ImportFont(file, new_id);
+	}
+	else
+	{
+		new_id = forced_id;
+		std::string path(LIBRARY_FONTS_FOLDER + std::to_string(new_id) + ".fnt");
+
+		if (App->file_system->Exists(path.c_str())) {
+			font = LoadFile(path.c_str());
+		}
+	}
+
+	App->resources->AddResource(font);
+
+	return font;
+}
+
+ResourceFont* ResourceFont::ImportFont(const char* file, u64 forced_id)
 {
 	ResourceFont* font = nullptr;
 	uint maxHeight = 0;
@@ -36,7 +69,7 @@ ResourceFont* ResourceFont::ImportFontBySize(const char* file, uint size)
 	else
 	{
 		ResourceFontData fontData;
-		FT_Set_Pixel_Sizes(face, 0, size);
+		FT_Set_Pixel_Sizes(face, 0, 350);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		for (uint c = 32; c < 128; c++) {
@@ -71,16 +104,20 @@ ResourceFont* ResourceFont::ImportFontBySize(const char* file, uint size)
 		FT_Done_Face(face);
 
 		fontData.charactersMap = charactersBitmap;
-		fontData.fontSize = size;
+		fontData.fontSize = 350;
 		fontData.maxCharHeight = maxHeight;
 
 		font = new ResourceFont(fontData);
+		font->ID = forced_id;
 		font->path = file;
 		font->name = App->file_system->GetBaseFileName(file);
-		font->meta_data_path = LIBRARY_FONTS_FOLDER + std::string("/") + font->name + "_meta.fnt";
+		font->meta_data_path = LIBRARY_FONTS_FOLDER + std::to_string(font->GetID()) + ".fnt";
 
 		ResourceFont::SaveFile(fontData, font->meta_data_path.c_str());
+		font->CreateMeta();
 	}
+
+
 
 	return font;
 }

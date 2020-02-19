@@ -350,15 +350,10 @@ ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 ResourceFont* ModuleImporter::LoadFontFile(const char* path)
 {
 	ResourceFont* font = nullptr;
-	font = ResourceFont::ImportFontBySize(path, 60);
 
-	if (font != nullptr)
-	{
-		App->resources->AddResource(font);
-		return font;
+	if (!App->resources->GetFontByName(App->file_system->GetBaseFileName(path).c_str())) {
+		font = ResourceFont::ImportFile(path);
 	}
-	else
-		LOG_ENGINE("Font not loaded! Error!");
 
 	return font;
 }
