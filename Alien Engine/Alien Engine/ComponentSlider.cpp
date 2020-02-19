@@ -322,22 +322,26 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 
 bool ComponentSlider::OnHover()
 {
-	return false;
+	current_color = hover_color;
+	return true;
 }
 
 bool ComponentSlider::OnClick()
 {
-	return false;
+	current_color = clicked_color;
+	return true;
 }
 
 bool ComponentSlider::OnPressed()
 {
-	return false;
+	current_color = pressed_color;
+	return true;
 }
 
 bool ComponentSlider::OnRelease()
 {
-	return false;
+	current_color = idle_color;
+	return true;
 }
 
 void ComponentSlider::UILogic()
@@ -380,11 +384,11 @@ void ComponentSlider::UILogic()
 
 bool ComponentSlider::CheckMouseInside(float3 mouse_pos)
 {
-	/*ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
+	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
 #ifdef GAME_VERSION
 	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
 #else
 	return (mouse_pos.x >= x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
-#endif*/
-	return false;
+#endif
+	//return false;
 }
