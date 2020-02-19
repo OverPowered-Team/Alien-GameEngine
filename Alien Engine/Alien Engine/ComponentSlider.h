@@ -32,14 +32,17 @@ public:
 	bool OnPressed();
 	bool OnRelease();
 private:
-	void UILogic();
-	bool CheckMouseInside(float3 mouse_pos);
+	void UILogicSlider();
+	bool CheckMouseInsideSlider(float3 mouse_pos);
 
 public:
 
 	ResourceTexture* sliderTexture = nullptr;
 	float sliderScaleX = 0.2F;
 	float sliderScaleY = 0.9F;
+
+	float sliderX = 0.0F;
+	float sliderY = 0.0F;
 
 	float offsetX = 0.0f;
 	float offsetY = 0.0f;

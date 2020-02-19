@@ -198,7 +198,7 @@ void PanelScene::GuizmosLogic()
 		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation, guizmo_mode, object_transform_matrix.ptr(), delta_matrix.ptr());
 		static bool guizmo_return = true;
 		static bool duplicate = false;
-		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && !block_move)
+		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && !block_move && ImGui::IsWindowFocused())
 		{
 			if (!duplicate && (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)) {
 				duplicate = true;
