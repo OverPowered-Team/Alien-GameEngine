@@ -10,7 +10,7 @@
 #include "PanelProject.h"
 #include "ComponentTransform.h"
 
-ComponentCheckbox::ComponentCheckbox(GameObject* obj) :ComponentUI(obj)
+ComponentCheckbox::ComponentCheckbox(GameObject* obj) : ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_CHECKBOX;
 

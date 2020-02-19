@@ -564,6 +564,9 @@
     <ClInclude Include="ResourceFont.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSlider.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -913,6 +916,9 @@
     </ClCompile>
     <ClCompile Include="ResourceFont.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSlider.cpp">
+      <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

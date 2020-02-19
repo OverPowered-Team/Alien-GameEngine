@@ -164,6 +164,7 @@
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentScript.h" />
+    <ClInclude Include="ComponentSlider.h" />
     <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="ComponentUI.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentScript.cpp" />
+    <ClCompile Include="ComponentSlider.cpp" />
     <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="ComponentUI.cpp" />
