@@ -29,6 +29,7 @@ struct aiFileIO;
 #define ASSETS_PREFAB_FOLDER "Assets/Prefabs/"
 #define LIBRARY_SCRIPTS_FOLDER "Library/Scripts/"
 #define HEADER_SCRIPTS_FILE "AlienEngineScripts/"
+#define DEFAULT_FONT "Assets/Fonts/Arialn.ttf"
 // -------Foldres Paths--------
 
 // -------DLL Paths--------

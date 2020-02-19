@@ -76,6 +76,8 @@ bool ModuleResources::Start()
 
 	ReadAllMetaData();
 
+	default_font = GetFontByName("Arialn");
+
 	return true;
 }
 

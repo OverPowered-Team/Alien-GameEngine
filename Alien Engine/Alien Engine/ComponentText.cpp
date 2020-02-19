@@ -8,7 +8,7 @@
 ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 {
 	text = "Hola";
-	font = App->resources->GetFontByName("Arialn");
+	font = App->resources->default_font;
 
 	uv[0] = { 0,0 };
 	uv[1] = { 0,1 };
@@ -28,10 +28,26 @@ bool ComponentText::DrawInspector()
 	return true;
 }
 
-bool ComponentText::DrawCharacter()
+bool ComponentText::DrawCharacter(Character ch)
 {
+	glBindTexture(GL_TEXTURE_2D, ch.textureID);
 
-	return false;
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, uvID);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return true;
 }
 
 void ComponentText::Draw(bool isGame)
@@ -48,22 +64,25 @@ void ComponentText::Draw(bool isGame)
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glBindTexture(GL_TEXTURE_2D, font->fontData.charactersMap[80].textureID);
+	std::string::const_iterator c;
+	int i = 0;
+	for(c = text.begin(); c != text.end(); c++) {
+		Character ch = font->fontData.charactersMap[*c];
+		float xpos = font->fontData.charactersMap[*(c - 1)].advance * i + ch.bearing.x;
+		float ypos = (ch.size.y - ch.bearing.y);
+		float w = ch.size.x;
+		float h = ch.size.y;
 
-	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		vertices[0] = { xpos, ypos + h, 0 };
+		vertices[1] = { xpos, ypos, 0 };
+		vertices[2] = { xpos + w, ypos, 0 };
+		vertices[3] = { xpos + w, ypos + h, 0 };
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
 
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, uvID);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		DrawCharacter(ch);
+		i++;
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

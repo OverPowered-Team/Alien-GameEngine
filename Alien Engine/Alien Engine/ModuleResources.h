@@ -106,6 +106,7 @@ public:
 
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
+	ResourceFont* default_font = nullptr;
 	FileNode* assets = nullptr;
 
 private:

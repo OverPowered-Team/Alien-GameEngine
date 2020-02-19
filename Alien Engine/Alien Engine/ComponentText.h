@@ -4,6 +4,7 @@
 #include "ComponentUI.h"
 
 class ResourceFont;
+struct Character;
 
 class ComponentText :public ComponentUI
 {
@@ -12,7 +13,7 @@ public:
 	virtual ~ComponentText() {};
 
 	bool DrawInspector();
-	bool DrawCharacter();
+	bool DrawCharacter(Character ch);
 
 	void Draw(bool isGame) override;
 	void Reset() {};

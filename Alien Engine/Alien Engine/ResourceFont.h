@@ -34,7 +34,7 @@ public:
 	static ResourceFont* ImportFile(const char* file, u64 forced_id = 0);
 	
 	static ResourceFont* ImportFont(const char* file, u64 forced_id);
-	static ResourceFont* LoadFile(const char* file);
+	static ResourceFont* LoadFile(const char* file, u64 forced_id);
 
 private:
 	static uint LoadTextureCharacter(uint width, uint height, uchar* buffer);
