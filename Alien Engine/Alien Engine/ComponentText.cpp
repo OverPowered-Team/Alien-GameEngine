@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleResources.h"
+#include "ComponentTransform.h"
 #include "ComponentText.h"
 #include "ResourceFont.h"
 #include "glew/include/glew.h"
@@ -16,11 +17,6 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
-
-	if (font == nullptr)
-	{
-		font = ResourceFont::ImportFontBySize("Assets/Fonts/Arialn.ttf", 60);
-	}
 
 	ui_type = ComponentType::UI_TEXT;
 }
@@ -40,7 +36,12 @@ bool ComponentText::DrawCharacter()
 
 void ComponentText::Draw(bool isGame)
 {
+	glDisable(GL_CULL_FACE);
+
 	glColor4f(1.0, 1.0, 1.0, 1.0);
+
+	glPushMatrix();
+	glMultMatrixf(game_object_attached->GetComponent<ComponentTransform>()->global_transformation.Transposed().ptr());
 
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -68,6 +69,10 @@ void ComponentText::Draw(bool isGame)
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glPopMatrix();
+
+	glEnable(GL_CULL_FACE);
 }
 
 

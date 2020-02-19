@@ -564,6 +564,13 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Fonts
+	App->file_system->DiscoverFiles(FONTS_FOLDER, files, directories);
+	ReadFonts(directories, files, FONTS_FOLDER);
+
+	files.clear();
+	directories.clear();
+
 	// Init Scripts
 	ReadScripts();
 
@@ -607,6 +614,15 @@ void ModuleResources::ReadAllMetaData()
 	App->file_system->DiscoverFiles(LIBRARY_PREFABS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourcePrefab* prefab = new ResourcePrefab();
+		prefab->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// fonts
+	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceFont* prefab = new ResourceFont::LoadFile();
 		prefab->ReadLibrary(files[i].data());
 	}
 	files.clear();
@@ -704,6 +720,26 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			std::string path = App->file_system->GetPathWithoutExtension(std::string(current_folder + files[i]).data()) + "_meta.alien";
+			ResourceFont* font = ResourceFont::ImportFile(std::string(current_folder + files[i]).data(), GetIDFromAlienPath(path.data()));
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadFonts(new_directories, new_files, dir);
 		}
 	}
 }
