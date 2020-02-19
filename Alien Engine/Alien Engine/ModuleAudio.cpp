@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "Application.h"
 #include "ModuleAudio.h"
 #include "ComponentAudioEmitter.h"
@@ -15,7 +14,13 @@ bool ModuleAudio::Start()
 {
 	// Init wwise and audio banks
 	WwiseT::InitSoundEngine();
-	//WwiseT::LoadBank("Main.bnk");
+	WwiseT::LoadBank("Main.bnk");
+
+	auto s = WwiseT::CreateAudSource("hola");
+
+	s->PlayEventByName("porta");
+
+	WwiseT::SetDefaultListener(s->GetID());
 
 	return true;
 }
@@ -34,6 +39,7 @@ update_status ModuleAudio::PostUpdate(float dt)
 bool ModuleAudio::CleanUp()
 {
 	audios.clear();
+	WwiseT::CloseSoundEngine();
 	return true;
 }
 

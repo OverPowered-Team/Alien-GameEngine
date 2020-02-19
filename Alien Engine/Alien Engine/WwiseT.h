@@ -1,34 +1,9 @@
 #ifndef WWISET_H_
 #define WWISET_H_
 
+#include "Globals.h"
+
 #include "AK/SoundEngine/Common/AkTypes.h"
-
-// Wwise libs
-#ifndef _DEBUG  // Profile build configuration must be loaded instead of Debug
-#define AK_OPTIMIZED
-#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkSoundEngine.lib")
-#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkMusicEngine.lib")
-#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkMemoryMgr.lib")
-#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkStreamMgr.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkRoomVerbFX.lib")
-
-#else
-#include "AK/Comm/AkCommunication.h"
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/CommunicationCentral.lib")
-#pragma comment( lib, "AK/ws2_32.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkSoundEngine.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkMusicEngine.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkMemoryMgr.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkStreamMgr.lib")
-#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkRoomVerbFX.lib")
-
-#endif
-
-#pragma comment( lib, "AK/dinput8.lib")
-#pragma comment( lib, "AK/dsound.lib")
-#pragma comment( lib, "AK/dxguid.lib")
-
-typedef unsigned int uint;
 
 // Wwise memory hooks
 namespace AK
@@ -66,12 +41,12 @@ namespace WwiseT
 		void SetMono();
 		void SetStereo();
 		void SetPitch(float value);
-		void SetListener(unsigned int listener_id);
+		void SetListener(uint listener_id);
 		void SetSourcePos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z);
 		void SetListenerPos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z);
 		// Geters
-		unsigned int GetID()const;
-		const char* GetName()const;
+		unsigned int GetID() const;
+		const char* GetName() const;
 
 	private:
 		unsigned int id;

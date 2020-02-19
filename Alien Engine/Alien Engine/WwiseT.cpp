@@ -4,10 +4,34 @@
 #include "AK/SoundEngine/Common/AkModule.h"						// Default memory and stream managers
 #include "AK/Win32/AkFilePackageLowLevelIOBlocking.h"
 #include "AK/MusicEngine/Common/AkMusicEngine.h"                // Music Engine
+#include "AK/Plugin/AkRoomVerbFXFactory.h"
+
+// Wwise libs
+#ifndef _DEBUG  // Profile build configuration must be loaded instead of Debug
+#define AK_OPTIMIZED
+#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkSoundEngine.lib")
+#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkMusicEngine.lib")
+#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkMemoryMgr.lib")
+#pragma comment( lib, "AK/Release(StaticCRT)/lib/AkStreamMgr.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkRoomVerbFX.lib")
+#else
+#include "AK/Comm/AkCommunication.h"
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/CommunicationCentral.lib")
+#pragma comment( lib, "AK/ws2_32.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkSoundEngine.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkMusicEngine.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkMemoryMgr.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkStreamMgr.lib")
+#pragma comment( lib, "AK/Debug(StaticCRT)/lib/AkRoomVerbFX.lib")
+#endif
+
+#pragma comment( lib, "AK/dinput8.lib")
+#pragma comment( lib, "AK/dsound.lib")
+#pragma comment( lib, "AK/dxguid.lib")
+
 #include <assert.h>
 #include <vector>
 
-#include "AK/Plugin/AkRoomVerbFXFactory.h"
 
 CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
 
@@ -115,7 +139,7 @@ bool WwiseT::InitSoundEngine()
 	}
 #endif // AK_OPTIMIZED
 
-	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("."));
+	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("./DLLs"));
 	if (base_path_res != AK_Success)
 	{
 		assert(!"Invalid base path!");
