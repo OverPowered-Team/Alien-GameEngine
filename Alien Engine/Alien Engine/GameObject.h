@@ -48,6 +48,7 @@ class __declspec(dllexport) GameObject
 	friend class ResourceTexture;
 	friend class ModuleObjects;
 	friend class ComponentImage;
+	friend class ComponentSlider;
 	friend class ModuleUI;
 public:
 	GameObject(GameObject* parent);
