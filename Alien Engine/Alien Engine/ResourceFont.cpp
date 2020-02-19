@@ -4,6 +4,7 @@
 #include "ModuleImporter.h"
 #include "FreeType/include/freetype/freetype.h"
 #include "glew/include/glew.h"
+#include "mmgr/mmgr.h"
 
 ResourceFont::ResourceFont(ResourceFontData fontData):Resource(), fontData(fontData)
 {
@@ -101,6 +102,8 @@ ResourceFont* ResourceFont::ImportFont(const char* file, u64 forced_id)
 			memcpy(characterBuffer, (uint8_t*)face->glyph->bitmap.buffer, bytes);
 
 			fontData.fontBuffer.push_back(characterBuffer);
+
+			delete[] characterBuffer;
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FT_Done_Face(face);
@@ -169,7 +172,10 @@ ResourceFont* ResourceFont::LoadFile(const char* file, u64 forced_id)
 			fontData.charactersMap[i + 32].textureID = ResourceFont::LoadTextureCharacter(width, height, fontData.fontBuffer[i]);
 
 			cursor += bytes;
+			delete[] buffer;
 		}
+
+		delete[] buffer;
 
 		res = new ResourceFont(fontData);
 		res->ID = forced_id;

@@ -4,6 +4,7 @@
 #include "ComponentText.h"
 #include "ResourceFont.h"
 #include "glew/include/glew.h"
+#include "mmgr/mmgr.h"
 
 ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 {
