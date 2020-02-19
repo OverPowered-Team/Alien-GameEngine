@@ -29,7 +29,8 @@ public:
 public:
 
 	ResourceTexture* sliderTexture = nullptr;
-
+	float sliderScaleX = 0.2F;
+	float sliderScaleY = 0.9F;
 };
 
 #endif // !_COMPONENT_SLIDER_H_

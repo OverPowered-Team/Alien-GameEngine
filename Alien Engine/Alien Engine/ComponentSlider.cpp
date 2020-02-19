@@ -143,10 +143,10 @@ bool ComponentSlider::DrawInspector()
 		}
 		/*----------SLIDER TEXTURE------------------*/
 
-		ImGui::Spacing();
+		//ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Color");
-		ImGui::SameLine(85);
+		ImGui::Text("Global Color");
+		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 		static bool set_Z = true;
 		static Color col;
@@ -160,7 +160,11 @@ bool ComponentSlider::DrawInspector()
 		else if (!set_Z && ImGui::IsMouseReleased(0)) {
 			set_Z = true;
 		}
-		ImGui::Spacing();
+		float sliderScale[] = { sliderScaleX, sliderScaleY };
+		if (ImGui::DragFloat2("Slider Scale", sliderScale, 0.1F)) {
+			sliderScaleX = sliderScale[0];
+			sliderScaleY = sliderScale[1];
+		}
 
 
 		ImGui::Spacing();
@@ -179,8 +183,12 @@ void ComponentSlider::Draw(bool isGame)
 	if (canvas == nullptr || canvas_trans == nullptr) {
 		return;
 	}
-
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	float4x4 matrix = transform->global_transformation;
+	transform->global_transformation[0][0] = transform->global_transformation[0][0] * sliderScaleX;
+	transform->global_transformation[1][1] = transform->global_transformation[1][1] * sliderScaleY;
 	DrawTexture(isGame, sliderTexture);
+	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
 
