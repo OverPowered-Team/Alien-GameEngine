@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_SPEAKERCONFIG_H_
@@ -220,8 +220,6 @@ the specific language governing permissions and limitations under the License.
 #define AK_STANDARD_MAX_NUM_CHANNELS			(AK_VOICE_MAX_NUM_CHANNELS)	///< Legacy: Platform supports stereo.
 
 #endif
-
-#define AK_MAX_AMBISONICS_ORDER	(5)
 
 // Helpers.
 inline void AK_SPEAKER_SETUP_FIX_LEFT_TO_CENTER( AkUInt32 &io_uChannelMask )

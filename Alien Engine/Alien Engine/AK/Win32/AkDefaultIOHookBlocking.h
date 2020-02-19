@@ -9,16 +9,16 @@ may use this file in accordance with the end user license agreement provided
 with the software or, alternatively, in accordance with the terms contained in a
 written agreement between you and Audiokinetic Inc.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.6  Build: 6636
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 //////////////////////////////////////////////////////////////////////
 //
 // AkDefaultIOHookBlocking.h
 //
 // Default blocking low level IO hook (AK::StreamMgr::IAkIOHookBlocking) 
-// and file system (AK::StreamMgr::IAkFileLocationResolver) implementation. 
-// It can be used as a standalone implementation of the 
+// and file system (AK::StreamMgr::IAkFileLocationResolver) implementation 
+// on Windows. It can be used as a standalone implementation of the 
 // Low-Level I/O system.
 // 
 // AK::StreamMgr::IAkFileLocationResolver: 
@@ -84,25 +84,24 @@ written agreement between you and Audiokinetic Inc.
 	// Create more devices.
 	// ...
 */
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _AK_DEFAULT_IO_HOOK_BLOCKING_H_
 #define _AK_DEFAULT_IO_HOOK_BLOCKING_H_
 
 #include "../SoundEngine/Common/AkStreamMgrModule.h"
-#include "../Common/AkMultipleFileLocation.h"
+#include "AkFileLocationBase.h"
 
 //-----------------------------------------------------------------------------
 // Name: class CAkDefaultIOHookBlocking.
 // Desc: Implements IAkIOHookBlocking low-level I/O hook, and 
 //		 IAkFileLocationResolver. Can be used as a standalone Low-Level I/O
 //		 system, or as part of a system with multiple devices.
-//		 File location is resolved using simple path concatenation logic.
+//		 File location is resolved using simple path concatenation logic
+//		 (implemented in CAkFileLocationBase).
 //-----------------------------------------------------------------------------
 class CAkDefaultIOHookBlocking : public AK::StreamMgr::IAkFileLocationResolver
 								,public AK::StreamMgr::IAkIOHookBlocking
-								,public CAkMultipleFileLocation
+								,public CAkFileLocationBase
 {
 public:
 

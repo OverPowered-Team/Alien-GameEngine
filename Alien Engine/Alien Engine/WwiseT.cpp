@@ -1,16 +1,9 @@
 #include "WwiseT.h"
-#include "Application.h"
-#include "ModuleObjects.h"
-#include "RandomHelper.h"
-
-#include "MathGeoLib/include/Math/float3.h"
 
 #include "AK/SoundEngine/Common/AkMemoryMgr.h"                  // Memory Manager
-
 #include "AK/SoundEngine/Common/AkModule.h"						// Default memory and stream managers
 #include "AK/Win32/AkFilePackageLowLevelIOBlocking.h"
 #include "AK/MusicEngine/Common/AkMusicEngine.h"                // Music Engine
-#include "MathGeoLib/include/MathGeoLib.h"
 #include <assert.h>
 #include <vector>
 
@@ -55,7 +48,7 @@ bool WwiseT::InitSoundEngine()
 {
 	// Init mem manager
 	AkMemSettings memSettings;
-	//memSettings.uMaxNumPools = 20;
+	memSettings.uMaxNumPools = 20;
 
 	if (AK::MemoryMgr::Init(&memSettings) != AK_Success)
 	{
@@ -122,7 +115,7 @@ bool WwiseT::InitSoundEngine()
 	}
 #endif // AK_OPTIMIZED
 
-	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("../Game/SoundBanks/"));
+	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("."));
 	if (base_path_res != AK_Success)
 	{
 		assert(!"Invalid base path!");
@@ -179,12 +172,10 @@ void WwiseT::ProcessAudio()
 void WwiseT::LoadBank(const char * path)
 {
 	AkBankID bankID; // Not used. These banks can be unloaded with their file name.
-	AKRESULT eResult = AK::SoundEngine::LoadBank(path, bankID);
-	
+	AKRESULT eResult = AK::SoundEngine::LoadBank(path, AK_DEFAULT_POOL_ID, bankID);
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not initialize soundbank.");
-		//Log("WwiseT.cpp", 1, LogTypes::Error, "Could not initialize soundbank.");
 	}
 }
 
@@ -192,10 +183,7 @@ uint WwiseT::LoadBank(char* buffer, uint size)
 {	
 	AkBankID bankID = 0;
 
-	AKRESULT eResult = AK_Fail;// AK::SoundEngine::LoadBank((void*)buffer, size, bankID);
-
-	LOG_ENGINE("LoadBank(char* buffer, uint size) not implemented"); // TODO: implement uint WwiseT::LoadBank(char* buffer, uint size)
-
+	AKRESULT eResult = AK::SoundEngine::LoadBank((void*)buffer, size, bankID);
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not initialize soundbank.");
@@ -256,7 +244,7 @@ void WwiseT::ResumeAll()
 
 WwiseT::AudioSource::AudioSource(const char* event_name)
 {
-	id = Random::GetRandomID();
+	id = 0;// App->GenerateRandomNumber();
 	name = new char[128];
 	name = event_name;
 	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name);
@@ -283,7 +271,7 @@ WwiseT::AudioSource::AudioSource(uint pre_id, const char * event_name)
 WwiseT::AudioSource::~AudioSource()
 {
 	AKRESULT eResult = AK::SoundEngine::UnregisterGameObj(id);
-	RELEASE_ARRAY(name);
+	//RELEASE_ARRAY(name);
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not unregister GameObject. See eResult variable to more info");
@@ -370,6 +358,7 @@ const char * WwiseT::AudioSource::GetName() const
 
 void WwiseT::AudioSource::SetSourcePos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z)
 {
+	/*
 	// Setting position vectors
 	math::float3 pos = { 0, 0, 0 };
 	math::float3 rot_front = { 0, 0, 0 };
@@ -413,11 +402,12 @@ void WwiseT::AudioSource::SetSourcePos(float pos_x, float pos_y, float pos_z, fl
 
 	// Set position
 	source_pos.Set(ak_pos, ak_rot_front, ak_rot_top);
-	AK::SoundEngine::SetPosition(id, source_pos);
+	AK::SoundEngine::SetPosition(id, source_pos);*/
 }
 
 void WwiseT::AudioSource::SetListenerPos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z)
 {
+	/*
 	// Setting position vectors
 	math::float3 pos = { 0, 0, 0 };
 	math::float3 rot_front = { 0, 0, 0 };
@@ -462,6 +452,7 @@ void WwiseT::AudioSource::SetListenerPos(float pos_x, float pos_y, float pos_z, 
 	// Set position
 	listener_pos.Set(ak_pos, ak_rot_front, ak_rot_top);
 	AK::SoundEngine::SetPosition(id, listener_pos);
+	*/
 }
 
 void WwiseT::AudioSource::ApplyEnvReverb(AkReal32 desired_level, const char * target)

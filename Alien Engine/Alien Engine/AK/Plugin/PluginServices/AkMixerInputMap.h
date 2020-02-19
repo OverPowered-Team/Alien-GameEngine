@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
  
 #ifndef _AK_MIXERINPUTMAP_H_
@@ -78,16 +78,6 @@ public:
 	AkForceInline void Init( AK::IAkPluginMemAlloc * in_pAllocator ) { m_pAllocator = in_pAllocator; }
 protected:
 	AkForceInline void * Alloc( size_t in_uSize ) { AKASSERT( m_pAllocator || !"Allocator not set. Did you forget to call AkMixerInputMap::Init()?" ); return AK_PLUGIN_ALLOC( m_pAllocator, in_uSize ); }
-	AkForceInline void * ReAlloc(void * in_pCurrent, size_t in_uOldSize, size_t in_uNewSize)
-	{
-		void* pNew = Alloc(in_uNewSize);
-		if (pNew && in_pCurrent)
-		{
-			AKPLATFORM::AkMemCpy(pNew, in_pCurrent, (AkUInt32)in_uOldSize);
-			Free(in_pCurrent);
-		}
-		return pNew;
-	}
 	AkForceInline void Free( void * in_pAddress ) { AKASSERT( m_pAllocator || !"Allocator not set. Did you forget to call AkMixerInputMap::Init()?" ); AK_PLUGIN_FREE( m_pAllocator, in_pAddress ); }
 	AkForceInline AK::IAkPluginMemAlloc * GetAllocator() { return m_pAllocator; }
 private:
@@ -96,27 +86,27 @@ private:
 
 /// AkMixerInputMap: Map of inputs (identified with AK::IAkMixerInputContext *) to user-defined blocks of data.
 template <class USER_DATA>
-class AkMixerInputMap : public AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>
+class AkMixerInputMap : public AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>
 {
 public:
-	typedef AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator> BaseClass;
+	typedef AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1> BaseClass;
 
 	/// Returns the user data associated with given input context. Returns NULL if none found.
 	USER_DATA * Exists( AK::IAkMixerInputContext * in_pInput )
 	{
-		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::Iterator it = FindEx( in_pInput );
+		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::Iterator it = FindEx( in_pInput );
 		return ( it != BaseClass::End() ) ? (*it).pUserData : NULL;
 	}
 
 	/// Adds an input with new user data.
 	USER_DATA * AddInput( AK::IAkMixerInputContext * in_pInput )
 	{
-		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::Iterator it = FindEx( in_pInput );
+		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::Iterator it = FindEx( in_pInput );
 		if ( it != BaseClass::End() )
 			return (*it).pUserData;
 		else
 		{
-			AkInputMapSlot<USER_DATA> * pSlot = AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::AddLast();
+			AkInputMapSlot<USER_DATA> * pSlot = AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::AddLast();
 			if ( pSlot )
 			{
 				pSlot->pUserData = AK_PLUGIN_NEW( AkPluginArrayAllocator::GetAllocator(), USER_DATA );
@@ -134,7 +124,7 @@ public:
 	/// Removes an input and destroys its associated user data.
 	bool RemoveInput( AK::IAkMixerInputContext * in_pInput )
 	{
-		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::Iterator it = FindEx( in_pInput );
+		typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::Iterator it = FindEx( in_pInput );
 		if ( it != BaseClass::End() )
 		{
 			AKASSERT( (*it).pUserData );
@@ -158,7 +148,7 @@ public:
 	}
 
 	/// Finds an item in the array.
-	typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::Iterator FindEx( AK::IAkMixerInputContext * in_pInput ) const
+	typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::Iterator FindEx( AK::IAkMixerInputContext * in_pInput ) const
 	{
 		AkInputMapSlot<USER_DATA> mapSlot;
 		mapSlot.pContext = in_pInput;
@@ -168,7 +158,7 @@ public:
 	/// Removes and destroys all items in the array.
 	void RemoveAll()
 	{
-		for ( typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator>::Iterator it = BaseClass::Begin(), itEnd = BaseClass::End(); it != itEnd; ++it )
+		for ( typename AkArray<AkInputMapSlot<USER_DATA>, const AkInputMapSlot<USER_DATA>&, AkPluginArrayAllocator, 1>::Iterator it = BaseClass::Begin(), itEnd = BaseClass::End(); it != itEnd; ++it )
 		{
 			AKASSERT( (*it).pUserData );
 			AK_PLUGIN_DELETE( AkPluginArrayAllocator::GetAllocator(), (*it).pUserData );

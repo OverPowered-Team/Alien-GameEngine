@@ -1,12 +1,11 @@
 #include "ComponentAudioListener.h"
 #include "Application.h"
 #include "ModuleAudio.h"
+#include "ComponentTransform.h"
 #include "MathGeoLib\include\MathGeoLib.h"
 
 AudioListener::AudioListener(GameObject * parent) : Component(parent)
 {
-	type = ComponentType::A_LISTENER;
-
 	listener = App->audio->CreateSoundEmitter("listener");
 	App->audio->SetListener(listener);
 }
@@ -26,7 +25,11 @@ void AudioListener::UpdateListenerPos()
 	
 }
 
-void AudioListener::LoadComponent(JSONArraypack* to_load)
+void AudioListener::SaveListener(/*JSON_Array* componentsObj*/) const
 {
-	to_load->SetNumber("Type", (int)type);
+	/*JSON_Value* component = json_value_init_object();
+	JSON_Object* componentObj = json_value_get_object(component);
+	json_object_set_number(componentObj, "Type:", this->type);
+
+	json_array_append_value(componentsObj, component);*/
 }

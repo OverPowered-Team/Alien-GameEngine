@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -81,22 +81,34 @@ namespace AK
 	// Audiokinetic Wwise namespace
 	namespace Wwise
 	{
+		/// Import channel configuration options.
+		enum AudioFileChannel
+		{
+			Channel_mono		= 0,
+			Channel_stereo		= 1,
+			Channel_mono_drop	= 2,
+			Channel_stereo_drop = 3,
+			Channel_as_input	= 4,
+			Channel_mono_drop_right	= 5,
+			Channel_stereo_balance	= 6,
+		};
+
 		/// License type.
 		enum LicenseType
 		{
-			LicenseType_Trial = 1,		///< Used for both Trial and Evaluation License handling
-			LicenseType_Purchased,		///< The license was purchased
-			LicenseType_Academic		///< The license is for academic
+			LicenseType_Trial = 1, ///< Note: LicenseType_Trial is used for both Trial and Evaluation Licence handling.
+			LicenseType_Purchased,
+			LicenseType_Academic
 		};
 
 		/// License status.
 		enum LicenseStatus
 		{
-			LicenseStatus_Unlicensed,	///< No license found
-			LicenseStatus_Expired,		///< A license is found, but is expired
-			LicenseStatus_Valid,		///< A license is found and is valid
+			LicenseStatus_Unlicensed,
+			LicenseStatus_Expired,
+			LicenseStatus_Valid,
 
-			LicenseStatus_Incompatible	///< The plugin was made for an older version of Wwise
+			LicenseStatus_Incompatible		//the plugin is for an older version of wwise
 		};
 
 		/// Log message severity.
@@ -153,7 +165,24 @@ namespace AK
 
 			/// Display an error message to the user.
 			/// The message should be on a single line.
-			virtual void ErrorMessage( const CStringW& in_rErrorText, Severity in_eSeverity = Severity_Warning ) = 0;
+			virtual void ErrorMessage( const CString& in_rErrorText, Severity in_eSeverity = Severity_Warning ) = 0;
+		};
+
+		/// Add support for a second progress bar to the IProgress interfaces
+		class IDoubleProgress : public IProgress
+		{
+		public:
+			/// Call this to set the name of the second operation currently done.
+            /// If not called the operation will have an empty name in the UI.
+            /// The name should be on a single line.
+            virtual void SetSecondOperationName( LPCWSTR in_szOperationName ) = 0;
+
+			/// Should be called at the beginning of the operation to set the min and max value 
+			/// of the second progress bar.
+			virtual void SetSecondRange( DWORD in_dwMinValue, DWORD in_dwMaxValue ) = 0;
+
+			/// Notify of the advancement of the task.
+			virtual void NotifySecondProgress( DWORD in_dwProgress ) = 0;
 		};
 
 		/// Represents the association between a dialog control (such as
@@ -171,9 +200,7 @@ namespace AK
 		};
 
 		/// Base interface for all Wwise plug-ins.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - \ref AK::Wwise::IAudioPlugin
 		class IPluginBase
@@ -201,9 +228,7 @@ namespace AK
 		/// All functions perform the appropriate platform-specific byte reordering
 		/// except where noted otherwise.
 		/// \endaknote
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - \ref wwiseplugin_bank
 		/// - AK::Wwise::IAudioPlugin::GetBankParameters()
@@ -220,14 +245,25 @@ namespace AK
 				UINT32 & out_cWritten		///< The number of bytes actually written
 			) = 0;
 
-			[[deprecated("Not supported anymore. Please use WriteUtf16String or WriteUtf8String")]]
-			virtual bool WritePascalString(
+			/// Writes a single-byte character string which does not need to be null-terminated.
+			/// Strings are limited to 256 characters, and are stored as described below. 
+			/// Your run-time plug-in receives a blob of data (AK::IAkPluginParam::Init() and AK::IAkPluginParam::SetParamsBlock())
+			/// which you need to interpret.
+			/// - BYTE: size_of_string
+			/// - char[]: array_of_characters.
+			/// 
+			/// \aknote
+			/// "String" properties (as defined in the plugin's XML Description File - refer to \ref plugin_xml 
+			/// for more details) are utf-16 encoded. While you are free to store this string in soundbanks as
+			/// as an ansi string, AK::IAkPluginParam::SetParam() will be passed an utf-16 string when you 
+			/// connect the authoring tool to the sound engine. Thus, WriteUtf16String() is the preferred method 
+			/// for sending strings to a plug-in.
+			/// \endaknote
+			/// \return True if successful, False otherwise
+            virtual bool WritePascalString(
 				LPCWSTR in_szString,		///< The string to be written; conversion is made internally
 				UINT32 in_uiStringLength	///< The string length, in number of characters
-			)
-			{
-				return false;
-			}
+			) = 0;
 
 			/// Writes a null-terminated utf-16 string (characters are 2 bytes wide).
 			/// Handles endianness according to destination platform.
@@ -240,7 +276,7 @@ namespace AK
 			/// \endaknote
 			/// \return True if successful, False otherwise
             virtual bool WriteUtf16String(
-				const wchar_t * in_szString			///< The string to be written (null-terminated).
+				LPCWSTR in_szString			///< The string to be written (null-terminated).
 			) = 0;
 
 			/// Writes a null-terminated utf-8 string (multibyte characters).

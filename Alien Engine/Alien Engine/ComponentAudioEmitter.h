@@ -1,19 +1,19 @@
 #pragma once
 
-#include <string>
-
 #include "Component.h"
 #include "Globals.h"
 #include "WwiseT.h"
 #include "Timer.h"
 
-class AudioEmitter : public Component
+#include <string>
+
+class ComponentAudioEmitter : public Component
 {
 public:
-	AudioEmitter(GameObject* parent);
-	~AudioEmitter();
-
+	ComponentAudioEmitter(GameObject* parent);
+	~ComponentAudioEmitter();
 public:
+
 	void Update(float dt);
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
@@ -21,8 +21,6 @@ public:
 	void StartSound();
 	void UpdateSourcePos();
 
-	void SaveComponent(JSONArraypack* to_save) override;
-	void LoadComponent(JSONArraypack* to_load) override;
 
 public:
 	WwiseT::AudioSource* source;

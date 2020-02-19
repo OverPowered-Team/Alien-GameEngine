@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -32,9 +32,7 @@ the specific language governing permissions and limitations under the License.
 #define _AK_WWISE_ISOURCECONTROL_H
 
 // Include the header file that defines the BSTR type.
-#ifdef AK_WIN
 #include <wtypes.h>
-#endif
 
 #include "ISourceControlUtilities.h"
 #include "SourceControlContainers.h"
@@ -57,9 +55,7 @@ namespace AK
 
 		/// Wwise source control plug-in interface. This is the interface that the plug-in must implement. It contains
 		/// all the necessary functions to perform source control operations and manage the Wwise source control UI.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - \ref source_control_dll_creation_object_information
 		class ISourceControl
@@ -192,7 +188,7 @@ namespace AK
 			//@{
 
 			/// The AK:Wwise::ISourceControl interface offers a way to display custom icons in the Project Explorer. This map
-			/// type must be filled in by the plug-in when Wwise gives it a file name list. CStringW objects are used as keys, and are associated
+			/// type must be filled in by the plug-in when Wwise gives it a file name list. CString objects are used as keys, and are associated
 			/// to FilenameToIconMapItem objects. The HICON m_hIcon member will be NULL when there is no icon associated with the file.
 			/// \sa
 			/// - AK::Wwise::SourceControlContainers::IAkMap

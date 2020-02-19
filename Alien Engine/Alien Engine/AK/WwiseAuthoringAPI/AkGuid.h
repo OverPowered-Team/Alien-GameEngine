@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -51,21 +51,18 @@ namespace AK
 				memcpy( this, &other, sizeof other );
 			}
 
-		#ifdef GUID_DEFINED
+#ifdef _MFC_VER
 			AkGuid( const GUID& guid )
 			{
 				*this = guid;
-			}
-			inline AkGuid& operator=(const GUID& other)
-			{
-				return *this = * reinterpret_cast<const AkGuid*>( &other );
 			}
 			inline operator GUID() const
 			{
 				return *reinterpret_cast<const GUID*>(this);
 			}
-		#endif
-			inline bool operator==(const AkGuid& other) const
+#endif
+
+			inline bool operator==(const AkGuid& other)
 			{
 				return AkGuidIsEqual(this, &other);
 			}
@@ -94,11 +91,12 @@ namespace AK
 				return (data1 == 0 && data2 == 0 && data3 == 0);
 			}
 
-			inline AkGuid& Nullify()
+#ifdef _MFC_VER
+			inline AkGuid& operator=(const GUID& other)
 			{
-				memset(this, 0, sizeof(AkGuid));
-				return *this;
+				return *this = * reinterpret_cast<const AkGuid*>( &other );
 			}
+#endif
 
 			uint32_t data1;
 			uint16_t data2;

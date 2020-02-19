@@ -84,6 +84,7 @@ public:
 	bool HasComponent(ComponentType component) const;
 	Component* GetComponent(const ComponentType& type);
 	const Component* GetComponent(const ComponentType& type) const;
+	ComponentTransform* GetComponentTransform() const; //sorry ori
 	void* GetComponentScript(const char* script_class_name);
 	const void* GetComponentScript(const char* script_class_name) const;
 	Component* GetComponentInParent(const ComponentType& type);

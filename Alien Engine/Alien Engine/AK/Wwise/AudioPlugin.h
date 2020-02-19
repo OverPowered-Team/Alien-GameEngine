@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -78,9 +78,7 @@ namespace AK
 		/// assigned to each plug-in, which in turn can use it to manage its properties.
 		/// Whenever a property name is specified, it corresponds to the property
 		/// name set in the plug-in's XML definition file.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - \ref wwiseplugin_xml_properties_tag
 		/// - AK::Wwise::IAudioPlugin::SetPluginPropertySet()
@@ -145,7 +143,7 @@ namespace AK
 			/// to check the status of the undo system.
 			virtual AK::Wwise::IUndoManager * GetUndoManager() = 0;
 
-			/// Obtain licensing status for the plug-in. Refer to \ref wwiseplugin_dll_license for more information.
+			/// Obtain licensing status for the plug-in.
 			virtual void GetLicenseStatus(
 				const GUID & in_guidPlatform,			///< GUID of the platform
 				AK::Wwise::LicenseType & out_eType,		///< License Type
@@ -153,7 +151,7 @@ namespace AK
 				UINT32 & out_uDaysToExpiry				///< Days until license expiry
 				) = 0;
 
-			/// Obtain licensing status for a plug-in-specific asset ID. Refer to \ref wwiseplugin_dll_license for more information.
+			/// Obtain licensing status for a plug-in-specific asset ID.
 			virtual void GetAssetLicenseStatus( 
 				const GUID & in_guidPlatform,			///< GUID of the platform
 				AkUInt32 in_uAssetID,					///< ID of the asset
@@ -180,9 +178,7 @@ namespace AK
 		/// assigned to each plug-in, which in turn can use it to manage its inner objects.
 		/// Inner objects can be created from the inner types defined in the plug-in's XML 
 		/// definition file.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - AK::Wwise::IAudioPlugin::SetPluginObjectStore()
 		/// - \ref wwiseplugin_objectstore
@@ -248,9 +244,7 @@ namespace AK
 
 		/// Plug-in object media interface. An instance of this class is created and
 		/// assigned to each plug-in that supports media file handling.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - AK::Wwise::IAudioPlugin::SetPluginObjectMedia()
 		class IPluginObjectMedia
@@ -321,9 +315,7 @@ namespace AK
 
 		/// Wwise plug-in interface. This must be implemented for each source or
 		/// effect plug-in that is exposed in Wwise.
-		/// \akwarning
-		/// The functions in this interface are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - \ref wwiseplugin_object
 		class IAudioPlugin
@@ -409,11 +401,11 @@ namespace AK
 
 			/// Load file 
 			/// \return \b true if load succeeded.
-			virtual bool Load( AK::IXmlTextReader* in_pReader ) = 0;
+			virtual bool Load( IXmlTextReader* in_pReader ) = 0;
 
 			/// Save file
 			/// \return \b true if save succeeded.
-			virtual bool Save( AK::IXmlTextWriter* in_pWriter ) = 0;
+			virtual bool Save( IXmlTextWriter* in_pWriter ) = 0;
 
 			/// Copy the plugin's custom data into another instance of the same plugin. This is used
 			/// during copy/paste and delete. The properties on the PropertySet do not need to
@@ -606,7 +598,6 @@ namespace AK
 			/// \sa
 			/// - \ref IPluginPropertySet::GetLicenseStatus
 			/// - \ref IPluginPropertySet::GetAssetLicenseStatus
-			/// - \ref wwiseplugin_dll_license
 			virtual AK::Wwise::LicenseStatus GetLicenseStatus(
 				const GUID & in_guidPlatform,		///< GUID of the platform
 				AK::Wwise::Severity& out_eSeverity,	///< (Optional) If set, the string placed in out_pszMessage will be shown in the log with the corresponding severity. 
@@ -632,8 +623,8 @@ namespace AK
 			virtual bool IsPlayable() const { return true; }
 			virtual void InitToDefault() {}
 			virtual void Delete() {}
-			virtual bool Load( AK::IXmlTextReader* in_pReader ) { return false; }
-			virtual bool Save( AK::IXmlTextWriter* in_pWriter ) { return false; }
+			virtual bool Load( IXmlTextReader* in_pReader ) { return false; }
+			virtual bool Save( IXmlTextWriter* in_pWriter ) { return false; }
 			virtual bool CopyInto( IAudioPlugin* io_pWObject ) const { return true; }
 			virtual void NotifyCurrentPlatformChanged( const GUID & in_guidCurrentPlatform ) {}
 			virtual void NotifyPropertyChanged( const GUID & in_guidPlatform, LPCWSTR in_pszPropertyName ) {}
@@ -650,11 +641,8 @@ namespace AK
 			virtual IPluginMediaConverter* GetPluginMediaConverterInterface() { return NULL; }
 			virtual AK::Wwise::LicenseStatus GetLicenseStatus(const GUID &, AK::Wwise::Severity&, LPWSTR, unsigned int in_uiBufferSize){ return AK::Wwise::LicenseStatus_Valid; }
 			virtual bool GetSourceDuration( double& out_dblMinDuration, double& out_dblMaxDuration ) const { out_dblMinDuration = 0.f; out_dblMaxDuration = FLT_MAX; return false; }
-			virtual HINSTANCE GetResourceHandle() const { return NULL; }
-			virtual bool GetDialog(eDialog in_eDialog, UINT& out_uiDialogID, PopulateTableItem*& out_pTable) const { return false; }
 		};
 
-	#ifdef AK_WIN
 		typedef AKRESULT(CALLBACK* RegisterWwisePluginFn)(AK::PluginRegistration *in_pList);
 		inline AKRESULT RegisterWwisePlugin()
 		{
@@ -668,13 +656,12 @@ namespace AK
 			if (hLib == NULL)
 				return AK_Fail;
 
-			RegisterWwisePluginFn pReg = (RegisterWwisePluginFn)::GetProcAddress(hLib, "RegisterWwisePlugin20192");
+			RegisterWwisePluginFn pReg = (RegisterWwisePluginFn)::GetProcAddress(hLib, "RegisterWwisePlugin");
 			if (pReg == NULL)
 				return AK_Fail;
 
 			return pReg(g_pAKPluginList);
 		}
-	#endif
 
 		/// Struct to be used with the function GetSinkPluginDevices to return devices.
 #define AK_MAX_OUTPUTDEVICEDESCRIPTOR 256
@@ -690,8 +677,6 @@ namespace AK
 
 /// Private message sent to Wwise window to open a topic in the help file
 /// the WPARAM defines the help topic ID
-#ifndef WM_AK_PRIVATE_SHOW_HELP_TOPIC
 #define WM_AK_PRIVATE_SHOW_HELP_TOPIC	0x4981
-#endif
 
 #endif // _AK_WWISE_AUDIOPLUGIN_H

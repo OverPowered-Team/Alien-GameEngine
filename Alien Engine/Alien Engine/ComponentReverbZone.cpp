@@ -1,29 +1,31 @@
 #include "Application.h"
-#include "ComponentReverbZone.h"
+#include "ComponentAudioEmitter.h"
 #include "ComponentTransform.h"
+#include "ComponentReverbZone.h"
 #include "ModuleAudio.h"
 
-ReverbZone::ReverbZone(GameObject * parent) : Component(parent)
+#define MAX(a,b) ((a)>(b)) ? (a) : (b)
+
+ComponentReverbZone::ComponentReverbZone(GameObject * parent) : Component(parent)
 {
 	type = ComponentType::A_REVERB;
 }
 
-ReverbZone::~ReverbZone()
+ComponentReverbZone::~ComponentReverbZone()
 {
 
 }
 
-void ReverbZone::Update(float dt)
+void ComponentReverbZone::Update()
 {
-	/*sphere.pos = ((ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
-	
+	/*sphere.pos = game_object_attached->GetComponentTransform()->position;
 	AABB box = sphere.MinimalEnclosingAABB();
 	OBB boundingBox(box);
-	//box.Transform(((ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM))->matr);
+	box.Transform(parent->GetComponentTransform()->GetGlobalMatrix());
 
 	DebugDrawSphere();
 	for (int i = 0; i < App->scene_intro->root->children.size(); ++i) {
-		AudioEmitter* audio_emitter = App->scene_intro->root->children[i]->GetComponentAudioEmitter();
+		ComponentAudioEmitter* audio_emitter = App->scene_intro->root->children[i]->GetComponentAudioEmitter();
 
 		if (audio_emitter != nullptr && App->scene_intro->root->children.size() >= 0)
 		{
@@ -37,16 +39,15 @@ void ReverbZone::Update(float dt)
 			}
 		}
 	}*/
-
 }
 
-void ReverbZone::SetRadius(float rad) 
+void ComponentReverbZone::SetRadius(float rad) 
 {
-	radius = rad;
-	sphere.r = rad;
+	/*radius = rad;
+	sphere.r = rad;*/
 }
 
-void ReverbZone::DebugDrawSphere()
+void ComponentReverbZone::DebugDrawSphere()
 {
 	glLineWidth(3.0f);
 	glColor3f(2.0f, 2.0f, 2.0f);
@@ -71,13 +72,19 @@ void ReverbZone::DebugDrawSphere()
 	glLineWidth(1.0f);
 }
 
-void ReverbZone::SaveComponent(JSONArraypack* to_save)
+void ComponentReverbZone::SaveReverbZone(JSON_Array * componentsObj) const
 {
-	to_save->SetNumber("Type", (int)type);
-	to_save->SetNumber("Radius", radius);
+	/*JSON_Value* component = json_value_init_object();
+	JSON_Object* componentObj = json_value_get_object(component);
+	json_object_set_number(componentObj, "Type:", this->type);
+	json_object_set_number(componentObj, "Radius:", this->radius);
+
+	json_array_append_value(componentsObj, component);*/
 }
 
-void ReverbZone::LoadComponent(JSONArraypack* to_load)
+void ComponentReverbZone::LoadReverbZone(JSON_Object * obj, GameObject * go)
 {
-	radius = to_load->GetNumber("Radius");
+	/*App->scene_intro->gameobject_scene->reverb_zone == nullptr;
+	App->scene_intro->GOPath->reverb_zone == nullptr;
+	go->reverb_zone->radius = json_object_get_number(obj, "Radius:");*/
 }

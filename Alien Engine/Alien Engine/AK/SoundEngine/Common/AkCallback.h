@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkCallback.h
@@ -34,8 +34,8 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_CALLBACK_H_
 #define _AK_CALLBACK_H_
 
-#include "../SoundEngine/Common/AkCommonDefs.h"
-#include "../SoundEngine/Common/AkMidiTypes.h"
+#include "AkCommonDefs.h"
+#include "AkMidiTypes.h"
 
 namespace AK
 {
@@ -98,7 +98,7 @@ struct AkEventCallbackInfo : public AkCallbackInfo
 	AkUniqueID		eventID;		///< Unique ID of Event, passed to PostEvent()
 };
 
-/// Callback information structure corresponding to \ref AkCallbackType::AK_MIDIEvent
+/// Callback information structure corresponding to \ref AK_MidiEvent
 /// \sa 
 /// - AK::SoundEngine::PostEvent()
 /// - \ref soundengine_events
@@ -166,7 +166,7 @@ struct AkSpeakerVolumeMatrixCallbackInfo : public AkEventCallbackInfo
 	AkChannelConfig inputConfig;				///< Channel configuration of the voice/bus.
 	AkChannelConfig outputConfig;				///< Channel configuration of the output bus.
 	AkReal32 * pfBaseVolume;					///< Base volume, common to all channels.
-	AkReal32 * pfEmitterListenerVolume;			///< Emitter-listener pair-specific gain. When there are multiple emitter-listener pairs, this volume is set to that of the loudest pair, and the relative gain of other pairs is applied directly on the channel volume matrix pVolumes.
+	AkReal32 * pfEmitterListenerVolume;			///< Emitter-listener pair-specific gain. When there are multiple emitter-listener pairs, this volume equals 1, and pair gains are applied directly on the channel volume matrix pVolumes.
 	AK::IAkMixerInputContext * pContext;		///< Context of the current voice/bus about to be mixed into the output bus with specified base volume and volume matrix.
 	AK::IAkMixerPluginContext * pMixerContext;	///< Output mixing bus context. Use it to access a few useful panning and mixing services, as well as the ID of the output bus. NULL if pContext is the master audio bus.
 };
@@ -216,17 +216,6 @@ struct AkMusicSyncCallbackInfo : public AkCallbackInfo
 	AkSegmentInfo segmentInfo;		///< Segment information corresponding to the segment triggering this callback.
 	AkCallbackType musicSyncType;	///< Would be either \ref AK_MusicSyncEntry, \ref AK_MusicSyncBeat, \ref AK_MusicSyncBar, \ref AK_MusicSyncExit, \ref AK_MusicSyncGrid, \ref AK_MusicSyncPoint or \ref AK_MusicSyncUserCue.
 	char *	 pszUserCueName;		///< Cue name (UTF-8 string). Set for notifications AK_MusicSyncUserCue. NULL if cue has no name.
-};
-
-/// Resources data summary structure containing general information about the system
-struct AkResourceMonitorDataSummary
-{
-	AkReal32	totalCPU;		///< Pourcentage of the cpu time used for processing audio. Please note that the numbers may add up when using multiple threads.
-	AkReal32	pluginCPU;		///< Pourcentage of the cpu time used by plugin processing. Please note that the numbers may add up when using multiple threads.
-	AkUInt32	physicalVoices;	///< Number of active physical voices
-	AkUInt32	virtualVoices;	///< Number of active virtual voices
-	AkUInt32	totalVoices;	///< Number of active physical and virtual voices
-	AkUInt32	nbActiveEvents;	///< Number of events triggered at a certain time
 };
 
 /// Function called on completion of an event, or when a marker is reached.
@@ -285,6 +274,9 @@ AK_CALLBACK( void, AkBusMeteringCallbackFunc )(
 /// - AK_InvalidFile: File specified could not be opened.
 /// - AK_InvalidParameter: Invalid parameter.
 /// - AK_Fail: Load or unload failed for any other reason. (Most likely small allocation failure)
+/// \param in_memPoolId ID of the memory pool in which the bank was explicitly loaded/unloaded. 
+/// AK_DEFAULT_POOL_ID is returned whenever this callback is issued from an implicit bank load (PrepareEvent(), PrepareGameSyncs()), 
+/// the bank memory was managed internally, or an error occurred.
 /// \param in_pCookie Optional cookie that was passed to the bank request.
 /// \remarks This callback is executed from the bank thread. The processing time in the callback function should be minimal. Having too much processing time could slow down the bank loading process.
 /// \sa 
@@ -297,6 +289,7 @@ AK_CALLBACK( void, AkBankCallbackFunc )(
 	AkUInt32		in_bankID,
 	const void *	in_pInMemoryBankPtr,
 	AKRESULT		in_eLoadResult,
+	AkMemPoolId		in_memPoolId,
 	void *			in_pCookie
 	);
 
@@ -316,13 +309,10 @@ enum AkGlobalCallbackLocation
 
 	AkGlobalCallbackLocation_Term = (1 << 7),		///< Sound engine termination.
 
-	AkGlobalCallbackLocation_Monitor = (1 << 8),		/// Send monitor data
-	AkGlobalCallbackLocation_MonitorRecap = (1 << 9),	/// Send monitor data connection to recap.
-
-	AkGlobalCallbackLocation_Init = (1 << 10),		///< Sound engine initialization.
+	AkGlobalCallbackLocation_Monitor = (1 << 8), /// Send monitor data
 
 	// IMPORTANT: Keep in sync with number of locations.
-	AkGlobalCallbackLocation_Num = 11				///< Total number of global callback locations.
+	AkGlobalCallbackLocation_Num = 9				///< Total number of global callback locations.
 };
 
 /// Callback prototype used for global callback registration.
@@ -336,11 +326,6 @@ AK_CALLBACK( void, AkGlobalCallbackFunc )(
 	AK::IAkGlobalPluginContext * in_pContext,	///< Engine context.
 	AkGlobalCallbackLocation in_eLocation,		///< Location where this callback is fired.
 	void * in_pCookie							///< User cookie passed to AK::SoundEngine::RegisterGlobalCallback().
-	);
-
-
-AK_CALLBACK( void, AkResourceMonitorCallbackFunc )(
-	const AkResourceMonitorDataSummary * in_pdataSummary		///< Data summary passed to the function registered using AK::SoundEngine::RegisterResourceMonitorCallback().
 	);
 
 namespace AK

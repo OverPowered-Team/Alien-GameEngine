@@ -5,15 +5,15 @@ released in source code form as part of the SDK installer package.
 Commercial License Usage
 
 Licensees holding valid commercial licenses to the AUDIOKINETIC Wwise Technology
-may use this file in accordance with the end user license agreement provided
+may use this file in accordance with the end user license agreement provided 
 with the software or, alternatively, in accordance with the terms contained in a
 written agreement between you and Audiokinetic Inc.
 
 Apache License Usage
 
-Alternatively, this file may be used under the Apache License, Version 2.0 (the
-"Apache License"); you may not use this file except in compliance with the
-Apache License. You may obtain a copy of the Apache License at
+Alternatively, this file may be used under the Apache License, Version 2.0 (the 
+"Apache License"); you may not use this file except in compliance with the 
+Apache License. You may obtain a copy of the Apache License at 
 http://www.apache.org/licenses/LICENSE-2.0.
 
 Unless required by applicable law or agreed to in writing, software distributed
@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -119,7 +119,7 @@ namespace AK
 				m_eType = AkVariantType_guid;
 			}
 
-#ifdef GUID_DEFINED
+#ifdef _MFC_VER
 			inline AkVariantBase(const GUID& in_val)
 			{
 				m_data = new AkGuid();
@@ -226,7 +226,7 @@ namespace AK
 				m_eType = AkVariantType_string;
 				return *this;
 			}
-
+			
 #ifdef _MFC_VER
 			inline AkVariantBase& operator=(const VARIANT& in_var)
 			{
@@ -317,19 +317,19 @@ namespace AK
 
 			// Helpers ----------------------------------------------------------------------------
 
-			inline const std::wstring& GetWString() const
+			const std::wstring& GetWString() const
 			{
 				AKASSERT(m_eType == AkVariantType_wstring && "AkVariant: illegal typecast");
 				return *static_cast<const std::wstring*>(m_data);
 			}
 
-			inline const std::string& GetString() const
+			const std::string& GetString() const
 			{
 				AKASSERT(m_eType == AkVariantType_string && "AkVariant: illegal typecast");
 				return *static_cast<const std::string*>(m_data);
 			}
 
-			inline const AkGuid& GetGuid() const
+			const AkGuid& GetGuid() const
 			{
 				AKASSERT(m_eType == AkVariantType_guid && "AkVariant: illegal typecast");
 				return *static_cast<const AkGuid*>(m_data);
@@ -390,39 +390,6 @@ namespace AK
 				_SET_VALUE(m_boolean, in_val, AkVariantType_bool)
 			}
 
-			inline bool operator==(const AkVariantBase& rhs) const
-			{
-				if (m_eType != rhs.m_eType)
-					return false;
-
-				switch (m_eType)
-				{
-				case AkVariantType_uint8:  return m_uint8  == rhs.m_uint8;
-				case AkVariantType_uint16: return m_uint16 == rhs.m_uint16;
-				case AkVariantType_uint32: return m_uint32 == rhs.m_uint32;
-				case AkVariantType_uint64: return m_uint64 == rhs.m_uint64;
-
-				case AkVariantType_int8:  return m_int8 == rhs.m_int8;
-				case AkVariantType_int16: return m_int16 == rhs.m_int16;
-				case AkVariantType_int32: return m_int32 == rhs.m_int32;
-				case AkVariantType_int64: return m_int64 == rhs.m_int64;
-
-				case AkVariantType_real32: return m_real32 == rhs.m_real32;
-				case AkVariantType_real64: return m_real64 == rhs.m_real64;
-
-				case AkVariantType_bool: return m_boolean == rhs.m_boolean;
-
-				case AkVariantType_string: return GetString().compare(rhs.GetString()) == 0;
-				case AkVariantType_wstring: return GetWString().compare(rhs.GetWString()) == 0;
-
-				case AkVariantType_guid: return GetGuid() == rhs.GetGuid();
-				default:
-					AKASSERT(false && "Trying to convert an AkVariant that doesn't contain a basic type");
-				}
-				return false;
-			}
-
-
 			// Typecast ----------------------------------------------------------------------------
 
 			inline operator bool() const
@@ -456,7 +423,7 @@ namespace AK
 			{
 				return static_cast<T>(static_cast<int32_t>(*this));
 			}
-
+			
 			inline operator int32_t() const
 			{
 				switch (m_eType)
@@ -574,21 +541,16 @@ namespace AK
 				return (m_eType == AkVariantType_none);
 			}
 
-			inline bool IsBool() const
-			{
-				return (m_eType == AkVariantType_bool);
-			}
-
 		private:
 
-			static inline uint8_t CharToUInt(char c)
+			static inline uint8_t WCharToUInt(wchar_t wc)
 			{
-				if (c >= '0' && c <= '9')
-					return (uint8_t)(c - '0');
-				else if (c >= 'a' && c <= 'f')
-					return (uint8_t)(c - 'a') + 10;
-				else if (c >= 'A' && c <= 'F')
-					return (uint8_t)(c - 'A') + 10;
+				if (wc >= '0' && wc <= '9')
+					return (uint8_t)(wc - '0');
+				else if (wc >= 'a' && wc <= 'f')
+					return (uint8_t)(wc - 'a') + 10;
+				else if (wc >= 'A' && wc <= 'F')
+					return (uint8_t)(wc - 'A') + 10;
 				else
 					return (uint8_t)-1;
 			}
@@ -610,23 +572,16 @@ namespace AK
 				return guid;
 			}
 
-			static AkGuid AkGuidFromStr(const std::string& in_str)
+			static bool WStrToAkGuid(const std::wstring& in_wstr, AkGuid& out_guid)
 			{
-				AkGuid guid;
-				StrToAkGuid(in_str, guid);
-				return guid;
-			}
-
-			static bool StrToAkGuid(const std::string& in_str, AkGuid& out_guid)
-			{
-				const char* psz = in_str.c_str();
-				const size_t len = strlen(psz);
+				const wchar_t* psz = in_wstr.c_str();
+				const size_t len = wcslen(psz);
 
 				// GUID must have format: 01234567-ABCD-0123-abcd-01234567ABCD, with MANDATORY brackets around
 				if (len != k_iExampleGuidLen)
 					return false;
 
-				const bool brackets = psz[0] == '{' && psz[len - 1] == '}';
+				const bool brackets = psz[0] == L'{' && psz[len - 1] == L'}';
 				if (!brackets)
 					return false;
 
@@ -644,14 +599,14 @@ namespace AK
 				// Convert into uint32
 				for (int i = 0; i < 4; i++) // 01234567
 				{
-					uint8_t u1 = CharToUInt(*psz++);
-					uint8_t u2 = CharToUInt(*psz++);
+					uint8_t u1 = WCharToUInt(*psz++);
+					uint8_t u2 = WCharToUInt(*psz++);
 					if (u1 == (uint8_t)-1 || u2 == (uint8_t)-1)
 						return false;
 					pby[3 - i] = (u1 << 4) | u2; // store backward as little endian
 				}
 
-				if (*psz != '-')
+				if (*psz != L'-')
 					return false;
 
 				++psz; // -
@@ -660,14 +615,14 @@ namespace AK
 				// Convert into uint16
 				for (int i = 0; i < 2; i++) // ABCD
 				{
-					uint8_t u1 = CharToUInt(*psz++);
-					uint8_t u2 = CharToUInt(*psz++);
+					uint8_t u1 = WCharToUInt(*psz++);
+					uint8_t u2 = WCharToUInt(*psz++);
 					if (u1 == (uint8_t)-1 || u2 == (uint8_t)-1)
 						return false;
 					pby[1 - i] = (u1 << 4) | u2;
 				}
 
-				if (*psz != '-')
+				if (*psz != L'-')
 					return false;
 
 				++psz; // -
@@ -676,14 +631,14 @@ namespace AK
 				// Convert into uint16
 				for (int i = 0; i < 2; i++) // 0123
 				{
-					uint8_t u1 = CharToUInt(*psz++);
-					uint8_t u2 = CharToUInt(*psz++);
+					uint8_t u1 = WCharToUInt(*psz++);
+					uint8_t u2 = WCharToUInt(*psz++);
 					if (u1 == (uint8_t)-1 || u2 == (uint8_t)-1)
 						return false;
 					pby[1 - i] = (u1 << 4) | u2;
 				}
 
-				if (*psz != '-')
+				if (*psz != L'-')
 					return false;
 
 				++psz; // -
@@ -692,35 +647,29 @@ namespace AK
 				// Convert into uint8[2]
 				for (int i = 0; i < 2; i++) // abcd
 				{
-					uint8_t u1 = CharToUInt(*psz++);
-					uint8_t u2 = CharToUInt(*psz++);
+					uint8_t u1 = WCharToUInt(*psz++);
+					uint8_t u2 = WCharToUInt(*psz++);
 					if (u1 == (uint8_t)-1 || u2 == (uint8_t)-1)
 						return false;
 					*pby++ = (u1 << 4) | u2;
 				}
 
-				if (*psz != '-')
+				if (*psz != L'-')
 					return false;
 
-				++psz; // -
+				++psz; // -	
 
 				// Convert into uint8[6]
 				for (int i = 0; i < 6; i++) // 01234567ABCD
 				{
-					uint8_t u1 = CharToUInt(*psz++);
-					uint8_t u2 = CharToUInt(*psz++);
+					uint8_t u1 = WCharToUInt(*psz++);
+					uint8_t u2 = WCharToUInt(*psz++);
 					if (u1 == (uint8_t)-1 || u2 == (uint8_t)-1)
 						return false;
 					*pby++ = (u1 << 4) | u2;
 				}
 
 				return true;
-			}
-
-			static bool WStrToAkGuid(const std::wstring& in_wstr, AkGuid& out_guid)
-			{
-				static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-				return StrToAkGuid(converter.to_bytes(in_wstr), out_guid);
 			}
 
 			static void AkGuidToStr(const AkGuid& in_guid, std::string& out_str)
@@ -875,70 +824,16 @@ namespace AK
 				return m_eType;
 			}
 
-			bool GetBoolean() const
-			{
-				AKASSERT(m_eType == AkVariantType_bool && "AkVariant: illegal typecast");
-				return m_boolean;
-			}
-
-			int8_t GetInt8() const
-			{
-				AKASSERT(m_eType == AkVariantType_int8 && "AkVariant: illegal typecast");
-				return m_int8;
-			}
-
-			int16_t GetInt16() const
-			{
-				AKASSERT(m_eType == AkVariantType_int16 && "AkVariant: illegal typecast");
-				return m_int16;
-			}
-
 			int32_t GetInt32() const
 			{
 				AKASSERT(m_eType == AkVariantType_int32 && "AkVariant: illegal typecast");
 				return m_int32;
 			}
 
-			int64_t GetInt64() const
+			bool GetBoolean() const
 			{
-				AKASSERT(m_eType == AkVariantType_int64 && "AkVariant: illegal typecast");
-				return m_int64;
-			}
-
-			uint8_t GetUInt8() const
-			{
-				AKASSERT(m_eType == AkVariantType_uint8 && "AkVariant: illegal typecast");
-				return m_uint8;
-			}
-
-			uint16_t GetUInt16() const
-			{
-				AKASSERT(m_eType == AkVariantType_uint16 && "AkVariant: illegal typecast");
-				return m_uint16;
-			}
-
-			uint32_t GetUInt32() const
-			{
-				AKASSERT(m_eType == AkVariantType_uint32 && "AkVariant: illegal typecast");
-				return m_uint32;
-			}
-
-			uint64_t GetUInt64() const
-			{
-				AKASSERT(m_eType == AkVariantType_uint64 && "AkVariant: illegal typecast");
-				return m_uint64;
-			}
-
-			float GetReal32() const
-			{
-				AKASSERT(m_eType == AkVariantType_real32 && "AkVariant: illegal typecast");
-				return m_real32;
-			}
-
-			double GetReal64() const
-			{
-				AKASSERT(m_eType == AkVariantType_real64 && "AkVariant: illegal typecast");
-				return m_real64;
+				AKASSERT(m_eType == AkVariantType_bool && "AkVariant: illegal typecast");
+				return m_boolean;
 			}
 
 			// Implicit interface supporting conversion to rapidjson. Does not require rapidjson dependencies
@@ -979,7 +874,7 @@ namespace AK
 
 				return true;
 			}
-
+			
 		protected:
 
 			int m_eType;

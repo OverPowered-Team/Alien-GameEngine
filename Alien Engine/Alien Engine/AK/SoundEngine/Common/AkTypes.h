@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkTypes.h
@@ -35,13 +35,11 @@ the specific language governing permissions and limitations under the License.
 
 // Platform-specific section.
 //----------------------------------------------------------------------------------------------------
-//#include "AK/AkPlatforms.h"
 #include "../../AkPlatforms.h"
 
 
 //----------------------------------------------------------------------------------------------------
 
-//#include "../../SoundEngine/Common/AkSoundEngineExport.h"
 #include "AkSoundEngineExport.h"
 
 #ifndef NULL
@@ -55,6 +53,21 @@ the specific language governing permissions and limitations under the License.
 #if defined(AK_CPU_X86_64) || defined(AK_CPU_ARM_64)
 #define AK_POINTER_64
 #endif // #if defined(AK_CPU_X86_64) || defined(AK_CPU_ARM_64)
+
+#ifdef AK_USE_STD_ATOMIC
+	// Apple, starting with iOS 10 and MacOS 10.12 is enforcing the type of objects on which we use Atomic Operations.
+	#include <stdatomic.h>
+
+	typedef _Atomic(AkInt32)	AkAtomic32;			///< Signed 32-bit integer - Atomic Declaration
+	typedef _Atomic(AkInt64)	AkAtomic64;			///< Signed 64-bit integer - Atomic Declaration
+	typedef _Atomic(AkUInt32)	AkAtomicU32;		///< Unsigned 32-bit integer - Atomic Declaration
+	typedef _Atomic(AkIntPtr)	AkAtomicPtr;		///< Signed platform sized integer - Atomic Declaration
+#else
+	typedef AkInt32				AkAtomic32;			///< Signed 32-bit integer - Atomic Declaration
+	typedef AkInt64				AkAtomic64;			///< Signed 64-bit integer - Atomic Declaration
+	typedef AkUInt32			AkAtomicU32;		///< Unsigned 32-bit integer - Atomic Declaration
+	typedef AkIntPtr			AkAtomicPtr;		///< Signed platform sized integer - Atomic Declaration
+#endif
 
 typedef AkUInt32		AkUniqueID;			 		///< Unique 32-bit ID
 typedef AkUInt32		AkStateID;			 		///< State ID
@@ -117,7 +130,7 @@ static const AkPriority					AK_DEFAULT_BANK_IO_PRIORITY			= AK_DEFAULT_PRIORITY;
 static const AkReal32					AK_DEFAULT_BANK_THROUGHPUT			= 1*1024*1024/1000.f;	///<  Default bank load throughput (1 Mb/ms)
 
 // Bank version
-static const AkUInt32					AK_SOUNDBANK_VERSION =				135;					///<  Version of the soundbank reader
+static const AkUInt32					AK_SOUNDBANK_VERSION =				128;					///<  Version of the soundbank reader
 
 /// Standard function call result.
 enum AKRESULT
@@ -128,18 +141,35 @@ enum AKRESULT
     AK_PartialSuccess			= 3,	///< The operation succeeded partially.
     AK_NotCompatible			= 4,	///< Incompatible formats
     AK_AlreadyConnected			= 5,	///< The stream is already connected to another node.
+    AK_NameNotSet				= 6,	///< Trying to open a file when its name was not set
     AK_InvalidFile				= 7,	///< An unexpected value causes the file to be invalid.
     AK_AudioFileHeaderTooLarge	= 8,	///< The file header is too large.
     AK_MaxReached				= 9,	///< The maximum was reached.
+    AK_InputsInUsed				= 10,	///< Inputs are currently used.
+    AK_OutputsInUsed			= 11,	///< Outputs are currently used.
+    AK_InvalidName				= 12,	///< The name is invalid.
+    AK_NameAlreadyInUse			= 13,	///< The name is already in use.
     AK_InvalidID				= 14,	///< The ID is invalid.
     AK_IDNotFound				= 15,	///< The ID was not found.
     AK_InvalidInstanceID		= 16,	///< The InstanceID is invalid.
     AK_NoMoreData				= 17,	///< No more data is available from the source.
+    AK_NoSourceAvailable		= 18,	///< There is no child (source) associated with the node.
+	AK_StateGroupAlreadyExists	= 19,	///< The StateGroup already exists.
 	AK_InvalidStateGroup		= 20,	///< The StateGroup is not a valid channel.
 	AK_ChildAlreadyHasAParent	= 21,	///< The child already has a parent.
 	AK_InvalidLanguage			= 22,	///< The language is invalid (applies to the Low-Level I/O).
 	AK_CannotAddItseflAsAChild	= 23,	///< It is not possible to add itself as its own child.
+	//AK_TransitionNotFound		= 24,	///< The transition is not in the list.
+	//AK_TransitionNotStartable	= 25,	///< Start allowed in the Running and Done states.
+	//AK_TransitionNotRemovable	= 26,	///< Must not be in the Computing state.
+	//AK_UsersListFull			= 27,	///< No one can be added any more, could be AK_MaxReached.
+	//AK_UserAlreadyInList		= 28,	///< This user is already there.
+	AK_UserNotInList			= 29,	///< This user is not there.
+	AK_NoTransitionPoint		= 30,	///< Not in use.
 	AK_InvalidParameter			= 31,	///< Something is not within bounds.
+	AK_ParameterAdjusted		= 32,	///< Something was not within bounds and was relocated to the nearest OK value.
+	AK_IsA3DSound				= 33,	///< The sound has 3D parameters.
+	AK_NotA3DSound				= 34,	///< The sound does not have 3D parameters.
 	AK_ElementAlreadyInList		= 35,	///< The item could not be added because it was already in the list.
 	AK_PathNotFound				= 36,	///< This path is not known.
 	AK_PathNoVertices			= 37,	///< Stuff in vertices before trying to start it
@@ -147,19 +177,33 @@ enum AKRESULT
 	AK_PathNotPaused			= 39,	///< Only a paused path can be resumed.
 	AK_PathNodeAlreadyInList	= 40,	///< This path is already there.
 	AK_PathNodeNotInList		= 41,	///< This path is not there.
+	AK_VoiceNotFound			= 42,	///< Unknown in our voices list
 	AK_DataNeeded				= 43,	///< The consumer needs more.
 	AK_NoDataNeeded				= 44,	///< The consumer does not need more.
 	AK_DataReady				= 45,	///< The provider has available data.
 	AK_NoDataReady				= 46,	///< The provider does not have available data.
+	AK_NoMoreSlotAvailable		= 47,	///< Not enough space to load bank.
+	AK_SlotNotFound				= 48,	///< Bank error.
+	AK_ProcessingOnly			= 49,	///< No need to fetch new data.
+	AK_MemoryLeak				= 50,	///< Debug mode only.
+	AK_CorruptedBlockList		= 51,	///< The memory manager's block list has been corrupted.
 	AK_InsufficientMemory		= 52,	///< Memory error.
 	AK_Cancelled				= 53,	///< The requested action was cancelled (not an error).
 	AK_UnknownBankID			= 54,	///< Trying to load a bank using an ID which is not defined.
+    AK_IsProcessing             = 55,   ///< Asynchronous pipeline component is processing.
 	AK_BankReadError			= 56,	///< Error while reading a bank.
 	AK_InvalidSwitchType		= 57,	///< Invalid switch type (used with the switch container)
+	AK_VoiceDone				= 58,	///< Internal use only.
+	AK_UnknownEnvironment		= 59,	///< This environment is not defined.
+	AK_EnvironmentInUse			= 60,	///< This environment is used by an object.
+	AK_UnknownObject			= 61,	///< This object is not defined.
+	AK_NoConversionNeeded		= 62,	///< Audio data already in target format, no conversion to perform.
     AK_FormatNotReady           = 63,   ///< Source format not known yet.
 	AK_WrongBankVersion			= 64,	///< The bank version is not compatible with the current bank reader.
+	AK_DataReadyNoProcess		= 65,	///< The provider has some data but does not process it (virtual voices).
     AK_FileNotFound             = 66,   ///< File not found.
-    AK_DeviceNotReady           = 67,   ///< Specified ID doesn't match a valid hardware device: either the device doesn't exist or is disabled.
+    AK_DeviceNotReady           = 67,   ///< IO device not ready (may be because the tray is open)
+    AK_CouldNotCreateSecBuffer	= 68,   ///< The direct sound secondary buffer creation failed.
 	AK_BankAlreadyLoaded		= 69,	///< The bank load failed because the bank is already loaded.
 	AK_RenderedFX				= 71,	///< The effect on the node is rendered.
 	AK_ProcessNeeded			= 72,	///< A routine needs to be executed on some CPU.
@@ -180,12 +224,6 @@ enum AKRESULT
 	AK_OpenSLError				= 87,	///< OpenSL returned an error.  Check error log for more details.
 	AK_PluginNotRegistered		= 88,	///< Plugin is not registered.  Make sure to implement a AK::PluginRegistration class for it and use AK_STATIC_LINK_PLUGIN in the game binary.
 	AK_DataAlignmentError		= 89,	///< A pointer to audio data was not aligned to the platform's required alignment (check AkTypes.h in the platform-specific folder)
-	AK_DeviceNotCompatible		= 90,	///< Incompatible Audio device.
-	AK_DuplicateUniqueID		= 91,	///< Two Wwise objects share the same ID.
-	AK_InitBankNotLoaded		= 92,	///< The Init bank was not loaded yet, the sound engine isn't completely ready yet.
-	AK_DeviceNotFound			= 93,	///< The specified device ID does not match with any of the output devices that the sound engine is currently using.
-	AK_PlayingIDNotFound		= 94,	///< Calling a function with a playing ID that is not known.
-	AK_InvalidFloatValue		= 95,	///< One parameter has a invalid float value such as NaN, INF or FLT_MAX.
 };
 
 /// Game sync group type
@@ -194,31 +232,6 @@ enum AkGroupType
 	// should stay set as Switch = 0 and State = 1
 	AkGroupType_Switch	= 0, ///< Type switch
 	AkGroupType_State	= 1  ///< Type state
-};
-
-/// Configured audio settings
-struct AkAudioSettings
-{
-	AkUInt32			uNumSamplesPerFrame;		///< Number of samples per audio frame (256, 512, 1024 or 2048).
-	AkUInt32			uNumSamplesPerSecond;		///< Number of samples per second.
-};
-
-enum AkAudioDeviceState
-{
-	AkDeviceState_Unknown = 0,         ///< The audio device state is unknown or invalid.
-	AkDeviceState_Active = 1 << 0,	   ///< The audio device is active That is, the audio adapter that connects to the endpoint device is present and enabled.
-	AkDeviceState_Disabled = 1 << 1,   ///< The audio device is disabled.
-	AkDeviceState_NotPresent = 1 << 2, ///< The audio device is not present because the audio adapter that connects to the endpoint device has been removed from the system.
-	AkDeviceState_Unplugged = 1 << 3,  ///< The audio device is unplugged.
-	AkDeviceState_All = AkDeviceState_Active | AkDeviceState_Disabled | AkDeviceState_NotPresent | AkDeviceState_Unplugged, ///< Includes audio devices in all states.
-};
-
-struct AkDeviceDescription
-{
-	AkUInt32 idDevice;											///< Device ID for Wwise. This is the same as what is returned from AK::GetDeviceID and AK::GetDeviceIDFromName. Use it to specify the main device in AkPlatformInitSettings.idAudioDevice or in AK::SoundEngine::AddSecondaryOutput. 
-	AkOSChar deviceName[AK_MAX_PATH];							///< The user-friendly name for the device.
-	AkAudioDeviceState deviceStateMask = AkDeviceState_Unknown;	///< Bitmask used to filter the device based on their state.
-	bool isDefaultDevice = false;								///< Identify default device. Always false when not supported.
 };
 
 /// This structure allows the game to provide audio files to fill the external sources. See \ref AK::SoundEngine::PostEvent
@@ -291,7 +304,6 @@ enum AkConnectionType
 	ConnectionType_Direct = 0x0,			///< Direct (main, dry) connection.
 	ConnectionType_GameDefSend = 0x1,		///< Connection by a game-defined send.
 	ConnectionType_UserDefSend = 0x2,		///< Connection by a user-defined send.
-	ConnectionType_ReflectionsSend = 0x3,	///< Connection by a early reflections send.
 };
 
 /// 3D vector.
@@ -476,19 +488,19 @@ class AkEmitterListenerPair
 {
 public:
 	/// Constructor.
-	AkEmitterListenerPair()
-		: fDistance(0.f)
-		, fEmitterAngle(0.f)
-		, fListenerAngle(0.f)	
-		, fDryMixGain(1.f)
-		, fGameDefAuxMixGain(1.f)
-		, fUserDefAuxMixGain(1.f)
+	AkEmitterListenerPair() 
+		: fDistance( 0.f )
+		, fEmitterAngle( 0.f )
+		, fListenerAngle( 0.f )
+		, fDryMixGain( 1.f )
+		, fGameDefAuxMixGain( 1.f )
+		, fUserDefAuxMixGain( 1.f )
 		, fOcclusion(0.f)
 		, fObstruction(0.f)
 		, fSpread(0.f)
 		, fFocus(0.f)
-		, uEmitterChannelMask(0xFFFFFFFF)
-		, m_uListenerID(0)
+		, uEmitterChannelMask( 0xFFFFFFFF )
+		, m_uListenerID( 0 )
 	{
 	}
 	/// Destructor.
@@ -509,19 +521,17 @@ public:
 	inline AkReal32 Occlusion() const { return fOcclusion; }
 
 	/// Get the obstruction factor for this emitter-listener pair
-	inline AkReal32 Obstruction() const { return fObstruction; }	
+	inline AkReal32 Obstruction() const { return fObstruction; }
 
 	/// Get the emitter-listener-pair-specific gain (due to distance and cone attenuation), linear [0,1], for a given connection type.
-	inline AkReal32 GetGainForConnectionType(AkConnectionType in_eType) const
+	inline AkReal32 GetGainForConnectionType(AkConnectionType in_eType) const 
 	{
 		if (in_eType == ConnectionType_Direct)
 			return fDryMixGain;
 		else if (in_eType == ConnectionType_GameDefSend)
 			return fGameDefAuxMixGain;
-		else if (in_eType == ConnectionType_UserDefSend)
-			return fUserDefAuxMixGain;
 		else
-			return 1.0f;
+			return fUserDefAuxMixGain;
 	}
 
 	/// Get listener ID associated with the emitter-listener pair.
@@ -530,7 +540,7 @@ public:
 	AkTransform emitter;				/// Emitter position.
 	AkReal32 fDistance;					/// Distance between emitter and listener.
 	AkReal32 fEmitterAngle;				/// Angle between position vector and emitter orientation.
-	AkReal32 fListenerAngle;			/// Angle between position vector and listener orientation.	
+	AkReal32 fListenerAngle;			/// Angle between position vector and listener orientation.
 	AkReal32 fDryMixGain;				/// Emitter-listener-pair-specific gain (due to distance and cone attenuation) for direct connections.
 	AkReal32 fGameDefAuxMixGain;		/// Emitter-listener-pair-specific gain (due to distance and cone attenuation) for game-defined send connections.
 	AkReal32 fUserDefAuxMixGain;		/// Emitter-listener-pair-specific gain (due to distance and cone attenuation) for user-defined send connections.
@@ -583,9 +593,9 @@ enum AkCurveInterpolation
 /// Auxiliary bus sends information per game object per given auxiliary bus.
 struct AkAuxSendValue
 {
-	AkGameObjectID listenerID;	///< Game object ID of the listener associated with this send. Use AK_INVALID_GAME_OBJECT as a wildcard to set the auxiliary send to all connected listeners (see AK::SoundEngine::SetListeners).
+	AkGameObjectID listenerID;	///< Game object ID of the listener associated with this send.
 	AkAuxBusID auxBusID;		///< Auxiliary bus ID.
-	AkReal32 fControlValue;		///< Represents the attenuation or amplification factor applied to the volume of the sound going through the auxiliary bus. A value in the range [0.0f:1.0f[ will attenuate the sound, the sound being completely attenuated at 0.0f and unchanged at 1.0f. A value greater than 1.0f will amplify the sound by a factor equal to this value.
+	AkReal32 fControlValue;		///< Value in the range [0.0f:1.0f], send level to auxiliary bus.	
 };
 
 /// Volume ramp specified by end points "previous" and "next".
@@ -605,6 +615,53 @@ inline AkRamp operator*(const AkRamp& in_rLhs, const AkRamp& in_rRhs)
 	return result;
 }
 
+#ifndef AK_MEMPOOLATTRIBUTES
+
+	/// Memory pool attributes.
+	/// Block allocation type determines the method used to allocate
+	/// a memory pool. Block management type determines the
+	/// method used to manage memory blocks. Note that
+	/// the list of values in this enum is platform-dependent.
+	/// \sa
+	/// - AkMemoryMgr::CreatePool()
+	/// - AK::Comm::DEFAULT_MEMORY_POOL_ATTRIBUTES
+	enum AkMemPoolAttributes
+	{
+		AkNoAlloc		= 0,	///< CreatePool will not allocate memory.  You need to allocate the buffer yourself.
+		AkMalloc		= 1,	///< CreatePool will use AK::AllocHook() to allocate the memory block.
+		AkAllocMask		= AkNoAlloc | AkMalloc,						///< Block allocation type mask.
+
+		AkFixedSizeBlocksMode	= 1<<3,			///< Block management type: Fixed-size blocks. Get blocks through GetBlock/ReleaseBlock API.  If not specified, use AkAlloc/AkFree.
+		AkBlockMgmtMask	= AkFixedSizeBlocksMode	///< Block management type mask.
+	};
+	#define AK_MEMPOOLATTRIBUTES
+
+#endif
+
+namespace AK
+{   
+	/// External allocation hook for the Memory Manager. Called by the Audiokinetic 
+	/// implementation of the Memory Manager when creating a pool of type AkMalloc.
+	/// \aknote This needs to be defined by the client. \endaknote
+	/// \return A pointer to the start of the allocated memory (NULL if the system is out of memory)
+	/// \sa
+	/// - \ref memorymanager
+	/// - AK::FreeHook()
+	AK_EXTERNFUNC( void *, AllocHook )( 
+		size_t in_size			///< Number of bytes to allocate
+		);
+
+	/// External deallocation hook for the Memory Manager. Called by the Audiokinetic 
+	/// implementation of the Memory Manager when destroying a pool of type AkMalloc.
+	/// \aknote This needs to be defined by the client. \endaknote
+	/// \sa 
+	/// - \ref memorymanager
+	/// - AK::AllocHook()
+	AK_EXTERNFUNC( void, FreeHook )( 
+		void * in_pMemAddress	///< Pointer to the start of memory allocated with AllocHook
+		);
+}
+
 // ---------------------------------------------------------------
 // Languages
 // ---------------------------------------------------------------
@@ -618,10 +675,6 @@ inline AkRamp operator*(const AkRamp& in_rLhs, const AkRamp& in_rRhs)
 // files. Audio sources persist them to "remember" their format.
 // DO NOT CHANGE THEM without talking to someone in charge of persistence!
 
-// Company ID for plugin development.
-#define AKCOMPANYID_PLUGINDEV_MIN		(64)
-#define AKCOMPANYID_PLUGINDEV_MAX		(255)
-
 // Vendor ID.
 #define AKCOMPANYID_AUDIOKINETIC        (0)     ///< Audiokinetic inc.
 #define AKCOMPANYID_AUDIOKINETIC_EXTERNAL (1)   ///< Audiokinetic inc.
@@ -629,6 +682,7 @@ inline AkRamp operator*(const AkRamp& in_rLhs, const AkRamp& in_rRhs)
 #define AKCOMPANYID_WAVEARTS			(257)	///< WaveArts
 #define AKCOMPANYID_PHONETICARTS		(258)	///< Phonetic Arts
 #define AKCOMPANYID_IZOTOPE				(259)	///< iZotope
+#define AKCOMPANYID_GENAUDIO			(260)	///< GenAudio
 #define AKCOMPANYID_CRANKCASEAUDIO		(261)	///< Crankcase Audio
 #define AKCOMPANYID_IOSONO				(262)	///< IOSONO
 #define AKCOMPANYID_AUROTECHNOLOGIES	(263)	///< Auro Technologies
@@ -664,50 +718,22 @@ inline AkRamp operator*(const AkRamp& in_rLhs, const AkRamp& in_rRhs)
 #define AKCODECID_PROFILERCAPTURE		(14)	///< Profiler capture file (.prof) as written through AK::SoundEngine::StartProfilerCapture
 #define AKCODECID_ANALYSISFILE			(15)	///< Analysis file
 #define AKCODECID_MIDI					(16)	///< MIDI file
-#define AKCODECID_OPUSNX                (17)    ///< OpusNX encoding
+#define AKCODECID_OPUS                  (17)    ///< Opus encoding
 #define AKCODECID_CAF					(18)	///< CAF file
-#define AKCODECID_AKOPUS                (19)    ///< Opus encoding
-
-#define AKPLUGINID_METER				(129)  ///< Meter Plugin
-#define AKPLUGINID_RECORDER				(132)  ///< Recorder Plugin
-
-#define AKEXTENSIONID_SPATIALAUDIO		(800)	///< Spatial Audio
-#define AKEXTENSIONID_INTERACTIVEMUSIC	(801)	///< Interactive Music
-#define AKEXTENSIONID_EVENTMGRTHREAD	(900)	///< Profiling: Event Manager
 
 //The following are internally defined
 #define	AK_WAVE_FORMAT_VAG				0xFFFB
 #define	AK_WAVE_FORMAT_AT9				0xFFFC
 #define	AK_WAVE_FORMAT_VORBIS  			0xFFFF
 #define	AK_WAVE_FORMAT_AAC				0xAAC0
-#define AK_WAVE_FORMAT_OPUSNX           0x3039
-#define AK_WAVE_FORMAT_OPUS             0x3040
+#define AK_WAVE_FORMAT_OPUS             0x3039
 #define WAVE_FORMAT_XMA2				0x166
 
-//-----------------------------------------------------------------------------
-// Codecs
-//-----------------------------------------------------------------------------
-
 class IAkSoftwareCodec;
-class IAkFileCodec;
-class IAkGrainCodec;
 /// Registered file source creation function prototype.
 AK_CALLBACK( IAkSoftwareCodec*, AkCreateFileSourceCallback )( void* in_pCtx );
 /// Registered bank source node creation function prototype.
 AK_CALLBACK( IAkSoftwareCodec*, AkCreateBankSourceCallback )( void* in_pCtx );
-/// Registered FileCodec creation function prototype.
-AK_CALLBACK( IAkFileCodec*, AkCreateFileCodecCallback )();
-/// Registered IAkGrainCodec creation function prototype.
-AK_CALLBACK( IAkGrainCodec*, AkCreateGrainCodecCallback )();
-
-struct AkCodecDescriptor
-{
-	AkCreateFileSourceCallback pFileSrcCreateFunc;       // File VPL source.
-	AkCreateBankSourceCallback pBankSrcCreateFunc;       // Bank VPL source.
-	AkCreateFileCodecCallback pFileCodecCreateFunc;  // FileCodec utility.
-	AkCreateGrainCodecCallback pGrainCodecCreateFunc;  // GrainCodec utility.
-};
-
 
 //-----------------------------------------------------------------------------
 // Positioning
@@ -732,21 +758,19 @@ namespace AK
 	}
 }
 
-#define AK_PANNER_NUM_STORAGE_BITS 3
-/// Speaker panning type: type of panning logic when object is not 3D spatialized (i.e. when Ak3DSpatializationMode is AK_SpatializationMode_None).
-enum AkSpeakerPanningType
+/// 3D Positioning type.
+#define PANNER_NUM_STORAGE_BITS 2
+enum AkPannerType
 {
-	AK_DirectSpeakerAssignment	= 0,	///< No panning: route to matching channels between input and output.
-	AK_BalanceFadeHeight		= 1		///< Balance-Fade-Height: Traditional "box" or "car"-like panner.
+	Ak2D		= 0,	///< 2D Panner
+	Ak3D		= 1		///< 3D Panner
 };
 
-#define AK_POSSOURCE_NUM_STORAGE_BITS 3
-/// 3D position type: defines what acts as the emitter position for computing spatialization against the listener. Used when Ak3DSpatializationMode is AK_SpatializationMode_PositionOnly or AK_SpatializationMode_PositionAndOrientation.
-enum Ak3DPositionType
+#define POSSOURCE_NUM_STORAGE_BITS 2
+enum AkPositionSourceType
 {
-	AK_3DPositionType_Emitter = 0,					///< 3D spatialization is computed directly from the emitter game object position.
-	AK_3DPositionType_EmitterWithAutomation = 1,	///< 3D spatialization is computed from the emitter game object position, translated by user-defined automation.
-	AK_3DPositionType_ListenerWithAutomation = 2	///< 3D spatialization is computed from the listener game object position, translated by user-defined automation.
+	AkUserDef			= 0,	///< 3D user-defined
+	AkGameDef			= 1		///< 3D game-defined
 };
 
 /// Headphone / speakers panning rules
@@ -756,7 +780,6 @@ enum AkPanningRule
 	AkPanningRule_Headphones 	= 1		///< Left and right positioned 180 degrees apart.
 };
 
-#define AK_SPAT_NUM_STORAGE_BITS 3
 /// 3D spatialization mode.
 enum Ak3DSpatializationMode
 {
@@ -783,8 +806,7 @@ enum AkMeteringFlags
 	AK_EnableBusMeter_TruePeak	= 1 << 1,		///< Enable computation of true peak metering (most CPU and memory intensive).
 	AK_EnableBusMeter_RMS		= 1 << 2,		///< Enable computation of RMS metering.
 	// 1 << 3 is reserved.
-	AK_EnableBusMeter_KPower	= 1 << 4,		///< Enable computation of K-weighted power metering (used as a basis for computing loudness, as defined by ITU-R BS.1770).
-	AK_EnableBusMeter_3DMeter = 1 << 5
+	AK_EnableBusMeter_KPower	= 1 << 4		///< Enable computation of K-weighted power metering (used as a basis for computing loudness, as defined by ITU-R BS.1770).
 };
 
 /// Plug-in type.
@@ -800,7 +822,6 @@ enum AkPluginType
 	//AkPluginTypeMotionSource = 5,	///< Motion Device source plug-in: feeds movement data to device busses. Deprecated by Motion refactor.
 	AkPluginTypeMixer = 6,	///< Mixer plug-in: mix voices at the bus level.
 	AkPluginTypeSink = 7,	///< Sink plug-in: implement custom sound engine end point.
-	AkPluginTypeGlobalExtension = 8,	///< Global Extension plug-in: (e.g. Spatial Audio, Interactive Music)
 	AkPluginTypeMask = 0xf 	///< Plug-in type mask is 4 bits.
 };
 
@@ -891,10 +912,8 @@ namespace AkFileParser
 #define AK_UNALIGNED						///< Refers to the __unaligned compilation flag available on some platforms. Note that so far, on the tested platform this should always be placed before the pointer symbol *.
 #endif
 
-#if __cplusplus <= 199711L
+#ifndef AK_FINAL
 #define AK_FINAL
-#else
-#define AK_FINAL		final					///< Refers to the C++11 final keyword
 #endif
 
 #ifndef AK_ASYNC_OPEN_DEFAULT

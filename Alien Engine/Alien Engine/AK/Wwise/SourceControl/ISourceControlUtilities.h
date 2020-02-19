@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -54,7 +54,7 @@ namespace AK
 			/// \return A pointer to an AK::Wwise::ISourceControlOperationProgress interface.
 			virtual ISourceControlOperationProgress* GetProgressDialog() = 0;
 
-			/// This function does the same thing as the standard \c MessageBox function, except that this one will
+			/// This function does the same thing as the standard ::MessageBox function, except that this one will
 			/// be displayed with the Wwise UI look and feel.
 			/// \warning This function is not thread-safe.
 			/// \return The window results of the dialog
@@ -95,6 +95,12 @@ namespace AK
 				ISourceControlDialogBase* in_pDialog	///< A pointer to a dialog class that implements 
 														///< AK::Wwise::ISourceControlDialogBase functions.
 				) = 0;
+
+			/// Get the path to the registry for the current project. This path is to be used with
+			/// the HKEY_CURRENT_USER registry key.
+			/// \warning This function is not thread-safe.
+			/// \return A string containing the registry path.
+			virtual LPCWSTR GetRegistryPath() = 0;
 
 			/// Set DWORD value in user preferences.
 			/// \warning This function is not thread-safe.

@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -31,7 +31,6 @@ the specific language governing permissions and limitations under the License.
 #ifndef _IAK_STREAM_MGR_H_
 #define _IAK_STREAM_MGR_H_
 
-//#include "AK/SoundEngine/Common/AkMemoryMgr.h"
 #include "AkMemoryMgr.h"
 
 //-----------------------------------------------------------------------------
@@ -216,9 +215,7 @@ namespace AK
     //@{
     
     /// Profiling interface of streams.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
     class IAkStreamProfile
     {
     protected:
@@ -254,9 +251,7 @@ namespace AK
 
 
     /// Profiling interface of high-level I/O devices.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
     class IAkDeviceProfile
     {
     protected:
@@ -312,9 +307,7 @@ namespace AK
     };
 
     /// Profiling interface of the Stream Manager.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
     class IAkStreamMgrProfile
     {
     protected:
@@ -355,9 +348,7 @@ namespace AK
 
     /// Interface of standard streams. Used as a handle to a standard stream. Has methods for 
     /// stream control. Obtained through the Stream Manager's AK::IAkStreamMgr::CreateStd() method.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
     class IAkStdStream
     {
     protected:
@@ -479,13 +470,6 @@ namespace AK
 		/// - \ref streamingdevicemanager
         virtual AkStmStatus GetStatus() = 0;  
 
-        /// Block and wait for a pending read to finish, and return the current status of the stream.
-        /// This will return immediately if the status is not pending.
-        /// \return The stream status.
-		/// \sa
-		/// - \ref streamingdevicemanager
-        virtual AkStmStatus WaitForPendingOperation() = 0;
-
         //@}
     };
 
@@ -493,9 +477,7 @@ namespace AK
     /// Interface of automatic streams. It is used as a handle to a stream, 
     /// I/O operations are triggered from here. 
     /// Obtained through the Stream Manager's AK::IAkStreamMgr::CreateAuto() method.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 	/// \sa
 	/// - \ref streamingdevicemanager
     class IAkAutoStream 
@@ -546,18 +528,6 @@ namespace AK
 		virtual AKRESULT  SetMinimalBufferSize(
 			AkUInt32		in_uMinBufferSize	///< Minimum buffer size that can be handed out to client.
 			) = 0;
-
-		/// Set the minimum size to buffer ahead in an automated stream.
-		///
-		/// This function was made available to allow systems that cannot only rely on AkAutoStmHeuristics::fThroughput to predict what will be the best target size of an automatic stream.
-		/// The system will predict the minimum size to buffer and will consider this value as the minimal size to be the target.
-		/// \sa
-		/// - AkAutoStmBufSettings
-		/// - \ref streamingdevicemanager
-		/// - \ref AkAutoStmHeuristics
-		virtual AKRESULT  SetMinTargetBufferSize(
-			AkUInt32		in_uMinTargetBufferSize	///< Minimum size to buffer ahead in an automated stream. (in bytes)
-		) = 0;
 
         /// Give the stream a name (appears in the Wwise profiler).
 		/// \sa
@@ -675,9 +645,7 @@ namespace AK
 
 
     /// Interface of the Stream Manager.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
     class IAkStreamMgr
     {
     protected:
@@ -772,18 +740,6 @@ namespace AK
 			bool						in_bSyncOpen		///< If true, force the Stream Manager to open file synchronously. Otherwise, it is left to its discretion.
             ) = 0;
 
-		/// Create an automatic stream (in-memory buffer overload).
-		/// \return AK_Success if the stream was created successfully
-		/// \remarks The stream needs to be started explicitly with IAkAutoStream::Start().
-		/// \sa
-		/// - \ref streamingdevicemanager
-		virtual AKRESULT CreateAuto(
-			void *                      in_pBuffer,         ///< Pointer to the memory area containing stream data
-			AkUInt64                    in_uSize,           ///< Size of the memory area containing stream data
-			const AkAutoStmHeuristics & in_heuristics,      ///< Streaming heuristics
-			IAkAutoStream *&            out_pStream         ///< Returned interface to an automatic stream. If the function does not return AK_Success, this pointer is left untouched.
-			) = 0;
-
 		/// Start streaming the first "in_pFSFlags->uNumBytesPrefetch" bytes of the file with id "in_fileID" into cache.  The stream will be scheduled only after
 		/// all regular streams (not file caching streams) are serviced.  The file will stay cached until either the UnpinFileInCache is called,
 		/// or the limit as set by uMaxCachePinnedBytes is reached and another higher priority file (in_uPriority) needs the space.  
@@ -837,12 +793,6 @@ namespace AK
 			AkReal32& out_fPercentBuffered,					///< Percentage of buffer full (out of 100)
 			bool& out_bCacheFull							///< Set to true if the rest of the buffer can not fit into the cache-pinned memory limit.
 			) = 0;
-
-		/// Make a memory stream point to a new area in memory, otherwise keeping the exact same state.
-		virtual AKRESULT RelocateMemoryStream(
-			IAkAutoStream * in_pStream,                     ///< The stream to relocate. Must be a stream created with the memory overload of CreateAutoStm.
-			AkUInt8 * in_pNewStart                          ///< The new area in memory to point to
-		) = 0;
 
 		//@}
 

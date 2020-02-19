@@ -9,8 +9,8 @@ may use this file in accordance with the end user license agreement provided
 with the software or, alternatively, in accordance with the terms contained in a
 written agreement between you and Audiokinetic Inc.
 
-Version: v2019.2.0  Build: 7216
-Copyright (c) 2006-2020 Audiokinetic Inc.
+Version: v2017.2.3  Build: 6575
+Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once

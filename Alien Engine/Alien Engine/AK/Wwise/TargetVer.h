@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -30,22 +30,18 @@ the specific language governing permissions and limitations under the License.
 
 #pragma once
 
-#ifndef NTDDI_VERSION				// Specifies that the minimum required platform is Windows 8.0.
-#define NTDDI_VERSION 0x06020000	// Change this to the appropriate value to target other versions of Windows.
+#ifndef WINVER					// Specifies that the minimum required platform is Windows Vista.
+#define WINVER 0x0600			// Change this to the appropriate value to target other versions of Windows.
 #endif
 
-#ifndef WINVER					// Specifies that the minimum required platform is Windows 8.0.
-#define WINVER 0x0602			// Change this to the appropriate value to target other versions of Windows.
+#ifndef _WIN32_WINNT			// Specifies that the minimum required platform is Windows Vista.
+#define _WIN32_WINNT 0x0600		// Change this to the appropriate value to target other versions of Windows.
 #endif
 
-#ifndef _WIN32_WINNT			// Specifies that the minimum required platform is Windows 8.0.
-#define _WIN32_WINNT 0x0602		// Change this to the appropriate value to target other versions of Windows.
+#ifndef _WIN32_WINDOWS			// Specifies that the minimum required platform is Windows 98.
+#define _WIN32_WINDOWS 0x0410	// Change this to the appropriate value to target Windows Me or later.
 #endif
 
-#ifndef _WIN32_WINDOWS			// Specifies that the minimum required platform is Windows Me.
-#define _WIN32_WINDOWS 0x0490	// This is already the latest possible version on this deprecated value.
-#endif
-
-#ifndef _WIN32_IE				// Specifies that the minimum required platform is Internet Explorer 10. (This is conservative but we don't need IE)
-#define _WIN32_IE 0x0A00		// Change this to the appropriate value to target other versions of IE.
+#ifndef _WIN32_IE				// Specifies that the minimum required platform is Internet Explorer 7.0.
+#define _WIN32_IE 0x0700		// Change this to the appropriate value to target other versions of IE.
 #endif

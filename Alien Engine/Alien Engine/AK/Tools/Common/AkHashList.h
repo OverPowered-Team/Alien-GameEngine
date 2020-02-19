@@ -21,16 +21,16 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKHASHLIST_H
 #define _AKHASHLIST_H
 
-#include <AK/Tools/Common/AkKeyDef.h>// for MapStruct
-#include <AK/Tools/Common/AkObject.h>
-#include <AK/Tools/Common/AkArray.h>
+#include "AkKeyDef.h"// for MapStruct
+#include "AkObject.h"
+#include "AkArray.h"
 
 // NOTE: when using this template, a hashing function of the following form must be available: 
 //
@@ -57,7 +57,7 @@ public:
 		MapStruct<T_KEY, T_ITEM> Assoc;	// key-item association
 	};
 
-	typedef AkArray<Item*, Item*, T_ALLOC, AkGrowByPolicy_NoGrow > HashTableArray;
+	typedef AkArray<Item*, Item*, T_ALLOC, 0 > HashTableArray;
 
 	struct Iterator
 	{
@@ -483,7 +483,7 @@ struct AkDefaultHashListBarePolicy
 template < class T_KEY, class T_MAPSTRUCT, typename T_ALLOC = ArrayPoolDefault, class KEY_POLICY = AkDefaultHashListBarePolicy<T_KEY, T_MAPSTRUCT> > 
 class AkHashListBare
 {
-	typedef AkArray<T_MAPSTRUCT*, T_MAPSTRUCT*, T_ALLOC, AkGrowByPolicy_NoGrow > HashTableArray;
+	typedef AkArray<T_MAPSTRUCT*, T_MAPSTRUCT*, T_ALLOC, 0 > HashTableArray;
 public:
 	struct Iterator
 	{

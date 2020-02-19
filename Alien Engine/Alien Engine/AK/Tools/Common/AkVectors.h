@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkVectors.h
@@ -30,12 +30,12 @@ the specific language governing permissions and limitations under the License.
 
 #pragma once
 
-#include <AK/SoundEngine/Common/AkTypes.h>
-#include <AK/SoundEngine/Common/AkSimd.h>
-#include <AK/SoundEngine/Common/AkSpeakerVolumes.h>
-#include <AK/SoundEngine/Common/IAkPluginMemAlloc.h>
-#include <AK/Tools/Common/AkArray.h>
-#include <AK/Tools/Common/AkObject.h>
+#include "../../SoundEngine/Common/AkTypes.h"
+#include "../../SoundEngine/Common/AkSimd.h"
+#include "../../SoundEngine/Common/AkSpeakerVolumes.h"
+#include "../../SoundEngine/Common/IAkPluginMemAlloc.h"
+#include "AkArray.h"
+#include "AkObject.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -48,6 +48,66 @@ the specific language governing permissions and limitations under the License.
 #define AKVECTORS_TWOPI				(6.283185307179586476925286766559f)
 #define AKVECTORS_PIOVERTWO			(1.5707963267948966192313216916398f)
 #define	AKVECTORS_EPSILON			(1.0e-38f)									// epsilon value for fast log(0)
+
+
+class AkMatrix4x4
+{
+	static const int MAX_SIZE = 16;
+
+	public:
+	//-----------------------------------------------------------
+	// Constructor/Destructor functions
+	AkMatrix4x4(){}
+	~AkMatrix4x4(){}
+
+	//-----------------------------------------------------------
+	// Basic vector operators
+	AkMatrix4x4 operator/=(const AkReal32 f)
+	{
+		for (int i = 0; i < MAX_SIZE; i++)
+			m_Data[i] /= f;
+
+		return *this;
+	}
+
+	AkMatrix4x4 operator=(AkReal32 * in_Data)
+	{
+		for (int i = 0; i < MAX_SIZE; i++)
+		{
+			m_Data[i] = in_Data[i];
+		}
+
+		return *this;
+	}
+
+	AkReal32 m_Data[MAX_SIZE];
+};
+
+class AkMatrix3x3
+{
+
+public:
+	//-----------------------------------------------------------
+	// Constructor/Destructor functions
+	AkMatrix3x3(){}
+	~AkMatrix3x3(){}
+
+	//-----------------------------------------------------------
+	// Basic vector operators
+	AkMatrix3x3 operator/=(const AkReal32 f)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				m_Data[i][j] /= f;
+			}
+		}
+		return *this;
+	}
+
+	AkReal32 m_Data[3][3];
+};
 
 class Ak4DVector
 {
@@ -436,7 +496,7 @@ public:
 		return v;
 	}
 
-	AkForceInline const Ak3DVector& Normalize()
+	AkForceInline void Normalize()
 	{
 		AkReal32 l = Length();
 		if (l != 0.f)
@@ -451,7 +511,6 @@ public:
 			Y = 0.f;
 			Z = 0.f;
 		}
-		return *this;
 	}
 
 	AkForceInline AkReal32 L2_Norm() const
@@ -697,286 +756,6 @@ public:
 
     AkReal32						X;
     AkReal32						Y;
-};
-
-
-
-class AkMatrix4x4
-{
-	static const int MAX_SIZE = 16;
-
-public:
-	//-----------------------------------------------------------
-	// Constructor/Destructor functions
-	AkMatrix4x4() {}
-	~AkMatrix4x4() {}
-
-	//-----------------------------------------------------------
-	// Basic vector operators
-	AkMatrix4x4 operator/=(const AkReal32 f)
-	{
-		for (int i = 0; i < MAX_SIZE; i++)
-			m_Data[i] /= f;
-
-		return *this;
-	}
-
-	AkMatrix4x4 operator=(AkReal32 * in_Data)
-	{
-		for (int i = 0; i < MAX_SIZE; i++)
-		{
-			m_Data[i] = in_Data[i];
-		}
-
-		return *this;
-	}
-
-	AkReal32 m_Data[MAX_SIZE];
-};
-
-class AkMatrix3x3
-{
-
-public:
-	//-----------------------------------------------------------
-	// Constructor/Destructor functions
-	AkMatrix3x3() {}
-	~AkMatrix3x3() {}
-
-	//-----------------------------------------------------------
-	// Basic vector operators
-	AkMatrix3x3 operator/=(const AkReal32 f)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				m_Data[i][j] /= f;
-			}
-		}
-		return *this;
-	}
-
-	AkForceInline AkReal32& operator()(const AkUInt32 row, const AkUInt32 column)
-	{
-		return m_Data[column][row];
-	}
-
-	AkForceInline const AkReal32& operator()(const AkUInt32 row, const AkUInt32 column) const
-	{
-		return m_Data[column][row];
-	}
-
-	AkForceInline Ak3DVector operator*(const Ak3DVector& in_rhs)
-	{
-		Ak3DVector res;
-		res.X = in_rhs.X * m_Data[0][0] + in_rhs.Y * m_Data[1][0] + in_rhs.Z * m_Data[2][0];
-		res.Y = in_rhs.X * m_Data[0][1] + in_rhs.Y * m_Data[1][1] + in_rhs.Z * m_Data[2][1];
-		res.Z = in_rhs.X * m_Data[0][2] + in_rhs.Y * m_Data[1][2] + in_rhs.Z * m_Data[2][2];
-		return res;
-	}
-
-	AkForceInline AkMatrix3x3& operator+=(const AkMatrix3x3& in_rhs)
-	{
-		Add(*this, *this, in_rhs);
-		return *this;
-	}
-
-	static AkForceInline void Add(AkMatrix3x3& out_res, const AkMatrix3x3& in_m0, const AkMatrix3x3& in_m1)
-	{
-#define ADD(i,j) out_res(i,j) = in_m0(i,j) + in_m1(i,j)
-		ADD(0, 0); ADD(0, 1); ADD(0, 2);
-		ADD(1, 0); ADD(1, 1); ADD(1, 2);
-		ADD(2, 0); ADD(2, 1); ADD(2, 2);
-#undef ADD
-	}
-
-	AkForceInline AkMatrix3x3& operator*=(const AkReal32& in_f)
-	{
-		m_Data[0][0] *= in_f; m_Data[0][1] *= in_f; m_Data[0][2] *= in_f;
-		m_Data[1][0] *= in_f; m_Data[1][1] *= in_f; m_Data[1][2] *= in_f;
-		m_Data[2][0] *= in_f; m_Data[2][1] *= in_f; m_Data[2][2] *= in_f;
-		return *this;
-	}
-
-	static AkForceInline void Diagonal(AkMatrix3x3& out_mat, AkReal32 in_f)
-	{
-		out_mat(0, 0) = in_f;		out_mat(0, 1) = 0.f;		out_mat(0, 2) = 0.f;
-		out_mat(1, 0) = 0.f;		out_mat(1, 1) = in_f;		out_mat(1, 2) = 0.f;
-		out_mat(2, 0) = 0.f;		out_mat(2, 1) = 0.f;		out_mat(2, 2) = in_f;
-	}
-
-	// Creates the matrix Mu such that Mu*v = u X v
-	static AkForceInline  void CrossProductMatrix(AkMatrix3x3& out_mat, const Ak3DVector& in_u)
-	{
-		out_mat(0, 0) = 0.f;		out_mat(0, 1) = -in_u.Z;		out_mat(0, 2) = in_u.Y;
-		out_mat(1, 0) = in_u.Z;		out_mat(1, 1) = 0.f;			out_mat(1, 2) = -in_u.X;
-		out_mat(2, 0) = -in_u.Y;	out_mat(2, 1) = in_u.X;			out_mat(2, 2) = 0.f;
-	}
-
-	static AkForceInline void OuterProduct(AkMatrix3x3& out_mat, const Ak3DVector& in_v0, const Ak3DVector& in_v1)
-	{
-		out_mat(0, 0) = in_v0.X*in_v1.X;	out_mat(0, 1) = in_v0.X*in_v1.Y;		out_mat(0, 2) = in_v0.X*in_v1.Z;
-		out_mat(1, 0) = in_v0.Y*in_v1.X;	out_mat(1, 1) = in_v0.Y*in_v1.Y;		out_mat(1, 2) = in_v0.Y*in_v1.Z;
-		out_mat(2, 0) = in_v0.Z*in_v1.X;	out_mat(2, 1) = in_v0.Z*in_v1.Y;		out_mat(2, 2) = in_v0.Z*in_v1.Z;
-	}
-
-	static AkForceInline void Rotation(AkMatrix3x3& out_mat, AkReal32 in_angle, const Ak3DVector& in_axis)
-	{
-		Rotation(out_mat, sinf(in_angle), cosf(in_angle), in_axis);
-	}
-
-	static void Rotation(AkMatrix3x3& out_mat, AkReal32 in_sin, AkReal32 in_cos, const Ak3DVector& in_axis)
-	{
-		Diagonal(out_mat, in_cos);
-
-		AkMatrix3x3 outer;
-		OuterProduct(outer, in_axis, in_axis);
-		outer *= (1.f - in_cos);
-		out_mat += outer;
-
-		AkMatrix3x3 cross;
-		CrossProductMatrix(cross, in_axis*in_sin);
-		out_mat += cross;
-	}
-
-	// [column][row]
-	AkReal32 m_Data[3][3];
-};
-
-class AkQuaternion
-{
-public:
-	// Identity quaternion
-	AkQuaternion(): W(1.f), X(0.f), Y(0.f), Z(0.f) {}
-
-	AkQuaternion(AkReal32 in_W, AkReal32 in_X, AkReal32 in_Y, AkReal32 in_Z) : 
-			W(in_W), 
-			X(in_X), 
-			Y(in_Y), 
-			Z(in_Z) 
-	{}
-
-	AkQuaternion(const Ak3DVector& in_fromVector): 
-		W(0.f), 
-		X(in_fromVector.X), 
-		Y(in_fromVector.Y), 
-		Z(in_fromVector.Z) 
-	{}
-
-	AkForceInline AkReal32 Length()
-	{
-		return sqrtf( W*W + X*X + Y*Y + Z*Z );
-	}
-
-	AkForceInline const AkQuaternion& Normalize()
-	{
-		AkReal32 f = 1.0f / Length();
-		W *= f;
-		X *= f;
-		Y *= f;
-		Z *= f;
-		return *this;
-	}
-
-	AkForceInline AkQuaternion Inverse() const
-	{
-		AkReal32 norm = W*W + X*X + Y*Y + Z*Z;
-		if (norm > 0.0)
-		{
-			AkReal32 invNorm = 1.0f / norm;
-			return AkQuaternion(W*invNorm, -X*invNorm, -Y*invNorm, -Z*invNorm);
-		}
-		else
-		{
-			return AkQuaternion();
-		}
-	}
-
-	// Create a quaternion representing the shortest arc rotation between (normalized) vectors v0, v1
-	AkQuaternion(const Ak3DVector& in_v0, const Ak3DVector& in_v1)
-	{
-		AkReal32 dot = in_v0.Dot(in_v1);
-		if (dot >= 1.0f - AKVECTORS_EPSILON)
-		{
-			// No rotation - return unity quaternion.
-			AkQuaternion();
-		}
-		if (dot <= -1.f - AKVECTORS_EPSILON)
-		{
-			// 180 degree rotation - can use any non-zero length axis.
-			Ak3DVector axis = Ak3DVector(0.f, 0.f, 1.f).Cross(in_v0);
-			AkReal32 len = axis.Length();
-			if (len < AKVECTORS_EPSILON)
-			{
-				axis = Ak3DVector(0.f, 1.f, 0.f).Cross(in_v0);
-				len = axis.Length();
-			}
-			axis.Normalize();
-			AkQuaternion(AKVECTORS_PI, axis);
-		}
-		else
-		{
-			AkReal32 sqrt = sqrtf((1.f + dot) * 2.f);
-			AkReal32 invs = 1.f / sqrt;
-
-			Ak3DVector cross = in_v0.Cross(in_v1);
-
-			X = cross.X * invs;
-			Y = cross.Y * invs;
-			Z = cross.Z * invs;
-			W = sqrt * 0.5f;
-			Normalize();
-		}
-	}
-	
-	// Build quaternion from an axis and angle representation.
-	AkQuaternion(AkReal32 in_angle, const Ak3DVector& in_axis)
-	{
-		AkReal32 cosHalfAngle = cosf(in_angle / 2.f);
-		W = cosHalfAngle;
-		X = cosHalfAngle*in_axis.X;
-		Y = cosHalfAngle*in_axis.Y;
-		Z = cosHalfAngle*in_axis.Z;
-	}
-	
-	/// Quaternion multiplication.
-	AkForceInline AkQuaternion operator*(const AkQuaternion& Q) const
-	{
-		return AkQuaternion(
-			W*Q.W - X*Q.X - Y*Q.Y - Z*Q.Z,
-            W*Q.X + X*Q.W + Y*Q.Z - Z*Q.Y,
-            W*Q.Y - X*Q.Z + Y*Q.W + Z*Q.X,
-            W*Q.Z + X*Q.Y - Y*Q.X + Z*Q.W);
-	}
-	
-	AkForceInline Ak3DVector operator* (const Ak3DVector& in_v) const
-	{
-		/*
-		// impl 1
-		Ak3DVector uv, uuv;
-		Ak3DVector qvec(X, Y, Z);
-		uv = qvec.Cross(in_v);
-		uuv = qvec.Cross(uv);
-		uv *= (2.0f * W);
-		uuv *= 2.0f;
-		return in_v + uv + uuv;
-		*/
-
-		// impl 2
-		Ak3DVector u(X, Y, Z);
-		Ak3DVector res = 
-			u * u.Dot(in_v) * 2.f
-			+ in_v * (W*W - u.Dot(u))
-			+ u.Cross(in_v) * W * 2.0f;
-
-		return res;
-	}
-
-	AkReal32 W;
-	AkReal32 X;
-	AkReal32 Y;
-	AkReal32 Z;
 };
 
 struct AkIntersectionPoints
@@ -1583,7 +1362,7 @@ public:
 		m_Center = in_center;
 		m_Extent = in_extent;
 
-		m_Z = in_Front;
+		m_Z = in_Front,
 		m_Y = in_Up;
 		m_X = m_Z.Cross(m_Y);
 	}

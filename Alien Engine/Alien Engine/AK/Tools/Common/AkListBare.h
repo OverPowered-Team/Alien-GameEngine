@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkListBare.h
@@ -112,8 +112,10 @@ class AkLastPolicyWithLast
 {
 public:
 	/// Get last element.
-	AkForceInline T * Last() { return m_pLast; }
-	AkForceInline const T * Last() const { return m_pLast; }
+	AkForceInline T * Last()
+	{
+		return m_pLast;
+	}
 
 protected:
 	AkForceInline AkLastPolicyWithLast() : m_pLast( NULL ) {}
@@ -240,7 +242,7 @@ public:
 	}
 
 	/// End condition.
-	inline Iterator End() const
+	inline Iterator End()
 	{
 		Iterator returnedIt;
 		returnedIt.pItem = NULL;
@@ -259,7 +261,7 @@ public:
 	}
 
 	/// Get Iterator at beginning.
-	inline Iterator Begin() const
+	inline Iterator Begin()
 	{
 		Iterator returnedIt;
 		

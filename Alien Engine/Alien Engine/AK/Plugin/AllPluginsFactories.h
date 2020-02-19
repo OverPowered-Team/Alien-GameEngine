@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_ALLPLUGINSFACTORIES_H_
@@ -52,8 +52,8 @@ the specific language governing permissions and limitations under the License.
 #include <AK/Plugin/AkRecorderFXFactory.h>						// Recorder
 
 // Platform specific
-#ifdef AK_SONY
-	#include <AK/Plugin/SceAudio3dEngineFactory.h>				// SCE Audio3d
+#ifdef AK_PS4
+#include <AK/Plugin/SceAudio3dEngineFactory.h>					// SCE Audio3d
 #endif
 
 // Sources plug-ins
@@ -62,14 +62,19 @@ the specific language governing permissions and limitations under the License.
 #include <AK/Plugin/AkToneSourceFactory.h>						// Tone generator
 #include <AK/Plugin/AkAudioInputSourceFactory.h>				// Audio input
 #include <AK/Plugin/AkSynthOneSourceFactory.h>					// SynthOne
+#include <AK/Plugin/AkMotionGeneratorSourceFactory.h>
 
 // Required by codecs plug-ins
 #include <AK/Plugin/AkVorbisDecoderFactory.h>
 #ifdef AK_APPLE
-	#include <AK/Plugin/AkAACFactory.h>			// Note: Useable only on Apple devices. Ok to include it on other platforms as long as it is not referenced.
+#include <AK/Plugin/AkAACFactory.h>			// Note: Useable only on Apple devices. Ok to include it on other platforms as long as it is not referenced.
 #endif
 #ifdef AK_NX
-	#include <AK/Plugin/AkOpusNXFactory.h>		// Note: Useable only on NX. Ok to include it on other platforms as long as it is not referenced.
-#endif	
+#include <AK/Plugin/AkOpusFactory.h>		// Note: Useable only on NX. Ok to include it on other platforms as long as it is not referenced.
+#endif
+
+#if (defined AK_WIN || defined AK_PS4 || defined AK_XBOXONE || defined AK_NX || defined AK_ANDROID)
+#include <AK/Plugin/AkMotionSinkFactory.h>
+#endif
 
 #endif // _AK_ALLPLUGINSFACTORIES_H_

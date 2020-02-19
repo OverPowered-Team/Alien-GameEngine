@@ -9,20 +9,21 @@ may use this file in accordance with the end user license agreement provided
 with the software or, alternatively, in accordance with the terms contained in a
 written agreement between you and Audiokinetic Inc.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.6  Build: 6636
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 //////////////////////////////////////////////////////////////////////
 //
 // AkDefaultIOHookDeferred.h
 //
 // Default deferred low level IO hook (AK::StreamMgr::IAkIOHookDeferred) 
-// and file system (AK::StreamMgr::IAkFileLocationResolver) implementation.
+// and file system (AK::StreamMgr::IAkFileLocationResolver) implementation 
+// on Windows.
 // 
 // AK::StreamMgr::IAkFileLocationResolver: 
-// Resolves file location using simple path concatenation logic.
-// It can be used as a standalone
-// Low-Level IO system, or as part of a multi device system. 
+// Resolves file location using simple path concatenation logic 
+// (implemented in ../Common/CAkFileLocationBase). It can be used as a 
+// standalone Low-Level IO system, or as part of a multi device system. 
 // In the latter case, you should manage multiple devices by implementing 
 // AK::StreamMgr::IAkFileLocationResolver elsewhere (you may take a look 
 // at class CAkDefaultLowLevelIODispatcher).
@@ -84,14 +85,11 @@ written agreement between you and Audiokinetic Inc.
 	// Create more devices.
 	// ...
 */
-//
-//////////////////////////////////////////////////////////////////////
-
 #ifndef _AK_DEFAULT_IO_HOOK_DEFERRED_H_
 #define _AK_DEFAULT_IO_HOOK_DEFERRED_H_
 
 #include "../SoundEngine/Common/AkStreamMgrModule.h"
-#include "../Common/AkMultipleFileLocation.h"
+#include "AkFileLocationBase.h"
 #include "../Tools/Common/AkAssert.h"
 
 //-----------------------------------------------------------------------------
@@ -99,11 +97,12 @@ written agreement between you and Audiokinetic Inc.
 // Desc: Implements IAkIOHookDeferred low-level I/O hook, and 
 //		 IAkFileLocationResolver. Can be used as a standalone Low-Level I/O
 //		 system, or as part of a system with multiple devices.
-//		 File location is resolved using simple path concatenation logic.
+//		 File location is resolved using simple path concatenation logic
+//		 (implemented in CAkFileLocationBase).
 //-----------------------------------------------------------------------------
 class CAkDefaultIOHookDeferred : public AK::StreamMgr::IAkFileLocationResolver
 								,public AK::StreamMgr::IAkIOHookDeferred
-								,public CAkMultipleFileLocation
+								,public CAkFileLocationBase
 {
 public:
 
@@ -118,6 +117,7 @@ public:
 		bool						in_bAsyncOpen=AK_ASYNC_OPEN_DEFAULT	// If true, files are opened asynchronously when possible.
 		);
 	void Term();
+
 
 	//
 	// IAkFileLocationAware interface.
@@ -146,7 +146,7 @@ public:
 	// IAkIOHookDeferred interface.
 	//-----------------------------------------------------------------------------
 
-    // Reads data from a file (asynchronous).
+    /// Reads data from a file (asynchronous).
     virtual AKRESULT Read(
 		AkFileDesc &			in_fileDesc,        // File descriptor.
 		const AkIoHeuristics &	in_heuristics,		// Heuristics for this data transfer.
@@ -200,6 +200,7 @@ protected:
 	bool				m_bAsyncOpen;	// If true, opens files asynchronously when it can.
 
 	// Structures for concurrent asynchronous transfers bookkeeping.
+	static AkMemPoolId	m_poolID;			// Memory pool for overlapped objects.
 	// Note 1: The pool is a fixed block size pool. It returns OVERLAPPED objects. Allocation is guaranteed
 	// because the pool size is MaxConcurrentIO * sizeof(OVERLAPPED).
 	// Note 2: accesses to memory pool are not locked, because we only use the platform SDK here,
@@ -212,7 +213,7 @@ protected:
 		AkAsyncIOTransferInfo * in_pTransfer	// Transfer that will use this OVERLAPPED. Its address is stored in OVERLAPPED::hEvent.
 		)
 	{
-		OVERLAPPED * pOverlapped = (OVERLAPPED*)AK::MemoryMgr::Malloc(AkMemID_Streaming, sizeof(OVERLAPPED));
+		OVERLAPPED * pOverlapped = (OVERLAPPED*)AK::MemoryMgr::GetBlock( m_poolID );
 		AKASSERT( pOverlapped || !"Too many concurrent transfers in the Low-Level IO" );
 		pOverlapped->hEvent = in_pTransfer;
 		return pOverlapped;
@@ -222,7 +223,7 @@ protected:
 		OVERLAPPED * in_pOverlapped				// OVERLAPPED structure to release. 
 		)
 	{
-		AK::MemoryMgr::Free(AkMemID_Streaming, in_pOverlapped);
+		AK::MemoryMgr::ReleaseBlock( m_poolID, in_pOverlapped );
 	}
 };
 

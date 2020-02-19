@@ -21,18 +21,19 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_PLATFORM_FUNCS_H_
 #define _AK_PLATFORM_FUNCS_H_
 
 #include "malloc.h"
-#include "../../Tools/Common/AkAssert.h"
-#include "../../SoundEngine/Common/AkAtomic.h"
+#include "../Common/AkAssert.h"
+#include "../../SoundEngine/Common/AkTypes.h"
 #include <windows.h>
 //#define AK_ENABLE_PERF_RECORDING
+#include <stdio.h>
 #if defined(AK_ENABLE_PERF_RECORDING)
 #include <stdio.h>
 #endif
@@ -77,7 +78,11 @@ namespace AK
 #define AK_GET_THREAD_ROUTINE_PARAMETER_PTR(type) reinterpret_cast<type*>( AK_THREAD_ROUTINE_PARAMETER )
 #define AK_RETURN_THREAD_OK                     0x00000000
 #define AK_RETURN_THREAD_ERROR                  0x00000001
-#define AK_DEFAULT_STACK_SIZE					(128*1024)
+#if defined AK_CPU_X86_64
+#define AK_DEFAULT_STACK_SIZE					(65536)
+#else
+#define AK_DEFAULT_STACK_SIZE                   (32768)
+#endif
 #define AK_THREAD_PRIORITY_NORMAL				THREAD_PRIORITY_NORMAL
 #define AK_THREAD_PRIORITY_ABOVE_NORMAL			THREAD_PRIORITY_ABOVE_NORMAL
 #define AK_THREAD_PRIORITY_TIME_CRITICAL		THREAD_PRIORITY_TIME_CRITICAL
@@ -146,24 +151,45 @@ namespace AKPLATFORM
 		AKVERIFY( ::SetEvent( in_event ) );
 	}
 
-	// Virtual Memory
-	// ------------------------------------------------------------------
+	
+	// Atomic Operations
+    // ------------------------------------------------------------------
 
-#ifdef AK_WIN_UNIVERSAL_APP
-	AkForceInline void* AllocVM(size_t size, size_t* /*extra*/)
+	/// Platform Independent Helper
+	inline AkInt32 AkInterlockedIncrement(AkAtomic32 * pValue)
 	{
-		return VirtualAllocFromApp(NULL, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-	}
-#else
-	AkForceInline void* AllocVM(size_t size, size_t* /*extra*/)
-	{
-		return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+		return InterlockedIncrement( pValue );
 	}
 
+	/// Platform Independent Helper
+	inline AkInt32 AkInterlockedDecrement(AkAtomic32 * pValue)
+	{
+		return InterlockedDecrement( pValue );
+	}
+
+#ifdef AK_CPU_X86_64
+	inline bool AkInterlockedCompareExchange( volatile AkAtomic64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal )
+	{
+		return _InterlockedCompareExchange64(io_pDest, in_newValue, in_expectedOldVal) == in_expectedOldVal;
+	}
 #endif
-	AkForceInline void FreeVM(void* address, size_t size, size_t extra, size_t release)
+
+	inline bool AkInterlockedCompareExchange(volatile AkAtomic32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal)
 	{
-		VirtualFree(address, release ? 0 : size, release ? MEM_RELEASE : MEM_DECOMMIT);
+		return InterlockedCompareExchange(io_pDest, in_newValue, in_expectedOldVal) == in_expectedOldVal;
+	}
+
+#if defined AK_CPU_X86 || defined AK_CPU_ARM
+	inline bool AkInterlockedCompareExchange(volatile AkAtomicPtr* io_pDest, AkIntPtr in_newValue, AkIntPtr in_expectedOldVal)
+	{
+		return InterlockedCompareExchange((volatile LONG_PTR*)io_pDest, (LONG_PTR)in_newValue, (LONG_PTR)in_expectedOldVal) == in_expectedOldVal;
+	}
+#endif		
+
+	//Ensure that all write operations are complete.  Necessary only on platforms that don't garentee the order of writes.
+	inline void AkMemoryBarrier() 
+	{
+		_ReadWriteBarrier();
 	}
 
     // Threads
@@ -356,7 +382,7 @@ namespace AKPLATFORM
 	{
         AkInt64 iFreq;
         PerformanceFrequency( &iFreq );
-		AK::g_fFreqRatio = (AkReal32)((AkReal64)iFreq / 1000);
+        AK::g_fFreqRatio = (AkReal32)( iFreq / 1000 );
 	}
 
 	/// Returns a time range in milliseconds, using the sound engine's updated count->milliseconds ratio.
@@ -445,7 +471,7 @@ namespace AKPLATFORM
 	#define AkAlloca( _size_ ) _alloca( _size_ )
 
 	/// Output a debug message on the console
-#if ! defined(AK_OPTIMIZED)
+#if ! ( defined(AK_USE_UWP_API) || defined(AK_OPTIMIZED) )
 	inline void OutputDebugMsg( const wchar_t* in_pszMsg )
 	{
 		OutputDebugStringW( in_pszMsg );
@@ -532,17 +558,6 @@ namespace AKPLATFORM
 	{
 		return ( wcscmp( in_pszString1,  in_pszString2 ) );
 	}
-
-	/// Compare two NULL-terminated AkOSChar strings up to the specified count of characters.
-	/// \return
-	/// - \< 0 if in_pszString1 \< in_pszString2
-	/// -    0 if the two strings are identical
-	/// - \> 0 if in_pszString1 \> in_pszString2
-	/// \remark The comparison is case-sensitive
-	inline int OsStrNCmp(  const AkOSChar* in_pszString1, const AkOSChar* in_pszString2, size_t in_MaxCountSize)
-	{
-		return wcsncmp(in_pszString1, in_pszString2, in_MaxCountSize);
-	}
 	
 	#define AK_UTF16_TO_WCHAR(	in_pdDest, in_pSrc, in_MaxSize )	AKPLATFORM::SafeStrCpy(		in_pdDest, in_pSrc, in_MaxSize )
 	#define AK_WCHAR_TO_UTF16(	in_pdDest, in_pSrc, in_MaxSize )	AKPLATFORM::SafeStrCpy(		in_pdDest, in_pSrc, in_MaxSize )
@@ -553,8 +568,6 @@ namespace AKPLATFORM
 
 	// Use with AkOSChar.
 	#define AK_PATH_SEPARATOR	(L"\\")
-	#define AK_LIBRARY_PREFIX	(L"")
-	#define AK_DYNAMIC_LIBRARY_EXTENSION	(L".dll")
 
 	#if defined(AK_ENABLE_PERF_RECORDING)
 	
@@ -586,16 +599,12 @@ namespace AKPLATFORM
 			}																														\
 			AKPLATFORM::g_uAkPerfRecExecCount++;
 	#endif // AK_ENABLE_PERF_RECORDING
-
-#if (defined(AK_CPU_X86_64) || defined(AK_CPU_X86))
-	/// Support to fetch the CPUID for the platform. Only valid for X86 targets
-	/// \remark Note that IAkProcessorFeatures should be preferred to fetch this data
-	/// as it will have already translated the feature bits into AK-relevant enums
-	inline void CPUID(AkUInt32 in_uLeafOpcode, AkUInt32 in_uSubLeafOpcode, unsigned int out_uCPUFeatures[4])
-	{
-		__cpuidex((int*)out_uCPUFeatures, in_uLeafOpcode, in_uSubLeafOpcode);
-	}
-#endif
 }
+
+#ifdef AK_ENABLE_INSTRUMENT
+	#ifdef AK_XBOXONE
+		#include <AK/Tools/XBoxOne/AkInstrument.h>
+	#endif
+#endif
 
 #endif  // _AK_PLATFORM_FUNCS_H_

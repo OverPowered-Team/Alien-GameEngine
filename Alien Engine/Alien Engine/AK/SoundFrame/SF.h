@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -50,11 +50,11 @@ namespace AK
 	/// Audiokinetic Sound Frame namespace.
 	namespace SoundFrame
 	{
-		/// Deprecated. The file format is always UTF-8.
+		/// SoundBank content text file format.
 		enum SoundBankContentTxtFileFormat
 		{
-			SoundBankContentTxtFileFormat_ANSI = 0,		///< Deprecated.
-			SoundBankContentTxtFileFormat_UNICODE = 1	///< Deprecated.
+			SoundBankContentTxtFileFormat_ANSI = 0,		///< 8-bit ANSI characters.
+			SoundBankContentTxtFileFormat_UNICODE = 1	///< 16-bit UNICODE characters.
 		};
 
 		/// SoundBank generation settings.
@@ -66,7 +66,7 @@ namespace AK
 			bool bGenerateHeaderFile;				///< Generate a header file.
 
 			bool bGenerateContentTxtFile;			///< Generate a content text file.
-			SoundBankContentTxtFileFormat eContentTxtFileFormat; ///< Deprecated. This option is ignored and the output file format is always UTF-8.
+			SoundBankContentTxtFileFormat eContentTxtFileFormat; ///< Specify the content text file format.
 
 			bool bGenerateXMLMetadata;				///< Generate metadata files in XML format.
 			bool bGenerateJSONMetadata;				///< Generate metadata files in JSON format.
@@ -79,9 +79,7 @@ namespace AK
 		};
 
 		/// Interface through which the client communicates with the instance of Wwise.
-		/// \akwarning
-		/// The functions in this class are not thread-safe, unless stated otherwise.
-		/// \endakwarning
+		/// \warning The functions in this class are not thread-safe, unless stated otherwise.
 		/// \sa
 		/// - AK::SoundFrame::Create()
 		class ISoundFrame : public ISFRefCount
@@ -409,7 +407,7 @@ namespace AK
 			/// This function is thread-safe. 			
 			/// \return	True if the operation was successful, False otherwise
 			/// \sa
-			/// - AK::SoundEngine::SetScalingFactor()
+			/// - AK::SoundEngine::SetAttenuationScalingFactor()
 			virtual bool SetAttenuationScalingFactor(
 				AkGameObjectID in_GameObjectID,				///< Game object identifier
 				AkReal32 in_fAttenuationScalingFactor		///< Scaling Factor, 1 means 100%, 0.5 means 50%, 2 means 200%, and so on.

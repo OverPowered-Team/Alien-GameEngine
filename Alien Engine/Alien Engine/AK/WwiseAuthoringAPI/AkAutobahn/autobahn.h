@@ -56,36 +56,41 @@ namespace AK
 	{
 		typedef AkVariant any;
 
+		/// A map holding any values and string keys.
+		typedef AkJson anymap;
+
 		/// A vector holding any values.
-		typedef std::vector<AkVariant> anyvec;
+		typedef std::vector<any> anyvec;
+
+		/// A pair of ::anyvec and ::anymap.
+		typedef std::pair<anyvec, anymap> anyvecmap;
+
 
 		/// Handler type for use with session::subscribe(const std::string&, handler_t)
 		typedef std::function<void(uint64_t, const JsonProvider&)> handler_t;
 
-		/// Disconnect handler.
-		typedef std::function<void()> disconnectHandler_t;
-
-		struct result_t
+		/// Represents a procedure registration.
+		struct registration
 		{
-			result_t() : success(false) {}
-			result_t(bool in_success) : success(in_success) {}
-			result_t(bool in_success, const AkJson& in_data) : success(in_success), data(in_data) {}
-
-			bool success;
-			AkJson data;
+			registration() : id(0){};
+			registration(uint64_t id) : id(id){};
+			uint64_t id;
 		};
-
 
 		/// Represents a topic subscription.
 		struct subscription
 		{
-			subscription() : id(0), success(false) {}
-			subscription(const AkJson& in_errorJson) : id(0), success(false), errorJson(in_errorJson) {}
-			subscription(uint64_t in_id) : id(in_id), success(true) {};
-
+			subscription() : id(0){};
+			subscription(uint64_t id) : id(id){};
 			uint64_t id;
-			bool success;
-			AkJson errorJson;
+		};
+
+		/// Represents an event publication (for acknowledged publications).
+		struct publication
+		{
+			publication() : id(0){};
+			publication(uint64_t id) : id(id){};
+			uint64_t id;
 		};
 
 		/// Represents the authentication information sent on welcome
@@ -97,21 +102,68 @@ namespace AK
 			std::string authrole;
 		};
 
+		struct publish_options
+		{
+			bool acknowledge = false;
+			bool exclude_me = false;
+			std::vector<int> exclude;
+			std::vector<int> eligible;
+			bool disclose_me = false;
+
+			AkJson toDict() const
+			{
+				AkJson obj(AkJson::Type::Map);
+
+				if (acknowledge)
+				{
+					obj.GetMap()["acknowledge"] = AkVariant(acknowledge);
+				}
+
+				if (exclude_me)
+				{
+					obj.GetMap()["exclude_me"] = AkVariant(exclude_me);
+				}
+
+				if (!exclude.empty())
+				{
+					AkJson jsonExclude(AkJson::Type::Array);
+
+					for (auto value : exclude)
+					{
+						jsonExclude.GetArray().push_back(AkJson(AkVariant(value)));
+					}
+
+					obj.GetMap()["exclude"] = jsonExclude;
+				}
+
+				if (!eligible.empty())
+				{
+					AkJson jsonEligible(AkJson::Type::Array);
+
+					for (auto value : exclude)
+					{
+						jsonEligible.GetArray().push_back(AkJson(AkVariant(value)));
+					}
+
+					obj.GetMap()["eligible"] = jsonEligible;
+				}
+
+				if (disclose_me)
+				{
+					obj.GetMap()["disclose_me"] = AkVariant(disclose_me);
+				}
+
+				return obj;
+			}
+		};
+
 		/*!
 		* A WAMP session.
 		*/
 		class session : public IWebSocketClientHandler
 		{
-		public:
-
-			static void createErrorMessageJson(const std::string& in_message, AkJson& out_jsonError);
-			
-		private:
-
-			static void createNoSessionErrorJson(AkJson& out_jsonError);
 
 		public:
-
 			session();
 			~session();
 
@@ -119,13 +171,13 @@ namespace AK
 			* Start listening on the IStream provided to the constructor
 			* of this session.
 			*/
-			bool start(const char* in_uri, unsigned int in_port, disconnectHandler_t disconnectHandler = nullptr);
+			void start(const char* in_uri, unsigned int in_port);
 
 			/*!
 			* Closes the IStream and the OStream provided to the constructor
 			* of this session.
 			*/
-			void stop(const std::string& errorMessage);
+			void stop(std::exception_ptr abortExc);
 
 			bool isConnected() const;
 
@@ -144,22 +196,77 @@ namespace AK
 			std::future<uint64_t> join(const std::string& realm, const std::string& method = "", const std::string& authid = "",
 				const std::string& signature = "");
 
+			/*!
+			* Leave the realm.
+			*
+			* \param reason An optional WAMP URI providing a reason for leaving.
+			* \return A future that resolves with the reason sent by the peer.
+			*/
+			std::future<std::string> leave(const std::string& reason = std::string("wamp.error.close_realm"));
+
+
 			authinfo getAuthInfo() const;
 
-			bool subscribe(const std::string& topic, handler_t handler, const AkJson& options, std::future<subscription>& out_future, AkJson& out_jsonError);
 
-			bool unsubscribe(uint64_t subscription_id, std::future<result_t>& out_future, AkJson& out_jsonError);
+			/*!
+			* Publish an event with both positional and keyword payload to a topic.
+			*
+			* \param topic The URI of the topic to publish to.
+			* \param args The positional payload for the event.
+			* \param kwargs The keyword payload for the event.
+			*/
+			void publish(const std::string& topic, const anyvec& args = {}, const anymap& kwargs = AkJson(AkJson::Type::Map), const publish_options& options = publish_options());
 
-			bool call_options(
-				const std::string& procedure,
-				const anyvec& args,
-				const AkJson& kwargs,
-				const AkJson& options,
-				std::future<result_t>& out_future,
-				AkJson& out_jsonError);
+
+			/*!
+			* Subscribe a handler to a topic to receive events.
+			*
+			* \param topic The URI of the topic to subscribe to.
+			* \param handler The handler that will receive events under the subscription.
+			* \param options WAMP options for the subscription request.
+			* \return A future that resolves to a autobahn::subscription
+			*/
+			std::future<subscription> subscribe(const std::string& topic, handler_t handler, const anymap& options = AkJson(AkJson::Type::Map));
+
+
+			std::future<anymap> unsubscribe(uint64_t subscription_id);
+
+			/*!
+			* Calls a remote procedure with no arguments.
+			*
+			* \param procedure The URI of the remote procedure to call.
+			* \return A future that resolves to the result of the remote procedure call.
+			*/
+			std::future<anymap> call(const std::string& procedure);
+
+			std::future<anymap> call_options(const std::string& procedure, const anymap& options);
+
+			/*!
+			* Calls a remote procedure with positional arguments.
+			*
+			* \param procedure The URI of the remote procedure to call.
+			* \param args The positional arguments for the call.
+			* \return A future that resolves to the result of the remote procedure call.
+			*/
+			std::future<anymap> call(const std::string& procedure, const anyvec& args);
+
+			std::future<anymap> call_options(const std::string& procedure, const anyvec& args, const anymap& options);
+
+			/*!
+			* Calls a remote procedure with positional and keyword arguments.
+			*
+			* \param procedure The URI of the remote procedure to call.
+			* \param args The positional arguments for the call.
+			* \param kwargs The keyword arguments for the call.
+			* \return A future that resolves to the result of the remote procedure call.
+			*/
+			std::future<anymap> call(const std::string& procedure, const anyvec& args, const anymap& kwargs);
+
+			std::future<anymap> call_options(const std::string& procedure, const anyvec& args, const anymap& kwargs,
+				const anymap& options);
 
 		private:
-			
+
 			//////////////////////////////////////////////////////////////////////////////////////
 			/// Caller
 
@@ -168,7 +275,7 @@ namespace AK
 			{
 				call_t() {}
 				call_t(call_t&& c) : m_res(std::move(c.m_res)) {}
-				std::promise<result_t> m_res;
+				std::promise<anymap> m_res;
 			};
 
 			/// Map of outstanding WAMP calls (request ID -> call).
@@ -208,9 +315,6 @@ namespace AK
 			std::mutex m_handlersMutex;
 			handlers_t m_handlers;
 
-			/// Disconnect handler.
-			disconnectHandler_t m_disconnectHandler;
-
 			// No mutex required.
 
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +325,7 @@ namespace AK
 			{
 				unsubscribe_request_t(){};
 				unsubscribe_request_t(unsubscribe_request_t&& s) : m_res(std::move(s.m_res)) {}
-				std::promise<result_t> m_res;
+				std::promise<anymap> m_res;
 			};
 
 			/// Map of outstanding WAMP subscribe requests (request ID -> subscribe request).
@@ -236,6 +340,30 @@ namespace AK
 			//////////////////////////////////////////////////////////////////////////////////////
 			/// Callee
 
+			/// An outstanding WAMP register request.
+			struct register_request_t
+			{
+				register_request_t(){};
+				register_request_t(register_request_t&& r) : m_endpoint(std::move(r.m_endpoint)), m_res(std::move(r.m_res)) {}
+				register_request_t(any endpoint) : m_endpoint(endpoint){};
+				any m_endpoint;
+				std::promise<registration> m_res;
+			};
+
+			/// Map of outstanding WAMP register requests (request ID -> register request).
+			typedef std::map<uint64_t, register_request_t> register_requests_t;
+
+			/// Map of WAMP register request ID -> register request
+			register_requests_t m_register_requests;
+
+			std::mutex m_regreqMutex;
+
+			/// Map of registered endpoints (registration ID -> endpoint)
+			typedef std::map<uint64_t, any> endpoints_t;
+
+			/// Map of WAMP registration ID -> endpoint
+			endpoints_t m_endpoints;
+
 
 			/// An unserialized, raw WAMP message.
 			typedef AkJson wamp_msg_t;
@@ -243,6 +371,9 @@ namespace AK
 
 			/// Process a WAMP WELCOME message.
 			void process_welcome(const wamp_msg_t& msg);
+
+			/// Process a WAMP ABORT message.
+			void process_abort(const wamp_msg_t& msg);
 
 			/// Process a WAMP CHALLENGE message.
 			void process_challenge(const wamp_msg_t& msg);
@@ -261,6 +392,12 @@ namespace AK
 
 			/// Process a WAMP EVENT message.
 			void process_event(const wamp_msg_t& msg);
+
+			/// Process a WAMP REGISTERED message.
+			void process_registered(const wamp_msg_t& msg);
+
+			/// Process a WAMP INVOCATION message.
+			void process_invocation(const wamp_msg_t& msg);
 
 			/// Process a WAMP GOODBYE message.
 			void process_goodbye(const wamp_msg_t& msg);
@@ -286,10 +423,9 @@ namespace AK
 #endif
 
 			std::atomic<bool> m_running;
-			std::atomic<bool> m_wasDisconnected;
 
 			std::shared_ptr<WebSocketClient> m_websocket;
-			std::recursive_mutex m_websocketMutex;
+			std::mutex m_websocketMutex;
 
 			std::thread m_sendThread;
 
@@ -305,9 +441,6 @@ namespace AK
 			/// Future to be fired when session was joined.
 			std::promise<uint64_t> m_session_join;
 
-			/// Future to be fired when the send thread has started waiting
-			std::promise<bool> m_send_thread_started;
-
 			std::mutex m_joinMutex;
 
 			/// Last request ID of outgoing WAMP requests.
@@ -321,6 +454,8 @@ namespace AK
 
 
 			bool m_goodbye_sent = false;
+
+			std::promise<std::string> m_session_leave;
 
 			/// WAMP message type codes.
 			enum class msg_code : int
@@ -344,15 +479,38 @@ namespace AK
 				CANCEL = 49,
 				RESULT = 50,
 				REGISTER = 64,
-				// Renamed from original source to avoid clash with macro from Wwise SDK.
-				// Keeping the others as-is to remain in sync with the original source as much as possible.
-				WAMP_REGISTERED = 65,
+				REGISTERED = 65,
 				UNREGISTER = 66,
 				UNREGISTERED = 67,
 				INVOCATION = 68,
 				INTERRUPT = 69,
 				YIELD = 70
 			};
+		};
+
+
+		class protocol_error : public std::runtime_error
+		{
+		public:
+			protocol_error(const std::string& msg) : std::runtime_error(msg){};
+		};
+
+		class no_session_error : public std::runtime_error
+		{
+		public:
+			no_session_error() : std::runtime_error("session not joined"){};
+		};
+
+		class server_error : public std::runtime_error
+		{
+		public:
+			server_error(const std::string& msg) : std::runtime_error(msg){};
+		};
+
+		class connection_error : public std::runtime_error
+		{
+		public:
+			connection_error(const std::string& msg) : std::runtime_error(msg){};
 		};
 	}
 }

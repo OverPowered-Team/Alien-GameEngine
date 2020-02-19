@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkMidiTypes.h
@@ -34,7 +34,7 @@ the specific language governing permissions and limitations under the License.
 #define _AK_MIDI_TYPES_H_
 
 // Include standard types
-#include "../../SoundEngine/Common/AkTypes.h"
+#include "AkTypes.h"
 
 //-----------------------------------------------------------------------------
 // Types.
@@ -176,7 +176,7 @@ static const AkMidiNoteNo				AK_INVALID_MIDI_NOTE				=  (AkUInt8)-1;				///< Not
 
 struct AkMIDIEvent
 {
-	AkUInt8			byType;		///< See AK_MIDI_EVENT_TYPE_* pre-processor definitions
+	AkUInt8			byType;		// (Ak_MIDI_EVENT_TYPE_)
 	AkMidiChannelNo	byChan;
 
 	struct tGen
@@ -227,7 +227,7 @@ struct AkMIDIEvent
 
 struct AkMIDIPost : public AkMIDIEvent
 {
-	AkUInt32 uOffset; ///< Frame offset (in samples) for MIDI event post
+	AkUInt32 uOffset; // Frame offset for MIDI event post
 };
 
 #endif  //_AK_MIDI_TYPES_H_

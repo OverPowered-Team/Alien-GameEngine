@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSmartPtr.h
@@ -52,20 +52,13 @@ public:
             m_pT->AddRef();
     }
 
-	/// Smart pointer copy constructor
+	/// Smart pointer constructor
     AkForceInline CAkSmartPtr( const CAkSmartPtr<T>& in_rPtr )
     {
         m_pT = in_rPtr.m_pT;
         if (m_pT)
             m_pT->AddRef();
     }
-
-	/// Smart pointer move constructor
-	AkForceInline CAkSmartPtr( CAkSmartPtr<T>&& in_rPtr )
-	{
-		m_pT = in_rPtr.m_pT;
-		in_rPtr.m_pT = NULL;
-	}
 
 	/// Smart pointer destructor
     ~CAkSmartPtr()
@@ -98,19 +91,11 @@ public:
         return pObj;
     }
 
-	/// Copy Assignation operator
+	/// Assignation operator
 	const CAkSmartPtr<T>& operator=( const CAkSmartPtr<T>& in_pObj )
 	{
         _Assign( in_pObj.m_pT );
         return *this;
-	}
-
-	/// Move Assignation operator
-	CAkSmartPtr<T>& operator=( CAkSmartPtr<T>&& in_pObj )
-	{
-		_Assign( in_pObj.m_pT, false );
-		in_pObj.m_pT = NULL;
-		return *this;
 	}
 
 	/// Assignation operator

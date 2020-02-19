@@ -6,18 +6,18 @@
 
 class GameObject;
 
-class ReverbZone : public Component
+class ComponentReverbZone : public Component
 {
 public:
-	ReverbZone(GameObject* parent);
-	~ReverbZone();
+	ComponentReverbZone(GameObject* parent);
+	~ComponentReverbZone();
 
-	void Update(float dt);
+	void Update();
 	void SetRadius(float rad);
 	void DebugDrawSphere();
 
-	void SaveComponent(JSONArraypack* to_save) override;
-	void LoadComponent(JSONArraypack* to_load) override;
+	void SaveReverbZone(JSON_Array* componentsObj) const;
+	void LoadReverbZone(JSON_Object* obj, GameObject* go);
 
 public:
 	float radius = 10.0f;

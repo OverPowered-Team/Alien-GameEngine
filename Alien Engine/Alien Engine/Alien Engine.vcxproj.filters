@@ -70,11 +70,8 @@
     <Filter Include="Tools\Wwise">
       <UniqueIdentifier>{882073fd-dd9e-49e6-97f2-91b356002bb8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tools\Wwise\WwiseT">
-      <UniqueIdentifier>{dabe1022-b87b-4628-b195-19002df7aad3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tools\Wwise\AK">
-      <UniqueIdentifier>{cbb73623-ab55-418c-bb54-a6fa622e4757}</UniqueIdentifier>
+      <UniqueIdentifier>{72079480-7c12-466a-8f91-7d7d96401564}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -565,7 +562,7 @@
       <Filter>Components\Audio</Filter>
     </ClInclude>
     <ClInclude Include="WwiseT.h">
-      <Filter>Tools\Wwise\WwiseT</Filter>
+      <Filter>Tools\Wwise</Filter>
     </ClInclude>
     <ClInclude Include="AK\AkPlatforms.h">
       <Filter>Tools\Wwise\AK</Filter>
@@ -574,54 +571,6 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Comm\AkCommunication.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkBuddyBlockPool.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkDefaultLowLevelIODispatcher.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkDeviceBase.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkDeviceBlocking.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkDeviceDeferredLinedUp.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkFileLocationBase.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkFilePackage.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkFilePackageLowLevelIO.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkFilePackageLUT.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkIOMemMgr.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkMultipleFileLocation.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkStmDeferredLinedUpBase.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkStmMemView.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkStreamingDefaults.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkStreamMgr.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Common\AkTransferDeferred.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\DSP\AkApplyGain.h">
@@ -648,6 +597,12 @@
     <ClInclude Include="AK\IBytes.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="AK\MotionEngine\Common\AkMotionEngine.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\MotionEngine\Common\IAkMotionMixBus.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
     <ClInclude Include="AK\MusicEngine\Common\AkMusicEngine.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
@@ -658,6 +613,9 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkCompressorFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkConvolutionReverbFXFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkDelayFXFactory.h">
@@ -684,7 +642,13 @@
     <ClInclude Include="AK\Plugin\AkMeterFXFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
-    <ClInclude Include="AK\Plugin\AkOpusDecoderFactory.h">
+    <ClInclude Include="AK\Plugin\AkMotionGeneratorFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkMotionGeneratorSourceFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkMotionSinkFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkParametricEQFXFactory.h">
@@ -699,10 +663,16 @@
     <ClInclude Include="AK\Plugin\AkRecorderFXFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="AK\Plugin\AkReflectFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
     <ClInclude Include="AK\Plugin\AkReflectGameData.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkRoomVerbFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkRumbleFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkSilenceSourceFactory.h">
@@ -714,7 +684,25 @@
     <ClInclude Include="AK\Plugin\AkSinkFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSoundSeedImpactFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSoundSeedWindFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSoundSeedWindSourceFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSoundSeedWooshFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSoundSeedWooshSourceFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
     <ClInclude Include="AK\Plugin\AkStereoDelayFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AkSynthOneFactory.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\AkSynthOneSourceFactory.h">
@@ -738,6 +726,45 @@
     <ClInclude Include="AK\Plugin\AllPluginsRegistrationHelpers.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="AK\Plugin\AuroHeadphoneFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\AuroPannerMixerFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\CrankcaseAudioREVModelPlayerFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZHybridReverbFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashBoxModelerFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashDelayFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashDistortionFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashDynamicsFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashFiltersFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\iZTrashMultibandDistortionFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\McDSPFutzBoxFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\McDSPLimiterFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Plugin\MSHRTFFXFactory.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
     <ClInclude Include="AK\Plugin\PluginServices\AkFXDurationHandler.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
@@ -754,12 +781,6 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Plugin\PluginServices\AkVectorValueRamp.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Common\AkAtomic.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Common\AkBytesCount.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\SoundEngine\Common\AkBytesMem.h">
@@ -819,9 +840,6 @@
     <ClInclude Include="AK\SoundEngine\Common\IAkMixerPlugin.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Common\IAkPlatformContext.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
     <ClInclude Include="AK\SoundEngine\Common\IAkPlugin.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
@@ -849,25 +867,10 @@
     <ClInclude Include="AK\SoundEngine\Platforms\Generic\AkSpeakerVolumes.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Platforms\Linux\AkAtomic.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
     <ClInclude Include="AK\SoundEngine\Platforms\POSIX\AkTypes.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\SoundEngine\Platforms\SSE\AkSimd.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Platforms\SSE\AkSimdAvx.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Platforms\SSE\AkSimdAvx2.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkAtomic.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkPlatformContext.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkSimd.h">
@@ -889,48 +892,6 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\SpatialAudio\Common\AkSpatialAudioTypes.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkBuddyBlockPool.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkDeviceBase.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkDeviceBlocking.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkDeviceDeferredLinedUp.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkIOMemMgr.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkStmDeferredLinedUpBase.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkStmMemView.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkStreamingDefaults.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkStreamMgr.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Common\AkTransferDeferred.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\POSIX\AkIOThread.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Win32\AkIOThread.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Win32\AkPlatformStreamingDefaults.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\StreamManager\Win32\stdafx.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Tools\Common\AkAllocator.h">
@@ -955,9 +916,6 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Tools\Common\AkHashList.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Tools\Common\AkHeap.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Tools\Common\AkKeyArray.h">
@@ -996,9 +954,6 @@
     <ClInclude Include="AK\Tools\Common\AkSyncCaller.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
-    <ClInclude Include="AK\Tools\Common\AkTls.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
     <ClInclude Include="AK\Tools\Common\AkVectors.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
@@ -1008,19 +963,10 @@
     <ClInclude Include="AK\Tools\POSIX\AkPlatformFuncs.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
-    <ClInclude Include="AK\Tools\POSIX\AkTls.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Tools\Win32\AkCOMScope.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
     <ClInclude Include="AK\Tools\Win32\AkLock.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Tools\Win32\AkPlatformFuncs.h">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClInclude>
-    <ClInclude Include="AK\Tools\Win32\AkTls.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Win32\AkDefaultIOHookBlocking.h">
@@ -1032,10 +978,22 @@
     <ClInclude Include="AK\Win32\AkFileHelpers.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="AK\Win32\AkFileLocationBase.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Win32\AkFilePackage.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Win32\AkFilePackageLowLevelIO.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
     <ClInclude Include="AK\Win32\AkFilePackageLowLevelIOBlocking.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Win32\AkFilePackageLowLevelIODeferred.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Win32\AkFilePackageLUT.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Win32\stdafx.h">
@@ -1048,6 +1006,9 @@
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Wwise\IXmlTextWriter.h">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClInclude>
+    <ClInclude Include="AK\Wwise\MotionPlugin.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
     <ClInclude Include="AK\Wwise\PlatformID.h">
@@ -1451,82 +1412,31 @@
     <ClCompile Include="ModuleAudio.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentAudioEmitter.cpp">
+    <ClCompile Include="ComponentAudioListener.cpp">
       <Filter>Components\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentAudioListener.cpp">
+    <ClCompile Include="ComponentAudioEmitter.cpp">
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="ComponentReverbZone.cpp">
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="WwiseT.cpp">
-      <Filter>Tools\Wwise\WwiseT</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkDefaultLowLevelIODispatcher.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkDeviceBase.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkDeviceBlocking.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkDeviceDeferredLinedUp.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkFileLocationBase.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkFilePackage.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkFilePackageLUT.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkIOMemMgr.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkMultipleFileLocation.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkStreamMgr.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\Common\AkTransferDeferred.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkDeviceBase.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkDeviceBlocking.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkDeviceDeferredLinedUp.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkIOMemMgr.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkStreamMgr.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Common\AkTransferDeferred.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\POSIX\AkIOThread.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Win32\AkIOThread.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
-    </ClCompile>
-    <ClCompile Include="AK\StreamManager\Win32\stdafx.cpp">
-      <Filter>Tools\Wwise\AK</Filter>
+      <Filter>Tools\Wwise</Filter>
     </ClCompile>
     <ClCompile Include="AK\Win32\AkDefaultIOHookBlocking.cpp">
       <Filter>Tools\Wwise\AK</Filter>
     </ClCompile>
     <ClCompile Include="AK\Win32\AkDefaultIOHookDeferred.cpp">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClCompile>
+    <ClCompile Include="AK\Win32\AkFileLocationBase.cpp">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClCompile>
+    <ClCompile Include="AK\Win32\AkFilePackage.cpp">
+      <Filter>Tools\Wwise\AK</Filter>
+    </ClCompile>
+    <ClCompile Include="AK\Win32\AkFilePackageLUT.cpp">
       <Filter>Tools\Wwise\AK</Filter>
     </ClCompile>
     <ClCompile Include="AK\Win32\stdafx.cpp">
@@ -1558,13 +1468,7 @@
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json">
       <Filter>JSON</Filter>
     </None>
-    <None Include="AK\Common\AkFilePackageLowLevelIO.inl">
-      <Filter>Tools\Wwise\AK</Filter>
-    </None>
-    <None Include="AK\Common\AkStmDeferredLinedUpBase.inl">
-      <Filter>Tools\Wwise\AK</Filter>
-    </None>
-    <None Include="AK\StreamManager\Common\AkStmDeferredLinedUpBase.inl">
+    <None Include="AK\Win32\AkFilePackageLowLevelIO.inl">
       <Filter>Tools\Wwise\AK</Filter>
     </None>
   </ItemGroup>

@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_WWISE_UNDO_H
@@ -49,7 +49,7 @@ namespace AK
 			virtual bool Redo()	= 0;
 
 			// Get the name of the action
-			virtual bool GetName( CStringW& out_csName ) = 0;
+			virtual bool GetName( CString& out_csName ) = 0;
 
 			// Check if this undo event is relevant all by itself. For example, 
 			// a selection change is not necessary, but is nice to have around when
@@ -59,11 +59,13 @@ namespace AK
 			// Return the associated object GUID this undo is modifying
 			virtual GUID GetObjectID() const = 0;
 
+#ifdef UNDO_EVENT_DEBUG_INFO
 			// Get a string representing data for this
 			// undo event. It will be used to display info in the
 			// debug window. The object should prepend in_szPrefix
 			// to the string (for formatting complex undo info)
-			virtual bool GetDebugString( LPCWSTR in_szPrefix, CStringW& out_csString ) = 0;
+			virtual bool GetDebugString( LPCTSTR in_szPrefix, CString& out_csString ) = 0;
+#endif // UNDO_EVENT_DEBUG_INFO
 		};
 
 		class IComplexUndo
@@ -90,7 +92,7 @@ namespace AK
 			virtual bool OpenComplex( IComplexUndo * in_pComplex = NULL ) = 0;
 
 			// Close the current complex undo
-			virtual bool CloseComplex( LPCWSTR in_szName, bool in_bKeepEvenIfContainsSingleEvent = false ) = 0;
+			virtual bool CloseComplex( LPCTSTR in_szName, bool in_bKeepEvenIfContainsSingleEvent = false ) = 0;
 
 			// Cancel the current complex undo
 			virtual bool CancelComplex() = 0;

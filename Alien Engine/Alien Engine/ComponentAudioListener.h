@@ -13,8 +13,7 @@ public:
 	~AudioListener();
 	void Update(float dt);
 	void UpdateListenerPos();
-
-	void LoadComponent(JSONArraypack* to_load) override;
+	void SaveListener(/*JSON_Array* componentsObj*/) const;
 
 
 public:

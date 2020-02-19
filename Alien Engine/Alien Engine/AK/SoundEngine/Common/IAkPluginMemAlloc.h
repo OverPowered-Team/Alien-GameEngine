@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -31,15 +31,13 @@ the specific language governing permissions and limitations under the License.
 #ifndef _IAKPLUGINMEMALLOC_H_
 #define _IAKPLUGINMEMALLOC_H_
 
-#include "../../SoundEngine/Common/AkTypes.h"
-#include "../../SoundEngine/Common/AkMemoryMgr.h" // For AK_MEMDEBUG
+#include "AkTypes.h"
+#include "AkMemoryMgr.h"  // For AK_MEMDEBUG
 
 namespace AK
 {
 	/// Interface to memory allocation
-	/// \akwarning 
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 	///
 	/// \akcaution SDK users should never call these function directly, but use memory allocation macros instead. \endakcaution
 	/// \sa 
@@ -67,15 +65,6 @@ namespace AK
             void * in_pMemAddress	///< Allocated memory start address
             ) = 0;
 
-		/// Allocate memory. 
-		/// \return A pointer to the newly-allocated memory. 
-		/// \sa 
-		/// - \ref fx_memory_alloc
-		virtual void * Malign(
-			size_t in_uSize,		///< Allocation size in bytes
-			size_t in_uAlignment	///< Required alignment in bytes
-		) = 0;
-
 #if defined (AK_MEMDEBUG)
 	    /// Debug malloc.
 		/// \sa 
@@ -85,15 +74,6 @@ namespace AK
             const char*  in_pszFile,///< Allocation file name (for tracking purposes)
 		    AkUInt32 in_uLine		///< Allocation line number (for tracking purposes)
 		    ) = 0;
-		/// Debug malign.
-		/// \sa 
-		/// - \ref fx_memory_alloc
-		virtual void * dMalign(
-			size_t	 in_uSize,		///< Allocation size
-			size_t	 in_uAlign,		///< Allocation alignment
-			const char*  in_pszFile,///< Allocation file name (for tracking purposes)
-			AkUInt32 in_uLine		///< Allocation line number (for tracking purposes)
-		) = 0;
 #endif
 	};
 }
@@ -120,7 +100,6 @@ namespace AK
 #if defined (AK_MEMDEBUG)
 	#define AK_PLUGIN_NEW(_allocator,_what)	            new((_allocator),__FILE__,__LINE__) _what
 	#define AK_PLUGIN_ALLOC(_allocator,_size)           (_allocator)->dMalloc((_size),__FILE__,__LINE__)
-	#define AK_PLUGIN_ALLOC_ALIGN(_allocator,_size,_align)           (_allocator)->dMalign((_size),(_align),__FILE__,__LINE__)
 #else
 	/// Macro used to allocate objects.
 	/// \param _allocator Memory allocator interface.
@@ -140,16 +119,6 @@ namespace AK
 	/// - \ref fx_memory_alloc
 	/// - AK_PLUGIN_FREE()
 	#define AK_PLUGIN_ALLOC(_allocator,_size)           (_allocator)->Malloc((_size))
-	/// Macro used to allocate arrays of built-in types with alignment
-	/// \param _allocator Memory allocator interface.
-	/// \param _size Requested size in bytes.
-	/// \param _align Requested alignment of allocation
-	/// \return A void pointer to the the allocated memory.
-	/// \aknote Use AK_PLUGIN_FREE() for memory allocated with this macro. \endaknote
-	/// \sa
-	/// - \ref fx_memory_alloc
-	/// - AK_PLUGIN_FREE()
-	#define AK_PLUGIN_ALLOC_ALIGN(_allocator,_size,_align)           (_allocator)->Malign((_size),(_align))
 #endif
 
 /// Macro used to deallocate objects.

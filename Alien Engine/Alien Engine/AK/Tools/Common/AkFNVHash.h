@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _FNVHASH_H
@@ -48,7 +48,6 @@ namespace AK
 	struct Hash32
 	{
 		typedef unsigned int HashType;
-		typedef unsigned int SizeType;
 		static inline unsigned int Bits() {return 32;}
 		static inline HashType Prime() {return 16777619;}
 		static const HashType s_offsetBasis = 2166136261U;
@@ -62,7 +61,6 @@ namespace AK
 	struct Hash64
 	{
 		typedef unsigned long long HashType;
-		typedef unsigned long long SizeType;
 		static inline unsigned int Bits() {return 64;}
 		static inline HashType Prime() {return 1099511628211ULL;}
 		static const HashType s_offsetBasis = 14695981039346656037ULL;
@@ -77,7 +75,7 @@ namespace AK
 		/// Turn the provided data into a hash value.
 		/// When Wwise uses this hash with strings, it always provides lower case strings only.
 		/// Call this repeatedly on the same instance to build a hash incrementally.
-		inline typename HashParams::HashType Compute( const void* in_pData, typename HashParams::SizeType in_dataSize );
+		inline typename HashParams::HashType Compute( const void* in_pData, unsigned int in_dataSize );
 		inline typename HashParams::HashType Get() const { return m_uHash; }
 
 		template <typename T>
@@ -92,14 +90,16 @@ namespace AK
 	#pragma warning(disable:4127)
 	#endif
 
+
 	template <class HashParams> 
 	FNVHash<HashParams>::FNVHash( typename HashParams::HashType in_uBase )
 		: m_uHash( in_uBase )
 	{
 	}
 
+
 	template <class HashParams> 
-	typename HashParams::HashType FNVHash<HashParams>::Compute( const void* in_pData, typename HashParams::SizeType in_dataSize )
+	typename HashParams::HashType FNVHash<HashParams>::Compute( const void* in_pData, unsigned int in_dataSize )
 	{
 		const unsigned char* pData = (const unsigned char*) in_pData;
 		const unsigned char* pEnd = pData + in_dataSize;		/* beyond end of buffer */
@@ -130,6 +130,7 @@ namespace AK
 	typedef FNVHash<Hash32> FNVHash32;
 	typedef FNVHash<Hash30> FNVHash30;
 	typedef FNVHash<Hash64> FNVHash64;
+
 }
 
 #endif

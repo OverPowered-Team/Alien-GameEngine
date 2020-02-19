@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -83,12 +83,12 @@ namespace AK
 		/// \return True if the writer is ready.
 		virtual bool IsReady() const = 0;
 
-		virtual AK::XmlWriteReady::WriteReady GetReadyState() const = 0;
+		virtual XmlWriteReady::WriteReady GetReadyState() const = 0;
 
-		virtual bool Append( AK::IXmlTextWriter* in_pWriterToAppend ) = 0;
+		virtual bool Append( IXmlTextWriter* in_pWriterToAppend ) = 0;
 
 		// Properties
-		virtual AK::XmlWriteState::WriteState GetWriteState() const = 0;
+		virtual XmlWriteState::WriteState GetWriteState() const = 0;
 
 		// Methods
 		/// Writes the XML declaration. 
@@ -98,28 +98,28 @@ namespace AK
 		virtual void WriteEndDocument() = 0;
 
 		/// Writes out a start tag with the specified local name. 
-		virtual void WriteStartElement( const CStringW& in_rcsElementName, /// The local name of the element. 
-			AK::XmlElementType::ElementType in_eType = AK::XmlElementType::Map /// Element type.
+		virtual void WriteStartElement( const CString& in_rcsElementName, /// The local name of the element. 
+										XmlElementType::ElementType in_eType = XmlElementType::Map /// Element type.
 										) = 0;
 
 		/// Closes one element and pops the corresponding namespace scope.
 		virtual void WriteEndElement() = 0;
 
 		/// Writes an attribute with the specified value. 
-		virtual void WriteAttributeString(	const CStringW& in_rcsAttribute, /// The local name of the attribute. 
-											const CStringW& in_rcsValue		/// The value of the attribute. 
+		virtual void WriteAttributeString(	const CString& in_rcsAttribute, /// The local name of the attribute. 
+											const CString& in_rcsValue		/// The value of the attribute. 
 											) = 0;
 
 		/// Writes the given text content. 
-		virtual void WriteString( const CStringW& in_rcsValue	/// The text to write. 
+		virtual void WriteString( const CString& in_rcsValue	/// The text to write. 
 									) = 0;
 
 		/// Writes out a <![CDATA[...]]> block containing the specified text. 
-		virtual void WriteCData( const CStringW& in_rcsValue		/// The text to place inside the CDATA block. 
+		virtual void WriteCData( const CString& in_rcsValue		/// The text to place inside the CDATA block. 
 									) = 0;
 
 		/// Writes raw markup manually. 
-		virtual void WriteRaw( const CStringW& in_rcsValue	/// String containing the text to write
+		virtual void WriteRaw( const CString& in_rcsValue	/// String containing the text to write
 								) = 0;
 
 		// Helpers
@@ -129,7 +129,7 @@ namespace AK
 		public:
 		
 			/// Calls WriteStartElement automatically
-			AutoStartEndElement( const CStringW& in_rcsElementName, AK::IXmlTextWriter* in_pWriter, AK::XmlElementType::ElementType in_eType = AK::XmlElementType::Map )
+			AutoStartEndElement( const CString& in_rcsElementName, IXmlTextWriter* in_pWriter, XmlElementType::ElementType in_eType = XmlElementType::Map )
 				: m_pWriter( in_pWriter )
 			{
 				m_pWriter->WriteStartElement( in_rcsElementName, in_eType );
@@ -142,7 +142,7 @@ namespace AK
 			}
 
 		private:
-			AK::IXmlTextWriter* m_pWriter;
+			IXmlTextWriter* m_pWriter;
 		};
 	};
 }

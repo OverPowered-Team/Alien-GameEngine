@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-Version: v2019.2.0  Build: 7216
-Copyright (c) 2006-2020 Audiokinetic Inc.
+Version: v2017.2.3  Build: 6575
+Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -33,7 +33,6 @@ Copyright (c) 2006-2020 Audiokinetic Inc.
 #include <AK/Tools/Common/AkKeyArray.h>
 #include <AK/Tools/Common/AkSet.h>
 #include <AK/Tools/Common/AkString.h>
-#include <AK/Tools/Common/AkLock.h>
 
 class AkAcousticRoom;
 class AkAcousticPortal;
@@ -41,35 +40,17 @@ class AkImageSourceTriangle;
 class AkImageSourcePlane;
 
 #define AK_MAX_REFLECT_ORDER 4
-#define AK_MAX_REFLECTION_PATH_LENGTH (AK_MAX_REFLECT_ORDER + 4)
 #define AK_MAX_SOUND_PROPAGATION_DEPTH 8
 #define AK_DEFAULT_DIFFR_SHADOW_DEGREES (30.0f)
-#define AK_DEFAULT_DIFFR_SHADOW_ATTEN (1.0f)
-#define AK_DEFAULT_MOVEMENT_THRESHOLD (1.0f)
-#define AK_DEFAULT_REFLECTIONS_ORDER (1)
-#define AK_SA_EPSILON (0.001f)
-#define AK_SA_DIFFRACTION_EPSILON (0.002f) // Radians
-#define AK_SA_PLANE_THICKNESS_RATIO (0.005f)
+#define AK_DEFAULT_DIFFR_SHADOW_ATTEN (2.0f)
 
 const AkReal32 kDefaultMaxPathLength = 100.f;
 
-const AkUInt32 kDefaultDiffractionMaxEdges = 8;
-const AkUInt32 kDefaultDiffractionMaxPaths = 8;
-const AkReal32 kMaxDiffraction = 1.0f;
+extern AkMemPoolId g_SpatialAudioPoolId;
 
-// Max values that are used for calculating diffraction paths between the listener and a portal.
-const AkUInt32 kDiffractionMaxEdges = 8;
-const AkUInt32 kDiffractionMaxPaths = 8;
-const AkUInt32 kPortalToPortalDiffractionMaxPaths = 8;
-
-typedef AkArrayAllocatorNoAlign<AkMemID_SpatialAudio> ArrayPoolSpatialAudio;
-typedef AkArrayAllocatorAlignedSimd<AkMemID_SpatialAudio> ArrayPoolSpatialAudioSIMD;
-
-typedef AkArrayAllocatorNoAlign<AkMemID_SpatialAudioPaths> ArrayPoolSpatialAudioPaths;
-typedef AkArrayAllocatorAlignedSimd<AkMemID_SpatialAudioPaths> ArrayPoolSpatialAudioPathsSIMD;
-
-typedef AkArrayAllocatorNoAlign<AkMemID_SpatialAudioGeometry> ArrayPoolSpatialAudioGeometry;
-typedef AkArrayAllocatorAlignedSimd<AkMemID_SpatialAudioGeometry> ArrayPoolSpatialAudioGeometrySIMD;
+AK_DEFINE_ARRAY_POOL(_ArrayPoolSpatialAudio, g_SpatialAudioPoolId);
+typedef AkArrayAllocatorNoAlign<_ArrayPoolSpatialAudio> ArrayPoolSpatialAudio;
+typedef AkArrayAllocatorAlignedSimd<_ArrayPoolSpatialAudio> ArrayPoolSpatialAudioSIMD;
 
 namespace AK
 {
@@ -78,21 +59,8 @@ namespace AK
 		typedef AkString<ArrayPoolSpatialAudio, wchar_t> WString;		///< Wide string type for use in Wwise Spatial Audio
 		typedef AkString<ArrayPoolSpatialAudio, AkOSChar> OsString;		///< OS string type for use in Wwise Spatial Audio
 		typedef AkString<ArrayPoolSpatialAudio, char> String;			///< String type for use in Wwise Spatial Audio
-		typedef AkDbString<ArrayPoolSpatialAudio, char, CAkLock> DbString; ///< Instanced string type.
-
-		typedef AkUInt16 Idx;
 	}
 }
-
-typedef AkUInt16 AkVertIdx;
-typedef AkUInt16 AkTriIdx;
-typedef AkUInt16 AkSurfIdx;
-typedef AkUInt16 AkEdgeIdx;
-
-#define AK_INVALID_VERTEX ((AkVertIdx)(-1))
-#define AK_INVALID_TRIANGLE ((AkTriIdx)(-1))
-#define AK_INVALID_SURFACE ((AkSurfIdx)(-1))
-#define AK_INVALID_EDGE ((AkEdgeIdx)(-1))
 
 /// Base type for ID's used by Wwise spatial audio.  
 struct AkSpatialAudioID
@@ -161,4 +129,3 @@ typedef AkSpatialAudioID AkPortalID;
 ///	- \ref AK::SpatialAudio::SetGeometry
 ///	- \ref AK::SpatialAudio::RemoveGeometry
 typedef AkSpatialAudioID AkGeometrySetID;
-

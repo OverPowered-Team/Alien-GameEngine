@@ -21,66 +21,62 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKARRAY_H
 #define _AKARRAY_H
 
-#include "../../Tools/Common/AkObject.h"
-#include "../../Tools/Common/AkAssert.h"
-#include "../../Tools/Common/AkPlatformFuncs.h"
+#include "AkObject.h"
+#include "AkAssert.h"
+#include "AkPlatformFuncs.h"
 
-template <AkMemID T_MEMID>
+#define AK_DEFINE_ARRAY_POOL( _name_, _poolID_ )	\
+struct _name_										\
+{													\
+	static AkMemPoolId Get()						\
+	{												\
+		return _poolID_;							\
+	}												\
+};
+
+AK_DEFINE_ARRAY_POOL( _ArrayPoolDefault, g_DefaultPoolId )
+AK_DEFINE_ARRAY_POOL( _ArrayPoolLEngineDefault, g_LEngineDefaultPoolId )
+
+template <class U_POOL>
 struct AkArrayAllocatorNoAlign
 {
 	AkForceInline void * Alloc( size_t in_uSize )
 	{
-		return AkAlloc(T_MEMID, in_uSize);
-	}
-
-	AkForceInline void * ReAlloc( void * in_pCurrent, size_t in_uOldSize, size_t in_uNewSize )
-	{
-		return AkRealloc(T_MEMID, in_pCurrent, in_uNewSize);
+		return AK::MemoryMgr::Malloc( U_POOL::Get(), in_uSize );
 	}
 
 	AkForceInline void Free( void * in_pAddress )
 	{
-		AkFree(T_MEMID, in_pAddress);
+		AK::MemoryMgr::Free( U_POOL::Get(), in_pAddress );
 	}
 
-	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorNoAlign<T_MEMID> in_srcAlloc, void * in_pSrc )
+	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorNoAlign<U_POOL> in_srcAlloc, void * in_pSrc ) 
 	{
 		io_pDest = in_pSrc;
 	}
 };
 
-template <AkMemID T_MEMID>
+template <class U_POOL>
 struct AkArrayAllocatorAlignedSimd
 {
 	AkForceInline void * Alloc( size_t in_uSize )
 	{
-		return AkMalign(T_MEMID, in_uSize, AK_SIMD_ALIGNMENT);
-	}
-
-	AkForceInline void * ReAlloc(void * in_pCurrent, size_t in_uOldSize, size_t in_uNewSize)
-	{
-		void* pNew = Alloc(in_uNewSize);
-		if (pNew && in_pCurrent)
-		{
-			AKPLATFORM::AkMemCpy(pNew, in_pCurrent, (AkUInt32)in_uOldSize);
-			Free(in_pCurrent);
-		}
-		return pNew;
+		return AK::MemoryMgr::Malign( U_POOL::Get(), in_uSize, AK_SIMD_ALIGNMENT );
 	}
 
 	AkForceInline void Free( void * in_pAddress )
 	{
-		AkFalign(T_MEMID, in_pAddress);
+		AK::MemoryMgr::Falign( U_POOL::Get(), in_pAddress );
 	}
 
-	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorAlignedSimd<T_MEMID> in_srcAlloc, void * in_pSrc )
+	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorAlignedSimd<U_POOL> in_srcAlloc, void * in_pSrc ) 
 	{
 		io_pDest = in_pSrc;
 	}
@@ -89,9 +85,9 @@ struct AkArrayAllocatorAlignedSimd
 
 // AkHybridAllocator
 //	Attempts to allocate from a small buffer of size uBufferSizeBytes, which is contained within the array type.  Useful if the array is expected to contain a small number of elements.
-//	If the array grows to a larger size than uBufferSizeBytes, the the memory is allocated with the specified AkMemID.
+//	If the array grows to a larger size than uBufferSizeBytes, the the memory is allocated from the default memory pool.
 //	NOTE: only use with types that are trivially copyable.
-template< AkUInt32 uBufferSizeBytes, AkUInt8 uAlignmentSize = AK_OS_STRUCT_ALIGN, AkMemID T_MEMID = AkMemID_Object>
+template< AkUInt32 uBufferSizeBytes, AkUInt8 uAlignmentSize = AK_OS_STRUCT_ALIGN>
 struct AkHybridAllocator
 {
 	static const AkUInt32 _uBufferSizeBytes = uBufferSizeBytes;
@@ -101,27 +97,16 @@ struct AkHybridAllocator
 		if (in_uSize <= uBufferSizeBytes)
 			return (void *)&m_buffer;
 		else
-			return AkMalign(T_MEMID, in_uSize, uAlignmentSize);
-	}
-
-	AkForceInline void * ReAlloc( void * in_pCurrent, size_t in_uOldSize, size_t in_uNewSize )
-	{
-		void* pNew = Alloc(in_uNewSize);
-		if (pNew != in_pCurrent && pNew && in_pCurrent)
-		{
-			AKPLATFORM::AkMemCpy(pNew, in_pCurrent, (AkUInt32)in_uOldSize);
-			Free(in_pCurrent);
-		}
-		return pNew;
+			return AK::MemoryMgr::Malign(g_DefaultPoolId, in_uSize, uAlignmentSize);
 	}
 
 	AkForceInline void Free(void * in_pAddress)
 	{
 		if (&m_buffer != in_pAddress)
-			AkFalign(T_MEMID, in_pAddress);
+			AK::MemoryMgr::Falign(g_DefaultPoolId, in_pAddress);
 	}
 
-	AkForceInline void TransferMem(void *& io_pDest, AkHybridAllocator<uBufferSizeBytes, uAlignmentSize, T_MEMID>& in_srcAlloc, void * in_pSrc)
+	AkForceInline void TransferMem(void *& io_pDest, AkHybridAllocator<uBufferSizeBytes, uAlignmentSize>& in_srcAlloc, void * in_pSrc)
 	{
 		if (&in_srcAlloc.m_buffer == in_pSrc)
 		{
@@ -146,11 +131,6 @@ struct AkAssignmentMovePolicy
 	{
 		in_Dest = in_Src;
 	}
-
-	static AkForceInline bool IsTrivial()
-	{
-		return true;
-	}
 };
 
 // Can be used as TMovePolicy to create arrays of arrays.
@@ -161,44 +141,15 @@ struct AkTransferMovePolicy
 	{
 		in_Dest.Transfer(in_Src); //transfer ownership of resources.
 	}
-
-	static AkForceInline bool IsTrivial()
-	{
-		return false;
-	}
 };
 
 // Common allocators:
-typedef AkArrayAllocatorNoAlign<AkMemID_Object> ArrayPoolDefault;
-typedef AkArrayAllocatorNoAlign<AkMemID_Processing> ArrayPoolLEngineDefault;
-typedef AkArrayAllocatorAlignedSimd<AkMemID_Processing> ArrayPoolLEngineDefaultAlignedSimd;
-
-struct AkGrowByPolicy_Legacy
-{
-	static AkUInt32 GrowBy( AkUInt32 /*in_CurrentArraySize*/ ) { return 1; }
-};
-
-struct AkGrowByPolicy_NoGrow
-{
-	static AkUInt32 GrowBy( AkUInt32 /*in_CurrentArraySize*/ ) { return 0; }
-};
-
-struct AkGrowByPolicy_Proportional
-{
-	static AkUInt32 GrowBy( AkUInt32 in_CurrentArraySize )
-	{
-		if ( in_CurrentArraySize == 0 )
-			return 1;
-		else
-			return in_CurrentArraySize + ( in_CurrentArraySize >> 1 );
-	}
-};
-
-//#define AkGrowByPolicy_DEFAULT AkGrowByPolicy_Legacy
-#define AkGrowByPolicy_DEFAULT AkGrowByPolicy_Proportional
+typedef AkArrayAllocatorNoAlign<_ArrayPoolDefault> ArrayPoolDefault;
+typedef AkArrayAllocatorNoAlign<_ArrayPoolLEngineDefault> ArrayPoolLEngineDefault;
+typedef AkArrayAllocatorAlignedSimd<_ArrayPoolLEngineDefault> ArrayPoolLEngineDefaultAlignedSimd;
 
 /// Specific implementation of array
-template <class T, class ARG_T, class TAlloc = ArrayPoolDefault, class TGrowBy = AkGrowByPolicy_DEFAULT, class TMovePolicy = AkAssignmentMovePolicy<T> > class AkArray : public TAlloc
+template <class T, class ARG_T, class TAlloc = ArrayPoolDefault, unsigned long TGrowBy = 1, class TMovePolicy = AkAssignmentMovePolicy<T> > class AkArray : public TAlloc
 {
 public:
 	/// Constructor
@@ -224,22 +175,6 @@ public:
 	struct Iterator
 	{
 		T* pItem;	///< Pointer to the item in the array.
-
-		/// + operator
-		Iterator operator+(AkUInt32 inc) const
-		{
-			AKASSERT( pItem );
-			Iterator returnedIt;
-			returnedIt.pItem = pItem + inc;
-			return returnedIt;
-		}
-
-        /// - operator
-        AkUInt32 operator-(Iterator const& rhs) const
-        {
-			AKASSERT((pItem && rhs.pItem)||(!pItem && !rhs.pItem));
-			return (AkUInt32)(pItem - rhs.pItem);
-        }
 
 		/// ++ operator
 		Iterator& operator++()
@@ -396,16 +331,11 @@ public:
 		return in_rIter;
 	}
 
-	bool IsGrowingAllowed()
-	{
-		return TGrowBy::GrowBy( 1 ) != 0;
-	}
-
 	/// Pre-Allocate a number of spaces in the array
 	AKRESULT Reserve( AkUInt32 in_ulReserve )
 	{
 		AKASSERT( m_pItems == 0 && m_uLength == 0 );
-		AKASSERT( in_ulReserve || IsGrowingAllowed() );
+		AKASSERT( in_ulReserve || TGrowBy );
 
 		if ( in_ulReserve )
 		{
@@ -439,12 +369,6 @@ public:
 		return m_uLength;
 	}
 
-	/// Returns a pointer to the first item in the array.
-	AkForceInline T * Data() const
-	{
-		return m_pItems;
-	}
-
 	/// Returns true if the number items in the array is 0, false otherwise.
 	AkForceInline bool IsEmpty() const
 	{
@@ -452,7 +376,7 @@ public:
 	}
 	
 	/// Returns a pointer to the specified item in the list if it exists, 0 if not found.
-	AkForceInline T* Exists(ARG_T in_Item) const
+	T* Exists(ARG_T in_Item) const
 	{
 		Iterator it = FindEx( in_Item );
 		return ( it != End() ) ? it.pItem : 0;
@@ -460,7 +384,7 @@ public:
 
 	/// Add an item in the array, without filling it.
 	/// Returns a pointer to the location to be filled.
-	AkForceInline T * AddLast()
+	T * AddLast()
 	{
 		size_t cItems = Length();
 
@@ -468,7 +392,7 @@ public:
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
-		if ( ( cItems >= m_ulReserved ) && IsGrowingAllowed() )
+		if ( ( cItems >= m_ulReserved ) && TGrowBy > 0 )
 		{
 			if ( !GrowArray() ) 
 				return 0;
@@ -489,7 +413,7 @@ public:
 	}
 
 	/// Add an item in the array, and fills it with the provided item.
-	AkForceInline T * AddLast(ARG_T in_rItem)
+	T * AddLast(ARG_T in_rItem)
 	{
 		T * pItem = AddLast();
 		if ( pItem )
@@ -568,7 +492,7 @@ public:
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
-		if ( ( cItems >= m_ulReserved ) && IsGrowingAllowed() )
+		if ( ( cItems >= m_ulReserved ) && TGrowBy > 0 )
 		{
 			if ( !GrowArray() ) 
 				return 0;
@@ -599,50 +523,37 @@ public:
 		return 0;
 	}
 
-	bool GrowArray()
-	{
-		// If no size specified, growing by the declared growth policy of the array.
-		return GrowArray( TGrowBy::GrowBy( m_ulReserved ) );
-	}
-
 	/// Resize the array.
-	bool GrowArray( AkUInt32 in_uGrowBy )
+	bool GrowArray( AkUInt32 in_uGrowBy = TGrowBy )
 	{
 		AKASSERT( in_uGrowBy );
-
+		
 		AkUInt32 ulNewReserve = m_ulReserved + in_uGrowBy;
-		T * pNewItems = NULL;
+		T * pNewItems = (T *) TAlloc::Alloc( sizeof( T ) * ulNewReserve );
+		if ( !pNewItems ) 
+			return false;
+
+		// Copy all elements in new array, destroy old ones
+
 		size_t cItems = Length();
-		if (TMovePolicy::IsTrivial())
-		{
-			pNewItems = (T *)TAlloc::ReAlloc(m_pItems, sizeof(T) * cItems, sizeof(T) * ulNewReserve);
-			if (!pNewItems)
-				return false;
-		}
-		else
-		{
-			pNewItems = (T *)TAlloc::Alloc(sizeof(T) * ulNewReserve);
-			if (!pNewItems)
-				return false;
 
-			// Copy all elements in new array, destroy old ones
-			if (m_pItems && m_pItems != pNewItems /*AkHybridAllocator may serve up same memory*/)
+		if ( m_pItems && m_pItems != pNewItems /*AkHybridAllocator may serve up same memory*/ ) 
+		{
+			for ( size_t i = 0; i < cItems; ++i )
 			{
-				for (size_t i = 0; i < cItems; ++i)
-				{
-					AkPlacementNew(pNewItems + i) T;
+				AkPlacementNew( pNewItems + i ) T; 
 
-					TMovePolicy::Move(pNewItems[i], m_pItems[i]);
-
-					m_pItems[i].~T();
-				}
-
-				TAlloc::Free(m_pItems);
+				TMovePolicy::Move( pNewItems[ i ], m_pItems[ i ] );
+	            
+				m_pItems[ i ].~T();
 			}
+
+			TAlloc::Free( m_pItems );
 		}
 
 		m_pItems = pNewItems;
 		m_ulReserved = ulNewReserve;
+
 		return true;
 	}
 

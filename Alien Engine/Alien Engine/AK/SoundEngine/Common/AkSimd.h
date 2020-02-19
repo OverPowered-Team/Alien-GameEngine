@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSimd.h
@@ -33,14 +33,14 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_SIMD_H_
 #define _AK_SIMD_H_
 
-#include <AK/SoundEngine/Common/AkTypes.h>
+#include "AkTypes.h"
 
 // Platform-specific section.
 //----------------------------------------------------------------------------------------------------
 
-#if defined( AK_WIN ) || defined( AK_XBOX )
+#if defined( AK_WIN ) || defined( AK_XBOXONE )
 	
-	#include <AK/SoundEngine/Platforms/Windows/AkSimd.h>
+	#include "../Platforms/Windows/AkSimd.h"
 
 #elif defined( AK_APPLE )
 
@@ -59,10 +59,6 @@ the specific language governing permissions and limitations under the License.
 
 	#include <AK/SoundEngine/Platforms/PS4/AkSimd.h>
 	
-#elif defined( AK_PELLEGRINO )
-
-	#include <AK/SoundEngine/Platforms/Pellegrino/AkSimd.h>
-
 #elif defined( AK_LINUX )
 
 	#include <AK/SoundEngine/Platforms/Linux/AkSimd.h>

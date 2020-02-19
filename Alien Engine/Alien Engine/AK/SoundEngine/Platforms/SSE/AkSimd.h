@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSimd.h
@@ -33,10 +33,8 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_SIMD_SSE_H_
 #define _AK_SIMD_SSE_H_
 
-#include <AK/SoundEngine/Common/AkTypes.h>
+#include "../../Common/AkTypes.h"
 #include <xmmintrin.h>
-#include <smmintrin.h>
-#include <emmintrin.h>
 
 ////////////////////////////////////////////////////////////////////////
 /// @name Platform specific defines for prefetching
@@ -65,18 +63,6 @@ typedef float	AKSIMD_F32;		///< 32-bit float
 typedef __m128	AKSIMD_V4F32;	///< Vector of 4 32-bit floats
 typedef AKSIMD_V4F32 AKSIMD_V4COND;	 ///< Vector of 4 comparison results
 typedef AKSIMD_V4F32 AKSIMD_V4FCOND;	 ///< Vector of 4 comparison results
-
-typedef __m128i	AKSIMD_V4I32;	///< Vector of 4 32-bit signed integers
-
-struct AKSIMD_V4I32X2 {			///< Pair of 4 32-bit signed integers
-	AKSIMD_V4I32 val[2];
-};
-
-struct AKSIMD_V4I32X4 {			///< Quartet of 4 32-bit signed integers
-	AKSIMD_V4I32 val[4];
-};
-
-typedef AKSIMD_V4I32 AKSIMD_V4ICOND;
 
 //@}
 ////////////////////////////////////////////////////////////////////////
@@ -144,8 +130,6 @@ typedef AKSIMD_V4I32 AKSIMD_V4ICOND;
 /// a and b, based on the mask i (see _mm_shuffle_ps)
 // Usage: AKSIMD_SHUFFLE_V4F32( vec1, vec2, AKSIMD_SHUFFLE( z, y, x, w ) )
 #define AKSIMD_SHUFFLE_V4F32( a, b, i ) _mm_shuffle_ps( a, b, i )
-
-#define AKSIMD_SHUFFLE_V4I32( a, b, i ) _mm_castps_si128(_mm_shuffle_ps( _mm_castsi128_ps(a), _mm_castsi128_ps(b), i ))
 
 /// Moves the upper two single-precision, floating-point values of b to
 /// the lower two single-precision, floating-point values of the result.
@@ -238,46 +222,33 @@ typedef AKSIMD_V4I32 AKSIMD_V4ICOND;
 /// Vector square root aproximation (see _mm_sqrt_ps)
 #define AKSIMD_SQRT_V4F32( __a__ ) _mm_sqrt_ps( (__a__) )
 
-/// Vector reciprocal square root approximation 1/sqrt(a), or equivalently, sqrt(1/a)
-#define AKSIMD_RSQRT_V4F32( __a__ ) _mm_rsqrt_ps( (__a__) )
-
-/// Reciprocal of x (1/x)
-#define AKSIMD_RECIP_V4F32(__a__) _mm_rcp_ps(__a__)
-
-/// Rounds to upper value
-static AkForceInline AKSIMD_V4F32 AKSIMD_CEIL_V4F32(const AKSIMD_V4F32 & x)
-{
-	static const AKSIMD_V4F32 vEpsilon = { 0.49999f, 0.49999f, 0.49999f, 0.49999f };
-	return _mm_cvtepi32_ps(_mm_cvtps_epi32(_mm_add_ps(x, vEpsilon)));
-}
-
-/// Faked in-place vector horizontal add - each element will represent sum of all elements
-/// \akwarning
+/// Faked in-place vector horizontal add. 
+/// \akwarning 
 /// Don't expect this to be very efficient. 
-/// \endakwarning
-static AkForceInline AKSIMD_V4F32 AKSIMD_HORIZONTALADD_V4F32(AKSIMD_V4F32 vVec)
+/// /endakwarning
+static AkForceInline void AKSIMD_HORIZONTALADD(AKSIMD_V4F32 & vVec)
 {   
-	__m128 vAb = _mm_shuffle_ps(vVec, vVec, 0xB1);
-	__m128 vHaddAb = _mm_add_ps(vVec, vAb);
-	__m128 vHaddCd = _mm_shuffle_ps(vHaddAb, vHaddAb, 0x4E);
-	__m128 vHaddAbcd = _mm_add_ps(vHaddAb, vHaddCd);
-	return vHaddAbcd;
+	__m128 vHighLow = _mm_movehl_ps(vVec, vVec);
+	vVec = _mm_add_ps(vVec, vHighLow);
+	vHighLow = _mm_shuffle_ps(vVec, vVec, 0x55);
+	vVec = _mm_add_ps(vVec, vHighLow);
 } 
 
 static AkForceInline AKSIMD_V4F32 AKSIMD_DOTPRODUCT( AKSIMD_V4F32 & vVec, const AKSIMD_V4F32 & vfSigns )
 {
 	AKSIMD_V4F32 vfDotProduct = AKSIMD_MUL_V4F32( vVec, vfSigns );
-	return AKSIMD_HORIZONTALADD_V4F32( vfDotProduct );
+	AKSIMD_HORIZONTALADD( vfDotProduct );
+	return AKSIMD_SHUFFLE_V4F32( vfDotProduct, vfDotProduct, AKSIMD_SHUFFLE(0,0,0,0) );
 }
 
 /// Cross-platform SIMD multiplication of 2 complex data elements with interleaved real and imaginary parts
-static AkForceInline AKSIMD_V4F32 AKSIMD_COMPLEXMUL_V4F32( const AKSIMD_V4F32 vCIn1, const AKSIMD_V4F32 vCIn2 )
+static AkForceInline AKSIMD_V4F32 AKSIMD_COMPLEXMUL( const AKSIMD_V4F32 vCIn1, const AKSIMD_V4F32 vCIn2 )
 {
 	static const AKSIMD_V4F32 vSign = { -1.f, 1.f, -1.f, 1.f }; 
 
-	AKSIMD_V4F32 vTmp1 = AKSIMD_SHUFFLE_V4F32( vCIn1, vCIn1, AKSIMD_SHUFFLE(2,2,0,0));
+	AKSIMD_V4F32 vTmp1 = _mm_shuffle_ps( vCIn1, vCIn1, _MM_SHUFFLE(2,2,0,0)); 
 	vTmp1 = AKSIMD_MUL_V4F32( vTmp1, vCIn2 );
-	AKSIMD_V4F32 vTmp2 = AKSIMD_SHUFFLE_V4F32( vCIn1, vCIn1, AKSIMD_SHUFFLE(3,3,1,1));
+	AKSIMD_V4F32 vTmp2 = _mm_shuffle_ps( vCIn1, vCIn1, _MM_SHUFFLE(3,3,1,1)); 
 	vTmp2 = AKSIMD_MUL_V4F32( vTmp2, vSign );
 	vTmp2 = AKSIMD_MADD_V4F32( vTmp2, AKSIMD_SHUFFLE_BADC( vCIn2 ), vTmp1 );
 	return vTmp2;
@@ -320,8 +291,6 @@ static AKSIMD_V4F32 AKSIMD_COMPLEXMUL_SSE3( const AKSIMD_V4F32 vCIn1, const AKSI
 
 #define AKSIMD_CMPLT_V4I32( a, b ) _mm_cmplt_epi32(a,b)
 #define AKSIMD_CMPGT_V4I32( a, b ) _mm_cmpgt_epi32(a,b)
-#define AKSIMD_OR_V4I32( a, b ) _mm_or_si128(a,b)
-#define AKSIMD_OR_V4F32( a, b ) _mm_or_ps(a,b)
 #define AKSIMD_XOR_V4I32( a, b ) _mm_xor_si128(a,b)
 #define AKSIMD_XOR_V4F32( a, b ) _mm_xor_ps(a,b)
 #define AKSIMD_SUB_V4I32( a, b ) _mm_sub_epi32(a,b)
@@ -344,78 +313,6 @@ static AKSIMD_V4F32 AKSIMD_COMPLEXMUL_SSE3( const AKSIMD_V4F32 vCIn1, const AKSI
 /// values from a and b (see _mm_unpackhi_ps)
 #define AKSIMD_UNPACKHI_V4F32( a, b ) _mm_unpackhi_ps( a, b )
 
-// Given four pointers, gathers 32-bits of data from each location,
-// deinterleaves them as 16-bits of each, and sign-extends to 32-bits
-// e.g. (*addr[0]) := (b a) 
-// e.g. (*addr[1]) := (d c) 
-// e.g. (*addr[2]) := (f e) 
-// e.g. (*addr[3]) := (h g)
-// return struct has
-// val[0] := (g e c a)
-// val[1] := (h f d b)
-static AkForceInline AKSIMD_V4I32X2 AKSIMD_GATHER_V4I32_AND_DEINTERLEAVE_V4I32X2(AkInt16* addr3, AkInt16* addr2, AkInt16* addr1, AkInt16* addr0)
-{
-	__m128i data[4] = {
-		_mm_set1_epi32(*(AkInt32*)addr0),
-		_mm_set1_epi32(*(AkInt32*)addr1),
-		_mm_set1_epi32(*(AkInt32*)addr2),
-		_mm_set1_epi32(*(AkInt32*)addr3),
-	};
-
-	__m128i group[2] = {
-		_mm_unpacklo_epi32(data[0], data[1]),
-		_mm_unpacklo_epi32(data[2], data[3]),
-	};
-
-	__m128i shuffle = _mm_unpacklo_epi64(group[0], group[1]);
-
-	AKSIMD_V4I32X2 ret{
-		 _mm_srai_epi32(_mm_slli_epi32(shuffle, 16), 16),
-		 _mm_srai_epi32(shuffle, 16)
-	};
-	return ret;
-}
-
-// Given four pointers, gathers 64-bits of data from each location,
-// deinterleaves them as 16-bits of each, and sign-extends to 32-bits
-// e.g. (*addr[0]) := (d c b a) 
-// e.g. (*addr[1]) := (h g f e) 
-// e.g. (*addr[2]) := (l k j i) 
-// e.g. (*addr[3]) := (p o n m) 
-// return struct has
-// val[0] := (m i e a)
-// val[1] := (n j f b)
-// val[2] := (o k g c)
-// val[3] := (p l h d)
-
-static AkForceInline AKSIMD_V4I32X4 AKSIMD_GATHER_V4I64_AND_DEINTERLEAVE_V4I32X4(AkInt16* addr3, AkInt16* addr2, AkInt16* addr1, AkInt16* addr0)
-{
-	__m128i data[4] = {
-		_mm_set1_epi64x(*(AkInt64*)addr0),
-		_mm_set1_epi64x(*(AkInt64*)addr1),
-		_mm_set1_epi64x(*(AkInt64*)addr2),
-		_mm_set1_epi64x(*(AkInt64*)addr3),
-	};
-	
-	__m128i group[2] = {
-		_mm_unpacklo_epi64(data[0], data[1]),
-		_mm_unpacklo_epi64(data[2], data[3]),
-	};
-
-	__m128i shuffle[2] = {
-		_mm_castps_si128 (_mm_shuffle_ps(_mm_castsi128_ps(group[0]), _mm_castsi128_ps(group[1]), 0x88)),
-		_mm_castps_si128 (_mm_shuffle_ps(_mm_castsi128_ps(group[0]), _mm_castsi128_ps(group[1]), 0xDD)),
-	};
-
-	AKSIMD_V4I32X4 ret{
-		_mm_srai_epi32(_mm_slli_epi32(shuffle[0],16),16),
-		_mm_srai_epi32(shuffle[0],16),
-		_mm_srai_epi32(_mm_slli_epi32(shuffle[1],16),16),
-		_mm_srai_epi32(shuffle[1],16),
-	};
-	return ret;
-}
-
 //@}
 ////////////////////////////////////////////////////////////////////////
 
@@ -429,12 +326,8 @@ static AkForceInline AKSIMD_V4I32X4 AKSIMD_GATHER_V4I64_AND_DEINTERLEAVE_V4I32X4
 /// Vector "<=" operation (see _mm_cmple_ps)
 #define AKSIMD_LTEQ_V4F32( __a__, __b__ ) _mm_cmple_ps( (__a__), (__b__) )
 
-#define AKSIMD_LT_V4F32( __a__, __b__ ) _mm_cmplt_ps( (__a__), (__b__) )
-
 /// Vector ">=" operation (see _mm_cmple_ps)
 #define AKSIMD_GTEQ_V4F32( __a__, __b__ ) _mm_cmpge_ps( (__a__), (__b__) )
-
-#define AKSIMD_GT_V4F32( __a__, __b__ ) _mm_cmpgt_ps( (__a__), (__b__) )
 
 /// Vector "==" operation (see _mm_cmpeq_ps)
 #define AKSIMD_EQ_V4F32( __a__, __b__ ) _mm_cmpeq_ps( (__a__), (__b__) )
@@ -460,6 +353,12 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_VSEL_V4F32( AKSIMD_V4F32 vA, AKSIMD_V4F
 //@}
 ////////////////////////////////////////////////////////////////////////
 
+#include <emmintrin.h>
+
+typedef __m128i	AKSIMD_V4I32;	///< Vector of 4 32-bit signed integers
+
+typedef AKSIMD_V4I32 AKSIMD_V4ICOND;
+
 /// Loads unaligned 128-bit value (see _mm_loadu_si128)
 #define AKSIMD_LOADU_V4I32( __addr__ ) _mm_loadu_si128( (__addr__) )
 
@@ -473,20 +372,12 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_VSEL_V4F32( AKSIMD_V4F32 vA, AKSIMD_V4F
 
 #define AKSIMD_SETV_V4I32( _d, _c, _b, _a ) _mm_set_epi32( (_d), (_c), (_b), (_a) )
 
-#define AKSIMD_SETV_V2I64( _b, _a ) _mm_set_epi64x( (_b), (_a) )
-
-/// Sets the 32b integer i at the location specified by index in a
-#define AKSIMD_INSERT_V4I32( a, i, index) _mm_insert_epi32(a, i, index)
-
-/// Sets the 64b integer i at the location specified by index in a
-#define AKSIMD_INSERT_V2I64( a, i, index) _mm_insert_epi64(a, i, index)
-
 /// Stores four 32-bit integer values. 
-#define AKSIMD_STORE_V4I32( __addr__, __vec__ ) _mm_store_si128( (__m128i*)(__addr__), (__vec__) )
+#define AKSIMD_STORE_V4I32( __addr__, __vec__ ) _mm_store_si128( (__addr__), (__vec__) )
 
 /// Stores four 32-bit integer values. The address
 /// does not need to be 16-byte aligned (see _mm_storeu_si128).
-#define AKSIMD_STOREU_V4I32( __addr__, __vec__ ) _mm_storeu_si128( (__m128i*)(__addr__), (__vec__) )
+#define AKSIMD_STOREU_V4I32( __addr__, __vec__ ) _mm_storeu_si128( (__addr__), (__vec__) )
 
 ////////////////////////////////////////////////////////////////////////
 /// @name AKSIMD conversion
@@ -498,7 +389,7 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_VSEL_V4F32( AKSIMD_V4F32 vA, AKSIMD_V4F
 
 /// Converts the four single-precision, floating-point values of a to signed
 /// 32-bit integer values by rounding (see _mm_cvtps_epi32)
-#define AKSIMD_ROUND_V4F32_TO_V4I32( __vec__ ) _mm_cvtps_epi32( (__vec__) )
+#define AKSIMD_CONVERT_V4F32_TO_V4I32( __vec__ ) _mm_cvtps_epi32( (__vec__) )
 
 /// Converts the four single-precision, floating-point values of a to signed
 /// 32-bit integer values by truncating (see _mm_cvttps_epi32)
@@ -511,81 +402,6 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_VSEL_V4F32( AKSIMD_V4F32 vA, AKSIMD_V4F
 /// Compares the 8 signed 16-bit integers in a and the 8 signed
 /// 16-bit integers in b for greater than (see _mm_cmpgt_epi16)
 #define AKSIMD_CMPGT_V8I16( __a__, __b__ ) _mm_cmpgt_epi16( (__a__), (__b__) )
-
-/// Converts the 4 half-precision floats in the lower 64-bits of the provided
-/// vector to 4 full-precision floats 
-#define AKSIMD_CONVERT_V4F16_TO_V4F32_LO(__vec__) AKSIMD_CONVERT_V4F16_TO_V4F32_HELPER( _mm_unpacklo_epi16(_mm_setzero_si128(), __vec__))
-
-/// Converts the 4 half-precision floats in the upper 64-bits of the provided
-/// vector to 4 full-precision floats 
-#define AKSIMD_CONVERT_V4F16_TO_V4F32_HI(__vec__) AKSIMD_CONVERT_V4F16_TO_V4F32_HELPER( _mm_unpackhi_epi16(_mm_setzero_si128(), __vec__))
-
-static AkForceInline AKSIMD_V4F32 AKSIMD_CONVERT_V4F16_TO_V4F32_HELPER(AKSIMD_V4I32 vec)
-{
-	__m128i expMantData = _mm_and_si128(vec, _mm_set1_epi32(0x7fff0000));
-	__m128i expMantShifted = _mm_srli_epi32(expMantData, 3); // shift so that the float16 exp/mant is now split along float32's bounds
-	
-	// magic number to get scale fp16 exp range into fp32 exp range (also renormalize any denorms)
-	__m128i expMantFloat = _mm_castps_si128(_mm_mul_ps(_mm_castsi128_ps(expMantShifted), _mm_castsi128_ps(_mm_set1_epi32(0x77800000))));
-	
-	// if fp16 val was inf or nan, preserve the inf/nan exponent field (we can just 'or' the new inf-bits into the attempt at scaling from inf previously)
-	__m128i infnanCheck = _mm_cmpgt_epi32(expMantData, _mm_set1_epi32(0x7bffffff));
-	__m128i infnanExp = _mm_and_si128(infnanCheck, _mm_set1_epi32(255 << 23));
-	__m128i expMantWithInfNan = _mm_or_si128(expMantFloat, infnanExp);
-	
-	// reincorporate the sign
-	__m128i signData = _mm_and_si128(vec, _mm_set1_epi32(0x80000000));
-	__m128 assembledFloat = _mm_castsi128_ps(_mm_or_si128(signData, expMantWithInfNan));
-	return assembledFloat;
-}
-
-/// Converts the 4 full-precision floats vector to 4 half-precision floats 
-/// occupying the lower bits and leaving the upper bits as zero
-static AkForceInline AKSIMD_V4I32 AKSIMD_CONVERT_V4F32_TO_V4F16(AKSIMD_V4F32 vec)
-{
-	__m128i signData = _mm_and_si128(_mm_castps_si128(vec), _mm_set1_epi32(0x80000000));
-	__m128i unsignedVec = _mm_and_si128(_mm_castps_si128(vec), _mm_set1_epi32(0x7fffffff));
-
-	// do the processing for values that will be denormed in float16
-	// Add 0.5 to get value within range, and rounde; then move mantissa data up
-	__m128 denormedVec = _mm_add_ps(_mm_castsi128_ps(unsignedVec), _mm_set1_ps(0.5f));
-	__m128i denormResult = _mm_slli_epi32(_mm_castps_si128(denormedVec), 16);
-
-	// processing for values that will be normal in float16
-	__m128i subnormMagic = _mm_set1_epi32(0xC8000FFF); // -131072 + rounding bias
-	__m128i normRoundPart1 = _mm_add_epi32(unsignedVec, subnormMagic);
-	__m128i mantLsb = _mm_slli_epi32(unsignedVec, 31 - 13);
-	__m128i mantSignExtendLsb = _mm_srai_epi32(mantLsb, 31); // Extend Lsb so that it's -1 when set
-	__m128i normRoundPart2 = _mm_sub_epi32(normRoundPart1, mantSignExtendLsb); // and subtract the sign-extended bit to finish rounding up
-	__m128i normResult = _mm_slli_epi32(normRoundPart2, 3);
-
-	// Combine the norm and subnorm paths together
-	__m128i normalMinimum = _mm_set1_epi32((127 - 14) << 23); // smallest float32 that yields a normalized float16
-	__m128i denormMask = _mm_cmpgt_epi32(normalMinimum, unsignedVec);
-
-	__m128i nonNanFloat = _mm_or_si128(_mm_and_si128(denormMask, denormResult), _mm_andnot_si128(denormMask, normResult));
-
-	// apply inf/nan check
-	__m128i isNotInfNanMask = _mm_cmplt_epi32(unsignedVec, _mm_set1_epi32(0x47800000)); // test if the value will be greater than the max representable by float16
-	__m128i mantissaData = _mm_and_si128(unsignedVec, _mm_set1_epi32(0x007fffff));
-	__m128i isNanMask = _mm_cmpgt_epi32(unsignedVec, _mm_set1_epi32(0x7F800000)); // mark the parts of the vector where we have a mantissa (i.e. NAN) as 0xffffffff
-	__m128i nantissaBit = _mm_and_si128(isNanMask, _mm_set1_epi32(0x02000000)); // set the NaN mantissa bit if mantissa suggests this is NaN
-	__m128i infData = _mm_andnot_si128(mantissaData, _mm_set1_epi32(0x7c000000)); // grab the exponent data from unsigned vec with no mantissa
-	__m128i infNanFloat = _mm_or_si128(infData, nantissaBit); // if we have a non-zero mantissa, add the NaN mantissa bit
-
-	__m128i resultWithInfNan = _mm_or_si128(_mm_and_si128(isNotInfNanMask, nonNanFloat), _mm_andnot_si128(isNotInfNanMask, infNanFloat));
-
-	// reincorporate the original sign
-	__m128i signedResult = _mm_or_si128(signData, resultWithInfNan);
-
-	// store results packed in lower 64 bits, and set upper 64 to zero
-	__m128i resultEpi16Lo = _mm_shufflelo_epi16(signedResult, 0xD); // move 16b ints (x,x,x,x,d,c,b,a) down to (x,x,x,x,x,x,d,b)
-	__m128i resultEpi16Hi = _mm_shufflehi_epi16(signedResult, 0xD); //  move 16b ints (h,g,f,e,x,x,x,x) down to (x,x,h,f,x,x,x,x)
-	__m128 resultEpi16 = _mm_shuffle_ps(_mm_castsi128_ps(resultEpi16Lo), _mm_castsi128_ps(resultEpi16Hi), 0xE4); // combine - (x, x, h, f, x, x, d, b)
-	__m128i result = _mm_castps_si128(_mm_shuffle_ps(resultEpi16, _mm_setzero_ps(), 0x8)); // reshuffle with zero - (0,0,0,0,h,f,d,b)
-
-	return result;
-}
 
 //@}
 ////////////////////////////////////////////////////////////////////////
@@ -619,35 +435,9 @@ static AkForceInline AKSIMD_V4I32 AKSIMD_CONVERT_V4F32_TO_V4F16(AKSIMD_V4F32 vec
 //@}
 ////////////////////////////////////////////////////////////////////////
 
-#if defined( AK_CPU_X86 ) /// MMX
+#if defined( AK_CPU_X86 ) && !defined(AK_IOS) /// MMX
 
 typedef __m64	AKSIMD_V2F32;	///< Vector of 2 32-bit floats
-
-#define AKSIMD_SETZERO_V2F32() _mm_setzero_si64();
-
-#define AKSIMD_CMPGT_V2I32( a, b ) _mm_cmpgt_pi16(a,b)
-
-/// Interleaves the lower 2 signed or unsigned 16-bit integers in a with
-/// the lower 2 signed or unsigned 16-bit integers in b (see _mm_unpackhi_epi16)
-#define AKSIMD_UNPACKLO_VECTOR4I16( a, b ) _mm_unpacklo_pi16( a, b )
-
-/// Interleaves the upper 2 signed or unsigned 16-bit integers in a with
-/// the upper 2 signed or unsigned 16-bit integers in b (see _mm_unpackhi_epi16)
-#define AKSIMD_UNPACKHI_VECTOR4I16( a, b ) _mm_unpackhi_pi16( a, b )
-
-/// Shifts the 2 signed or unsigned 32-bit integers in a left by
-/// in_shiftBy bits while shifting in zeros (see _mm_slli_epi32)
-#define AKSIMD_SHIFTLEFT_V2I32( __vec__, __shiftBy__ ) \
-	_mm_slli_pi32( (__vec__), (__shiftBy__) )
-
-/// Shifts the 2 signed 32-bit integers in a right by in_shiftBy
-/// bits while shifting in the sign bit (see _mm_srai_epi32)
-#define AKSIMD_SHIFTRIGHTARITH_V2I32( __vec__, __shiftBy__ ) \
-	_mm_srai_pi32( (__vec__), (__shiftBy__) )
-
-/// Used when ending a block of code that utilizes any MMX construct on x86 code
-/// so that the x87 FPU can be used again
-#define AKSIMD_MMX_EMPTY _mm_empty();
 
 #endif
 

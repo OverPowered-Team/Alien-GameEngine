@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkCommonDefs.h
@@ -34,8 +34,8 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_COMMON_DEFS_H_
 #define _AK_COMMON_DEFS_H_
 
-#include "../SoundEngine/Common/AkSpeakerConfig.h"
-#include "../SoundEngine/Common/AkSpeakerVolumes.h"
+#include "AkSpeakerConfig.h"
+#include "AkSpeakerVolumes.h"
 
 //-----------------------------------------------------------------------------
 // AUDIO DATA FORMAT
@@ -188,7 +188,7 @@ enum AkSourceChannelOrdering
 //			* 64-255: Reserved for clients' in-house Plug-ins
 //			* 256-4095: Assigned by Audiokinetic to third-party plug-in developers
 //   - in_pluginID: PluginID as defined in the Plug-in's XML file (16 bits)
-//			* 0-32767: Set freely by the Plug-in developer
+//			* 0-65535: Set freely by the Plug-in developer
 #define AKMAKECLASSID( in_pluginType, in_companyID, in_pluginID ) \
 	( (in_pluginType) + ( (in_companyID) << 4 ) + ( (in_pluginID) << ( 4 + 12 ) ) )
 
@@ -412,7 +412,30 @@ public:
 		return pDataOld;
 	}
 
-	bool CheckValidSamples();	
+#if defined(AK_CHECK_AUDIO_BUFFER_VALID)
+	bool CheckValidSamples()
+	{
+		// Zero out all channels.
+		const AkUInt32 uNumChannels = NumChannels();
+		for ( AkUInt32 i = 0; i < uNumChannels; ++i )
+		{
+			AkSampleType * AK_RESTRICT pfChan = GetChannel(i);
+			if ( pfChan )
+			{
+				for ( AkUInt32 j = 0; j < uValidFrames; j++ )
+				{
+					AkSampleType fSample = *pfChan++;
+					if ( fSample > 4.f )
+						return false;
+					else if ( fSample < -4.f )
+						return false;
+				}
+			}
+		}
+
+		return true;
+	}
+#endif
 
 	//@}
 

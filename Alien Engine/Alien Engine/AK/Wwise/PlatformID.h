@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -34,7 +34,7 @@ the specific language governing permissions and limitations under the License.
 #if defined( _MSC_VER )
 	#define AK_ID_DECLARE extern const _declspec( selectany )
 #else
-	#define AK_ID_DECLARE extern const __attribute__( ( weak ) )
+	#define AK_ID_DECLARE const
 #endif
 
 struct BasePlatformID
@@ -75,7 +75,7 @@ struct BasePlatformID
 	{
 		bool operator()( const BasePlatformID& in_rLeft, const BasePlatformID& in_rRight ) const
 		{
-			return ( ::memcmp( &in_rLeft, &in_rRight, sizeof(BasePlatformID) ) < 0 );
+			return ( ::memcmp( &in_rLeft, &in_rRight, sizeof BasePlatformID ) < 0 );
 		}
 	};
 };
@@ -110,10 +110,6 @@ namespace PlatformID
 	AK_ID_DECLARE GUID PS4_unsafeguid = { 0x3af9b9b6, 0x6ef1, 0x47e9, { 0xb5, 0xfe, 0xe3, 0xc, 0x9e, 0x60, 0x2c, 0x77 } };
 	AK_ID_DECLARE BasePlatformID PS4 = BasePlatformID::Create( PS4_unsafeguid );
 
-	// {662A5E67-9D35-48DA-B6A8-B77C7F1D84E0}
-	AK_ID_DECLARE GUID Pellegrino_unsafeguid = { 0x662a5e67, 0x9d35, 0x48da, { 0xb6, 0xa8, 0xb7, 0x7c, 0x7f, 0x1d, 0x84, 0xe0 } };
-	AK_ID_DECLARE BasePlatformID Pellegrino = BasePlatformID::Create(Pellegrino_unsafeguid);
-
 	// {ECE03DB4-F948-462d-B2BB-A9173012B1F8}
 	AK_ID_DECLARE GUID iOS_unsafeguid = { 0xece03db4, 0xf948, 0x462d, { 0xb2, 0xbb, 0xa9, 0x17, 0x30, 0x12, 0xb1, 0xf8 } };
 	AK_ID_DECLARE BasePlatformID iOS = BasePlatformID::Create( iOS_unsafeguid );
@@ -138,25 +134,13 @@ namespace PlatformID
 	AK_ID_DECLARE GUID Linux_unsafeguid = { 0xbd0bdf13, 0x3125, 0x454f, { 0x8b, 0xfd, 0x31, 0x95, 0x37, 0x16, 0x9f, 0x81 } };
 	AK_ID_DECLARE BasePlatformID Linux = BasePlatformID::Create( Linux_unsafeguid );
 
-	// {EBDCC377-12EE-4FFE-A545-8588F83CAC94}
-	AK_ID_DECLARE GUID Stadia_unsafeguid = { 0xebdcc377, 0x12ee, 0x4ffe, { 0xa5, 0x45, 0x85, 0x88, 0xf8, 0x3c, 0xac, 0x94 } };
-	AK_ID_DECLARE BasePlatformID Stadia = BasePlatformID::Create(Stadia_unsafeguid);
-
 	// {874F26D2-416D-4698-BFB6-3427CAFCFF9C}
 	AK_ID_DECLARE GUID NintendoNX_unsafeguid = { 0x874f26d2, 0x416d, 0x4698, { 0xbf, 0xb6, 0x34, 0x27, 0xca, 0xfc, 0xff, 0x9c } };
 	AK_ID_DECLARE BasePlatformID NintendoNX = BasePlatformID::Create(NintendoNX_unsafeguid);
 
-	// {2EBB8232-E286-4962-A676-D15590AB9647}
-	AK_ID_DECLARE GUID Lumin_unsafeguid = { 0x2ebb8232, 0xe286, 0x4962, { 0xa6, 0x76, 0xd1, 0x55, 0x90, 0xab, 0x96, 0x47 } };
-	AK_ID_DECLARE BasePlatformID Lumin = BasePlatformID::Create(Lumin_unsafeguid);
-
 	// {639AD233-23F2-4c0f-9127-79F44C15E1DA}
 	AK_ID_DECLARE GUID Emscripten_unsafeguid = { 0x639ad233, 0x23f2, 0x4c0f, { 0x91, 0x27, 0x79, 0xf4, 0x4c, 0x15, 0xe1, 0xdA } };
 	AK_ID_DECLARE BasePlatformID Emscripten = BasePlatformID::Create(Emscripten_unsafeguid);
-
-	//{26352fc0-7716-4f97-8daf-3665ec2bb501}
-	AK_ID_DECLARE GUID Chinook_unsafeguid = { 0x26352fc0, 0x7716, 0x4f97, { 0x8d, 0xaf, 0x36, 0x65, 0xec, 0x2b, 0xb5, 0x01 } };
-	AK_ID_DECLARE BasePlatformID Chinook = BasePlatformID::Create(Chinook_unsafeguid);
 
 	/// Returns true if the given platform has Big Endian byte ordering. 
 	inline bool IsPlatformBigEndian( const BasePlatformID & in_guidPlatform )
@@ -165,15 +149,6 @@ namespace PlatformID
 			|| in_guidPlatform == PlatformID::WiiUHW
 			|| in_guidPlatform == PlatformID::PS3 
 			|| in_guidPlatform == PlatformID::Xbox360;
-	}
-
-	//This helper is used for platforms that are most probably on a ARM CPU (Android being possible on x86).  
-	//This is currently used to switch between Vorbis encoding algorithms, for optimisation purposes.
-	inline bool PlatformMaybeARM(const BasePlatformID & in_guidPlatform)
-	{
-		return in_guidPlatform == PlatformID::NintendoNX
-			|| in_guidPlatform == PlatformID::Android
-			|| in_guidPlatform == PlatformID::iOS;			
 	}
 }
 

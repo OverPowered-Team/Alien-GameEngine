@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkWinSoundEngine.h
@@ -40,19 +40,30 @@ the specific language governing permissions and limitations under the License.
 ///< Use with AkPlatformInitSettings to select the API used for audio output.  
 ///< Use AkAPI_Default, it will select the more appropriate API depending on the computer's capabilities.  Other values should be used for testing purposes.
 ///< \sa AK::SoundEngine::Init
-typedef enum AkAudioAPIWindows
+enum AkAudioAPI
 {
 	AkAPI_Wasapi = 1 << 0,								///< Use Wasapi 
 	AkAPI_XAudio2 = 1 << 1,								///< Use XAudio2 (this is the preferred API on Windows)
 	AkAPI_DirectSound = 1 << 2,							///< Use DirectSound
 	AkAPI_Default = AkAPI_Wasapi | AkAPI_XAudio2 | AkAPI_DirectSound,	///< Default value, will select the more appropriate API (XAudio2 is the default)	
-} AkAudioAPI;
+};
+
+///< Used with \ref AK::GetWindowsDeviceName to specify the device state mask.
+enum AkAudioDeviceState
+{
+	AkDeviceState_Active = 1 << 0,	   ///< The audio device is active That is, the audio adapter that connects to the endpont device is present and enabled.
+	AkDeviceState_Disabled = 1 << 1,   ///< The audio device is disabled.
+	AkDeviceState_NotPresent = 1 << 2, ///< The audio device is not present because the audio adapter that connects to the endpoint device has been removed from the system.
+	AkDeviceState_Unplugged = 1 << 3,  ///< The audio device is unplugged.
+	AkDeviceState_All = AkDeviceState_Active | AkDeviceState_Disabled | AkDeviceState_NotPresent | AkDeviceState_Unplugged, ///< Includes audio devices in all states.
+};
 
 struct IXAudio2;
 
 /// Platform specific initialization settings
 /// \sa AK::SoundEngine::Init
 /// \sa AK::SoundEngine::GetDefaultPlatformInitSettings
+/// - \ref soundengine_initialization_advanced_soundengine_using_memory_threshold
 
 struct AkPlatformInitSettings
 {
@@ -66,9 +77,12 @@ struct AkPlatformInitSettings
 
     // Threading model.
     AkThreadProperties  threadLEngine;			///< Lower engine threading properties
-	AkThreadProperties  threadOutputMgr;		///< Ouput thread threading properties
 	AkThreadProperties  threadBankManager;		///< Bank manager threading properties (its default priority is AK_THREAD_PRIORITY_NORMAL)
 	AkThreadProperties  threadMonitor;			///< Monitor threading properties (its default priority is AK_THREAD_PRIORITY_ABOVENORMAL). This parameter is not used in Release build.
+
+    // Memory.
+    AkUInt32            uLEngineDefaultPoolSize;///< Lower Engine default memory pool size
+	AkReal32            fLEngineDefaultPoolRatioThreshold;	///< 0.0f to 1.0f value: The percentage of occupied memory where the sound engine should enter in Low memory mode. \ref soundengine_initialization_advanced_soundengine_using_memory_threshold
 
 	// Voices.
 	AkUInt16            uNumRefillsInVoice;		///< Number of refill buffers in voice buffer. 2 == double-buffered, defaults to 4.
@@ -84,8 +98,6 @@ struct AkPlatformInitSettings
 												///< This setting is ignored when using other AkAudioAPI types.
 
 	IXAudio2*			pXAudio2;				///< XAudio2 instance to use for the Wwise sound engine.  If NULL (default) Wwise will initialize its own instance.  Used only if the sink type is XAudio2 in AkInitSettings.outputType.
-
-	bool				bEnableAvxSupport;		///< Enables run-time detection of AVX and AVX2 SIMD support in the engine and plug-ins. Disabling this may improve CPU performance by allowing for higher CPU clockspeeds.
 };
 
 struct IDirectSound8;
@@ -106,59 +118,26 @@ namespace AK
 
 	/// Finds the device ID for particular Audio Endpoint. 
 	/// \note CoInitialize must have been called for the calling thread.  See Microsoft's documentation about CoInitialize for more details.
-	/// \return A device ID to use with AkPlatformInitSettings.idAudioDevice
+	/// \return A device ID to use with AddSecondaryOutput or AkPlatformInitSettings.idAudioDevice
 	AK_EXTERNAPIFUNC( AkUInt32, GetDeviceID ) (IMMDevice* in_pDevice);
 
-	/// Finds an audio endpoint that matches the token in the device name or device ID and returns an ID.  
+	/// Finds an audio endpoint that matches the token in the device name or device ID and returns and ID compatible with AddSecondaryOutput.  
 	/// This is a helper function that searches in the device ID (as returned by IMMDevice->GetId) and 
 	/// in the property PKEY_Device_FriendlyName.  The token parameter is case-sensitive.  If you need to do matching on different conditions, use IMMDeviceEnumerator directly and AK::GetDeviceID.
 	/// \note CoInitialize must have been called for the calling thread.  See Microsoft's documentation about CoInitialize for more details.
-	/// \return The device ID as returned by IMMDevice->GetId, hashed by AK::SoundEngine::GetIDFromName()
+	/// \return An ID to use with AddSecondaryOutput.  The ID returned is the device ID as returned by IMMDevice->GetId, hashed by AK::SoundEngine::GetIDFromName()
 	AK_EXTERNAPIFUNC( AkUInt32, GetDeviceIDFromName )(wchar_t* in_szToken);
 
-	/// Get the user-friendly name for the specified device.  Call repeatedly with index starting at 0 and increasing to get all available devices, including disabled and unplugged devices, until the returned string is null and out_uDeviceID is zero.
-	/// The number of indexable devices for the given uDeviceStateMask can be fetched by calling AK::SoundEngine::GetWindowsDeviceCount().
+	/// Get the user-friendly name for the specified device.  Call repeatedly with index starting at 0 and increasing to get all available devices, including disabled and unplugged devices, until the returned string is null.
 	/// You can also get the default device information by specifying index=-1.  The default device is the one with a green checkmark in the Audio Playback Device panel in Windows.
-	/// The returned out_uDeviceID parameter is the Device ID to use with Wwise.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice. 
+	/// The returned out_uDeviceID parameter is the Device ID to use with Wwise.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice or in AK::SoundEngine::AddSecondaryOutput. 
 	/// \note CoInitialize must have been called for the calling thread.  See Microsoft's documentation about CoInitialize for more details.
 	/// \return The name of the device at the "index" specified.  The pointer is valid until the next call to GetWindowsDeviceName.
 	AK_EXTERNAPIFUNC(const wchar_t*, GetWindowsDeviceName) (
 		AkInt32 index,			 ///< Index of the device in the array.  -1 to get information on the default device.
-		AkUInt32 &out_uDeviceID, ///< Device ID for Wwise.  This is the same as what is returned from AK::GetDeviceID and AK::GetDeviceIDFromName.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice. 
+		AkUInt32 &out_uDeviceID, ///< Device ID for Wwise.  This is the same as what is returned from AK::GetDeviceID and AK::GetDeviceIDFromName.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice or in AK::SoundEngine::AddSecondaryOutput. 
 		AkAudioDeviceState uDeviceStateMask = AkDeviceState_All ///< Optional bitmask used to filter the device based on their state.
 		);
-
-	/// Get the number of Audio Endpoints available for the specified device state mask.
-	/// \note CoInitialize must have been called for the calling thread.  See Microsoft's documentation about CoInitialize for more details.
-	/// \return The number of Audio Endpoints available for the specified device state mask.
-	AK_EXTERNAPIFUNC( AkUInt32, GetWindowsDeviceCount ) (
-		AkAudioDeviceState uDeviceStateMask = AkDeviceState_All ///< Optional bitmask used to filter the device based on their state.
-		);
-
-	/// Get the Audio Endpoint for the specified device index.  Call repeatedly with index starting at 0 and increasing to get all available devices, including disabled and unplugged devices, until the false is returned.
-	/// You can also get the default device information by specifying index=-1.  The default device is the one with a green checkmark in the Audio Playback Device panel in Windows.
-	/// The returned out_uDeviceID parameter is the Device ID to use with Wwise.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice. 
-	/// The returned out_ppDevice is a pointer to a pointer variable to which the method writes the address of the IMMDevice. out_ppDevice is optional; if it is null, then no action is taken.
-	/// If the method returns false, *out_ppDevice is null. If the method successed, *out_ppDevice will be a counted reference to the interface, and the caller is responsible for releasing the interface when it is no longer needed, by calling Release(), or encapsulating the device in a COM Smart Pointer. 
-	/// \note CoInitialize must have been called for the calling thread.  See Microsoft's documentation about CoInitialize for more details.
-	/// \return Whether or not a device was found at the given index.
-	AK_EXTERNAPIFUNC( bool, GetWindowsDevice) (
-		AkInt32 in_index,			///< Index of the device in the array.  -1 to get information on the default device.
-		AkUInt32& out_uDeviceID,	///< Device ID for Wwise.  This is the same as what is returned from AK::GetDeviceID and AK::GetDeviceIDFromName.  Use it to specify the main device in AkPlatformInitSettings.idAudioDevice. 
-		IMMDevice** out_ppDevice,	///< pointer to a pointer variable to which the method writes the address of the IMMDevice in question.
-		AkAudioDeviceState uDeviceStateMask = AkDeviceState_All ///< Optional bitmask used to filter the device based on their state.
-		);
-
-#ifdef AK_UWP_CPP_CX
-
-	/// Get the device ID corresponding to a Universal Windows Platform Gamepad reference. This device ID can be used to add/remove motion output for that gamepad.
-	/// \note The ID returned is unique to Wwise and does not correspond to any sensible value outside of Wwise.
-	/// \note This function is only available for project code using C++/CX.
-	/// \return Unique device ID, or AK_INVALID_DEVICE_ID if the reference is no longer valid (such as if the gamepad was disconnected)
-	AK_EXTERNAPIFUNC(AkDeviceID, GetDeviceIDFromGamepad) (Windows::Gaming::Input::Gamepad^ rGamepad);
-
-#endif
-
 };
 
 #endif //_AK_WIN_SOUND_ENGINE_H_

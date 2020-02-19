@@ -1,9 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleAudio.h"
+#include "ComponentAudioEmitter.h"
 
-ModuleAudio::ModuleAudio()
-{}
+ModuleAudio::ModuleAudio(bool start_enabled) : Module(start_enabled)
+{
+	name = "audio";
+}
 
 ModuleAudio::~ModuleAudio()
 {}
@@ -12,10 +15,7 @@ bool ModuleAudio::Start()
 {
 	// Init wwise and audio banks
 	WwiseT::InitSoundEngine();
-	WwiseT::LoadBank("Assignment3.bnk");
-	
-	//source = App->audio->CreateSoundEmitter("Emitter");
-	//SetListener(source);
+	//WwiseT::LoadBank("Main.bnk");
 
 	return true;
 }
@@ -45,11 +45,9 @@ WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 
 void ModuleAudio::Play()
 {
-	
-	std::list<AudioEmitter*>::const_iterator iterator;
-	for (iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
-	{	
-			iterator._Ptr->_Myval->StartSound();
+	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
+	{
+		(*iterator)->StartSound();
 	}
 
 	is_playing = true;
@@ -57,13 +55,10 @@ void ModuleAudio::Play()
 
 void ModuleAudio::Stop()
 {
-	std::list<AudioEmitter*>::const_iterator iterator;
-	for (iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
+	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
 	{
-
-		iterator._Ptr->_Myval->source->StopEventByName("BGmusic");
-		iterator._Ptr->_Myval->source->StopEventByName("Rain");
-
+		(*iterator)->source->StopEventByName("BGmusic");
+		(*iterator)->source->StopEventByName("Rain");
 	}
 
 	is_playing = false;
@@ -71,25 +66,19 @@ void ModuleAudio::Stop()
 
 void ModuleAudio::Pause() const
 {
-	std::list<AudioEmitter*>::const_iterator iterator;
-	for (iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
+	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
 	{
-
-		iterator._Ptr->_Myval->source->PauseEventByName("BGmusic");
-		iterator._Ptr->_Myval->source->PauseEventByName("Rain");
-
+		(*iterator)->source->PauseEventByName("BGmusic");
+		(*iterator)->source->PauseEventByName("Rain");
 	}
 }
 
 void ModuleAudio::Resume() const
 {
-	std::list<AudioEmitter*>::const_iterator iterator;
-	for (iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
+	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
 	{
-
-		iterator._Ptr->_Myval->source->ResumeEventByName("BGmusic");
-		iterator._Ptr->_Myval->source->ResumeEventByName("Rain");
-
+		(*iterator)->source->ResumeEventByName("BGmusic");
+		(*iterator)->source->ResumeEventByName("Rain");
 	}
 }
 

@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -30,142 +30,21 @@ the specific language governing permissions and limitations under the License.
 
 #pragma once
 
-#include "AK/SoundEngine/Common/AkTypes.h"
+#include "AkTypes.h"
 
 /// \name Audiokinetic Memory Manager's implementation-specific definitions.
 //@{
-
-typedef void ( *AkMemInitForThread ) (
-	);
-
-typedef void ( *AkMemTermForThread ) (
-	);
-
-typedef void* ( *AkMemMalloc ) (
-	AkMemPoolId poolId,
-	size_t uSize
-	);
-
-typedef void* ( *AkMemMalign ) (
-	AkMemPoolId poolId,
-	size_t uSize,
-	AkUInt32 uAlignment
-	);
-
-typedef void* ( *AkMemRealloc ) (
-	AkMemPoolId poolId,
-	void* pAddress,
-	size_t uSize
-	);
-
-typedef void ( *AkMemFree ) (
-	AkMemPoolId poolId,
-	void* pAddress
-	);
-
-typedef void ( *AkMemFalign ) (
-	AkMemPoolId poolId,
-	void* pAddress
-	);
-
-typedef size_t ( *AkMemTotalReservedMemorySize ) (
-	);
-
-typedef size_t ( *AkMemSizeOfMemory ) (
-	AkMemPoolId poolId,
-	void* pAddress
-	);
-
-typedef void ( *AkMemDebugMalloc ) (
-	AkMemPoolId poolId,
-	size_t uSize,
-	void* pAddress,
-	char const* pszFile,
-	AkUInt32 uLine
-	);
-
-typedef void ( *AkMemDebugMalign ) (
-	AkMemPoolId poolId,
-	size_t uSize,
-	AkUInt32 uAlignment,
-	void* pAddress,
-	char const* pszFile,
-	AkUInt32 uLine
-	);
-
-typedef void ( *AkMemDebugRealloc ) (
-	AkMemPoolId poolId,
-	void* pOldAddress,
-	size_t uSize,
-	void* pNewAddress,
-	char const* pszFile,
-	AkUInt32 uLine
-	);
-
-typedef void ( *AkMemDebugFree ) (
-	AkMemPoolId poolId,
-	void* pAddress
-	);
-
-typedef void ( *AkMemDebugFalign ) (
-	AkMemPoolId poolId,
-	void* pAddress
-	);
-
-typedef AKRESULT ( *AkMemDebugCheckForOverwrite ) (
-	);
-
-typedef void * ( *AkMemAllocVM ) (
-	size_t size,
-	size_t* extra
-	);
-
-typedef void ( *AkMemFreeVM ) (
-	void* address, 
-	size_t size, 
-	size_t extra,
-	size_t release
-	);
-
-/// Initialization settings for the default implementation of the Memory Manager. For more details, see \ref memorymanager_init.
+/// Memory Manager's initialization settings.
 /// \sa AK::MemoryMgr
 struct AkMemSettings
-{
-	/// @name High-level memory allocation hooks. When not NULL, redirect allocations normally forwarded to rpmalloc.
-	//@{
-	AkMemInitForThread				pfInitForThread;				///< (Optional) Thread-specific allocator initialization hook.
-	AkMemTermForThread				pfTermForThread;				///< (Optional) Thread-specific allocator termination hook.
-	AkMemMalloc						pfMalloc;						///< (Optional) Memory allocation hook.
-	AkMemMalign						pfMalign;						///< (Optional) Memory allocation hook.
-	AkMemRealloc					pfRealloc;						///< (Optional) Memory allocation hook.
-	AkMemFree						pfFree;							///< (Optional) Memory allocation hook.
-	AkMemFalign						pfFalign;						///< (Optional) Memory allocation hook.
-	AkMemTotalReservedMemorySize	pfTotalReservedMemorySize;		///< (Optional) Memory allocation statistics hook.
-	AkMemSizeOfMemory				pfSizeOfMemory;					///< (Optional) Memory allocation statistics hook.
-	//@}
-
-	/// @name Configuration.
-	//@{
-	AkUInt64						uMemAllocationSizeLimit;		///< When non-zero, limits the total amount of virtual and device memory allocated by AK::MemoryMgr. 
-	//@}
-
-	/// @name Memory allocation debugging hooks.
-	//@{
-	AkMemDebugMalloc				pfDebugMalloc;					///< (Optional) Memory allocation debugging hook.
-	AkMemDebugMalign				pfDebugMalign;					///< (Optional) Memory allocation debugging hook.
-	AkMemDebugRealloc				pfDebugRealloc;					///< (Optional) Memory allocation debugging hook.
-	AkMemDebugFree					pfDebugFree;					///< (Optional) Memory allocation debugging hook.
-	AkMemDebugFalign				pfDebugFalign;					///< (Optional) Memory allocation debugging hook.
-	AkMemDebugCheckForOverwrite		pfDebugCheckForOverwrite;		///< (Optional) Memory allocation debugging hook.
-	//@}
-
-	/// @name Page allocation hooks, used by rpmalloc. Default to AKPLATFORM::AllocVM et al.
-	//@{
-	AkMemAllocVM					pfAllocVM;						///< Virtual page allocation hook.
-	AkMemFreeVM						pfFreeVM;						///< Virtual page allocation hook.
-	AkMemAllocVM					pfAllocDevice;					///< Device page allocation hook.
-	AkMemFreeVM						pfFreeDevice;					///< Device page allocation hook.
-	//@}
+{	
+	AkMemSettings()
+	{
+		uMaxNumPools = 32;				// Default number of pools.
+		uDebugFlags = 0;
+	}
+    AkUInt32 uMaxNumPools;              ///< Maximum number of memory pools.  32 by default, increase as needed.
+	AkUInt32 uDebugFlags;				///< Debug flags from AK::MemoryMgr::DebugFlags enum.  Should be 0.  This flag is ignored when not in DEBUG.  Memory usage will be higher when this debug tool is enabled.
 };
 //@}
 
@@ -175,21 +54,12 @@ namespace AK
     //@{
 	namespace MemoryMgr
 	{
-		/// @name Initialization
-		//@{
-
-	    /// Initialize the default implementation of the Memory Manager.
+	    /// Memory Manager initialization.
 	    /// \sa AK::MemoryMgr
-		AK_EXTERNAPIFUNC( AKRESULT, Init ) (
+		AK_EXTERNAPIFUNC(AKRESULT, Init)(
 			AkMemSettings * in_pSettings        ///< Memory manager initialization settings.
 			);
-
-	    /// Obtain the default initialization settings for the default implementation of the Memory Manager.
-		AK_EXTERNAPIFUNC( void, GetDefaultSettings ) (
-			AkMemSettings & out_pMemSettings	///< Memory manager default initialization settings.
-			);
-
-	    //@}
 	}
     //@}
 }
+

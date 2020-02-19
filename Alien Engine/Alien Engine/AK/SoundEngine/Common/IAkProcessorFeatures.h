@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -30,7 +30,7 @@ the specific language governing permissions and limitations under the License.
 
 #pragma once
 
-#include "../SoundEngine/Common/AkTypes.h"
+#include "AkTypes.h"
 
 namespace AK
 {   
@@ -40,18 +40,12 @@ namespace AK
 		AK_SIMD_SSE = 1<<0,		///< SSE support.	
 		AK_SIMD_SSE2 = 1<<1,	///< SSE2 support.
 		AK_SIMD_SSE3 = 1<<2,	///< SSE3 support.
-		AK_SIMD_SSSE3 = 1<<3,	///< SSSE3 support.
-		AK_SIMD_SSE41 = 1<<4,	///< SSE 4.1 support.
-		AK_SIMD_AVX = 1<<5,		///< AVX support.
-		AK_SIMD_F16C = 1<<6,	///< F16C support.
-		AK_SIMD_AVX2 = 1<<7		///< AVX2 support.
+		AK_SIMD_SSSE3 = 1<<3	///< SSSE3 support.
 	};
 
 	/// Runtime processor supported features detection interface. Allows to query specific processor features
 	/// to chose optimal implementation.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 	class IAkProcessorFeatures
 	{
 	protected:

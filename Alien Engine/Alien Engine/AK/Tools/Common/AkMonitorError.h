@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKMONITORERROR_H
@@ -62,14 +62,17 @@ namespace AK
 			ErrorCode_PluginExecutionInvalid,
 			ErrorCode_PluginAllocationFailed,
 
-			ErrorCode_VorbisSeekTableRecommended,
+			ErrorCode_VorbisRequireSeekTable,
 
 			ErrorCode_VorbisDecodeError,
 			ErrorCode_AACDecodeError,
-
+			
 			ErrorCode_xWMACreateDecoderFailed,//Deprecated, keep in place for legacy maintenance.
 
+			ErrorCode_ATRAC9CreateDecoderFailed,
+			ErrorCode_ATRAC9CreateDecoderFailedChShortage,
 			ErrorCode_ATRAC9DecodeFailed,
+			ErrorCode_ATRAC9ClearContextFailed,
 			ErrorCode_ATRAC9LoopSectionTooSmall,
 
 			ErrorCode_InvalidAudioFileHeader,
@@ -77,8 +80,6 @@ namespace AK
 			ErrorCode_FileTooSmall,
 
 			ErrorCode_TransitionNotAccurateChannel,
-			ErrorCode_TransitionNotAccuratePluginMismatch,
-			ErrorCode_TransitionNotAccurateRejectedByPlugin,
 			ErrorCode_TransitionNotAccurateStarvation,
 			ErrorCode_NothingToPlay, 
 			ErrorCode_PlayFailed,
@@ -129,11 +130,11 @@ namespace AK
 			ErrorCode_SeekAfterEof,
 
 			ErrorCode_UnknownGameObject,
-			ErrorCode_UnknownEmitter,			//Deprecated
+			ErrorCode_UnknownEmitter, 
 			ErrorCode_UnknownListener, 
 			ErrorCode_GameObjectIsNotListener,
 			ErrorCode_GameObjectIsNotEmitter,
-			ErrorCode_UnknownGameObjectEvent,	//Deprecated
+			ErrorCode_UnknownGameObjectEvent,
 			ErrorCode_GameObjectIsNotEmitterEvent,
 
 			ErrorCode_ExternalSourceNotResolved,
@@ -161,29 +162,9 @@ namespace AK
 			ErrorCode_AudioDeviceShareSetNotFound,
 
 			ErrorCode_NotEnoughMemoryToStart,
-			ErrorCode_UnkownOpusError,
 
-			ErrorCode_AudioDeviceInitFailure,
-			ErrorCode_AudioDeviceRemoveFailure,
-			ErrorCode_AudioDeviceNotFound,
-			ErrorCode_AudioDeviceNotValid,
-
-			ErrorCode_SpatialAudio_ListenerAutomationNotSupported,
-			ErrorCode_MediaDuplicationLength,
-
-			ErrorCode_HwVoicesSystemInitFailed, // When the hardware-accelerated subsystem fails to initialize
-			ErrorCode_HwVoicesDecodeBatchFailed, // When a grouping of hardware-accelerated voices fail to decode collectively
-			ErrorCode_HwVoiceLimitReached, // Cannot create any more hardware-accelerated voices
-			ErrorCode_HwVoiceInitFailed, // A hardware-accelerated voice fails to be created, but not because the max number of voices was reached
-			
 			Num_ErrorCodes // THIS STAYS AT END OF ENUM
 		};
-
-		static_assert(Num_ErrorCodes == 96,
-			"Please document your new ErrorCode "
-			"in 'Documentation/Help/source_en/reference/common_errors_capture_log.xml', "
-			"then you can increment this value."
-		);
 
 		/// Function prototype of local output function pointer.
 		AK_CALLBACK( void, LocalOutputFunc )(
@@ -275,9 +256,9 @@ namespace AK
 			AKTEXT("No error"), // ErrorCode_NoError
 			AKTEXT("File not found"), // ErrorCode_FileNotFound,
 			AKTEXT("Cannot open file"), // ErrorCode_CannotOpenFile,
-			AKTEXT("Not enough memory in I/O pool to start stream"), // ErrorCode_CannotStartStreamNoMemory,
-			AKTEXT("Unknown I/O device error"), // ErrorCode_IODevice,
-			AKTEXT("I/O settings incompatible."), // ErrorCode_IncompatibleIOSettings
+			AKTEXT("Not enough memory to start stream"), // ErrorCode_CannotStartStreamNoMemory,
+			AKTEXT("IO device error"), // ErrorCode_IODevice,
+			AKTEXT("IO settings incompatible with user requirements"), // ErrorCode_IncompatibleIOSettings
 
 			AKTEXT("Plug-in unsupported channel configuration"), // ErrorCode_PluginUnsupportedChannelConfiguration,
 			AKTEXT("Plug-in media unavailable"), // ErrorCode_PluginMediaUnavailable,
@@ -286,14 +267,17 @@ namespace AK
 			AKTEXT("Invalid plug-in execution mode"), // ErrorCode_PluginExecutionInvalid
 			AKTEXT("Could not allocate effect"), // ErrorCode_PluginAllocationFailed
 
-AKTEXT("Seek table recommended to seek in Vorbis sources. Please update conversion settings."), // ErrorCode_VorbisSeekTableRecommended,
+AKTEXT("Seek table required to seek in Vorbis sources. Please update conversion settings."), // ErrorCode_VorbisRequireSeekTable,
 
 AKTEXT("Vorbis decoder failure"), // ErrorCode_VorbisDecodeError,
 AKTEXT("AAC decoder failure"), // ErrorCode_AACDecodeError
 
 AKTEXT("Failed creating xWMA decoder"), // ErrorCode_xWMACreateDecoderFailed,
 
+AKTEXT("Failed creating ATRAC9 decoder"), // ErrorCode_ATRAC9CreateDecoderFailed
+AKTEXT("Failed creating ATRAC9 decoder: no more ATRAC9 decoding channels available"), // ErrorCode_ATRAC9CreateDecoderFailedChShortage
 AKTEXT("ATRAC9 decoding failed"), // ErrorCode_ATRAC9DecodeFailed
+AKTEXT("ATRAC9 context clear failed"), // ErrorCode_ATRAC9ClearContextFailed
 AKTEXT("ATRAC9 loop section is too small"), // ErrorCode_ATRAC9LoopSectionTooSmall
 
 AKTEXT("Invalid file header"), // ErrorCode_InvalidAudioFileHeader,
@@ -301,10 +285,8 @@ AKTEXT("File header too large (due to markers or envelope)"), // ErrorCode_Audio
 AKTEXT("File or loop region is too small to be played properly"), // ErrorCode_FileTooSmall,
 
 AKTEXT("Transition not sample-accurate due to mixed channel configurations"), // ErrorCode_TransitionNotAccurateChannel,
-AKTEXT("Transition not sample-accurate due to incompatible audio formats"), // ErrorCode_TransitionNotAccuratePluginMismatch,
-AKTEXT("Transition not sample-accurate due to incompatible encoding parameters"), // ErrorCode_TransitionNotAccurateRejectedByPlugin
 AKTEXT("Transition not sample-accurate due to source starvation"), // ErrorCode_TransitionNotAccurateStarvation,
-AKTEXT("Nothing to play in Dynamic Sequence"), // ErrorCode_NothingToPlay, 
+AKTEXT("Nothing to play"), // ErrorCode_NothingToPlay, 
 AKTEXT("Play Failed"), // ErrorCode_PlayFailed,	// Notification meaning the play asked was not done for an out of control reason
 // For example, if The Element has a missing source file.
 
@@ -326,7 +308,7 @@ AKTEXT("XMA decoder starvation"), // ErrorCode_XMADecoderSourceStarving,
 AKTEXT("XMA decoding error"), // ErrorCode_XMADecodingError
 AKTEXT("Invalid XMA data - Make sure data is allocated from APU memory and is aligned to 2K."), // ErrorCode_InvalidXMAData
 
-AKTEXT("Plug-in not found"), // ErrorCode_PluginNotRegistered,
+AKTEXT("Plug-in not registered"), // ErrorCode_PluginNotRegistered,
 AKTEXT("Codec plug-in not registered"), // ErrorCode_CodecNotRegistered,
 AKTEXT("Plug-in version doesn't match sound engine version.  Please ensure the plug-in is compatible with this version of Wwise"), //ErrorCode_PluginVersionMismatch
 
@@ -384,25 +366,12 @@ AKTEXT("Source plugin not found in currently loaded banks."), //ErrorCode_Source
 
 AKTEXT("Number of Resume and/or Play-From-Beginning virtual voices has reached warning limit (see Project Settings > Log tab). There may be some infinite, leaked voices.") , // ErrorCode_VirtualVoiceLimit
 
-AKTEXT("AK::SoundEngine::AddOutput()/ReplaceOutput() - Device ShareSet not found in Init bank."),	//ErrorCode_AudioDeviceShareSetNotFound
+AKTEXT("AK::SoundEngine::AddOutput() - Device ShareSet not found in Init bank."),	//ErrorCode_AudioDeviceShareSetNotFound
 
 AKTEXT("Not enough memory to start sound."),	//ErrorCode_NotEnoughMemoryToStart
-AKTEXT("Error while decoding Opus header."),	//ErrorCode_UnkownOpusError
 
-AKTEXT("The Output Device specified by AddOutput() or Init() could not be initialized."), //ErrorCode_AudioDeviceInitFailure
-AKTEXT("ReplaceOutput could not properly remove old output device."), // ErrorCode_AudioDeviceRemoveFailure
-AKTEXT("Device ID to remove not found as an active device."), // ErrorCode_AudioDeviceNotFound
-AKTEXT("Device ID not recognized by platform or is disabled."), // ErrorCode_AudioDeviceNotValid
-AKTEXT("Early reflections are not supported on sounds using 3D Position: Listener with Automation. The assigned early reflections bus will be ignored."), // ErrorCode_SpatialAudio_ListenerAutomationNotSupported
-AKTEXT("Duplicated media has different length in two separate banks.  Stopping sound."), // ErrorCode_MediaDuplicationLength
-
-AKTEXT("The hardware-accelerated voice subsystem failed to initialize."), // ErrorCode_HwVoicesSystemInitFailed
-AKTEXT("Hardware accelerated audio decoding failed."), // ErrorCode_HwVoicesDecodeBatchFailed
-AKTEXT("Maximum number of hardware-accelerated voices reached. Voice will not play."), // ErrorCode_HwVoiceLimitReached
-AKTEXT("Failed creating hardware-accelerated voice."), // ErrorCode_HwVoiceInitFailed
 		};
 	}
-
 }
 #endif // AK_MONITOR_IMPLEMENT_ERRORCODES
 

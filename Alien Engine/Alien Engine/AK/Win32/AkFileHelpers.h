@@ -9,8 +9,8 @@ may use this file in accordance with the end user license agreement provided
 with the software or, alternatively, in accordance with the terms contained in a
 written agreement between you and Audiokinetic Inc.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.6  Build: 6636
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 //////////////////////////////////////////////////////////////////////
 //
@@ -25,7 +25,7 @@ written agreement between you and Audiokinetic Inc.
 
 #include "../Tools/Common/AkAssert.h"
 #include <windows.h>
-#include "../SoundEngine/Common/AkStreamMgrModule.h"
+#include "../SoundEngine/Common/IAkStreamMgr.h"
 
 class CAkFileHelpers
 {
@@ -88,7 +88,7 @@ public:
 			dwFlags |= FILE_FLAG_OVERLAPPED;
 
 		// Create the file handle.
-#if defined(AK_USE_UWP_API) && !defined(AK_XBOX) // Xbox can use "normal" IO
+#if defined(AK_USE_UWP_API) && !defined(AK_XBOXONE) // Xbox One can use "normal" IO
 		out_hFile = ::CreateFile2( 
 			in_pszFilename,
 			dwAccessMode,
@@ -116,37 +116,6 @@ public:
 		}
 
 		return AK_Success;
-	}
-
-	//Open file and fill AkFileDesc
-	static AKRESULT Open(
-		const AkOSChar* in_pszFileName,     // File name.
-		AkOpenMode      in_eOpenMode,       // Open mode.
-		bool			in_bOverlapped,		// Overlapped IO
-		AkFileDesc &    out_fileDesc		// File descriptor
-		)
-	{
-		// Open the file without FILE_FLAG_OVERLAPPED and FILE_FLAG_NO_BUFFERING flags.
-		AKRESULT eResult = OpenFile( 
-			in_pszFileName,
-			in_eOpenMode,
-			in_bOverlapped,
-			in_bOverlapped, //No buffering flag goes in pair with overlapped flag for now.  Block size must be set accordingly
-			out_fileDesc.hFile );
-
-		if (eResult == AK_Success)
-		{
-#ifdef AK_USE_UWP_API
-			FILE_STANDARD_INFO info;
-			::GetFileInformationByHandleEx(out_fileDesc.hFile, FileStandardInfo, &info, sizeof(info));
-			out_fileDesc.iFileSize = info.EndOfFile.QuadPart;
-#else
-			ULARGE_INTEGER Temp;
-			Temp.LowPart = ::GetFileSize(out_fileDesc.hFile, (LPDWORD)&Temp.HighPart);
-			out_fileDesc.iFileSize = Temp.QuadPart;
-#endif
-		}
-		return eResult;
 	}
 
 	// Wrapper for system file handle closing.
@@ -221,7 +190,7 @@ public:
 			fileAttributes = fileInfo.dwFileAttributes;
 		}
 #else
-		fileAttributes = GetFileAttributes( (LPCSTR)in_pszBasePath );
+		fileAttributes = GetFileAttributes( in_pszBasePath );
 #endif
 		if (fileAttributes == INVALID_FILE_ATTRIBUTES)
 			return AK_Fail;  //something is wrong with your path!

@@ -1114,9 +1114,6 @@ CIVETWEB_API unsigned mg_check_feature(unsigned feature);
 */
 CIVETWEB_API int mg_get_system_info(char *buffer, int buflen);
 
-CIVETWEB_API void base64_encode(const unsigned char *src, int src_len, char *dst);
-CIVETWEB_API int base64_decode(const unsigned char *src, int src_len, char *dst, size_t *dst_len);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

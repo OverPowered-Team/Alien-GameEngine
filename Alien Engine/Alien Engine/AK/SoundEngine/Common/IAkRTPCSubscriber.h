@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // IAkRTPCSubscriber.h
@@ -40,9 +40,7 @@ namespace AK
 	/// Real-Time Parameter Control Subscriber interface.
 	/// This interface must be implemented by every AK::IAkPluginParam implementation, allowing
 	/// real-time editing with Wwise and in-game RTPC control.
-	/// \akwarning
-	/// The functions in this interface are not thread-safe, unless stated otherwise.
-	/// \endakwarning
+	/// \warning The functions in this interface are not thread-safe, unless stated otherwise.
 	/// \sa
 	/// - AK::IAkPluginParam
 	class IAkRTPCSubscriber

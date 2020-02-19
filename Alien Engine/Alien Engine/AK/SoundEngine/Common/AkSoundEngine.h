@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSoundEngine.h
@@ -34,66 +34,40 @@ the specific language governing permissions and limitations under the License.
 #ifndef _AK_SOUNDENGINE_H_
 #define _AK_SOUNDENGINE_H_
 
-#include "../SoundEngine/Common/AkSoundEngineExport.h"
-#include "../SoundEngine/Common/AkTypes.h"
-#include "../SoundEngine/Common/IAkPlugin.h"
-#include "../SoundEngine/Common/AkCallback.h"
+#include "AkSoundEngineExport.h"
+#include "AkTypes.h"
+#include "IAkPlugin.h"
+#include "AkCallback.h"
 
 #ifdef AK_WIN
-#include "../SoundEngine/Platforms/Windows/AkWinSoundEngine.h"
-#include "../SoundEngine/Platforms/Windows/AkPlatformContext.h"
+#include "../Platforms/Windows/AkWinSoundEngine.h"
 
 #elif defined (AK_MAC_OS_X)
 #include <AK/SoundEngine/Platforms/Mac/AkMacSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Mac/AkPlatformContext.h>
 
 #elif defined (AK_IOS)
 #include <AK/SoundEngine/Platforms/iOS/AkiOSSoundEngine.h>
-#include <AK/SoundEngine/Platforms/iOS/AkPlatformContext.h>
-
-#elif defined(AK_GAMINGXBOX)
-#include <AK/SoundEngine/Platforms/GX/AkGXSoundEngine.h>
-#include <AK/SoundEngine/Platforms/GX/AkPlatformContext.h>
 
 #elif defined (AK_XBOXONE)
 #include <AK/SoundEngine/Platforms/XboxOne/AkXboxOneSoundEngine.h>
-#include <AK/SoundEngine/Platforms/XboxOne/AkPlatformContext.h>
-
-#elif defined( AK_LUMIN )
-#include <AK/SoundEngine/Platforms/Lumin/AkLuminSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Lumin/AkPlatformContext.h>
 
 #elif defined( AK_ANDROID )
 #include <AK/SoundEngine/Platforms/Android/AkAndroidSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Android/AkPlatformContext.h>
 
 #elif defined (AK_PS4)
 #include <AK/SoundEngine/Platforms/PS4/AkPS4SoundEngine.h>
-#include <AK/SoundEngine/Platforms/PS4/AkPlatformContext.h>
 
-#elif defined (AK_PELLEGRINO)
-#include <AK/SoundEngine/Platforms/Pellegrino/AkPellegrinoSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Pellegrino/AkPlatformContext.h>
-
-#elif defined( AK_GGP )
-#include <AK/SoundEngine/Platforms/GGP/AkGGPSoundEngine.h>
-#include <AK/SoundEngine/Platforms/GGP/AkPlatformContext.h>
-
-#elif defined( AK_LINUX_DESKTOP )
+#elif defined( AK_LINUX )
 #include <AK/SoundEngine/Platforms/Linux/AkLinuxSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Linux/AkPlatformContext.h>
 
 #elif defined( AK_EMSCRIPTEN )
 #include <AK/SoundEngine/Platforms/Emscripten/AkEmscriptenSoundEngine.h>
-#include <AK/SoundEngine/Platforms/Emscripten/AkPlatformContext.h>
 
 #elif defined( AK_QNX  )
 #include <AK/SoundEngine/Platforms/QNX/AkQNXSoundEngine.h>
-#include <AK/SoundEngine/Platforms/QNX/AkPlatformContext.h>
 
 #elif defined( AK_NX )
 #include <AK/SoundEngine/Platforms/NX/AkNXSoundEngine.h>
-#include <AK/SoundEngine/Platforms/NX/AkPlatformContext.h>
 
 #else
 #error AkSoundEngine.h: Undefined platform
@@ -116,6 +90,7 @@ the specific language governing permissions and limitations under the License.
 ///
 /// \sa
 /// - \ref AkGlobalCallbackFunc
+/// - \ref AudioInterruptionCallbackFunc
 /// - \ref AkPlatformInitSettings
 /// - \ref background_music_and_dvr
 ///
@@ -142,7 +117,7 @@ struct AkOutputSettings
 	AkUniqueID		audioDeviceShareset;	///< Unique ID of a custom audio device to be used. Custom audio devices are defined in the Audio Device Shareset section of the Wwise project.
 											///< If you want to output normally through the default system, leave this field to its default value (AK_INVALID_UNIQUE_ID).
 											///< Typical usage: AkInitSettings.eOutputSettings.audioDeviceShareset = AK::SoundEngine::GetIDFromString("InsertYourAudioDeviceSharesetNameHere");
-											/// \sa <tt>\ref AK::SoundEngine::GetIDFromString()</tt>
+											/// \sa \ref <tt>AK::SoundEngine::GetIDFromString()</tt>
 											/// \sa \ref soundengine_plugins_audiodevices
 											/// \sa \ref integrating_secondary_outputs
 											/// \sa \ref default_audio_devices
@@ -161,60 +136,29 @@ struct AkOutputSettings
 											///< Hardware might not support the selected configuration.
 };
 
-/// Possible values for the floor plane axis used in the Game Object 3D Viewer in Wwise
-enum AkFloorPlane
-{
-	AkFloorPlane_XZ = 0,
-	AkFloorPlane_XY,
-	AkFloorPlane_YZ,
-	AkFloorPlane_Default = AkFloorPlane_XZ
-};
-
-/// The execution context for a task.
-struct AkTaskContext
-{
-    AkUInt32 uIdxThread;           ///< The current thread index [0, AkTaskSchedulerDesc::uNumSchedulerWorkerThreads[.
-};
-
-/// Task function: process the [in_uIdxBegin,in_uIdxEnd[ range of items in the in_pData array.
-typedef void(*AkParallelForFunc)(void* in_pData, AkUInt32 in_uIdxBegin, AkUInt32 in_uIdxEnd, AkTaskContext in_ctx, void* in_pUserData);
-
-/// Description of the client task scheduler.
-struct AkTaskSchedulerDesc
-{
-    /// Execute in_func in parallel over the [in_uIdxBegin,in_uIdxEnd[ range of items in the in_pData array,
-	/// and wait for the work to finish.
-	typedef void(*ParallelForFunc)(
-		void * in_pData,            ///< A pointer to a data array.
-		AkUInt32 in_uIdxBegin,     ///< The first element of data to process.
-		AkUInt32 in_uIdxEnd,       ///< The one past the last element of data to process.
-		AkUInt32 in_uTileSize,     ///< The desired maximum tile size in which to subdivide the data.
-		AkParallelForFunc in_func, ///< The data processing function.
-		void * in_pUserData,       ///< User data to be passed into 'func'.
-		const char * in_szDebugName);    ///< Debug name for the workload.
-
-    ParallelForFunc fcnParallelFor;             ///< ParallelForFunc callback.
-    AkUInt32        uNumSchedulerWorkerThreads; ///< The number of worker threads in the schduler.
-};
-
 /// Platform-independent initialization settings of the sound engine
 /// \sa 
 /// - <tt>AK::SoundEngine::Init()</tt>
 /// - <tt>AK::SoundEngine::GetDefaultInitSettings()</tt>
 /// - \ref soundengine_integration_init_advanced
+/// - \ref soundengine_initialization_advanced_soundengine_using_memory_threshold
 struct AkInitSettings
 {
     AkAssertHook        pfnAssertHook;				///< External assertion handling function (optional)
 
     AkUInt32            uMaxNumPaths;				///< Maximum number of paths for positioning
+    AkUInt32            uDefaultPoolSize;			///< Size of the default memory pool, in bytes
+	AkReal32            fDefaultPoolRatioThreshold;	///< 0.0f to 1.0f value: The percentage of occupied memory where the sound engine should enter in Low memory Mode. \ref soundengine_initialization_advanced_soundengine_using_memory_threshold
 	AkUInt32            uCommandQueueSize;			///< Size of the command queue, in bytes
+	AkMemPoolId			uPrepareEventMemoryPoolID;	///< Memory pool where data allocated by <tt>AK::SoundEngine::PrepareEvent()</tt> and <tt>AK::SoundEngine::PrepareGameSyncs()</tt> will be done. 
 	bool				bEnableGameSyncPreparation;	///< Sets to true to enable AK::SoundEngine::PrepareGameSync usage.
 	AkUInt32			uContinuousPlaybackLookAhead;	///< Number of quanta ahead when continuous containers should instantiate a new voice before which next sounds should start playing. This look-ahead time allows I/O to occur, and is especially useful to reduce the latency of continuous containers with trigger rate or sample-accurate transitions. 
 													///< Default is 1 audio quantum, also known as an audio frame. Its size is equal to AkInitSettings::uNumSamplesPerFrame / AkPlatformInitSettings::uSampleRate. For many platforms the default values - which can be overridden - are respectively 1,024 samples and 48 kHz. This gives a default 21.3 ms for an audio quantum, which is adequate if you have a RAM-based streaming device that completes transfers within 20 ms. With 1 look-ahead quantum, voices spawned by continuous containers are more likely to be ready when they are required to play, thereby improving the overall precision of sound scheduling. If your device completes transfers in 30 ms instead, you might consider increasing this value to 2 because it will grant new voices 2 audio quanta (~43 ms) to fetch data. 
 
 	AkUInt32			uNumSamplesPerFrame;		///< Number of samples per audio frame (256, 512, 1024, or 2048).
 
-    AkUInt32            uMonitorQueuePoolSize;		///< Size of the monitoring queue, in bytes. This parameter is not used in Release build.
+    AkUInt32            uMonitorPoolSize;			///< Size of the monitoring pool, in bytes. This parameter is not used in Release build.
+    AkUInt32            uMonitorQueuePoolSize;		///< Size of the monitoring queue pool, in bytes. This parameter is not used in Release build.
 	
 	AkOutputSettings	settingsMainOutput;			///< Main output device settings.
 	AkUInt32			uMaxHardwareTimeoutMs;		///< Amount of time to wait for HW devices to trigger an audio interrupt. If there is no interrupt after that time, the sound engine will revert to  silent mode and continue operating until the HW finally comes back. Default value: 2000 (2 seconds)
@@ -225,14 +169,6 @@ struct AkInitSettings
 	AkBackgroundMusicChangeCallbackFunc BGMCallback; ///< Application-defined audio source change event callback function.
 	void*				BGMCallbackCookie;			///< Application-defined user data for the audio source change event callback function.
 	AkOSChar *			szPluginDLLPath;			///< When using DLLs for plugins, specify their path. Leave NULL if DLLs are in the same folder as the game executable.
-
-	AkFloorPlane		eFloorPlane;				///< Floor plane axis for 3D game object viewing.
-    AkTaskSchedulerDesc taskSchedulerDesc;			///< The defined client task scheduler that AkSoundEngine will use to schedule internal tasks.	
-
-	AkUInt32			uBankReadBufferSize;		///< The number of bytes read by the BankReader when new data needs to be loaded from disk during serialization. Increasing this trades memory usage for larger, but fewer, file-read events during bank loading.
-
-	AkReal32			fDebugOutOfRangeLimit;		///< Debug setting: Only used when bDebugOutOfRangeCheckEnabled is true.  This defines the maximum values samples can have.  Normal audio must be contained within +1/-1.  This limit should be set higher to allow temporary or short excursions out of range.  Default is 16.
-	bool				bDebugOutOfRangeCheckEnabled;	///< Debug setting: Enable checks for out-of-range (and NAN) floats in the processing code.  Do not enable in any normal usage, this setting uses a lot of CPU.  Will print error messages in the log if invalid values are found at various point in the pipeline. Contact AK Support with the new error messages for more information.
 };
 
 /// Necessary settings for setting externally-loaded sources
@@ -241,6 +177,13 @@ struct AkSourceSettings
 	AkUniqueID	sourceID;							///< Source ID (available in the SoundBank content files)
 	AkUInt8*	pMediaMemory;						///< Pointer to the data to be set for the source
 	AkUInt32	uMediaSize;							///< Size, in bytes, of the data to be set for the source
+};
+
+/// Configured audio settings
+struct AkAudioSettings
+{
+	AkUInt32			uNumSamplesPerFrame;		///< Number of samples per audio frame (256, 512, 1024 or 2048).
+	AkUInt32			uNumSamplesPerSecond;		///< Number of samples per second.
 };
 
 /// Return values for GetSourcePlayPositions.
@@ -357,7 +300,7 @@ namespace AK
 		/// platform settings (for e.g. system menu or control panel option). 
 		/// 
 		/// \warning Call this function only after the sound engine has been properly initialized. If you are initializing the sound engine with AkInitSettings::bUseLEngineThread to false, it is required to call RenderAudio() at least once before calling this function to complete the sound engine initialization.
-		/// \return The output configuration. An empty AkChannelConfig not AkChannelConfig::IsValid() if device does not exist.
+		/// \return The output configuration. An empty AkChannelConfig (!AkChannelConfig::IsValid()) if device does not exist.
 		/// \sa 
 		/// - AkSpeakerConfig.h
 		/// - AkOutputSettings
@@ -380,10 +323,6 @@ namespace AK
 		/// Sets the panning rule of the specified output.
 		/// This may be changed anytime once the sound engine is initialized.
 		/// \warning This function posts a message through the sound engine's internal message queue, whereas GetPanningRule() queries the current panning rule directly.
-		/// \aknote 
-		///	The specified panning rule will only impact the sound if the processing format is downmixing to Stereo in the mixing process. It
-		/// will not impact the output if the audio stays in 5.1 until the end, for example.
-		/// \endaknote
 		AK_EXTERNAPIFUNC( AKRESULT, SetPanningRule )( 
 			AkPanningRule		in_ePanningRule,			///< Panning rule.
 			AkOutputDeviceID	in_idOutput = 0				///< Output ID to set the bus on.  As returned from AddOutput or GetOutputID.  You can pass 0 for the main (default) output	
@@ -429,13 +368,11 @@ namespace AK
 		/// - Modify the angles and call SetSpeakerAngles().
 		/// This function posts a message to the audio thread through the command queue, so it is thread safe. However the result may not be immediately read with GetSpeakerAngles().
 		/// \warning This function only applies to configurations (or subset of these configurations) that are standard and whose speakers are on the plane (2D).
-		/// \return 
-		/// - AK_Success if successful.
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
-		/// - AK_InsufficientMemory if there wasn't enough memory in the message queue
+		/// \return AK_NotCompatible if the channel configuration of the device is not standard (AK_ChannelConfigType_Standard), 
+		/// AK_Success if successful (device exists and angles are valid), AK_Fail otherwise.
 		/// \sa GetSpeakerAngles()
 		AK_EXTERNAPIFUNC( AKRESULT, SetSpeakerAngles )(
-			const AkReal32 *	in_pfSpeakerAngles,			///< Array of loudspeaker pair angles, in degrees relative to azimuth [0,180].
+			AkReal32 *			in_pfSpeakerAngles,			///< Array of loudspeaker pair angles, in degrees relative to azimuth [0,180].
 			AkUInt32			in_uNumAngles,				///< Number of elements in in_pfSpeakerAngles. It must correspond to AK::GetNumberOfAnglesForConfig( AK_SPEAKER_SETUP_DEFAULT_PLANE ) (the value returned by GetSpeakerAngles()).
 			AkReal32 			in_fHeightAngle,			///< Elevation of the height layer, in degrees relative to the plane  [-90,90].
 			AkOutputDeviceID	in_idOutput = 0				///< Output ID to set the bus on.  As returned from AddOutput or GetOutputID.  You can pass 0 for the main (default) output			
@@ -445,9 +382,8 @@ namespace AK
 		/// This may be changed anytime once the sound engine was initialized.
 		/// If this function is not called, the used value will be the value specified in the platform specific project settings.
 		/// \return 
-		/// - AK_Success if successful
 		/// - AK_InvalidParameter if the threshold was not between 0 and -96.3 dB.
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
+		/// - AK_Success if successful
 		AK_EXTERNAPIFUNC( AKRESULT, SetVolumeThreshold )( 
 			AkReal32 in_fVolumeThresholdDB ///< Volume Threshold, must be a value between 0 and -96.3 dB
 			);
@@ -507,12 +443,11 @@ namespace AK
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
         AK_EXTERNAPIFUNC( AKRESULT, RegisterPlugin )( 
-			AkPluginType in_eType,								///< Plug-in type (for example, source or effect)
-			AkUInt32 in_ulCompanyID,							///< Company identifier (as declared in the plug-in description XML file)
-			AkUInt32 in_ulPluginID,								///< Plug-in identifier (as declared in the plug-in description XML file)
-			AkCreatePluginCallback in_pCreateFunc,				///< Pointer to the plug-in's creation function
-			AkCreateParamCallback in_pCreateParamFunc,			///< Pointer to the plug-in's parameter node creation function
-			AkGetDeviceListCallback in_pGetDeviceList = NULL	///< Optional pointer to the plug-in's device enumeration function. Specify for a sink plug-in to support \ref AK::SoundEngine::GetDeviceList.
+			AkPluginType in_eType,						///< Plug-in type (for example, source or effect)
+			AkUInt32 in_ulCompanyID,					///< Company identifier (as declared in the plug-in description XML file)
+			AkUInt32 in_ulPluginID,						///< Plug-in identifier (as declared in the plug-in description XML file)
+			AkCreatePluginCallback in_pCreateFunc,		///< Pointer to the plug-in's creation function
+            AkCreateParamCallback in_pCreateParamFunc	///< Pointer to the plug-in's parameter node creation function
             );
 
 		/// Loads a plug-in dynamic library and registers it with the sound engine.  
@@ -523,8 +458,7 @@ namespace AK
 		/// - AK_FileNotFound if the DLL is not found in the OS path or if it has extraneous dependencies not found.  
 		/// - AK_InvalidFile if the symbol g_pAKPluginList is not exported by the dynamic library
 		AK_EXTERNAPIFUNC( AKRESULT, RegisterPluginDLL ) (
-			const AkOSChar* in_DllName,					///< Name of the DLL to load, without "lib" prefix or extension.  
-			const AkOSChar* in_DllPath = NULL			///< Optional path to the DLL. Will override szPLuginDLLPath that was set in AkInitSettings.
+			const AkOSChar* in_DllName					///< Name of the DLL to load, without "lib" prefix or extension.  
 			);
 		
 		/// Registers a codec type with the sound engine and set the callback functions to create the 
@@ -554,10 +488,8 @@ namespace AK
 		/// location specified by in_eLocation. This function will also be called from the thread calling 			
 		/// AK::SoundEngine::Term with in_eLocation set to AkGlobalCallbackLocation_Term.
 		/// For example, in order to be called at every audio rendering pass, and once during teardown for releasing resources, you would call 
-		/// RegisterGlobalCallback(myCallback, AkGlobalCallbackLocation_BeginRender  | AkGlobalCallbackLocation_Term, myCookie, AkPluginTypeNone, 0, 0);  
+		/// RegisterGlobalCallback(myCallback, AkGlobalCallbackLocation_BeginRender | AkGlobalCallbackLocation_Term, myCookie);  
 		/// \remarks
-		/// A Plugin Type, Company ID and Plugin ID can be provided to this function to enable timing in the performance monitor.
-		/// If the callback is being timed, it will contribute to the Total Plug-in CPU measurement, and also appear in the Plug-ins tab of the Advanced Profiler by plug-in type and ID. 
 		/// It is illegal to call this function while already inside of a global callback.
 		/// This function might stall for several milliseconds before returning.
 		/// \sa 
@@ -567,10 +499,7 @@ namespace AK
 		AK_EXTERNAPIFUNC(AKRESULT, RegisterGlobalCallback)(
 			AkGlobalCallbackFunc in_pCallback,				///< Function to register as a global callback.
 			AkUInt32 in_eLocation = AkGlobalCallbackLocation_BeginRender, ///< Callback location defined in AkGlobalCallbackLocation. Bitwise OR multiple locations if needed.
-			void * in_pCookie = NULL,						///< User cookie.
-			AkPluginType in_eType = AkPluginTypeNone,		///< Plug-in type (for example, source or effect). AkPluginTypeNone for no timing.
-			AkUInt32 in_ulCompanyID = 0,					///< Company identifier (as declared in the plug-in description XML file). 0 for no timing. 
-			AkUInt32 in_ulPluginID = 0						///< Plug-in identifier (as declared in the plug-in description XML file). 0 for no timing. 
+			void * in_pCookie = NULL						///< User cookie.
 			);
 
 		/// Unregisters a global callback function, previously registered using RegisterGlobalCallback.
@@ -585,32 +514,6 @@ namespace AK
 		AK_EXTERNAPIFUNC(AKRESULT, UnregisterGlobalCallback)(
 			AkGlobalCallbackFunc in_pCallback,				///< Function to unregister as a global callback.
 			AkUInt32 in_eLocation = AkGlobalCallbackLocation_BeginRender ///< Must match in_eLocation as passed to RegisterGlobalCallback for this callback.
-			);
-
-		/// Registers a resource monitor callback function. This function will be called from the audio rendering thread, at the
-		/// end of each frame.
-		/// \remarks
-		/// If the callback is being timed, it will contribute to the Total Plug-in CPU measurement, and also appear in the Plug-ins tab of the Advanced Profiler by plug-in type and ID. 
-		/// It is illegal to call this function while already inside of a resource callback.
-		/// This function might stall for several milliseconds before returning.
-		/// this function will return AK_Fail in Release
-		/// \sa 
-		/// - <tt>AK::SoundEngine::UnregisterResourceMonitorCallback()</tt>
-		/// - AkResourceMonitorCallbackFunc
-		AK_EXTERNAPIFUNC(AKRESULT, RegisterResourceMonitorCallback)(
-			AkResourceMonitorCallbackFunc in_pCallback				///< Function to register as a resource monitor callback.
-			);
-
-		/// Unregisters a resource monitor callback function, previously registered using RegisterResourceMonitorCallback.
-		/// \remarks
-		/// It is legal to call this function while already inside of a resource monitor callback, If it is unregistering itself and not
-		/// another callback.
-		/// This function might stall for several milliseconds before returning.
-		/// \sa 
-		/// - <tt>AK::SoundEngine::RegisterResourceMonitorCallback()</tt>
-		/// - AkResourceMonitorCallbackFunc
-		AK_EXTERNAPIFUNC(AKRESULT, UnregisterResourceMonitorCallback)(
-			AkResourceMonitorCallbackFunc in_pCallback				///< Function to unregister as a resource monitor callback.
 			);
 
 		/// Registers a callback for the Audio Device status changes.  
@@ -1400,23 +1303,8 @@ namespace AK
 			);
 
 		/// Stop the current content playing associated to the specified playing ID.
-		/// \aknote 
-		///	This function is deprecated. Please use ExecuteActionOnPlayingID() in its place.
-		/// \endaknote
-		/// \sa
-		///  - <tt>AK::SoundEngine::ExecuteActionOnPlayingID()</tt>
-		AK_EXTERNAPIFUNC( void, StopPlayingID )(
+		AK_EXTERNAPIFUNC( void, StopPlayingID )( 
 			AkPlayingID in_playingID,											///< Playing ID to be stopped.
-			AkTimeMs in_uTransitionDuration = 0,								///< Fade duration
-			AkCurveInterpolation in_eFadeCurve = AkCurveInterpolation_Linear	///< Curve type to be used for the transition
-			);
-
-		/// Executes an Action on the content associated to the specified playing ID.
-		/// \sa
-		/// - <tt>AK::SoundEngine::AkActionOnEventType</tt>
-		AK_EXTERNAPIFUNC(void, ExecuteActionOnPlayingID)(
-			AkActionOnEventType in_ActionType,									///< Action to execute on the specified playing ID.
-			AkPlayingID in_playingID,											///< Playing ID on which to execute the action.
 			AkTimeMs in_uTransitionDuration = 0,								///< Fade duration
 			AkCurveInterpolation in_eFadeCurve = AkCurveInterpolation_Linear	///< Curve type to be used for the transition
 			);
@@ -1575,7 +1463,7 @@ namespace AK
 		/// - \ref AK::SoundEngine::MultiPositionType
         AK_EXTERNAPIFUNC( AKRESULT, SetMultiplePositions )( 
 			AkGameObjectID in_GameObjectID,						///< Game Object identifier.
-			const AkChannelEmitter * in_pPositions,			///< Array of positions to apply, each using its own channel mask.
+			const AkChannelEmitter * in_pPositions,			///< Array of positions to apply.
 			AkUInt16 in_NumPositions,							///< Number of positions specified in the provided array.
 			MultiPositionType in_eMultiPositionType = MultiPositionType_MultiDirections ///< \ref AK::SoundEngine::MultiPositionType
 		    );
@@ -1585,7 +1473,6 @@ namespace AK
 		/// \return 
 		/// - AK_Success when successful
 		/// - AK_InvalidParameter if the scaling factor specified was 0 or negative.
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
 		AK_EXTERNAPIFUNC( AKRESULT, SetScalingFactor )(
 			AkGameObjectID in_GameObjectID,				///< Game object identifier
 			AkReal32 in_fAttenuationScalingFactor		///< Scaling Factor, 1 means 100%, 0.5 means 50%, 2 means 200%, and so on.
@@ -1627,6 +1514,7 @@ namespace AK
 		/// Load a bank synchronously (by Unicode string).\n
 		/// The bank name is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted, and consumed by the Bank Manager thread.
 		/// The function returns when the request has been completely processed.
 		/// \return 
@@ -1655,10 +1543,14 @@ namespace AK
 		/// Therefore, in_pszString should be the real name of the SoundBank (with or without the BNK extension - it is trimmed internally),
 		/// not the name of the file (if you changed it), nor the full path of the file. The path should be resolved in 
 		/// your implementation of the Stream Manager, or in the Low-Level I/O module if you use the default Stream Manager's implementation.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank() function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref streamingdevicemanager
@@ -1666,6 +1558,7 @@ namespace AK
 		/// - \ref sdk_bank_training
 		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 	        const wchar_t*      in_pszString,		    ///< Name of the bank to load
+            AkMemPoolId         in_memPoolId,			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
             AkBankID &          out_bankID				///< Returned bank ID
 	        );
 #endif //AK_SUPPORT_WCHAR
@@ -1673,6 +1566,7 @@ namespace AK
 		/// Loads a bank synchronously.\n
 		/// The bank name is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted, and consumed by the Bank Manager thread.
 		/// The function returns when the request has been completely processed.
 		/// \return 
@@ -1701,10 +1595,14 @@ namespace AK
 		/// Therefore, in_pszString should be the real name of the SoundBank (with or without the BNK extension - it is trimmed internally),
 		/// not the name of the file (if you changed it), nor the full path of the file. The path should be resolved in 
 		/// your implementation of the Stream Manager, or in the Low-Level I/O module if you use the default Stream Manager's implementation.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank() function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
 		/// - <tt>AK::SoundEngine::GetIDFromString</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref streamingdevicemanager
@@ -1712,6 +1610,7 @@ namespace AK
 		/// - \ref sdk_bank_training
 		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 	        const char*         in_pszString,		    ///< Name of the bank to load
+            AkMemPoolId         in_memPoolId,			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
             AkBankID &          out_bankID				///< Returned bank ID
 	        );
 
@@ -1719,6 +1618,7 @@ namespace AK
 		/// \aknote Requires that the "Use SoundBank names" option be unchecked in the Wwise Project Settings. \endaknote
 		/// The bank ID is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted, and consumed by the Bank Manager thread.
 		/// The function returns when the request has been completely processed.
 		/// \return 
@@ -1741,14 +1641,19 @@ namespace AK
 		/// but the plug-ins will not be used. More specifically, playing a sound that uses an unregistered effect plug-in 
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref sdk_bank_training
 		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
-	        AkBankID			in_bankID              ///< Bank ID of the bank to load
+	        AkBankID			in_bankID,              ///< Bank ID of the bank to load
+            AkMemPoolId         in_memPoolId			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
             );
 
 		/// Loads a bank synchronously (from in-memory data, in-place).\n
@@ -1756,7 +1661,7 @@ namespace AK
 		/// IMPORTANT: Banks loaded from memory with in-place data MUST be unloaded using the UnloadBank function
 		/// providing the same memory pointer. Make sure you are using the correct UnloadBank(...) overload
 		///
-		/// Use LoadBankMemoryView when you want to manage I/O on your side. Load the bank file
+		/// Use this overload when you want to manage I/O on your side. Load the bank file
 		/// in a buffer and pass its address to the sound engine.
 		/// In-memory loading is in-place: *** the memory must be valid until the bank is unloaded. ***
 		/// A bank load request will be posted, and consumed by the Bank Manager thread.
@@ -1784,16 +1689,20 @@ namespace AK
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
 		/// - The memory must be aligned on platform-specific AK_BANK_PLATFORM_DATA_ALIGNMENT bytes (see AkTypes.h).
-		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Device memory allocator.
-		/// - Avoid using this function for banks containing a lot of events or structure data: this data will be unpacked into the sound engine heap,
-		///   making the supplied bank memory redundant. For event/structure-only banks, prefer LoadBankMemoryCopy().
+		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Physical memory allocator.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
+		/// - Avoid using this function for banks containing a lot of events or structure data.  
+		///	  This data will be loaded in the Default Pool anyway thus duplicating memory (one copy in the Default Pool 
+		///   and one in the block you provided). For event/structure-only banks, prefer the other versions of LoadBank().
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref sdk_bank_training
-		AK_EXTERNAPIFUNC( AKRESULT, LoadBankMemoryView )(
+		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 	        const void *		in_pInMemoryBankPtr,	///< Pointer to the in-memory bank to load (pointer is stored in sound engine, memory must remain valid)
 			AkUInt32			in_uInMemoryBankSize,	///< Size of the in-memory bank to load
             AkBankID &          out_bankID				///< Returned bank ID
@@ -1804,9 +1713,9 @@ namespace AK
 		/// NOTE: Banks loaded from in-memory with out-of-place data must be unloaded using the standard UnloadBank function
 		/// (with no memory pointer). Make sure you are using the correct UnloadBank(...) overload
 		///
-		/// Use LoadBankMemoryCopy when you want to manage I/O on your side. Load the bank file
-		/// in a buffer and pass its address to the sound engine, the media section of the bank will be copied into newly 
-		/// allocated memory.  
+		/// Use this overload when you want to manage I/O on your side. Load the bank file
+		/// in a buffer and pass its address to the sound engine, the media section of the bank will be copied into the 
+		/// specified memory pool.  
 		/// In-memory loading is out-of-place: the buffer can be release as soon as the function returns. The advantage of using this
 		/// over the in-place version is that there is no duplication of bank structures.
 		/// A bank load request will be posted, and consumed by the Bank Manager thread.
@@ -1833,21 +1742,28 @@ namespace AK
 		/// but the plug-ins will not be used. More specifically, playing a sound that uses an unregistered effect plug-in 
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
+		/// - The memory must be aligned on platform-specific AK_BANK_PLATFORM_DATA_ALIGNMENT bytes (see AkTypes.h).
+		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Physical memory allocator.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
+		/// - Avoid using this function for banks containing a lot of events or structure data.  
+		///	  This data will be loaded in the Default Pool anyway thus duplicating memory (one copy in the Default Pool 
+		///   and one in the block you provided). For event/structure-only banks, prefer the other versions of LoadBank().
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref sdk_bank_training
-		AK_EXTERNAPIFUNC( AKRESULT, LoadBankMemoryCopy )(
+		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 			const void *		in_pInMemoryBankPtr,	///< Pointer to the in-memory bank to load (pointer is not stored in sound engine, memory can be released after return)
 			AkUInt32			in_uInMemoryBankSize,	///< Size of the in-memory bank to load
+			AkMemPoolId			in_uPoolForBankMedia,	///< Memory pool to copy the media section of the bank to (the pool is created if AK_DEFAULT_POOL_ID is passed).
 			AkBankID &          out_bankID				///< Returned bank ID
 			);
 
-		/// Synchronously decodes Vorbis-encoded and Opus-encoded (Software version) media in a SoundBank. The file should already be read in memory before the decode operation. The out_pDecodedBankPtr can then be used with variants of LoadBank that load from in-memory data.
-		/// \n
-		/// CPU usage, RAM size, storage size and Internet bandwidth must be accounted for when developing a game, especially when it is aimed at mobile platforms. The DecodeBank function makes it possible to decode media at load time instead of decoding them every time they are played.
+		/// Synchronously decode Vorbis-encoded media in a SoundBank.
 		AK_EXTERNAPIFUNC( AKRESULT, DecodeBank )(
 			const void *		in_pInMemoryBankPtr,	///< Pointer to the in-memory bank to decode (pointer is not stored in sound engine, memory can be released after return)
 			AkUInt32			in_uInMemoryBankSize,	///< Size of the in-memory bank to decode
@@ -1860,6 +1776,7 @@ namespace AK
         /// Loads a bank asynchronously (by Unicode string).\n
 		/// The bank name is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted to the Bank Manager consumer thread.
 		/// The function returns immediately.
 		/// \return 
@@ -1885,9 +1802,13 @@ namespace AK
 		/// (<tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt>) if you use the default Stream Manager's implementation.
 		/// - The cookie (in_pCookie) is passed to the Low-Level I/O module for your convenience, in <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> 
 		// as AkFileSystemFlags::pCustomParam.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - AkBankCallbackFunc
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
@@ -1898,13 +1819,15 @@ namespace AK
 	        const wchar_t*      in_pszString,           ///< Name/path of the bank to load
 			AkBankCallbackFunc  in_pfnBankCallback,	    ///< Callback function
 			void *              in_pCookie,				///< Callback cookie (reserved to user, passed to the callback function, and also to  <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> as AkFileSystemFlags::pCustomParam)
- 			AkBankID &          out_bankID				///< Returned bank ID
+            AkMemPoolId         in_memPoolId,			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
+			AkBankID &          out_bankID				///< Returned bank ID
 	        );
 #endif //AK_SUPPORT_WCHAR
 
         /// Loads a bank asynchronously.\n
 		/// The bank name is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted to the Bank Manager consumer thread.
 		/// The function returns immediately.
 		/// \return 
@@ -1930,9 +1853,13 @@ namespace AK
 		/// (<tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt>) if you use the default Stream Manager's implementation.
 		/// - The cookie (in_pCookie) is passed to the Low-Level I/O module for your convenience, in <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> 
 		// as <tt>AkFileSystemFlags::pCustomParam</tt>.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the \c UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - AkBankCallbackFunc
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
@@ -1943,13 +1870,15 @@ namespace AK
 	        const char*         in_pszString,			///< Name/path of the bank to load
 			AkBankCallbackFunc  in_pfnBankCallback,	    ///< Callback function
 			void *              in_pCookie,				///< Callback cookie (reserved to user, passed to the callback function, and also to  <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> as AkFileSystemFlags::pCustomParam)
-  			AkBankID &          out_bankID				///< Returned bank ID
+            AkMemPoolId         in_memPoolId,			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
+			AkBankID &          out_bankID				///< Returned bank ID
 	        );
 
         /// Loads a bank asynchronously (by ID).\n
 		/// \aknote Requires that the "Use SoundBank names" option be unchecked in the Wwise Project Settings. \endaknote
 		/// The bank ID is passed to the Stream Manager.
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
+		/// You can specify a custom pool for storage of media, the engine will create a new pool if AK_DEFAULT_POOL_ID is passed.
 		/// A bank load request will be posted to the Bank Manager consumer thread.
 		/// The function returns immediately.
 		/// \return 
@@ -1972,9 +1901,13 @@ namespace AK
 		/// you use the default Stream Manager's implementation. The ID overload of <tt>AK::IAkStreamMgr::CreateStd()</tt> and <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> are called.
 		/// - The cookie (in_pCookie) is passed to the Low-Level I/O module for your convenience, in <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> 
 		// as AkFileSystemFlags::pCustomParam.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
+		/// - <tt>AK::MemoryMgr::CreatePool()</tt>
 		/// - AkBankCallbackFunc
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
@@ -1982,15 +1915,16 @@ namespace AK
 		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 	        AkBankID			in_bankID,				///< Bank ID of the bank to load
 			AkBankCallbackFunc  in_pfnBankCallback,	    ///< Callback function
-			void *              in_pCookie				///< Callback cookie (reserved to user, passed to the callback function, and also to  <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> as AkFileSystemFlags::pCustomParam)
- 	        );
+			void *              in_pCookie,				///< Callback cookie (reserved to user, passed to the callback function, and also to  <tt>AK::StreamMgr::IAkFileLocationResolver::Open()</tt> as AkFileSystemFlags::pCustomParam)
+            AkMemPoolId         in_memPoolId			///< Memory pool ID (the pool is created if AK_DEFAULT_POOL_ID is passed)
+	        );
 
 		/// Loads a bank asynchronously (from in-memory data, in-place).\n
 		///
 		/// IMPORTANT: Banks loaded from memory with in-place data MUST be unloaded using the UnloadBank function
 		/// providing the same memory pointer. Make sure you are using the correct UnloadBank(...) overload
 		///
-		/// Use LoadBankMemoryView when you want to manage I/O on your side. Load the bank file
+		/// Use this overload when you want to manage I/O on your side. Load the bank file
 		/// in a buffer and pass its address to the sound engine.
 		/// In-memory loading is in-place: *** the memory must be valid until the bank is unloaded. ***
 		/// A bank load request will be posted to the Bank Manager consumer thread.
@@ -2012,9 +1946,10 @@ namespace AK
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
 		/// - The memory must be aligned on platform-specific AK_BANK_PLATFORM_DATA_ALIGNMENT bytes (see AkTypes.h).
-		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Device memory allocator.
-		/// - Avoid using this function for banks containing a lot of events or structure data: this data will be unpacked into the sound engine heap,
-		///   making the supplied bank memory redundant. For event/structure-only banks, prefer LoadBankMemoryCopy().
+		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Physical memory allocator.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
@@ -2022,7 +1957,7 @@ namespace AK
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref sdk_bank_training
-		AK_EXTERNAPIFUNC( AKRESULT, LoadBankMemoryView )(
+		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 			const void *		in_pInMemoryBankPtr,	///< Pointer to the in-memory bank to load (pointer is stored in sound engine, memory must remain valid)
 			AkUInt32			in_uInMemoryBankSize,	///< Size of the in-memory bank to load
 			AkBankCallbackFunc  in_pfnBankCallback,	    ///< Callback function
@@ -2035,9 +1970,9 @@ namespace AK
 		/// NOTE: Banks loaded from in-memory with out-of-place data must be unloaded using the standard UnloadBank function
 		/// (with no memory pointer). Make sure you are using the correct UnloadBank(...) overload
 		///
-		/// Use LoadBankMemoryCopy when you want to manage I/O on your side. Load the bank file
-		/// in a buffer and pass its address to the sound engine, the media section of the bank will be copied into newly allocated 
-		/// memory.
+		/// Use this overload when you want to manage I/O on your side. Load the bank file
+		/// in a buffer and pass its address to the sound engine, the media section of the bank will be copied into the 
+		/// specified memory pool.  
 		/// In-memory loading is out-of-place: the buffer can be released after the callback function is called. The advantage of using this
 		/// over the in-place version is that there is no duplication of bank structures.
 		/// A bank load request will be posted to the Bank Manager consumer thread.
@@ -2058,6 +1993,11 @@ namespace AK
 		/// but the plug-ins will not be used. More specifically, playing a sound that uses an unregistered effect plug-in 
 		/// will result in audio playback without applying the said effect. If an unregistered source plug-in is used by an event's audio objects, 
 		/// posting the event will fail.
+		/// - The memory must be aligned on platform-specific AK_BANK_PLATFORM_DATA_ALIGNMENT bytes (see AkTypes.h).
+		/// - (XboxOne only): If the bank may contain XMA in memory data, the memory must be allocated using the Physical memory allocator.
+		/// - Requesting to load a bank in a different memory pool than where the bank was previously loaded must be done only
+		/// after receiving confirmation by the callback that the bank was completely unloaded or by using synchronous versions
+		/// of the UnloadBank function.
 		/// \sa 
 		/// - <tt>AK::SoundEngine::UnloadBank()</tt>
 		/// - <tt>AK::SoundEngine::ClearBanks()</tt>
@@ -2065,11 +2005,12 @@ namespace AK
 		/// - \ref soundengine_banks
 		/// - \ref integrating_elements_plugins
 		/// - \ref sdk_bank_training
-		AK_EXTERNAPIFUNC( AKRESULT, LoadBankMemoryCopy )(
+		AK_EXTERNAPIFUNC( AKRESULT, LoadBank )(
 			const void *		in_pInMemoryBankPtr,	///< Pointer to the in-memory bank to load (pointer is not stored in sound engine, memory can be released after callback)
 			AkUInt32			in_uInMemoryBankSize,	///< Size of the in-memory bank to load
 			AkBankCallbackFunc  in_pfnBankCallback,	    ///< Callback function
 			void *              in_pCookie,				///< Callback cookie
+			AkMemPoolId			in_uPoolForBankMedia,	///< Memory pool to copy the media section of the bank to (the pool is created if AK_DEFAULT_POOL_ID is passed).
 			AkBankID &          out_bankID				///< Returned bank ID
 			);
 
@@ -2078,6 +2019,8 @@ namespace AK
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
 		/// \return AK_Success if successful, AK_Fail otherwise. AK_Success is returned when the bank was not loaded.
 		/// \remarks
+		/// - If you provided a pool memory ID when loading this bank, it is returned as well. 
+		/// Otherwise, the function returns AK_DEFAULT_POOL_ID.
 		/// - The sound engine internally calls GetIDFromString(in_pszString) to retrieve the bank ID, 
 		/// then it calls the synchronous version of UnloadBank() by ID.
 		/// Therefore, in_pszString should be the real name of the SoundBank (with or without the BNK extension - it is trimmed internally),
@@ -2090,7 +2033,8 @@ namespace AK
 		/// - \ref soundengine_banks
         AK_EXTERNAPIFUNC( AKRESULT, UnloadBank )(
 	        const wchar_t*      in_pszString,           ///< Name of the bank to unload
-			const void *		in_pInMemoryBankPtr		///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
+			const void *		in_pInMemoryBankPtr,	///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
+	        AkMemPoolId *       out_pMemPoolId = NULL   ///< Returned memory pool ID used with LoadBank() (can pass NULL)
 	        );
 #endif //AK_SUPPORT_WCHAR
 
@@ -2098,6 +2042,8 @@ namespace AK
 		/// Refer to \ref soundengine_banks_general for a discussion on using strings and IDs.
 		/// \return AK_Success if successful, AK_Fail otherwise. AK_Success is returned when the bank was not loaded.
 		/// \remarks
+		/// - If you provided a pool memory ID when loading this bank, it is returned as well. 
+		/// Otherwise, the function returns AK_DEFAULT_POOL_ID.
 		/// - The sound engine internally calls GetIDFromString(in_pszString) to retrieve the bank ID, 
 		/// then it calls the synchronous version of UnloadBank() by ID.
 		/// Therefore, in_pszString should be the real name of the SoundBank (with or without the BNK extension - it is trimmed internally),
@@ -2110,12 +2056,15 @@ namespace AK
 		/// - \ref soundengine_banks
         AK_EXTERNAPIFUNC( AKRESULT, UnloadBank )(
 	        const char*         in_pszString,           ///< Name of the bank to unload
-			const void *		in_pInMemoryBankPtr		///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
+			const void *		in_pInMemoryBankPtr,	///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
+	        AkMemPoolId *       out_pMemPoolId = NULL   ///< Returned memory pool ID used with LoadBank() (can pass NULL)
 	        );
 
 		/// Unloads a bank synchronously (by ID and memory pointer).\n
 		/// \return AK_Success if successful, AK_Fail otherwise. AK_Success is returned when the bank was not loaded.
 		/// \remarks
+		/// If you provided a pool memory ID when loading this bank, it is returned as well. 
+		/// Otherwise, the function returns AK_DEFAULT_POOL_ID.
 		/// - In order to force the memory deallocation of the bank, sounds that use media from this bank will be stopped. 
 		/// This means that streamed sounds or generated sounds will not be stopped.
 		/// \sa 
@@ -2124,8 +2073,9 @@ namespace AK
 		/// - \ref soundengine_banks
         AK_EXTERNAPIFUNC( AKRESULT, UnloadBank )(
 	        AkBankID            in_bankID,              ///< ID of the bank to unload
-			const void *		in_pInMemoryBankPtr		///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
- 	        );
+			const void *		in_pInMemoryBankPtr,	///< Memory pointer from where the bank was initially loaded from. (REQUIRED to determine which bank associated to a memory pointer must be unloaded). Pass NULL only if NULL was passed when loading the bank.
+            AkMemPoolId *       out_pMemPoolId = NULL   ///< Returned memory pool ID used with LoadBank() (can pass NULL)
+	        );
 
 #ifdef AK_SUPPORT_WCHAR
 		/// Unloads a bank asynchronously (by Unicode string).\n
@@ -2428,8 +2378,6 @@ namespace AK
 		/// \remarks
 		/// Whenever at least one event fails to be resolved, the actions performed for all 
 		/// other events are cancelled.
-		/// \aknote  The use of PrepareEvent is incompatible with LoadBank, using in-memory data.
-		/// \endaknote
 		/// \sa
 		/// - <tt>AK::SoundEngine::PrepareEvent()</tt>
 		/// - <tt>AK::SoundEngine::ClearPreparedEvents()</tt>
@@ -2888,21 +2836,16 @@ namespace AK
 			AkGameObjectID in_emitterGameObj	///< Emitter game object.
 			);
 
-		/// Sets a listener's spatialization parameters. This lets you define listener-specific 
+		/// Sets a listener's spatialization parameters. This let you define listener-specific 
 		/// volume offsets for each audio channel.
 		/// If \c in_bSpatialized is false, only \c in_pVolumeOffsets is used for this listener (3D positions 
 		/// have no effect on the speaker distribution). Otherwise, \c in_pVolumeOffsets is added to the speaker
 		/// distribution computed for this listener.
 		/// Use helper functions of \c AK::SpeakerVolumes to manipulate the vector of volume offsets in_pVolumeOffsets.
 		/// 
-		/// \remarks
-		/// - If a sound is mixed into a bus that has a different speaker configuration than in_channelConfig,
+		/// If a sound is mixed into a bus that has a different speaker configuration than in_channelConfig,
 		/// standard up/downmix rules apply.
-		/// - Sounds with 3D Spatialization set to None will not be affected by these parameters.
-		/// \return 
-		/// \c AK_Success if message was successfully posted to sound engine queue
-		/// \c AK_InvalidFloatValue if the value specified was NaN or Inf
-		/// \c AK_InsufficientMemory if there wasn't enough memory in the message queue		
+		/// \return \c AK_Success if message was successfully posted to sound engine queue, \c AK_Fail otherwise.
 		/// \sa 
 		/// - \ref soundengine_listeners_spatial
 		AK_EXTERNAPIFUNC( AKRESULT, SetListenerSpatialization )(
@@ -2931,9 +2874,7 @@ namespace AK
 		/// function at every game frame, you should not use \c in_uValueChangeDuration, as it would have no effect and it is less efficient.
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
-		/// \return 
-		/// \c AK_Success if the value was successfully set
-		/// \c AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)
+		/// \return Always \c AK_Success
 		/// \sa 
 		/// - \ref soundengine_rtpc
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
@@ -2960,9 +2901,8 @@ namespace AK
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
 		/// \return 
-		/// \c AK_Success if the value was successfully set
-		/// \c AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)		
-		/// \c AK_IDNotFound if in_pszRtpcName is NULL.
+		/// - AK_Success if successful
+		/// - AK_IDNotFound if in_pszRtpcName is NULL.
 		/// \aknote Strings are case-insensitive. \endaknote
 		/// \sa 
 		/// - \ref soundengine_rtpc
@@ -2989,9 +2929,8 @@ namespace AK
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
 		/// \return 
-		/// \c AK_Success if the value was successfully set
-		/// \c AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)	
-		/// \c AK_IDNotFound if in_pszRtpcName is NULL.
+		/// - AK_Success if successful
+		/// - AK_IDNotFound if in_pszRtpcName is NULL.
 		/// \aknote Strings are case-insensitive. \endaknote
 		/// \sa 
 		/// - \ref soundengine_rtpc
@@ -3014,10 +2953,7 @@ namespace AK
 		/// function at every game frame, you should not use in_uValueChangeDuration, as it would have no effect and it is less efficient.
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
-		/// - AK_Success if successful
-		/// - AK_PlayingIDNotFound if in_playingID is not found.
-		/// - AK_IDNotFound if in_pszRtpcName is NULL.
-		/// - AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)
+		/// \return Always AK_Success
 		/// \sa 
 		/// - \ref soundengine_rtpc
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
@@ -3041,10 +2977,7 @@ namespace AK
 		/// function at every game frame, you should not use in_uValueChangeDuration, as it would have no effect and it is less efficient.
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
-		/// - AK_Success if successful
-		/// - AK_PlayingIDNotFound if in_playingID is not found.
-		/// - AK_IDNotFound if in_pszRtpcName is NULL.
-		/// - AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)
+		/// \return Always AK_Success
 		/// \sa 
 		/// - \ref soundengine_rtpc
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
@@ -3068,10 +3001,7 @@ namespace AK
 		/// function at every game frame, you should not use in_uValueChangeDuration, as it would have no effect and it is less efficient.
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
-		/// - AK_Success if successful
-		/// - AK_PlayingIDNotFound if in_playingID is not found.
-		/// - AK_IDNotFound if in_pszRtpcName is NULL.
-		/// - AK_InvalidFloatValue if the value specified was NaN, Inf or FLT_MAX (3.402823e+38)
+		/// \return Always AK_Success
 		/// \sa 
 		/// - \ref soundengine_rtpc
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
@@ -3095,7 +3025,7 @@ namespace AK
 		/// middle of an interpolation, the interpolation stops and the new value is set directly. 
 		/// Refer to \ref soundengine_rtpc_pergameobject, \ref soundengine_rtpc_buses and 
 		/// \ref soundengine_rtpc_effects for more details on RTPC scope.
-		/// \return 
+		/// \return Always AK_Success
 		/// \sa 
 		/// - \ref soundengine_rtpc
 		/// - <tt>AK::SoundEngine::GetIDFromString()</tt>
@@ -3297,7 +3227,6 @@ namespace AK
 		/// \return 
 		/// - AK_Success if successful
 		///	- AK_InvalidParameter if a duplicated environment is found in the array
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
 		AK_EXTERNAPIFUNC( AKRESULT, SetGameObjectAuxSendValues )( 
 			AkGameObjectID		in_gameObjectID,		///< Associated game object ID
 			AkAuxSendValue*		in_aAuxSendValues,		///< Variable-size array of AkAuxSendValue structures
@@ -3341,21 +3270,19 @@ namespace AK
 			AkMeteringFlags in_eMeteringFlags			///< Metering flags.
 			);
 
-		/// Sets the Output Bus Volume (direct) to be used for the specified game object.
+		/// Sets the output bus volume (direct) to be used for the specified game object.
 		/// The control value is a number ranging from 0.0f to 1.0f.
-		/// Output Bus Volumes are stored per listener association, so calling this function will override the default set of listeners. The game object in_emitterObjID will now reference its own set of listeners which will 
+		/// Output bus volumes are stored per listener association, so calling this function will override the default set of listeners. The game object in_emitterObjID will now reference its own set of listeners which will 
 		/// be the same as the old set of listeners, but with the new associated gain.  Future changes to the default listener set will not be picked up by this game object unless ResetListenersToDefault() is called.
 		/// \sa 
 		/// - \ref AK::SoundEngine::ResetListenersToDefault
 		/// - \ref soundengine_environments
 		/// - \ref soundengine_environments_setting_dry_environment
 		/// - \ref soundengine_environments_id_vs_string
-		/// \return 
-		/// - AK_Success when successful
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
+		/// \return Always returns AK_Success
 		AK_EXTERNAPIFUNC( AKRESULT, SetGameObjectOutputBusVolume )( 
 			AkGameObjectID		in_emitterObjID,		///< Associated emitter game object ID
-			AkGameObjectID		in_listenerObjID,		///< Associated listener game object ID. Pass AK_INVALID_GAME_OBJECT to set the Output Bus Volume for all connected listeners.
+			AkGameObjectID		in_listenerObjID,		///< Associated listener game object ID
 			AkReal32			in_fControlValue		///< A multiplier where 0 means silence and 1 means no change. 
 														///< (Therefore, values between 0 and 1 will attenuate the sound, and values greater than 1 will amplify it.)
 			);
@@ -3563,7 +3490,7 @@ namespace AK
 		/// directory and will append numbers at the end of the provided filename.
 		///
 		/// If no device is running yet, the system will return success AK_Success despite doing nothing.
-		/// Use RegisterAudioDeviceStatusCallback to get notified when devices are created/destructed.
+		/// Use \ref RegisterAudioDeviceStatusCallback to get notified when devices are created/destructed.
 		///
 		/// \return AK_Success if successful, AK_Fail if there was a problem starting the output capture.
 		/// \remark
@@ -3578,7 +3505,6 @@ namespace AK
 		/// - <tt>AK::StreamMgr::SetFileLocationResolver()</tt>
 		/// - \ref streamingdevicemanager
 		/// - \ref streamingmanager_lowlevel_location
-		/// - RegisterAudioDeviceStatusCallback
 		AK_EXTERNAPIFUNC( AKRESULT, StartOutputCapture )( 
 			const AkOSChar* in_CaptureFileName				///< Name of the output capture file
 			);
@@ -3624,8 +3550,8 @@ namespace AK
 		/// \return 
 		/// - AK_NotImplemented: Feature not supported
 		/// - AK_InvalidParameter: Out of range parameters or unsupported parameter combinations (see parameter list below).
-		/// - AK_IDNotFound: The audioDeviceShareset on in_settings doesn't exist.  Possibly, the Init bank isn't loaded yet or was not updated with latest changes.
-		/// - AK_DeviceNotReady: The idDevice on in_settings doesn't match with a valid hardware device.  Either the device doesn't exist or is disabled.  Disconnected devices (headphones) are not considered "not ready" therefore won't cause this error.
+		/// - AK_IDNotFound: Shareset ID doesn't exist.  Possibly, the Init bank isn't loaded yet or was not updated with latest changes.
+		/// - AK_DeviceNotReady: The in_iDeviceID doesn't match with a valid hardware device.  Either the device doesn't exist or is disabled.  Disconnected devices (headphones) are not considered "not ready" therefore won't cause this error.
 		/// - AK_Success: Parameters are valid.		
 		AK_EXTERNAPIFUNC(AKRESULT, AddOutput)(			
 			const AkOutputSettings & in_Settings,	///< Creation parameters for this output.  \ref AkOutputSettings							
@@ -3644,24 +3570,7 @@ namespace AK
 		/// \sa AK::SoundEngine::AddOutput
 		/// \return AK_Success: Parameters are valid.
 		AK_EXTERNAPIFUNC(AKRESULT, RemoveOutput)(
-			AkOutputDeviceID in_idOutput	///< ID of the output to remove.  Use the returned ID from AddOutput, GetOutputID, or ReplaceOutput
-			);
-
-		/// Replaces an output device previously created during engine initialization or from AddOutput, with a new output device.
-		/// In addition to simply removing one output device and adding a new one, the new output device will also be used on all of the master buses
-		/// that the old output device was associated with, and preserve all listeners that were attached to the old output device.
-		/// \sa AK::SoundEngine::AddOutput
-		/// \return 
-		/// - AK_InvalidID: The audioDeviceShareset on in_settings was not valid.
-		/// - AK_IDNotFound: The audioDeviceShareset on in_settings doesn't exist.  Possibly, the Init bank isn't loaded yet or was not updated with latest changes.
-		/// - AK_DeviceNotReady: The idDevice on in_settings doesn't match with a valid hardware device.  Either the device doesn't exist or is disabled.  Disconnected devices (headphones) are not considered "not ready" therefore won't cause this error.
-		/// - AK_DeviceNotFound: The in_outputDeviceId provided does not match with any of the output devices that the sound engine is currently using.
-		/// - AK_InvalidParameter: Out of range parameters or unsupported parameter combinations on in_settings
-		/// - AK_Success: parameters were valid, and the remove and add will occur.
-		AK_EXTERNAPIFUNC(AKRESULT, ReplaceOutput)(
-			const AkOutputSettings & in_Settings,				///< Creation parameters for this output.  \ref AkOutputSettings
-			AkOutputDeviceID in_outputDeviceId,					///< AkOutputDeviceID of the output to replace. For example, use the AkOuptutDeviceID returned from AddOutput() or ReplaceOutput(), or generated by GetOutputID()
-			AkOutputDeviceID *out_pOutputDeviceId = NULL		///< (Optional) Pointer into which the method writes the AkOutputDeviceID of the new output device. If the call fails, the value pointed to will not be modified.
+			AkOutputDeviceID in_idOutput	///< ID of the output to remove.  Use the returned ID from AddOutput or GetOutputID
 			);
 
 		/// Gets the compounded output ID from shareset and device id.
@@ -3698,7 +3607,6 @@ namespace AK
 
 		/// Sets the Audio Device to which a master bus outputs.  This overrides the setting in the Wwise project.	
 		/// Can only be set on top-level busses. The Init bank should be successfully loaded prior to this call.
-		/// SetBusDevice must be preceded by a call to AddOutput for the new device shareset to be registered as an output.
 		/// \return 
 		/// AK_IDNotFound when either the Bus ID or the Device ID are not present in the Init bank or the bank was not loaded
 		/// AK_InvalidParameter when the specified bus is not a Master Bus.  This function can be called only on busses that have no parent bus.
@@ -3709,7 +3617,6 @@ namespace AK
 
 		/// Sets the Audio Device to which a master bus outputs.  This overrides the setting in the Wwise project.	
 		/// Can only be set on top-level busses. The Init bank should be successfully loaded prior to this call.
-		/// SetBusDevice must be preceded by a call to AddOutput for the new device shareset to be registered as an output.
 		/// \return 
 		/// AK_IDNotFound when either the Bus ID or the Device ID are not present in the Init bank or the bank was not loaded
 		/// AK_InvalidParameter when the specified bus is not a Master Bus.  This function can be called only on busses that have no parent bus.
@@ -3721,7 +3628,6 @@ namespace AK
 		#ifdef AK_SUPPORT_WCHAR
 		/// Sets the Audio Device to which a master bus outputs.  This overrides the setting in the Wwise project.	
 		/// Can only be set on top-level busses. The Init bank should be successfully loaded prior to this call.
-		/// SetBusDevice must be preceded by a call to AddOutput for the new device shareset to be registered as an output.
 		/// \return 
 		/// AK_IDNotFound when either the Bus ID or the Device ID are not present in the Init bank or the bank was not loaded
 		/// AK_InvalidParameter when the specified bus is not a Master Bus.  This function can be called only on busses that have no parent bus.
@@ -3731,58 +3637,11 @@ namespace AK
 			);
 		#endif
 		
-		/// Returns a listing of the current devices for a given sink plug-in, including Device ID, friendly name, and state.
-		/// This call is only valid for sink plug-ins that support device enumeration.
-		/// Prerequisites: the plug-in must have been initialized by loading the init bank or by calling \ref AK::SoundEngine::RegisterPlugin.
-		/// \return
-		/// AK_NotImplemented if the sink plug-in does not implement device enumeration
-		/// AK_PluginNotRegistered if the plug-in has not been registered yet either by loading the init bank or by calling RegisterPluginDLL.
-		AK_EXTERNAPIFUNC(AKRESULT, GetDeviceList) (
-			AkUInt32 in_ulCompanyID,					///< Company identifier (as declared in the plug-in description XML file)
-			AkUInt32 in_ulPluginID,						///< Plug-in identifier (as declared in the plug-in description XML file)
-			AkUInt32& io_maxNumDevices,					///< In: The maximum number of devices to write to out_deviceDescriptions. Out: Returns the number of devices that were written to out_deviceDescriptions, or if out_deviceDescriptions is NULL, how many devices would have been written.
-			AkDeviceDescription* out_deviceDescriptions ///< The output array of device descriptions. If NULL, no devices will be written out.
-			);
-
-		/// Returns a listing of the current devices for a given sink plug-in, including Device ID, friendly name, and state.
-		/// This call is only valid for sink plug-ins that support device enumeration.
-		/// Prerequisites:
-		///  * The plug-in must have been initialized by loading the init bank or by calling \ref AK::SoundEngine::RegisterPlugin.
-		///  * The audio device shareset must have been loaded from a soundbank and a device with this shareset must exist in the pipeline.
-		/// \return
-		/// AK_NotImplemented if the sink plug-in does not implement device enumeration
-		/// AK_PluginNotRegistered if the plug-in has not been registered yet either by loading the init bank or by calling RegisterPluginDLL.
-		AK_EXTERNAPIFUNC(AKRESULT, GetDeviceList) (
-			AkUniqueID in_audioDeviceShareSetID,		///< In: The audio device shareset ID for which to list the sink plug-in devices.
-			AkUInt32& io_maxNumDevices,					///< In: The maximum number of devices to write to out_deviceDescriptions. Out: Returns the number of devices that were written to out_deviceDescriptions, or if out_deviceDescriptions is NULL, how many devices would have been written.
-			AkDeviceDescription* out_deviceDescriptions ///< The output array of device descriptions. If NULL, no devices will be written out.
-			);
-
 		/// Sets the volume of a output device.		
-		/// \return
-		/// - AK_Success if successful		
-		/// - AK_InvalidFloatValue if the value specified was NaN or Inf
 		AK_EXTERNAPIFUNC( AKRESULT, SetOutputVolume )(
 			AkOutputDeviceID in_idOutput,	///< Output ID to set the volume on.  As returned from AddOutput or GetOutputID
 			AkReal32 in_fVolume				///< Volume (0.0 = Muted, 1.0 = Volume max)
 			);
-
-		/// Returns whether or not the audio device matching the device ID provided supports spatial audio (i.e. the functionality is enabled, and more than 0 dynamic objects are supported).
-		/// If Spatial Audio is supported, then you can call Init, AddOutput, or ReplaceOutput with an Audio Device Shareset corresponding to the respective platform-specific plug-in that
-		/// provides spatial audio, such as the Microsoft Spatial Sound Platform for Windows. Note that on Xbox One, you need to call EnableSpatialAudio() before the sound engine is
-		/// initialized, or initialize the sound engine with AkPlatformInitSettings::bEnableSpatialAudio set to true if you want spatial audio support; otherwise this will always return AK_NotCompatible.
-		/// \return
-		/// AK_NotCompatible when the device ID provided does not support spatial audio, or the platform does not support spatial audio
-		/// AK_Fail when there is some other miscellaneous failure, or the device ID provided does not match a device that the system knows about
-		/// AK_Success when the device ID provided does support spatial audio
-		AK_EXTERNAPIFUNC( AKRESULT, GetDeviceSpatialAudioSupport ) (
-			AkUInt32 in_idDevice			///< Device specific identifier, when multiple devices of the same type are possible.  If only one device is possible, leave to 0.
-											///< - PS4 Controller-Speakers: UserID as returned from sceUserServiceGetLoginUserIdList
-											///< - XBoxOne Controller-Headphones: Use the AK::GetDeviceID function to get the ID from an IMMDevice. Find the player's device with the WASAPI API (IMMDeviceEnumerator, see Microsoft documentation) or use AK::GetDeviceIDFromName.
-											///< - Windows: Use AK::GetDeviceID or AK::GetDeviceIDFromName to get the correct ID.		
-											///< - All others output: use 0 to select the default device for that type.
-			);
-
 
 		//@}
 
@@ -3796,7 +3655,7 @@ namespace AK
 		/// - Android: Call for APP_CMD_PAUSE
 		/// - iOS: Don't call. All audio interrupts are handled internally.
 		/// - XBoxOne: Use when entering constrained mode or suspended mode (see ResourceAvailability in Xbox One documentation).
-		/// \sa WakeupFromSuspend
+		/// \sa \ref WakeupFromSuspend
 		AK_EXTERNAPIFUNC( AKRESULT, Suspend )(
 			bool in_bRenderAnyway = false /// If set to true, audio processing will still occur, but not outputted. When set to false, no audio will be processed at all, even upon reception of RenderAudio().
 			);

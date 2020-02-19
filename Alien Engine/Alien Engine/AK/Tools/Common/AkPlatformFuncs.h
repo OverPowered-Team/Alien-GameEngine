@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: v2019.2.0  Build: 7216
-  Copyright (c) 2006-2020 Audiokinetic Inc.
+  Version: v2017.2.3  Build: 6575
+  Copyright (c) 2006-2018 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkPlatformFuncs.h
@@ -34,16 +34,12 @@ the specific language governing permissions and limitations under the License.
 #define _AK_TOOLS_COMMON_AKPLATFORMFUNCS_H
 
 #include "../../SoundEngine/Common/AkTypes.h"
-#include "../../SoundEngine/Common/AkAtomic.h"
 
 // Uncomment the following to enable built-in platform profiler markers in the sound engine
 //#define AK_ENABLE_INSTRUMENT
 
-#if defined(AK_WIN)
-#include "../../Tools/Win32/AkPlatformFuncs.h"
-
-#elif defined (AK_XBOX)
-#include <AK/Tools/XboxOne/AkPlatformFuncs.h>
+#if defined(AK_WIN) || defined(AK_XBOXONE)
+#include "../Win32/AkPlatformFuncs.h"
 
 #elif defined (AK_APPLE)
 #include <AK/Tools/Mac/AkPlatformFuncs.h>
@@ -55,17 +51,10 @@ the specific language governing permissions and limitations under the License.
 #elif defined (AK_PS4)
 #include <AK/Tools/PS4/AkPlatformFuncs.h>
 
-#elif defined (AK_PELLEGRINO)
-#include <AK/Tools/Pellegrino/AkPlatformFuncs.h>
-
 #elif defined (AK_EMSCRIPTEN)
 #include <AK/Tools/Emscripten/AkPlatformFuncs.h>
 
 #elif defined (AK_LINUX)
-
-#ifdef AK_GGP
-#include <AK/Tools/GGP/AkPlatformFuncs.h>
-#endif
 #include <AK/Tools/Linux/AkPlatformFuncs.h>
 #include <AK/Tools/POSIX/AkPlatformFuncs.h>
 
@@ -98,19 +87,6 @@ the specific language governing permissions and limitations under the License.
 #define AkZeroMemSmall(___Dest, ___Size) AKPLATFORM::AkMemSet(___Dest, 0, ___Size);
 #endif
 
-#ifndef AkAllocaSIMD
-#ifdef __clang__
-#if __has_builtin( __builtin_alloca_with_align )
-#define AkAllocaSIMD( _size_ ) __builtin_alloca_with_align( _size_, 128 )
-#else
-// work around alloca alignment issues in versions of clang before 4.0
-#define AkAllocaSIMD( _size_ ) (void*)( ( ( uintptr_t )AkAlloca( _size_ + 16 ) + 0xF ) & ~0xF )
-#endif
-#else
-#define AkAllocaSIMD( _size_ ) AkAlloca( _size_ )
-#endif
-#endif
-
 #ifndef AK_THREAD_INIT_CODE
 #define AK_THREAD_INIT_CODE(_threadProperties)
 #endif
@@ -128,14 +104,6 @@ namespace AK
 	}
 }
 
-namespace AKPLATFORM
-{
-	inline void AkGetDefaultHighPriorityThreadProperties(AkThreadProperties & out_threadProperties)
-	{
-		AkGetDefaultThreadProperties(out_threadProperties);
-		out_threadProperties.nPriority = AK_THREAD_PRIORITY_ABOVE_NORMAL;
-	}
-}
 
 #ifndef AK_PERF_RECORDING_RESET
 #define AK_PERF_RECORDING_RESET()

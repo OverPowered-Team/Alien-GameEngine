@@ -780,6 +780,12 @@ const Component* GameObject::GetComponent(const ComponentType& type) const
 	return nullptr;
 }
 
+ComponentTransform* GameObject::GetComponentTransform() const
+{
+	auto ret = GetComponent(ComponentType::TRANSFORM);
+	return (ret == nullptr) ? nullptr : (ComponentTransform*)ret;
+}
+
 Component* GameObject::GetComponentWithID(const u64& compID)
 {
 	std::vector<Component*>::iterator item = components.begin();
