@@ -2,7 +2,7 @@
     "Meta": {
         "ID": "12136694488779273108",
         "NumMeshes": 36,
-        "NumAnimations": 1,
+        "NumAnimations": 0,
         "PathMeshes": [
             "Library\/Meshes\/17051541242931067362.alienMesh",
             "Library\/Meshes\/18163110784262583545.alienMesh",
@@ -41,8 +41,6 @@
             "Library\/Meshes\/10410416631451005270.alienMesh",
             "Library\/Meshes\/17863996549730180763.alienMesh"
         ],
-        "PathAnimations": [
-            "Library\/Animation\/17704810800974653542.alienAnimation"
-        ]
+        "PathAnimations": []
     }
 }
