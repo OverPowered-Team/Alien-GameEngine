@@ -28,6 +28,7 @@ public:
 	float* GetProjectionMatrix() const;
 
 	float* GetViewMatrix() const;
+	float4x4 GetViewMatrix4x4() const; 
 
 	void SetVerticalFov(const float& vertical_fov);
 	float GetVerticalFov() const;
