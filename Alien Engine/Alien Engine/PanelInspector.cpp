@@ -6,6 +6,9 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ComponentAudioListener.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentReverbZone.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -307,7 +310,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Audio Emitter\0Audio Listener\0Audio Reverb\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -378,7 +381,44 @@ void PanelInspector::ButtonAddComponent()
 					LOG_ENGINE("The selected object already has this component!");
 
 				break; }
+
+			case ComponentType::A_LISTENER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_LISTENER))
+				{
+					comp = new ComponentAudioListener(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::A_EMITTER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_EMITTER))
+				{
+					comp = new ComponentAudioEmitter(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::A_REVERB: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_REVERB))
+				{
+					comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
 			}
+
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);

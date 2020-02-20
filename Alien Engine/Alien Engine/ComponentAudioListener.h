@@ -6,16 +6,22 @@
 
 class GameObject;
 
-class AudioListener : public Component
+class ComponentAudioListener : public Component
 {
 public:
-	AudioListener(GameObject* parent);
-	~AudioListener();
-	void Update(float dt);
+	ComponentAudioListener(GameObject* parent);
+	~ComponentAudioListener();
+	void Update();
 	void UpdateListenerPos();
-	void SaveListener(/*JSON_Array* componentsObj*/) const;
+
+	void Reset() override;
+
+	void SaveComponent(JSONArraypack* to_save) override;
+	void LoadComponent(JSONArraypack* to_load) override;
+
+	bool DrawInspector() override;
 
 
 public:
-	WwiseT::AudioSource* listener;
+	WwiseT::AudioSource* listener = nullptr;
 };

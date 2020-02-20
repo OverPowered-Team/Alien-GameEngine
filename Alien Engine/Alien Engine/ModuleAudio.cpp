@@ -12,17 +12,17 @@ ModuleAudio::~ModuleAudio()
 
 bool ModuleAudio::Start()
 {
+	bool ret = true;
+
 	// Init wwise and audio banks
-	WwiseT::InitSoundEngine();
+	ret = WwiseT::InitSoundEngine();
 	WwiseT::LoadBank("Main.bnk");
 
 	auto s = WwiseT::CreateAudSource("hola");
 
 	s->PlayEventByName("test");
 
-	WwiseT::SetDefaultListener(s->GetID());
-
-	return true;
+	return ret;
 }
 
 update_status ModuleAudio::Update(float dt)
@@ -38,7 +38,10 @@ update_status ModuleAudio::PostUpdate(float dt)
 
 bool ModuleAudio::CleanUp()
 {
-	audios.clear();
+	for (auto i = emitters.begin(); i != emitters.end(); i++)
+		delete* i;
+	emitters.clear();
+
 	WwiseT::StopAllEvents();
 	UnloadAllBanks();
 	return WwiseT::CloseSoundEngine();
@@ -46,23 +49,23 @@ bool ModuleAudio::CleanUp()
 
 bool ModuleAudio::UnloadAllBanks()
 {
-	for (std::vector<std::string>::iterator it = eng_banks.begin(); it != eng_banks.end(); it++)
+	for (auto it = eng_banks.begin(); it != eng_banks.end(); it++)
 	{
 		WwiseT::UnLoadBank((*it).c_str());
 	}
 	eng_banks.clear();
+
 	return true;
 }
 
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 {
-	WwiseT::AudioSource* ret = WwiseT::CreateAudSource(name);
-	return ret;
+	return WwiseT::CreateAudSource(name);
 }
 
 void ModuleAudio::Play()
 {
-	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
+	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)
 	{
 		(*iterator)->StartSound();
 	}
@@ -72,31 +75,17 @@ void ModuleAudio::Play()
 
 void ModuleAudio::Stop()
 {
-	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
-	{
-		(*iterator)->source->StopEventByName("BGmusic");
-		(*iterator)->source->StopEventByName("Rain");
-	}
-
-	is_playing = false;
+	WwiseT::StopAllEvents();
 }
 
 void ModuleAudio::Pause() const
 {
-	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
-	{
-		(*iterator)->source->PauseEventByName("BGmusic");
-		(*iterator)->source->PauseEventByName("Rain");
-	}
+	WwiseT::PauseAll();
 }
 
 void ModuleAudio::Resume() const
 {
-	for (auto iterator = audios.begin(); iterator != App->audio->audios.end(); ++iterator)
-	{
-		(*iterator)->source->ResumeEventByName("BGmusic");
-		(*iterator)->source->ResumeEventByName("Rain");
-	}
+	WwiseT::ResumeAll();
 }
 
 void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)

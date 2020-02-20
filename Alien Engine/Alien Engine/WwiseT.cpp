@@ -245,20 +245,13 @@ void WwiseT::SetDefaultListener(uint id)
 
 WwiseT::AudioSource* WwiseT::CreateAudSource(const char * name)
 {
-	AudioSource* src = nullptr;
-
-	src = new AudioSource(name);
-
-	return src;
+	return new AudioSource(name);
 }
 
 WwiseT::AudioSource * WwiseT::CreateAudSource(uint id, const char * name)
 {
-	AudioSource* src = nullptr;
+	return new AudioSource(id, name);
 
-	src = new AudioSource(id, name);
-
-	return src;
 }
 
 void WwiseT::StopAllEvents()
