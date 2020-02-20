@@ -18,7 +18,7 @@ bool ModuleAudio::Start()
 
 	auto s = WwiseT::CreateAudSource("hola");
 
-	s->PlayEventByName("porta");
+	s->PlayEventByName("test");
 
 	WwiseT::SetDefaultListener(s->GetID());
 
@@ -51,7 +51,7 @@ bool ModuleAudio::UnloadAllBanks()
 		WwiseT::UnLoadBank((*it).c_str());
 	}
 	eng_banks.clear();
-	return false;
+	return true;
 }
 
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
