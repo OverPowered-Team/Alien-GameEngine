@@ -17,10 +17,12 @@ public:
 	void Update(float dt);
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
-	void ChangeTimeToSwap(float new_time);
+	//void ChangeTimeToSwap(float new_time);
 	void StartSound();
 	void UpdateSourcePos();
-
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
+	bool DrawInspector();
 
 public:
 	WwiseT::AudioSource* source;

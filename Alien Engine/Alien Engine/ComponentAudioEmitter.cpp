@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleAudio.h"
 #include "ComponentTransform.h"
+#include "ReturnZ.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
 ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(parent)
@@ -14,20 +15,20 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 
 void ComponentAudioEmitter::Update(float dt)
 {
-	UpdateSourcePos();
-	
-	if (timer.Read() / 1000 >= time_to_swap) {
-		if (song == 1) {
-			source->ChangeState("swap_music", "state2");
-			song = 2;
-			timer.Start();
-		}
-		else {
-			source->ChangeState("swap_music", "state1");
-			song = 1;
-			timer.Start();
-		}
-	}
+	//UpdateSourcePos();
+	//
+	//if (timer.Read() / 1000 >= time_to_swap) {
+	//	if (song == 1) {
+	//		source->ChangeState("swap_music", "state2");
+	//		song = 2;
+	//		timer.Start();
+	//	}
+	//	else {
+	//		source->ChangeState("swap_music", "state1");
+	//		song = 1;
+	//		timer.Start();
+	//	}
+	//}
 }
 
 ComponentAudioEmitter::~ComponentAudioEmitter()
@@ -52,10 +53,10 @@ void ComponentAudioEmitter::Mute(bool mute)
 		source->SetVolume(volume);
 }
 
-void ComponentAudioEmitter::ChangeTimeToSwap(float new_time)
-{
-	time_to_swap = new_time;
-}
+//void ComponentAudioEmitter::ChangeTimeToSwap(float new_time)
+//{
+//	time_to_swap = new_time;
+//}
 
 void ComponentAudioEmitter::StartSound()
 {	
@@ -76,30 +77,34 @@ void ComponentAudioEmitter::UpdateSourcePos()
 		source->SetSourcePos(vector_pos.x, vector_pos.y, vector_pos.z, 0, 0, 1, 0, 1, 0);
 	}*/
 }
-/*
-void ComponentAudioEmitter::SaveEmitter(JSON_Array* componentsObj) const
+void ComponentAudioEmitter::SaveComponent(JSONArraypack* to_save)
 {
-	// TODO: Adapt to AlienEngine SaveComponent
-	JSON_Value* component = json_value_init_object();
-	JSON_Object* componentObj = json_value_get_object(component);
-	json_object_set_number(componentObj, "Type:", this->type);
-	json_object_set_number(componentObj, "Volume:", this->volume);
-	json_object_set_number(componentObj, "TimeToSwap:", this->time_to_swap);
-	json_object_set_number(componentObj, "Song:", this->song);
-	json_object_set_boolean(componentObj, "Mute:", this->mute);
-	json_object_set_string(componentObj, "AudioName:", this->audio_name.c_str());
-
-	json_array_append_value(componentsObj, component);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Volume", volume);
+	to_save->SetBoolean("Mute", mute);
 }
-
-void ComponentAudioEmitter::LoadEmitter(JSON_Object* obj, GameObject* go)
+void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 {
-	App->scene_intro->gameobject_scene->audio_emitter == nullptr;
-	App->scene_intro->GOPath->audio_emitter == nullptr;
-	go->audio_emitter->volume = json_object_get_number(obj, "Volume:");
-	go->audio_emitter->time_to_swap = json_object_get_number(obj, "TimeToSwap:");
-	go->audio_emitter->song = json_object_get_number(obj, "Song:");
-	go->audio_emitter->mute = json_object_get_boolean(obj, "Mute:");
-	go->audio_emitter->audio_name = json_object_get_string(obj, "AudioName:");
+	ID = std::stoull(to_load->GetString("ID"));
+	enabled = to_load->GetBoolean("Enabled");
+	volume = to_load->GetNumber("Volume");
+	mute = to_load->GetNumber("Mute");
 }
-*/
+bool ComponentAudioEmitter::DrawInspector()
+{
+	static bool en;
+	ImGui::PushID(this);
+	en = enabled;
+	if (ImGui::Checkbox("##CmpActive", &en)) {
+		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+		enabled = en;
+		if (!enabled)
+			OnDisable();
+		else
+			OnEnable();
+	}
+	ImGui::PopID();
+	return true;
+}
