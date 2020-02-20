@@ -15,6 +15,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 
 	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	fileToEdit = used_shader->path;
 }
 
 ComponentMaterial::~ComponentMaterial()
