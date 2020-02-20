@@ -51,7 +51,7 @@ bool ResourceShader::CreateMetaData(const u64& force_id)
 		delete alien;
 	}
 
-	meta_data_path = std::string(LIBRARY_TEXTURES_FOLDER + std::to_string(ID) + ".shader");
+	meta_data_path = std::string(LIBRARY_SHADERS_FOLDER + std::to_string(ID) + ".shader");
 	std::string ext;
 	App->file_system->SplitFilePath(path.data(), nullptr, nullptr, &ext);
 	if (App->StringCmp(ext.data(), "shader"))
