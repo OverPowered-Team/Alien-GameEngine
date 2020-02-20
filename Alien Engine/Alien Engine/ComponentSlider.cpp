@@ -344,19 +344,23 @@ bool ComponentSlider::OnPressed()
 	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
 	float width = (sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
-	if (((sliderX - (width * 0.5f)) + width) <= ((x - (width_bg * 0.5f)) + width_bg) && (sliderX - (width * 0.5f)) >= (x - (width_bg * 0.5f)))
+	if (sliderX + (width*0.5f) < x  + (width_bg*0.5f) && sliderX - (width * 0.5f) > x - (width_bg * 0.5f))
 	{
-		int x = App->input->GetMouseXMotion();
-		offsetX = offsetX + (x * 0.25f);
-		if (x + offsetX > (x + (width_bg * 0.5f)))
-		{
-			
-		}
+		int xmotion = App->input->GetMouseXMotion();
+		offsetX = offsetX + (xmotion * 0.25f);
+
+
 	}
-	/*else if (((sliderX - (width * 0.5f)) + width) >= ((x - (width_bg * 0.5f)) + width_bg))
+	else if (sliderX + (width * 0.5f) > x + (width_bg * 0.5f))
 	{
-		offsetX -= (sliderX - (width * 0.5f)) + width - ((x - (width_bg * 0.5f)) + width_bg);
-	}*/
+		offsetX -= 0.25f;
+	}
+	else
+	{
+		offsetX += 0.25f;
+	}
+
+	
 
 	
 

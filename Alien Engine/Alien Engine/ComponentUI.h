@@ -47,7 +47,7 @@ private:
 	void UILogic();
 
 protected:
-	int x = 0, y = 0;
+	float x = 0.0f, y = 0.0f;
 
 	ComponentType ui_type = ComponentType::UI;
 	UIState state = Idle;
