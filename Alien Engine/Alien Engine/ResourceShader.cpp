@@ -32,8 +32,38 @@ ResourceShader::~ResourceShader()
 
 bool ResourceShader::CreateMetaData(const u64& force_id)
 {
-	// TODO
-	ID = App->resources->GetRandomID(); // test
+	if (force_id == 0)
+		ID = App->resources->GetRandomID();
+	else
+		ID = force_id;
+
+	std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien").data();
+	
+	JSON_Value* alien_value = json_value_init_object();
+	JSON_Object* alien_object = json_value_get_object(alien_value);
+	json_serialize_to_file_pretty(alien_value, alien_path.data());
+
+	if (alien_value != nullptr && alien_object != nullptr) {
+		JSONfilepack* alien = new JSONfilepack(alien_path, alien_object, alien_value);
+		alien->StartSave();
+		alien->SetString("Meta.ID", std::to_string(ID));
+		alien->FinishSave();
+		delete alien;
+	}
+
+	meta_data_path = std::string(LIBRARY_TEXTURES_FOLDER + std::to_string(ID) + ".shader");
+	std::string ext;
+	App->file_system->SplitFilePath(path.data(), nullptr, nullptr, &ext);
+	if (App->StringCmp(ext.data(), "shader"))
+	{
+		App->file_system->Copy(path.data(), meta_data_path.data());
+	}
+	else
+	{
+		// ...?
+	}
+
+
 	App->resources->AddResource(this);
 
 	return true;
