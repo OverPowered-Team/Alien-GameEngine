@@ -75,15 +75,51 @@ bool ResourceShader::DeleteMetaData()
 	return true;
 }
 
-bool ResourceShader::ReadBaseInfo(const char* assets_file_path)
+bool ResourceShader::ReadBaseInfo(const char* assets_path)
 {
-	// TODO
-	return true;
+	bool ret = true;
+
+	this->path = assets_path;
+	std::string alien_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
+
+	JSON_Value* value = json_parse_file(alien_path.data());
+	JSON_Object* object = json_value_get_object(value);
+
+	if (value != nullptr && object != nullptr)
+	{
+		JSONfilepack* meta = new JSONfilepack(alien_path, object, value);
+
+		ID = std::stoull(meta->GetString("Meta.ID"));
+
+		delete meta;
+	}
+
+	meta_data_path = LIBRARY_SHADERS_FOLDER + std::to_string(ID) + ".shader";
+
+	if (!App->file_system->Exists(meta_data_path.data())) {
+		return false;
+	}
+
+	struct stat fileMeta;
+	struct stat fileAssets;
+
+	if (stat(meta_data_path.c_str(), &fileMeta) == 0 && stat(path.c_str(), &fileAssets) == 0) {
+		if (fileAssets.st_mtime > fileMeta.st_mtime) {
+			remove(meta_data_path.data());
+			App->file_system->Copy(path.data(), meta_data_path.data());
+		}
+	}
+
+	App->resources->AddResource(this);
+
+	return ret;
 }
 
 void ResourceShader::ReadLibrary(const char* meta_data)
 {
-	// TODO
+	this->meta_data_path = meta_data;
+	ID = std::stoull(App->file_system->GetBaseFileName(meta_data_path.data()));
+	App->resources->AddResource(this);
 }
 
 void ResourceShader::ParseAndCreateShader()

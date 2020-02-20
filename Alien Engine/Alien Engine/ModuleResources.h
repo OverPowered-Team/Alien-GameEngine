@@ -93,6 +93,7 @@ private:
 
 	void ReadAllMetaData();
 	void ReadTextures(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadModels(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadScenes(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
@@ -109,7 +110,6 @@ public:
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
 	FileNode* assets = nullptr;
-	ResourceShader* default_shader = nullptr;
 
 private:
 	ResourceMesh* cube = nullptr;

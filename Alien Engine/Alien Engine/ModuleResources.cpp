@@ -64,7 +64,7 @@ bool ModuleResources::Start()
 	App->file_system->DiscoverEverythig(assets);
 
 #endif
-	default_shader = App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
+	App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
@@ -549,6 +549,11 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Shaders
+	ReadShaders(directories, files, SHADERS_FOLDER);
+	files.clear();
+	directories.clear();
+
 	// Init Models & Meshes
 	App->file_system->DiscoverFiles(MODELS_FOLDER, files, directories);
 
@@ -649,6 +654,27 @@ void ModuleResources::ReadTextures(std::vector<std::string> directories, std::ve
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadTextures(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		if (!shader->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = shader->GetID();
+			shader->CreateMetaData(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadShaders(new_directories, new_files, dir);
 		}
 	}
 }
