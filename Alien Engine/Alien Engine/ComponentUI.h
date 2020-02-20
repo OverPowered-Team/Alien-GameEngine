@@ -21,6 +21,7 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class GameObject;
 	friend class ComponentImage;
 	friend class ComponentCheckbox;
+	friend class ComponentSlider;
 	friend class Component;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -42,9 +43,8 @@ public:
 	void ClearTexture();
 	void SetTexture(ResourceTexture* tex);
 
-private:
-	bool CheckMouseInside(float3 mouse_pos);
-	void UILogic();
+	virtual bool CheckMouseInside(float3 mouse_pos);
+	virtual void UILogic();
 
 protected:
 	float x = 0.0f, y = 0.0f;
