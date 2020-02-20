@@ -39,8 +39,19 @@ update_status ModuleAudio::PostUpdate(float dt)
 bool ModuleAudio::CleanUp()
 {
 	audios.clear();
-	WwiseT::CloseSoundEngine();
-	return true;
+	WwiseT::StopAllEvents();
+	UnloadAllBanks();
+	return WwiseT::CloseSoundEngine();
+}
+
+bool ModuleAudio::UnloadAllBanks()
+{
+	for (std::vector<std::string>::iterator it = eng_banks.begin(); it != eng_banks.end(); it++)
+	{
+		WwiseT::UnLoadBank((*it).c_str());
+	}
+	eng_banks.clear();
+	return false;
 }
 
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)

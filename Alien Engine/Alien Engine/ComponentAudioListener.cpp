@@ -6,7 +6,7 @@
 
 AudioListener::AudioListener(GameObject * parent) : Component(parent)
 {
-	listener = App->audio->CreateSoundEmitter("listener");
+	listener = App->audio->CreateSoundEmitter("listener"); //CREATING LISTENER SAME AS AN EMITTER?
 	App->audio->SetListener(listener);
 }
 

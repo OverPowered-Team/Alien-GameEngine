@@ -217,6 +217,16 @@ uint WwiseT::LoadBank(char* buffer, uint size)
 	return bankID;
 }
 
+bool WwiseT::UnLoadBank(const char* path)
+{
+	bool ret = true;
+	AKRESULT res = AK::SoundEngine::UnloadBank(path, NULL);
+	if (res != AK_Success)
+		ret = false;
+
+	return ret;
+}
+
 void WwiseT::UnLoadBank(uint bankID, char* buffer)
 {
 	AKRESULT eResult = AK::SoundEngine::UnloadBank(bankID, buffer);

@@ -60,6 +60,7 @@ namespace WwiseT
 	void ProcessAudio();
 	void LoadBank(const char* path);
 	uint LoadBank(char* buffer, uint size);
+	bool UnLoadBank(const char* path);
 	void UnLoadBank(uint bankID, char* buffer);
 
 	void SetDefaultListener(uint id);

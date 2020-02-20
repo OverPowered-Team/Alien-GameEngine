@@ -17,6 +17,7 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+	bool UnloadAllBanks();
 
 	// Utils
 	void Play();
@@ -29,6 +30,7 @@ private:
 	//std::list<WwiseT::AudioSource*> event_list;
 	WwiseT::AudioSource* listener;
 	WwiseT::AudioSource* source;
+	std::vector <std::string> eng_banks;
 public:
 	std::list<ComponentAudioEmitter*> audios;
 	
