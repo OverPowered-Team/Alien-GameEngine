@@ -24,12 +24,12 @@
               224,
               228
             ],
-			"GoBack": [
+            "GoBack": [
               29,
               224,
               228
             ],
-			"GoFordward": [
+            "GoFordward": [
               28,
               224,
               228
@@ -54,7 +54,7 @@
               224,
               228
             ],
-			"PanelTextEditor": [
+            "PanelTextEditor": [
               20,
               224,
               228
@@ -69,7 +69,7 @@
               224,
               228
             ],
-			"PanelBuild": [
+            "PanelBuild": [
               14,
               224,
               228
@@ -83,6 +83,11 @@
               19,
               224,
               228
+            ],
+            "PanelAnimTimeline": [
+              23,
+              226,
+              230
             ],
             "WireframeMode": [
               61,
@@ -154,7 +159,7 @@
               224,
               228
             ],
-			"ImGuiDemo": [
+            "ImGuiDemo": [
               9,
               224,
               228

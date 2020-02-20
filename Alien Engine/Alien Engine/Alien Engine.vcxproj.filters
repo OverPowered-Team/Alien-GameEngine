@@ -555,6 +555,9 @@
     <ClInclude Include="ResourceAnimatorController.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="PanelAnimTimeline.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -898,6 +901,9 @@
     </ClCompile>
     <ClCompile Include="ResourceAnimatorController.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelAnimTimeline.cpp">
+      <Filter>Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

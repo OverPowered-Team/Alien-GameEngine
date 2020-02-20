@@ -286,6 +286,7 @@
     <ClInclude Include="PanelScene.h" />
     <ClInclude Include="PanelSceneSelector.h" />
     <ClInclude Include="PanelTextEditor.h" />
+    <ClInclude Include="PanelAnimTimeline.h" />
     <ClInclude Include="Parson\parson.h" />
     <ClInclude Include="PCG\pcg_extras.hpp" />
     <ClInclude Include="PCG\pcg_random.hpp" />
@@ -407,6 +408,7 @@
     <ClCompile Include="PanelScene.cpp" />
     <ClCompile Include="PanelSceneSelector.cpp" />
     <ClCompile Include="PanelTextEditor.cpp" />
+    <ClCompile Include="PanelAnimTimeline.cpp" />
     <ClCompile Include="Parson\parson.c" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />

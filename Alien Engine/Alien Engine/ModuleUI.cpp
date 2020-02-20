@@ -25,6 +25,7 @@
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
 #include "PanelTextEditor.h"
+#include "PanelAnimTimeline.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
 
@@ -118,6 +119,7 @@ void ModuleUI::LoadConfig(JSONfilepack*& config)
 		panel_scene_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelScene", i);
 		panel_scene_selector_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelSceneSelector", i);
 		panel_text_edit_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelTextEditor", i);
+		panel_animtimeline_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelAnimTimeline", i);
 		shortcut_demo_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ImGuiDemo", i);
 		shortcut_report_bug_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ReportBug", i);
 		shortcut_view_mesh_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ViewMesh", i);
@@ -151,6 +153,7 @@ void ModuleUI::LoadConfig(JSONfilepack*& config)
 		panel_text_editor->shortcut->SetShortcutKeys(panel_text_edit_codes[0], panel_text_edit_codes[1], panel_text_edit_codes[2]);
 		panel_game->shortcut->SetShortcutKeys(panel_game_codes[0], panel_game_codes[1], panel_game_codes[2]);
 		panel_layout->shortcut->SetShortcutKeys(panel_layout_codes[0], panel_layout_codes[1], panel_layout_codes[2]);
+		panel_animtimeline->shortcut->SetShortcutKeys(panel_animtimeline_codes[0], panel_animtimeline_codes[1], panel_animtimeline_codes[2]);
 		shortcut_demo->SetShortcutKeys(shortcut_demo_codes[0], shortcut_demo_codes[1], shortcut_demo_codes[2]);
 		shortcut_report_bug->SetShortcutKeys(shortcut_report_bug_codes[0], shortcut_report_bug_codes[1], shortcut_report_bug_codes[2]);
 		shortcut_view_mesh->SetShortcutKeys(shortcut_view_mesh_codes[0], shortcut_view_mesh_codes[1], shortcut_view_mesh_codes[2]);
@@ -189,6 +192,7 @@ void ModuleUI::SaveConfig(JSONfilepack*& config)
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelCreate", (uint)panel_create_object->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelScene", (uint)panel_scene->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelLayout", (uint)panel_layout->shortcut->GetScancode(i));
+		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelAnimTimeline", (uint)panel_animtimeline->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.WireframeMode", (uint)shortcut_wireframe->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.ViewMesh", (uint)shortcut_view_mesh->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.ReportBug", (uint)shortcut_report_bug->GetScancode(i));
@@ -549,6 +553,10 @@ void ModuleUI::MainMenuBar()
 		if (ImGui::MenuItem("Game", panel_render->shortcut->GetNameScancodes()))
 		{
 			panel_game->ChangeEnable();
+		}
+		if (ImGui::MenuItem("Animation Timeline", panel_animtimeline->shortcut->GetNameScancodes()))
+		{
+			panel_animtimeline->ChangeEnable();
 		}
 		ImGui::EndMenu();
 	}
@@ -1079,6 +1087,7 @@ void ModuleUI::InitPanels()
 	panel_layout = new PanelLayout("Layout Editor", panel_layout_codes[0], panel_layout_codes[1], panel_layout_codes[2]);
 	panel_game = new PanelGame("Game", panel_game_codes[0], panel_game_codes[1], panel_game_codes[2]);
 	panel_build = new PanelBuild("Build", panel_build_codes[0], panel_build_codes[1], panel_build_codes[2]);
+	panel_animtimeline = new PanelAnimTimeline("Animation Timeline", panel_animtimeline_codes[0], panel_animtimeline_codes[1], panel_animtimeline_codes[2]);
 
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
@@ -1094,6 +1103,7 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_scene_selector);
 	panels.push_back(panel_text_editor);
 	panels.push_back(panel_build);
+	panels.push_back(panel_animtimeline);
 }
 
 void ModuleUI::UpdatePanels()
