@@ -26,13 +26,13 @@ public:
 	void Resume() const;
 	void SetListener(WwiseT::AudioSource* new_listener);
 	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
+
 private:
-	//std::list<WwiseT::AudioSource*> event_list;
 	WwiseT::AudioSource* listener;
-	WwiseT::AudioSource* source;
 	std::vector <std::string> eng_banks;
+
 public:
-	std::list<ComponentAudioEmitter*> audios;
+	std::list<ComponentAudioEmitter*> emitters;
 	
 	bool is_playing = false;
 };

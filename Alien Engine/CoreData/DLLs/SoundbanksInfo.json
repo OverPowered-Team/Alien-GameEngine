@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "11",
+  "SoundbankVersion": "128",
+  "RootPaths": {
+   "ProjectRoot": "D:\\Christian\\Github\\WwiseProject\\TheWitcher\\",
+   "SourceFilesRoot": "D:\\Christian\\Github\\WwiseProject\\TheWitcher\\.cache\\Windows\\",
+   "SoundBanksRoot": "D:\\Christian\\Github\\WwiseProject\\TheWitcher\\GeneratedSoundBanks\\Windows\\",
+   "ExternalSourcesInputFile": "",
+   "ExternalSourcesOutputRoot": "D:\\Christian\\Github\\WwiseProject\\TheWitcher\\GeneratedSoundBanks\\Windows"
+  },
+  "DialogueEvents": [],
+  "StreamedFiles": [],
+  "MediaFilesNotInAnyBank": [],
+  "SoundBanks": [
+   {
+    "Id": "1355168291",
+    "Language": "SFX",
+    "ObjectPath": "Init",
+    "ShortName": "Init",
+    "Path": "Init.bnk"
+   },
+   {
+    "Id": "3161908922",
+    "Language": "SFX",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main",
+    "ShortName": "Main",
+    "Path": "Main.bnk",
+    "IncludedEvents": [
+     {
+      "Id": "3157003241",
+      "Name": "test",
+      "ObjectPath": "\\Events\\Default Work Unit\\test"
+     }
+    ],
+    "IncludedMemoryFiles": [
+     {
+      "Id": "192450603",
+      "Language": "SFX",
+      "ShortName": "David Bisbal - Ave María.wav",
+      "Path": "SFX\\David Bisbal - Ave María_1C9C67B2.wem"
+     }
+    ]
+   }
+  ]
+ }
+}
