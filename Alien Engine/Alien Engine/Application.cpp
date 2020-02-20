@@ -25,9 +25,6 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-#ifndef GAME_VERSION
-	AddModule(camera);
-#endif
 	AddModule(input);
 	AddModule(audio);
 	AddModule(file_system);
@@ -36,6 +33,7 @@ Application::Application()
 	// Scenes
 	AddModule(objects);
 #ifndef GAME_VERSION
+	AddModule(camera);
 	AddModule(ui);
 #endif
 	// Renderer last!
@@ -346,6 +344,8 @@ bool Application::CleanUp()
 	while(item != list_modules.rend() && ret == true)
 	{
 		ret = (*item)->CleanUp();
+		if (!ret)
+			LOG_ENGINE("Module %s failed to CleanUp", (*item)->name);
 		++item;
 	}
 	return ret;

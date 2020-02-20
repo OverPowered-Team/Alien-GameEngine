@@ -18,7 +18,7 @@ bool ModuleAudio::Start()
 
 	auto s = WwiseT::CreateAudSource("hola");
 
-	s->PlayEventByName("porta");
+	s->PlayEventByName("test");
 
 	WwiseT::SetDefaultListener(s->GetID());
 
@@ -39,8 +39,8 @@ update_status ModuleAudio::PostUpdate(float dt)
 bool ModuleAudio::CleanUp()
 {
 	audios.clear();
-	WwiseT::CloseSoundEngine();
-	return true;
+	WwiseT::StopAllEvents();
+	return WwiseT::CloseSoundEngine();
 }
 
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
