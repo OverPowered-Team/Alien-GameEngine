@@ -13,7 +13,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MATERIAL;
 
-	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default.shader"); // needs fix. meta is not created too...
+	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 	//used_shader = App->resources->default_shader; default_shader pointer may be unnecessary as we get the shader resource like the 2 lines of code above
 }
