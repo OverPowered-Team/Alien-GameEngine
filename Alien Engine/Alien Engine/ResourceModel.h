@@ -32,6 +32,5 @@ private:
 
 public:
 	std::vector<ResourceMesh*> meshes_attached;
-	std::vector<ResourceAnimation*> animation_attached;
-
+	std::vector<ResourceAnimation*> animations_attached;
 };

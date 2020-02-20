@@ -95,18 +95,18 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 				}
 			}
 
-			meta->SetNumber("Model.NumAnimations", animation_attached.size());
-			alien->SetNumber("Meta.NumAnimations", animation_attached.size());
+			meta->SetNumber("Model.NumAnimations", animations_attached.size());
+			alien->SetNumber("Meta.NumAnimations", animations_attached.size());
 
-			std::string* animation_paths = new std::string[animation_attached.size()];
-			std::vector<ResourceAnimation*>::iterator item_anim = animation_attached.begin();
-			for (; item_anim != animation_attached.end(); ++item_anim) 
+			std::string* animation_paths = new std::string[animations_attached.size()];
+			std::vector<ResourceAnimation*>::iterator item_anim = animations_attached.begin();
+			for (; item_anim != animations_attached.end(); ++item_anim) 
 			{
 				if ((*item_anim) != nullptr) 
 				{
 					if (meta_animation_paths != nullptr) 
 					{
-						std::string path_ = App->file_system->GetBaseFileName(meta_animation_paths[item_anim - animation_attached.begin()].data()); //std::stoull().data());
+						std::string path_ = App->file_system->GetBaseFileName(meta_animation_paths[item_anim - animations_attached.begin()].data()); //std::stoull().data());
 						(*item_anim)->CreateMetaData(std::stoull(path_));
 					}
 					else 
@@ -114,15 +114,15 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 						(*item_anim)->CreateMetaData();
 					}
 
-					animation_paths[item_anim - animation_attached.begin()] = (*item_anim)->GetLibraryPath();
+					animation_paths[item_anim - animations_attached.begin()] = (*item_anim)->GetLibraryPath();
 					LOG_ENGINE("Created alienMesh file %s", (*item_anim)->GetLibraryPath());
 				}
 			}
 
 			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());
 			alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
-			meta->SetArrayString("Model.PathAnimations", animation_paths, animation_attached.size());
-			alien->SetArrayString("Meta.PathAnimations", animation_paths, animation_attached.size());
+			meta->SetArrayString("Model.PathAnimations", animation_paths, animations_attached.size());
+			alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
 
 			if (meta_mesh_paths != nullptr)
 				delete[] meta_mesh_paths;
@@ -167,17 +167,28 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 
 		ID = std::stoull(meta->GetString("Meta.ID"));
 		int num_meshes = meta->GetNumber("Meta.NumMeshes");
-		std::string* paths = meta->GetArrayString("Meta.PathMeshes");
+		int num_anims = meta->GetNumber("Meta.NumAnimations");
+		std::string* mesh_paths = meta->GetArrayString("Meta.PathMeshes");
+		std::string* anim_paths = meta->GetArrayString("Meta.PathAnimations");
 
 		for (uint i = 0; i < num_meshes; ++i) {
-			if (!App->file_system->Exists(paths[i].data())) {
-				delete[] paths;
+			if (!App->file_system->Exists(mesh_paths[i].data())) {
+				delete[] mesh_paths;
 				delete meta;
 				return false;
 			}
 		}
 
-		delete[] paths;
+		for (uint i = 0; i < num_anims; ++i) {
+			if (!App->file_system->Exists(anim_paths[i].data())) {
+				delete[] anim_paths;
+				delete meta;
+				return false;
+			}
+		}
+
+		delete[] anim_paths;
+		delete[] mesh_paths;
 		delete meta;
 
 		// InitMeshes
@@ -190,8 +201,9 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			JSONfilepack* model = new JSONfilepack(library_path, mesh_object, mesh_value);
 
 			name = model->GetString("Model.Name");
-			
+
 			std::string* mesh_path = model->GetArrayString("Model.PathMeshes");
+			std::string* anim_path = model->GetArrayString("Model.PathAnimations");
 
 			for (uint i = 0; i < num_meshes; ++i) {
 				ResourceMesh* r_mesh = new ResourceMesh();
@@ -203,12 +215,22 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 					delete r_mesh;
 				}
 			}
+			for (uint i = 0; i < num_anims; ++i) {
+				ResourceAnimation* r_anim = new ResourceAnimation();
+				if (r_anim->ReadBaseInfo(anim_path[i].data())) {
+					animations_attached.push_back(r_anim);
+				}
+				else {
+					LOG_ENGINE("Error loading %s", anim_path[i].data());
+					delete r_anim;
+				}
+			}
+			delete[] anim_path;
 			delete[] mesh_path;
 			delete model;
 			App->resources->AddResource(this);
 		}
 	}
-
 	return ret;
 }
 
@@ -270,15 +292,15 @@ bool ResourceModel::DeleteMetaData()
 	}
 	meshes_attached.clear();
 
-	std::vector<ResourceAnimation*>::iterator item_anim = animation_attached.begin();
-	for (; item_anim != animation_attached.end(); ++item_anim)
+	std::vector<ResourceAnimation*>::iterator item_anim = animations_attached.begin();
+	for (; item_anim != animations_attached.end(); ++item_anim)
 	{
 		if ((*item_anim) != nullptr)
 		{
 			(*item_anim)->DeleteMetaData();
 		}
 	}
-	animation_attached.clear();
+	animations_attached.clear();
 
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 

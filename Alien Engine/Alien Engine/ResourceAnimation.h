@@ -37,7 +37,9 @@ public:
 
 	uint GetChannelIndex(std::string name);
 
-	void Load();
+	bool LoadMemory();
+	bool ReadBaseInfo(const char* meta_file_path);
+	void Copy(ResourceAnimation* anim);
 
 	bool CreateMetaData(const u64& force_id = 0) override;
 	bool DeleteMetaData() override;

@@ -34,7 +34,6 @@ PanelProject::~PanelProject()
 
 void PanelProject::PanelLogic()
 {
-
 	if (change_folder) {
 		current_active_folder = current_active_file;
 		current_active_file = nullptr;
@@ -207,6 +206,7 @@ void PanelProject::SeeFiles()
 			// set the file clicked
 			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
 				current_active_file = current_active_folder->children[i];
+				App->objects->DeselectObjects();
 			}
 
 			// double click script
@@ -608,6 +608,11 @@ bool PanelProject::SelectFile(const char* path, FileNode* node)
 		}
 	}
 	return ret;
+}
+
+FileNode* PanelProject::GetSelectedFile()
+{
+	return current_active_file;
 }
 
 void PanelProject::RefreshAllNodes()

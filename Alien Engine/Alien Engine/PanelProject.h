@@ -14,6 +14,7 @@ public:
 	void PanelLogic();
 
 	bool SelectFile(const char* path, FileNode* node);
+	FileNode* GetSelectedFile();
 	void RefreshAllNodes();
 
 public:

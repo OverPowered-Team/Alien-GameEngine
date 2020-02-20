@@ -175,7 +175,6 @@ private:
 	std::pair<bool, Time::GameState> change_game_state;
 
 public:
-
 	// public panels
 	PanelConfig* panel_config = nullptr;
 	PanelConsole* panel_console = nullptr;

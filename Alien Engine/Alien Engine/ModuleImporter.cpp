@@ -278,6 +278,10 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 	resource_animation->ticks_per_second = anim->mTicksPerSecond;
 	resource_animation->num_channels = anim->mNumChannels;
 	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];
+	resource_animation->start_tick = 0;
+	resource_animation->end_tick = anim->mDuration;
+	resource_animation->max_tick = anim->mDuration;
+
 	for (uint i = 0u; i < resource_animation->num_channels; ++i)
 	{
 		ResourceAnimation::Channel& channel = resource_animation->channels[i];
@@ -316,7 +320,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 		}
 	}
 	
-	model->animation_attached.push_back(resource_animation);
+	model->animations_attached.push_back(resource_animation);
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)

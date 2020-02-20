@@ -36,9 +36,152 @@ uint ResourceAnimation::GetChannelIndex(std::string name)
 }
 
 
-void ResourceAnimation::Load()
+bool ResourceAnimation::LoadMemory()
 {
-	//App->importer->animation->Load(this);
+	char* buffer;
+	uint size = App->file_system->Load(meta_data_path.data(), &buffer);
+
+	if (size > 0) {
+		char* cursor = buffer;
+
+		//Load name size
+		uint bytes = sizeof(uint);
+		uint name_size;
+		memcpy(&name_size, cursor, bytes);
+		cursor += bytes;
+
+		//Load name
+		bytes = name_size;
+		name.resize(bytes);
+		memcpy(&name[0], cursor, bytes);
+		cursor += bytes;
+
+		//Load channel nums, duration and ticks per second
+		bytes = sizeof(uint);
+		memcpy(&start_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&end_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&tick_duration, cursor, bytes);
+		cursor += bytes;
+		memcpy(&ticks_per_second, cursor, bytes);
+		cursor += bytes;
+		memcpy(&max_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&num_channels, cursor, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(bool);
+		memcpy(&loops, cursor, bytes);
+		cursor += bytes;
+
+		channels = new ResourceAnimation::Channel[num_channels];
+		// Load channels
+		for (uint i = 0; i < num_channels; i++)
+		{
+			//Load channel name size
+			bytes = sizeof(uint);
+			name_size;
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load name
+			bytes = name_size;
+			channels[i].name.resize(bytes);
+			memcpy(&channels[i].name[0], cursor, bytes);
+			cursor += bytes;
+
+			//Load num position, scale, rotation keys
+			bytes = sizeof(uint);
+			memcpy(&channels[i].num_position_keys, cursor, bytes);
+			cursor += bytes;
+			memcpy(&channels[i].num_scale_keys, cursor, bytes);
+			cursor += bytes;
+			memcpy(&channels[i].num_rotation_keys, cursor, bytes);
+			cursor += bytes;
+
+			//Load position keys
+			bytes = sizeof(KeyAnimation<float3>) * channels[i].num_position_keys;
+			channels[i].position_keys = new KeyAnimation<float3>[channels[i].num_position_keys];
+			memcpy(channels[i].position_keys, cursor, bytes);
+			cursor += bytes;
+
+			//Load scale keys
+			bytes = sizeof(KeyAnimation<float3>) * channels[i].num_scale_keys;
+			channels[i].scale_keys = new KeyAnimation<float3>[channels[i].num_scale_keys];
+			memcpy(channels[i].scale_keys, cursor, bytes);
+			cursor += bytes;
+
+			//Load rotation keys
+			bytes = sizeof(KeyAnimation<Quat>) * channels[i].num_rotation_keys;
+			channels[i].rotation_keys = new KeyAnimation<Quat>[channels[i].num_rotation_keys];
+			memcpy(channels[i].rotation_keys, cursor, bytes);
+			cursor += bytes;
+		}
+
+		RELEASE_ARRAY(buffer);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
+}
+
+bool ResourceAnimation::ReadBaseInfo(const char* meta_file_path)
+{
+	meta_data_path = std::string(meta_file_path);
+	ID = std::stoull(App->file_system->GetBaseFileName(meta_file_path));
+
+	char* buffer;
+	uint size = App->file_system->Load(meta_data_path.data(), &buffer);
+
+	if (size > 0) {
+		char* cursor = buffer;
+
+		//Load name size
+		uint bytes = sizeof(uint);
+		uint name_size;
+		memcpy(&name_size, cursor, bytes);
+		cursor += bytes;
+
+		//Load name
+		bytes = name_size;
+		name.resize(bytes);
+		memcpy(&name[0], cursor, bytes);
+		cursor += bytes;
+
+		//Load channel nums, duration and ticks per second
+		bytes = sizeof(uint);
+		memcpy(&start_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&end_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&tick_duration, cursor, bytes);
+		cursor += bytes;
+		memcpy(&ticks_per_second, cursor, bytes);
+		cursor += bytes;
+		memcpy(&max_tick, cursor, bytes);
+		cursor += bytes;
+		memcpy(&num_channels, cursor, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(bool);
+		memcpy(&loops, cursor, bytes);
+
+		App->resources->AddResource(this);
+		RELEASE_ARRAY(buffer);
+		return true;
+	}
+	else 
+		return false;
+}
+
+void ResourceAnimation::Copy(ResourceAnimation* anim)
+{
+
 }
 
 bool ResourceAnimation::CreateMetaData(const u64& force_id)
@@ -50,7 +193,7 @@ bool ResourceAnimation::CreateMetaData(const u64& force_id)
 		ID = force_id;
 	}
 	
-	meta_data_path = std::string(LIBRARY_ANIMATION_FOLDER + std::to_string(ID) + ".alienAnimation");
+	meta_data_path = std::string(LIBRARY_ANIMATIONS_FOLDER + std::to_string(ID) + ".alienAnimation");
 
 	uint size = sizeof(uint) + name.size() + sizeof(uint) * 6 + sizeof(bool);
 	for (uint i = 0; i < num_channels; i++)

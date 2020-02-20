@@ -15,6 +15,7 @@ public:
 	void ButtonAddComponent();
 
 private:
+	void ShowModelImportSettings(ResourceModel* model);
 
 	std::tuple<const char*, bool, u64> script_info = { "Return To Components", false, 0 };
 

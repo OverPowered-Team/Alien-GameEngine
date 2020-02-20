@@ -1,11 +1,15 @@
 #include "PanelInspector.h"
 #include "ModuleObjects.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleUI.h"
+#include "PanelProject.h"
 #include "ResourceScript.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ResourceAnimation.h"
+#include "ResourceModel.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -23,10 +27,10 @@ PanelInspector::~PanelInspector()
 
 void PanelInspector::PanelLogic()
 {
-
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 	if (ImGui::IsWindowHovered())
 		App->camera->is_scene_hovered = false;
+	//selected gameobject/s
 	if (App->objects->GetSelectedObjects().size() == 1)
 	{
 		static bool draw_add = true;
@@ -56,7 +60,8 @@ void PanelInspector::PanelLogic()
 			draw_add = true;
 		}
 	}
-	else if (App->objects->GetSelectedObjects().size() > 1) {
+	else if (App->objects->GetSelectedObjects().size() > 1) 
+	{
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Spacing();
 			ImGui::Text("Position  ");
@@ -198,6 +203,15 @@ void PanelInspector::PanelLogic()
 					}
 				}
 			}
+		}
+	}
+	else if (App->ui->panel_project->GetSelectedFile())
+	{
+		FileNode* selected_file = App->ui->panel_project->GetSelectedFile();
+		if (selected_file->type == FileDropType::MODEL3D)
+		{
+			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
+			ShowModelImportSettings(r_model);
 		}
 	}
 
@@ -386,6 +400,49 @@ void PanelInspector::ButtonAddComponent()
 			}
 			component = 0;
 		}
+	}
+}
+
+void PanelInspector::ShowModelImportSettings(ResourceModel* model)
+{
+	static char anim_name[MAX_PATH] = "Name";
+
+	for each (ResourceAnimation* anim in model->animations_attached)
+	{
+		ImGui::PushID(anim);
+		strcpy_s(anim_name, 100, anim->name.data());
+		if (ImGui::InputText("Clip Name", anim_name, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			anim->name = anim_name;
+		}
+		int start_tick = (int)anim->start_tick;
+		int end_tick = (int)anim->end_tick;
+		if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, anim->end_tick - 1))
+			if (start_tick >= 0 && start_tick < anim->end_tick) anim->start_tick = (uint)start_tick;
+		if (ImGui::DragInt("End", &end_tick, 1.0F, anim->start_tick + 1, anim->max_tick))
+			if (end_tick > anim->start_tick&& end_tick <= anim->max_tick) anim->end_tick = (uint)end_tick;
+		ImGui::Checkbox("Loops", &anim->loops);
+		ImGui::Separator();
+		ImGui::PopID();
+	}
+	if (ImGui::Button("+"))
+	{
+		ResourceAnimation* new_anim = new ResourceAnimation();
+		new_anim->Copy(model->animations_attached[0]);
+		new_anim->name = "New Clip";
+		new_anim->max_tick = model->animations_attached[0]->max_tick;
+		new_anim->end_tick = model->animations_attached[0]->max_tick;
+	}
+	ImGui::SameLine();
+	/*if (ImGui::Button("-") && meta->animations.size() > 1)
+	{
+		delete meta->animations[meta->animations.size() - 1];
+		meta->animations.pop_back();
+	}*/
+
+	ImGui::Separator();
+	if (ImGui::Button("Apply")) {
+		model->CreateMetaData();
 	}
 }
 
