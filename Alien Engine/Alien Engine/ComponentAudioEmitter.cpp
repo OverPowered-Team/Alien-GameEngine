@@ -32,6 +32,7 @@ void ComponentAudioEmitter::Update(float dt)
 
 ComponentAudioEmitter::~ComponentAudioEmitter()
 {
+	App->audio->emitters.remove(this);
 	RELEASE(source);
 }
 
