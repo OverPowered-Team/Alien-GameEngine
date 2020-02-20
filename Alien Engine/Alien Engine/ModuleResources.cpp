@@ -64,7 +64,6 @@ bool ModuleResources::Start()
 	App->file_system->DiscoverEverythig(assets);
 
 #endif
-	App->importer->LoadShaderFile(SHADERS_FOLDER "default.shader");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
@@ -550,6 +549,7 @@ void ModuleResources::ReadAllMetaData()
 	directories.clear();
 
 	// Init Shaders
+	App->file_system->DiscoverFiles(SHADERS_FOLDER, files, directories);
 	ReadShaders(directories, files, SHADERS_FOLDER);
 	files.clear();
 	directories.clear();
