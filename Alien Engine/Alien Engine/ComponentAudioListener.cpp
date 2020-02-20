@@ -65,6 +65,7 @@ bool ComponentAudioListener::DrawInspector()
 		/*ImGui::Text("Name: %s", listener->GetName());
 		ImGui::Text("ID: %s", std::to_string(listener->GetID()));*/
 	}
+	ImGui::Separator();
 
 	ImGui::PopID();
 

@@ -7,6 +7,8 @@
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
 #include "ComponentAudioListener.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentReverbZone.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -384,6 +386,30 @@ void PanelInspector::ButtonAddComponent()
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_LISTENER))
 				{
 					comp = new ComponentAudioListener(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::A_EMITTER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_EMITTER))
+				{
+					comp = new ComponentAudioEmitter(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::A_REVERB: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_REVERB))
+				{
+					comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 
