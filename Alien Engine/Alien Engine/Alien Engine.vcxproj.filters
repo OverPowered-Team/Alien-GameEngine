@@ -67,7 +67,10 @@
     <Filter Include="Tools\Bullet">
       <UniqueIdentifier>{c24bcfaf-48f0-42ed-bc8e-e0b48f4b693d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Colliders">
+    <Filter Include="Components\Physics">
+      <UniqueIdentifier>{1aae6f81-aadd-43c7-b287-f4e7aa0e9081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics\Colliders">
       <UniqueIdentifier>{07f3b050-aa4d-446f-a303-d0bb99a3801a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1603,19 +1606,22 @@
       <Filter>Tools\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCapsuleCollider.h">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCollider.h">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentConvexHullCollider.h">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSphereCollider.h">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentBoxCollider.h">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRigidBody.h">
+      <Filter>Components\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2526,19 +2532,22 @@
       <Filter>Tools\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="ComponentCapsuleCollider.cpp">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentCollider.cpp">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentConvexHullCollider.cpp">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentSphereCollider.cpp">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentBoxCollider.cpp">
-      <Filter>Components\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentRigidBody.cpp">
+      <Filter>Components\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,119 +8,62 @@
 
 ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 {
-	// Default values ---------------------------
 
-	bouncing = 0.1f;
-	friction = 0.5f;
-	angular_friction = 0.1f;
+	Reset();
 
-	center = float3(0.f, 0.f, 0.f);
 
-	// Create aux body --------------------------
-
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.F, nullptr, nullptr);
-	aux_body = new btRigidBody(rbInfo);
-	aux_body->setUserPointer(go);
-}
-
-bool ComponentCollider::CleanUp()
-{
-	for (int i = 0; i < aux_body->getNumConstraintRefs(); ++i)
-		aux_body->removeConstraintRef(aux_body->getConstraintRef(i));
-
-	App->physics->RemoveBody(aux_body);
-
-	delete shape;
-	delete aux_motion_state;
-	delete aux_body;
-
-	return true;
+	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+	CreateShape(mesh);
 }
 
 void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetNumber("Bouncing", bouncing);
-	to_save->SetNumber("Friction", friction);
-	to_save->SetNumber("AngularFriction", angular_friction);
 	to_save->SetFloat3("Center", center);
-	to_save->SetBoolean("IsTrigger", is_trigger);
-
-	SaveCollider(to_save);
 
 }
 
 void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 {
-	//is_loaded = true;
-
-	bouncing =			to_load->GetNumber("Bouncing");
-	friction =			to_load->GetNumber("Friction");
-	angular_friction =	to_load->GetNumber("AngularFriction");
-	center =			to_load->GetFloat3("Center");
-	is_trigger =		to_load->GetBoolean("IsTrigger");
-
-	SetIsTrigger(is_trigger);
-	LoadCollider(to_load);
+	Reset();
+	center = to_load->GetFloat3("Center");
 }
 
 void ComponentCollider::Update()
 {
-	// Load Collider on pdate -------------------------------
-
-	if (shape == nullptr)
-	{
-		ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
-		
-		CreateShape(mesh);
-		aux_body->setCollisionShape(shape);
-	}
-
 	// Match Size Scalling ----------------------------------
 
 	AdjustShape();
 
+	// Get GameObject Components ----------------------------
+	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
+
 	// Body Logic -------------------------------------------
-	ComponentTransform* go_transform = game_object_attached->GetComponent<ComponentTransform>(); // AURELIO_TODO: set only once 
 
 	float3 world_center = GetWorldCenter();
-	btTransform transform = ToBtTransform(go_transform->GetGlobalPosition() + world_center, go_transform->GetGlobalRotation());
-	aux_body->setWorldTransform(transform);
 
 	if (Time::GetGameState() == Time::GameState::PAUSE) return;
 
-	if (SearchRigidBody())
-	{
-		if (body_added == true)
-		{
-			App->physics->RemoveBody(aux_body);
-			body_added = false;
-		}
-	}
-	else
-	{
-		if (body_added == false)
-		{
-			App->physics->AddBody(aux_body);
-			body_added = true;
-		}
+	SetBouncing(bouncing);
+	SetFriction(friction);
+	SetAngularFriction(angular_friction);
 
-		SetBouncing(bouncing);
-		SetFriction(friction);
-		SetAngularFriction(angular_friction);
-	}
 }
 
-bool ComponentCollider::Render()
+void ComponentCollider::Render()
 {
-	if (shape == nullptr) return true;
+	if (shape == nullptr) return;
 
-	if (App->scene->selected_go == linked_go && App->scene->editor_mode)
+	if (game_object_attached->IsSelected()/* && App->scene->editor_mode*/)
 	{
 		App->physics->RenderCollider(this);
 	}
+}
 
-	return true;
+void ComponentCollider::Reset()
+{
+	center.zero();
+	scaled_center.zero();
 }
 
 bool ComponentCollider::DrawInspector()
@@ -134,14 +77,13 @@ bool ComponentCollider::DrawInspector()
 
 	// Draw Collider Adiional Info ---------------
 
-	DrawPanelColliderInfo();
-
+	DrawInspectorCollider();
 
 	ImGui::Spacing();
 	ImGui::Title("Physic Material", 1); ImGui::Text("");
 	ImGui::Spacing();
 	ImGui::Spacing();
-	ImGui::Title("Bouncing", 2);		ImGui::DragFloat("##bouncing", &bouncing, 0.01f, 0.00f, 1.f);
+	ImGui::Title("Bouncing", 2);	    ImGui::DragFloat("##bouncing", &bouncing, 0.01f, 0.00f, 1.f);
 	ImGui::Title("Linear Fric.", 2);	ImGui::DragFloat("##friction", &friction, 0.01f, 0.00f, FLT_MAX);
 	ImGui::Title("Angular Fric.", 2);	ImGui::DragFloat("##angular_friction", &angular_friction, 0.01f, 0.00f, FLT_MAX);
 
@@ -157,16 +99,7 @@ bool ComponentCollider::DrawInspector()
 
 void ComponentCollider::SetIsTrigger(bool value)
 {
-	if (value == true)
-	{
-		aux_body->setCollisionFlags(aux_body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	}
-	else
-	{
-		aux_body->setCollisionFlags(aux_body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	}
 
-	is_trigger = value;
 }
 
 
@@ -203,10 +136,14 @@ bool ComponentCollider::GetIsTrigger()
 
 float3 ComponentCollider::GetWorldCenter()
 {
-	return linked_go->transform->GetGlobalTransform().RotatePart().MulPos(scaled_center);
+	return transform->GetGlobalRotation().Mul(scaled_center);
 }
 
-bool ComponentCollider::SearchRigidBody()
+void ComponentCollider::AddToRigidBody()
 {
-	return (linked_go->GetComponent<C_RigidBody>() == nullptr) ? false : true;
+	C_RigidBody* rigid_body = game_object_attached->GetComponent<C_RigidBody>();
+}
+
+void ComponentCollider::RemoveFromRigidBody()
+{
 }

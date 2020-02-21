@@ -1,12 +1,14 @@
 #include "ComponentBoxCollider.h"
+#include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
+#include "imgui/imgui.h"
 
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
-	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
-	size = float3::one;
+
+	size.one();
 }
 
 void ComponentBoxCollider::CreateShape(C_Mesh* mesh)
@@ -23,20 +25,21 @@ void ComponentBoxCollider::CreateShape(C_Mesh* mesh)
 void ComponentBoxCollider::AdjustShape()
 {
 	scaled_center = center;
-
-	float3 scaled_size = size.Mul(linked_go->transform->scale.Abs());
+	float3 scaled_size = size.Mul(transform->GetGlobalScale().Abs());
 	scaled_size = CheckInvalidCollider(scaled_size);
 	shape->setLocalScaling(btVector3(scaled_size.x, scaled_size.y, scaled_size.z));
 }
 
-void ComponentBoxCollider::SaveCollider(Config& config)
+void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
 {
-	config.AddFloatArray("size", (float*)&size, 3);
+	ComponentCollider::SaveComponent(to_save);
+	to_save->SetFloat3("size", size);
 }
 
-void ComponentBoxCollider::LoadCollider(Config& config)
+void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
-	size = config.GetFloat3("size", { 1.f ,1.f, 1.f });
+	ComponentCollider::LoadComponent(to_load);
+	size = to_load->GetFloat3("size");
 }
 
 float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
@@ -44,7 +47,7 @@ float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
 	return size.Max(float3(0.01, 0.01, 0.01));
 }
 
-void ComponentBoxCollider::DrawPanelColliderInfo()
+bool ComponentBoxCollider::DrawInspector()
 {
 	ImGui::Title("Size", 1);	ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX);
 }

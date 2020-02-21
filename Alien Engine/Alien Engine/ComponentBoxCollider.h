@@ -10,13 +10,15 @@ class C_Mesh;
 
 class ComponentBoxCollider : public ComponentCollider
 {
-public:
-
 	friend ModulePhysics;
 
 public:
 
 	ComponentBoxCollider(GameObject* go);
+
+private:
+
+	float3 CheckInvalidCollider(float3 size);
 
 	// Virtual Functions ------------------------------
 
@@ -24,15 +26,12 @@ public:
 
 	void AdjustShape();
 
-	void SaveCollider(Config& config);
+	void SaveComponent(JSONArraypack* to_save);
 
-	void LoadCollider(Config& config);
+	void LoadComponent(JSONArraypack* to_load);
 
-	void DrawPanelColliderInfo();
+	bool DrawInspector();
 
-private:
-
-	float3 CheckInvalidCollider(float3 size);
 
 
 private:
