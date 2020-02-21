@@ -278,7 +278,7 @@ void ComponentMaterial::Reset()
 
 void ComponentMaterial::SetComponent(Component* component)
 {
-	if (component->GetType() == type) {
+	/*if (component->GetType() == type) {
 
 		ComponentMaterial* material = (ComponentMaterial*)component;
 		if (texture != nullptr) {
@@ -287,6 +287,21 @@ void ComponentMaterial::SetComponent(Component* component)
 		texture = material->texture;
 		if (texture != nullptr) {
 			texture->IncreaseReferences();
+		}
+
+		color = material->color;
+	}*/
+	if (component->GetType() == type) {
+
+		ComponentMaterial* material = (ComponentMaterial*)component;
+		if (texture != nullptr) {
+			texture->DecreaseReferences();
+			used_shader->DecreaseReferences();
+		}
+		texture = material->texture;
+		if (texture != nullptr) {
+			texture->IncreaseReferences();
+			used_shader->IncreaseReferences();
 		}
 
 		color = material->color;
@@ -322,13 +337,27 @@ void ComponentMaterial::LoadComponent(JSONArraypack* to_load)
 
 void ComponentMaterial::Clone(Component* clone)
 {
-	clone->enabled = enabled;
+	/*clone->enabled = enabled;
 	clone->not_destroy = not_destroy;
 	ComponentMaterial* mat = (ComponentMaterial*)clone;
 	mat->color = color;
 	mat->texture = texture;
 	if (texture != nullptr) {
 		++texture->references;
+	}
+	mat->texture_activated = texture_activated;*/
+
+	clone->enabled = enabled;
+	clone->not_destroy = not_destroy;
+	ComponentMaterial* mat = (ComponentMaterial*)clone;
+	mat->color = color;
+	mat->texture = texture;
+	mat->used_shader = used_shader;
+	if (texture != nullptr) {
+		++texture->references;
+	}
+	if (used_shader != nullptr) {
+		++used_shader->references;
 	}
 	mat->texture_activated = texture_activated;
 }
