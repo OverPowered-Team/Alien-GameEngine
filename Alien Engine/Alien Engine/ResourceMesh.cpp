@@ -390,6 +390,10 @@ void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>*
 
 void ResourceMesh::InitBuffers()
 {
+	// VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
 	glGenBuffers(1, &id_vertex);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vertex);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) *num_vertex * 3,
@@ -416,4 +420,22 @@ void ResourceMesh::InitBuffers()
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
 			normals, GL_STATIC_DRAW);
 	}
+
+	/* Layout ---------------------- */
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex); // most likely not needed
+
+	// Vertex position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// Vertex normal
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)12);
+	glEnableVertexAttribArray(1);
+
+	// Vertex uvs
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)24);
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

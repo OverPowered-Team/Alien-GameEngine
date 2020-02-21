@@ -4,6 +4,7 @@
 #include "ComponentTransform.h"
 #include "Application.h"
 #include "ComponentMaterial.h"
+#include "ResourceShader.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "Color.h"
 #include "ResourceMesh.h"
@@ -37,6 +38,7 @@ void ComponentMesh::DrawPolygon()
 	}
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -66,8 +68,18 @@ void ComponentMesh::DrawPolygon()
 		glNormalPointer(GL_FLOAT, 0, 0);
 	}
 
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	//glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(mesh->vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	material->used_shader->Bind();
+
+	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	material->used_shader->Unbind();
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
