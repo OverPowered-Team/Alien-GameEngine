@@ -9,6 +9,7 @@
 #include "Color.h"
 #include "ResourceMesh.h"
 #include "ReturnZ.h"
+#include "ModuleCamera3D.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
@@ -50,7 +51,7 @@ void ComponentMesh::DrawPolygon()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	/*glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(1.0f, 0.1f);
 
@@ -66,14 +67,16 @@ void ComponentMesh::DrawPolygon()
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
 		glNormalPointer(GL_FLOAT, 0, 0);
-	}
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	//glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	}*/
 
 	glBindVertexArray(mesh->vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	material->used_shader->Bind();
+
+	// Uniforms
+	material->used_shader->SetUniformMat4f("view", App->camera->fake_camera->GetViewMatrix4f4()); // TODO: About in-game camera?
+	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
+	material->used_shader->SetUniformMat4f("projection", App->camera->fake_camera->GetProjectionMatrix4f4());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 

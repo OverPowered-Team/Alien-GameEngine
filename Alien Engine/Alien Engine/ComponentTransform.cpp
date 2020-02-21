@@ -173,6 +173,11 @@ const Quat ComponentTransform::GetGlobalRotation() const
 	return rot;
 }
 
+float4x4 ComponentTransform::GetGlobalMatrix() const
+{
+	return global_transformation;
+}
+
 void ComponentTransform::RecalculateTransform()
 {	
 	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);

@@ -36,6 +36,8 @@ public:
 	const Quat GetLocalRotation() const;
 	const Quat GetGlobalRotation() const;
 
+	float4x4 GetGlobalMatrix() const;
+
 private:
 
 	void LookScale();
