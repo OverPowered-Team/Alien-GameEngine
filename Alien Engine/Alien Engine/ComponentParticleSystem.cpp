@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "imgui/imgui.h"
 #include "MathGeoLib/include/Math/float3.h"
+#include "ReturnZ.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
@@ -51,9 +52,21 @@ void ComponentParticleSystem::OnDisable()
 
 bool ComponentParticleSystem::DrawInspector()
 {
-	if (ImGui::CollapsingHeader("Particle System", ImGuiTreeNodeFlags_DefaultOpen))
+	static bool check;
+
+	ImGui::PushID(this);
+	check = enabled;
+	if (ImGui::Checkbox("##CmpActive", &check)) {
+		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+		enabled = check;
+	}
+	ImGui::PopID();
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Particle System", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Checkbox("Active System", &enabled); // Can't repeat checkbox name (!!)
+
+		static bool cntl_Z = true; // CTRLZ Checking
 
 		// ----------------------------------- Emmitter ----------------------------------------
 
@@ -100,8 +113,19 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::TreePop();
 			}
 
+
 			float duration = emmitter->GetMaxLife();
-			if (ImGui::DragFloat("Duration", &duration, 1.0F, 0.0F, FLT_MAX)) { emmitter->SetMaxLife(duration); }
+			if (ImGui::DragFloat("Duration", &duration, 1.0F, 0.0F, FLT_MAX)) 
+			{ 
+				if (cntl_Z)
+				 ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this); 
+
+				cntl_Z = false;
+				emmitter->SetMaxLife(duration);
+			}
+			else if (!cntl_Z && ImGui::IsMouseReleased(0)) {
+				cntl_Z = true;
+			}
 
 			bool loop = emmitter->GetLoop();
 			if (ImGui::Checkbox("Looping", &loop)) { emmitter->SetLoop(loop); }

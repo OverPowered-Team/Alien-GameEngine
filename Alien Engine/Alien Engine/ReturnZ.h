@@ -161,6 +161,7 @@ public:
 	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
 };
 
+
 class CompScriptZ : public CompZ {
 public:
 	std::string data_name;
@@ -176,4 +177,9 @@ public:
 	float far_plane = 0.f;
 	float near_plane = 0.f;
 	int is_fov_horizontal = 0;
+};
+
+class CompParticleSystemZ : public CompZ {
+public:
+	float duration = 10.0f; //maxLifeTime of emmitter (cringe)
 };
