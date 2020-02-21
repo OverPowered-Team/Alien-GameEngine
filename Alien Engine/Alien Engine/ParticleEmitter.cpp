@@ -115,7 +115,7 @@ void ParticleEmmitter::GetInitialValues(float3& position, float3& velocity, floa
 	{
 		// Get a random position inside the cube (cube centered in emmitter pos), without any rotation
 		position = emmitterCenterPosition;
-		position.x += (-cubeSize.x * 0.5f, cubeSize.x * 0.5f);
+		position.x += Random::GetRandomFloatBetweenTwo(-cubeSize.x * 0.5f, cubeSize.x * 0.5f);
 		position.y += Random::GetRandomFloatBetweenTwo(-cubeSize.y * 0.5f, cubeSize.y * 0.5f);
 		position.z += Random::GetRandomFloatBetweenTwo(-cubeSize.z * 0.5f, cubeSize.z * 0.5f);
 

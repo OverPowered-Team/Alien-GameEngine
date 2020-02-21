@@ -9,6 +9,8 @@
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentParticleSystem.h"
+#include "ParticleSystem.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -546,6 +548,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		camera_->frustum.front = transform->GetGlobalRotation().WorldZ();
 		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
 	}
+
+	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
+	if(partSystem != nullptr)
+	{
+		partSystem->particleSystem->DrawEmmitter();
+		partSystem->particleSystem->DrawParticles();
+	}
+
 
 	if (App->objects->printing_scene)
 	{

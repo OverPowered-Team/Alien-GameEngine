@@ -152,6 +152,9 @@ void Particle::Draw()
 
 void Particle::Orientate(ComponentCamera* camera)
 {
+	if (camera == nullptr)
+		return; 
+
 	switch (owner->GetBillboardType())
 	{
 	case BillboardType::SCREEN:
