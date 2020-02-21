@@ -33,6 +33,11 @@
       "Id": "3157003241",
       "Name": "test",
       "ObjectPath": "\\Events\\Default Work Unit\\test"
+     },
+     {
+      "Id": "576110585",
+      "Name": "test2",
+      "ObjectPath": "\\Events\\Default Work Unit\\test2"
      }
     ],
     "IncludedMemoryFiles": [
@@ -41,6 +46,12 @@
       "Language": "SFX",
       "ShortName": "David Bisbal - Ave María.wav",
       "Path": "SFX\\David Bisbal - Ave María_1C9C67B2.wem"
+     },
+     {
+      "Id": "889853004",
+      "Language": "SFX",
+      "ShortName": "Porta - Dragon Ball Rap (con Letra).wav",
+      "Path": "SFX\\Porta - Dragon Ball Rap (con Letra)_1C9C67B2.wem"
      }
     ]
    }

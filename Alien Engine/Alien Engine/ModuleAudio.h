@@ -39,6 +39,7 @@ public:
 	bool UnloadAllBanks();
 
 	// Utils
+	void Play(const char* event);
 	void Play();
 	void Stop();
 	void Pause() const;

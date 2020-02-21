@@ -91,6 +91,10 @@ WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 	return WwiseT::CreateAudSource(name);
 }
 
+void ModuleAudio::Play(const char* event)
+{
+}
+
 void ModuleAudio::Play()
 {
 	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)

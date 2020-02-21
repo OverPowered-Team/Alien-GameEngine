@@ -10,6 +10,9 @@
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentScript.h"
+#include "ComponentAudioListener.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentReverbZone.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
@@ -1378,7 +1381,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 9); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
 				ComponentTransform* transform = new ComponentTransform(this);
@@ -1404,6 +1407,21 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCamera* camera = new ComponentCamera(this);
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
+				break; }
+			case (int)ComponentType::A_EMITTER: {
+				ComponentAudioEmitter* emitter = new ComponentAudioEmitter(this);
+				emitter->LoadComponent(components_to_load);
+				AddComponent(emitter);
+				break; }
+			case (int)ComponentType::A_LISTENER: {
+				ComponentAudioListener* listener = new ComponentAudioListener(this);
+				listener->LoadComponent(components_to_load);
+				AddComponent(listener);
+				break; }
+			case (int)ComponentType::A_REVERB: {
+				ComponentReverbZone* reverb = new ComponentReverbZone(this);
+				reverb->LoadComponent(components_to_load);
+				AddComponent(reverb);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);

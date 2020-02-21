@@ -14,7 +14,7 @@ public:
 	~ComponentAudioEmitter();
 public:
 
-	void Update(float dt);
+	void Update() override;
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
 	//void ChangeTimeToSwap(float new_time);
@@ -31,4 +31,7 @@ public:
 	bool play_on_awake = true;
 	bool loop = false;
 	bool mute = false;
+
+private:
+	bool play_mode = false;
 };

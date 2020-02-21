@@ -12,26 +12,25 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 	App->audio->emitters.push_back(this);
 }
 
-void ComponentAudioEmitter::Update(float dt)
+void ComponentAudioEmitter::Update()
 {
-	//UpdateSourcePos();
-	//
-	//if (timer.Read() / 1000 >= time_to_swap) {
-	//	if (song == 1) {
-	//		source->ChangeState("swap_music", "state2");
-	//		song = 2;
-	//		timer.Start();
-	//	}
-	//	else {
-	//		source->ChangeState("swap_music", "state1");
-	//		song = 1;
-	//		timer.Start();
-	//	}
-	//}
+	if (Time::state == Time::GameState::NONE) {
+		if (play_mode) {
+			source->StopEventByName(audio_name.c_str());
+			play_mode = false;
+		}
+	}
+	else if (Time::state == Time::GameState::PLAY) {
+		if (!play_mode && play_on_awake) {
+			StartSound();
+			play_mode = true;
+		}
+	}
 }
 
 ComponentAudioEmitter::~ComponentAudioEmitter()
 {
+	source->StopEventByName(audio_name.c_str());
 	App->audio->emitters.remove(this);
 	RELEASE(source);
 }
@@ -108,15 +107,19 @@ bool ComponentAudioEmitter::DrawInspector()
 	if (ImGui::CollapsingHeader("Audio Emitter", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::Text("Audio Clip");
 		ImGui::SameLine();
-
+		static char buf[30];
+		if (ImGui::InputText("Event name", buf, 30, ImGuiInputTextFlags_EnterReturnsTrue)) // TODO: Change inputText by a combo with all events 
+			audio_name.assign(buf);
 		/*if (ImGui::BeginCombo("Clip", "NONE")) {
 
 		}*/
 		ImGui::NewLine();
-		ImGui::Checkbox("Mute", &mute);
+		if (ImGui::Checkbox("Mute", &mute))
+			Mute(mute);
 		ImGui::Checkbox("PlayOnAwake", &play_on_awake);
 		ImGui::Checkbox("Loop", &loop);
-		ImGui::SliderFloat("Volume", &volume, 0.F, 1.F);
+		if (ImGui::SliderFloat("Volume", &volume, 0.F, 1.F))
+			ChangeVolume(volume);
 	}
 
 	ImGui::Separator();
