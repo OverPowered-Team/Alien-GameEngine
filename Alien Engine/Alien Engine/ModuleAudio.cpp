@@ -18,10 +18,6 @@ bool ModuleAudio::Start()
 	ret = WwiseT::InitSoundEngine();
 	WwiseT::LoadBank("Main.bnk");
 
-	auto s = WwiseT::CreateAudSource("hola");
-
-	s->PlayEventByName("test");
-
 	return ret;
 }
 

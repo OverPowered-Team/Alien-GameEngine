@@ -25,11 +25,10 @@ public:
 	bool DrawInspector();
 
 public:
-	WwiseT::AudioSource* source;
+	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;
 	float volume = 1.0f;
-	float time_to_swap = 30.0f;
-	int song = 2;
+	bool play_on_awake = true;
+	bool loop = false;
 	bool mute = false;
-	Timer timer;
 };

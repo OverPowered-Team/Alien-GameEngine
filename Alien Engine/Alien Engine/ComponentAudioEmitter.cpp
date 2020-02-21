@@ -46,11 +46,11 @@ void ComponentAudioEmitter::ChangeVolume(float new_volume)
 
 void ComponentAudioEmitter::Mute(bool mute)
 {
-	mute = mute;
-	if (mute == true)
-		source->SetVolume(0);
-	else if (mute == false)
+	if (mute)
+		source->SetVolume(0.F);
+	else
 		source->SetVolume(volume);
+	this->mute = mute;
 }
 
 //void ComponentAudioEmitter::ChangeTimeToSwap(float new_time)
@@ -61,21 +61,21 @@ void ComponentAudioEmitter::Mute(bool mute)
 void ComponentAudioEmitter::StartSound()
 {	
 	source->PlayEventByName(audio_name.c_str());
-	timer.Start();	
+	//timer.Start();	
 }
 
 void ComponentAudioEmitter::UpdateSourcePos()
 {
-	/*ComponentTransform* transformation = game_object_attached->GetComponentTransform();
+	ComponentTransform* transformation = game_object_attached->GetComponentTransform();
 
 	if (transformation != nullptr)
 	{
-		math::Quat rot = transformation->rotation;
+		//math::Quat rot = transformation->GetGlobalRotation();
 
-		math::float3 vector_pos = transformation->position;
+		math::float3 vector_pos = transformation->GetGlobalPosition();
 
 		source->SetSourcePos(vector_pos.x, vector_pos.y, vector_pos.z, 0, 0, 1, 0, 1, 0);
-	}*/
+	}
 }
 void ComponentAudioEmitter::SaveComponent(JSONArraypack* to_save)
 {
@@ -94,17 +94,29 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
-	static bool en;
 	ImGui::PushID(this);
-	en = enabled;
-	if (ImGui::Checkbox("##CmpActive", &en)) {
+
+	if (ImGui::Checkbox("##CmpActive", &enabled)) {
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-		enabled = en;
 		if (!enabled)
 			OnDisable();
 		else
 			OnEnable();
 	}
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Audio Emitter", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::Text("Audio Clip");
+		ImGui::SameLine();
+		ImGui::BeginCombo("Clip", "NONE");
+		ImGui::NewLine();
+		ImGui::Checkbox("Mute", &mute);
+		ImGui::Checkbox("PlayOnAwake", &play_on_awake);
+		ImGui::Checkbox("Loop", &loop);
+		ImGui::SliderFloat("Volume", &volume, 0.F, 1.F);
+	}
+
+	ImGui::Separator();
 	ImGui::PopID();
 	return true;
 }
