@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ComponentParticleSystem.h"
 #include "ParticleSystem.h"
+#include "ComponentTransform.h"
 #include "Time.h"
 #include "imgui/imgui.h"
 #include "MathGeoLib/include/Math/float3.h"
@@ -23,6 +24,11 @@ ComponentParticleSystem::~ComponentParticleSystem()
 
 void ComponentParticleSystem::PreUpdate()
 {
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+
+	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
+	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
+
 	particleSystem->PreUpdate(Time::GetDT());
 }
 
