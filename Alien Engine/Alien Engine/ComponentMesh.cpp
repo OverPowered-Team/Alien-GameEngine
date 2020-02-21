@@ -48,8 +48,8 @@ void ComponentMesh::DrawPolygon()
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	/*glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
 
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_POLYGON_OFFSET_FILL);
@@ -87,12 +87,12 @@ void ComponentMesh::DrawPolygon()
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
 
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POLYGON_OFFSET_FILL);
+	/*glDisable(GL_TEXTURE_2D);
+	glDisable(GL_POLYGON_OFFSET_FILL);*/
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+	/*glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	glPopMatrix();
 }

@@ -22,10 +22,22 @@ ResourceShader::ResourceShader(const char* path)
 	name = App->file_system->GetBaseFileName(path);
 	this->path = std::string(path);
 	type = ResourceType::RESOURCE_SHADER;
-	ParseAndCreateShader();
+	//ParseAndCreateShader();
 }
 
 ResourceShader::~ResourceShader()
+{
+	glDeleteProgram(renderer_id);
+}
+
+bool ResourceShader::LoadMemory()
+{
+	ParseAndCreateShader();
+
+	return true;
+}
+
+void ResourceShader::FreeMemory()
 {
 	glDeleteProgram(renderer_id);
 }
@@ -62,7 +74,6 @@ bool ResourceShader::CreateMetaData(const u64& force_id)
 	{
 		// ...?
 	}
-
 
 	App->resources->AddResource(this);
 

@@ -28,6 +28,9 @@ public:
 	ResourceShader(const char* path);
 	virtual ~ResourceShader();
 
+	bool LoadMemory();
+	void FreeMemory();
+
 	bool CreateMetaData(const u64& force_id = 0);
 	bool DeleteMetaData();
 
