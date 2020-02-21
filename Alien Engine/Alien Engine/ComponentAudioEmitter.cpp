@@ -108,7 +108,10 @@ bool ComponentAudioEmitter::DrawInspector()
 	if (ImGui::CollapsingHeader("Audio Emitter", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::Text("Audio Clip");
 		ImGui::SameLine();
-		ImGui::BeginCombo("Clip", "NONE");
+
+		/*if (ImGui::BeginCombo("Clip", "NONE")) {
+
+		}*/
 		ImGui::NewLine();
 		ImGui::Checkbox("Mute", &mute);
 		ImGui::Checkbox("PlayOnAwake", &play_on_awake);

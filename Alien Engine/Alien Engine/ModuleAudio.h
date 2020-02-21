@@ -8,12 +8,31 @@
 
 class ComponentAudioEmitter;
 
+struct BankEvent {
+	u64 id;
+	std::string name;
+};
+
+struct AudioFiles {
+	u64 id;
+	std::string name;
+};
+
+struct Bank {
+	u64 id;
+	std::string name;
+	std::vector<BankEvent> events;
+	std::vector <AudioFiles> audios;
+};
+
+
 class ModuleAudio : public Module
 {
 public:
 	ModuleAudio(bool start_enabled = true);
 	~ModuleAudio();
 	bool Start();
+	void LoadBanksInfo();
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
@@ -29,7 +48,7 @@ public:
 
 private:
 	WwiseT::AudioSource* listener;
-	std::vector <std::string> eng_banks;
+	std::vector <Bank> banks;
 
 public:
 	std::list<ComponentAudioEmitter*> emitters;
