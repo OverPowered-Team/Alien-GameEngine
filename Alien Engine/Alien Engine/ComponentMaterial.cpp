@@ -296,11 +296,16 @@ void ComponentMaterial::SetComponent(Component* component)
 		ComponentMaterial* material = (ComponentMaterial*)component;
 		if (texture != nullptr) {
 			texture->DecreaseReferences();
-			used_shader->DecreaseReferences();
 		}
 		texture = material->texture;
 		if (texture != nullptr) {
 			texture->IncreaseReferences();
+		}
+		if (used_shader != nullptr) {
+			used_shader->DecreaseReferences();
+		}
+		used_shader = material->used_shader;
+		if (used_shader != nullptr) {
 			used_shader->IncreaseReferences();
 		}
 
