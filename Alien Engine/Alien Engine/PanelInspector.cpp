@@ -405,44 +405,58 @@ void PanelInspector::ButtonAddComponent()
 
 void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 {
-	static char anim_name[MAX_PATH] = "Name";
-
-	for each (ResourceAnimation* anim in model->animations_attached)
+	if (model->animations_attached.size() > 0)
 	{
-		ImGui::PushID(anim);
-		strcpy_s(anim_name, 100, anim->name.data());
-		if (ImGui::InputText("Clip Name", anim_name, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+		static char anim_name[MAX_PATH] = "Name";
+
+		for each (ResourceAnimation * anim in model->animations_attached)
 		{
-			anim->name = anim_name;
+			ImGui::PushID(anim);
+			strcpy_s(anim_name, 100, anim->name.data());
+			if (ImGui::InputText("Clip Name", anim_name, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				anim->name = anim_name;
+			}
+			int start_tick = (int)anim->start_tick;
+			int end_tick = (int)anim->end_tick;
+			if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, anim->end_tick - 1))
+				if (start_tick >= 0 && start_tick < anim->end_tick) anim->start_tick = (uint)start_tick;
+			if (ImGui::DragInt("End", &end_tick, 1.0F, anim->start_tick + 1, anim->max_tick))
+				if (end_tick > anim->start_tick && end_tick <= anim->max_tick) anim->end_tick = (uint)end_tick;
+			ImGui::Checkbox("Loops", &anim->loops);
+			ImGui::Separator();
+			ImGui::PopID();
 		}
-		int start_tick = (int)anim->start_tick;
-		int end_tick = (int)anim->end_tick;
-		if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, anim->end_tick - 1))
-			if (start_tick >= 0 && start_tick < anim->end_tick) anim->start_tick = (uint)start_tick;
-		if (ImGui::DragInt("End", &end_tick, 1.0F, anim->start_tick + 1, anim->max_tick))
-			if (end_tick > anim->start_tick&& end_tick <= anim->max_tick) anim->end_tick = (uint)end_tick;
-		ImGui::Checkbox("Loops", &anim->loops);
+		if (ImGui::Button("+"))
+		{
+			ResourceAnimation* new_anim = new ResourceAnimation();
+			new_anim->name = "New Clip";
+			new_anim->max_tick = model->animations_attached[0]->max_tick;
+			new_anim->end_tick = model->animations_attached[0]->max_tick;
+			model->animations_attached.push_back(new_anim);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("-") && model->animations_attached.size() > 1)
+		{
+			delete model->animations_attached[model->animations_attached.size() - 1];
+			model->animations_attached.pop_back();
+		}
 		ImGui::Separator();
-		ImGui::PopID();
-	}
-	if (ImGui::Button("+"))
-	{
-		ResourceAnimation* new_anim = new ResourceAnimation();
-		new_anim->Copy(model->animations_attached[0]);
-		new_anim->name = "New Clip";
-		new_anim->max_tick = model->animations_attached[0]->max_tick;
-		new_anim->end_tick = model->animations_attached[0]->max_tick;
-	}
-	ImGui::SameLine();
-	/*if (ImGui::Button("-") && meta->animations.size() > 1)
-	{
-		delete meta->animations[meta->animations.size() - 1];
-		meta->animations.pop_back();
-	}*/
+		if (ImGui::Button("Apply")) {
+			//Give value to new animations
+			model->animations_attached[0]->LoadMemory();
+			if (model->animations_attached.size() > 1)
+			{
+				for (int i = 1; i < model->animations_attached.size(); ++i)
+				{
+					model->animations_attached[i]->Copy(model->animations_attached[0]);
+				}
+			}
 
-	ImGui::Separator();
-	if (ImGui::Button("Apply")) {
-		model->CreateMetaData();
+			model->LoadMemory();
+			model->CreateMetaData();
+			model->FreeMemory();
+		}
 	}
 }
 

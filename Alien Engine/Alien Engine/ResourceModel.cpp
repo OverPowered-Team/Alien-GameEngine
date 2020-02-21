@@ -277,6 +277,13 @@ bool ResourceModel::LoadMemory()
 		}
 	}
 
+	std::vector<ResourceAnimation*>::iterator anim_item = animations_attached.begin();
+	for (; anim_item != animations_attached.end(); ++item) {
+		if (*anim_item != nullptr) {
+			(*anim_item)->LoadMemory();
+		}
+	}
+
 	return ret;
 }
 

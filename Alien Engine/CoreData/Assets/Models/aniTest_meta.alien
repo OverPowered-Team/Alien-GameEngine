@@ -1,0 +1,48 @@
+{
+    "Meta": {
+        "ID": "11524723941356894569",
+        "NumMeshes": 36,
+        "NumAnimations": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/5670188716030998331.alienMesh",
+            "Library\/Meshes\/13446737152846863623.alienMesh",
+            "Library\/Meshes\/1525579687749733578.alienMesh",
+            "Library\/Meshes\/10996511771452963702.alienMesh",
+            "Library\/Meshes\/4357254444904509556.alienMesh",
+            "Library\/Meshes\/4013584466746239113.alienMesh",
+            "Library\/Meshes\/12561219883353963790.alienMesh",
+            "Library\/Meshes\/11925692977312620236.alienMesh",
+            "Library\/Meshes\/48691694823856745.alienMesh",
+            "Library\/Meshes\/9541555941870274058.alienMesh",
+            "Library\/Meshes\/11726549206979868731.alienMesh",
+            "Library\/Meshes\/14051909518729907263.alienMesh",
+            "Library\/Meshes\/7713151329325285373.alienMesh",
+            "Library\/Meshes\/9944199934655543194.alienMesh",
+            "Library\/Meshes\/16399724624464226658.alienMesh",
+            "Library\/Meshes\/11477158730871516325.alienMesh",
+            "Library\/Meshes\/1274287498971057076.alienMesh",
+            "Library\/Meshes\/17839667063433238056.alienMesh",
+            "Library\/Meshes\/6766449881321538233.alienMesh",
+            "Library\/Meshes\/16789336047853715734.alienMesh",
+            "Library\/Meshes\/16103505022682003811.alienMesh",
+            "Library\/Meshes\/18369408657486266279.alienMesh",
+            "Library\/Meshes\/3967645988416849109.alienMesh",
+            "Library\/Meshes\/4818234980233100353.alienMesh",
+            "Library\/Meshes\/13810679946451233761.alienMesh",
+            "Library\/Meshes\/7088564569599203833.alienMesh",
+            "Library\/Meshes\/11659842093633720186.alienMesh",
+            "Library\/Meshes\/14930746126165164686.alienMesh",
+            "Library\/Meshes\/9046435469019328836.alienMesh",
+            "Library\/Meshes\/8326563495123535893.alienMesh",
+            "Library\/Meshes\/2781988042758087534.alienMesh",
+            "Library\/Meshes\/13092822976028258243.alienMesh",
+            "Library\/Meshes\/13004893723881574087.alienMesh",
+            "Library\/Meshes\/14257682671134414676.alienMesh",
+            "Library\/Meshes\/15798848547236826244.alienMesh",
+            "Library\/Meshes\/3637549697654091183.alienMesh"
+        ],
+        "PathAnimations": [
+            "Library\/Animation\/16098650897310549986.alienAnimation"
+        ]
+    }
+}

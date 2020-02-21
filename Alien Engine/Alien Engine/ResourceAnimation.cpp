@@ -9,7 +9,6 @@ ResourceAnimation::ResourceAnimation() : Resource()
 
 ResourceAnimation::~ResourceAnimation()
 {
-	
 }
 
 
@@ -130,6 +129,23 @@ bool ResourceAnimation::LoadMemory()
 	return false;
 }
 
+void ResourceAnimation::FreeMemory()
+{
+	if (channels == nullptr)
+		return;
+
+	LOG_ENGINE("Unloading Animation %s", name.c_str());
+
+	for (int i = 0; i < num_channels; i++)
+	{
+		delete[] channels[i].position_keys;
+		delete[] channels[i].scale_keys;
+		delete[] channels[i].rotation_keys;
+	}
+
+	channels = nullptr;
+}
+
 bool ResourceAnimation::ReadBaseInfo(const char* meta_file_path)
 {
 	meta_data_path = std::string(meta_file_path);
@@ -181,7 +197,28 @@ bool ResourceAnimation::ReadBaseInfo(const char* meta_file_path)
 
 void ResourceAnimation::Copy(ResourceAnimation* anim)
 {
+	name = anim->name;
+	ticks_per_second = anim->ticks_per_second;
+	num_channels = anim->num_channels;
+	channels = new ResourceAnimation::Channel[num_channels];
+	start_tick = 0;
+	end_tick = anim->end_tick;
+	max_tick = anim->max_tick;
 
+	//copy channels
+	uint size = 0;
+	for (uint i = 0; i < anim->num_channels; i++)
+	{
+		channels[i].name = anim->channels[i].name;
+		channels[i].position_keys = new KeyAnimation<float3>[anim->channels[i].num_position_keys];
+		channels[i].scale_keys = new KeyAnimation<float3>[anim->channels[i].num_scale_keys];
+		channels[i].rotation_keys = new KeyAnimation<Quat>[anim->channels[i].num_rotation_keys];
+
+
+
+		//memcpy(channels[i].position_keys)
+	}
+	memcpy(&channels, anim->channels, size);
 }
 
 bool ResourceAnimation::CreateMetaData(const u64& force_id)
@@ -277,18 +314,5 @@ bool ResourceAnimation::CreateMetaData(const u64& force_id)
 
 bool ResourceAnimation::DeleteMetaData()
 {
-	if (channels == nullptr)
-		return false;
-
-	LOG_ENGINE("Unloading Animation %s", name.c_str());
-
-	for (int i = 0; i < num_channels; i++)
-	{
-		delete[] channels[i].position_keys;
-		delete[] channels[i].scale_keys;
-		delete[] channels[i].rotation_keys;
-	}
-
-	channels = nullptr;
 	return true;
 }

@@ -38,6 +38,7 @@ public:
 	uint GetChannelIndex(std::string name);
 
 	bool LoadMemory();
+	void FreeMemory();
 	bool ReadBaseInfo(const char* meta_file_path);
 	void Copy(ResourceAnimation* anim);
 
