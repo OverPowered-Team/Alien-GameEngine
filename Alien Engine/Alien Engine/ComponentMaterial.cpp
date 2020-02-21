@@ -15,7 +15,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 
 	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-	fileToEdit = used_shader->path;
+	file_to_edit = used_shader->path;
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -213,7 +213,7 @@ bool ComponentMaterial::DrawInspector()
 			if (ImGui::Button("Edit shader"))
 			{
 				{
-					std::ifstream t(fileToEdit.c_str());
+					std::ifstream t(file_to_edit.c_str());
 					if (t.good())
 					{
 						std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
@@ -247,7 +247,7 @@ bool ComponentMaterial::DrawInspector()
 							u64 id_s = App->resources->GetIDFromAlienPath((*i)->GetAssetsPath());
 							used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 
-							fileToEdit = used_shader->path; // must test if it edits on library too in this engine
+							file_to_edit = used_shader->path; // must test if it edits on library too in this engine
 						}
 					}
 
@@ -365,7 +365,7 @@ void ComponentMaterial::ShowShaderTextEditor()
 				auto textToSave = shader_editor.GetText();
 
 				// Save text assets folder
-				App->file_system->Save(fileToEdit.c_str(), textToSave.c_str(), textToSave.size());
+				App->file_system->Save(file_to_edit.c_str(), textToSave.c_str(), textToSave.size());
 
 				// Save text library folder
 				App->file_system->Save(used_shader->GetLibraryPath(), textToSave.c_str(), textToSave.size());
@@ -421,7 +421,7 @@ void ComponentMaterial::ShowShaderTextEditor()
 	ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, shader_editor.GetTotalLines(),
 		shader_editor.IsOverwrite() ? "Ovr" : "Ins",
 		shader_editor.CanUndo() ? "*" : " ",
-		shader_editor.GetLanguageDefinition().mName.c_str(), fileToEdit.c_str());
+		shader_editor.GetLanguageDefinition().mName.c_str(), file_to_edit.c_str());
 
 	shader_editor.Render("TextEditor");
 
