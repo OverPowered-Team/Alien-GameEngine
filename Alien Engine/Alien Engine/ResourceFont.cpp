@@ -47,7 +47,15 @@ ResourceFont* ResourceFont::ImportFile(const char* file, u64 forced_id)
 		std::string path(LIBRARY_FONTS_FOLDER + std::to_string(new_id) + ".fnt");
 
 		if (App->file_system->Exists(path.c_str())) {
+			LOG_ENGINE("Own file founded!", std::to_string(new_id));
 			font = LoadFile(path.c_str(), new_id);
+			font->path = file;
+			font->name = App->file_system->GetBaseFileName(file);
+		}
+		else
+		{
+			LOG_ENGINE("Own file NOT founded! Reloading font with same ID: %s", std::to_string(new_id));
+			font = ImportFont(file, new_id);
 			font->path = file;
 			font->name = App->file_system->GetBaseFileName(file);
 		}
@@ -72,7 +80,7 @@ ResourceFont* ResourceFont::ImportFont(const char* file, u64 forced_id)
 	else
 	{
 		ResourceFontData fontData;
-		FT_Set_Pixel_Sizes(face, 0, 24);
+		FT_Set_Pixel_Sizes(face, 0, 350);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		for (uint c = 32; c < 128; c++) {
@@ -103,7 +111,6 @@ ResourceFont* ResourceFont::ImportFont(const char* file, u64 forced_id)
 
 			fontData.fontBuffer.push_back(characterBuffer);
 
-			delete[] characterBuffer;
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FT_Done_Face(face);
@@ -172,14 +179,14 @@ ResourceFont* ResourceFont::LoadFile(const char* file, u64 forced_id)
 			fontData.charactersMap[i + 32].textureID = ResourceFont::LoadTextureCharacter(width, height, fontData.fontBuffer[i]);
 
 			cursor += bytes;
-			delete[] buffer;
+			
 		}
-
-		delete[] buffer;
 
 		res = new ResourceFont(fontData);
 		res->ID = forced_id;
 		res->meta_data_path = LIBRARY_FONTS_FOLDER + std::to_string(res->GetID()) + ".fnt";
+
+	
 	}
 
 	return res;

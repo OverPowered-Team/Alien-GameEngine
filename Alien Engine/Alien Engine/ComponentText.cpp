@@ -55,7 +55,7 @@ void ComponentText::Draw(bool isGame)
 {
 	glDisable(GL_CULL_FACE);
 
-	glColor4f(1.0, 1.0, 1.0, 1.0);
+	glColor4f(0.5, 1.0, 1.0, 1.0);
 
 	glPushMatrix();
 	glMultMatrixf(game_object_attached->GetComponent<ComponentTransform>()->global_transformation.Transposed().ptr());
