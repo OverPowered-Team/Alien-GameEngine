@@ -29,6 +29,7 @@ class ResourceFont : public Resource {
 
 public:
 	ResourceFont(ResourceFontData fontData);
+	virtual ~ResourceFont();
 
 	void CreateMeta();
 	static ResourceFont* ImportFile(const char* file, u64 forced_id = 0);

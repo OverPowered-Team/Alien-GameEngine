@@ -11,6 +11,17 @@ ResourceFont::ResourceFont(ResourceFontData fontData):Resource(), fontData(fontD
 	type = ResourceType::RESOURCE_FONT;
 }
 
+ResourceFont::~ResourceFont()
+{
+	for (auto itBuff = fontData.fontBuffer.begin(); itBuff != fontData.fontBuffer.end(); itBuff++)
+	{
+		delete[](*itBuff);
+	}
+
+	fontData.fontBuffer.clear();
+
+}
+
 void ResourceFont::CreateMeta()
 {
 	JSON_Value* value = json_value_init_object();
@@ -186,6 +197,7 @@ ResourceFont* ResourceFont::LoadFile(const char* file, u64 forced_id)
 		res->ID = forced_id;
 		res->meta_data_path = LIBRARY_FONTS_FOLDER + std::to_string(res->GetID()) + ".fnt";
 
+		delete[] buffer;
 	
 	}
 
