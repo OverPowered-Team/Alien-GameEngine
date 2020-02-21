@@ -29,6 +29,9 @@ public:
 	void Update() override;
 	void PostUpdate() override;
 
+	void DebugDraw();
+	void Draw();
+
 	void Reset() override;  
 
 	void OnEnable() override;

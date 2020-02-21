@@ -1,3 +1,4 @@
+#include "Application.h"
 #include "ComponentParticleSystem.h"
 #include "ParticleSystem.h"
 #include "Time.h"
@@ -33,6 +34,17 @@ void ComponentParticleSystem::Update()
 void ComponentParticleSystem::PostUpdate()
 {
 	particleSystem->PostUpdate(Time::GetDT());
+}
+
+void ComponentParticleSystem::DebugDraw()
+{
+	if (drawEmmitter && App->objects->GetSelectedObjects().back() == game_object_attached)
+		particleSystem->DrawEmmitter();
+}
+
+void ComponentParticleSystem::Draw()
+{
+	particleSystem->DrawParticles();
 }
 
 void ComponentParticleSystem::Reset()

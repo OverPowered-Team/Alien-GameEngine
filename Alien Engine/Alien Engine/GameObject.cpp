@@ -550,10 +550,10 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	}
 
 	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
+	
 	if(partSystem != nullptr)
 	{
-		partSystem->particleSystem->DrawEmmitter();
-		partSystem->particleSystem->DrawParticles();
+		partSystem->Draw();
 	}
 
 
@@ -568,7 +568,13 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		{
 			light->DrawIconLight();
 		}
+
+		if (partSystem != nullptr)
+		{
+			partSystem->DebugDraw();
+		}
 	}
+
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
