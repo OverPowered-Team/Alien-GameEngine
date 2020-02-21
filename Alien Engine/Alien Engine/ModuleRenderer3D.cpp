@@ -446,3 +446,19 @@ bool ModuleRenderer3D::IsInsideFrustum(const ComponentCamera* camera, const AABB
 
 	return true;
 }
+
+ComponentCamera* ModuleRenderer3D::GetCurrentMainCamera()
+{
+	ComponentCamera* currentMainCam = nullptr; 
+
+	#ifndef GAME_VERSION
+	// By default, we return the editor cam
+	currentMainCam = scene_fake_camera;
+	#endif
+
+	// If there is a game camera, we overwrite it
+	if (actual_game_camera != nullptr)
+		currentMainCam = actual_game_camera;
+	
+	return currentMainCam;
+}

@@ -87,7 +87,8 @@ bool ParticleSystem::PostUpdate(float dt)
 
 	// ------------------ ORDER PARTICLES NEAR TO FAR ------------------------
 
-	std::sort(particles.begin(), particles.end(), compareParticles);
+	if(App->renderer3D->GetCurrentMainCamera() != nullptr) // In case we are in game mode and no camera exists
+		std::sort(particles.begin(), particles.end(), compareParticles);
 
 	return true;
 }
@@ -115,7 +116,7 @@ void ParticleSystem::DrawParticles()
 	// Debugging drawing points in particles Position
 	//DrawPointsForParticles();
 
-	ComponentCamera* mainCamera = App->renderer3D->actual_game_camera;
+	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
@@ -192,5 +193,5 @@ void ParticleSystem::ResetSystem()
 
 bool compareParticles(Particle* a, Particle* b)
 {
-	return a->GetPosition().DistanceSq(App->renderer3D->actual_game_camera->GetCameraPosition()) < b->GetPosition().DistanceSq(App->renderer3D->actual_game_camera->GetCameraPosition());
+	return a->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition()) < b->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition());
 }
