@@ -15,6 +15,7 @@ public:
 
 	void Exit();
 
+
 };
 
 ALIEN_FACTORY ListenerButton* CreateListenerButton() {

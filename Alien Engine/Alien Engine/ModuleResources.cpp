@@ -452,10 +452,7 @@ void ModuleResources::ReloadScripts()
 					ResourceScript* script = (ResourceScript*)*item;
 					if (App->StringCmp(script->header_path.data(), files[i].data())) {
 						if (script->NeedReload()) {
-							remove(script->GetAssetsPath());
-							remove(script->GetLibraryPath());
-							script->data_structures.clear();
-							script->CreateMetaData(script->GetID());
+							script->Reimport();
 						}
 						exists = true;
 						script->reload_completed = true;
