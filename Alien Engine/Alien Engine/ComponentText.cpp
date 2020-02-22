@@ -105,6 +105,7 @@ void ComponentText::SaveComponent(JSONArraypack* to_save)
 		to_save->SetString("FontID", std::to_string(font->GetID()));
 	}
 	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetColor("Color", current_color);
 }
 
 void ComponentText::LoadComponent(JSONArraypack* to_load)

@@ -25,6 +25,9 @@ public:
 	//void RemoveListenerOnClickRepeat(std::function<void()> funct);
 	//void RemoveListenerOnRelease(std::function<void()> funct);
 
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
+
 private:
 	bool DrawInspector();
 
