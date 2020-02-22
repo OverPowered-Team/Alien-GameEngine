@@ -18,10 +18,16 @@
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Macros\dllmain.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -35,14 +35,14 @@ void ModuleAudio::LoadBanksInfo()
 			b.name = bank_arr->GetString("ShortName");
 			auto events = bank_arr->GetArray("IncludedEvents");
 			events->GetFirstNode();
-			for (uint e = 0; e <= events->GetArraySize(); ++e, events->GetAnotherNode()) {
+			for (uint e = 0; e < events->GetArraySize(); ++e, events->GetAnotherNode()) {
 				BankEvent ev = BankEvent();
 				ev.id = std::stoull(events->GetString("Id"));
 				ev.name = events->GetString("Name");
 				b.events.push_back(ev);
 			}
 			auto aud = bank_arr->GetArray("IncludedMemoryFiles");
-			for (uint a = 0; a <= aud->GetArraySize(); ++a) {
+			for (uint a = 0; a < aud->GetArraySize(); ++a) {
 				AudioFiles f;
 				f.id = std::stoull(aud->GetString("Id"));
 				f.name = aud->GetString("ShortName");

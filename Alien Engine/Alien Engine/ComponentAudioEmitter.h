@@ -7,7 +7,7 @@
 
 #include <string>
 
-class ComponentAudioEmitter : public Component
+class __declspec(dllexport) ComponentAudioEmitter : public Component
 {
 public:
 	ComponentAudioEmitter(GameObject* parent);
