@@ -232,6 +232,27 @@ bool ComponentMaterial::DrawInspector()
 				used_shader->ParseAndCreateShader();
 			}
 
+			ImGui::Separator();
+
+			/* Set shader unifroms from Inspector */
+			ImGui::Text("--Uniforms--");
+			
+			GLint uniform_count = 0;
+			const GLsizei u_buff_size = 24;
+			glGetProgramiv(used_shader->renderer_id, GL_ACTIVE_UNIFORMS, &uniform_count);
+			for (GLuint i = 0; i < uniform_count; ++i)
+			{
+				GLsizei length;
+				GLint size;
+				GLenum type;
+				GLchar name[u_buff_size];
+				glGetActiveUniform(used_shader->renderer_id, i, (GLsizei)20, &length, &size, &type, name);
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s(%u)", (const char*)name, (unsigned int)type);
+			}
+
+			ImGui::Separator();
+
 			// Can select desired shader in the shaders folder
 			if (select_shader)
 			{
