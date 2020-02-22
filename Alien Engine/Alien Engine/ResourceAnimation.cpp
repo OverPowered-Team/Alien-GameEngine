@@ -197,28 +197,30 @@ bool ResourceAnimation::ReadBaseInfo(const char* meta_file_path)
 
 void ResourceAnimation::Copy(ResourceAnimation* anim)
 {
-	name = anim->name;
 	ticks_per_second = anim->ticks_per_second;
 	num_channels = anim->num_channels;
 	channels = new ResourceAnimation::Channel[num_channels];
-	start_tick = 0;
-	end_tick = anim->end_tick;
-	max_tick = anim->max_tick;
 
 	//copy channels
 	uint size = 0;
 	for (uint i = 0; i < anim->num_channels; i++)
 	{
-		channels[i].name = anim->channels[i].name;
-		channels[i].position_keys = new KeyAnimation<float3>[anim->channels[i].num_position_keys];
-		channels[i].scale_keys = new KeyAnimation<float3>[anim->channels[i].num_scale_keys];
-		channels[i].rotation_keys = new KeyAnimation<Quat>[anim->channels[i].num_rotation_keys];
+		channels[i].num_position_keys = anim->channels[i].num_position_keys;
+		channels[i].num_scale_keys = anim->channels[i].num_scale_keys;
+		channels[i].num_rotation_keys = anim->channels[i].num_rotation_keys;
 
+		uint bytes = sizeof(KeyAnimation<float3>) * channels[i].num_position_keys;
+		channels[i].position_keys = new KeyAnimation<float3>[channels[i].num_position_keys];
+		memcpy(channels[i].position_keys, anim->channels[i].position_keys, bytes);
 
+		bytes = sizeof(KeyAnimation<float3>) * channels[i].num_scale_keys;
+		channels[i].scale_keys = new KeyAnimation<float3>[channels[i].num_scale_keys];
+		memcpy(channels[i].scale_keys, anim->channels[i].scale_keys, bytes);
 
-		//memcpy(channels[i].position_keys)
+		bytes = sizeof(KeyAnimation<Quat>) * channels[i].num_rotation_keys;
+		channels[i].rotation_keys = new KeyAnimation<Quat>[channels[i].num_rotation_keys];
+		memcpy(channels[i].rotation_keys, anim->channels[i].rotation_keys, bytes);
 	}
-	memcpy(&channels, anim->channels, size);
 }
 
 bool ResourceAnimation::CreateMetaData(const u64& force_id)

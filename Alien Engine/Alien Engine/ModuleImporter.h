@@ -44,6 +44,7 @@ public:
 	void LoadParShapesMesh(par_shapes_mesh* p_mesh, ResourceMesh* mesh);
 	ResourceMesh* LoadEngineModels(const char* path);
 	bool ReImportModel(ResourceModel* model); // when dropped
+	void ReImportAnimations(ResourceModel* model, const aiScene* scene);
 	
 	// textures
 	ResourceTexture* LoadTextureFile(const char* path, bool has_been_dropped = false, bool is_custom = true); // when dropped

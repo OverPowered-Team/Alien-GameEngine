@@ -8,8 +8,11 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"
+#include "ResourceMesh.h"
+
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -433,17 +436,26 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 			new_anim->name = "New Clip";
 			new_anim->max_tick = model->animations_attached[0]->max_tick;
 			new_anim->end_tick = model->animations_attached[0]->max_tick;
+
 			model->animations_attached.push_back(new_anim);
+			App->resources->AddResource(new_anim);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("-") && model->animations_attached.size() > 1)
 		{
+			App->resources->RemoveResource(model->animations_attached[model->animations_attached.size() - 1]);
 			delete model->animations_attached[model->animations_attached.size() - 1];
 			model->animations_attached.pop_back();
+
 		}
 		ImGui::Separator();
-		if (ImGui::Button("Apply")) {
-			//Give value to new animations
+		if (ImGui::Button("Save")) {
+			std::vector<ResourceMesh*>::iterator item = model->meshes_attached.begin();
+			for (; item != model->meshes_attached.end(); ++item) {
+				if (*item != nullptr) {
+					(*item)->LoadMemory();
+				}
+			}
 			model->animations_attached[0]->LoadMemory();
 			if (model->animations_attached.size() > 1)
 			{
@@ -452,9 +464,7 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 					model->animations_attached[i]->Copy(model->animations_attached[0]);
 				}
 			}
-
-			model->LoadMemory();
-			model->CreateMetaData();
+			model->CreateMetaData(model->GetID());
 			model->FreeMemory();
 		}
 	}

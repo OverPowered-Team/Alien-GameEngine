@@ -121,6 +121,15 @@ void ModuleResources::AddResource(Resource* resource)
 	}
 }
 
+void ModuleResources::RemoveResource(Resource* resource)
+{
+	if (resource != nullptr) {
+		std::vector<Resource*>::iterator it = std::find(resources.begin(), resources.end(), resource);
+		if (it != resources.end())
+			resources.erase(it);
+	}
+}
+
 bool ModuleResources::CreateNewModelInstanceOf(const char* path)
 {
 	bool ret = false;

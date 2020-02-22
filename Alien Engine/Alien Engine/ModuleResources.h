@@ -55,6 +55,7 @@ public:
 	bool CleanUp();
 
 	void AddResource(Resource* resource);
+	void RemoveResource(Resource* resource);
 
 	// meta path
 	bool CreateNewModelInstanceOf(const char* path);

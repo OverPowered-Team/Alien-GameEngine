@@ -319,7 +319,8 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
 	}
-	
+
+	App->resources->AddResource(resource_animation);
 	model->animations_attached.push_back(resource_animation);
 }
 
@@ -549,6 +550,8 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 			LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
 		}
 
+		ReImportAnimations(model, scene);
+		
 		// create the meta data files like .alien
 		if (model->CreateMetaData(model->ID)) {
 			App->resources->AddResource(model);
@@ -564,6 +567,44 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 	aiReleaseImport(scene);
 
 	return ret;
+}
+
+void ModuleImporter::ReImportAnimations(ResourceModel* model, const aiScene* scene)
+{
+	if (scene->HasAnimations())
+	{
+		for (int i = 0; i < scene->mNumAnimations; i++)
+		{
+			LoadAnimation(scene->mAnimations[i]);
+		}
+
+		JSON_Value* value = json_parse_file(model->meta_data_path.data());
+		JSON_Object* object = json_value_get_object(value);
+
+		if (value != nullptr && object != nullptr)
+		{
+			JSONfilepack* meta = new JSONfilepack(model->meta_data_path.data(), object, value);
+			uint num_anims = meta->GetNumber("Meta.NumAnimations");
+			JSONArraypack* anims_meta = meta->GetArray("Meta.Animations");
+
+			for (int i = 0; i < num_anims; ++i)
+			{
+				if (i > 0)
+				{
+					ResourceAnimation* new_anim = new ResourceAnimation();
+					model->animations_attached.push_back(new_anim);
+					App->resources->AddResource(new_anim);
+					model->animations_attached[i]->Copy(model->animations_attached[0]);
+				}
+				anims_meta->GetNode(i);
+				model->animations_attached[i]->name = anims_meta->GetString("Name");
+				model->animations_attached[i]->loops = anims_meta->GetBoolean("Loops");
+				model->animations_attached[i]->start_tick = anims_meta->GetNumber("Start_Tick");
+				model->animations_attached[i]->end_tick = anims_meta->GetNumber("End_Tick");
+			}	
+			delete meta;
+		}
+	}
 }
 
 
