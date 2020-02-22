@@ -6,6 +6,7 @@
 #include "ComponentCanvas.h"
 #include "ComponentTransform.h"
 #include "ResourceTexture.h"
+#include "ResourceFont.h"
 #include "PanelGame.h"
 #include "PanelScene.h"
 

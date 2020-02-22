@@ -95,4 +95,47 @@ void ComponentText::Draw(bool isGame)
 	glEnable(GL_CULL_FACE);
 }
 
+void ComponentText::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("Text", text);
+	to_save->SetNumber("UIType", (int)ui_type);
+	if (font != nullptr) {
+		to_save->SetString("FontID", std::to_string(font->GetID()));
+	}
+	to_save->SetBoolean("Enabled", enabled);
+}
+
+void ComponentText::LoadComponent(JSONArraypack* to_load)
+{
+	enabled = to_load->GetBoolean("Enabled");
+	text = to_load->GetString("Text");
+
+	u64 fontID = std::stoull(to_load->GetString("FontID"));
+	if (fontID != 0) {
+		ResourceFont* font = (ResourceFont*)App->resources->GetResourceWithID(fontID);
+	}
+	else {
+		LOG_ENGINE("Font ID equals to 0! Font not founded");
+	}
+
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
+}
+
 

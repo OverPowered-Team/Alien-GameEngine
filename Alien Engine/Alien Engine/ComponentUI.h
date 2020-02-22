@@ -8,6 +8,7 @@
 #include "Color.h"
 
 class ResourceTexture;
+class ReosurceFont;
 
 enum UIState {
 	Idle,
@@ -38,6 +39,9 @@ public:
 
 	virtual void Update();
 	virtual void Draw(bool isGame);
+
+	virtual void SaveComponent(JSONArraypack* to_save) {};
+	virtual void LoadComponent(JSONArraypack* to_load) {};
 
 	void ClearTexture();
 	void SetTexture(ResourceTexture* tex);
