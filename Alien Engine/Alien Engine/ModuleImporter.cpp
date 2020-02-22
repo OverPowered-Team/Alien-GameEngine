@@ -16,6 +16,8 @@
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
 #include "ResourceAnimation.h"
+#include "ResourceBone.h"
+
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
@@ -94,10 +96,26 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	model->name = App->file_system->GetBaseFileName(path);
 	model->path = std::string(path);
 
-	// start recursive function to all nodes
-	for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
-		LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
+	//Import meshes & bones
+	if (scene->HasMeshes())
+	{
+		for (int i = 0; i < scene->mNumMeshes; i++)
+		{
+			//Import mesh here.
+			//LoadMesh(scene->mMeshes[i]);
+
+			//Import bones of mesh
+			if (scene->mMeshes[i]->HasBones())
+			{
+				for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
+				{
+					LoadBone(scene->mMeshes[i]->mBones[j]);
+				}
+			}
+		}
 	}
+
+	// Import animations
 	if (scene->HasAnimations())
 	{
 		for (int i = 0; i < scene->mNumAnimations; i++)
@@ -105,6 +123,12 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 			LoadAnimation(scene->mAnimations[i]);
 		}
 	}
+
+	// start recursive function to all nodes
+	for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
+		LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
+	}
+
 	// create the meta data files like .alien
 	if (model->CreateMetaData()) {
 		App->resources->AddResource(model);
@@ -131,6 +155,8 @@ void ModuleImporter::LoadSceneNode(const aiNode* node, const aiScene* scene, Res
 		const aiMesh* mesh = scene->mMeshes[node->mMeshes[0]];
 		next_parent = LoadNodeMesh(scene, node, mesh, parent);
 		next_parent->family_number = family_number;
+		if (mesh->HasBones())
+			next_parent->deformable = true;
 		App->resources->AddResource(next_parent);
 		model->meshes_attached.push_back(next_parent);
 	}
@@ -148,6 +174,8 @@ void ModuleImporter::LoadSceneNode(const aiNode* node, const aiScene* scene, Res
 			next_parent = LoadNodeMesh(scene, node, mesh, parent_node);
 			next_parent->name += std::to_string(i);
 			next_parent->family_number = family_number + 1;
+			if (mesh->HasBones())
+				next_parent->deformable = true;
 			App->resources->AddResource(next_parent);
 			model->meshes_attached.push_back(next_parent);
 		}
@@ -161,6 +189,17 @@ void ModuleImporter::LoadSceneNode(const aiNode* node, const aiScene* scene, Res
 		next_parent->SetName(node->mName.C_Str());
 		if (parent != nullptr)
 			next_parent->parent_name = parent->name;
+	}
+
+	if (model->bones_attached.size() > 0)
+	{
+		for each (ResourceBone* bone in model->bones_attached)
+		{
+			if (bone->name == node->mName.C_Str())
+			{
+				next_parent->bone_id = bone->GetID();
+			}
+		}
 	}
 
 	if (next_parent != nullptr) {
@@ -322,6 +361,30 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 
 	App->resources->AddResource(resource_animation);
 	model->animations_attached.push_back(resource_animation);
+}
+
+void ModuleImporter::LoadBone(const aiBone* bone)
+{
+	ResourceBone* r_bone = new ResourceBone();
+
+	r_bone->name = bone->mName.C_Str();
+	r_bone->matrix = float4x4(float4(bone->mOffsetMatrix.a1, bone->mOffsetMatrix.b1, bone->mOffsetMatrix.c1, bone->mOffsetMatrix.d1),
+		float4(bone->mOffsetMatrix.a2, bone->mOffsetMatrix.b2, bone->mOffsetMatrix.c2, bone->mOffsetMatrix.d2),
+		float4(bone->mOffsetMatrix.a3, bone->mOffsetMatrix.b3, bone->mOffsetMatrix.c3, bone->mOffsetMatrix.d3),
+		float4(bone->mOffsetMatrix.a4, bone->mOffsetMatrix.b4, bone->mOffsetMatrix.c4, bone->mOffsetMatrix.d4));
+
+	r_bone->num_weights = bone->mNumWeights;
+	r_bone->weights = new float[r_bone->num_weights];
+	r_bone->vertex_ids = new uint[r_bone->num_weights];
+
+	for (uint i = 0; i < r_bone->num_weights; i++)
+	{
+		memcpy(&r_bone->weights[i], &bone->mWeights[i].mWeight, sizeof(float));
+		memcpy(&r_bone->vertex_ids[i], &bone->mWeights[i].mVertexId, sizeof(uint));
+	}
+
+	App->resources->AddResource(r_bone);
+	model->bones_attached.push_back(r_bone);
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)

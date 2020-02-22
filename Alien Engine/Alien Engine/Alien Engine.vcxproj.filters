@@ -558,6 +558,9 @@
     <ClInclude Include="PanelAnimTimeline.h">
       <Filter>Panels</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentDeformableMesh.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -904,6 +907,9 @@
     </ClCompile>
     <ClCompile Include="PanelAnimTimeline.cpp">
       <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentDeformableMesh.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

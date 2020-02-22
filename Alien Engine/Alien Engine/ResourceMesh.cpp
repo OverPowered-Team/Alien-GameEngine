@@ -3,7 +3,10 @@
 #include "ModuleFileSystem.h"
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
+#include "ComponentBone.h"
+#include "ComponentDeformableMesh.h"
 #include "ResourceTexture.h"
+#include "ResourceBone.h"
 
 ResourceMesh::ResourceMesh() : Resource()
 {
@@ -339,7 +342,7 @@ bool ResourceMesh::DeleteMetaData()
 	return true;
 }
 
-void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created)
+void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link)
 {
 	IncreaseReferences();
 	// get the parent
@@ -365,17 +368,28 @@ void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>*
 	}
 
 	obj->SetName(name.data());
-
-	obj->AddComponent(new ComponentTransform(obj, pos, rot, scale));
+	obj->transform->SetLocalPosition(pos);
+	obj->transform->SetLocalRotation(rot);
+	obj->transform->SetLocalScale(scale);
 
 	if (num_vertex != 0) {
+		if (!deformable) //review this
+		{
+			ComponentMesh* mesh = new ComponentMesh(obj);
+			mesh->mesh = this;
+			mesh->RecalculateAABB_OBB();
 
-		ComponentMesh* mesh = new ComponentMesh(obj);
+			obj->AddComponent(mesh);
+		}	
+		else
+		{
+			ComponentDeformableMesh* mesh = new ComponentDeformableMesh(obj);
+			mesh->mesh = this;
+			mesh->RecalculateAABB_OBB();
+			skeleton_link.first = obj;
 
-		mesh->mesh = this;
-		mesh->RecalculateAABB_OBB();
-
-		obj->AddComponent(mesh);
+			obj->AddComponent(mesh);
+		}
 
 		ComponentMaterial* material = new ComponentMaterial(obj);
 
@@ -385,6 +399,14 @@ void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>*
 		material->color = material_color;
 
 		obj->AddComponent(material);
+	}
+
+	if (bone_id != 0)
+	{
+		if (skeleton_link.second == nullptr)
+			skeleton_link.second = obj;
+		ComponentBone* bone = new ComponentBone(obj);
+		obj->AddComponent(bone);
 	}
 }
 

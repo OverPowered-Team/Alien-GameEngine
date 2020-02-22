@@ -11,7 +11,7 @@
 
 ComponentTransform::ComponentTransform(GameObject* attach) : Component(attach)
 {
-	type = ComponentType::TRANSFORM;
+	type = ComponentType::TRANSFORM;	
 }
 
 ComponentTransform::ComponentTransform(GameObject* attach, const float3& pos, const Quat& rot, const float3& scale) : Component(attach)

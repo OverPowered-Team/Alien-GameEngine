@@ -67,12 +67,11 @@ public:
 		DontDestroyOnLoad();
 	*/
 
-
-
 	GameObject* GetChild(const char* child_name);
 	GameObject* GetChild(const int& index);
 	// look for child of child of child bla bla
 	GameObject* GetChildRecursive(const char* child_name);
+	std::vector<GameObject*> GetChildren();
 
 	void SetEnable(bool enable);
 	bool IsEnabled() const;
@@ -228,6 +227,7 @@ private:
 public:
 
 	GameObject* parent = nullptr;
+	ComponentTransform* transform = nullptr;
 
 private:
 

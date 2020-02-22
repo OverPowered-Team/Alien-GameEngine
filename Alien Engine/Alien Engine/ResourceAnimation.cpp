@@ -5,10 +5,12 @@
 
 ResourceAnimation::ResourceAnimation() : Resource()
 {
+	type = ResourceType::RESOURCE_ANIMATION;
 }
 
 ResourceAnimation::~ResourceAnimation()
 {
+	FreeMemory();
 }
 
 

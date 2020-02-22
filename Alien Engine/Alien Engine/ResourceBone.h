@@ -12,16 +12,17 @@ public:
 	ResourceBone();
 	~ResourceBone();
 
-	std::string name;
+	std::string name = "";
 	float4x4 matrix;
 
-	uint num_weights;
-	uint* vertex_ids;
-	float* weights;
+	uint num_weights = 0;
+	uint* vertex_ids = nullptr;
+	float* weights = nullptr;
 
+	bool CreateMetaData(const u64& force_id = 0);
 	std::string GetTypeString() const;
-	void Load();
-	void UnLoad();
+	bool LoadMemory();
+	void FreeMemory();
 };
 
 #endif // !_RESOURCE_BONE_H_

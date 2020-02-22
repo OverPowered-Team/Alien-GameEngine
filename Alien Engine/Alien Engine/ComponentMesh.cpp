@@ -36,7 +36,7 @@ void ComponentMesh::DrawPolygon()
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	}
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -106,7 +106,7 @@ void ComponentMesh::DrawOutLine()
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glPushMatrix();
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -130,7 +130,7 @@ void ComponentMesh::DrawMesh()
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -162,7 +162,7 @@ void ComponentMesh::DrawVertexNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -188,7 +188,7 @@ void ComponentMesh::DrawFaceNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -453,7 +453,7 @@ AABB ComponentMesh::GenerateAABB()
 
 void ComponentMesh::RecalculateAABB_OBB()
 {
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	obb = GenerateAABB();
 	obb.Transform(transform->global_transformation);
 

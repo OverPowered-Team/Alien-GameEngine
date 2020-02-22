@@ -395,7 +395,7 @@ void ComponentCamera::DrawIconCamera()
 {
 	if (mesh_camera != nullptr && print_icon)
 	{
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 		float3 position = transform->GetGlobalPosition() - frustum.front.Normalized() * 2;
 		Quat rotated = transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } * Quat{ 0.7071,0,0.7071,0 });
 		float4x4 matrix = float4x4::FromTRS(position, rotated, { 0.1F,0.1F,0.1F });
@@ -466,7 +466,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	frustum.horizontalFov = horizontal_fov * Maths::Deg2Rad();
 
 	if (game_object_attached != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 		frustum.pos = transform->GetGlobalPosition();
 		frustum.front = transform->GetLocalRotation().WorldZ();
 		frustum.up = transform->GetLocalRotation().WorldY();

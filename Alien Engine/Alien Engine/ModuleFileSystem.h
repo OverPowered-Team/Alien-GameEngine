@@ -18,7 +18,8 @@ struct aiFileIO;
 #define LIBRARY_TEXTURES_FOLDER "Library/Textures/"
 #define LIBRARY_SCENES_FOLDER "Library/Scenes/"
 #define LIBRARY_PREFABS_FOLDER "Library/Prefabs/"
-#define LIBRARY_ANIMATIONS_FOLDER "Library/Animation/"
+#define LIBRARY_ANIMATIONS_FOLDER "Library/Animations/"
+#define LIBRARY_BONES_FOLDER "Library/Bones/"
 
 #define CONFIGURATION_FOLDER "Configuration/"
 #define CONFIGURATION_LAYOUTS_FOLDER "Configuration/Layouts/"

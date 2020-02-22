@@ -2,7 +2,9 @@
 #include "Globals.h"
 #include "ResourceMesh.h"
 #include "ResourceAnimation.h"
+#include "ResourceBone.h"
 #include "ModuleFileSystem.h"
+#include "ComponentDeformableMesh.h"
 #include "Application.h"
 #include <algorithm>
 #include "ReturnZ.h"
@@ -34,6 +36,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 	std::string* meta_mesh_paths = nullptr;
 	std::string* meta_animation_paths = nullptr;
+	std::string* meta_bones_paths = nullptr;
 	int num_anims = 0;
 	if (force_id != 0) 
 	{
@@ -46,6 +49,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 			meta_mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 			meta_animation_paths = meta->GetArrayString("Meta.PathAnimations");
+			meta_bones_paths = meta->GetArrayString("Meta.PathBones");
 			num_anims = meta->GetNumber("Meta.NumAnimations");
 			delete meta;
 		}
@@ -125,13 +129,35 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 				anim_array_alien->SetNumber("End_Tick", animations_attached[i]->end_tick);
 
 				animation_paths[i] = animations_attached[i]->GetLibraryPath();
-				LOG_ENGINE("Created alienMesh file %s", animations_attached[i]->GetLibraryPath());
+				LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
+			}
+
+			meta->SetNumber("Model.NumBones", bones_attached.size());
+			alien->SetNumber("Meta.NumBones", bones_attached.size());
+
+			std::string* bones_paths = new std::string[bones_attached.size()];
+			for (int i = 0; i < bones_attached.size(); ++i)
+			{
+				if (meta_bones_paths != nullptr)
+				{
+					std::string path_ = App->file_system->GetBaseFileName(meta_bones_paths[i].data()); //std::stoull().data());
+					bones_attached[i]->CreateMetaData(std::stoull(path_));
+				}
+				else
+				{
+					bones_attached[i]->CreateMetaData();
+				}
+
+				bones_paths[i] = bones_attached[i]->GetLibraryPath();
+				LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
 			}
 
 			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());
 			alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
 			meta->SetArrayString("Model.PathAnimations", animation_paths, animations_attached.size());
 			alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
+			meta->SetArrayString("Model.PathBones", bones_paths, bones_attached.size());
+			alien->SetArrayString("Meta.PathBones", bones_paths, bones_attached.size());
 
 			if (meta_mesh_paths != nullptr)
 				delete[] meta_mesh_paths;
@@ -140,6 +166,11 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			if (meta_animation_paths != nullptr)
 				delete[] meta_animation_paths;
 			delete[] animation_paths;
+
+			if (meta_bones_paths != nullptr)
+				delete[] meta_bones_paths;
+			delete[] bones_paths;
+
 			// Create the file
 			LOG_ENGINE("Created alien file %s", library_path.data());
 			
@@ -306,6 +337,13 @@ bool ResourceModel::LoadMemory()
 		}
 	}
 
+	std::vector<ResourceBone*>::iterator bone_item = bones_attached.begin();
+	for (; bone_item != bones_attached.end(); ++bone_item) {
+		if (*bone_item != nullptr) {
+			(*bone_item)->LoadMemory();
+		}
+	}
+
 	return ret;
 }
 
@@ -352,7 +390,6 @@ void ResourceModel::ConvertToGameObjects()
 		GameObject* parent = nullptr;
 		if (meshes_attached.at(0)->family_number == meshes_attached.at(1)->family_number) {
 			parent = new GameObject(App->objects->GetRoot(false));
-			parent->AddComponent(new ComponentTransform(parent, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 			parent->SetName(name.data());
 		}
 		else {
@@ -362,13 +399,17 @@ void ResourceModel::ConvertToGameObjects()
 		// vector to find the parents
 		std::vector<std::pair<u64,GameObject*>> objects_created;
 		objects_created.push_back({ 0,parent });
+		std::pair<GameObject*, GameObject*> skeleton_link = { nullptr, nullptr };
 
 		std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
 		for (; item != meshes_attached.end(); ++item) {
 			if (*item != nullptr) {
-				(*item)->ConvertToGameObject(&objects_created);
+				(*item)->ConvertToGameObject(&objects_created, skeleton_link);
 			}
 		}
+
+		if (skeleton_link.first != nullptr && skeleton_link.second != nullptr)
+			((ComponentDeformableMesh*)skeleton_link.first->GetComponent(ComponentType::DEFORMABLE_MESH))->AttachSkeleton(skeleton_link.second->transform);
 		objects_created.clear();
 
 		//// set it selected

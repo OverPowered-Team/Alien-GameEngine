@@ -26,7 +26,7 @@ public:
 
 	bool DeleteMetaData();
 
-	void ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created);
+	void ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link = std::pair<GameObject*, GameObject*>(nullptr,nullptr));
 
 	void InitBuffers();
 
@@ -55,6 +55,8 @@ private:
 
 	std::string parent_name;
 	u64 texture_id = 0;
+	u64 bone_id = 0;
+	bool deformable = false;
 	uint family_number = 0;
 
 	ResourceTexture* texture = nullptr;

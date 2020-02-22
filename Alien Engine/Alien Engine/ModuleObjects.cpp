@@ -69,7 +69,6 @@ bool ModuleObjects::Start()
 #ifndef GAME_VERSION
 	GameObject* light_test = new GameObject(base_game_object);
 	light_test->SetName("Light");
-	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
 	light_test->AddComponent(new ComponentLight(light_test));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
@@ -797,8 +796,6 @@ GameObject* ModuleObjects::CreateEmptyGameObject(GameObject* parent, bool set_se
 		object = new GameObject(GetRoot(false));
 		object->SetName("Empty GameObject");
 	}
-
-	object->AddComponent(new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 	
 	if (set_selected)
 		SetNewSelectedObject(object);
@@ -1581,7 +1578,6 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 {
 	GameObject* object = new GameObject(GetRoot(false));
-	ComponentTransform* transform = new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
 	
@@ -1618,7 +1614,6 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 		break;
 	}
 
-	object->AddComponent(transform);
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->RecalculateAABB_OBB();

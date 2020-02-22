@@ -5,6 +5,7 @@
 
 class ResourceMesh;
 class ResourceAnimation;
+class ResourceBone;
 
 class ResourceModel : public Resource {
 
@@ -33,4 +34,5 @@ private:
 public:
 	std::vector<ResourceMesh*> meshes_attached;
 	std::vector<ResourceAnimation*> animations_attached;
+	std::vector<ResourceBone*> bones_attached;
 };

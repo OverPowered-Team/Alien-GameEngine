@@ -17,11 +17,14 @@
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
 
 	if (parent != nullptr) {
 		this->parent = parent;
 		parent->AddChild(this);
 	}
+
 }
 
 GameObject::GameObject()
@@ -444,6 +447,11 @@ GameObject* GameObject::GetChildRecursive(const char* child_name)
 			(*item)->GetChildRecursive(child_name);
 		}
 	}
+}
+
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	return children;
 }
 
 void GameObject::SetEnable(bool enable)

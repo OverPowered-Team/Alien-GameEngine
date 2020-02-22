@@ -159,6 +159,7 @@
     <ClInclude Include="ComponentAnimator.h" />
     <ClInclude Include="ComponentBone.h" />
     <ClInclude Include="ComponentCamera.h" />
+    <ClInclude Include="ComponentDeformableMesh.h" />
     <ClInclude Include="ComponentLight.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="ComponentAnimator.cpp" />
     <ClCompile Include="ComponentBone.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
+    <ClCompile Include="ComponentDeformableMesh.cpp" />
     <ClCompile Include="ComponentLight.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />

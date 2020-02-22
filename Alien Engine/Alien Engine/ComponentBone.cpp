@@ -10,6 +10,7 @@
 
 ComponentBone::ComponentBone(GameObject* gameobject) : Component(gameobject)
 {
+	type = ComponentType::BONE;
 }
 
 
@@ -29,6 +30,11 @@ void ComponentBone::AddBone(ResourceBone* b)
 {
 	if (b)
 		bone = b;
+}
+
+uint ComponentBone::GetBoneID()
+{
+	return bone->GetID();
 }
 
 ResourceBone* ComponentBone::GetBone()

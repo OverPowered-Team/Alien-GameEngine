@@ -8,10 +8,12 @@ typedef unsigned long long u64;
 enum class ComponentType {
 	TRANSFORM = 0,
 	MESH,
+	DEFORMABLE_MESH,
 	MATERIAL,
 	LIGHT,
 	CAMERA,
 	ANIMATOR,
+	BONE,
 	SCRIPT,
 
 	UNKNOWN
@@ -38,6 +40,8 @@ public:
 
 	bool IsEnabled();
 	void SetEnable(bool enable);
+public:
+	GameObject* game_object_attached = nullptr;
 
 protected:
 
@@ -66,7 +70,6 @@ protected:
 	ComponentType type = ComponentType::UNKNOWN;
 	bool enabled = true;
 	u64 ID = 0;
-	GameObject* game_object_attached = nullptr;
 	bool not_destroy = true;
 
 };

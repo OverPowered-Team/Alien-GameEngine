@@ -25,11 +25,10 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class PanelCreateObject;
 	friend class PanelRender;
 public:
-
 	ComponentMesh(GameObject* attach);
 	virtual ~ComponentMesh();
 
-private:
+protected:
 
 	void DrawPolygon();
 	void DrawOutLine();
@@ -54,7 +53,7 @@ private:
 
 	AABB GenerateAABB();
 
-private:
+protected:
 	
 	ResourceMesh* mesh = nullptr;
 
