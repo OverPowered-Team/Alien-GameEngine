@@ -3,6 +3,7 @@
 #include "ComponentTransform.h"
 #include "ComponentText.h"
 #include "ResourceFont.h"
+#include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
 
@@ -24,8 +25,38 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 bool ComponentText::DrawInspector()
 {
-	
+	static bool check;
 
+	ImGui::PushID(this);
+	check = enabled;
+	if (ImGui::Checkbox("##CmpActive", &check)) {
+		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+		enabled = check;
+	}
+	ImGui::PopID();
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Text", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		RightClickMenu("Text");
+
+		ImGui::Spacing();
+
+		static char text_str[MAX_PATH];
+		memcpy(text_str, text.data(), MAX_PATH);
+
+		ImGui::Text("Text: "); ImGui::SameLine();
+		if (ImGui::InputText("##Text", text_str, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
+			text = text_str;
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
+	else {
+		RightClickMenu("Image");
+	}
 	return true;
 }
 
@@ -95,6 +126,40 @@ void ComponentText::Draw(bool isGame)
 	glEnable(GL_CULL_FACE);
 }
 
+void ComponentText::Clone(Component* clone)
+{
+	clone->enabled = enabled;
+	ComponentUI* ui = (ComponentUI*)clone;
+	ui->current_color = current_color;
+
+	dynamic_cast<ComponentText*>(clone)->text = text;
+	if (font != nullptr) {
+		dynamic_cast<ComponentText*>(clone)->font = font;
+	}
+	else {
+		LOG_ENGINE("There's no default font!");
+	}
+
+	//TODO: UPDATE TEXT
+
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				ui->SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			ui->SetCanvas(nullptr);
+		}
+	}
+}
+
 void ComponentText::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
@@ -137,6 +202,16 @@ void ComponentText::LoadComponent(JSONArraypack* to_load)
 			SetCanvas(nullptr);
 		}
 	}
+}
+
+void ComponentText::SetFont(ResourceFont* font)
+{
+	this->font = font;
+}
+
+ResourceFont* ComponentText::GetFont() const
+{
+	return font;
 }
 
 

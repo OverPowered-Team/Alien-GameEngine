@@ -1608,8 +1608,19 @@ void GameObject::CloningGameObject(GameObject* clone)
 						(*item)->Clone(image);
 						clone->AddComponent(image);
 						break; }
+					case ComponentType::UI_TEXT: {
+						ComponentText* text = new ComponentText(clone);
+						(*item)->Clone(text);
+						clone->AddComponent(text);
+						break; }
+					case ComponentType::UI_BUTTON: {
+						ComponentButton* button = new ComponentButton(clone);
+						(*item)->Clone(button);
+						clone->AddComponent(button);
+						break; }
 					}
 					break; }
+
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;
@@ -1648,6 +1659,12 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
 			mesh->mesh = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_FONT: {
+		ComponentText* text = (ComponentText*)GetComponent(ComponentType::UI_TEXT);
+		if (text != nullptr && text->GetFont() == (ResourceFont*)to_delete) {
+			text->SetFont(nullptr);
 		}
 		break; }
 	}

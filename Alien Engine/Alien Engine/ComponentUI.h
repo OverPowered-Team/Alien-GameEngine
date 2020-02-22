@@ -22,6 +22,8 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class GameObject;
 	friend class ComponentImage;
 	friend class ComponentCheckbox;
+	friend class ComponentText;
+	friend class ComponentButton;
 	friend class Component;
 	friend class ReturnZ;
 	friend class CompZ;
