@@ -57,4 +57,8 @@ private:
 	int funcTypeSource = 6;
 	int funcTypeDest = 7;
 	int transformSelected = 0; // 0 Global - 1 Local
+
+	ResourceTexture* texture = nullptr;
+	bool change_texture_menu = false;
+	bool texture_activated = true;
 };

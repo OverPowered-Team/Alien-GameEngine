@@ -226,19 +226,155 @@ bool ComponentParticleSystem::DrawInspector()
 		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			// Billboarding ?
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			ImGui::Text("Orientation Mode ");
+			ImGui::SameLine(200, 15);
 			if (ImGui::Combo("Billboard", &bbTypeSelected, "Screen Aligned\0World Aligned\0Axially Aligned\0None\0\0"))
 			{
 				particleSystem->SetBillboardType((BillboardType)bbTypeSelected);
 			}
 
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			ImGui::Text("Particle Material ");
+
+			static ResourceTexture* selected_texture = nullptr;
+
+			if (texture != nullptr)
+			{
+				/*ImGui::SameLine(220, 15);
+				if (ImGui::Button("Change Texture", { 120,20 })) {
+					change_texture_menu = true;
+					selected_texture = texture;
+				}*/
+
+
+				static bool check;
+				check = texture_activated;
+				if (ImGui::Checkbox("Texture Active", &check)) {
+					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+					texture_activated = check;
+				}
+
+				ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
+				ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
+				ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
+
+				ImGui::Image((ImTextureID)texture->id, {140 ,140 });
+
+				ImGui::Spacing();
+
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+				if (ImGui::Button("Delete", { 60,20 })) {
+					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+					texture = nullptr;
+					selected_texture = nullptr;	
+				}
+
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
+
+				ImGui::SameLine(80, 15);
+				if (ImGui::Button("Change Texture", { 120,20 })) {
+					change_texture_menu = true;
+					selected_texture = texture;
+				}
+				ImGui::Spacing();
+			}
+
+			else {
+				ImGui::SameLine(200, 15);
+				if (ImGui::Button("Add Texture", { 120,20 })) {
+					change_texture_menu = true;
+					selected_texture = texture;
+				}
+			}
+
+
+			if (change_texture_menu) 
+			{
+				ImGui::OpenPopup("Textures Loaded");
+				ImGui::SetNextWindowSize({ 522,570 });
+
+				if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+					ImGui::Spacing();
+					ImGui::NewLine();
+					ImGui::SameLine(190);
+					ImGui::Text("Texture Selected");
+					ImGui::Text("");
+					ImGui::SameLine(170);
+
+					if (selected_texture != nullptr) {
+						ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
+						ImGui::Spacing();
+						ImGui::Text("");
+						ImGui::SameLine(150);
+
+						ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
+						ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
+						ImGui::Text("");
+						ImGui::SameLine(112);
+						ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
+					}
+					ImGui::Spacing();
+
+					if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+						ImGui::Columns(3, 0, false);
+						ImGui::SetColumnWidth(0, 156);
+						ImGui::SetColumnWidth(1, 156);
+						ImGui::SetColumnWidth(2, 156);
+
+						std::vector<Resource*>::iterator item = App->resources->resources.begin();
+						for (; item != App->resources->resources.end(); ++item) {
+							if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+								ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
+								if (ImGui::IsItemClicked()) {
+									selected_texture = static_cast<ResourceTexture*>(*item);
+								}
+								ImGui::NextColumn();
+							}
+						}
+
+						ImGui::EndChild();
+					}
+					ImGui::Spacing();
+					ImGui::Text("");
+					ImGui::SameLine(377);
+					if (ImGui::Button("Apply", { 120,20 })) {
+						ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+						texture = selected_texture;
+						selected_texture = nullptr;
+						change_texture_menu = false;
+					}
+					ImGui::SameLine(237);
+					if (ImGui::Button("Cancel", { 120,20 })) {
+						selected_texture = nullptr;
+						change_texture_menu = false;
+					}
+					ImGui::EndPopup();
+				}
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+
 			// Material
 
-			// Add texture
-			if (ImGui::Button("Choose Texture"))
-			{
-			/*	App->editor->textureBrowser->SetActive(true);
-				App->editor->textureBrowser->callback = this;*/
-			}
+			//// Add texture
+			//if (ImGui::Button("Choose Texture"))
+			//{
+			///*	App->editor->textureBrowser->SetActive(true);
+			//	App->editor->textureBrowser->callback = this;*/
+			//}
 
 			//if (resMat != nullptr)
 			//{
