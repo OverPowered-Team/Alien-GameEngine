@@ -1,8 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModulePhysics.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
+#include "Bullet/include/BulletCollision/CollisionShapes/btShapeHull.h"
 #include "ComponentCollider.h"
+#include "ComponentRigidBody.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -112,23 +113,24 @@ bool ModulePhysics::CleanUp()
 void ModulePhysics::RenderCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
-	world->debugDrawObject(collider->aux_body->getCenterOfMassTransform(), collider->shape, btVector3(0.f, 1.f, 0.f));
-	ModuleRenderer3D::EndDebugDraw();
+	//ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+
+	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform(), collider->shape, btVector3(0.f, 1.f, 0.f));
+	//ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::RenderConvexCollider(ComponentCollider* col)
+void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+	//ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	btTransform worldTransform = col->aux_body->getCenterOfMassTransform();
-	btShapeHull* hull = static_cast<btShapeHull*>(col->shape->getUserPointer());
+	btTransform worldTransform = collider->rigid_body->body->getCenterOfMassTransform();
+	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
 
 	if (hull == nullptr) return;
 
 	int num_indices = hull->numIndices();
-	btVector3 localScale = col->shape->getLocalScaling();
+	btVector3 localScale = collider->shape->getLocalScaling();
 	for (int i = 0; i < num_indices; i += 3)
 	{
 		btVector3 v0 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i]] * localScale);
@@ -141,15 +143,15 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* col)
 		debug_renderer->drawLine(v0, v2, color);
 	}
 
-	ModuleRenderer3D::EndDebugDraw();
+	//ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::RenderConstraint(btTypedConstraint* constraint)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawConstraints);
-	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
+	//ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
 	world->debugDrawConstraint(constraint);
-	ModuleRenderer3D::EndDebugDraw();
+	//ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::AddBody(btRigidBody* body)

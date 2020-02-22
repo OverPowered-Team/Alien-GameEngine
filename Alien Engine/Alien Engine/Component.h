@@ -11,8 +11,8 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
+	BOX_COLLIDER,
 	SCRIPT,
-
 	UNKNOWN
 };
 

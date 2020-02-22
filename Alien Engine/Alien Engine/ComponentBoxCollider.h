@@ -6,7 +6,6 @@
 
 class GameObject;
 class ModulePhysics;
-class C_Mesh;
 
 class ComponentBoxCollider : public ComponentCollider
 {
@@ -22,9 +21,11 @@ private:
 
 	// Virtual Functions ------------------------------
 
-	void CreateShape(C_Mesh* mesh);
+	void CreateShape(ComponentMesh* mesh);
 
 	void AdjustShape();
+
+	void Reset();
 
 	void SaveComponent(JSONArraypack* to_save);
 

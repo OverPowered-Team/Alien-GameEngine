@@ -17,7 +17,6 @@ class __declspec(dllexport) ComponentCollider : public Component
 	friend class ModulePhysics;
 	friend class ReturnZ;
 	friend class CompZ;
-
 	friend class ComponentRigidBody;
 	friend class ComponentVehicle;
 
@@ -38,17 +37,22 @@ protected:
 	virtual void Render();
 	virtual bool DrawInspector();
 	virtual void Reset();
-	virtual void Clone(Component* clone);
+	virtual void Clone(Component* clone) {}
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
 
+	virtual void CreateShape(ComponentMesh* mesh) {};
 	virtual void AdjustShape() {}; 	// Adjust shape to scale and other factors
 
 protected:
 
-	float3 center = float3(0.f, 0.f, 0.f);
 	float3 scaled_center = float3(0.f, 0.f, 0.f);
+
+	float3 center; // Local position from GameObject
+	Quat rotation; // Local rotation
+
 	btCollisionShape* shape = nullptr;
 	ComponentTransform* transform = nullptr;
+	ComponentRigidBody* rigid_body = nullptr;
 };

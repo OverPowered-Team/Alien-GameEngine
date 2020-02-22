@@ -7,18 +7,14 @@
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
 	type = ComponentType::BOX_COLLIDER;
-
-	size.one();
 }
 
-void ComponentBoxCollider::CreateShape(C_Mesh* mesh)
+void ComponentBoxCollider::CreateShape(ComponentMesh* mesh)
 {
-	if (is_loaded == false)
-	{
-		size = (mesh != nullptr) ? mesh->mesh_aabb.Size() : size = float3::one;
-		center = (mesh != nullptr) ? mesh->mesh_aabb.CenterPoint() : float3::zero;
-	}
-	float3 shape_size = float3::one * 0.5f;
+	size = (mesh != nullptr) ? mesh->local_aabb.Size() :  float3::one();
+	center = (mesh != nullptr) ? mesh->local_aabb.CenterPoint() : float3::zero();
+	
+	float3 shape_size = float3::one() * 0.5f;
 	shape = new btBoxShape(btVector3(shape_size.x, shape_size.y, shape_size.z));
 }
 
@@ -28,6 +24,12 @@ void ComponentBoxCollider::AdjustShape()
 	float3 scaled_size = size.Mul(transform->GetGlobalScale().Abs());
 	scaled_size = CheckInvalidCollider(scaled_size);
 	shape->setLocalScaling(btVector3(scaled_size.x, scaled_size.y, scaled_size.z));
+}
+
+void ComponentBoxCollider::Reset()
+{
+	size.one();
+	ComponentCollider::Reset();
 }
 
 void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
@@ -50,5 +52,6 @@ float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
 bool ComponentBoxCollider::DrawInspector()
 {
 	ImGui::Title("Size", 1);	ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX);
+	return true;
 }
 

@@ -36,97 +36,31 @@ ComponentRigidBody::~ComponentRigidBody()
 	delete compound_shape;
 }
 
-void ComponentRigidBody::SaveComponent(JSONArraypack* to_save)
-{
-	to_save->SetNumber("Type", (int)type);
-
-	to_save->SetBoolean("IsTrigger", is_trigger);
-	to_save->SetNumber("Bouncing", bouncing);
-	to_save->SetNumber("Friction", friction);
-	to_save->SetNumber("AngularFriction", angular_friction);
-
-	to_save->SetNumber("Mass", mass);
-	to_save->SetNumber("Drag", drag);
-	to_save->SetNumber("AngularDrag", angular_drag);
-
-	to_save->SetBoolean("FreezePosX", freeze_position[0]);
-	to_save->SetBoolean("FreezePosY", freeze_position[1]);
-	to_save->SetBoolean("FreezePosZ", freeze_position[2]);
-						 
-	to_save->SetBoolean("FreezeRotX", freeze_rotation[0]);
-	to_save->SetBoolean("FreezeRotY", freeze_rotation[1]);
-	to_save->SetBoolean("FreezeRotZ", freeze_rotation[2]);
-}
-
-void ComponentRigidBody::LoadComponent(JSONArraypack* to_load)
-{
-	Reset();
-
-	bouncing =				to_load->GetNumber("Bouncing");
-	friction =				to_load->GetNumber("Friction");
-	angular_friction =		to_load->GetNumber("AngularFriction");
-	is_trigger =			to_load->GetBoolean("IsTrigger");
-							
-	mass =					to_load->GetNumber("Mass");
-	drag =					to_load->GetNumber("Drag");
-	angular_drag =			to_load->GetNumber("AngularDrag");
-
-	freeze_position[0] =	to_load->GetBoolean("FreezePosX");
-	freeze_position[1] =	to_load->GetBoolean("FreezePosY");
-	freeze_position[2] =	to_load->GetBoolean("FreezePosZ");
-												  
-	freeze_rotation[0] =	to_load->GetBoolean("FreezeRotX");
-	freeze_rotation[1] =	to_load->GetBoolean("FreezeRotY");
-	freeze_rotation[2] =	to_load->GetBoolean("FreezeRotZ");
-
-	SetIsTrigger(is_trigger);
-}
-
 void ComponentRigidBody::Update()
 {
 	// Update Local Vars  ------------------------
 
-	btCollisionShape* current_shape = (collider != nullptr) ? collider->shape : aux_shape;		// Update Shape 
-	float3 go_offset = (collider != nullptr) ? collider->GetWorldCenter() : float3::zero();     // Update Go Offset
-	float current_mass = (game_object_attached->is_static) ? 0.f : mass;							// Update Mass
+	float3 go_offset =/* (compound_shape != nullptr) ? compound_shape->GetWorldCenter() : */float3::zero();     // Update Go Offset
+	float current_mass = (game_object_attached->is_static) ? 0.f : mass;						// Update Mass
 
 	 // Update Inertia ---------------------------
 
-
-	current_shape->calculateLocalInertia(current_mass, inertia);
+	compound_shape->calculateLocalInertia(current_mass, inertia);
 	body->setMassProps(current_mass, inertia);
 
 	// Update Rigid Body Vars ---------------------
 
-	// Set Is Trigger 
-	if (collider)
-	{
-		if (collider->is_trigger)
-			body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-		else
-			body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	}
-	else
-	{
+	if (is_trigger)
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	}
-
-	// Set Collision Shape 
-	if (body->getCollisionShape() != current_shape)
-	{
-		body->setCollisionShape(current_shape);
-	}
+	else
+		body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	SetMass(current_mass);
 	SetDrag(drag);
 	SetAngularDrag(angular_drag);
-
-	if (collider != nullptr)
-	{
-		SetBouncing(collider->bouncing);
-		SetFriction(collider->friction);
-		SetAngularFriction(collider->angular_friction);
-	}
+	SetBouncing(bouncing);
+	SetFriction(friction);
+	SetAngularFriction(angular_friction);
 
 	btVector3 freeze_p((float)!freeze_position[0], (float)!freeze_position[1], (float)!freeze_position[2]);
 	btVector3 freeze_r((float)!freeze_rotation[0], (float)!freeze_rotation[1], (float)!freeze_rotation[2]);
@@ -247,25 +181,76 @@ bool ComponentRigidBody::DrawInspector()
 	return true;
 }
 
-float3 ComponentRigidBody::GetVelocity()
+
+void ComponentRigidBody::Reset()
 {
-	return float3(&body->getLinearVelocity()[0]);
+	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	{
+		force_to_apply[i].zero();
+		torque_to_apply[i].zero();
+	}
+
+	SetMass(1.0f);
+	SetDrag(0.f);
+	SetAngularDrag(0.f);
+
+	SetBouncing(0.1f);
+	SetFriction(0.5f);
+	SetAngularFriction(0.1f);
 }
 
-void ComponentRigidBody::SetVelocity(float3 velocity)
+void ComponentRigidBody::Clone(Component* clone)
 {
-	body->setLinearVelocity(ToBtVector3(velocity));
+
 }
 
-float3 ComponentRigidBody::GetAngularVelocity()
+void ComponentRigidBody::SaveComponent(JSONArraypack* to_save)
 {
-	return float3(&body->getAngularVelocity()[0]);
+	to_save->SetNumber("Type", (int)type);
+
+	to_save->SetBoolean("IsTrigger", is_trigger);
+	to_save->SetNumber("Bouncing", bouncing);
+	to_save->SetNumber("Friction", friction);
+	to_save->SetNumber("AngularFriction", angular_friction);
+
+	to_save->SetNumber("Mass", mass);
+	to_save->SetNumber("Drag", drag);
+	to_save->SetNumber("AngularDrag", angular_drag);
+
+	to_save->SetBoolean("FreezePosX", freeze_position[0]);
+	to_save->SetBoolean("FreezePosY", freeze_position[1]);
+	to_save->SetBoolean("FreezePosZ", freeze_position[2]);
+
+	to_save->SetBoolean("FreezeRotX", freeze_rotation[0]);
+	to_save->SetBoolean("FreezeRotY", freeze_rotation[1]);
+	to_save->SetBoolean("FreezeRotZ", freeze_rotation[2]);
 }
 
-void ComponentRigidBody::SetAngularVelocity(float3 velocity)
+void ComponentRigidBody::LoadComponent(JSONArraypack* to_load)
 {
-	body->setAngularVelocity(ToBtVector3(velocity));
+	Reset();
+
+	bouncing = to_load->GetNumber("Bouncing");
+	friction = to_load->GetNumber("Friction");
+	angular_friction = to_load->GetNumber("AngularFriction");
+	is_trigger = to_load->GetBoolean("IsTrigger");
+
+	mass = to_load->GetNumber("Mass");
+	drag = to_load->GetNumber("Drag");
+	angular_drag = to_load->GetNumber("AngularDrag");
+
+	freeze_position[0] = to_load->GetBoolean("FreezePosX");
+	freeze_position[1] = to_load->GetBoolean("FreezePosY");
+	freeze_position[2] = to_load->GetBoolean("FreezePosZ");
+
+	freeze_rotation[0] = to_load->GetBoolean("FreezeRotX");
+	freeze_rotation[1] = to_load->GetBoolean("FreezeRotY");
+	freeze_rotation[2] = to_load->GetBoolean("FreezeRotZ");
+
+	SetIsTrigger(is_trigger);
 }
+
+// Forces Functions ------------------------------
 
 void ComponentRigidBody::AddForce(const float3 force, ForceMode mode, Space space)
 {
@@ -291,6 +276,8 @@ void ComponentRigidBody::AddTorque(const float3 force, ForceMode mode, Space spa
 	torque_to_apply[(uint)mode] += final_force;
 }
 
+// Rigid Body Values ----------------------------
+
 void ComponentRigidBody::SetMass(const float mass)
 {
 	if (mass != body->getMass())
@@ -314,6 +301,27 @@ void ComponentRigidBody::SetAngularDrag(const float angular_drag)
 		body->setDamping(drag, angular_drag);
 	}
 }
+
+void ComponentRigidBody::SetVelocity(float3 velocity)
+{
+	body->setLinearVelocity(ToBtVector3(velocity));
+}
+
+float3 ComponentRigidBody::GetVelocity()
+{
+	return float3(&body->getLinearVelocity()[0]);
+}
+
+void ComponentRigidBody::SetAngularVelocity(float3 velocity)
+{
+	body->setAngularVelocity(ToBtVector3(velocity));
+}
+float3 ComponentRigidBody::GetAngularVelocity()
+{
+	return float3(&body->getAngularVelocity()[0]);
+}
+
+// Colliders values --------------------------------
 
 void ComponentRigidBody::SetIsTrigger(bool value)
 {
@@ -354,28 +362,6 @@ void ComponentRigidBody::SetAngularFriction(const float value)
 		angular_drag = value;
 		body->setRollingFriction(angular_drag);
 	}
-}
-
-void ComponentRigidBody::Reset()
-{
-	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
-	{
-		force_to_apply[i].zero();
-		torque_to_apply[i].zero();
-	}
-
-	SetMass(1.0f);
-	SetDrag(0.f);
-	SetAngularDrag(0.f);
-
-	SetBouncing(0.1f);
-	SetFriction(0.5f);
-	SetAngularFriction(0.1f);
-}
-
-void ComponentRigidBody::Clone(Component* clone)
-{
-
 }
 
 void ComponentRigidBody::CreateBody()

@@ -9,15 +9,15 @@
 class GameObject;
 class ComponentCollider;
 class ComponentCapsuleCollider;
-class C_JointP2P;
-class C_Vehicle;
+//class C_JointP2P;
+//class C_Vehicle;
 
 class __declspec(dllexport) ComponentRigidBody : public Component
 {
 	friend class ModulePhysics;
-	friend class ComponentCapsuleCollider;
-	friend class C_JointP2P;
-	friend class C_Vehicle;
+	friend class ComponentCollider;
+	//friend class C_JointP2P;
+	//friend class C_Vehicle;
 
 public:
 
@@ -56,7 +56,7 @@ public:
 private:
 
 	void Update();
-	bool Render();
+	void Render();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);

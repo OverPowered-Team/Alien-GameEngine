@@ -71,6 +71,11 @@ const float3 ComponentTransform::GetLocalPosition() const
 	return local_position;
 }
 
+void ComponentTransform::SetGlobalPosition(const float3& pos)
+{
+
+}
+
 const float3 ComponentTransform::GetGlobalPosition() const
 {
 	float3 pos, scale;

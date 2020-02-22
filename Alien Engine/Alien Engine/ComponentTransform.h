@@ -24,6 +24,7 @@ public:
 	void SetLocalPosition(const float& x, const float& y, const float& z);
 
 	const float3 GetLocalPosition() const;
+	void SetGlobalPosition(const float3& pos);
 	const float3 GetGlobalPosition() const;
 
 	void SetLocalScale(const float3& new_local_scale);
