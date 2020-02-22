@@ -386,6 +386,10 @@ void ComponentMaterial::SaveComponent(JSONArraypack* to_save)
 	if (texture != nullptr) {
 		to_save->SetString("TextureID", std::to_string(texture->GetID()));
 	}
+	to_save->SetBoolean("HasShader", (texture != nullptr) ? true : false);
+	if (used_shader != nullptr) {
+		to_save->SetString("ShaderID", std::to_string(used_shader->GetID()));
+	}
 	to_save->SetBoolean("Enabled", enabled);
 }
 
@@ -400,8 +404,15 @@ void ComponentMaterial::LoadComponent(JSONArraypack* to_load)
 		if (texture != nullptr)
 			texture->IncreaseReferences();
 	}
+	if (to_load->GetBoolean("HasShader")) {
+		u64 ID = std::stoull(to_load->GetString("ShaderID"));
+		used_shader = (ResourceShader*)App->resources->GetResourceWithID(ID);
+		if (used_shader != nullptr)
+			used_shader->IncreaseReferences();
+	}
 	ID = std::stoull(to_load->GetString("ID"));
 }
+
 
 void ComponentMaterial::Clone(Component* clone)
 {

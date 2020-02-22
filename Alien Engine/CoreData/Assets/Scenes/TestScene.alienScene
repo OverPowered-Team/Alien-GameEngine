@@ -1,11 +1,11 @@
 {
     "Scene": {
-        "Name": "test_shaders",
+        "Name": "TestScene",
         "GameObjects": [
             {
                 "Name": "Light",
                 "FamilyNumber": 1,
-                "ID": "2716077790368390942",
+                "ID": "49559279010200717",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5463501941979920520"
+                        "ID": "12258059570916488871"
                     },
                     {
                         "Type": 3,
@@ -52,7 +52,7 @@
                             1
                         ],
                         "Enabled": true,
-                        "ID": "4028111310622577203",
+                        "ID": "16241234626871714784",
                         "PrintIcon": true
                     }
                 ]
@@ -60,7 +60,7 @@
             {
                 "Name": "Cylinder",
                 "FamilyNumber": 1,
-                "ID": "16310954832642730901",
+                "ID": "16122964265929047122",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -90,7 +90,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "7749453105269105153"
+                        "ID": "4155303061184988845"
                     },
                     {
                         "Type": 1,
@@ -100,7 +100,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": true,
                         "DrawOBB": true,
-                        "ID": "3779979281583020017",
+                        "ID": "2248330411791484540",
                         "HasMesh": true,
                         "IsPrimitive": false,
                         "MeshID": "12801038667721441805",
@@ -115,7 +115,7 @@
                             1
                         ],
                         "TextureEnabled": true,
-                        "ID": "16734595042136980553",
+                        "ID": "11840465946852567917",
                         "HasTexture": false,
                         "HasShader": false,
                         "ShaderID": "14585542579072674941",
