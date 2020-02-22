@@ -6,6 +6,7 @@
 #include "imgui/imgui.h"
 #include "MathGeoLib/include/Math/float3.h"
 #include "ReturnZ.h"
+#include "imgui/imgui_internal.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
@@ -81,17 +82,36 @@ bool ComponentParticleSystem::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
 	if (ImGui::CollapsingHeader("Particle System", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 
 		static bool cntl_Z = true; // CTRLZ Checking
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
 		// ----------------------------------- Emmitter ----------------------------------------
+		static bool enable_emmitter = false;
+		
+		ImGui::Checkbox("##pptActiveEmmitter", &enable_emmitter);
+		
+		ImGui::SameLine();
+
 
 		if (ImGui::TreeNodeEx("Emmitter", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
 			ParticleEmmitter* emmitter = &particleSystem->emmitter;
 
+			ImGui::Spacing();
 			ImGui::Checkbox("Draw Emmitter", &drawEmmitter);
 
 			if (ImGui::TreeNode("Shape Options"))
@@ -180,11 +200,24 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::TreePop();
 		}
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
 		// ----------------------------------- Particle ----------------------------------------
 
+		static bool enable_particle = false;
+		
+		ImGui::Checkbox("##pptActiveParticle", &enable_particle);
+		
+		ImGui::SameLine();
 
 		if (ImGui::TreeNodeEx("Particle", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
 			ImGui::DragFloat("Life Time", &particleSystem->particleInfo.maxLifeTime, 1.0f, 0.0f, FLT_MAX);
 			ImGui::DragFloat("Speed", (float*)&particleSystem->particleInfo.speed, 0.2f);
 
@@ -221,11 +254,30 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::TreePop();
 		}
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
 		// ----------------------------------- Renderer ----------------------------------------
 
-		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
+		static bool enable_renderer = false;
+		
+		ImGui::Checkbox("##pptActiveRenderer", &enable_renderer);
+		
+		
+
+		ImGui::SameLine();
+
+
+		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_NavLeftJumpsBackHere))
 		{
-			// Billboarding ?
+			
+			if (!enable_renderer)
+			{
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+
 			ImGui::Spacing();
 			ImGui::Separator();
 			ImGui::Spacing();
@@ -238,21 +290,14 @@ bool ComponentParticleSystem::DrawInspector()
 			}
 
 			ImGui::Spacing();
-			ImGui::Separator();
 			ImGui::Spacing();
 
 			ImGui::Text("Particle Material ");
 
-			static ResourceTexture* selected_texture = nullptr;
+			//static ResourceTexture* selected_texture = nullptr;
 
 			if (texture != nullptr)
 			{
-				/*ImGui::SameLine(220, 15);
-				if (ImGui::Button("Change Texture", { 120,20 })) {
-					change_texture_menu = true;
-					selected_texture = texture;
-				}*/
-
 
 				static bool check;
 				check = texture_activated;
@@ -301,69 +346,10 @@ bool ComponentParticleSystem::DrawInspector()
 
 			if (change_texture_menu) 
 			{
-				ImGui::OpenPopup("Textures Loaded");
-				ImGui::SetNextWindowSize({ 522,570 });
-
-				if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
-					ImGui::Spacing();
-					ImGui::NewLine();
-					ImGui::SameLine(190);
-					ImGui::Text("Texture Selected");
-					ImGui::Text("");
-					ImGui::SameLine(170);
-
-					if (selected_texture != nullptr) {
-						ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
-						ImGui::Spacing();
-						ImGui::Text("");
-						ImGui::SameLine(150);
-
-						ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
-						ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
-						ImGui::Text("");
-						ImGui::SameLine(112);
-						ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
-					}
-					ImGui::Spacing();
-
-					if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
-						ImGui::Columns(3, 0, false);
-						ImGui::SetColumnWidth(0, 156);
-						ImGui::SetColumnWidth(1, 156);
-						ImGui::SetColumnWidth(2, 156);
-
-						std::vector<Resource*>::iterator item = App->resources->resources.begin();
-						for (; item != App->resources->resources.end(); ++item) {
-							if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
-								ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
-								if (ImGui::IsItemClicked()) {
-									selected_texture = static_cast<ResourceTexture*>(*item);
-								}
-								ImGui::NextColumn();
-							}
-						}
-
-						ImGui::EndChild();
-					}
-					ImGui::Spacing();
-					ImGui::Text("");
-					ImGui::SameLine(377);
-					if (ImGui::Button("Apply", { 120,20 })) {
-						ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-						texture = selected_texture;
-						selected_texture = nullptr;
-						change_texture_menu = false;
-					}
-					ImGui::SameLine(237);
-					if (ImGui::Button("Cancel", { 120,20 })) {
-						selected_texture = nullptr;
-						change_texture_menu = false;
-					}
-					ImGui::EndPopup();
-				}
+				TextureBrowser();
 			}
+
 			ImGui::Spacing();
-			ImGui::Separator();
 			ImGui::Spacing();
 
 
@@ -423,9 +409,18 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::TreePop();
 			}
 
+			if (!enable_renderer)
+			{
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
 
 			ImGui::TreePop();
 		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 
 		/*if (ImGui::TreeNodeEx("Save & Load", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -448,6 +443,70 @@ bool ComponentParticleSystem::DrawInspector()
 	}
 
 	return true;
+}
+
+void ComponentParticleSystem::TextureBrowser()
+{
+	ImGui::OpenPopup("Textures Loaded");
+	ImGui::SetNextWindowSize({ 522,570 });
+
+	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		ImGui::Spacing();
+		ImGui::NewLine();
+		ImGui::SameLine(190);
+		ImGui::Text("Texture Selected");
+		ImGui::Text("");
+		ImGui::SameLine(170);
+
+		if (selected_texture != nullptr) {
+			ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
+			ImGui::Spacing();
+			ImGui::Text("");
+			ImGui::SameLine(150);
+
+			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
+			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
+			ImGui::Text("");
+			ImGui::SameLine(112);
+			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
+		}
+		ImGui::Spacing();
+
+		if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+			ImGui::Columns(3, 0, false);
+			ImGui::SetColumnWidth(0, 156);
+			ImGui::SetColumnWidth(1, 156);
+			ImGui::SetColumnWidth(2, 156);
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+					ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
+					if (ImGui::IsItemClicked()) {
+						selected_texture = static_cast<ResourceTexture*>(*item);
+					}
+					ImGui::NextColumn();
+				}
+			}
+
+			ImGui::EndChild();
+		}
+		ImGui::Spacing();
+		ImGui::Text("");
+		ImGui::SameLine(377);
+		if (ImGui::Button("Apply", { 120,20 })) {
+			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			texture = selected_texture;
+			selected_texture = nullptr;
+			change_texture_menu = false;
+		}
+		ImGui::SameLine(237);
+		if (ImGui::Button("Cancel", { 120,20 })) {
+			selected_texture = nullptr;
+			change_texture_menu = false;
+		}
+		ImGui::EndPopup();
+	}
 }
 
 ParticleSystem* ComponentParticleSystem::GetSystem() const

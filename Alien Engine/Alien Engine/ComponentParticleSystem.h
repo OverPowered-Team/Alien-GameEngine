@@ -39,6 +39,8 @@ public:
 
 	bool DrawInspector () override;
 
+	void TextureBrowser();
+
 	ParticleSystem* GetSystem() const;
 
 	// Parser
@@ -59,6 +61,10 @@ private:
 	int transformSelected = 0; // 0 Global - 1 Local
 
 	ResourceTexture* texture = nullptr;
+	ResourceTexture* selected_texture = nullptr;
+
 	bool change_texture_menu = false;
 	bool texture_activated = true;
+
+	bool enable_render = false;
 };
