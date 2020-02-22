@@ -199,7 +199,25 @@ bool ComponentSlider::OnPressed()
 		int xmotion = App->input->GetMouseXMotion();
 		trans_dot->global_transformation[0][3] = trans_dot->global_transformation[0][3] + (xmotion * 0.25f);
 
-		if (dot->GetComponent<ComponentUI>()->x + (width * 0.5f) > x + (width_bg * 0.5f))
+
+		float3 canvas_pos = canvas_trans->GetGlobalPosition();
+		float3 object_pos = trans_dot->GetGlobalPosition();
+		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
+
+		#ifndef GAME_VERSION
+			dot->GetComponent<ComponentUI>()->x = origin.x * App->ui->panel_game->width;
+			dot->GetComponent<ComponentUI>()->y = -origin.y * App->ui->panel_game->height;
+		#else
+			x = origin.x * App->window->width;
+			y = origin.y * App->window->height;
+		#endif
+
+
+
+		dot->GetComponent<ComponentUI>()->x = dot->GetComponent<ComponentUI>()->x + (xmotion * 0.25f);
+
+		if ((dot->GetComponent<ComponentUI>()->x + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
 		{
 			trans_dot->global_transformation[0][3] = x + width_bg;
 		}
