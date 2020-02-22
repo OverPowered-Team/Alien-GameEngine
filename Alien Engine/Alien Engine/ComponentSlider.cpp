@@ -194,7 +194,7 @@ bool ComponentSlider::OnPressed()
 	float width = (dot->GetComponent<ComponentUI>()->x + ((trans_dot->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (dot->GetComponent<ComponentUI>()->x - ((trans_dot->global_transformation[0][0]/ (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
-	if (dot->GetComponent<ComponentUI>()->x + (width*0.5f) < x  + (width_bg*0.5f) && dot->GetComponent<ComponentUI>()->x - (width * 0.5f) > x - (width_bg * 0.5f))
+	if (dot->GetComponent<ComponentUI>()->x + (width*0.5f) <= x  + (width_bg*0.5f) && dot->GetComponent<ComponentUI>()->x - (width * 0.5f) >= x - (width_bg * 0.5f))
 	{
 		int xmotion = App->input->GetMouseXMotion();
 		trans_dot->global_transformation[0][3] = trans_dot->global_transformation[0][3] + (xmotion * 0.25f);
@@ -219,7 +219,13 @@ bool ComponentSlider::OnPressed()
 
 		if ((dot->GetComponent<ComponentUI>()->x + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
 		{
-			trans_dot->global_transformation[0][3] = x + width_bg;
+			trans_dot->global_transformation[0][3] -=3.0f;
+			
+		}
+		else if (dot->GetComponent<ComponentUI>()->x - (width * 0.5f) <= x - (width_bg * 0.5f))
+		{
+			trans_dot->global_transformation[0][3] += 3.0f;
+
 		}
 
 	}
