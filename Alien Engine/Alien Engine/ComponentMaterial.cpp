@@ -236,6 +236,7 @@ bool ComponentMaterial::DrawInspector()
 
 			/* Set shader unifroms from Inspector */
 			ImGui::Text("--Uniforms--");
+			static bool editing_uniform = false;
 			
 			GLint uniform_count = 0;
 			const GLsizei u_buff_size = 24;
@@ -247,8 +248,41 @@ bool ComponentMaterial::DrawInspector()
 				GLenum type;
 				GLchar name[u_buff_size];
 				glGetActiveUniform(used_shader->renderer_id, i, (GLsizei)20, &length, &size, &type, name);
-
+				
 				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s(%u)", (const char*)name, (unsigned int)type);
+				ImGui::SameLine();
+				ImGui::PushID(i);
+				if (ImGui::Button("Edit uniform"))
+				{
+					editing_uniform = !editing_uniform;
+				}
+
+				if (editing_uniform)
+				{
+					switch (type)
+					{
+					case GL_FLOAT_VEC4:
+					{
+						ImVec4 values;
+						glGetUniformfv(used_shader->renderer_id, (GLint)used_shader->GetUniformLocation(name),
+							(float*)&values);
+
+						ImVec4 color_to_use = ImVec4(values.x, values.y, values.z, values.w);
+
+						if (ImGui::ColorEdit4("vec4", &color_to_use.x))
+						{
+							used_shader->SetUniform4f(name, color_to_use.x,
+								color_to_use.y, color_to_use.z, color_to_use.w);
+						}
+					}
+					break;
+					default:
+						LOG_ENGINE("We currently don't support editing this type of uniform...");
+						break;
+					}
+				}
+
+				ImGui::PopID();
 			}
 
 			ImGui::Separator();
