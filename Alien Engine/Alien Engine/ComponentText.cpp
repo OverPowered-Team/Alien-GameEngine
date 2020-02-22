@@ -100,7 +100,7 @@ void ComponentText::Draw(bool isGame)
 	int i = 0;
 	for(c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
-		float xpos = font->fontData.charactersMap[*(c - 1)].advance * i + ch.bearing.x;
+		float xpos = x + ch.bearing.x;
 		float ypos = (ch.size.y - ch.bearing.y);
 		float w = ch.size.x;
 		float h = ch.size.y;
@@ -114,7 +114,10 @@ void ComponentText::Draw(bool isGame)
 
 		DrawCharacter(ch);
 		i++;
+		x += ch.advance;
 	}
+
+	x = 0;
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
