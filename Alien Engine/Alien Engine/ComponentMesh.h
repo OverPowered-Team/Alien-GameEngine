@@ -36,7 +36,7 @@ private:
 	void DrawMesh(ComponentCamera* camera);
 	void DrawVertexNormals(ComponentCamera* camera);
 	void DrawFaceNormals(ComponentCamera* camera);
-	bool DrawInspector(ComponentCamera* camera);
+	bool DrawInspector();
 	void DrawGlobalAABB(ComponentCamera* camera);
 	void DrawOBB(ComponentCamera* camera);
 

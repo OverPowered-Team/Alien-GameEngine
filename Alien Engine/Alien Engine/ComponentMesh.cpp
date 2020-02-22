@@ -48,6 +48,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(1.0f, 0.1f);
 	/*glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
 
@@ -225,7 +228,7 @@ void ComponentMesh::DrawFaceNormals(ComponentCamera* camera)
 	}
 }
 
-bool ComponentMesh::DrawInspector(ComponentCamera* camera)
+bool ComponentMesh::DrawInspector()
 {
 	static bool check;
 
