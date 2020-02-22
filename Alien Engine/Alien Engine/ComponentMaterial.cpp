@@ -15,6 +15,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 
 	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	used_shader->IncreaseReferences();
 	file_to_edit = used_shader->path;
 }
 
@@ -22,6 +23,8 @@ ComponentMaterial::~ComponentMaterial()
 {
 	if (texture != nullptr)
 		texture->DecreaseReferences();
+	if (used_shader != nullptr)
+		used_shader->DecreaseReferences();
 }
 
 void ComponentMaterial::BindTexture()
@@ -244,9 +247,14 @@ bool ComponentMaterial::DrawInspector()
 					for (auto i = shaders.begin(); i != shaders.end(); ++i) {
 						if (ImGui::Button((*i)->GetName()))
 						{
-							u64 id_s = App->resources->GetIDFromAlienPath((*i)->GetAssetsPath());
+							u64 id_s = App->resources->GetIDFromAlienPath(std::string(std::string((*i)->GetAssetsPath()) + "_meta.alien").data());
+							if (used_shader != nullptr) {
+								used_shader->DecreaseReferences();
+							}
 							used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-
+							if (used_shader != nullptr) {
+								used_shader->IncreaseReferences();
+							}
 							file_to_edit = used_shader->path; // must test if it edits on library too in this engine
 						}
 					}
