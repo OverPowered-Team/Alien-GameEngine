@@ -464,7 +464,7 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
@@ -480,24 +480,24 @@ void GameObject::DrawScene()
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
+			mesh->DrawPolygon(camera);
 		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawOutLine(camera);
 		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh();
+			mesh->DrawMesh(camera);
 		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals();
+			mesh->DrawVertexNormals(camera);
 		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals();
+			mesh->DrawFaceNormals(camera);
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);
 	}
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
@@ -512,7 +512,7 @@ void GameObject::DrawGame()
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 

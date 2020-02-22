@@ -31,14 +31,14 @@ public:
 
 private:
 
-	void DrawPolygon();
-	void DrawOutLine();
-	void DrawMesh();
-	void DrawVertexNormals();
-	void DrawFaceNormals();
-	bool DrawInspector();
-	void DrawGlobalAABB();
-	void DrawOBB();
+	void DrawPolygon(ComponentCamera* camera);
+	void DrawOutLine(ComponentCamera* camera);
+	void DrawMesh(ComponentCamera* camera);
+	void DrawVertexNormals(ComponentCamera* camera);
+	void DrawFaceNormals(ComponentCamera* camera);
+	bool DrawInspector(ComponentCamera* camera);
+	void DrawGlobalAABB(ComponentCamera* camera);
+	void DrawOBB(ComponentCamera* camera);
 
 	void Reset();
 	void SetComponent(Component* component);

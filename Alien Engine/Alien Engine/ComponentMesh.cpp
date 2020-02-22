@@ -27,7 +27,7 @@ ComponentMesh::~ComponentMesh()
 	}
 }
 
-void ComponentMesh::DrawPolygon()
+void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -74,9 +74,9 @@ void ComponentMesh::DrawPolygon()
 	material->used_shader->Bind();
 
 	// Uniforms
-	material->used_shader->SetUniformMat4f("view", App->camera->fake_camera->GetViewMatrix4f4()); // TODO: About in-game camera?
+	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4f4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
-	material->used_shader->SetUniformMat4f("projection", App->camera->fake_camera->GetProjectionMatrix4f4());
+	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
@@ -97,7 +97,7 @@ void ComponentMesh::DrawPolygon()
 	glPopMatrix();
 }
 
-void ComponentMesh::DrawOutLine()
+void ComponentMesh::DrawOutLine(ComponentCamera* camera)
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -142,7 +142,7 @@ void ComponentMesh::DrawOutLine()
 	glPopMatrix();
 }
 
-void ComponentMesh::DrawMesh()
+void ComponentMesh::DrawMesh(ComponentCamera* camera)
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -173,7 +173,7 @@ void ComponentMesh::DrawMesh()
 
 }
 
-void ComponentMesh::DrawVertexNormals()
+void ComponentMesh::DrawVertexNormals(ComponentCamera* camera)
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -199,7 +199,7 @@ void ComponentMesh::DrawVertexNormals()
 	}
 }
 
-void ComponentMesh::DrawFaceNormals()
+void ComponentMesh::DrawFaceNormals(ComponentCamera* camera)
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -225,7 +225,7 @@ void ComponentMesh::DrawFaceNormals()
 	}
 }
 
-bool ComponentMesh::DrawInspector()
+bool ComponentMesh::DrawInspector(ComponentCamera* camera)
 {
 	static bool check;
 
@@ -303,7 +303,7 @@ bool ComponentMesh::DrawInspector()
 	return true;
 }
 
-void ComponentMesh::DrawGlobalAABB()
+void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
 {
 	if (mesh == nullptr)
 		return;
@@ -353,7 +353,7 @@ void ComponentMesh::DrawGlobalAABB()
 	glEnd();
 }
 
-void ComponentMesh::DrawOBB()
+void ComponentMesh::DrawOBB(ComponentCamera* camera)
 {
 	if (mesh == nullptr)
 		return;
