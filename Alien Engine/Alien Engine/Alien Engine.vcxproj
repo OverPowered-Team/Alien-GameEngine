@@ -271,9 +271,16 @@
     <ClInclude Include="ModuleUI.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="NodeEditor\Include\imgui_node_editor.h" />
+    <ClInclude Include="NodeEditor\Source\crude_json.h" />
+    <ClInclude Include="NodeEditor\Source\imgui_bezier_math.h" />
+    <ClInclude Include="NodeEditor\Source\imgui_canvas.h" />
+    <ClInclude Include="NodeEditor\Source\imgui_extra_math.h" />
+    <ClInclude Include="NodeEditor\Source\imgui_node_editor_internal.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="PanelAbout.h" />
+    <ClInclude Include="PanelAnimator.h" />
     <ClInclude Include="PanelBuild.h" />
     <ClInclude Include="PanelConfig.h" />
     <ClInclude Include="PanelConsole.h" />
@@ -394,9 +401,14 @@
     <ClCompile Include="ModuleUI.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="NodeEditor\Source\crude_json.cpp" />
+    <ClCompile Include="NodeEditor\Source\imgui_canvas.cpp" />
+    <ClCompile Include="NodeEditor\Source\imgui_node_editor.cpp" />
+    <ClCompile Include="NodeEditor\Source\imgui_node_editor_api.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="PanelAbout.cpp" />
+    <ClCompile Include="PanelAnimator.cpp" />
     <ClCompile Include="PanelBuild.cpp" />
     <ClCompile Include="PanelConfig.cpp" />
     <ClCompile Include="PanelConsole.cpp" />
@@ -443,6 +455,9 @@
     <None Include="MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
     <None Include="MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="MathGeoLib\include\Math\Matrix.inl" />
+    <None Include="NodeEditor\Source\imgui_bezier_math.inl" />
+    <None Include="NodeEditor\Source\imgui_extra_math.inl" />
+    <None Include="NodeEditor\Source\imgui_node_editor_internal.inl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Alien Engine.rc" />

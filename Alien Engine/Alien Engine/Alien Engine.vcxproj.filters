@@ -64,6 +64,9 @@
     <Filter Include="Tools\TextEdit">
       <UniqueIdentifier>{987d3c13-1318-45bd-80aa-53653a15e71f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\NodeEditor">
+      <UniqueIdentifier>{9c1812fe-d048-4882-bec3-f543b7281dff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -561,6 +564,27 @@
     <ClInclude Include="ComponentDeformableMesh.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\Include\imgui_node_editor.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Source\crude_json.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Source\imgui_bezier_math.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Source\imgui_canvas.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Source\imgui_extra_math.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Source\imgui_node_editor_internal.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelAnimator.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -911,6 +935,21 @@
     <ClCompile Include="ComponentDeformableMesh.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="NodeEditor\Source\crude_json.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Source\imgui_canvas.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Source\imgui_node_editor.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Source\imgui_node_editor_api.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelAnimator.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\include\Geometry\KDTree.inl">
@@ -936,6 +975,15 @@
     </None>
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json">
       <Filter>JSON</Filter>
+    </None>
+    <None Include="NodeEditor\Source\imgui_bezier_math.inl">
+      <Filter>Tools\NodeEditor</Filter>
+    </None>
+    <None Include="NodeEditor\Source\imgui_extra_math.inl">
+      <Filter>Tools\NodeEditor</Filter>
+    </None>
+    <None Include="NodeEditor\Source\imgui_node_editor_internal.inl">
+      <Filter>Tools\NodeEditor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
