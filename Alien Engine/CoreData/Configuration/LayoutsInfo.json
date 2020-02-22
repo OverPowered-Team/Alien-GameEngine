@@ -78,7 +78,8 @@
             "Save": true,
             "Text Editor": false,
             "Build": false,
-            "Animation Timeline": true
+            "Animation Timeline": true,
+            "Animator": true
         }
     ]
 }
