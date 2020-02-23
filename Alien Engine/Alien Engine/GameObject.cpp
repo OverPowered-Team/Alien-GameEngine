@@ -5,6 +5,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentLight.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
@@ -1413,9 +1414,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					ComponentTransform* transform = new ComponentTransform(clone);
-					(*item)->Clone(transform);
-					clone->AddComponent(transform);
+					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
 				case ComponentType::LIGHT: {
 					ComponentLight* light = new ComponentLight(clone);
@@ -1436,6 +1435,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentCamera* camera = new ComponentCamera(clone);
 					(*item)->Clone(camera);
 					clone->AddComponent(camera);
+					break; }
+				case ComponentType::DEFORMABLE_MESH: {
+					ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(clone);
+					(*item)->Clone(def_mesh);
+					clone->AddComponent(def_mesh);
 					break; }
 				case ComponentType::SCRIPT: {
 					ComponentScript* script = new ComponentScript(clone);
