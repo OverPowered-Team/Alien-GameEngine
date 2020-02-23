@@ -29,6 +29,7 @@ public:
 
 	void UILogic() override;
 	bool CheckMouseInside(float3 mouse_pos) override;
+	float GetValue();
 
 private:
 	GameObject* dot = nullptr;
