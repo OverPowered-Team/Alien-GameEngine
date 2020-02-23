@@ -9,13 +9,17 @@
 class Color;
 class JSONArraypack;
 
-class JSONfilepack {
+class __declspec(dllexport) JSONfilepack {
 
 public:
 
 	JSONfilepack(const std::string& path, JSON_Object*& object, JSON_Value*& value);
 
 	~ JSONfilepack();
+
+	static JSONfilepack* CreateJSON(const char* path);
+	static JSONfilepack* GetJSON(const char* path);
+	static void FreeJSON(JSONfilepack* json);
 
 	void StartSave();
 	void FinishSave();
@@ -70,7 +74,7 @@ private:
 
 };
 
-class JSONArraypack {
+class __declspec(dllexport) JSONArraypack {
 
 public:
 

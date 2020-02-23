@@ -76,9 +76,6 @@ update_status ModuleInput::PreUpdate(float dt)
 			else
 				keyboard[i] = KEY_IDLE;
 		}
-
-
-
 	}
 
 	Uint32 buttons = SDL_GetMouseState(&mouse_x, &mouse_y);

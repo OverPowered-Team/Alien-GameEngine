@@ -30,6 +30,7 @@
 #include "..\..\..\Alien Engine\AlienEngine.h"
 #include "..\..\..\Alien Engine\RayCreator.h"
 #include "..\..\..\Alien Engine\Screen.h"
+#include "..\\..\..\\Alien Engine\JSONfilepack.h"
 /*-----------------HELPERS-------------------*/
 
 #ifdef ALIENENGINESCRIPTS_EXPORTS

@@ -478,6 +478,7 @@ void GameObject::DrawScene()
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
@@ -590,6 +591,63 @@ void GameObject::AddComponent(Component* component)
 		}
 	}
 	components.push_back(component);
+}
+
+void GameObject::PostUpdate()
+{
+	if (!components.empty()) {
+		auto item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr) {
+				(*item)->PostUpdate();
+			}
+		}
+	}
+
+	if (!children.empty()) {
+		auto item = children.begin();
+		for (; item != children.end(); ++item) {
+			(*item)->PostUpdate();
+		}
+	}
+}
+
+void GameObject::PreUpdate()
+{
+	if (!components.empty()) {
+		auto item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr) {
+				(*item)->PreUpdate();
+			}
+		}
+	}
+
+	if (!children.empty()) {
+		auto item = children.begin();
+		for (; item != children.end(); ++item) {
+			(*item)->PreUpdate();
+		}
+	}
+}
+
+void GameObject::Update()
+{
+	if (!components.empty()) {
+		auto item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr) {
+				(*item)->Update();
+			}
+		}
+	}
+
+	if (!children.empty()) {
+		auto item = children.begin();
+		for (; item != children.end(); ++item) {
+			(*item)->Update();
+		}
+	}
 }
 
 bool GameObject::HasComponent(ComponentType component) const

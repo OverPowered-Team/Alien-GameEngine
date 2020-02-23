@@ -53,6 +53,10 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save) {}
 	virtual void LoadComponent(JSONArraypack* to_load) {}
 
+	virtual void PreUpdate() {}
+	virtual void Update() {}
+	virtual void PostUpdate() {}
+
 	void ResetIDs();
 
 	const ComponentType& GetType() const;

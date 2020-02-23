@@ -46,6 +46,8 @@ void ComponentMesh::DrawPolygon()
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_POLYGON_OFFSET_FILL);

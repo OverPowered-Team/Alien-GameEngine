@@ -9,55 +9,19 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Archivos de recursos">
+    <Filter Include="Scripts">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Move.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
-    <ClInclude Include="Tank.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
-    <ClInclude Include="dfgh.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
-    <ClInclude Include="Testtt.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
-    <ClInclude Include="TestMove.h">
-      <Filter>Archivos de recursos</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Move.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
     <ClCompile Include="Macros\dllmain.cpp">
       <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Tank.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="dfgh.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="Testtt.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="TestMove.cpp">
-      <Filter>Archivos de recursos</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
