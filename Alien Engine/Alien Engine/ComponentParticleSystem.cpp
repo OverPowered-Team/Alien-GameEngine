@@ -633,6 +633,16 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 
 	// --------------- Material Resource Info -------------------- //
 
+	
+	/*to_save->SetBoolean("TextureEnabled", texture_activated);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
+	
+	if (texture != nullptr) {
+		to_save->SetString("TextureID", std::to_string(texture->GetID()));
+	}
+	*/
+
 	/*if (currentResource != nullptr)
 	{
 		tmp_ps = name + "Resource Material Name";
@@ -767,6 +777,23 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->funcBlendDest = (FunctionBlendType)(int)to_load->GetNumber("Blending.Destination");
 	// Equation
 	particleSystem->eqBlend = (EquationBlendType)(int)to_load->GetNumber("Blending.Equation");
+
+
+	// ---------------------- Resource Info -------------------------- //
+
+	
+	/*texture_activated = to_load->GetBoolean("TextureEnabled");
+
+	if (to_load->GetBoolean("HasTexture")) {
+		u64 ID = std::stoull(to_load->GetString("TextureID"));
+		texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+		if (texture != nullptr) 
+		{
+			texture->IncreaseReferences();
+			particleSystem->texture = texture;
+		}
+	}
+	ID = std::stoull(to_load->GetString("ID"));*/
 }
 
 
