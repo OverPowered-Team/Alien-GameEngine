@@ -12,7 +12,10 @@
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {
-	ChangeVertex(10,10);
+	//ChangeVertex(10,10);
+	glGenBuffers(1, &verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &uvID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
