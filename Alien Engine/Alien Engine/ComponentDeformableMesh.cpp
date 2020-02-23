@@ -11,6 +11,7 @@
 ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : ComponentMesh(attach)
 {
 	type = ComponentType::DEFORMABLE_MESH;
+	name = "Deformable Mesh";
 }
 
 ComponentDeformableMesh::~ComponentDeformableMesh()
@@ -146,3 +147,4 @@ void ComponentDeformableMesh::DrawPolygon()
 
 	glPopMatrix();
 }
+

@@ -12,6 +12,7 @@
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
+	name = "Mesh";
 }
 
 ComponentMesh::~ComponentMesh()
@@ -221,7 +222,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Mesh", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
