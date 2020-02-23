@@ -8,6 +8,7 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "Color.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
 #include "ReturnZ.h"
 #include "ModuleCamera3D.h"
 
@@ -72,6 +73,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glNormalPointer(GL_FLOAT, 0, 0);
 	}*/
 
+	glBindTexture(GL_TEXTURE_2D, material->texture->id);
 	glBindVertexArray(mesh->vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	material->used_shader->Bind();
@@ -86,6 +88,8 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	material->used_shader->Unbind();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);

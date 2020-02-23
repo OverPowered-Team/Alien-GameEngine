@@ -149,6 +149,11 @@ void ResourceShader::Unbind() const
 	glUseProgram(NULL);
 }
 
+void ResourceShader::SetUniform1i(const std::string& name, const int& value)
+{
+	glUniform1i(GetUniformLocation(name), value);
+}
+
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 {
 	glUniform1f(GetUniformLocation(name), value);

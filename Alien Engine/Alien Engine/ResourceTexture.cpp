@@ -57,13 +57,15 @@ bool ResourceTexture::CreateMetaData(const u64& force_id)
 			is_custom = true;
 			width = ilGetInteger(IL_IMAGE_WIDTH);
 			height = ilGetInteger(IL_IMAGE_HEIGHT);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0); // TODO TOFIX
+			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else {
 			iluFlipImage();
 			ILuint image_size;
 			ILubyte* image_data;
 			ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
-			image_size = ilSaveL(IL_DDS, NULL, 0); 
+			image_size = ilSaveL(IL_DDS, NULL, 0);
 			if (image_size > 0) {
 				image_data = new ILubyte[image_size]; 
 				if (ilSaveL(IL_DDS, image_data, image_size) > 0) {
@@ -75,7 +77,9 @@ bool ResourceTexture::CreateMetaData(const u64& force_id)
 				is_custom = true;
 				width = ilGetInteger(IL_IMAGE_WIDTH);
 				height = ilGetInteger(IL_IMAGE_HEIGHT);
-				
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+
 				RELEASE_ARRAY(image_data);
 			}
 		}
