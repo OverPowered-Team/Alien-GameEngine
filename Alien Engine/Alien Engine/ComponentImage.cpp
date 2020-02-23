@@ -174,6 +174,11 @@ void ComponentImage::Clone(Component* clone)
 
 void ComponentImage::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetNumber("X", x);
+	to_save->SetNumber("Y", y);
+	to_save->SetNumber("Width", size.x);
+	to_save->SetNumber("Height", size.y);
+
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
@@ -183,6 +188,11 @@ void ComponentImage::SaveComponent(JSONArraypack* to_save)
 
 void ComponentImage::LoadComponent(JSONArraypack* to_load)
 {
+	x = to_load->GetNumber("X");
+	y = to_load->GetNumber("Y");
+	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	UpdateVertex();
+
 	enabled = to_load->GetBoolean("Enabled");
 	current_color = to_load->GetColor("Color");
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));

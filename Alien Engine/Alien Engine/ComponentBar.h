@@ -17,8 +17,8 @@ public:
 	void SetComponent(Component* component) {};
 	void Clone(Component* clone) {};
 
-	void SaveComponent(JSONArraypack* to_save) {};
-	void LoadComponent(JSONArraypack* to_load) {};
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
 
 private:
 	GameObject* bar = nullptr;

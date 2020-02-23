@@ -52,6 +52,22 @@ bool ComponentCheckbox::DrawInspector()
 
 		ImGui::Spacing();
 
+		ImGui::PushID(this);
+		ImGui::Text("Position:	"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("X", &x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("Y", &y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+
+		ImGui::PopID();
+
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
 

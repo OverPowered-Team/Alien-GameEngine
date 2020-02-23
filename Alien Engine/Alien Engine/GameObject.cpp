@@ -13,6 +13,7 @@
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentImage.h"
+#include "ComponentBar.h"
 #include "ComponentUI.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
@@ -1508,6 +1509,12 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 					button->ui_type = typeUI;
 					button->LoadComponent(components_to_load);
 					AddComponent(button);
+					break; }
+				case ComponentType::UI_BAR: {
+					ComponentBar* bar = new ComponentBar(this);
+					bar->ui_type = typeUI;
+					bar->LoadComponent(components_to_load);
+					AddComponent(bar);
 					break; }
 				default:
 					LOG_ENGINE("Unknown component UItype while loading");

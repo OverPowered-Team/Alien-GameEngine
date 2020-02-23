@@ -132,3 +132,58 @@ bool ComponentBar::DrawInspector()
 
 	return true;
 }
+
+void ComponentBar::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("X", x);
+	to_save->SetNumber("Y", y);
+	to_save->SetNumber("Width", size.x);
+	to_save->SetNumber("Height", size.y);
+
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("UIType", (int)ui_type);
+	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
+	to_save->SetColor("Color", current_color);
+
+	to_save->SetNumber("MaxValue", maxValue);
+	to_save->SetNumber("Value", value);
+	to_save->SetNumber("BarID", bar->ID);
+}
+
+void ComponentBar::LoadComponent(JSONArraypack* to_load)
+{
+	x = to_load->GetNumber("X");
+	y = to_load->GetNumber("Y");
+	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	UpdateVertex();
+
+	enabled = to_load->GetBoolean("Enabled");
+	current_color = to_load->GetColor("Color");
+	maxValue = to_load->GetNumber("MaxValue");
+	value = to_load->GetNumber("Value");
+
+	u64 textureID = std::stoull(to_load->GetString("TextureID"));
+	if (textureID != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+		if (tex != nullptr) {
+			SetTexture(tex);
+		}
+	}
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
+}
