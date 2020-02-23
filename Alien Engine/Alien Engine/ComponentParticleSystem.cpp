@@ -82,9 +82,7 @@ bool ComponentParticleSystem::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
+	
 
 	if (ImGui::CollapsingHeader("Particle System", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -309,7 +307,7 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
 				ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
 				ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
-
+				ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->references);
 				ImGui::Image((ImTextureID)texture->id, {140 ,140 });
 
 				ImGui::Spacing();
@@ -469,6 +467,9 @@ void ComponentParticleSystem::TextureBrowser()
 			ImGui::Text("");
 			ImGui::SameLine(112);
 			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
+			ImGui::Text("");
+			ImGui::SameLine(150);
+			ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->references);
 		}
 		ImGui::Spacing();
 
@@ -481,6 +482,10 @@ void ComponentParticleSystem::TextureBrowser()
 			std::vector<Resource*>::iterator item = App->resources->resources.begin();
 			for (; item != App->resources->resources.end(); ++item) {
 				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+
+					if ((*item)->NeedToLoad())
+						(*item)->IncreaseReferences();
+
 					ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
 					if (ImGui::IsItemClicked()) {
 						selected_texture = static_cast<ResourceTexture*>(*item);
@@ -497,6 +502,7 @@ void ComponentParticleSystem::TextureBrowser()
 		if (ImGui::Button("Apply", { 120,20 })) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			texture = selected_texture;
+			particleSystem->texture = texture;
 			selected_texture = nullptr;
 			change_texture_menu = false;
 		}

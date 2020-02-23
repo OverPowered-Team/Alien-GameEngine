@@ -83,7 +83,7 @@ private:
 	uint totalParticles = 0u;
 
 public:
-	ResourceTexture* resMat = nullptr;
+	ResourceTexture* texture = nullptr;
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;
 	FunctionBlendType funcBlendDest = FunctionBlendType::ONE_MINUS_SRC_ALPHA;

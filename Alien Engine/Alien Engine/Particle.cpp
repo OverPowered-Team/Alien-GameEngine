@@ -107,12 +107,12 @@ void Particle::Draw()
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	/*if (owner->resMat != nullptr)
+	if (owner->texture != nullptr)
 	{
-		glBindTexture(GL_TEXTURE_2D, owner->resMat->gpu_id);
+		glBindTexture(GL_TEXTURE_2D, owner->texture->id);
 	}
 	else
-		glBindTexture(GL_TEXTURE_2D, 0);*/
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBegin(GL_TRIANGLES);
 
