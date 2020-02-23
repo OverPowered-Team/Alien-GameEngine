@@ -278,7 +278,7 @@ bool ComponentSlider::CheckMouseInside(float3 mouse_pos)
 #else
 	return (mouse_pos.x >= dot->GetComponent<ComponentUI>()->x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= dot->GetComponent<ComponentUI>()->x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= dot->GetComponent<ComponentUI>()->y - ((trans->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= dot->GetComponent<ComponentUI>()->y + ((trans->global_transformation[1][1] / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
 #endif
-	//return false;
+
 }
 
 float ComponentSlider::GetValue()
@@ -287,22 +287,10 @@ float ComponentSlider::GetValue()
 	ComponentTransform* trans_dot = dot->GetComponent<ComponentTransform>();
 
 
-	/*float ipos_bar = trans_dot->global_transformation[0][3] - (trans_dot->global_transformation[0][0] * 0.5f);
-	float fixed_pos = trans->global_transformation[0][3] - trans->global_transformation[0][0];
-	float fpos_bar = trans->global_transformation[0][3] + trans->global_transformation[0][0] - trans_dot->global_transformation[0][0];
-	float final_pos = (ipos_bar - fixed_pos) / (fpos_bar - fixed_pos);*/
-
-
-
-
 	float startPos = (trans->global_transformation[0][3] - (trans->global_transformation[0][0] * 0.5f));
-	float endPos = (trans->global_transformation[0][3] + trans->global_transformation[0][0] - (trans_dot->global_transformation[0][0] * 0.5F));
-	float thumbPos = trans_dot->global_transformation[0][3] + trans_dot->global_transformation[0][0] * 0.5;
-	LOG_ENGINE("SLIDER VALUE: %f", (thumbPos - startPos) / (endPos - startPos));
+	float endPos = (trans->global_transformation[0][3] + trans->global_transformation[0][0] - (trans_dot->global_transformation[0][0] * 0.5f));
+	float thumbPos = trans_dot->global_transformation[0][3] + trans_dot->global_transformation[0][0] * 0.5f;
+	//LOG_ENGINE("SLIDER VALUE: %f", (thumbPos - startPos) / (endPos - startPos));
 	return((thumbPos - startPos) / (endPos - startPos));
 
-
-	
-
-	//return final_pos;
 }
