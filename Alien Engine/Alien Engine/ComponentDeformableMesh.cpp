@@ -97,6 +97,17 @@ void ComponentDeformableMesh::DrawPolygon()
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
+	//SKINNING STUFF
+	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, deformable_mesh->num_vertex * sizeof(float) * 3, deformable_mesh->vertex, GL_DYNAMIC_DRAW);
+
+	if (deformable_mesh->normals)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_normals);
+		glBufferData(GL_ARRAY_BUFFER, deformable_mesh->num_vertex * sizeof(float) * 3, deformable_mesh->normals, GL_DYNAMIC_DRAW);
+	}
+	/////////
+
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 

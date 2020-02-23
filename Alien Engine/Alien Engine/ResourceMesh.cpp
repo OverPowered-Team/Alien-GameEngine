@@ -485,21 +485,21 @@ void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>*
 void ResourceMesh::InitBuffers()
 {
 	glGenBuffers(1, &id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) *num_vertex * 3,
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) *num_vertex * 3,
 		vertex, GL_STATIC_DRAW);
 
 	// index
 	glGenBuffers(1, &id_index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * num_index,
+	glBindBuffer(GL_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * num_index,
 		index, GL_STATIC_DRAW);
 
 	if (uv_cords != nullptr) {
 		// UV
 		glGenBuffers(1, &id_uv);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_uv);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
+		glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
 			uv_cords, GL_STATIC_DRAW);
 	}
 
