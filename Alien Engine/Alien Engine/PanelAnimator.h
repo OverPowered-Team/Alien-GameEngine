@@ -5,8 +5,8 @@ class ImVec2;
 #include "Panel.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "NodeEditor/Include/imgui_node_editor.h"
-//#include "ComponentAnimator.h"
-//#include "ResourceAnimatorController.h"
+#include "ComponentAnimator.h"
+#include "ResourceAnimatorController.h"
 
 class PanelAnimator :
 	public Panel
@@ -18,7 +18,6 @@ public:
 	bool FillInfo();
 	void PanelLogic();
 
-	void Draw();
 	void DrawStates();
 	void DrawTransitions();
 	void HandleContextMenu();
@@ -52,6 +51,6 @@ private:
 
 	//creation management
 	ax::NodeEditor::PinId new_node_id = 0;
-	//State* source_state = nullptr;
+	State* source_state = nullptr;
 };
 

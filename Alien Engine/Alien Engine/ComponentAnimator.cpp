@@ -10,7 +10,9 @@
 
 ComponentAnimator::ComponentAnimator(GameObject* gameobject) : Component(gameobject)
 {
+	type = ComponentType::ANIMATOR;
 	animator_controller = nullptr;
+	animator_controller = new ResourceAnimatorController();
 }
 
 ComponentAnimator::~ComponentAnimator()
@@ -72,6 +74,15 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 
 	animator_controller = controller;
 	animator_controller->IncreaseReferences();
+}
+
+bool ComponentAnimator::DrawInspector()
+{
+	if (ImGui::CollapsingHeader("Animator")) {
+
+	}
+
+	return false;
 }
 
 //bool ComponentAnimator::Save(const nlohmann::json::iterator& it)

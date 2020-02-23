@@ -187,6 +187,18 @@ const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 	return nullptr;
 }
 
+std::vector<Resource*> ModuleResources::GetResourcesWithType(ResourceType type)
+{
+	std::vector<Resource*> ret;
+	for each (Resource* r in resources)
+	{
+		if (r->GetType() == type)
+			ret.push_back(r);
+	}
+
+	return ret;
+}
+
 void ModuleResources::AddNewFileNode(const std::string& path, bool is_file)
 {
 	std::string folder = App->file_system->GetCurrentHolePathFolder(path);

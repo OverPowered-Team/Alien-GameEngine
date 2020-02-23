@@ -8,6 +8,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ComponentAnimator.h"
 
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"
@@ -324,7 +325,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0DeformableMesh\0Material\0Light\0Camera\0Animator\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -390,6 +391,19 @@ void PanelInspector::ButtonAddComponent()
 					comp = new ComponentCamera(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 					App->renderer3D->selected_game_camera = (ComponentCamera*)comp;
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::ANIMATOR: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR))
+				{
+					comp = new ComponentAnimator(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 
 				else

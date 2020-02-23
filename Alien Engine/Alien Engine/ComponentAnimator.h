@@ -25,6 +25,8 @@ public:
 private:
 	ResourceAnimatorController* animator_controller;
 
+	bool DrawInspector();
+
 };
 
 

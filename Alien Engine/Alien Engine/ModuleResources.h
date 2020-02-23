@@ -63,6 +63,7 @@ public:
 	u64 GetIDFromAlienPath(const char* path);
 	Resource* GetResourceWithID(const u64& ID);
 	const Resource* GetResourceWithID(const u64& ID) const;
+	std::vector<Resource*> GetResourcesWithType(ResourceType type);
 
 	void AddNewFileNode(const std::string& path, bool is_file);
 
