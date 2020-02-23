@@ -14,15 +14,13 @@ PanelParticleSystem::~PanelParticleSystem()
 
 void PanelParticleSystem::PanelLogic() 
 {
-	if (App->objects->GetSelectedObjects().empty())
+
+	GameObject* selectedGo = App->objects->GetSelectedObjects().back();
+
+	if (selectedGo == nullptr) 
 		return;
 
-	GameObject* selected = App->objects->GetSelectedObjects().back();
-
-	if (selected == nullptr) 
-		return;
-
-	ComponentParticleSystem* compParticleSystem = (ComponentParticleSystem*)selected->GetComponent(ComponentType::PARTICLES);
+	ComponentParticleSystem* compParticleSystem = (ComponentParticleSystem*)selectedGo->GetComponent(ComponentType::PARTICLES);
 
 	if (compParticleSystem == nullptr)
 		return;
