@@ -24,6 +24,7 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class ComponentCheckbox;
 	friend class ComponentText;
 	friend class ComponentButton;
+	friend class ComponentSlider;
 	friend class Component;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -48,9 +49,8 @@ public:
 	void ClearTexture();
 	void SetTexture(ResourceTexture* tex);
 
-private:
-	bool CheckMouseInside(float3 mouse_pos);
-	void UILogic();
+	virtual bool CheckMouseInside(float3 mouse_pos);
+	virtual void UILogic();
 
 protected:
 	float x = 0.0f, y = 0.0f;
@@ -67,7 +67,7 @@ protected:
 	uint verticesID = 0;
 	uint uvID = 0;
 
-	Color current_color = Color::White();
+	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 	ComponentCanvas* canvas = nullptr;
 	ComponentTransform* canvas_trans = nullptr;
 
