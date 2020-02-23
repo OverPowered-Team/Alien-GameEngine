@@ -8,21 +8,11 @@
 
 class ComponentAudioEmitter;
 
-struct BankEvent {
-	u64 id;
-	std::string name;
-};
-
-struct AudioFiles {
-	u64 id;
-	std::string name;
-};
-
 struct Bank {
-	u64 id;
-	std::string name;
-	std::vector<BankEvent> events;
-	std::vector <AudioFiles> audios;
+	u64 id = 0ULL;
+	std::string name = "";
+	std::map<u64, std::string> events;
+	std::map<u64, std::string> audios;
 };
 
 
@@ -49,10 +39,13 @@ public:
 	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
 	std::vector<Bank> GetBanks();
 	Bank GetBankByName(const char* name);
+	Bank GetBankByID(const u64& id);
+
 private:
 	WwiseT::AudioSource* listener;
 	std::vector <Bank> banks;
 	bool play_mode = false;
+
 public:
 	std::list<ComponentAudioEmitter*> emitters;
 	std::list<Bank> used_banks;

@@ -28,8 +28,8 @@ public:
 public:
 	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;
-	std::string current_bank;
-	std::string current_event;
+	u64 current_bank;
+	u64 current_event;
 	float volume = 1.0f;
 	bool play_on_awake = true;
 	bool loop = false;

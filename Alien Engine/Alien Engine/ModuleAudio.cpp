@@ -35,17 +35,11 @@ void ModuleAudio::LoadBanksInfo()
 			auto events = bank_arr->GetArray("IncludedEvents");
 			events->GetFirstNode();
 			for (uint e = 0; e < events->GetArraySize(); ++e, events->GetAnotherNode()) {
-				BankEvent ev = BankEvent();
-				ev.id = std::stoull(events->GetString("Id"));
-				ev.name = events->GetString("Name");
-				b.events.push_back(ev);
+				b.events[std::stoull(events->GetString("Id"))] = events->GetString("Name");
 			}
 			auto aud = bank_arr->GetArray("IncludedMemoryFiles");
 			for (uint a = 0; a < aud->GetArraySize(); ++a) {
-				AudioFiles f;
-				f.id = std::stoull(aud->GetString("Id"));
-				f.name = aud->GetString("ShortName");
-				b.audios.push_back(f);
+				b.audios[std::stoull(aud->GetString("Id"))] = aud->GetString("ShortName");
 			}
 			banks.push_back(b);
 		}
@@ -91,8 +85,7 @@ void ModuleAudio::LoadUsedBanks()
 {
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
-		std::string full_path = (*i).name + ".bnk";
-		WwiseT::LoadBank(full_path.c_str());
+		WwiseT::LoadBank(((*i).name + ".bnk").c_str());
 	}
 }
 
@@ -137,6 +130,16 @@ Bank ModuleAudio::GetBankByName(const char* name)
 			bk = App->audio->GetBanks()[i];
 	}
 	return bk;
+}
+
+Bank ModuleAudio::GetBankByID(const u64& id)
+{
+	for (auto i = banks.begin(); i != banks.end(); ++i)
+	{
+		if ((*i).id == id)
+			return *i;
+	}
+	return Bank();
 }
 
 void ModuleAudio::Play(const char* event)

@@ -79,6 +79,8 @@ void ComponentAudioEmitter::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Volume", volume);
 	to_save->SetBoolean("Mute", mute);
+	to_save->SetString("Bank", std::to_string(current_bank));
+	to_save->SetString("Event", std::to_string(current_event));
 }
 void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 {
@@ -86,6 +88,8 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	enabled = to_load->GetBoolean("Enabled");
 	volume = to_load->GetNumber("Volume");
 	mute = to_load->GetNumber("Mute");
+	current_bank = std::stoull(to_load->GetString("Bank"));
+	current_event = std::stoull(to_load->GetString("Event"));
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
@@ -101,31 +105,33 @@ bool ComponentAudioEmitter::DrawInspector()
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Audio Emitter", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen)) {
-		if(ImGui::BeginCombo("Banks", current_bank.c_str()))
+		Bank bk = App->audio->GetBankByID(current_bank);
+		if(ImGui::BeginCombo("Banks", bk.name.c_str()))
 		{
-			for (int i = 0; i < App->audio->GetBanks().size(); ++i)
+			auto banks = App->audio->GetBanks();
+			for (auto i = banks.begin(); i != banks.end(); ++i)
 			{
-				bool is_selected = App->StringCmp(current_bank.c_str(), App->audio->GetBanks()[i].name.c_str());
-				if (ImGui::Selectable(App->audio->GetBanks()[i].name.c_str(), is_selected))
+				bool is_selected = (bk.id == (*i).id);
+				if (ImGui::Selectable((*i).name.c_str(), is_selected))
 				{
-					current_bank = App->audio->GetBanks()[i].name;
+					current_bank = (*i).id;
 
-					if(!AlreadyUsedBank(App->audio->GetBanks()[i]))
-						App->audio->used_banks.push_back(App->audio->GetBanks()[i]);
+					if(!AlreadyUsedBank((*i)))
+						App->audio->used_banks.push_back((*i));
 				}
 					
 			}
 			ImGui::EndCombo();
 		}
-		if (ImGui::BeginCombo("Events", current_event.c_str()))
+		if (ImGui::BeginCombo("Events", bk.events[current_event].c_str()))
 		{
-			for (int i = 0; i < App->audio->GetBankByName(current_bank.c_str()).events.size(); ++i)
+			for (auto i = bk.events.begin(); i != bk.events.end(); ++i)
 			{
-				bool is_selected = App->StringCmp(current_event.c_str(), App->audio->GetBankByName(current_bank.c_str()).events[i].name.c_str());
-				if (ImGui::Selectable(App->audio->GetBankByName(current_bank.c_str()).events[i].name.c_str(), is_selected))
+				bool is_selected = (current_event == (*i).first);
+				if (ImGui::Selectable((*i).second.c_str(), is_selected))
 				{
-					current_event = App->audio->GetBankByName(current_bank.c_str()).events[i].name;
-					audio_name = current_event;
+					current_event = (*i).first;
+					audio_name = (*i).second;
 				}
 			}
 			ImGui::EndCombo();
@@ -161,9 +167,9 @@ bool ComponentAudioEmitter::DrawInspector()
 
 bool ComponentAudioEmitter::AlreadyUsedBank(Bank bk)
 {
-	for (int i = 0; i < App->audio->used_banks.size(); ++i)
+	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); ++i)
 	{
-		if (App->StringCmp(current_bank.c_str(), bk.name.c_str()))
+		if (current_bank == (*i).id)
 			return true;
 	}
 
