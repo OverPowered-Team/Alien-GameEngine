@@ -17,13 +17,6 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 	used_shader->IncreaseReferences();
 	file_to_edit = used_shader->path;
-
-	if (texture != nullptr)
-	{
-		used_shader->SetUniform1i("tex", texture->id);
-		glActiveTexture(GL_TEXTURE0 + 0);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-	}
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -446,6 +439,13 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	texture = tex;
 	if (texture != nullptr) {
 		texture->IncreaseReferences();
+	}
+
+	if (texture != nullptr)
+	{
+		used_shader->SetUniform1i("tex", texture->id);
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, texture->id);
 	}
 }
 
