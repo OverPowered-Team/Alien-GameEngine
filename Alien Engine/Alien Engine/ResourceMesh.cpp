@@ -428,12 +428,15 @@ void ResourceMesh::InitBuffers()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 1 * sizeof(uint), (void*)12);
+	glEnableVertexAttribArray(0);
+
 	// Vertex uvs
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)12);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)16);
 	glEnableVertexAttribArray(1);
 
 	// Vertex normal
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)24);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)28);
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);

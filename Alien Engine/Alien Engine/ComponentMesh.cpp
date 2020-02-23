@@ -73,7 +73,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glNormalPointer(GL_FLOAT, 0, 0);
 	}*/
 
-	glBindTexture(GL_TEXTURE_2D, material->texture->id);
+	if(material->texture != nullptr)
+		glBindTexture(GL_TEXTURE_2D, material->texture->id);
+	
 	glBindVertexArray(mesh->vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	material->used_shader->Bind();
