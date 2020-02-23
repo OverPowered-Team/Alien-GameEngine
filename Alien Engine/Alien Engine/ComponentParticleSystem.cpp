@@ -300,6 +300,7 @@ bool ComponentParticleSystem::DrawInspector()
 				if (ImGui::Button("Delete", { 60,20 })) {
 					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 					texture = nullptr;
+					particleSystem->texture = texture;
 					selected_texture = nullptr;	
 				}
 
