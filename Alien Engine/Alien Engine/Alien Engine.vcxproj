@@ -186,6 +186,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="gpudetect\DeviceId.h" />
     <ClInclude Include="gpudetect\dxgi1_4.h" />
+    <ClInclude Include="ComponentBar.h" />
     <ClInclude Include="ImGuizmos\ImCurveEdit.h" />
     <ClInclude Include="ImGuizmos\ImGradient.h" />
     <ClInclude Include="ImGuizmos\ImGuizmo.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentBar.cpp" />
     <ClCompile Include="ComponentButton.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentCanvas.cpp" />

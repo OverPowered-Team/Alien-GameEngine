@@ -15,11 +15,12 @@ class __declspec(dllexport) ComponentCamera : public Component {
 	friend class PanelRender;
 	friend class PanelScene;
 	friend class ComponentUI;
+	friend class ComponentBar;
+	friend class ComponentSlider;
 	friend class ModuleObjects;
 	friend class RayCreator;
 	friend class Octree;
 	friend class OctreeNode;
-	friend class ComponentSlider;
 public:
 
 	ComponentCamera(GameObject* attach);

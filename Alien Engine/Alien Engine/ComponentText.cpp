@@ -55,7 +55,7 @@ bool ComponentText::DrawInspector()
 		ImGui::Spacing();
 	}
 	else {
-		RightClickMenu("Image");
+		RightClickMenu("Text");
 	}
 	return true;
 }
