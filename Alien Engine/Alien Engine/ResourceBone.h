@@ -23,6 +23,7 @@ public:
 	std::string GetTypeString() const;
 	bool LoadMemory();
 	void FreeMemory();
+	bool ReadBaseInfo(const char* meta_file_path);
 };
 
 #endif // !_RESOURCE_BONE_H_

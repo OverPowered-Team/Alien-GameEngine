@@ -80,7 +80,6 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			meta->StartSave();
 			meta->SetString("Model.Name", name);
 
-
 			meta->SetNumber("Model.NumBones", bones_attached.size());
 			alien->SetNumber("Meta.NumBones", bones_attached.size());
 
@@ -220,8 +219,10 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		ID = std::stoull(meta->GetString("Meta.ID"));
 		int num_meshes = meta->GetNumber("Meta.NumMeshes");
 		int num_anims = meta->GetNumber("Meta.NumAnimations");
+		int num_bones = meta->GetNumber("Meta.NumBones");
 		std::string* mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 		std::string* anim_paths = meta->GetArrayString("Meta.PathAnimations");
+		std::string* bones_paths = meta->GetArrayString("Meta.PathBones");
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			if (!App->file_system->Exists(mesh_paths[i].data())) {
@@ -230,10 +231,16 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 				return false;
 			}
 		}
-
 		for (uint i = 0; i < num_anims; ++i) {
 			if (!App->file_system->Exists(anim_paths[i].data())) {
 				delete[] anim_paths;
+				delete meta;
+				return false;
+			}
+		}
+		for (uint i = 0; i < num_bones; ++i) {
+			if (!App->file_system->Exists(bones_paths[i].data())) {
+				delete[] bones_paths;
 				delete meta;
 				return false;
 			}
@@ -277,6 +284,16 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 					delete r_anim;
 				}
 			}
+			for (uint i = 0; i < num_bones; ++i) {
+				ResourceBone* r_bone = new ResourceBone();
+				if (r_bone->ReadBaseInfo(bones_paths[i].data())) {
+					bones_attached.push_back(r_bone);
+				}
+				else {
+					LOG_ENGINE("Error loading %s", bones_paths[i].data());
+					delete r_bone;
+				}
+			}
 			delete[] anim_path;
 			delete[] mesh_path;
 			delete model;
@@ -303,6 +320,8 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 		std::string* mesh_path = model->GetArrayString("Model.PathMeshes");
 		int num_anims = model->GetNumber("Model.NumAnimations");
 		std::string* anim_path = model->GetArrayString("Model.PathAnimations");
+		int num_bones = model->GetNumber("Model.NumBones");
+		std::string* bones_path = model->GetArrayString("Model.PathBones");
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			ResourceMesh* r_mesh = new ResourceMesh();
@@ -324,8 +343,19 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 				delete r_anim;
 			}
 		}
+		for (uint i = 0; i < num_bones; ++i) {
+			ResourceBone* r_bone = new ResourceBone();
+			if (r_bone->ReadBaseInfo(bones_path[i].data())) {
+				bones_attached.push_back(r_bone);
+			}
+			else {
+				LOG_ENGINE("Error loading %s", bones_path[i].data());
+				delete r_bone;
+			}
+		}
 		delete[] mesh_path;
 		delete[] anim_path;
+		delete[] bones_path;
 		delete model;
 		App->resources->AddResource(this);
 	}
@@ -380,6 +410,16 @@ bool ResourceModel::DeleteMetaData()
 		}
 	}
 	animations_attached.clear();
+
+	std::vector<ResourceBone*>::iterator item_bone = bones_attached.begin();
+	for (; item_bone != bones_attached.end(); ++item_bone)
+	{
+		if ((*item_bone) != nullptr)
+		{
+			(*item_bone)->DeleteMetaData();
+		}
+	}
+	bones_attached.clear();
 
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 

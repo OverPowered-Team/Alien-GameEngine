@@ -122,3 +122,30 @@ void ResourceBone::FreeMemory()
 	delete[] vertex_ids;
 	delete[] weights;
 }
+
+bool ResourceBone::ReadBaseInfo(const char* meta_file_path)
+{
+	meta_data_path = std::string(meta_file_path);
+	ID = std::stoull(App->file_system->GetBaseFileName(meta_file_path));
+
+	char* buffer;
+	uint size = App->file_system->Load(meta_data_path.data(), &buffer);
+	char* cursor = buffer;
+
+	//Load name size
+	uint bytes = sizeof(uint);
+	uint name_size;
+	memcpy(&name_size, cursor, bytes);
+	cursor += bytes;
+
+	//Load name
+	bytes = name_size;
+	name.resize(bytes);
+	memcpy(&name[0], cursor, bytes);
+	cursor += bytes;
+
+	App->resources->AddResource(this);
+
+	RELEASE_ARRAY(buffer);
+	return true;
+}
