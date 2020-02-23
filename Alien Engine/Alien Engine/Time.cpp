@@ -12,6 +12,7 @@ Time::GameState Time::state = Time::GameState::NONE;
 float Time::time_since_start = 0.0F;
 float Time::game_time = 0.0F;
 float Time::delta_time = 0.0F;
+float Time::engine_dt = 0.0F;
 float Time::scale_time = 1.0F;
 Timer* Time::start_timer = new Timer();
 Timer* Time::game_timer = new Timer();
@@ -116,6 +117,14 @@ void Time::SetScaleTime(const float& scale)
 void Time::SetDT(const float& dt)
 {
 	delta_time = dt;
+}
+
+float Time::GetCurrentDT()
+{
+	if (state == GameState::NONE)
+		return engine_dt;
+	else
+		return delta_time * scale_time; // GetDT()
 }
 
 float Time::GetDT()

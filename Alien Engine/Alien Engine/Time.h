@@ -14,6 +14,7 @@ private:
 	friend class PanelScene;
 	friend class PanelInspector;
 	friend class ResourcePrefab;
+	friend class ComponentParticleSystem;
 
 	enum class GameState {
 		NONE,
@@ -35,10 +36,12 @@ private:
 	static void CleanUp();
 
 	static void SetDT(const float& dt);
+	static float GetCurrentDT();
 
 private:
 
 	static float delta_time;
+	static float engine_dt;
 	static Timer* game_timer;
 	static Timer* start_timer;
 

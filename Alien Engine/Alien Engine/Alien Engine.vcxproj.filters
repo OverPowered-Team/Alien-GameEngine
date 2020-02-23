@@ -558,6 +558,9 @@
     <ClInclude Include="ParticleEmitter.h">
       <Filter>Components\ParticleSystem</Filter>
     </ClInclude>
+    <ClInclude Include="PanelParticleSystem.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -901,6 +904,9 @@
     </ClCompile>
     <ClCompile Include="ParticleEmitter.cpp">
       <Filter>Components\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelParticleSystem.cpp">
+      <Filter>Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -216,6 +216,7 @@ void Application::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 	dt = frame_time.ReadSec();
+	Time::engine_dt = dt;
 	if (Time::IsPlaying()) {
 		Time::SetDT(dt);
 	}

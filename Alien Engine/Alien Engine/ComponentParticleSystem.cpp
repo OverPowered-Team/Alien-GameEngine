@@ -30,17 +30,17 @@ void ComponentParticleSystem::PreUpdate()
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
 
-	particleSystem->PreUpdate(Time::GetDT());
+	particleSystem->PreUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::Update()
 {
-	particleSystem->Update(Time::GetDT());
+	particleSystem->Update(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::PostUpdate()
 {
-	particleSystem->PostUpdate(Time::GetDT());
+	particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::DebugDraw()
@@ -511,7 +511,7 @@ void ComponentParticleSystem::TextureBrowser()
 
 ParticleSystem* ComponentParticleSystem::GetSystem() const
 {
-	return nullptr;
+	return particleSystem;
 }
 
 
