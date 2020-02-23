@@ -37,9 +37,6 @@ public:
 
 	void SetCheckboxState(bool value);
 
-	void SaveComponent(JSONArraypack* to_save);
-	void LoadComponent(JSONArraypack* to_load);
-
 private:
 	void CallListeners(std::vector<std::function<void()>>* listeners);
 
