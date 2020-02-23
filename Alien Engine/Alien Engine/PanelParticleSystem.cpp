@@ -31,7 +31,7 @@ void PanelParticleSystem::PanelLogic()
 
 	ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse;
 	
-	ImGui::SetNextWindowPos({1550,850});
+	//ImGui::SetNextWindowPos({1550,850});
 	if (ImGui::Begin("Particle System", nullptr, flags))
 	{
 		/*ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.8f,0.37f,0.0f,0.7f });

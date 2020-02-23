@@ -30,17 +30,20 @@ void ComponentParticleSystem::PreUpdate()
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
 
-	particleSystem->PreUpdate(Time::GetCurrentDT());
+	if(particleSystem->isPlaying)
+		particleSystem->PreUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::Update()
 {
-	particleSystem->Update(Time::GetCurrentDT());
+	if (particleSystem->isPlaying)
+		particleSystem->Update(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::PostUpdate()
 {
-	particleSystem->PostUpdate(Time::GetCurrentDT());
+	if (particleSystem->isPlaying)
+		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::DebugDraw()
@@ -546,20 +549,22 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Start.Position", particleSystem->particleInfo.position);
 	// Rotation
 	to_save->SetQuat("Start.Rotation", particleSystem->particleInfo.rotation); 
+	// Global / Local
+	to_save->SetBoolean("Start.Global", particleSystem->particleInfo.globalTransform);
 	// Velocity
 	to_save->SetFloat3("Start.Velocity", particleSystem->particleInfo.velocity);
 	// Force
 	to_save->SetFloat3("Start.Force", particleSystem->particleInfo.force);
 	// Speed
-	to_save->SetNumber("Start.Speed", (int)particleSystem->particleInfo.speed);
+	to_save->SetNumber("Start.Speed", (float)particleSystem->particleInfo.speed);
 	// Color
 	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.color);
 	// Size
-	to_save->SetNumber("Start.Size", (int)particleSystem->particleInfo.size);
+	to_save->SetNumber("Start.Size", (float)particleSystem->particleInfo.size);
 	// LightColor
-	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.lightColor);
+	to_save->SetFloat4("Start.LightColor", particleSystem->particleInfo.lightColor);
 	// MaxLifeTime
-	to_save->SetNumber("Start.MaxLifeTime", (int)particleSystem->particleInfo.maxLifeTime);
+	to_save->SetNumber("Start.MaxLifeTime", (float)particleSystem->particleInfo.maxLifeTime);
 	// changeOverLifeTime
 	to_save->SetBoolean("Start.ChangeOverLifeTime", particleSystem->particleInfo.changeOverLifeTime);
 	
@@ -568,9 +573,9 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// Color
 	to_save->SetFloat4("End.Color", particleSystem->endInfo.color);
 	// Size
-	to_save->SetNumber("End.Size", (int)particleSystem->endInfo.size);
+	to_save->SetNumber("End.Size", (float)particleSystem->endInfo.size);
 	// LightColor
-	to_save->SetFloat4("End.Color", particleSystem->endInfo.lightColor);
+	to_save->SetFloat4("End.LightColor", particleSystem->endInfo.lightColor);
 	// Force
 	to_save->SetFloat3("End.Force", particleSystem->endInfo.force);
 
@@ -686,6 +691,9 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->particleInfo.position = to_load->GetFloat3("Start.Position");
 	// Rotation
 	particleSystem->particleInfo.rotation = to_load->GetQuat("Start.Rotation");
+	// Global / Local
+	particleSystem->particleInfo.globalTransform = to_load->GetBoolean("Start.Global");
+	transformSelected = particleSystem->particleInfo.globalTransform ? 0 : 1;
 	// Velocity
 	particleSystem->particleInfo.velocity = to_load->GetFloat3("Start.Velocity");
 	// Force
@@ -697,7 +705,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// Size
 	particleSystem->particleInfo.size = to_load->GetNumber("Start.Size");
 	// LightColor
-	particleSystem->particleInfo.lightColor = to_load->GetFloat4("Start.Color");
+	particleSystem->particleInfo.lightColor = to_load->GetFloat4("Start.LightColor");
 	// MaxLifeTime
 	particleSystem->particleInfo.maxLifeTime = to_load->GetNumber("Start.MaxLifeTime");
 	// changeOverLifeTime
@@ -710,7 +718,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// Size
 	particleSystem->endInfo.size = to_load->GetNumber("End.Size");
 	// LightColor
-	particleSystem->endInfo.lightColor = to_load->GetFloat4("End.Color");
+	particleSystem->endInfo.lightColor = to_load->GetFloat4("End.LightColor");
 	// Force
 	particleSystem->endInfo.force = to_load->GetFloat3("End.Force");
 
