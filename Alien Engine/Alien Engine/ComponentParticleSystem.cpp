@@ -417,9 +417,8 @@ bool ComponentParticleSystem::DrawInspector()
 
 			ImGui::Text("Save Particle System ");
 			ImGui::SameLine(200, 15);
-			if (ImGui::Button("Load", { 120,20 })) {
-					//App->serialization->particleCallback = this;
-					//App->editor->browser->OpenBrowser(BrowserState::SAVE_PARTICLE_SYSTEM);
+			if (ImGui::Button("Save", { 120,20 })) {
+					
 			}
 				
 			ImGui::Spacing();
@@ -427,9 +426,8 @@ bool ComponentParticleSystem::DrawInspector()
 
 			ImGui::Text("Load Particle System ");
 			ImGui::SameLine(200, 15);
-			if (ImGui::Button("Save", { 120,20 })) {
-					//App->serialization->particleCallback = this;
-					//App->editor->browser->OpenBrowser(BrowserState::LOAD_PARTICLE_SYSTEM);
+			if (ImGui::Button("Load", { 120,20 })) {
+					
 			}
 
 				
@@ -639,40 +637,14 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// --------------- Material Resource Info -------------------- //
 
 	
-	/*to_save->SetBoolean("TextureEnabled", texture_activated);
+	to_save->SetBoolean("TextureEnabled", texture_activated);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
 	
 	if (texture != nullptr) {
 		to_save->SetString("TextureID", std::to_string(texture->GetID()));
 	}
-	*/
-
-	/*if (currentResource != nullptr)
-	{
-		tmp_ps = name + "Resource Material Name";
-		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetName());
-
-		tmp_ps = name + "Resource Material UUID";
-		json_object_dotset_number(object, tmp_ps.c_str(), currentResource->GetUID());
-
-		tmp_ps = name + "Resource Material File";
-		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetFile());
-
-		tmp_ps = name + "Resource Material Path";
-		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetExportedFile());
-	}
-	else
-	{
-		tmp_ps = name + "Resource Material Name";
-		json_object_dotset_string(object, tmp_ps.c_str(), "");
-		tmp_ps = name + "Resource Material UUID";
-		json_object_dotset_number(object, tmp_ps.c_str(), 0);
-		tmp_ps = name + "Resource Material File";
-		json_object_dotset_string(object, tmp_ps.c_str(), "");
-		tmp_ps = name + "Resource Material Path";
-		json_object_dotset_string(object, tmp_ps.c_str(), "");
-	}*/
+	
 }
 
 void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
@@ -790,7 +762,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// ---------------------- Resource Info -------------------------- //
 
 	
-	/*texture_activated = to_load->GetBoolean("TextureEnabled");
+	texture_activated = to_load->GetBoolean("TextureEnabled");
 
 	if (to_load->GetBoolean("HasTexture")) {
 		u64 ID = std::stoull(to_load->GetString("TextureID"));
@@ -801,7 +773,8 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 			particleSystem->texture = texture;
 		}
 	}
-	ID = std::stoull(to_load->GetString("ID"));*/
+	ID = std::stoull(to_load->GetString("ID"));
 }
+
 
 
