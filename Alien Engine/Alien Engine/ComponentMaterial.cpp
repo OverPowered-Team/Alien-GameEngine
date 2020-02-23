@@ -17,13 +17,6 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 	used_shader->IncreaseReferences();
 	file_to_edit = used_shader->path;
-
-	if (texture != nullptr)
-	{
-		used_shader->SetUniform1i("tex", texture->id);
-		glActiveTexture(GL_TEXTURE0 + 0);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-	}
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -36,7 +29,7 @@ ComponentMaterial::~ComponentMaterial()
 
 void ComponentMaterial::BindTexture()
 {
-	/*ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
 	if (texture != nullptr && texture->id > 0 && texture_activated && mesh != nullptr && mesh->mesh != nullptr) {
 		// enable textures
 		glEnable(GL_TEXTURE_2D);
@@ -44,7 +37,7 @@ void ComponentMaterial::BindTexture()
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 	}
 	glColor4f(color.r, color.g, color.b, color.a);
-	*/
+	
 }
 
 bool ComponentMaterial::DrawInspector()
@@ -423,6 +416,16 @@ void ComponentMaterial::LoadComponent(JSONArraypack* to_load)
 
 void ComponentMaterial::Clone(Component* clone)
 {
+	/*clone->enabled = enabled;
+	clone->not_destroy = not_destroy;
+	ComponentMaterial* mat = (ComponentMaterial*)clone;
+	mat->color = color;
+	mat->texture = texture;
+	if (texture != nullptr) {
+		++texture->references;
+	}
+	mat->texture_activated = texture_activated;*/
+
 	clone->enabled = enabled;
 	clone->not_destroy = not_destroy;
 	ComponentMaterial* mat = (ComponentMaterial*)clone;
