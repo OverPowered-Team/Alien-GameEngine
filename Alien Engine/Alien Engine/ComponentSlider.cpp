@@ -287,12 +287,22 @@ float ComponentSlider::GetValue()
 	ComponentTransform* trans_dot = dot->GetComponent<ComponentTransform>();
 
 
-	float ipos_bar = trans_dot->global_transformation[0][3] - (trans_dot->global_transformation[0][0] * 0.5f);
+	/*float ipos_bar = trans_dot->global_transformation[0][3] - (trans_dot->global_transformation[0][0] * 0.5f);
 	float fixed_pos = trans->global_transformation[0][3] - trans->global_transformation[0][0];
 	float fpos_bar = trans->global_transformation[0][3] + trans->global_transformation[0][0] - trans_dot->global_transformation[0][0];
-	float final_pos = (ipos_bar - fixed_pos) / (fpos_bar - fixed_pos);
+	float final_pos = (ipos_bar - fixed_pos) / (fpos_bar - fixed_pos);*/
 
-	LOG_ENGINE("SLIDER VALUE: %f", final_pos);
 
-	return final_pos;
+
+
+	float startPos = (trans->global_transformation[0][3] - (trans->global_transformation[0][0] * 0.5f));
+	float endPos = (trans->global_transformation[0][3] + trans->global_transformation[0][0] - (trans_dot->global_transformation[0][0] * 0.5F));
+	float thumbPos = trans_dot->global_transformation[0][3] + trans_dot->global_transformation[0][0] * 0.5;
+	LOG_ENGINE("SLIDER VALUE: %f", (thumbPos - startPos) / (endPos - startPos));
+	return((thumbPos - startPos) / (endPos - startPos));
+
+
+	
+
+	//return final_pos;
 }
