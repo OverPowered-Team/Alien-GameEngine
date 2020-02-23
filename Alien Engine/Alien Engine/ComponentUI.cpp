@@ -38,27 +38,12 @@ ComponentUI::~ComponentUI()
 
 void ComponentUI::ChangeVertex(float width, float height)
 {
-	size = {width, height};
+	size = { width, height };
 
-	vertices[0] = { x,y,0 };
-	vertices[1] = { x,y - size.y,0 };
-	vertices[2] = { x + size.x,y - size.y,0 };
-	vertices[3] = { x + size.x, y,0 };
-
-	glGenBuffers(1, &verticesID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
-}
-
-void ComponentUI::ChangePosition(float x, float y)
-{
-	this->x = x;
-	this->y = y;
-
-	vertices[0] = { x,y,0 };
-	vertices[1] = { x,y - size.y,0 };
-	vertices[2] = { x + size.x,y - size.y,0 };
-	vertices[3] = { x + size.x, y,0 };
+	vertices[0] = { 0,0,0 };
+	vertices[1] = { 0,-size.y,0 };
+	vertices[2] = { size.x,-size.y,0 };
+	vertices[3] = { size.x, 0,0 };
 
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
@@ -67,10 +52,10 @@ void ComponentUI::ChangePosition(float x, float y)
 
 void ComponentUI::UpdateVertex()
 {
-	vertices[0] = { x,y,0 };
-	vertices[1] = { x,y - size.y,0 };
-	vertices[2] = { x + size.x,y - size.y,0 };
-	vertices[3] = { x + size.x, y,0 };
+	vertices[0] = { 0,0,0 };
+	vertices[1] = { 0, -size.y,0 };
+	vertices[2] = { size.x, -size.y,0 };
+	vertices[3] = { size.x, 0,0 };
 
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);

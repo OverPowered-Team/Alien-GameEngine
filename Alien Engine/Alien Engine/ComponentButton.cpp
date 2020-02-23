@@ -16,8 +16,6 @@ ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
 
 void ComponentButton::SaveComponent(JSONArraypack* to_save)
 {
-	to_save->SetNumber("X", x);
-	to_save->SetNumber("Y", y);
 	to_save->SetNumber("Width", size.x);
 	to_save->SetNumber("Height", size.y);
 
@@ -30,8 +28,6 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 
 void ComponentButton::LoadComponent(JSONArraypack* to_load)
 {
-	x = to_load->GetNumber("X");
-	y = to_load->GetNumber("Y");
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
 	UpdateVertex();
 
@@ -80,6 +76,16 @@ bool ComponentButton::DrawInspector()
 		RightClickMenu("Button");
 
 		ImGui::Spacing();
+
+		ImGui::PushID(this);
+		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
+		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+			UpdateVertex();
+
+		ImGui::PopID();
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");

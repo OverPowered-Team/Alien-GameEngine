@@ -20,7 +20,6 @@ ComponentBar::ComponentBar(GameObject* obj):ComponentUI(obj)
 	bar->AddComponent(new ComponentTransform(bar, { 0,0,0 }, Quat::identity(), { 0.85, 0.85f, 0.85f }));
 	ComponentImage* comp = new ComponentImage(bar);
 	comp->ChangeVertex(19.4, 5);
-	comp->ChangePosition(0.4, -0.5);
 	comp->UpdateBar(value/maxValue);
 	bar->AddComponent(comp);
 
@@ -47,12 +46,6 @@ bool ComponentBar::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::PushID(this);
-		ImGui::Text("Position:	"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("X", &x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("Y", &y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();

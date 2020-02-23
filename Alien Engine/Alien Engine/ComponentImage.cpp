@@ -31,12 +31,6 @@ bool ComponentImage::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::PushID(this);
-		ImGui::Text("Position:	"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("X", &x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("Y", &y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
@@ -174,8 +168,6 @@ void ComponentImage::Clone(Component* clone)
 
 void ComponentImage::SaveComponent(JSONArraypack* to_save)
 {
-	to_save->SetNumber("X", x);
-	to_save->SetNumber("Y", y);
 	to_save->SetNumber("Width", size.x);
 	to_save->SetNumber("Height", size.y);
 
@@ -188,8 +180,6 @@ void ComponentImage::SaveComponent(JSONArraypack* to_save)
 
 void ComponentImage::LoadComponent(JSONArraypack* to_load)
 {
-	x = to_load->GetNumber("X");
-	y = to_load->GetNumber("Y");
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
 	UpdateVertex();
 
@@ -222,10 +212,10 @@ void ComponentImage::LoadComponent(JSONArraypack* to_load)
 
 void ComponentImage::UpdateBar(float factor)
 {
-	vertices[0] = { x,y,0 };
-	vertices[1] = { x,y - size.y,0 };
-	vertices[2] = { x + size.x * factor,y - size.y,0 };
-	vertices[3] = { x + size.x * factor, y,0 };
+	vertices[0] = { 0,0,0 };
+	vertices[1] = { 0,size.y,0 };
+	vertices[2] = { size.x * factor, size.y,0 };
+	vertices[3] = { size.x * factor, 0,0 };
 
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);

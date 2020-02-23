@@ -35,7 +35,6 @@ public:
 	virtual ~ComponentUI();
 
 	virtual void ChangeVertex(float width, float height);
-	void ChangePosition(float x, float y);
 	void UpdateVertex();
 
 	virtual bool OnHover() { return true; };

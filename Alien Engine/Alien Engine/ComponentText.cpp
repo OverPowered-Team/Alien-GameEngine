@@ -91,6 +91,11 @@ void ComponentText::Draw(bool isGame)
 	glPushMatrix();
 	glMultMatrixf(game_object_attached->GetComponent<ComponentTransform>()->global_transformation.Transposed().ptr());
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -125,6 +130,8 @@ void ComponentText::Draw(bool isGame)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
+
+	glDisable(GL_ALPHA_TEST);
 
 	glEnable(GL_CULL_FACE);
 }
