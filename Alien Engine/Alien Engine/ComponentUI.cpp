@@ -12,9 +12,7 @@
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {
-	glGenBuffers(1, &verticesID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+	ChangeVertex(10,10);
 
 	glGenBuffers(1, &uvID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
@@ -36,6 +34,47 @@ ComponentUI::~ComponentUI()
 	if (texture != nullptr) {
 		texture->DecreaseReferences();
 	}
+}
+
+void ComponentUI::ChangeVertex(float width, float height)
+{
+	size = {width, height};
+
+	vertices[0] = { x,y,0 };
+	vertices[1] = { x,y - size.y,0 };
+	vertices[2] = { x + size.x,y - size.y,0 };
+	vertices[3] = { x + size.x, y,0 };
+
+	glGenBuffers(1, &verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
+}
+
+void ComponentUI::ChangePosition(float x, float y)
+{
+	this->x = x;
+	this->y = y;
+
+	vertices[0] = { x,y,0 };
+	vertices[1] = { x,y - size.y,0 };
+	vertices[2] = { x + size.x,y - size.y,0 };
+	vertices[3] = { x + size.x, y,0 };
+
+	glGenBuffers(1, &verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
+}
+
+void ComponentUI::UpdateVertex()
+{
+	vertices[0] = { x,y,0 };
+	vertices[1] = { x,y - size.y,0 };
+	vertices[2] = { x + size.x,y - size.y,0 };
+	vertices[3] = { x + size.x, y,0 };
+
+	glGenBuffers(1, &verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
 }
 
 void ComponentUI::SetCanvas(ComponentCanvas* canvas_)

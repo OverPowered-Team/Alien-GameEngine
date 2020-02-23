@@ -11,8 +11,6 @@ public:
 	ComponentBar(GameObject* obj);
 	~ComponentBar() {};
 
-	void Draw(bool isGame);
-	void DrawTexture(bool isGame, ResourceTexture* tex);
 	bool DrawInspector();
 
 	void Reset() {};
@@ -23,11 +21,9 @@ public:
 	void LoadComponent(JSONArraypack* to_load) {};
 
 private:
-	ResourceTexture* barTexture = nullptr;
-	float barScaleX = 0.2F;
-	float barScaleY = 0.9F;
+	GameObject* bar = nullptr;
 
-	int maxValue = 0, value = 100;
+	float maxValue = 100.0f, value = 0.0f;
 };
 
 #endif // !_COMPONENT_BAR_H_

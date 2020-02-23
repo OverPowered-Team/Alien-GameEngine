@@ -25,6 +25,7 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class ComponentText;
 	friend class ComponentButton;
 	friend class ComponentSlider;
+	friend class ComponentBar;
 	friend class Component;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -32,6 +33,10 @@ public:
 	ComponentUI(GameObject* obj);
 
 	virtual ~ComponentUI();
+
+	virtual void ChangeVertex(float width, float height);
+	void ChangePosition(float x, float y);
+	void UpdateVertex();
 
 	virtual bool OnHover() { return true; };
 	virtual bool OnClick() { return true; };
@@ -60,7 +65,7 @@ protected:
 
 	ResourceTexture* texture = nullptr;
 
-	float3 vertices[4]{ {-1,1,0},{-1,-1,0},{1,-1,0},{1,1,0} };  // left-top, left-bottom, right-bottom, right-top
+	float3 vertices[4]{ {0,0,0},{0,-1,0},{1,-1,0},{1,0,0} };  // left-top, left-bottom, right-bottom, right-top
 	float2 uv[4]{ {-1,-1},{-1,0},{0,0},{0,-1} };
 	uint index[6]{ 0,1,2,2,3,0 };
 	uint indexID = 0;
@@ -70,6 +75,8 @@ protected:
 	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 	ComponentCanvas* canvas = nullptr;
 	ComponentTransform* canvas_trans = nullptr;
+
+	float2 size = { 10,10 };
 
 };
 

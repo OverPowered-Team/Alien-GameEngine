@@ -7,6 +7,7 @@ class ResourceTexture;
 
 class __declspec(dllexport) ComponentImage :public ComponentUI
 {
+	friend class ComponentBar;
 public:
 	ComponentImage(GameObject* obj);
 	~ComponentImage() {};
@@ -19,6 +20,8 @@ public:
 
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
+
+	void UpdateBar(float factor);
 };
 
 #endif // !_COMPONENT_IMAGE_H_
