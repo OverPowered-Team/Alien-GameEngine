@@ -8,6 +8,7 @@
 
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentParticleSystem.h"
 #include "GameObject.h"
 #include "ModuleCamera3D.h"
 
@@ -398,6 +399,22 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture* texture)
 			}
 			else
 				LOG_ENGINE("Selected GameObject has no mesh");
+
+
+			if ((*item)->HasComponent(ComponentType::PARTICLES)) {
+
+				ComponentParticleSystem* particleSystem = (ComponentParticleSystem*)(*item)->GetComponent(ComponentType::PARTICLES);
+
+				if(texture->NeedToLoad())
+					texture->LoadMemory();
+
+				particleSystem->SetTexture(texture);
+			
+			}
+			else
+				LOG_ENGINE("Selected GameObject has no particle system");
+
+
 		}
 	}	
 }
