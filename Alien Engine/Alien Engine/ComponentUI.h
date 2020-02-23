@@ -61,7 +61,7 @@ protected:
 	uint verticesID = 0;
 	uint uvID = 0;
 
-	Color current_color = Color::White();
+	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 	ComponentCanvas* canvas = nullptr;
 	ComponentTransform* canvas_trans = nullptr;
 

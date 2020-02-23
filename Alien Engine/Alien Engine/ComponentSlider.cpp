@@ -219,12 +219,15 @@ bool ComponentSlider::OnPressed()
 
 		if ((dot->GetComponent<ComponentUI>()->x + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
 		{
-			trans_dot->global_transformation[0][3] -=3.0f;
+			origin.x = ((((x + (width_bg * 0.5f)) - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height)));
+			trans_dot->global_transformation[0][3] = origin.x;
+
+			/*trans_dot->global_transformation[0][3] = trans->global_transformation[0][3];*/
 			
 		}
 		else if (dot->GetComponent<ComponentUI>()->x - (width * 0.5f) <= x - (width_bg * 0.5f))
 		{
-			trans_dot->global_transformation[0][3] += 3.0f;
+			trans_dot->global_transformation[0][3] = trans->global_transformation[0][3];
 
 		}
 
