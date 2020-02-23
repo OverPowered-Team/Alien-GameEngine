@@ -5,6 +5,7 @@ class GameObject;
 typedef unsigned int uint;
 class JSONArraypack;
 typedef unsigned long long u64;
+
 enum class ComponentType {
 	TRANSFORM = 0,
 	MESH,
@@ -71,5 +72,5 @@ protected:
 	bool enabled = true;
 	u64 ID = 0;
 	bool not_destroy = true;
-
+	const char* name = "";
 };

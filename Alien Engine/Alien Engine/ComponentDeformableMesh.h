@@ -17,6 +17,7 @@ protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateDeformableMesh();
 	void DrawPolygon();
+	
 
 private:
 	ResourceMesh* deformable_mesh = nullptr;
