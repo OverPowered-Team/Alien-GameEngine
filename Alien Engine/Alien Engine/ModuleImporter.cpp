@@ -602,6 +602,7 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 			LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
 		}
 
+		ReImportBones(scene);
 		ReImportAnimations(model, scene);
 		
 		// create the meta data files like .alien
@@ -655,6 +656,27 @@ void ModuleImporter::ReImportAnimations(ResourceModel* model, const aiScene* sce
 				model->animations_attached[i]->end_tick = anims_meta->GetNumber("End_Tick");
 			}	
 			delete meta;
+		}
+	}
+}
+
+void ModuleImporter::ReImportBones(const aiScene* scene)
+{
+	if (scene->HasMeshes())
+	{
+		for (int i = 0; i < scene->mNumMeshes; i++)
+		{
+			//Import mesh here.
+			//LoadMesh(scene->mMeshes[i]);
+
+			//Import bones of mesh
+			if (scene->mMeshes[i]->HasBones())
+			{
+				for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
+				{
+					LoadBone(scene->mMeshes[i]->mBones[j]);
+				}
+			}
 		}
 	}
 }
