@@ -16,10 +16,9 @@ bool ModuleAudio::Start()
 
 	// Init wwise and audio banks
 	ret = WwiseT::InitSoundEngine();
-	WwiseT::LoadBank("Main.bnk");
-
+	//WwiseT::LoadBank("Main.bnk");
+	//PrepareAllBanks();
 	LoadBanksInfo();
-
 	return ret;
 }
 
@@ -55,6 +54,19 @@ void ModuleAudio::LoadBanksInfo()
 
 update_status ModuleAudio::Update(float dt)
 {
+	if (Time::state == Time::GameState::NONE) {
+		if (play_mode) {
+			UnloadAllUsedBanks();
+			play_mode = false;
+		}
+	}
+	else if (Time::state == Time::GameState::PLAY) {
+		if (!play_mode) {
+			LoadUsedBanks();
+			//WwiseT::LoadBank("Main.bnk");
+			play_mode = true;
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -75,6 +87,16 @@ bool ModuleAudio::CleanUp()
 	return WwiseT::CloseSoundEngine();
 }
 
+void ModuleAudio::LoadUsedBanks()
+{
+	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
+	{
+		std::string full_path = (*i).name + ".bnk";
+		WwiseT::LoadBank(full_path.c_str());
+	}
+}
+
+
 bool ModuleAudio::UnloadAllBanks()
 {
 	for (auto it = banks.begin(); it != banks.end(); it++)
@@ -86,9 +108,35 @@ bool ModuleAudio::UnloadAllBanks()
 	return true;
 }
 
+void ModuleAudio::UnloadAllUsedBanks()
+{
+	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
+	{
+		WwiseT::UnLoadBank((*it).name.c_str());
+	}
+	used_banks.clear();
+
+}
+
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 {
 	return WwiseT::CreateAudSource(name);
+}
+
+std::vector<Bank> ModuleAudio::GetBanks()
+{
+	return banks;
+}
+
+Bank ModuleAudio::GetBankByName(const char* name)
+{
+	Bank bk;
+	for (int i = 0; i < banks.size(); ++i)
+	{
+		if (App->StringCmp(name, App->audio->GetBanks()[i].name.c_str()))
+			bk = App->audio->GetBanks()[i];
+	}
+	return bk;
 }
 
 void ModuleAudio::Play(const char* event)

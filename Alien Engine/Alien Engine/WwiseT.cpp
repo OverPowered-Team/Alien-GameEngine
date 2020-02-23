@@ -139,7 +139,7 @@ bool WwiseT::InitSoundEngine()
 	}
 #endif // AK_OPTIMIZED
 
-	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("./DLLs"));
+	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("./Assets/AudioBanks/"));
 	if (base_path_res != AK_Success)
 	{
 		assert(!"Invalid base path!");
@@ -488,7 +488,6 @@ void WwiseT::AudioSource::ApplyEnvReverb(AkReal32 desired_level, const char * ta
 	environment.listenerID = id;
 	environment.fControlValue = desired_level;
 	environment.auxBusID = AK::SoundEngine::GetIDFromString(target);
-
 	AKRESULT res = AK::SoundEngine::SetGameObjectAuxSendValues(id, &environment, 2);
 }
 

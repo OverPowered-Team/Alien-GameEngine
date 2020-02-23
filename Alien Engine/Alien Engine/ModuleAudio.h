@@ -33,11 +33,12 @@ public:
 	~ModuleAudio();
 	bool Start();
 	void LoadBanksInfo();
+	void LoadUsedBanks();
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 	bool UnloadAllBanks();
-
+	void UnloadAllUsedBanks();
 	// Utils
 	void Play(const char* event);
 	void Play();
@@ -46,13 +47,14 @@ public:
 	void Resume() const;
 	void SetListener(WwiseT::AudioSource* new_listener);
 	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
-
+	std::vector<Bank> GetBanks();
+	Bank GetBankByName(const char* name);
 private:
 	WwiseT::AudioSource* listener;
 	std::vector <Bank> banks;
-
+	bool play_mode = false;
 public:
 	std::list<ComponentAudioEmitter*> emitters;
-	
+	std::list<Bank> used_banks;
 	bool is_playing = false;
 };

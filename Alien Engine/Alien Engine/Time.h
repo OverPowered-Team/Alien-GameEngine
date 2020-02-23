@@ -15,6 +15,7 @@ private:
 	friend class PanelInspector;
 	friend class ResourcePrefab;
 	friend class ComponentAudioEmitter;
+	friend class ModuleAudio;
 
 	enum class GameState {
 		NONE,

@@ -7,6 +7,8 @@
 
 #include <string>
 
+struct Bank;
+
 class __declspec(dllexport) ComponentAudioEmitter : public Component
 {
 public:
@@ -17,16 +19,17 @@ public:
 	void Update() override;
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
-	//void ChangeTimeToSwap(float new_time);
 	void StartSound();
 	void UpdateSourcePos();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 	bool DrawInspector();
-
+	bool AlreadyUsedBank(Bank bk);
 public:
 	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;
+	std::string current_bank;
+	std::string current_event;
 	float volume = 1.0f;
 	bool play_on_awake = true;
 	bool loop = false;
