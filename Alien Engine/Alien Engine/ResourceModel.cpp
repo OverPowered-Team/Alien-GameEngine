@@ -108,7 +108,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			for (; item != meshes_attached.end(); ++item) {
 				if ((*item) != nullptr) 
 				{
-					if (bones_attached.size() > 0) //Check if this resourcemesh is a bone
+					if (bones_attached.size() > 0) //Check if this resourcemesh is a bone to link
 					{
 						for each (ResourceBone * bone in bones_attached)
 						{
