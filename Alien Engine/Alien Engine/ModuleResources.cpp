@@ -580,6 +580,7 @@ void ModuleResources::ReadAllMetaData()
 
 	files.clear();
 	directories.clear();
+
 #else
 
 	// textures
@@ -621,8 +622,8 @@ void ModuleResources::ReadAllMetaData()
 	// fonts
 	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
-		ResourceFont* prefab = new ResourceFont::LoadFile();
-		prefab->ReadLibrary(files[i].data());
+		ResourceFont* font = ResourceFont::LoadFile(files[i].data(), std::stoull(App->file_system->GetBaseFileName(files[i].data()).data()));
+		AddResource(font);
 	}
 	files.clear();
 	directories.clear();
