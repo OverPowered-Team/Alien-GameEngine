@@ -518,6 +518,13 @@ void ComponentParticleSystem::TextureBrowser()
 	}
 }
 
+void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
+{
+	texture = tex;
+	particleSystem->texture = texture;
+
+}
+
 ParticleSystem* ComponentParticleSystem::GetSystem() const
 {
 	return particleSystem;

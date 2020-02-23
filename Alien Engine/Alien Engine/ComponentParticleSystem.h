@@ -40,7 +40,7 @@ public:
 	bool DrawInspector () override;
 
 	void TextureBrowser();
-
+	void SetTexture(ResourceTexture* tex);
 	ParticleSystem* GetSystem() const;
 
 	// Parser
