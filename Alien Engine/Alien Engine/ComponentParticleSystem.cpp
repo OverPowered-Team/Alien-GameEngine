@@ -30,17 +30,20 @@ void ComponentParticleSystem::PreUpdate()
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
 
-	particleSystem->PreUpdate(Time::GetCurrentDT());
+	if(particleSystem->isPlaying)
+		particleSystem->PreUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::Update()
 {
-	particleSystem->Update(Time::GetCurrentDT());
+	if (particleSystem->isPlaying)
+		particleSystem->Update(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::PostUpdate()
 {
-	particleSystem->PostUpdate(Time::GetCurrentDT());
+	if (particleSystem->isPlaying)
+		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::DebugDraw()
@@ -681,7 +684,6 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// Global / Local
 	particleSystem->particleInfo.globalTransform = to_load->GetBoolean("Start.Global");
 	transformSelected = particleSystem->particleInfo.globalTransform ? 0 : 1;
-
 	// Velocity
 	particleSystem->particleInfo.velocity = to_load->GetFloat3("Start.Velocity");
 	// Force
