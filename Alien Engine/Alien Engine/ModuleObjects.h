@@ -63,6 +63,8 @@ public:
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
 
+	void HandleEvent(EventType eventType) override;
+
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
 

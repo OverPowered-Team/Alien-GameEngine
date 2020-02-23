@@ -131,6 +131,10 @@ private:
 	void OnEnable();
 	void OnDisable();
 
+	void OnPlay();
+	void OnPause();
+	void OnStop();
+
 	// here we call Component Mesh, Material & light
 	void DrawScene();
 	void DrawGame();

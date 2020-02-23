@@ -7,6 +7,7 @@
 #include "ResourceScene.h"
 #include "Resource_.h"
 #include "PanelScene.h"
+#include "Event.h"
 
 Time::GameState Time::state = Time::GameState::NONE;
 float Time::time_since_start = 0.0F;
@@ -50,6 +51,7 @@ void Time::Play()
 #endif
 		state = GameState::PLAY;
 		App->objects->InitScriptsOnPlay();
+		App->CastEvent(EventType::ON_PLAY);
 		game_time = 0.0F;
 		game_timer->Start();
 	}
@@ -60,6 +62,7 @@ void Time::Play()
 	else if (state == GameState::PLAY) {
 		App->objects->CleanUpScriptsOnStop();
 		state = GameState::NONE;
+		App->CastEvent(EventType::ON_STOP);
 		game_time = 0.0F;
 		App->objects->LoadScene("Library/play_scene.alienScene", false);
 		App->objects->ignore_cntrlZ = false;
@@ -85,6 +88,7 @@ void Time::Pause()
 	}
 	else if (state == GameState::PLAY || state == GameState::PLAY_ONCE) {
 		state = GameState::PAUSE;
+		App->CastEvent(EventType::ON_PAUSE);
 		game_timer->Pause();
 	}
 }

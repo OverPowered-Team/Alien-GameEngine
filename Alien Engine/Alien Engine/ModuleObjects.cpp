@@ -19,6 +19,7 @@
 #include "PanelHierarchy.h"
 #include "Gizmos.h"
 #include "Alien.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -1578,6 +1579,36 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetBoolean("Configuration.Renderer.DrawRay", draw_ray);
 	config->SetNumber("Configuration.Renderer.RayWidth", ray_width);
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
+}
+
+void ModuleObjects::HandleEvent(EventType eventType)
+{
+	std::vector<GameObject*> objects;
+	objects.push_back(base_game_object);
+
+	while (!objects.empty())
+	{
+		GameObject* currentGo = objects.back();
+		objects.pop_back();
+		objects.insert(objects.end(), currentGo->children.begin(), currentGo->children.end());
+
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			currentGo->OnPlay();
+			break;
+
+		case EventType::ON_PAUSE:
+			currentGo->OnPause();
+			break;
+
+		case EventType::ON_STOP:
+			currentGo->OnStop();
+			break;
+		}
+	}
+
+	objects.clear();
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
