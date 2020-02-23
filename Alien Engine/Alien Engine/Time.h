@@ -15,6 +15,7 @@ private:
 	friend class PanelInspector;
 	friend class ResourcePrefab;
 	friend class ResourceAnimatorController;
+	friend class ComponentAnimator;
 
 	enum class GameState {
 		NONE,

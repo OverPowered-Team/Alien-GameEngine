@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 #include <string>
-class resourceanimatorcontroller;
+class ResourceAnimatorController;
 
 
 class ComponentAnimator :
@@ -10,20 +10,20 @@ class ComponentAnimator :
 public:
 	ComponentAnimator(GameObject* gameobject);
 	virtual ~ComponentAnimator();
-	//void update();
+	void Update();
 
-	//void playstate(std::string name);
-	//void updateanimation(GameObject* go_to_update);
-	//void onplay();
+	void PlayState(std::string name);
+	void UpdateAnimation(GameObject* go_to_update);
+	void OnPlay();
 
-	//resourceanimatorcontroller* getresourceanimatorcontroller();
-	//void setanimatorcontroller(resourceanimatorcontroller* controller);
+	ResourceAnimatorController* GetResourceAnimatorController();
+	void SetAnimatorController(ResourceAnimatorController* controller);
 
 	//bool save(const nlohmann::json::iterator& it);
 	//bool load(const nlohmann::json comp);
 
 private:
-	resourceanimatorcontroller* animator_controller;
+	ResourceAnimatorController* animator_controller;
 
 };
 
