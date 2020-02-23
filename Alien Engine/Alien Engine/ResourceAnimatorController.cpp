@@ -532,7 +532,7 @@ void State::SetName(std::string name)
 
 void State::SetClip(ResourceAnimation* clip)
 {
-	//clip->AddReference();
+	clip->IncreaseReferences();
 	this->clip = clip;
 }
 

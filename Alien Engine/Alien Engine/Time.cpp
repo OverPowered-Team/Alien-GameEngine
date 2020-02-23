@@ -49,7 +49,7 @@ void Time::Play()
 		App->ui->panel_console->game_console = true;
 #endif
 		state = GameState::PLAY;
-		App->objects->InitScriptsOnPlay();
+		App->objects->OnPlay();
 		game_time = 0.0F;
 		game_timer->Start();
 	}

@@ -107,6 +107,9 @@ bool ResourceAnimation::LoadMemory()
 			memcpy(channels[i].position_keys, cursor, bytes);
 			cursor += bytes;
 
+			//for (int k = 0; k < channels[i].num_position_keys; k++)
+			//	LOG_ENGINE("X: %f Y: %f, Z: %f", channels[i].position_keys[k].value.x, channels[i].position_keys[k].value.y, channels[i].position_keys[k].value.z);
+
 			//Load scale keys
 			bytes = sizeof(KeyAnimation<float3>) * channels[i].num_scale_keys;
 			channels[i].scale_keys = new KeyAnimation<float3>[channels[i].num_scale_keys];

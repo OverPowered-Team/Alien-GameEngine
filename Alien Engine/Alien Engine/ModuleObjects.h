@@ -89,7 +89,8 @@ public:
 	void DeselectObject(GameObject* obj);
 
 	/*---------Scripts Calls-----------*/
-	void InitScriptsOnPlay() const;
+	void OnPlay() const;
+	void InitScripts() const;
 	void ScriptsPreUpdate() const;
 	void ScriptsUpdate() const;
 	void ScriptsPostUpdate() const;

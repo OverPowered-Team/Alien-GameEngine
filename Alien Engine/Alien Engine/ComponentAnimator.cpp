@@ -56,7 +56,7 @@ void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 	}
 }
 
-void ComponentAnimator::OnPlay()
+void ComponentAnimator::Awake()
 {
 	if (animator_controller)
 		animator_controller->Play();

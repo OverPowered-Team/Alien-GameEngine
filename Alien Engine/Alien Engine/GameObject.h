@@ -141,6 +141,7 @@ private:
 	void RemoveComponent(Component* component);
 	void AddComponent(Component* component);
 
+	void Awake();
 	void PreUpdate();
 	void Update();
 	void PostUpdate();

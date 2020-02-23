@@ -491,7 +491,14 @@ void ModuleObjects::DeselectObject(GameObject* obj)
 	obj->ChangeSelected(false);
 }
 
-void ModuleObjects::InitScriptsOnPlay() const
+void ModuleObjects::OnPlay() const
+{
+	InitScripts();
+
+	base_game_object->Awake();
+}
+
+void ModuleObjects::InitScripts() const
 {
 	// scripts awake
 	auto to_iter = current_scripts;
@@ -509,9 +516,9 @@ void ModuleObjects::InitScriptsOnPlay() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS AWAKE");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -530,9 +537,9 @@ void ModuleObjects::InitScriptsOnPlay() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS START");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -1094,7 +1101,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				}
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
-					InitScriptsOnPlay();
+					OnPlay();
 				}
 			}
 			current_scene = to_load;
