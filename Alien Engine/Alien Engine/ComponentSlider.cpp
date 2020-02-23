@@ -194,49 +194,30 @@ bool ComponentSlider::OnPressed()
 	float width = (dot->GetComponent<ComponentUI>()->x + ((trans_dot->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (dot->GetComponent<ComponentUI>()->x - ((trans_dot->global_transformation[0][0]/ (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
-	if (dot->GetComponent<ComponentUI>()->x + (width*0.5f) <= x  + (width_bg*0.5f) && dot->GetComponent<ComponentUI>()->x - (width * 0.5f) >= x - (width_bg * 0.5f))
+	int xmotion = App->input->GetMouseXMotion();
+	trans_dot->global_transformation[0][3] = trans_dot->global_transformation[0][3] + (xmotion * 0.25f);
+
+	float3 canvas_pos = canvas_trans->GetGlobalPosition();
+	float3 object_pos = trans_dot->GetGlobalPosition();
+	float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+	float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
+
+	#ifndef GAME_VERSION
+		dot->GetComponent<ComponentUI>()->x = origin.x * App->ui->panel_game->width;
+		dot->GetComponent<ComponentUI>()->y = -origin.y * App->ui->panel_game->height;
+	#else
+		x = origin.x * App->window->width;
+		y = origin.y * App->window->height;
+	#endif
+
+	if ((dot->GetComponent<ComponentUI>()->x + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
 	{
-		int xmotion = App->input->GetMouseXMotion();
-		trans_dot->global_transformation[0][3] = trans_dot->global_transformation[0][3] + (xmotion * 0.25f);
-
-		float3 canvas_pos = canvas_trans->GetGlobalPosition();
-		float3 object_pos = trans_dot->GetGlobalPosition();
-		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
-		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
-
-		#ifndef GAME_VERSION
-			dot->GetComponent<ComponentUI>()->x = origin.x * App->ui->panel_game->width;
-			dot->GetComponent<ComponentUI>()->y = -origin.y * App->ui->panel_game->height;
-		#else
-			x = origin.x * App->window->width;
-			y = origin.y * App->window->height;
-		#endif
-
-		if ((dot->GetComponent<ComponentUI>()->x + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
-		{
-			//origin.x = ((((x + (width_bg * 0.5f)) - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height)))+38.5f;
-			origin.x = (origin.x) * 2;
-			origin.y = -(-origin.y - 0.5F) * 2;
-			trans_dot->global_transformation[0][3] = origin.x;
-			trans_dot->global_transformation[0][3] = origin.y;
-
-			//trans_dot->global_transformation[0][3] = origin.x;
-
-			
-			
-		}
-		else if (dot->GetComponent<ComponentUI>()->x - (width * 0.5f) <= x - (width_bg * 0.5f))
-		{
-			trans_dot->global_transformation[0][3] = trans->global_transformation[0][3];
-
-		}
-
+		trans_dot->global_transformation[0][3] = trans->global_transformation[0][3] + trans->global_transformation[0][0] - trans_dot->global_transformation[0][0];
 	}
-
-
-	
-
-	
+	else if (dot->GetComponent<ComponentUI>()->x - (width * 0.5f) <= x - (width_bg * 0.5f))
+	{
+		trans_dot->global_transformation[0][3] = trans->global_transformation[0][3] - trans->global_transformation[0][0] + trans_dot->global_transformation[0][0];
+	}
 
 	current_color = pressed_color;
 
