@@ -94,14 +94,10 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Spacing();
 
 		// ----------------------------------- Emmitter ----------------------------------------
-		static bool enable_emmitter = false;
 		
-		ImGui::Checkbox("##pptActiveEmmitter", &enable_emmitter);
-		
-		ImGui::SameLine();
 
 
-		if (ImGui::TreeNodeEx("Emmitter", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Emmitter", ImGuiTreeNodeFlags_Bullet  | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -204,13 +200,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 		// ----------------------------------- Particle ----------------------------------------
 
-		static bool enable_particle = false;
-		
-		ImGui::Checkbox("##pptActiveParticle", &enable_particle);
-		
-		ImGui::SameLine();
-
-		if (ImGui::TreeNodeEx("Particle", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Particle", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -258,26 +248,16 @@ bool ComponentParticleSystem::DrawInspector()
 
 		// ----------------------------------- Renderer ----------------------------------------
 
-		static bool enable_renderer = false;
-		
-		ImGui::Checkbox("##pptActiveRenderer", &enable_renderer);
-		
 		
 
-		ImGui::SameLine();
 
-
-		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_NavLeftJumpsBackHere))
+		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			
-			if (!enable_renderer)
-			{
-				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			}
-
+		
 			ImGui::Spacing();
 			ImGui::Separator();
+			ImGui::Spacing();
 			ImGui::Spacing();
 
 			ImGui::Text("Orientation Mode ");
@@ -290,12 +270,14 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 
-			ImGui::Text("Particle Material ");
+			ImGui::Text("Particle Texture ");
 
 			//static ResourceTexture* selected_texture = nullptr;
 
 			if (texture != nullptr)
 			{
+				ImGui::Spacing();
+				ImGui::Spacing();
 
 				static bool check;
 				check = texture_activated;
@@ -334,11 +316,16 @@ bool ComponentParticleSystem::DrawInspector()
 			}
 
 			else {
+				
+
 				ImGui::SameLine(200, 15);
 				if (ImGui::Button("Add Texture", { 120,20 })) {
 					change_texture_menu = true;
 					selected_texture = texture;
 				}
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture assigned");
+				ImGui::Spacing();
 			}
 
 
@@ -349,69 +336,66 @@ bool ComponentParticleSystem::DrawInspector()
 
 			ImGui::Spacing();
 			ImGui::Spacing();
+			ImGui::Spacing();
+			
+			
 
+			static bool enable_blend = false;
 
-			// Material
-
-			//// Add texture
-			//if (ImGui::Button("Choose Texture"))
-			//{
-			///*	App->editor->textureBrowser->SetActive(true);
-			//	App->editor->textureBrowser->callback = this;*/
-			//}
-
-			//if (resMat != nullptr)
-			//{
-			//	// If there is a texture, option to remove it
-			//	ImGui::SameLine();
-			//	if (ImGui::Button("Remove texture"))
-			//	{
-			//		App->editor->textureBrowser->callback = this;
-			//		App->editor->textureBrowser->callback->AssignResource(0);
-			//		App->editor->textureBrowser->callback = nullptr;
-			//	}
-
-			//	ImGui::Spacing();
-			//	ImGui::Text(resMat->GetName());
-			//	ImGui::Image((ImTextureID)resMat->gpu_id, ImVec2(ImVec2(PREVIEW_SIZE * 3, PREVIEW_SIZE * 3)), { 0,1 }, { 1,0 });
-			//	ImGui::Text("Reference Counting: ");
-			//	ImGui::SameLine();
-			//	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%i", (resMat == nullptr) ? 0 : resMat->CountReferences() - 1);
-			//	ImGui::Spacing();
-			//	ImGui::Text("Transparency: ");
-			//	ImGui::SliderFloat(" ", &particleSystem->particleInfo.color.w, 0.0f, 1.0f);
-			//	ImGui::Spacing();
-			//}
-			//else
+			ImGui::Checkbox("##pptActiveBlend", &enable_blend);
+			ImGui::SameLine();
+			
+			if (ImGui::TreeNodeEx("Blending Options", ImGuiTreeNodeFlags_Framed))
 			{
+				
 				ImGui::Spacing();
-				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture assigned");
-				ImGui::Spacing();
-			}
 
-			if (ImGui::TreeNodeEx("Blending Options"))
-			{
-				ImGui::Text("Blending Color: ");
-				if (ImGui::Combo("Source", &funcTypeSource, "ZERO\0ONE\0SRC_COLOR\0ONE_MINUS_SRC_COLOR\0DST_COLOR\0ONE_MINUS_DST_COLOR\0SRC_ALPHA\0ONE_MINUS_SRC_ALPHA\0DST_ALPHA\0ONE_MINUS_DST_ALPHA\0CONSTANT_COLOR\0ONE_MINUS_CONSTANT_COLOR\0CONSTANT_ALPHA\0ONE_MINUS_CONSTANT_ALPHA\0\0"))
+				if (!enable_blend)
+				{
+					ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+					ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+				}
+
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "Transparency:");
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Text("Alpha test: "); ImGui::SameLine(200, 15);
+				ImGui::SliderFloat("##alpha test", (float*)&particleSystem->alpha_test, 0.1f, 1.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "Blending Color:");
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Text("Source ");
+				ImGui::SameLine(200, 15);
+				if (ImGui::Combo("##Source", &funcTypeSource, "ZERO\0ONE\0SRC_COLOR\0ONE_MINUS_SRC_COLOR\0DST_COLOR\0ONE_MINUS_DST_COLOR\0SRC_ALPHA\0ONE_MINUS_SRC_ALPHA\0DST_ALPHA\0ONE_MINUS_DST_ALPHA\0CONSTANT_COLOR\0ONE_MINUS_CONSTANT_COLOR\0CONSTANT_ALPHA\0ONE_MINUS_CONSTANT_ALPHA\0\0"))
 					particleSystem->funcBlendSource = (FunctionBlendType)funcTypeSource;
-
-				if (ImGui::Combo("Destination", &funcTypeDest, "ZERO\0ONE\0SRC_COLOR\0ONE_MINUS_SRC_COLOR\0DST_COLOR\0ONE_MINUS_DST_COLOR\0SRC_ALPHA\0ONE_MINUS_SRC_ALPHA\0DST_ALPHA\0ONE_MINUS_DST_ALPHA\0CONSTANT_COLOR\0ONE_MINUS_CONSTANT_COLOR\0CONSTANT_ALPHA\0ONE_MINUS_CONSTANT_ALPHA\0\0"))
+				ImGui::Text("Destination ");
+				ImGui::SameLine(200, 15);
+				if (ImGui::Combo("##Destination", &funcTypeDest, "ZERO\0ONE\0SRC_COLOR\0ONE_MINUS_SRC_COLOR\0DST_COLOR\0ONE_MINUS_DST_COLOR\0SRC_ALPHA\0ONE_MINUS_SRC_ALPHA\0DST_ALPHA\0ONE_MINUS_DST_ALPHA\0CONSTANT_COLOR\0ONE_MINUS_CONSTANT_COLOR\0CONSTANT_ALPHA\0ONE_MINUS_CONSTANT_ALPHA\0\0"))
 					particleSystem->funcBlendDest = (FunctionBlendType)funcTypeDest;
 
 				ImGui::Spacing();
-
+				ImGui::Spacing();
 				ImGui::Text("Blend Equation: ");
-				if (ImGui::Combo("Equation Mode", &eqTypeSelected, "ADD\0SUBTRACT\0REVERSE SUBTRACT\0\0"))
+				ImGui::SameLine(200, 15);
+				if (ImGui::Combo("##Equation Mode", &eqTypeSelected, "ADD\0SUBTRACT\0REVERSE SUBTRACT\0\0"))
 					particleSystem->eqBlend = (EquationBlendType)eqTypeSelected;
+
+				if (!enable_blend)
+				{
+					ImGui::PopItemFlag();
+					ImGui::PopStyleVar();
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
 
 				ImGui::TreePop();
 			}
-
-			if (!enable_renderer)
-			{
-				ImGui::PopItemFlag();
-				ImGui::PopStyleVar();
-			}
+			
 
 			ImGui::TreePop();
 		}
@@ -420,24 +404,42 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		/*if (ImGui::TreeNodeEx("Save & Load", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Serialization", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			if (ImGui::Button("Save Particle System")) {
-				App->serialization->particleCallback = this;
-				App->editor->browser->OpenBrowser(BrowserState::SAVE_PARTICLE_SYSTEM);
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text("Save Particle System ");
+			ImGui::SameLine(200, 15);
+			if (ImGui::Button("Load", { 120,20 })) {
+					//App->serialization->particleCallback = this;
+					//App->editor->browser->OpenBrowser(BrowserState::SAVE_PARTICLE_SYSTEM);
 			}
-			ImGui::SameLine();
-			if (ImGui::Button("Load Particle System")) {
-				App->serialization->particleCallback = this;
-				App->editor->browser->OpenBrowser(BrowserState::LOAD_PARTICLE_SYSTEM);
+				
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text("Load Particle System ");
+			ImGui::SameLine(200, 15);
+			if (ImGui::Button("Save", { 120,20 })) {
+					//App->serialization->particleCallback = this;
+					//App->editor->browser->OpenBrowser(BrowserState::LOAD_PARTICLE_SYSTEM);
 			}
 
-			ImGui::TreePop();
-		}*/
+				
 
-		ImGui::Spacing;
-		if (ImGui::Button("Restart Particle System")) particleSystem->ResetSystem();
+		
+			if (ImGui::Button("Restart Particle System")) particleSystem->ResetSystem();
 
+
+		ImGui::TreePop();
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
 
 	return true;
@@ -446,7 +448,7 @@ bool ComponentParticleSystem::DrawInspector()
 void ComponentParticleSystem::TextureBrowser()
 {
 	ImGui::OpenPopup("Textures Loaded");
-	ImGui::SetNextWindowSize({ 522,570 });
+	ImGui::SetNextWindowSize({ 522,585 });
 
 	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
 		ImGui::Spacing();
@@ -465,11 +467,11 @@ void ComponentParticleSystem::TextureBrowser()
 			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
 			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
 			ImGui::Text("");
-			ImGui::SameLine(112);
-			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
-			ImGui::Text("");
 			ImGui::SameLine(150);
 			ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->references);
+			ImGui::Text("");
+			ImGui::SameLine(112);
+			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
 		}
 		ImGui::Spacing();
 

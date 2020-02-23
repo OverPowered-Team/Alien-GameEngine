@@ -90,5 +90,6 @@ public:
 
 	int sourceFactor;
 	int destinationFactor;
+	float alpha_test = 0.1f;
 
 };
