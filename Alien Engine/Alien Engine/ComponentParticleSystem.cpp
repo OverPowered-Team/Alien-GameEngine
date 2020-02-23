@@ -520,4 +520,243 @@ ParticleSystem* ComponentParticleSystem::GetSystem() const
 	return particleSystem;
 }
 
+void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
+{
+	// --------------- General Info -------------------- //
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetString("ID", std::to_string(ID));
+
+	// ----------------------- Billboard Info ----------------------- //
+
+	to_save->SetNumber("Billboard", (int)particleSystem->bbType);
+
+	// --------------- Particle System Start Info -------------------- //
+
+	// Position
+	to_save->SetFloat3("Start.Position", particleSystem->particleInfo.position);
+	// Rotation
+	to_save->SetQuat("Start.Rotation", particleSystem->particleInfo.rotation); 
+	// Velocity
+	to_save->SetFloat3("Start.Velocity", particleSystem->particleInfo.velocity);
+	// Force
+	to_save->SetFloat3("Start.Force", particleSystem->particleInfo.force);
+	// Speed
+	to_save->SetNumber("Start.Speed", (int)particleSystem->particleInfo.speed);
+	// Color
+	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.color);
+	// Size
+	to_save->SetNumber("Start.Size", (int)particleSystem->particleInfo.size);
+	// LightColor
+	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.lightColor);
+	// MaxLifeTime
+	to_save->SetNumber("Start.MaxLifeTime", (int)particleSystem->particleInfo.maxLifeTime);
+	// changeOverLifeTime
+	to_save->SetBoolean("Start.ChangeOverLifeTime", particleSystem->particleInfo.changeOverLifeTime);
+	
+	// ----------------- Particle System End Info -------------------- //
+
+	// Color
+	to_save->SetFloat4("End.Color", particleSystem->endInfo.color);
+	// Size
+	to_save->SetNumber("End.Size", (int)particleSystem->endInfo.size);
+	// LightColor
+	to_save->SetFloat4("End.Color", particleSystem->endInfo.lightColor);
+	// Force
+	to_save->SetFloat3("End.Force", particleSystem->endInfo.force);
+
+	// ---------------------- Emitter Info --------------------------- //
+
+	// Shape
+	to_save->SetNumber("Emmitter.Shape", (int)particleSystem->emmitter.GetShape());
+	// Radius
+	to_save->SetNumber("Emmitter.Radius", particleSystem->emmitter.GetRadius());
+	// OutterRadius
+	to_save->SetNumber("Emmitter.OutRadius", particleSystem->emmitter.GetOutRadius());
+	// MaxLife
+	to_save->SetNumber("Emmitter.MaxLife", particleSystem->emmitter.GetMaxLife());
+	// CurrentLife
+	to_save->SetNumber("Emmitter.CurrentLife", particleSystem->emmitter.GetCurrentLife());
+	// SpawnRate
+	to_save->SetNumber("Emmitter.SpawnRate", particleSystem->emmitter.GetSpawnRate());
+	// Delay
+	to_save->SetNumber("Emmitter.Delay", particleSystem->emmitter.GetDelay());
+	// Loop
+	to_save->SetBoolean("Emmitter.Loop", particleSystem->emmitter.GetLoop());
+	// Position
+	to_save->SetFloat3("Emmitter.Position", particleSystem->emmitter.GetPosition());
+	// RelativePosition
+	to_save->SetFloat3("Emmitter.RelativePosition", particleSystem->emmitter.GetRelativePosition());
+	// Rotation
+	to_save->SetFloat3("Emmitter.Rotation", particleSystem->emmitter.GetRotation());
+	// Relative Rotation
+	to_save->SetFloat3("Emmitter.RelativeRotation", particleSystem->emmitter.GetRelativeRotation());
+	// Scale
+	to_save->SetFloat3("Emmitter.Scale", particleSystem->emmitter.GetScale());
+
+	// ------------------------ Burst Info --------------------------- //
+
+	// Burst List size
+	to_save->SetNumber("Bursts.Size", particleSystem->emmitter.bursts.size());
+
+	std::string name;
+	for (int i = 0; i < particleSystem->emmitter.bursts.size(); ++i)
+	{
+		// TimeBurst
+		name = "Burst.TimeBurst-";
+		name += i + '0';
+		to_save->SetNumber(name.c_str(), particleSystem->emmitter.bursts[i].timeToBurst);
+
+		// PartsInstanciate
+		name = "Burst.PartsInstanciate-";
+		name += i + '0';
+		to_save->SetNumber(name.c_str(), particleSystem->emmitter.bursts[i].partsToInstantiate);
+	}
+
+	// ---------------------- Blending Info -------------------------- //
+
+	// Source
+	to_save->SetNumber("Blending.Source", (int)particleSystem->funcBlendSource);
+	// Destination
+	to_save->SetNumber("Blending.Destination", (int)particleSystem->funcBlendDest);
+	// Equation
+	to_save->SetNumber("Blending.Equation", (int)particleSystem->eqBlend);
+
+	// --------------- Material Resource Info -------------------- //
+
+	/*if (currentResource != nullptr)
+	{
+		tmp_ps = name + "Resource Material Name";
+		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetName());
+
+		tmp_ps = name + "Resource Material UUID";
+		json_object_dotset_number(object, tmp_ps.c_str(), currentResource->GetUID());
+
+		tmp_ps = name + "Resource Material File";
+		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetFile());
+
+		tmp_ps = name + "Resource Material Path";
+		json_object_dotset_string(object, tmp_ps.c_str(), currentResource->GetExportedFile());
+	}
+	else
+	{
+		tmp_ps = name + "Resource Material Name";
+		json_object_dotset_string(object, tmp_ps.c_str(), "");
+		tmp_ps = name + "Resource Material UUID";
+		json_object_dotset_number(object, tmp_ps.c_str(), 0);
+		tmp_ps = name + "Resource Material File";
+		json_object_dotset_string(object, tmp_ps.c_str(), "");
+		tmp_ps = name + "Resource Material Path";
+		json_object_dotset_string(object, tmp_ps.c_str(), "");
+	}*/
+}
+
+void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
+{
+	// --------------- General Info -------------------- //
+	//to_load->GetNumber("Type");
+	ID = std::stoull(to_load->GetString("ID"));
+
+	// ----------------------- Billboard Info ----------------------- //
+
+	particleSystem->bbType = (BillboardType)(int)to_load->GetNumber("Billboard");
+
+	// --------------- Particle System Start Info -------------------- //
+
+	// Position
+	particleSystem->particleInfo.position = to_load->GetFloat3("Start.Position");
+	// Rotation
+	particleSystem->particleInfo.rotation = to_load->GetQuat("Start.Rotation");
+	// Velocity
+	particleSystem->particleInfo.velocity = to_load->GetFloat3("Start.Velocity");
+	// Force
+	particleSystem->particleInfo.force = to_load->GetFloat3("Start.Force");
+	// Speed
+	particleSystem->particleInfo.speed = to_load->GetNumber("Start.Speed");
+	// Color
+	particleSystem->particleInfo.color = to_load->GetFloat4("Start.Color");
+	// Size
+	particleSystem->particleInfo.size = to_load->GetNumber("Start.Size");
+	// LightColor
+	particleSystem->particleInfo.lightColor = to_load->GetFloat4("Start.Color");
+	// MaxLifeTime
+	particleSystem->particleInfo.maxLifeTime = to_load->GetNumber("Start.MaxLifeTime");
+	// changeOverLifeTime
+	particleSystem->particleInfo.changeOverLifeTime = to_load->GetBoolean("Start.ChangeOverLifeTime");
+
+	// ----------------- Particle System End Info -------------------- //
+
+	// Color
+	particleSystem->endInfo.color = to_load->GetFloat4("End.Color");
+	// Size
+	particleSystem->endInfo.size = to_load->GetNumber("End.Size");
+	// LightColor
+	particleSystem->endInfo.lightColor = to_load->GetFloat4("End.Color");
+	// Force
+	particleSystem->endInfo.force = to_load->GetFloat3("End.Force");
+
+	// ---------------------- Emitter Info --------------------------- //
+
+	particleSystem->ResetSystem();
+
+	// Shape
+	particleSystem->emmitter.SetShape((Emmitter_Shape)(int)to_load->GetNumber("Emmitter.Shape"));
+	// Radius
+	particleSystem->emmitter.SetRadius(to_load->GetNumber("Emmitter.Radius"));
+	// OutterRadius
+	particleSystem->emmitter.SetOutRadius(to_load->GetNumber("Emmitter.OutRadius"));
+	// MaxLife
+	particleSystem->emmitter.SetMaxLife(to_load->GetNumber("Emmitter.MaxLife"));
+	//// CurrentLife
+	//particleSystem->emmitter.SetCurrentLife(to_load->GetNumber("Emmitter.CurrentLife"));
+	// SpawnRate
+	particleSystem->emmitter.SetSpawnRate(to_load->GetNumber("Emmitter.SpawnRate"));
+	// Delay
+	particleSystem->emmitter.SetDelay(to_load->GetNumber("Emmitter.Delay"));
+	// Loop
+	particleSystem->emmitter.SetLoop(to_load->GetBoolean("Emmitter.Loop"));
+	// Position
+	particleSystem->emmitter.SetPosition(to_load->GetFloat3("Emmitter.Position"));
+	// RelativePosition
+	particleSystem->emmitter.SetRelativePosition(to_load->GetFloat3("Emmitter.RelativePosition"));
+	// Rotation
+	particleSystem->emmitter.SetRotation(to_load->GetFloat3("Emmitter.Rotation"));
+	// Relative Rotation
+	particleSystem->emmitter.SetRelativeRotation(to_load->GetFloat3("Emmitter.RelativeRotation"));
+	// Scale
+	particleSystem->emmitter.SetScale(to_load->GetFloat3("Emmitter.Scale"));
+
+	// ------------------------ Burst Info --------------------------- //
+
+	// Clean Burst List 
+	particleSystem->emmitter.bursts.clear();
+
+	// Burst List size
+	int burstListSize = to_load->GetNumber("Bursts.Size");
+
+	std::string name;
+	for (int i = 0; i < burstListSize; ++i)
+	{
+		particleSystem->emmitter.bursts.push_back(Burst());
+
+		// TimeBurst
+		name = "Burst.TimeBurst-";
+		name += i + '0';
+		particleSystem->emmitter.bursts[i].timeToBurst = to_load->GetNumber(name.c_str());
+
+		// PartsInstanciate
+		name = "Burst.PartsInstanciate-";
+		name += i + '0';
+		particleSystem->emmitter.bursts[i].partsToInstantiate = to_load->GetNumber(name.c_str());
+	}
+
+	// ---------------------- Blending Info -------------------------- //
+
+	// Source
+	particleSystem->funcBlendSource = (FunctionBlendType)(int)to_load->GetNumber("Blending.Source");
+	// Destination
+	particleSystem->funcBlendDest = (FunctionBlendType)(int)to_load->GetNumber("Blending.Destination");
+	// Equation
+	particleSystem->eqBlend = (EquationBlendType)(int)to_load->GetNumber("Blending.Equation");
+}
+
 

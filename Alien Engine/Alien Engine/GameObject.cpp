@@ -1415,6 +1415,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
 				break; }
+			case (int)ComponentType::PARTICLES: {
+				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
+				particleSystem->LoadComponent(components_to_load);
+				AddComponent(particleSystem);
+				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);

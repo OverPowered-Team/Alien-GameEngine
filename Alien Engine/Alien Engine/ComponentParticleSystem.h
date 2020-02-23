@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Component.h"
-
+class JSONArraypack;
 class ParticleSystem;
+
 class __declspec(dllexport) ComponentParticleSystem : public Component {
 	friend class ReturnZ;
 	friend class CompZ;
@@ -44,8 +45,8 @@ public:
 	ParticleSystem* GetSystem() const;
 
 	// Parser
-	void Save(JSONArraypack* to_save) const;
-	void Load(JSONArraypack* to_load);
+	void SaveComponent(JSONArraypack* to_save) override;
+	void LoadComponent(JSONArraypack* to_load) override;
 
 private:
 
