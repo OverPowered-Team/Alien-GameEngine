@@ -16,6 +16,7 @@ class ResourceMesh : public Resource {
 public:
 
 	ResourceMesh();
+	ResourceMesh(ResourceMesh* r_mesh);
 	virtual ~ResourceMesh();
 
 	bool CreateMetaData(const u64& force_id = 0);
@@ -29,6 +30,8 @@ public:
 	void ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link = std::pair<GameObject*, GameObject*>(nullptr,nullptr));
 
 	void InitBuffers();
+
+	void Reset();
 
 public:
 

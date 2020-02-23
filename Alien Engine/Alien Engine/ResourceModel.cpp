@@ -79,6 +79,28 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 			meta->StartSave();
 			meta->SetString("Model.Name", name);
+
+
+			meta->SetNumber("Model.NumBones", bones_attached.size());
+			alien->SetNumber("Meta.NumBones", bones_attached.size());
+
+			std::string* bones_paths = new std::string[bones_attached.size()];
+			for (int i = 0; i < bones_attached.size(); ++i)
+			{
+				if (meta_bones_paths != nullptr)
+				{
+					std::string path_ = App->file_system->GetBaseFileName(meta_bones_paths[i].data()); //std::stoull().data());
+					bones_attached[i]->CreateMetaData(std::stoull(path_));
+				}
+				else
+				{
+					bones_attached[i]->CreateMetaData();
+				}
+
+				bones_paths[i] = bones_attached[i]->GetLibraryPath();
+				LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
+			}
+
 			meta->SetNumber("Model.NumMeshes", meshes_attached.size());
 			alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
 
@@ -87,6 +109,16 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			for (; item != meshes_attached.end(); ++item) {
 				if ((*item) != nullptr) 
 				{
+					if (bones_attached.size() > 0) //Check if this resourcemesh is a bone
+					{
+						for each (ResourceBone * bone in bones_attached)
+						{
+							if (bone->name == (*item)->name)
+							{
+								(*item)->bone_id = bone->GetID();
+							}
+						}
+					}
 					if (meta_mesh_paths != nullptr) {
 						std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
 						(*item)->CreateMetaData(std::stoull(path_));
@@ -130,26 +162,6 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 				animation_paths[i] = animations_attached[i]->GetLibraryPath();
 				LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
-			}
-
-			meta->SetNumber("Model.NumBones", bones_attached.size());
-			alien->SetNumber("Meta.NumBones", bones_attached.size());
-
-			std::string* bones_paths = new std::string[bones_attached.size()];
-			for (int i = 0; i < bones_attached.size(); ++i)
-			{
-				if (meta_bones_paths != nullptr)
-				{
-					std::string path_ = App->file_system->GetBaseFileName(meta_bones_paths[i].data()); //std::stoull().data());
-					bones_attached[i]->CreateMetaData(std::stoull(path_));
-				}
-				else
-				{
-					bones_attached[i]->CreateMetaData();
-				}
-
-				bones_paths[i] = bones_attached[i]->GetLibraryPath();
-				LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
 			}
 
 			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());

@@ -12,8 +12,12 @@ public:
 	virtual ~ComponentDeformableMesh();
 
 	void AttachSkeleton(ComponentTransform* root);
-private:
+
+protected:
 	void AttachBone(ComponentTransform* bone_transform);
+	void UpdateDeformableMesh();
+	void DrawPolygon();
+
 private:
 	ResourceMesh* deformable_mesh = nullptr;
 	std::vector<ComponentBone*> bones;

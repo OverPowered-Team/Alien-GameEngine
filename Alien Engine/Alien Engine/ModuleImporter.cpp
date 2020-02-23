@@ -191,17 +191,6 @@ void ModuleImporter::LoadSceneNode(const aiNode* node, const aiScene* scene, Res
 			next_parent->parent_name = parent->name;
 	}
 
-	if (model->bones_attached.size() > 0)
-	{
-		for each (ResourceBone* bone in model->bones_attached)
-		{
-			if (bone->name == node->mName.C_Str())
-			{
-				next_parent->bone_id = bone->GetID();
-			}
-		}
-	}
-
 	if (next_parent != nullptr) {
 		mat = mat * node->mTransformation;
 		aiVector3D pos, scale;

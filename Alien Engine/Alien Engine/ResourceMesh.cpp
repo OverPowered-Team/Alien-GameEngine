@@ -13,6 +13,56 @@ ResourceMesh::ResourceMesh() : Resource()
 	type = ResourceType::RESOURCE_MESH;
 }
 
+ResourceMesh::ResourceMesh(ResourceMesh* r_mesh)
+{
+	num_index = r_mesh->num_index;
+	num_vertex = r_mesh->num_vertex;
+	num_faces = r_mesh->num_faces;
+
+	uint bytes = sizeof(float) * num_vertex * 3;
+	if (num_vertex > 0) {
+		vertex = new float[num_vertex * 3];
+		memcpy(vertex, r_mesh->vertex, bytes);
+	}
+
+	bytes = sizeof(uint) * num_index;
+	if (num_index > 0) {
+		index = new uint[num_index];
+		memcpy(index, r_mesh->index, bytes);
+	}
+
+	// normals
+	if (r_mesh->normals) {
+		bytes = sizeof(float) * num_vertex * 3;
+		normals = new float[num_vertex * 3];
+		memcpy(normals, r_mesh->normals, bytes);
+
+		bytes = sizeof(float) * num_faces * 3;
+		center_point = new float[num_faces * 3];
+		memcpy(center_point, r_mesh->center_point, bytes);
+
+		bytes = sizeof(float) * num_faces * 3;
+		center_point_normal = new float[num_faces * 3];
+		memcpy(center_point_normal, r_mesh->center_point_normal, bytes);
+	}
+
+	// uv
+	if (r_mesh->uv_cords) {
+		bytes = sizeof(float) * num_vertex * 3;
+		uv_cords = new float[num_vertex * 3];
+		memcpy(uv_cords, r_mesh->uv_cords, bytes);
+	}
+
+	if (r_mesh->texture_id != 0) {
+		texture_id = r_mesh->texture_id;
+		texture = (ResourceTexture*)App->resources->GetResourceWithID(r_mesh->texture_id);
+	}
+
+	if (num_vertex != 0) {
+		InitBuffers();
+	}
+}
+
 ResourceMesh::~ResourceMesh()
 {	
 	FreeMemory();
@@ -44,7 +94,7 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 
 	uint size = sizeof(ranges) + parent_name.size() + name.size() + texture_size +
 		sizeof(float) * 4 + sizeof(float) * 3 + sizeof(float) * 4 + sizeof(float) * 3 + vertex_size +
-		index_size + normals_size + uv_size;
+		index_size + normals_size + uv_size + sizeof(bool) + sizeof(u64);
 
 	char* data = new char[size]; 
 	char* cursor = data;
@@ -88,6 +138,16 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 
 	bytes = sizeof(float) * 3;
 	memcpy(cursor, scale.ptr(), bytes);
+	cursor += bytes;
+	bytes_moved += bytes;
+
+	bytes = sizeof(bool);
+	memcpy(cursor, &deformable, bytes);
+	cursor += bytes;
+	bytes_moved += bytes;
+
+	bytes = sizeof(u64);
+	memcpy(cursor, &bone_id, bytes);
 	cursor += bytes;
 	bytes_moved += bytes;
 
@@ -192,6 +252,16 @@ bool ResourceMesh::ReadBaseInfo(const char* meta_file_path)
 
 		bytes = sizeof(float) * 3;
 		memcpy(&scale, cursor, bytes);
+		cursor += bytes;
+		bytes_moved += bytes;
+
+		bytes = sizeof(bool);
+		memcpy(&deformable, cursor, bytes);
+		cursor += bytes;
+		bytes_moved += bytes;
+
+		bytes = sizeof(u64);
+		memcpy(&bone_id, cursor, bytes);
 		cursor += bytes;
 		bytes_moved += bytes;
 
@@ -406,6 +476,8 @@ void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>*
 		if (skeleton_link.second == nullptr)
 			skeleton_link.second = obj;
 		ComponentBone* bone = new ComponentBone(obj);
+		bone->AddBone((ResourceBone*)App->resources->GetResourceWithID(bone_id));
+		bone->GetBone()->IncreaseReferences();
 		obj->AddComponent(bone);
 	}
 }
@@ -437,5 +509,15 @@ void ResourceMesh::InitBuffers()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_normals);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
 			normals, GL_STATIC_DRAW);
+	}
+}
+
+void ResourceMesh::Reset()
+{
+	memset(vertex, 0, sizeof(float) * num_vertex * 3);
+
+	if (normals > 0)
+	{
+		memset(normals, 0, sizeof(float) * num_vertex * 3);
 	}
 }

@@ -477,6 +477,8 @@ void GameObject::DrawScene()
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -510,6 +512,8 @@ void GameObject::DrawGame()
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if(mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -528,6 +532,8 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 {
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+		if (mesh == nullptr) //not sure if this is the best solution
+			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {

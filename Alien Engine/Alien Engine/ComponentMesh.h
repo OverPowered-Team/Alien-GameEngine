@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	void DrawPolygon();
+	virtual void DrawPolygon();
 	void DrawOutLine();
 	void DrawMesh();
 	void DrawVertexNormals();
