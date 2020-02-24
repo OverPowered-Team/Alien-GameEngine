@@ -82,10 +82,12 @@ bool ModuleAudio::CleanUp()
 	WwiseT::StopAllEvents();
 
 	UnloadAllBanksFromWwise();
-	for (auto b = banks.begin(); b != banks.end(); b++) {
+	for (auto b = banks.begin(); b != banks.end(); b++)
 		delete* b;
-	}
 	banks.clear();
+
+	/*for (auto u_b = used_banks.begin(); u_b != used_banks.end(); ++u_b)
+		delete* u_b;*/
 	used_banks.clear();
 
 	return WwiseT::CloseSoundEngine();

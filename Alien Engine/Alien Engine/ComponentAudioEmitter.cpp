@@ -23,7 +23,6 @@ void ComponentAudioEmitter::Update()
 	}
 	else if (Time::state == Time::GameState::PLAY) {
 		if (!play_mode && play_on_awake) {
-			//Load necessary banks
 			Mute(mute);
 			StartSound();
 			play_mode = true;
@@ -92,7 +91,8 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	mute = to_load->GetBoolean("Mute");
 	current_bank = std::stoull(to_load->GetString("Bank"));
 	current_event = std::stoull(to_load->GetString("Event"));
-	audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
+	if(enabled)
+		audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
@@ -176,4 +176,14 @@ bool ComponentAudioEmitter::AlreadyUsedBank(const Bank* bk)
 	}
 
 	return false;
+}
+
+void ComponentAudioEmitter::OnEnable()
+{
+	audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
+}
+
+void ComponentAudioEmitter::OnDisable()
+{
+	audio_name = "";
 }
