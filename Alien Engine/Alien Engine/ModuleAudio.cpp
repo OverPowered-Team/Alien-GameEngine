@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleAudio.h"
 #include "ComponentAudioEmitter.h"
+#include "mmgr/mmgr.h"
 
 ModuleAudio::ModuleAudio(bool start_enabled) : Module(start_enabled)
 {
@@ -80,6 +81,7 @@ bool ModuleAudio::CleanUp()
 
 	WwiseT::StopAllEvents();
 
+	UnloadAllBanksFromWwise();
 	for (auto b = banks.begin(); b != banks.end(); b++) {
 		delete* b;
 	}
