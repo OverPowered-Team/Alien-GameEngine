@@ -10,6 +10,7 @@ class __declspec(dllexport) ComponentTransform : public Component {
 	friend class ComponentMesh;
 	friend class ComponentUI;
 	friend class ComponentText;
+	friend class ComponentCheckbox;
 	friend class ComponentBar;
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;

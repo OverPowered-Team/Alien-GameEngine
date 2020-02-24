@@ -17,6 +17,9 @@ public:
 
 	bool DrawInspector();
 
+	void Draw(bool isGame) override;
+	void DrawTexture(bool isGame, ResourceTexture* tex);
+
 	bool OnHover();
 	bool OnClick();
 	bool OnPressed();
@@ -35,7 +38,8 @@ public:
 	void AddListenerOnClickRepeat(std::function<void()> funct);
 	void AddListenerOnRelease(std::function<void()> funct);
 
-	void SetCheckboxState(bool value);
+	
+	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
@@ -48,6 +52,11 @@ private:
 
 public:
 	bool clicked = false;
+	float crossScaleX = 0.5F;
+	float crossScaleY = 0.5F;
+	float tickScaleX = 0.5F;
+	float tickScaleY = 0.5F;
+
 
 private:
 	std::vector<std::function<void()>> listenersOnHover;
@@ -56,8 +65,9 @@ private:
 	std::vector<std::function<void()>> listenersOnRelease;
 
 	ComponentCanvas* GetCanvas();
-	GameObject* tick = nullptr;
-	GameObject* cross = nullptr;
+
+	ResourceTexture* crossTexture = nullptr;
+	ResourceTexture* tickTexture = nullptr;
 };
 
 
