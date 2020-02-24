@@ -18,7 +18,7 @@
 
 ComponentSlider::ComponentSlider(GameObject* obj) : ComponentUI(obj)
 {
-	type = ComponentType::UI_SLIDER;
+	ui_type = ComponentType::UI_SLIDER;
 
 	//---------------------------------------------------------
 	dot = new GameObject(game_object_attached);
@@ -47,7 +47,7 @@ bool ComponentSlider::DrawInspector()
 
 		ImGui::Spacing();
 
-		ImGui::PushID(this);
+		/*ImGui::PushID(this);
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
@@ -55,7 +55,7 @@ bool ComponentSlider::DrawInspector()
 		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
 
-		ImGui::PopID();
+		ImGui::PopID();*/
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
@@ -178,10 +178,84 @@ void ComponentSlider::Clone(Component* clone)
 
 void ComponentSlider::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetNumber("X", x);
+	to_save->SetNumber("Y", y);
+	to_save->SetNumber("Width", size.x);
+	to_save->SetNumber("Height", size.y);
+
+	to_save->SetBoolean("Enabled", enabled);
+	
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("UIType", (int)ui_type);
+	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
+	to_save->SetColor("ColorCurrent", current_color);
+	to_save->SetColor("ColorIdle", idle_color);
+	to_save->SetColor("ColorHover", hover_color);
+	to_save->SetColor("ColorClicked", clicked_color);
+	to_save->SetColor("ColorPressed", pressed_color);
+	to_save->SetColor("ColorDisabled", disabled_color);
+
+	to_save->SetNumber("TickID", dot->ID);
+	
 }
 
 void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 {
+	x = to_load->GetNumber("X");
+	y = to_load->GetNumber("Y");
+	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	//UpdateVertex();
+
+	enabled = to_load->GetBoolean("Enabled");
+
+	current_color = to_load->GetColor("ColorCurrent");
+	idle_color = to_load->GetColor("ColorIdle");
+	hover_color = to_load->GetColor("ColorHover");
+	clicked_color = to_load->GetColor("ColorClicked");
+	pressed_color = to_load->GetColor("ColorPressed");
+	disabled_color = to_load->GetColor("ColorDisabled");
+
+
+	u64 textureID = std::stoull(to_load->GetString("TextureID"));
+	if (textureID != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+		if (tex != nullptr) {
+			SetTexture(tex);
+		}
+	}
+
+	/*u64 tickID = std::stoull(to_load->GetString("TickID"));
+	if (tickID != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(tickID);
+		if (tex != nullptr) {
+			SetTexture(tex);
+		}
+	}
+
+	u64 crossID = std::stoull(to_load->GetString("CrossID"));
+	if (crossID != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(crossID);
+		if (tex != nullptr) {
+			SetTexture(tex);
+		}
+	}*/
+
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
 }
 
 bool ComponentSlider::OnHover()

@@ -29,6 +29,7 @@ ComponentCheckbox::ComponentCheckbox(GameObject* obj) : ComponentUI(obj)
 	ComponentImage* comp2 = new ComponentImage(cross);
 	cross->AddComponent(comp2);
 	cross->enabled = true;
+	UpdateVertex();
 	
 
 }
@@ -52,7 +53,7 @@ bool ComponentCheckbox::DrawInspector()
 
 		ImGui::Spacing();
 
-		ImGui::PushID(this);
+	/*	ImGui::PushID(this);
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
@@ -60,7 +61,7 @@ bool ComponentCheckbox::DrawInspector()
 		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
 
-		ImGui::PopID();
+		ImGui::PopID();*/
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
@@ -288,8 +289,8 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
 
-	to_save->SetNumber("TickID", cross->ID);
-	to_save->SetNumber("CrossID", tick->ID);
+	to_save->SetNumber("TickID", tick->ID);
+	to_save->SetNumber("CrossID", cross->ID);
 }
 
 void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
@@ -319,7 +320,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 		}
 	}
 
-	u64 tickID = std::stoull(to_load->GetString("TickID"));
+	/*u64 tickID = std::stoull(to_load->GetString("TickID"));
 	if (tickID != 0) {
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(tickID);
 		if (tex != nullptr) {
@@ -333,7 +334,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 		if (tex != nullptr) {
 			SetTexture(tex);
 		}
-	}
+	}*/
 
 	GameObject* p = game_object_attached->parent;
 	bool changed = true;

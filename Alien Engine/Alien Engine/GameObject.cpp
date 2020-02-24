@@ -15,6 +15,8 @@
 #include "ComponentImage.h"
 #include "ComponentBar.h"
 #include "ComponentUI.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -1515,6 +1517,18 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 					bar->ui_type = typeUI;
 					bar->LoadComponent(components_to_load);
 					AddComponent(bar);
+					break; }
+				case ComponentType::UI_CHECKBOX: {
+					ComponentCheckbox* checkbox = new ComponentCheckbox(this);
+					checkbox->ui_type = typeUI;
+					checkbox->LoadComponent(components_to_load);
+					AddComponent(checkbox);
+					break; }
+				case ComponentType::UI_SLIDER: {
+					ComponentSlider* slider = new ComponentSlider(this);
+					slider->ui_type = typeUI;
+					slider->LoadComponent(components_to_load);
+					AddComponent(slider);
 					break; }
 				default:
 					LOG_ENGINE("Unknown component UItype while loading");

@@ -55,12 +55,16 @@ void ComponentUI::ChangeVertex(float width, float height)
 
 void ComponentUI::UpdateVertex()
 {
-	vertices[0] = { 0,0,0 };
+	/*vertices[0] = { 0,0,0 };
 	vertices[1] = { 0, -size.y,0 };
 	vertices[2] = { size.x, -size.y,0 };
-	vertices[3] = { size.x, 0,0 };
+	vertices[3] = { size.x, 0,0 };*/
 
-	glGenBuffers(1, &verticesID);
+	vertices[0] = { -size.x,size.y,0 };
+	vertices[1] = { -size.x, -size.y,0 };
+	vertices[2] = { size.x, -size.y,0 };
+	vertices[3] = { size.x, size.y,0 };
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
 }

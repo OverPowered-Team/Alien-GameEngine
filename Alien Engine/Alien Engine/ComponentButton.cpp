@@ -29,7 +29,7 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 void ComponentButton::LoadComponent(JSONArraypack* to_load)
 {
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
-	UpdateVertex();
+	//UpdateVertex();
 
 	enabled = to_load->GetBoolean("Enabled");
 	current_color = to_load->GetColor("Color");
@@ -77,7 +77,7 @@ bool ComponentButton::DrawInspector()
 
 		ImGui::Spacing();
 
-		ImGui::PushID(this);
+		/*ImGui::PushID(this);
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
@@ -85,7 +85,7 @@ bool ComponentButton::DrawInspector()
 		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
 
-		ImGui::PopID();
+		ImGui::PopID();*/
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");

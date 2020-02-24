@@ -45,7 +45,7 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing();
 
-		ImGui::PushID(this);
+		/*ImGui::PushID(this);
 		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
 		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
@@ -53,7 +53,7 @@ bool ComponentBar::DrawInspector()
 		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
 			UpdateVertex();
 
-		ImGui::PopID();
+		ImGui::PopID();*/
 
 		ImGui::Text("Value:		"); ImGui::SameLine();
 		if (ImGui::DragFloat("##Value", &value, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
