@@ -44,9 +44,13 @@ public:
 	void SetTexture(ResourceTexture* tex);
 	ParticleSystem* GetSystem() const;
 
-	// Parser
+	// Serialization Component
 	void SaveComponent(JSONArraypack* to_save) override;
 	void LoadComponent(JSONArraypack* to_load) override;
+
+	// Serialization File
+	void LoadParticles();
+	void SaveParticles();
 
 private:
 
