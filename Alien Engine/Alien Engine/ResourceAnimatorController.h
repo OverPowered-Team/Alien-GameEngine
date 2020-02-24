@@ -109,6 +109,7 @@ public:
     void FreeMemory();
 	bool LoadMemory();
 	bool ReadBaseInfo(const char* meta_file_path);
+	void ReadLibrary(const char* meta_data);
 	bool CreateMetaData(const u64& force_id = 0) override;
 	bool DeleteMetaData() override;
 	bool SaveAsset(const u64& force_id = 0);

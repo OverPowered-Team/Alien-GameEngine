@@ -565,6 +565,10 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Controllers
+	App->file_system->DiscoverFiles(ANIM_CONTROLLER_FOLDER, files, directories);
+	ReadAnimControllers(directories, files, ANIM_CONTROLLER_FOLDER);
+
 	// Init Prefabs
 	App->file_system->DiscoverFiles(ASSETS_PREFAB_FOLDER, files, directories);
 	ReadPrefabs(directories, files, ASSETS_PREFAB_FOLDER);
@@ -577,6 +581,8 @@ void ModuleResources::ReadAllMetaData()
 
 	// Init Scenes
 	App->file_system->DiscoverFiles(SCENE_FOLDER, files, directories);
+
+
 
 	ReadScenes(directories, files, SCENE_FOLDER);
 
@@ -598,6 +604,15 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceModel* model = new ResourceModel();
 		model->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// anim controllers
+	App->file_system->DiscoverFiles(LIBRARY_ANIM_CONTROLLERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		anim_ctrl->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -668,6 +683,27 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadModels(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		if (!anim_ctrl->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = anim_ctrl->GetID();
+			anim_ctrl->CreateMetaData(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAnimControllers(new_directories, new_files, dir);
 		}
 	}
 }
@@ -791,6 +827,8 @@ void ModuleResources::CreateAsset(AssetType type)
 	case AssetType::UNKONWN:
 		break;
 	}
+
+	App->ui->panel_project->RefreshAllNodes();
 }
 
 void ModuleResources::CreateAnimatorController()
