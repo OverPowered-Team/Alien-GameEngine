@@ -62,6 +62,7 @@ private:
 	void LoadBone(const aiBone* bone);
 	void LoadMesh(const aiMesh* mesh);
 	void LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum);
+	void LoadMaterials(const aiMaterial* material);
 
 private:
 	ResourceModel* model = nullptr;

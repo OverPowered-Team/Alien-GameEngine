@@ -1,19 +1,25 @@
 {
     "Meta": {
-        "ID": "4308797207712270708",
+        "ID": "16862606846935950550",
         "Name": "ApplyScale_FBX_UnitsScale",
         "NumBones": 0,
         "NumMeshes": 4,
         "NumAnimations": 0,
         "Animations": [],
+        "NumMaterials": 3,
         "PathMeshes": [
-            "Library\/Meshes\/5311468262776638128.alienMesh",
-            "Library\/Meshes\/2049160191838023888.alienMesh",
-            "Library\/Meshes\/10561911443760133097.alienMesh",
-            "Library\/Meshes\/3715419957487350192.alienMesh"
+            "Library\/Meshes\/8869418902057291134.alienMesh",
+            "Library\/Meshes\/17954418717254819436.alienMesh",
+            "Library\/Meshes\/11031570039401964644.alienMesh",
+            "Library\/Meshes\/1944817729076844036.alienMesh"
         ],
         "PathAnimations": [],
-        "PathBones": []
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/5135375434315762415.alienMaterial",
+            "Library\/Materials\/5600448938133049439.alienMaterial",
+            "Library\/Materials\/10234497216567448869.alienMaterial"
+        ]
     },
     "Nodes": [
         {
@@ -37,7 +43,8 @@
             "parentNum": 3,
             "nodeName": "Torus",
             "parentName": "Cube",
-            "meshIndex": 2
+            "meshIndex": 2,
+            "materialIndex": 1
         },
         {
             "pos": [
@@ -60,7 +67,8 @@
             "parentNum": 2,
             "nodeName": "Cube",
             "parentName": "Suzanne",
-            "meshIndex": 1
+            "meshIndex": 1,
+            "materialIndex": 1
         },
         {
             "pos": [
@@ -83,7 +91,8 @@
             "parentNum": 1,
             "nodeName": "Suzanne",
             "parentName": "ApplyScale_FBX_UnitsScale",
-            "meshIndex": 0
+            "meshIndex": 0,
+            "materialIndex": 0
         },
         {
             "pos": [
@@ -106,7 +115,8 @@
             "parentNum": 1,
             "nodeName": "Cone",
             "parentName": "ApplyScale_FBX_UnitsScale",
-            "meshIndex": 3
+            "meshIndex": 3,
+            "materialIndex": 2
         }
     ]
 }

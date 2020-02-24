@@ -17,6 +17,7 @@
 #include "ResourceTexture.h"
 #include "ResourceAnimation.h"
 #include "ResourceBone.h"
+#include "ResourceMaterial.h"
 
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
@@ -99,26 +100,32 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	//Import meshes & bones
 	if (scene->HasMeshes())
 	{
-		for (int i = 0; i < scene->mNumMeshes; i++)
+		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
 			//Import mesh here.
 			LoadMesh(scene->mMeshes[i]);
-
+			
 			//Import bones of mesh
 			if (scene->mMeshes[i]->HasBones())
 			{
-				for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
+				for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
 				{
 					LoadBone(scene->mMeshes[i]->mBones[j]);
 				}
 			}
 		}
 	}
+	
+	if (scene->HasMaterials()) {
+		for (uint i = 0; i < scene->mNumMaterials; ++i) {
+			LoadMaterials(scene->mMaterials[i]);
+		}
+	}
 
 	// Import animations
 	if (scene->HasAnimations())
 	{
-		for (int i = 0; i < scene->mNumAnimations; i++)
+		for (int i = 0; i < scene->mNumAnimations; ++i)
 		{
 			LoadAnimation(scene->mAnimations[i]);
 		}
@@ -305,12 +312,14 @@ void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nod
 	model_node.node_num = nodeNum + 1;
 	if (node->mNumMeshes == 1) {
 		model_node.mesh = node->mMeshes[0];
+		model_node.material = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex;
 	}
 	else if (node->mNumMeshes > 1) {
 		for (uint i = 0; i < node->mNumMeshes; ++i) {
 			ModelNode nodeMesh;
 			nodeMesh.name = std::string(node->mName.C_Str() + std::to_string(i));
 			nodeMesh.mesh = node->mMeshes[i];
+			model_node.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
 			nodeMesh.parent_name = model_node.name;
 			nodeMesh.node_num = nodeNum + 2;
 			nodeMesh.parent_num = nodeNum + 1;
@@ -326,10 +335,32 @@ void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nod
 
 	for (uint i = 0; i < node->mNumChildren; ++i) {
 		LoadNode(node->mChildren[i], scene, nodeNum + 1);
-		//LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
 	}
 
 	model->model_nodes.push_back(model_node);
+}
+
+void ModuleImporter::LoadMaterials(const aiMaterial* material)
+{
+	ResourceMaterial* mat = new ResourceMaterial();
+
+	aiColor4D col;
+	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE,col)) {
+		mat->color.r = col.r;
+		mat->color.g = col.g;
+		mat->color.b = col.b;
+		mat->color.a = col.a;
+	}
+
+	//aiString ai_path;
+
+	//if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
+
+	//}
+	///*mat->texturesID[TextureType::DIFFUSE] = */
+
+	App->resources->AddResource(mat);
+	model->materials_attached.push_back(mat);
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)
@@ -620,6 +651,12 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 		for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
 			LoadNode(scene->mRootNode->mChildren[i], scene, 1);
 			//LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
+		}
+
+		if (scene->HasMaterials()) {
+			for (uint i = 0; i < scene->mNumMaterials; ++i) {
+				LoadMaterials(scene->mMaterials[i]);
+			}
 		}
 
 		ReImportBones(scene);

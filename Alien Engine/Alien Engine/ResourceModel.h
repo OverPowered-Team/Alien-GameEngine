@@ -9,6 +9,7 @@ class ResourceMesh;
 class ResourceAnimation;
 class ResourceBone;
 class GameObject;
+class ResourceMaterial;
 
 struct ModelNode {
 	std::string	name;
@@ -53,4 +54,5 @@ public:
 	std::vector<ResourceMesh*> meshes_attached;
 	std::vector<ResourceAnimation*> animations_attached;
 	std::vector<ResourceBone*> bones_attached;
+	std::vector<ResourceMaterial*> materials_attached;
 };

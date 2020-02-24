@@ -585,6 +585,9 @@
     <ClInclude Include="PanelAnimator.h">
       <Filter>Panels</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceMaterial.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -949,6 +952,9 @@
     </ClCompile>
     <ClCompile Include="PanelAnimator.cpp">
       <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMaterial.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

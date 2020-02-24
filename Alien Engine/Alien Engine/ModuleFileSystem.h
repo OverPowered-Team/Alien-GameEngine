@@ -20,6 +20,7 @@ struct aiFileIO;
 #define LIBRARY_PREFABS_FOLDER "Library/Prefabs/"
 #define LIBRARY_ANIMATIONS_FOLDER "Library/Animations/"
 #define LIBRARY_BONES_FOLDER "Library/Bones/"
+#define LIBRARY_MATERIALS_FOLDER "Library/Materials/"
 
 #define CONFIGURATION_FOLDER "Configuration/"
 #define CONFIGURATION_LAYOUTS_FOLDER "Configuration/Layouts/"

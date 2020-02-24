@@ -8,7 +8,9 @@
 #include "Application.h"
 #include <algorithm>
 #include "ReturnZ.h"
+#include "ResourceMaterial.h"
 #include "ComponentTransform.h"
+#include "ComponentMaterial.h"
 
 ResourceModel::ResourceModel() : Resource()
 {
@@ -37,6 +39,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 	std::string* meta_mesh_paths = nullptr;
 	std::string* meta_animation_paths = nullptr;
 	std::string* meta_bones_paths = nullptr;
+	std::string* meta_materials_paths = nullptr;
 	int num_anims = 0;
 	if (force_id != 0) 
 	{
@@ -50,6 +53,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			meta_mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 			meta_animation_paths = meta->GetArrayString("Meta.PathAnimations");
 			meta_bones_paths = meta->GetArrayString("Meta.PathBones");
+			meta_materials_paths = meta->GetArrayString("Meta.PathMaterials");
 			num_anims = meta->GetNumber("Meta.NumAnimations");
 			delete meta;
 		}
@@ -144,9 +148,26 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
 		}
 
+		alien->SetNumber("Meta.NumMaterials", materials_attached.size());
+
+		std::string* materials_path = new std::string[materials_attached.size()];
+		for (int i = 0; i < materials_attached.size(); ++i)
+		{
+			if (meta_materials_paths != nullptr) {
+				std::string path_ = App->file_system->GetBaseFileName(meta_materials_paths[i].data()); //std::stoull().data());
+				materials_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else {
+				materials_attached[i]->CreateMetaData();
+			}
+
+			materials_path[i] = materials_attached[i]->GetLibraryPath();
+		}
+
 		alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
 		alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
 		alien->SetArrayString("Meta.PathBones", bones_paths, bones_attached.size());
+		alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
 
 		JSONArraypack* nodes = alien->InitNewArray("Nodes");
 		for (uint i = 0; i < model_nodes.size(); ++i) {
@@ -159,6 +180,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			nodes->SetString("nodeName", model_nodes[i].name);
 			nodes->SetString("parentName", model_nodes[i].parent_name);
 			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
+			nodes->SetNumber("materialIndex", model_nodes[i].material);
 		}
 
 		if (meta_mesh_paths != nullptr)
@@ -168,6 +190,10 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		if (meta_animation_paths != nullptr)
 			delete[] meta_animation_paths;
 		delete[] animation_paths;
+
+		if (meta_materials_paths != nullptr)
+			delete[] meta_materials_paths;
+		delete[] materials_path;
 
 		if (meta_bones_paths != nullptr)
 			delete[] meta_bones_paths;
@@ -204,9 +230,11 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		int num_meshes = meta->GetNumber("Meta.NumMeshes");
 		int num_anims = meta->GetNumber("Meta.NumAnimations");
 		int num_bones = meta->GetNumber("Meta.NumBones");
+		int num_materials = meta->GetNumber("Meta.NumMaterials");
 		std::string* mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 		std::string* anim_paths = meta->GetArrayString("Meta.PathAnimations");
 		std::string* bones_paths = meta->GetArrayString("Meta.PathBones");
+		std::string* materials_path = meta->GetArrayString("Meta.PathMaterials");
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			if (!App->file_system->Exists(mesh_paths[i].data())) {
@@ -229,6 +257,13 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 				return false;
 			}
 		}
+		for (uint i = 0; i < num_materials; ++i) {
+			if (!App->file_system->Exists(materials_path[i].data())) {
+				delete[] materials_path;
+				delete meta;
+				return false;
+			}
+		}
 
 		JSONArraypack* nodes = meta->GetArray("Nodes");
 		nodes->GetFirstNode();
@@ -242,12 +277,14 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			node.name = nodes->GetString("nodeName");
 			node.parent_name = nodes->GetString("parentName");
 			node.mesh = nodes->GetNumber("meshIndex");
+			node.material = nodes->GetNumber("materialIndex");
 			model_nodes.push_back(node);
 			nodes->GetAnotherNode();
 		}
 
 		delete[] anim_paths;
 		delete[] mesh_paths;
+		delete[] materials_path;
 		delete meta;
 
 		// InitMeshes
@@ -263,6 +300,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 
 			std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
 			std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
+			std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
 
 			for (uint i = 0; i < num_meshes; ++i) {
 				ResourceMesh* r_mesh = new ResourceMesh();
@@ -294,8 +332,21 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 					delete r_bone;
 				}
 			}
+
+			for (uint i = 0; i < num_materials; ++i) {
+				ResourceMaterial* r_material = new ResourceMaterial();
+				if (r_material->ReadBaseInfo(materials_path[i].data())) {
+					materials_attached.push_back(r_material);
+				}
+				else {
+					LOG_ENGINE("Error loading %s", materials_path[i].data());
+					delete r_material;
+				}
+			}
+
 			delete[] anim_path;
 			delete[] mesh_path;
+			delete[] materials_path;
 			delete model;
 			App->resources->AddResource(this);
 		}
@@ -325,6 +376,19 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 		std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
 		int num_bones = model->GetNumber("Meta.NumBones");
 		std::string* bones_path = model->GetArrayString("Meta.PathBones");
+		int num_materials = model->GetNumber("Meta.NumMaterials");
+		std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+
+		for (uint i = 0; i < num_materials; ++i) {
+			ResourceMaterial* r_material = new ResourceMaterial();
+			if (r_material->ReadBaseInfo(materials_path[i].data())) {
+				materials_attached.push_back(r_material);
+			}
+			else {
+				LOG_ENGINE("Error loading %s", materials_path[i].data());
+				delete r_material;
+			}
+		}
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			ResourceMesh* r_mesh = new ResourceMesh();
@@ -369,6 +433,7 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 			node.name = nodes->GetString("nodeName");
 			node.parent_name = nodes->GetString("parentName");
 			node.mesh = nodes->GetNumber("meshIndex");
+			node.material = nodes->GetNumber("materialIndex");
 			model_nodes.push_back(node);
 			nodes->GetAnotherNode();
 		}
@@ -376,6 +441,7 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 		delete[] mesh_path;
 		delete[] anim_path;
 		delete[] bones_path;
+		delete[] materials_path;
 		delete model;
 		App->resources->AddResource(this);
 	}
@@ -440,6 +506,16 @@ bool ResourceModel::DeleteMetaData()
 		}
 	}
 	bones_attached.clear();
+
+	std::vector<ResourceMaterial*>::iterator item_mat = materials_attached.begin();
+	for (; item_mat != materials_attached.end(); ++item_mat)
+	{
+		if ((*item_mat) != nullptr)
+		{
+			(*item_mat)->DeleteMetaData();
+		}
+	}
+	materials_attached.clear();
 
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 
@@ -507,6 +583,16 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					Cmesh->RecalculateAABB_OBB();
 					ret->AddComponent(Cmesh);
 				}
+
+				if (node.material >= 0) {
+					ResourceMaterial* material = materials_attached[node.material];
+					if (material != nullptr) {
+						ComponentMaterial* Cmat = new ComponentMaterial(ret);
+						Cmat->color = material->color;
+						ret->AddComponent(Cmat);
+					}
+				}
+
 			}
 			objects_created.push_back({ node.node_num, ret });
 			break;
