@@ -439,18 +439,26 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Height", size.y);
 
 	to_save->SetBoolean("Enabled", enabled);
-	to_save->SetBoolean("Clicked", clicked);
-	to_save->SetBoolean("Active", active);
+	to_save->SetBoolean("clicked", clicked);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
 	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
+	to_save->SetString("crossTexture", (crossTexture != nullptr) ? std::to_string(crossTexture->GetID()) : "0");
+	to_save->SetString("tickTexture", (tickTexture != nullptr) ? std::to_string(tickTexture->GetID()) : "0");
+	to_save->SetColor("Color", current_color);
+
+	to_save->SetNumber("crossScaleX", crossScaleX);
+	to_save->SetNumber("crossScaleY", crossScaleY);
+	to_save->SetNumber("tickScaleX", tickScaleX);
+	to_save->SetNumber("tickScaleY", tickScaleY);
+	
+
 	to_save->SetColor("ColorCurrent", current_color);
 	to_save->SetColor("ColorIdle", idle_color);
 	to_save->SetColor("ColorHover", hover_color);
 	to_save->SetColor("ColorClicked", clicked_color);
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
-
 }
 
 void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
@@ -458,11 +466,15 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	x = to_load->GetNumber("X");
 	y = to_load->GetNumber("Y");
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
-	UpdateVertex();
 
 	enabled = to_load->GetBoolean("Enabled");
-	active = to_load->GetBoolean("Active");
-	clicked = to_load->GetBoolean("Clicked");
+	clicked = to_load->GetBoolean("clicked");
+	current_color = to_load->GetColor("Color");
+	crossScaleX = to_load->GetNumber("crossScaleX");
+	crossScaleY = to_load->GetNumber("crossScaleY");
+	tickScaleX = to_load->GetNumber("tickScaleX");
+	tickScaleY = to_load->GetNumber("tickScaleY");
+	
 
 	current_color = to_load->GetColor("ColorCurrent");
 	idle_color = to_load->GetColor("ColorIdle");
@@ -471,7 +483,6 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	pressed_color = to_load->GetColor("ColorPressed");
 	disabled_color = to_load->GetColor("ColorDisabled");
 
-
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
@@ -479,23 +490,34 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 			SetTexture(tex);
 		}
 	}
-
-	/*u64 tickID = std::stoull(to_load->GetString("TickID"));
-	if (tickID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(tickID);
+	u64 crossTex = std::stoull(to_load->GetString("crossTexture"));
+	if (crossTex != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(crossTex);
 		if (tex != nullptr) {
-			SetTexture(tex);
+			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			if (tex != nullptr && tex != crossTexture) {
+				tex->IncreaseReferences();
+				if (crossTexture != nullptr) {
+					crossTexture->DecreaseReferences();
+				}
+				crossTexture = tex;
+			}
 		}
 	}
-
-	u64 crossID = std::stoull(to_load->GetString("CrossID"));
-	if (crossID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(crossID);
+	u64 tickTex = std::stoull(to_load->GetString("tickTexture"));
+	if (tickTex != 0) {
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(tickTex);
 		if (tex != nullptr) {
-			SetTexture(tex);
+			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			if (tex != nullptr && tex != tickTexture) {
+				tex->IncreaseReferences();
+				if (tickTexture != nullptr) {
+					tickTexture->DecreaseReferences();
+				}
+				tickTexture = tex;
+			}
 		}
-	}*/
-
+	}
 	GameObject* p = game_object_attached->parent;
 	bool changed = true;
 	while (changed) {
