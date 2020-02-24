@@ -37,9 +37,9 @@ void PanelParticleSystem::PanelLogic()
 		/*ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.8f,0.37f,0.0f,0.7f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.95f,0.5f,0.0f,0.7f });*/
 
-		if (ImGui::Button("Play")) { particleSystem->isPlaying = true; } ImGui::SameLine();
-		if (ImGui::Button("Pause")) { particleSystem->isPlaying = false; } ImGui::SameLine();
-		if (ImGui::Button("Restart")) { particleSystem->ResetSystem();  particleSystem->isPlaying = true; }
+		if (ImGui::Button("Play")) { particleSystem->Play(); } ImGui::SameLine();
+		if (ImGui::Button("Pause")) { particleSystem->Pause(); } ImGui::SameLine();
+		if (ImGui::Button("Restart")) { particleSystem->Restart(); }
 
 		ImGui::Text("Playback Time: ");	ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.3f", particleSystem->emmitter.GetCurrentLife());

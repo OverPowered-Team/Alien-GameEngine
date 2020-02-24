@@ -63,6 +63,11 @@ public:
 	uint GetTotalParticles() const;
 
 	bool isSystemActive() const;
+
+	bool isPlaying() const;
+	void Play();
+	void Pause();
+	void Restart();
 	void ResetSystem();
 
 public:
@@ -74,10 +79,10 @@ public:
 	ParticleMutableInfo startInfo;
 	ParticleMutableInfo endInfo;
 
-	bool isPlaying = true;
 
 private:
 
+	bool playing = true;
 	//std::map<float, Particle*> sortedParticles;
 	std::vector<Particle*> particles;
 	uint totalParticles = 0u;

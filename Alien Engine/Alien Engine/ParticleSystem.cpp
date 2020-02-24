@@ -173,6 +173,27 @@ bool ParticleSystem::isSystemActive() const
 	return !particles.empty() || emmitter.isActive();
 }
 
+bool ParticleSystem::isPlaying() const
+{
+	return playing;
+}
+
+void ParticleSystem::Play()
+{
+	playing = true; 
+}
+
+void ParticleSystem::Pause()
+{
+	playing = false;
+}
+
+void ParticleSystem::Restart()
+{
+	ResetSystem();
+	Play();
+}
+
 void ParticleSystem::ResetSystem()
 {
 	// Reset Emmitter

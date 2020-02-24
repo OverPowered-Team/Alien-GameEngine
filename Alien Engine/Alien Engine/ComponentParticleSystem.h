@@ -7,24 +7,17 @@ class ParticleSystem;
 class __declspec(dllexport) ComponentParticleSystem : public Component {
 	friend class ReturnZ;
 	friend class CompZ;
-	friend class ResourceMesh;
-	friend class ComponentLight;
-	friend class ComponentMaterial;
-	friend class ComponentTransform;
-	friend class ComponentCamera;
 	friend class GameObject;
-	friend class ModuleCamera3D;
 	friend class ModuleObjects;
-	friend class Gizmos;
-	friend class Octree;
-	friend class OctreeNode;
 	friend class PanelCreateObject;
-	friend class PanelRender;
+	friend class ModuleImporter;
 
-public:
+public: 
 
 	ComponentParticleSystem(GameObject* parent);
 	~ComponentParticleSystem();
+
+private:
 
 	void PreUpdate() override; 
 	void Update() override;
@@ -33,16 +26,12 @@ public:
 	void DebugDraw();
 	void Draw();
 
-	void Reset() override;  
-
 	void OnEnable() override;
 	void OnDisable() override;
 
 	bool DrawInspector () override;
 
 	void TextureBrowser();
-	void SetTexture(ResourceTexture* tex);
-	ParticleSystem* GetSystem() const;
 
 	// Serialization Component
 	void SaveComponent(JSONArraypack* to_save) override;
@@ -52,8 +41,16 @@ public:
 	void LoadParticles();
 	void SaveParticles();
 
-private:
+public: 
 
+	ParticleSystem* GetSystem() const;
+	void SetTexture(ResourceTexture* tex);
+
+	void Play();
+	void Pause();
+	void Restart(); 
+
+private:
 
 	ParticleSystem* particleSystem = nullptr;
 	bool drawEmmitter = false;

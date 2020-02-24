@@ -31,19 +31,18 @@ void ComponentParticleSystem::PreUpdate()
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
 
-	if(particleSystem->isPlaying)
+	if(particleSystem->isPlaying())
 		particleSystem->PreUpdate(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::Update()
 {
-	if (particleSystem->isPlaying)
 		particleSystem->Update(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::PostUpdate()
 {
-	if (particleSystem->isPlaying)
+	if (particleSystem->isPlaying())
 		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
@@ -58,19 +57,14 @@ void ComponentParticleSystem::Draw()
 	particleSystem->DrawParticles();
 }
 
-void ComponentParticleSystem::Reset()
-{
-	particleSystem->ResetSystem(); 
-	particleSystem->isPlaying = false;
-}
-
 void ComponentParticleSystem::OnEnable()
 {
+	particleSystem->Restart();
 }
 
 void ComponentParticleSystem::OnDisable()
 {
-	Reset();
+	particleSystem->Pause(); 
 }
 
 bool ComponentParticleSystem::DrawInspector()
@@ -525,6 +519,21 @@ void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
 	texture = tex;
 	particleSystem->texture = texture;
 
+}
+
+void ComponentParticleSystem::Play()
+{
+	particleSystem->Play();
+}
+
+void ComponentParticleSystem::Pause()
+{
+	particleSystem->Pause();
+}
+
+void ComponentParticleSystem::Restart()
+{
+	particleSystem->Restart();
 }
 
 ParticleSystem* ComponentParticleSystem::GetSystem() const
