@@ -610,7 +610,7 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	switch (type) { // call the loader
 	case FileDropType::MODEL3D:
 		LOG_ENGINE("Start Loading Model");
-		App->importer->LoadModelFile(final_path.data());
+		App->importer->LoadModelFile(final_path.data(), extern_path);
 		break;
 	case FileDropType::TEXTURE:
 		LOG_ENGINE("Start Loading Texture");

@@ -591,6 +591,17 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					if (material != nullptr) {
 						ComponentMaterial* Cmat = new ComponentMaterial(ret);
 						Cmat->color = material->color;
+
+						// TODO: all texture types!!
+						/*for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+							alien->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
+						}*/
+
+						// CHANGE
+						if (material->texturesID[0] != 0) {
+							Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
+						}
+
 						ret->AddComponent(Cmat);
 					}
 				}

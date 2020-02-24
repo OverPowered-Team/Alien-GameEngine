@@ -10,6 +10,7 @@ ResourceTexture::ResourceTexture(const char* path, const uint& id, const uint& w
 	this->width = width;
 	this->height = height;
 	name = App->file_system->GetBaseFileName(path);
+	name = App->file_system->GetBaseFileName(path);
 	type = ResourceType::RESOURCE_TEXTURE;
 }
 
@@ -115,6 +116,7 @@ bool ResourceTexture::ReadBaseInfo(const char* assets_path)
 {
 	bool ret = true;
 
+	name = App->file_system->GetBaseFileName(assets_path);
 	this->path = assets_path;
 	std::string alien_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
 

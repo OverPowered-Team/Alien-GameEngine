@@ -20,6 +20,8 @@
 #include "ResourceMaterial.h"
 
 #include "ReturnZ.h"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
 #include "mmgr/mmgr.h"
 
 ModuleImporter::ModuleImporter(bool start_enabled) : Module(start_enabled)
@@ -58,7 +60,7 @@ bool ModuleImporter::CleanUp()
 	return true;
 }
 
-bool ModuleImporter::LoadModelFile(const char* path)
+bool ModuleImporter::LoadModelFile(const char* path, const char* extern_path)
 {
 	bool ret = true;
 
@@ -72,7 +74,7 @@ bool ModuleImporter::LoadModelFile(const char* path)
 			aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes | aiProcess_LimitBoneWeights);
 		
 		if (scene != nullptr) {
-			InitScene(path, scene);
+			InitScene(path, scene, extern_path);
 			LOG_ENGINE("Succesfully loaded %s", path);
 		}
 		else {
@@ -91,7 +93,7 @@ bool ModuleImporter::LoadModelFile(const char* path)
 	return ret;
 }
 
-void ModuleImporter::InitScene(const char* path, const aiScene* scene)
+void ModuleImporter::InitScene(const char* path, const aiScene* scene, const char* extern_path)
 {
 	model = new ResourceModel();
 	model->name = App->file_system->GetBaseFileName(path);
@@ -118,7 +120,7 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	
 	if (scene->HasMaterials()) {
 		for (uint i = 0; i < scene->mNumMaterials; ++i) {
-			LoadMaterials(scene->mMaterials[i]);
+			LoadMaterials(scene->mMaterials[i], extern_path);
 		}
 	}
 
@@ -340,7 +342,7 @@ void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nod
 	model->model_nodes.push_back(model_node);
 }
 
-void ModuleImporter::LoadMaterials(const aiMaterial* material)
+void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* extern_path)
 {
 	ResourceMaterial* mat = new ResourceMaterial();
 
@@ -353,22 +355,71 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material)
 	}
 
 	aiString ai_path;
-	// ..\\texture\\blabla
+	// ..\\texture\\baker.dds
 	if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
-		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(App->file_system->GetBaseFileName(ai_path.C_Str()).data());
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(ai_path.C_Str());
 		if (tex != nullptr) {
 			mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
 		}
-		else {
-			std::string path;
+		else if (extern_path != nullptr) {
+			int dots = 0;
+			int under = 0;
+			std::string hole_name(ai_path.C_Str());
+			App->file_system->NormalizePath(hole_name);
+			std::string::iterator item = hole_name.begin();
+			for (; item != hole_name.end(); ++item)
+			{
+				if (*item == '.') {
+					++dots;
+					if (dots == 2) {
+						++under;
+						dots = 0;
+					}
+				}
+				else if (*item != '/') {
+					break;
+				}
+			}
 
-			tex = new ResourceTexture(path.data());
+			std::string copy;
+			if (under != 0) {
+				std::string exterString(extern_path);
+				std::string::iterator it = exterString.begin();
+				bool start_copy = false;
+				for (; it != exterString.end(); ++it)
+				{
+					if (!start_copy) {
+						if (*it == '/') {
+							--under;
+							if (under == 0) {
+								start_copy = true;
+							}
+						}
+					}
+					else {
+						copy.push_back(*it);
+					}
+				}
+			}
+			else {
+				copy = extern_path;
+				App->file_system->NormalizePath(copy);
+			}
 
-			tex->CreateMetaData();
-			App->resources->AddNewFileNode(path, true);
-		}*/
+			std::string path = App->file_system->GetCurrentHolePathFolder(copy) + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
+			
+			if (std::experimental::filesystem::exists(path)) {
+				std::string assets_path = TEXTURES_FOLDER + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
+				App->file_system->CopyFromOutsideFS(path.data(), assets_path.data());
+				tex = new ResourceTexture(assets_path.data());
+
+				tex->CreateMetaData();
+				App->resources->AddNewFileNode(assets_path, true);
+
+				mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
+			}
+		}
 	}
-	///*mat->texturesID[TextureType::DIFFUSE] = */
 
 	App->resources->AddResource(mat);
 	model->materials_attached.push_back(mat);
@@ -661,12 +712,11 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 		// start recursive function to all nodes
 		for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
 			LoadNode(scene->mRootNode->mChildren[i], scene, 1);
-			//LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
 		}
 
 		if (scene->HasMaterials()) {
 			for (uint i = 0; i < scene->mNumMaterials; ++i) {
-				LoadMaterials(scene->mMaterials[i]);
+				LoadMaterials(scene->mMaterials[i], nullptr);
 			}
 		}
 

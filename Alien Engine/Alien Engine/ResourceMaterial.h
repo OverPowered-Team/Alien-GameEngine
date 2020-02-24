@@ -55,7 +55,8 @@ enum aiTextureType
 */
 
 enum class TextureType {
-	DIFFUSE,
+	NONE = -1,
+	DIFFUSE = 0,
 	SPECULAR,
 	AMBIENT,
 	EMISSIVE,

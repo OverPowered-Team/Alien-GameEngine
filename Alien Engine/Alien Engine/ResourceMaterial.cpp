@@ -32,6 +32,10 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		alien->StartSave();
 
 		alien->SetColor("Material.Color", color);
+		
+		for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+			alien->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
+		}
 
 		alien->FinishSave();
 		delete alien;
@@ -60,6 +64,10 @@ void ResourceMaterial::ReadLibrary(const char* meta_data)
 		JSONfilepack* meta = new JSONfilepack(meta_data_path, object, value);
 
 		color = meta->GetColor("Material.Color");
+
+		for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+			texturesID[iter] = std::stoull(meta->GetString(std::to_string(iter)));
+		}
 
 		delete meta;
 	}
