@@ -18,6 +18,8 @@ public:
 	void PanelLogic();
 	void SetUniforms();
 
+	void OnPanelDesactive();
+
 private:
 	char path[MAX_PATH] = "path";
 	std::vector<UniformData*>uniforms;

@@ -108,3 +108,7 @@ void PanelCreateMaterial::SetUniforms()
 	}
 }
 
+void PanelCreateMaterial::OnPanelDesactive()
+{
+
+}
