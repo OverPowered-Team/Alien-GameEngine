@@ -90,6 +90,7 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	mute = to_load->GetNumber("Mute");
 	current_bank = std::stoull(to_load->GetString("Bank"));
 	current_event = std::stoull(to_load->GetString("Event"));
+	audio_name = App->audio->GetBankByID(current_bank).events[current_event];
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
@@ -123,7 +124,8 @@ bool ComponentAudioEmitter::DrawInspector()
 			}
 			ImGui::EndCombo();
 		}
-		if (ImGui::BeginCombo("Events", bk.events[current_event].c_str()))
+
+		if (ImGui::BeginCombo("Events", (bk.events.find(current_event) != bk.events.end()) ? bk.events[current_event].c_str() : ""))
 		{
 			for (auto i = bk.events.begin(); i != bk.events.end(); ++i)
 			{

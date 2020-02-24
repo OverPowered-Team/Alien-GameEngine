@@ -16,6 +16,28 @@
   "MediaFilesNotInAnyBank": [],
   "SoundBanks": [
    {
+    "Id": "393239870",
+    "Language": "SFX",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SFX",
+    "ShortName": "SFX",
+    "Path": "SFX.bnk",
+    "IncludedEvents": [
+     {
+      "Id": "3677180323",
+      "Name": "health",
+      "ObjectPath": "\\Events\\Default Work Unit\\health"
+     }
+    ],
+    "IncludedMemoryFiles": [
+     {
+      "Id": "423178946",
+      "Language": "SFX",
+      "ShortName": "111-pokemon-recovery.wav",
+      "Path": "SFX\\111-pokemon-recovery_1C9C67B2.wem"
+     }
+    ]
+   },
+   {
     "Id": "1355168291",
     "Language": "SFX",
     "ObjectPath": "Init",
