@@ -17,7 +17,7 @@ class State
 private:
 	std::string name;
 	float speed = 1.0;
-	ResourceAnimation* clip;
+	ResourceAnimation* clip = nullptr;
 
 public:
 	uint pin_in_id, pin_out_id, id;

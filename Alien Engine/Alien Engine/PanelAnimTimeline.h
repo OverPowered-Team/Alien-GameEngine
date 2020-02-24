@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Panel.h"
+#include "ResourceAnimation.h"
 
 class ComponentAnimator;
-class Channel;
 
 class PanelAnimTimeline : public Panel
 {
@@ -17,9 +17,12 @@ public:
 
 public:
 
-	ComponentAnimator* component_animation = nullptr;
-	Channel* channel = nullptr;
-	float num_frames = 0;
+	ComponentAnimator* component_animator = nullptr;
+	ResourceAnimation::Channel* channel = nullptr;
+	ResourceAnimatorController* animator = nullptr;
+	std::vector<ResourceAnimation*> animations;
+	std::vector<float> num_frames_vector;
+	
 
 private:
 
@@ -40,6 +43,14 @@ private:
 	float progress = 0.0f;
 
 	float windows_size = 1000.0f;
+
+	bool play = false;
+	bool pause = false;
+	bool stop = false;
+
+	float animation_time = 0.0f;
+
+	bool changed = true;
 
 
 };
