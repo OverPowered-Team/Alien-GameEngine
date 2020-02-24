@@ -304,7 +304,9 @@ bool ComponentMaterial::DrawInspector()
 					{
 						if (ImGui::Button((*i)->GetName()))
 						{
-							u64 id_s = App->resources->GetIDFromAlienPath(std::string(std::string((*i)->GetAssetsPath()) + "_meta.alien").data());
+							std::string shader_name = (*i)->GetName();
+							std::string p = std::string(SHADERS_FOLDER + shader_name + "_meta.alien");
+							u64 id_s = App->resources->GetIDFromAlienPath(p.data());
 							if (used_shader != nullptr) {
 								used_shader->DecreaseReferences();
 							}
