@@ -20,7 +20,7 @@ struct ModelNode {
 	uint node_num = 0;
 	uint parent_num = 0;
 	int mesh = -1;
-	int material = -1; // TODO
+	int material = -1; 
 };
 
 class ResourceModel : public Resource {

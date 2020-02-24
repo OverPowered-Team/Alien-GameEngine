@@ -352,11 +352,22 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material)
 		mat->color.a = col.a;
 	}
 
-	//aiString ai_path;
+	aiString ai_path;
+	// ..\\texture\\blabla
+	if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
+		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(App->file_system->GetBaseFileName(ai_path.C_Str()).data());
+		if (tex != nullptr) {
+			mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
+		}
+		else {
+			std::string path;
 
-	//if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
+			tex = new ResourceTexture(path.data());
 
-	//}
+			tex->CreateMetaData();
+			App->resources->AddNewFileNode(path, true);
+		}*/
+	}
 	///*mat->texturesID[TextureType::DIFFUSE] = */
 
 	App->resources->AddResource(mat);

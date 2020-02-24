@@ -66,6 +66,9 @@ enum class TextureType {
 	DISPLACEMENT,
 	LIGHTMAP,
 	REFLECTION,
+	DIFFUSE_ROUGHNESS,
+	AMBIENT_OCCLUSION,
+	METALNESS,
 
 	MAX
 };
@@ -89,7 +92,5 @@ public:
 	
 	Color color = Color::White();
 	u64 texturesID[(uint)TextureType::MAX] = { 0 };
-
-
 
 };
