@@ -39,13 +39,16 @@ enum class FunctionBlendType
 
 bool compareParticles(Particle* a, Particle* b);
 
-class ParticleSystem
+class __declspec(dllexport) ParticleSystem
 {
+	friend class ComponentParticleSystem;
 
 public:
 
 	ParticleSystem();
 	~ParticleSystem();
+
+private: 
 
 	bool PreUpdate(float dt);
 	bool Update(float dt);
@@ -57,6 +60,8 @@ public:
 	void DrawPointsForParticles();
 
 	void DrawEmmitter();
+
+public: 
 
 	void SetBillboardType(BillboardType type);
 	BillboardType GetBillboardType() const;
@@ -78,7 +83,6 @@ public:
 	ParticleInfo particleInfo;
 	ParticleMutableInfo startInfo;
 	ParticleMutableInfo endInfo;
-
 
 private:
 

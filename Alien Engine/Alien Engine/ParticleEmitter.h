@@ -41,12 +41,15 @@ struct Burst
 
 class ParticleSystem;
 
-class ParticleEmmitter {
+class __declspec(dllexport) ParticleEmmitter {
+	friend class ParticleSystem; 
 
 public:
 
 	ParticleEmmitter();
 	~ParticleEmmitter();
+
+private: 
 
 	// Updates emmitter lifetime 
 	void Update(float dt);
@@ -55,16 +58,18 @@ public:
 	int GetParticlesToInstantiate();
 	int GetParticlesToBurst();
 
-	void Reset();
-	void ResetBursts();
-
-	bool isActive() const;
-
 	void DebugDrawEmmitter();
 	// Get an initial position and an initial velocity given the emmiter type
 	void GetInitialValues(float3& position, float3& velocity, float speed, bool localTransform);
 
+public: 
+
+	bool isActive() const;
+
 	// -------- Bursts -----------
+
+	void Reset();
+	void ResetBursts();
 
 	bool HasBurstsActive() const;
 	void RemoveBurst(int index);
