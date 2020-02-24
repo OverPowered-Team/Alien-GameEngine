@@ -97,4 +97,7 @@ public:
 	int destinationFactor;
 	float alpha_test = 0.1f;
 
+	uint planeVertexBuffer = 0;
+	uint planeIndexBuffer = 0;
+	uint planeUVsBuffer = 0;
 };

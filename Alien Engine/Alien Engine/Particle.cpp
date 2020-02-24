@@ -42,7 +42,7 @@ void Particle::Draw()
 {
 	glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
 
-	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(1.f, 1.f, 1.f));
+	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size, 1.f));
 	float4x4 particleGlobal = particleLocal;
 
 	if (!particleInfo.globalTransform)
@@ -53,7 +53,6 @@ void Particle::Draw()
 
 	glPushMatrix();
 	glMultMatrixf((GLfloat*)&(particleGlobal.Transposed()));
-
 
 	// -------------------------------------------- Blending Options --------------------------------------------
 	glEnable(GL_BLEND);
@@ -110,39 +109,25 @@ void Particle::Draw()
 
 	if (owner->texture != nullptr)
 	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, owner->texture->id);
+
+		glBindBuffer(GL_ARRAY_BUFFER, owner->planeUVsBuffer);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 	else
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBegin(GL_TRIANGLES);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
-	// -------------------
+	// Vertex Buffer
+	glBindBuffer(GL_ARRAY_BUFFER, owner->planeVertexBuffer);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(-0.5f * particleInfo.size, -0.5f * particleInfo.size, 0.f);
+	// Index Buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->planeIndexBuffer);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(0.5f * particleInfo.size, 0.5f * particleInfo.size, 0.f);
-
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(-0.5f * particleInfo.size, 0.5f * particleInfo.size, 0.f);
-
-
-	// -------------------
-
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(-0.5f * particleInfo.size, -0.5f * particleInfo.size, 0.f);
-
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(0.5f * particleInfo.size, -0.5f * particleInfo.size, 0.f);
-
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(0.5f * particleInfo.size, 0.5f * particleInfo.size, 0.f);
-
-	// -------------------
-
-	glEnd();
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glBindTexture(GL_TEXTURE_2D, 0);

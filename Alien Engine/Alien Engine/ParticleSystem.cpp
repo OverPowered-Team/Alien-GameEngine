@@ -9,6 +9,53 @@ ParticleSystem::ParticleSystem()
 {
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
+
+	float planeVertex[] =
+	{
+		// 0
+		-0.5f, 0.5f, 0.f, 
+		// 1 
+		0.5f, 0.5f, 0.f, 
+		// 2 
+		-0.5f, -0.5f, 0.f,
+		// 3 
+		0.5f, -0.5f, 0.f,
+	};
+
+	float planeUVCoords[] =
+	{
+		// 0
+		0.0f, 0.0f, 
+		// 1
+		1.0f, 0.0f,
+		// 2
+		0.0f, 1.0f,
+		// 3
+		1.0f, 1.0f,
+	};
+
+	uint planeIndex[] =
+	{
+		// First tri
+		2, 1, 0,
+		// Second tri
+		2, 3, 1
+	};
+
+	glGenBuffers(1, &planeVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, planeVertex, GL_STATIC_DRAW);
+
+	// index
+	glGenBuffers(1, &planeIndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, planeIndex, GL_STATIC_DRAW);
+
+	// UV
+	glGenBuffers(1, &planeUVsBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, planeUVsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, planeUVCoords, GL_STATIC_DRAW);
+	
 }
 
 ParticleSystem::~ParticleSystem()
