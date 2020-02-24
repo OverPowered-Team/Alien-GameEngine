@@ -83,11 +83,11 @@ void PanelAnimator::ShowStatePopup(){
 	if (ImGui::BeginPopup("State popup")) {
 
 		ImGui::Separator();
-		char tmp[128];
 
-		if (ImGui::InputText("Name", tmp, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+		std::string temp_str = current_animator->FindState(context_node)->GetName();
+		if (ImGui::InputText("Name", &temp_str, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			current_animator->FindState(context_node)->SetName(tmp);
+			current_animator->FindState(context_node)->SetName(temp_str);
 			ImGui::CloseCurrentPopup();
 		}
 

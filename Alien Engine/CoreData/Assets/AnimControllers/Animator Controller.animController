@@ -1,0 +1,9 @@
+{
+    "Controller": {
+        "Name": "Animator Controller",
+        "NumStates": 0,
+        "NumTransitions": 0,
+        "States": [],
+        "Transitions": []
+    }
+}
