@@ -334,7 +334,7 @@ void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorControl
 {
 	if (current_animator)
 	{
-		current_animator->SaveAsset();
+		current_animator->SaveAsset(current_animator->GetID());
 		current_animator->DecreaseReferences();
 	}
 
@@ -359,6 +359,9 @@ bool PanelAnimator::FillInfo()
 
 void PanelAnimator::PanelLogic()
 {
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		current_animator->SaveAsset(current_animator->GetID());
+
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animator", &enabled, aboutFlags);

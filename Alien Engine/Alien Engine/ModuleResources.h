@@ -42,15 +42,6 @@ struct Icons {
 	ResourceTexture* prefab_lock = nullptr;
 };
 
-enum class AssetType
-{
-	ANIM_CONTROLLER,
-	ANIM,
-
-	UNKONWN
-};
-
-
 class ModuleResources : public Module
 {
 public:
@@ -64,7 +55,7 @@ public:
 
 	void AddResource(Resource* resource);
 	void RemoveResource(Resource* resource);
-	void CreateAsset(AssetType type);
+	void CreateAsset(FileDropType type);
 
 	// meta path
 	bool CreateNewModelInstanceOf(const char* path);

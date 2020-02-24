@@ -32,6 +32,7 @@ private:
 	void RightClickToWindow(bool pop_up_item);
 	bool MoveToFolder(FileNode* node, bool inside);
 	void DeleteNodes(FileNode* node);
+	void OnFileSelection();
 
 	int colum_width[2];
 

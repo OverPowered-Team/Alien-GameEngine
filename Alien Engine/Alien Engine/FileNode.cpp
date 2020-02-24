@@ -301,6 +301,10 @@ void FileNode::SetIcon()
 			icon = App->resources->icons.script_file;
 			type = FileDropType::SCRIPT;
 		}
+		else if (App->StringCmp(extension.data(), "animController")) {
+			icon = App->resources->icons.model;
+			type = FileDropType::ANIM_CONTROLLER;
+		}
 		else {
 			// TODO: fer un icon que sigui unknown
 			icon = App->resources->icons.model;

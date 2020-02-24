@@ -8,6 +8,7 @@
 #include "ResourcePrefab.h"
 #include "ResourceScript.h"
 #include "ResourceScene.h"
+#include "PanelAnimator.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "mmgr/mmgr.h"
@@ -207,6 +208,7 @@ void PanelProject::SeeFiles()
 			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
 				current_active_file = current_active_folder->children[i];
 				App->objects->DeselectObjects();
+				OnFileSelection();
 			}
 
 			// double click script
@@ -635,11 +637,31 @@ void PanelProject::GetUniqueFileName(std::string& asset_name, const std::string&
 
 	int asset_number = 0;
 
+	std::string tmp_name = asset_name;
 	for (uint i = 0; i < asset_node->children.size(); ++i) {
-		if (App->StringCmp(asset_node->children[i]->name.data(), asset_name.data())) {
+		if (App->StringCmp(App->file_system->GetBaseFileName(asset_node->children[i]->name.data()).data(), tmp_name.data())) {
 			++asset_number;
+			tmp_name = asset_name + "(" + std::to_string(asset_number) + ")";
+			i = -1;
 		}
 	}
 	if (asset_number > 0)
-		asset_name = asset_name + " (" + std::to_string(asset_number) + ")";
+		asset_name = asset_name + "(" + std::to_string(asset_number) + ")";
+}
+
+void PanelProject::OnFileSelection()
+{
+	switch (current_active_file->type)
+	{
+	case FileDropType::ANIM_CONTROLLER:
+	{
+		std::string asset_path = current_active_file->path + current_active_file->name;
+		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
+		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
+		App->ui->panel_animator->SetCurrentResourceAnimatorController((ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id));
+	}
+		break;
+	case FileDropType::ANIMATION:
+		break;
+	}
 }

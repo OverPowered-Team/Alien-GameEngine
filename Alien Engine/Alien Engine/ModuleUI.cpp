@@ -575,7 +575,7 @@ void ModuleUI::MainMenuBar()
 		{
 			if (ImGui::MenuItem("Animator Controller"))
 			{
-				App->resources->CreateAsset(AssetType::ANIM_CONTROLLER);
+				App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
 			}
 			ImGui::EndMenu();
 		}

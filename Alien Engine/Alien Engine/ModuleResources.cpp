@@ -815,16 +815,14 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 	}
 }
 
-void ModuleResources::CreateAsset(AssetType type)
+void ModuleResources::CreateAsset(FileDropType type)
 {
 	switch (type)
 	{
-	case AssetType::ANIM_CONTROLLER:
+	case FileDropType::ANIM_CONTROLLER:
 		CreateAnimatorController();
 		break;
-	case AssetType::ANIM:
-		break;
-	case AssetType::UNKONWN:
+	case FileDropType::ANIMATION:
 		break;
 	}
 

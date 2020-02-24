@@ -194,7 +194,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		states_array->SetAnotherNode();
 		states_array->SetString("Name", (*it)->GetName());
 		states_array->SetNumber("Speed", (*it)->GetSpeed());
-		states_array->SetNumber("Clip", (*it)->GetClip() ? (*it)->GetClip()->GetID() : 0);
+		states_array->SetString("Clip", (*it)->GetClip() ? std::to_string((*it)->GetClip()->GetID()) : std::to_string(0));
 	}
 
 	JSONArraypack* transitions_array = asset->InitNewArray("Controller.Transitions");
@@ -273,8 +273,8 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			//Load clip id and speed
-			bytes = sizeof(uint);
-			uint clip_id;
+			bytes = sizeof(u64);
+			u64 clip_id;
 			memcpy(&clip_id, cursor, bytes);
 			cursor += bytes;
 			bytes = sizeof(float);
@@ -282,7 +282,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&speed, cursor, bytes);
 			cursor += bytes;
 
-			AddState(tmp_name, (ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
+			AddState(tmp_name, clip_id == 0? nullptr:(ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
 		}
 
 		for (int i = 0; i < num_transitions; ++i)
@@ -465,7 +465,8 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 		//Store clip id and speed
 		bytes = sizeof(u64);
-		memcpy(cursor, &(*it)->GetClip()->GetID(), bytes);
+		const u64 clip_id = (*it)->GetClip() ? (*it)->GetClip()->GetID() : 0;
+		memcpy(cursor, &clip_id, bytes);
 		cursor += bytes;
 		bytes = sizeof(float);
 		float st_speed = (*it)->GetSpeed();

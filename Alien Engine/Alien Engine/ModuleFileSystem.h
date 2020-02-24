@@ -66,6 +66,7 @@ enum class FileDropType {
 	SCRIPT,
 	SCENE,
 	ANIM_CONTROLLER,
+	ANIMATION,
 	PREFAB,
 
 	UNKNOWN
