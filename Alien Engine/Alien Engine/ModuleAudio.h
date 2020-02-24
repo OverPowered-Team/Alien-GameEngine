@@ -27,8 +27,8 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
-	bool UnloadAllBanks();
-	void UnloadAllUsedBanks();
+	bool UnloadAllBanksFromWwise();
+	void UnloadAllUsedBanksFromWwise();
 	// Utils
 	void Play(const char* event);
 	void Play();
@@ -40,7 +40,6 @@ public:
 	std::vector<Bank> GetBanks();
 	Bank GetBankByName(const char* name);
 	Bank GetBankByID(const u64& id);
-
 private:
 	WwiseT::AudioSource* listener;
 	std::vector <Bank> banks;

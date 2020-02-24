@@ -16,7 +16,8 @@ void ComponentAudioEmitter::Update()
 {
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
-			source->StopEventByName(audio_name.c_str());
+			//source->StopEventByName(audio_name.c_str());
+			//audio_name = App->audio->a
 			play_mode = false;
 		}
 	}
@@ -138,21 +139,16 @@ bool ComponentAudioEmitter::DrawInspector()
 			}
 			ImGui::EndCombo();
 		}
-		//ImGui::Text("Audio Clip");
-		//ImGui::SameLine();
-		//static char buf[30];
-		//if (ImGui::InputText("Event name", buf, 30, ImGuiInputTextFlags_EnterReturnsTrue)) // TODO: Change inputText by a combo with all events 
-		//	audio_name.assign(buf);
-		/*if (ImGui::BeginCombo("Clip", "NONE")) {
-
-		}*/
-		if(ImGui::Button("Play selected event"))
+		if(ImGui::Button("Play"))
 		{
-			audio_name = current_event;
+			App->audio->LoadUsedBanks();
 			StartSound();
 		}
-		if (ImGui::Button("Stop selected event"))
+		if (ImGui::Button("Stop"))
+		{
 			App->audio->Stop();
+			App->audio->UnloadAllUsedBanksFromWwise();
+		}			
 		ImGui::NewLine();
 		if (ImGui::Checkbox("Mute", &mute))
 			Mute(mute);
