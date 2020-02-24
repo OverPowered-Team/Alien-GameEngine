@@ -271,6 +271,7 @@ bool ComponentMaterial::DrawInspector()
 
 						if (ImGui::ColorEdit4("vec4", &color_to_use.x))
 						{
+							glUseProgram(used_shader->renderer_id);
 							used_shader->SetUniform4f(name, color_to_use.x,
 								color_to_use.y, color_to_use.z, color_to_use.w);
 						}
