@@ -83,6 +83,15 @@ void PanelScene::PanelLogic()
 		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
 			FileNode* node = *(FileNode**)payload->Data;
 
+			// drop particle system
+			if (node != nullptr && node->type == FileDropType::PARTICLES && !App->objects->GetSelectedObjects().empty()) {
+				std::string file_path = node->path + node->name;
+				std::string path = App->file_system->GetPathWithoutExtension(file_path);
+				path += ".alienParticles";
+
+				App->importer->ApplyParticleSystemToSelectedObject(path);
+			}
+
 			// drop texture
 			if (node != nullptr && node->type == FileDropType::TEXTURE && !App->objects->GetSelectedObjects().empty()) {
 				std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
