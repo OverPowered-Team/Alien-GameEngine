@@ -177,9 +177,9 @@ void ComponentTransform::RecalculateTransform()
 {	
 	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);
 
-	if (game_object_attached == nullptr)
+	if (game_object_attached == nullptr) 
 		return;
-
+	
 	if (game_object_attached->parent != nullptr) {
 		ComponentTransform* tr = (ComponentTransform*)game_object_attached->parent->GetComponent(ComponentType::TRANSFORM);
 		if (tr != nullptr)

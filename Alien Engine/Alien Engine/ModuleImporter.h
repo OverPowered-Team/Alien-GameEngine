@@ -63,6 +63,8 @@ private:
 	ResourceMesh* LoadNodeMesh(const aiScene * scene, const aiNode* node, const aiMesh* mesh, ResourceMesh* parent);
 	void LoadAnimation(const aiAnimation* animation);
 	void LoadBone(const aiBone* bone);
+	void LoadMesh(const aiMesh* mesh);
+	void LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum);
 
 private:
 	ResourceModel* model = nullptr;
