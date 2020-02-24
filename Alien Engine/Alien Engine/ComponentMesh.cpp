@@ -92,12 +92,12 @@ void ComponentMesh::DrawOutLine()
 		return;
 	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
 	{
-		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b, 1.f));
 		glLineWidth(App->objects->parent_line_width);
 	}
 	else
 	{
-		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b, 1.f));
 		glLineWidth(App->objects->no_child_line_width);
 	}
 

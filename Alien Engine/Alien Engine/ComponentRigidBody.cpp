@@ -9,11 +9,11 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 {
 	type = ComponentType::RIGID_BODY;
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
-
+	mass = 1.f;
 	// Create compund shape --------------------------
 
 	compound_shape = new btCompoundShape(true, 4);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(1.f, nullptr, compound_shape);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, nullptr, compound_shape);
 
 	body = new btRigidBody(rbInfo);
 	body->setUserPointer(go);
@@ -109,18 +109,7 @@ void ComponentRigidBody::Update()
 
 void ComponentRigidBody::Draw()
 {
-	glPushMatrix();
-	glMultMatrixf(float4x4::identity().Transposed().ptr());
 
-	float3 mass_center = (float3)body->getCenterOfMassTransform().getOrigin();
-	LOG_ENGINE("%f, %f, %f", mass_center.x, mass_center.y, mass_center.z);
-	glPointSize(20.f);
-	glColor3f(1.f, 0.f, 0.f);
-	glBegin(GL_POINTS);
-	glVertex3fv(&mass_center[0]);
-	glEnd();
-
-	glPopMatrix();
 }
 
 bool ComponentRigidBody::DrawInspector()
@@ -406,9 +395,9 @@ void ComponentRigidBody::AddCollider(ComponentCollider* collider)
 	if (collider->is_added == false)
 	{
 		collider->shape->setUserIndex(colliders_index++); 
+		compound_shape->addChildShape(ToBtTransform(collider->scaled_center, collider->rotation), collider->shape);
 		compound_shape->calculateLocalInertia(mass, inertia);
 		body->setMassProps(mass, inertia); // Update Innertia
-		compound_shape->addChildShape(ToBtTransform(collider->scaled_center, collider->rotation), collider->shape);
 		collider->is_added = true;
 	}
 }
@@ -418,6 +407,8 @@ void ComponentRigidBody::RemoveCollider(ComponentCollider* collider)
 	if (collider->is_added == true)
 	{
 		compound_shape->removeChildShapeByIndex(collider->child_collider_index);
+		compound_shape->calculateLocalInertia(mass, inertia);
+		body->setMassProps(mass, inertia); // Update Innertia
 		collider->is_added = false;
 	}
 }

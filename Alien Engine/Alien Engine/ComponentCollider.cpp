@@ -31,6 +31,7 @@ void ComponentCollider::Update()
 {
 	// Match Size Scalling ----------------------------------
 	float3 world_center = GetWorldCenter();
+
 }
 
 void ComponentCollider::DrawCollider()

@@ -34,6 +34,10 @@ public:
 	bool SetCameraToDraw(const ComponentCamera* camera);
 
 	bool IsInsideFrustum(const ComponentCamera* camera, const AABB& aabb);
+
+	static void BeginDebugDraw(float4& color);
+
+	static void EndDebugDraw();
 public:
 
 	// buffers to draw scene

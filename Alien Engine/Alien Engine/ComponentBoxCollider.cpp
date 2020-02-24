@@ -9,7 +9,8 @@
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
 	type = ComponentType::BOX_COLLIDER;
-	rigid_body = game_object_attached->GetComponent<ComponentRigidBody>();
+	size = float3::one();
+	center = float3::zero();
 
 	if (!game_object_attached->HasComponent(ComponentType::RIGID_BODY))
 	{
@@ -21,8 +22,7 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	CreateShape();
 	AdjustShapeToMesh();
 
-	size = float3::one();
-	center = float3::zero();
+
 }
 
 void ComponentBoxCollider::CreateShape() 
@@ -50,6 +50,7 @@ void ComponentBoxCollider::AdjustShapeToMesh()
 
 	if (mesh != nullptr) 
 	{
+		center = mesh->local_aabb.CenterPoint();
 		size = mesh->local_aabb.Size();
 		CreateShape();
 	}
@@ -81,7 +82,8 @@ float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
 bool ComponentBoxCollider::DrawInspector()
 {
 	static float3 last_scale = transform->GetGlobalScale();
-	static float3 last_size = size;
+	float3 last_center = center;
+	float3 last_size = size;
 
 	ComponentCollider::DrawInspector();
 
@@ -93,8 +95,10 @@ bool ComponentBoxCollider::DrawInspector()
 		ImGui::Spacing();
 	}
 
-	if (!last_scale.Equals( transform->GetGlobalScale()) || !last_size.Equals(size))
+	if (!last_scale.Equals( transform->GetGlobalScale()) || !last_size.Equals(size) || !last_center.Equals(center))
 	{
+		last_scale = transform->GetGlobalScale();
+		scaled_center = center.Mul(last_scale);
 		CreateShape();
 	}
 

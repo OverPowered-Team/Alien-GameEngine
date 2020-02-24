@@ -112,15 +112,15 @@ bool ModulePhysics::CleanUp()
 void ModulePhysics::RenderCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	//ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
-	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform() /** ToBtTransform(collider->center, collider->rotation)*/ , collider->shape, btVector3(0.f, 1.f, 0.f));
-	//ModuleRenderer3D::EndDebugDraw();
+	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform() * ToBtTransform(collider->scaled_center, collider->rotation) , collider->shape, btVector3(0.f, 1.f, 0.f));
+	ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	//ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
 	btTransform worldTransform = collider->rigid_body->body->getCenterOfMassTransform();
 	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
@@ -141,15 +141,15 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 		debug_renderer->drawLine(v0, v2, color);
 	}
 
-	//ModuleRenderer3D::EndDebugDraw();
+	ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::RenderConstraint(btTypedConstraint* constraint)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawConstraints);
-	//ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
+	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
 	world->debugDrawConstraint(constraint);
-	//ModuleRenderer3D::EndDebugDraw();
+	ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::AddBody(btRigidBody* body)

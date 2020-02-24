@@ -446,3 +446,19 @@ bool ModuleRenderer3D::IsInsideFrustum(const ComponentCamera* camera, const AABB
 
 	return true;
 }
+
+void ModuleRenderer3D::BeginDebugDraw(float4& color)
+{
+	glDisable(GL_LIGHTING);
+	glColor4fv(&color[0]);
+	glLineWidth(4.f);
+}
+
+void ModuleRenderer3D::EndDebugDraw()
+{
+	GLfloat color_default[] = { 1.f, 1.f, 1.f, 1.f };
+	glEnable(GL_LIGHTING);
+	glColor4fv(color_default);
+	glLineWidth(1.f);
+
+}

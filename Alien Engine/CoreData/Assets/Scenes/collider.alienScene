@@ -5,7 +5,7 @@
             {
                 "Name": "Cube",
                 "FamilyNumber": 1,
-                "ID": "18257440836377564404",
+                "ID": "16486925409913158992",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -19,15 +19,15 @@
                     {
                         "Type": 0,
                         "Position": [
-                            2.0267391204833984,
-                            1.0336759090423584,
-                            -0.74878716468811035
+                            0,
+                            0,
+                            0
                         ],
                         "Rotation": [
                             0,
                             0,
                             0,
-                            1
+                            0
                         ],
                         "Scale": [
                             1,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "18078123218842072028"
+                        "ID": "9267302202969934230"
                     },
                     {
                         "Type": 1,
@@ -45,7 +45,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "18003004157180785545",
+                        "ID": "4725345617411243539",
                         "HasMesh": true,
                         "IsPrimitive": true,
                         "PrimType": 0,
@@ -60,17 +60,17 @@
                             1
                         ],
                         "TextureEnabled": true,
-                        "ID": "12667736883124083165",
+                        "ID": "17574101424130126364",
                         "HasTexture": false,
                         "Enabled": true
                     },
                     {
                         "Type": 5,
                         "IsTrigger": false,
-                        "Bouncing": 0.10000000149011612,
+                        "Bouncing": 0,
                         "Friction": 0,
                         "AngularFriction": 0,
-                        "Mass": 1.0199999809265137,
+                        "Mass": 1,
                         "Drag": 0,
                         "AngularDrag": 0,
                         "FreezePosX": false,
@@ -83,129 +83,13 @@
                     {
                         "Type": 6,
                         "Center": [
-                            0,
-                            0,
-                            0
+                            0.5,
+                            0.5,
+                            0.5
                         ],
                         "size": [
                             1,
                             1,
-                            1
-                        ]
-                    }
-                ]
-            },
-            {
-                "Name": "Main Light",
-                "FamilyNumber": 1,
-                "ID": "12125123504557166311",
-                "ParentID": "0",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -2.3951902389526367,
-                            1.9003806114196777,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "6952616382205553664"
-                    },
-                    {
-                        "Type": 3,
-                        "DiffuseColor": [
-                            0.75,
-                            0.75,
-                            0.75,
-                            1
-                        ],
-                        "AmbienColor": [
-                            0.5,
-                            0.5,
-                            0.5,
-                            1
-                        ],
-                        "Enabled": true,
-                        "ID": "18330776394010367873",
-                        "PrintIcon": true
-                    }
-                ]
-            },
-            {
-                "Name": "Camera",
-                "FamilyNumber": 1,
-                "ID": "2472632760346652455",
-                "ParentID": "0",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -0.59900343418121338,
-                            3.9514384269714355,
-                            -2.0879538059234619
-                        ],
-                        "Rotation": [
-                            0.33618539571762085,
-                            0,
-                            0,
-                            0.94179582595825195
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "7784456143618114423"
-                    },
-                    {
-                        "Type": 4,
-                        "VerticalFov": 60,
-                        "HoritzontalFov": 91,
-                        "BackCol": [
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            1
-                        ],
-                        "FarPlane": 200,
-                        "NearPlane": 0.10000000149011612,
-                        "isFovHori": 0,
-                        "ID": "16026125135317989550",
-                        "IsGameCamera": true,
-                        "IsSelectedCamera": false,
-                        "PrintIcon": true,
-                        "IconColor": [
-                            0.85000002384185791,
-                            0.85000002384185791,
-                            0.85000002384185791,
                             1
                         ]
                     }
