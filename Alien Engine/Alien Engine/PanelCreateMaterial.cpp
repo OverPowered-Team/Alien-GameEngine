@@ -35,8 +35,8 @@ void PanelCreateMaterial::PanelLogic()
 		ImGui::Spacing();
 		ImGui::Spacing();
 
-		/*ImGui::SetCursorPosX(10);
-		ImGui::InputText("Save Path", path, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);*/
+		ImGui::SetCursorPosX(10);
+		ImGui::InputText("Save Path", path, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
 		ImGui::Spacing();
 
 		ImGui::Spacing();
@@ -71,8 +71,14 @@ void PanelCreateMaterial::PanelLogic()
 
 		SetUniforms();
 
+		ImGui::Separator();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
 		if (ImGui::Button("Create", { ImGui::GetWindowWidth() - 16,25 }))
 		{
+			ResourceShader* n_shader = new ResourceShader(path);
+			n_shader->ParseAndCreateShader();
 			ChangeEnable();
 		}
 
@@ -102,7 +108,7 @@ void PanelCreateMaterial::SetUniforms()
 	{
 		UniformData* new_u = new UniformData();
 		new_u->create_color = create_color;
-		*new_u->uniform_name = *uniform_name;
+		new_u->uniform_name = uniform_name;
 		new_u->type = uniform_type_int;
 		uniforms.push_back(new_u);
 	}
