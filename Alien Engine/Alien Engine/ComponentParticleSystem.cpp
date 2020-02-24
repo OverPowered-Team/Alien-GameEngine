@@ -428,7 +428,7 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Text("Load Particle System ");
 			ImGui::SameLine(200, 15);
 			if (ImGui::Button("Load", { 120,20 })) {
-					
+				LoadParticles();
 			}
 
 				
@@ -777,6 +777,8 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	ID = std::stoull(to_load->GetString("ID"));
 }
 
+
+
 void ComponentParticleSystem::LoadParticles()
 {
 	OPENFILENAME to_load;
@@ -796,7 +798,7 @@ void ComponentParticleSystem::LoadParticles()
 
 	to_load.lStructSize = sizeof(to_load);
 	to_load.hwndOwner = NULL;
-	to_load.lpstrFilter = "alienScene\0*.alienParticles";
+	to_load.lpstrFilter = "alienParticles\0*.alienParticles";
 	to_load.lpstrFile = filename;
 	to_load.nMaxFile = MAX_PATH;
 	to_load.lpstrTitle = "Load a .alienParticles";
@@ -808,7 +810,25 @@ void ComponentParticleSystem::LoadParticles()
 		std::string name = filename;
 		App->file_system->NormalizePath(name);
 
-		App->objects->LoadScene(App->file_system->GetBaseFileName(name.data()).data());
+
+		JSON_Value* value = json_parse_file(name.data());
+		JSON_Object* object = json_value_get_object(value);
+
+
+		if (value != nullptr && object != nullptr)
+		{
+			JSONfilepack* particles = new JSONfilepack(name.data(), object, value);
+
+			JSONArraypack* properties = particles->GetArray("ParticleSystem.Properties");
+
+			if (properties != nullptr)
+				LoadComponent(properties);
+
+			delete particles;
+		}
+		else {
+			LOG_ENGINE("Error loading particle system %s", name.data());
+		}
 
 		// last of all, refresh nodes because I have no idea if the user has created folders or moved things in the explorer. Users are bad people creating folders without using the alien engine explorer :(
 		App->ui->panel_project->RefreshAllNodes();
@@ -817,6 +837,7 @@ void ComponentParticleSystem::LoadParticles()
 		SetCurrentDirectoryA(curr_dir);
 	}
 }
+
 
 void ComponentParticleSystem::SaveParticles()
 {
