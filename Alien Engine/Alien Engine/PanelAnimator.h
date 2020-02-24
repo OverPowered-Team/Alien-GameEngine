@@ -29,6 +29,8 @@ public:
 	void Start();
 	bool IsInside(const float2& pos) const;
 
+	void DrawParameterList();
+
 public:
 	ResourceAnimatorController* current_animator = nullptr;
 

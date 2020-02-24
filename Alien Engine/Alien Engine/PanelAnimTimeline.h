@@ -17,14 +17,18 @@ public:
 
 public:
 
-	ComponentAnimator* component_animator = nullptr;
-	ResourceAnimation::Channel* channel = nullptr;
-	ResourceAnimatorController* animator = nullptr;
-	std::vector<ResourceAnimation*> animations;
-	std::vector<float> num_frames_vector;
+	bool changed = true;
 	
 
 private:
+
+	ComponentAnimator* component_animator = nullptr;
+	ResourceAnimation::Channel* channel = nullptr;
+	ResourceAnimatorController* animator = nullptr;
+	ResourceAnimation* current_animation = nullptr;
+	std::vector<ResourceAnimation*> animations;
+	float current_num_frames;
+
 
 	ImVec2 bar_mov = { 0, 0 };
 	ImVec2 mouse_mov = { 0, 0 };
@@ -49,8 +53,6 @@ private:
 	bool stop = false;
 
 	float animation_time = 0.0f;
-
-	bool changed = true;
-
+	float aux_time = 0.0f;
 
 };

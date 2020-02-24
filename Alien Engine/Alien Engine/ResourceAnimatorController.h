@@ -72,8 +72,9 @@ private:
 	State* default_state = nullptr;
 	std::vector<bool> triggers;
 
-public:
-	std::string name = "New Animator Controller";
+	std::vector <std::pair <std::string, int>> int_parameters;
+	std::vector < std::pair <std::string, float>> float_parameters;
+	std::vector < std::pair <std::string, bool>> bool_parameters;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
@@ -81,6 +82,19 @@ private:
 public:
 	ResourceAnimatorController();
 	~ResourceAnimatorController();
+
+	std::string name = "New Animator Controller";
+
+	//Parameters things
+	std::vector < std::pair <std::string, bool>> GetBoolParameters();
+	std::vector < std::pair <std::string, float>> GetFloatParameters();
+	std::vector <std::pair <std::string, int>> GetIntParameters();
+	void AddBoolParameter();
+	void AddFloatParameter();
+	void AddIntParameter();
+	void SetBool(std::string name, bool value);
+	void SetFloat(std::string name, float value);
+	void SetInt(std::string name, int value);
 
 public:
     void FreeMemory();
@@ -132,6 +146,8 @@ public:
 	//void UnLoad();
 	//void Load();
 	void Reset();
+
+	friend class Time;
 };
 
 #endif // !__ANIMATOR_CONTROLLER_H_

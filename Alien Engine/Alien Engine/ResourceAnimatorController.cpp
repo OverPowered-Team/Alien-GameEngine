@@ -10,6 +10,7 @@
 
 
 
+
 ResourceAnimatorController::ResourceAnimatorController() : Resource()
 {
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
@@ -28,6 +29,60 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 ResourceAnimatorController::~ResourceAnimatorController()
 {
 	ax::NodeEditor::DestroyEditor(ed_context);
+}
+
+std::vector < std::pair <std::string, bool>>  ResourceAnimatorController::GetBoolParameters()
+{
+	return bool_parameters;
+}
+
+std::vector < std::pair <std::string, float>>  ResourceAnimatorController::GetFloatParameters()
+{
+	return float_parameters;
+}
+
+std::vector < std::pair <std::string, int>>  ResourceAnimatorController::GetIntParameters()
+{
+	return int_parameters;
+}
+
+void ResourceAnimatorController::AddBoolParameter()
+{
+	bool_parameters.push_back({"NewBool", false });
+}
+
+void ResourceAnimatorController::AddFloatParameter()
+{
+	float_parameters.push_back({"NewFloat", 0.0f });
+}
+
+void ResourceAnimatorController::AddIntParameter()
+{
+	int_parameters.push_back({"NewInt", 0 });
+}
+
+void ResourceAnimatorController::SetBool(std::string name, bool value)
+{
+	for (int i = 0; i < bool_parameters.size(); i++) {
+		if (bool_parameters[i].first == name)
+			bool_parameters[i].second = value;
+	}
+}
+
+void ResourceAnimatorController::SetFloat(std::string name, float value)
+{
+	for (int i = 0; i < float_parameters.size(); i++) {
+		if (float_parameters[i].first == name)
+			float_parameters[i].second = value;
+	}
+}
+
+void ResourceAnimatorController::SetInt(std::string name, int value)
+{
+	for (int i = 0; i < int_parameters.size(); i++) {
+		if (int_parameters[i].first == name)
+			int_parameters[i].second = value;
+	}
 }
 
 
