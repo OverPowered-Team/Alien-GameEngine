@@ -13,6 +13,7 @@ struct Bank {
 	std::string name = "";
 	std::map<u64, std::string> events;
 	std::map<u64, std::string> audios;
+	bool loaded = false;
 };
 
 
@@ -37,16 +38,16 @@ public:
 	void Resume() const;
 	void SetListener(WwiseT::AudioSource* new_listener);
 	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
-	std::vector<Bank> GetBanks();
-	Bank GetBankByName(const char* name);
-	Bank GetBankByID(const u64& id);
+	const std::vector<Bank*> GetBanks() const;
+	const Bank* GetBankByName(const char* name) const;
+	const Bank* GetBankByID(const u64& id) const;
 private:
 	WwiseT::AudioSource* listener;
-	std::vector <Bank> banks;
+	std::vector <Bank*> banks;
 	bool play_mode = false;
 
 public:
 	std::list<ComponentAudioEmitter*> emitters;
-	std::list<Bank> used_banks;
+	std::list<Bank*> used_banks;
 	bool is_playing = false;
 };

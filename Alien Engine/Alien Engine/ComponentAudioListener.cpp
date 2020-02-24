@@ -44,6 +44,20 @@ void ComponentAudioListener::Reset()
 {
 }
 
+void ComponentAudioListener::OnEnable()
+{
+	listener = App->audio->CreateSoundEmitter("listener");
+	App->audio->SetListener(listener);
+	UpdateListenerPos();
+}
+
+void ComponentAudioListener::OnDisable()
+{
+	delete listener;
+	listener = nullptr;
+	App->audio->SetListener(listener);
+}
+
 void ComponentAudioListener::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
@@ -62,6 +76,10 @@ bool ComponentAudioListener::DrawInspector()
 {
 	ImGui::PushID(this);
 
+	if (ImGui::Checkbox("##enableListener", &enabled)) {
+		(enabled) ? OnEnable() : OnDisable();
+	}
+	ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Audio Listener", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen)) {
 		/*ImGui::Text("Name: %s", listener->GetName());
 		ImGui::Text("ID: %s", std::to_string(listener->GetID()));*/

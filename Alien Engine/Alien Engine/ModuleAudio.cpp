@@ -29,17 +29,17 @@ void ModuleAudio::LoadBanksInfo()
 	bank_arr->GetFirstNode();
 	for (uint i = 0; i < bank_arr->GetArraySize(); ++i, bank_arr->GetAnotherNode()) {
 		if (strcmp(bank_arr->GetString("ShortName"), "Init") != 0) {
-			Bank b;
-			b.id = std::stoull(bank_arr->GetString("Id"));
-			b.name = bank_arr->GetString("ShortName");
+			Bank* b = new Bank();
+			b->id = std::stoull(bank_arr->GetString("Id"));
+			b->name = bank_arr->GetString("ShortName");
 			auto events = bank_arr->GetArray("IncludedEvents");
 			events->GetFirstNode();
 			for (uint e = 0; e < events->GetArraySize(); ++e, events->GetAnotherNode()) {
-				b.events[std::stoull(events->GetString("Id"))] = events->GetString("Name");
+				b->events[std::stoull(events->GetString("Id"))] = events->GetString("Name");
 			}
 			auto aud = bank_arr->GetArray("IncludedMemoryFiles");
 			for (uint a = 0; a < aud->GetArraySize(); ++a) {
-				b.audios[std::stoull(aud->GetString("Id"))] = aud->GetString("ShortName");
+				b->audios[std::stoull(aud->GetString("Id"))] = aud->GetString("ShortName");
 			}
 			banks.push_back(b);
 		}
@@ -66,7 +66,8 @@ update_status ModuleAudio::Update(float dt)
 
 update_status ModuleAudio::PostUpdate(float dt)
 {
-	WwiseT::ProcessAudio();
+	if (listener != nullptr)
+		WwiseT::ProcessAudio();
 	return UPDATE_CONTINUE;
 }
 
@@ -78,9 +79,11 @@ bool ModuleAudio::CleanUp()
 
 	WwiseT::StopAllEvents();
 
+	for (auto b = banks.begin(); b != banks.end(); b++)
+		delete* b;
 	banks.clear();
-	banks.shrink_to_fit();
 	used_banks.clear();
+
 	return WwiseT::CloseSoundEngine();
 }
 
@@ -88,7 +91,8 @@ void ModuleAudio::LoadUsedBanks()
 {
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
-		WwiseT::LoadBank(((*i).name + ".bnk").c_str());
+		WwiseT::LoadBank(((*i)->name + ".bnk").c_str());
+		(*i)->loaded = true;
 	}
 }
 
@@ -97,7 +101,8 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 {
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
-		WwiseT::UnLoadBank((*it).name.c_str());
+		WwiseT::UnLoadBank((*it)->name.c_str());
+		(*it)->loaded = false;
 	}
 	//banks.clear();
 
@@ -108,7 +113,7 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
-		WwiseT::UnLoadBank((*it).name.c_str());
+		WwiseT::UnLoadBank((*it)->name.c_str());
 	}
 	//used_banks.clear();
 
@@ -119,30 +124,30 @@ WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 	return WwiseT::CreateAudSource(name);
 }
 
-std::vector<Bank> ModuleAudio::GetBanks()
+const std::vector<Bank*> ModuleAudio::GetBanks() const
 {
 	return banks;
 }
 
-Bank ModuleAudio::GetBankByName(const char* name)
+const Bank* ModuleAudio::GetBankByName(const char* name) const
 {
-	Bank bk;
+	Bank* bk = nullptr;
 	for (int i = 0; i < banks.size(); ++i)
 	{
-		if (App->StringCmp(name, App->audio->GetBanks()[i].name.c_str()))
+		if (App->StringCmp(name, App->audio->GetBanks()[i]->name.c_str()))
 			bk = App->audio->GetBanks()[i];
 	}
 	return bk;
 }
 
-Bank ModuleAudio::GetBankByID(const u64& id)
+const Bank* ModuleAudio::GetBankByID(const u64& id) const
 {
 	for (auto i = banks.begin(); i != banks.end(); ++i)
 	{
-		if ((*i).id == id)
+		if ((*i)->id == id)
 			return *i;
 	}
-	return Bank();
+	return nullptr;
 }
 
 void ModuleAudio::Play(const char* event)
@@ -177,6 +182,6 @@ void ModuleAudio::Resume() const
 void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)
 {
 	listener = new_listener;
-	WwiseT::SetDefaultListener(new_listener->GetID());
+	WwiseT::SetDefaultListener((listener == nullptr) ? 0u : new_listener->GetID());
 }
 

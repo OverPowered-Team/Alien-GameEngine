@@ -24,7 +24,7 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 	bool DrawInspector();
-	bool AlreadyUsedBank(Bank bk);
+	bool AlreadyUsedBank(const Bank* bk);
 public:
 	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;

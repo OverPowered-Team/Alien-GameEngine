@@ -16,6 +16,9 @@ public:
 
 	void Reset() override;
 
+	void OnEnable() override;
+	void OnDisable() override;
+
 	void SaveComponent(JSONArraypack* to_save) override;
 	void LoadComponent(JSONArraypack* to_load) override;
 
