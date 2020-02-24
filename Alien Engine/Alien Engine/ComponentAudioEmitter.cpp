@@ -24,6 +24,7 @@ void ComponentAudioEmitter::Update()
 	else if (Time::state == Time::GameState::PLAY) {
 		if (!play_mode && play_on_awake) {
 			//Load necessary banks
+			Mute(mute);
 			StartSound();
 			play_mode = true;
 		}
@@ -88,7 +89,7 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	ID = std::stoull(to_load->GetString("ID"));
 	enabled = to_load->GetBoolean("Enabled");
 	volume = to_load->GetNumber("Volume");
-	mute = to_load->GetNumber("Mute");
+	mute = to_load->GetBoolean("Mute");
 	current_bank = std::stoull(to_load->GetString("Bank"));
 	current_event = std::stoull(to_load->GetString("Event"));
 	audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
@@ -154,8 +155,7 @@ bool ComponentAudioEmitter::DrawInspector()
 			App->audio->UnloadAllUsedBanksFromWwise();
 		}			
 		ImGui::NewLine();
-		if (ImGui::Checkbox("Mute", &mute))
-			Mute(mute);
+		ImGui::Checkbox("Mute", &mute);
 		ImGui::Checkbox("PlayOnAwake", &play_on_awake);
 		ImGui::Checkbox("Loop", &loop);
 		if (ImGui::SliderFloat("Volume", &volume, 0.F, 1.F))

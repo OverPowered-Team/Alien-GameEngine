@@ -61,6 +61,7 @@ update_status ModuleAudio::Update(float dt)
 			play_mode = true;
 		}
 	}
+
 	return UPDATE_CONTINUE;
 }
 
