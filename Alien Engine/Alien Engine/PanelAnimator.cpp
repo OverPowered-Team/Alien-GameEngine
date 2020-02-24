@@ -3,6 +3,8 @@
 #include "ModuleResources.h"
 #include "ModuleInput.h"
 
+#include "imgui/misc/cpp/imgui_stdlib.h"
+
 #include "ResourceAnimatorController.h"
 #include "ResourceAnimation.h"
 
@@ -83,7 +85,6 @@ void PanelAnimator::ShowStatePopup(){
 		ImGui::Separator();
 		char tmp[128];
 
-		snprintf(tmp, 127, current_animator->FindState(context_node)->GetName().c_str());
 		if (ImGui::InputText("Name", tmp, 128, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
 			current_animator->FindState(context_node)->SetName(tmp);
@@ -272,6 +273,63 @@ bool PanelAnimator::IsInside(const float2 & pos) const
 	return math::Contains(box, float3(pos.x, pos.y, 0));
 }
 
+void PanelAnimator::DrawParameterList()
+{
+	if (current_animator->GetBoolParameters().size() > 0) {
+		for (int i = 0; i < current_animator->GetBoolParameters().size(); i++) {
+
+			//name
+			ImGui::Text(current_animator->GetBoolParameters()[i].first.c_str());
+			ImGui::InputText("##inputtextbool", &current_animator->GetBoolParameters()[i].first, ImGuiInputTextFlags_EnterReturnsTrue);
+
+			ImGui::SameLine();
+			//value
+			ImGui::Checkbox("##checkbox", &current_animator->GetBoolParameters()[i].second);
+
+			ImGui::Separator();
+		}
+	}
+
+	if (current_animator->GetFloatParameters().size() > 0) {
+		for (int i = 0; i < current_animator->GetFloatParameters().size(); i++) {
+
+			//name
+			ImGui::Text(current_animator->GetFloatParameters()[i].first.c_str());
+			char tmp[128];
+
+			ImGui::InputText("##inputtextfloat", &current_animator->GetFloatParameters()[i].first, ImGuiInputTextFlags_EnterReturnsTrue);
+
+
+			ImGui::SameLine();
+			//value
+			ImGui::InputFloat("", &current_animator->GetFloatParameters()[i].second);
+
+
+			ImGui::Separator();
+		}
+	}
+
+	if (current_animator->GetIntParameters().size() > 0) {
+		for (int i = 0; i < current_animator->GetIntParameters().size(); i++) {
+
+			//name
+			ImGui::Text(current_animator->GetIntParameters()[i].first.c_str());
+			char tmp[128];
+
+			if (ImGui::InputText("", tmp, 128, ImGuiInputTextFlags_EnterReturnsTrue)) {
+				current_animator->GetIntParameters()[i].first = tmp;
+			}
+
+			ImGui::SameLine();
+
+			//value
+			ImGui::InputInt("", &current_animator->GetIntParameters()[i].second);
+
+			ImGui::Separator();
+		}
+	}
+}
+
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController * animator)
 {
 	//if (current_animator)
@@ -337,7 +395,7 @@ void PanelAnimator::PanelLogic()
 	if (current_animator) {
 		ax::NodeEditor::SetCurrentEditor(current_animator->GetEditorContext());
 
-		ax::NodeEditor::Begin("Animation controller Editor");
+		ax::NodeEditor::Begin("Animator");
 
 		unique_id = 0;
 		pin_in_id = 100;
@@ -359,6 +417,40 @@ void PanelAnimator::PanelLogic()
 
 		ax::NodeEditor::End();
 		ax::NodeEditor::SetCurrentEditor(nullptr);
+
+		ImGui::SetCursorPos({ 4, 24 });
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(0, 0, 0, 100));
+
+		ImGui::BeginChild("Parameters", { 200, 500 }, true);
+		ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen);
+
+		DrawParameterList();
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Add Parameter")) {
+			ImGui::OpenPopup("Add parameter...");
+		}
+
+		if (ImGui::BeginPopup("Add parameter..."))
+		{
+			if (ImGui::Selectable("bool")) {
+				current_animator->AddBoolParameter();
+			}
+
+			if (ImGui::Selectable("float")) {
+				current_animator->AddFloatParameter();
+			}
+
+			if (ImGui::Selectable("int")) {
+				current_animator->AddIntParameter();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::EndChild();
+		ImGui::PopStyleColor();
 	}
 
 	ImGui::End();
