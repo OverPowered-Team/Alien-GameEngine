@@ -286,6 +286,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		delete[] anim_paths;
 		delete[] mesh_paths;
 		delete[] materials_path;
+		delete[] bones_paths;
 		delete meta;
 
 		// InitMeshes

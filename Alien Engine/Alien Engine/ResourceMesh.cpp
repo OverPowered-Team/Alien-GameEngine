@@ -308,10 +308,11 @@ bool ResourceMesh::LoadMemory()
 		else {
 			--references;
 		}
-
+		delete[] data;
 		return true;
 	}
 	else {
+		delete[] data;
 		return false;
 	}
 }
