@@ -279,13 +279,20 @@ void PanelAnimator::DrawParameterList()
 		for (int i = 0; i < current_animator->GetBoolParameters().size(); i++) {
 
 			//name
-			ImGui::Text(current_animator->GetBoolParameters()[i].first.c_str());
-			ImGui::InputText("##inputtextbool", &current_animator->GetBoolParameters()[i].first, ImGuiInputTextFlags_EnterReturnsTrue);
+			ImGui::PushID(&current_animator->GetBoolParameters()[i].first);
+			std::string temp = current_animator->GetBoolParameters()[i].first;
+			if (ImGui::InputText("##inputtextbool", &temp)) {
+				current_animator->SetBoolParametersName(i, temp);
+			}
 
 			ImGui::SameLine();
-			//value
-			ImGui::Checkbox("##checkbox", &current_animator->GetBoolParameters()[i].second);
 
+			//value
+			bool temp_value = current_animator->GetBoolParameters()[i].second;
+			if (ImGui::Checkbox("##checkbox", &temp_value)) {
+				current_animator->SetBoolParametersValue(i, temp_value);
+			}
+			ImGui::PopID();
 			ImGui::Separator();
 		}
 	}
@@ -294,16 +301,20 @@ void PanelAnimator::DrawParameterList()
 		for (int i = 0; i < current_animator->GetFloatParameters().size(); i++) {
 
 			//name
-			ImGui::Text(current_animator->GetFloatParameters()[i].first.c_str());
-			char tmp[128];
-
-			ImGui::InputText("##inputtextfloat", &current_animator->GetFloatParameters()[i].first, ImGuiInputTextFlags_EnterReturnsTrue);
-
+			ImGui::PushID(&current_animator->GetFloatParameters()[i].first);
+			std::string temp = current_animator->GetFloatParameters()[i].first;
+			if (ImGui::InputText("##inputtextfloat", &temp)) {
+				current_animator->SetFloatParametersName(i, temp);
+			}
 
 			ImGui::SameLine();
-			//value
-			ImGui::InputFloat("", &current_animator->GetFloatParameters()[i].second);
 
+			//value
+			float temp_value = current_animator->GetFloatParameters()[i].second;
+			if (ImGui::InputFloat("##inputfloat", &temp_value)) {
+				current_animator->SetFloatParametersValue(i, temp_value);
+			}
+			ImGui::PopID();
 
 			ImGui::Separator();
 		}
@@ -311,19 +322,21 @@ void PanelAnimator::DrawParameterList()
 
 	if (current_animator->GetIntParameters().size() > 0) {
 		for (int i = 0; i < current_animator->GetIntParameters().size(); i++) {
-
 			//name
-			ImGui::Text(current_animator->GetIntParameters()[i].first.c_str());
-			char tmp[128];
-
-			if (ImGui::InputText("", tmp, 128, ImGuiInputTextFlags_EnterReturnsTrue)) {
-				current_animator->GetIntParameters()[i].first = tmp;
+			ImGui::PushID(&current_animator->GetIntParameters()[i].first);
+			std::string temp = current_animator->GetIntParameters()[i].first;
+			if (ImGui::InputText("##inputtextint", &temp)) {
+				current_animator->SetIntParametersName(i, temp);
 			}
 
 			ImGui::SameLine();
 
 			//value
-			ImGui::InputInt("", &current_animator->GetIntParameters()[i].second);
+			int temp_value = current_animator->GetIntParameters()[i].second;;
+			if (ImGui::InputInt("##inputint", &temp_value)) {
+				current_animator->SetIntParametersValue(i, temp_value);
+			}
+			ImGui::PopID();
 
 			ImGui::Separator();
 		}

@@ -31,19 +31,49 @@ ResourceAnimatorController::~ResourceAnimatorController()
 	ax::NodeEditor::DestroyEditor(ed_context);
 }
 
-std::vector < std::pair <std::string, bool>>  ResourceAnimatorController::GetBoolParameters()
+const std::vector < std::pair <std::string, bool>>&  ResourceAnimatorController::GetBoolParameters() 
 {
 	return bool_parameters;
 }
 
-std::vector < std::pair <std::string, float>>  ResourceAnimatorController::GetFloatParameters()
+const std::vector < std::pair <std::string, float>>&  ResourceAnimatorController::GetFloatParameters()
 {
 	return float_parameters;
 }
 
-std::vector < std::pair <std::string, int>>  ResourceAnimatorController::GetIntParameters()
+const std::vector < std::pair <std::string, int>>&  ResourceAnimatorController::GetIntParameters()
 {
 	return int_parameters;
+}
+
+void ResourceAnimatorController::SetBoolParametersName(uint index, const std::string& name)
+{
+	bool_parameters[index].first = std::string(name);
+}
+
+void ResourceAnimatorController::SetFloatParametersName(uint index, const std::string& name)
+{
+	float_parameters[index].first = std::string(name);
+}
+
+void ResourceAnimatorController::SetIntParametersName(uint index, const std::string& name)
+{
+	int_parameters[index].first = std::string(name);
+}
+
+void ResourceAnimatorController::SetBoolParametersValue(uint index, const bool &value)
+{
+	bool_parameters[index].second = value;
+}
+
+void ResourceAnimatorController::SetFloatParametersValue(uint index, const float &value)
+{
+	float_parameters[index].second = value;
+}
+
+void ResourceAnimatorController::SetIntParametersValue(uint index, const int &value)
+{
+	int_parameters[index].second = value;
 }
 
 void ResourceAnimatorController::AddBoolParameter()
