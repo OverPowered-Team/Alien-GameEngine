@@ -300,6 +300,9 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			App->resources->AddResource(this);
 		}
 	}
+	else {
+		ret = false;
+	}
 	return ret;
 }
 
