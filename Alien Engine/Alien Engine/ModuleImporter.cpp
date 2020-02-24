@@ -355,9 +355,10 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 	}
 
 	aiString ai_path;
-	// ..\\texture\\baker.dds
 	if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(ai_path.C_Str());
+		std::string name = ai_path.C_Str();
+		App->file_system->NormalizePath(name);
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(name.data());
 		if (tex != nullptr) {
 			mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
 		}
@@ -365,8 +366,7 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 			std::string aiPath;
 			int dots = 0;
 			int under = 0;
-			std::string hole_name(ai_path.C_Str());
-			App->file_system->NormalizePath(hole_name);
+			std::string hole_name(name);
 			std::string::iterator item = hole_name.begin();
 			bool ignore = false;
 			for (; item != hole_name.end(); ++item)
