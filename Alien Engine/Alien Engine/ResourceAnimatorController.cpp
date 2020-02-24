@@ -12,6 +12,7 @@
 
 ResourceAnimatorController::ResourceAnimatorController() : Resource()
 {
+	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
 	ed_context = ax::NodeEditor::CreateEditor();
 
 	for (int i = 0; i < NUM_TRIGGERS; ++i) {
@@ -159,7 +160,18 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 
 void ResourceAnimatorController::FreeMemory()
 {
-
+	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
+	{
+		if ((*it)->GetClip())
+			(*it)->GetClip()->DecreaseReferences();
+		delete (*it);
+	}
+	states.clear();
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
+	{
+		delete (*it);
+	}
+	transitions.clear();
 }
 bool ResourceAnimatorController::LoadMemory()
 {
@@ -264,9 +276,69 @@ bool ResourceAnimatorController::LoadMemory()
 	return false;
 }
 
-bool ResourceAnimatorController::ReadBaseInfo(const char* meta_file_path)
+bool ResourceAnimatorController::ReadBaseInfo(const char* assets_file_path)
 {
-	return false;
+	bool ret = true;
+
+	path = std::string(assets_file_path);
+	std::string alien_path = App->file_system->GetPathWithoutExtension(assets_file_path) + "_meta.alien";
+
+	JSON_Value* value = json_parse_file(alien_path.data());
+	JSON_Object* object = json_value_get_object(value);
+
+	if (value != nullptr && object != nullptr)
+	{
+		JSONfilepack* meta = new JSONfilepack(alien_path, object, value);
+
+		ID = std::stoull(meta->GetString("Meta.ID"));
+
+		delete meta;
+
+		meta_data_path = LIBRARY_ANIM_CONTROLLERS_FOLDER + std::to_string(ID) + ".alienAnimController";
+		char* buffer;
+		uint size = App->file_system->Load(meta_data_path.data(), &buffer);
+
+		if (size > 0)
+		{
+			char* cursor = buffer;
+
+			//Load name size
+			uint bytes = sizeof(uint);
+			uint name_size;
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load name
+			bytes = name_size;
+			name.resize(bytes);
+			memcpy(&name[0], cursor, bytes);
+			cursor += bytes;
+
+			//Load transitions and states nums
+			bytes = sizeof(uint);
+			uint num_states;
+			memcpy(&num_states, cursor, bytes);
+			cursor += bytes;
+			uint num_transitions;
+			memcpy(&num_transitions, cursor, bytes);
+			cursor += bytes;
+		}
+		else
+			return false;
+	}
+	else
+		return false;
+
+	App->resources->AddResource(this);
+
+	return ret;
+}
+
+void ResourceAnimatorController::ReadLibrary(const char* meta_data)
+{
+	this->meta_data_path = meta_data;
+	ID = std::stoull(App->file_system->GetBaseFileName(meta_data_path.data()));
+	App->resources->AddResource(this);
 }
 
 bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
@@ -378,6 +450,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	App->file_system->Save(meta_data_path.data(), data, size);
+	App->resources->AddResource(this);
 	RELEASE_ARRAY(data);
 
 	return true;
@@ -385,7 +458,15 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 bool ResourceAnimatorController::DeleteMetaData()
 {
-	return false;
+	remove(meta_data_path.data());
+
+	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
+	if (position != App->resources->resources.end())
+		App->resources->resources.erase(position);
+
+	delete this;
+
+	return true;
 }
 
 void ResourceAnimatorController::Play()
