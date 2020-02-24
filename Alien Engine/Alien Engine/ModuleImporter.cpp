@@ -354,13 +354,21 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 		mat->color.a = col.a;
 	}
 
+	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
+
+	App->resources->AddResource(mat);
+	model->materials_attached.push_back(mat);
+}
+
+void ModuleImporter::LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path)
+{
 	aiString ai_path;
-	if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path)) {
+	if (AI_SUCCESS == material->GetTexture(assimp_type, 0, &ai_path)) {
 		std::string name = ai_path.C_Str();
 		App->file_system->NormalizePath(name);
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(name.data());
 		if (tex != nullptr) {
-			mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
+			mat->texturesID[(uint)type] = tex->GetID();
 		}
 		else if (extern_path != nullptr) {
 			std::string aiPath;
@@ -378,7 +386,7 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 						dots = 0;
 					}
 				}
-				else  {
+				else {
 					ignore = true;
 					aiPath.push_back(*item);
 				}
@@ -429,7 +437,7 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 				App->file_system->NormalizePath(normal);
 				path = App->file_system->GetCurrentHolePathFolder(normal) + ai_path.C_Str();
 			}
-			
+
 			if (std::experimental::filesystem::exists(path)) {
 				std::string assets_path = TEXTURES_FOLDER + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
 				App->file_system->CopyFromOutsideFS(path.data(), assets_path.data());
@@ -442,9 +450,6 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 			}
 		}
 	}
-
-	App->resources->AddResource(mat);
-	model->materials_attached.push_back(mat);
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)

@@ -28,6 +28,8 @@
 class ResourceModel;
 class ResourceMesh;
 class ResourceTexture;
+class ResourceMaterial;
+enum class TextureType;
 
 class ModuleImporter : public Module
 {
@@ -63,6 +65,7 @@ private:
 	void LoadMesh(const aiMesh* mesh);
 	void LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum);
 	void LoadMaterials(const aiMaterial* material, const char* extern_path);
+	void LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path);
 
 private:
 	ResourceModel* model = nullptr;
