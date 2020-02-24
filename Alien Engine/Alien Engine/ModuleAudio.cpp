@@ -24,7 +24,7 @@ bool ModuleAudio::Start()
 
 void ModuleAudio::LoadBanksInfo()
 {
-	auto j = App->LoadJSONFile("DLLs/SoundbanksInfo.json");
+	auto j = App->LoadJSONFile("Assets/AudioBanks/SoundbanksInfo.json");
 	auto bank_arr = j->GetArray("SoundBanksInfo.SoundBanks");
 	bank_arr->GetFirstNode();
 	for (uint i = 0; i < bank_arr->GetArraySize(); ++i, bank_arr->GetAnotherNode()) {
@@ -79,8 +79,9 @@ bool ModuleAudio::CleanUp()
 
 	WwiseT::StopAllEvents();
 
-	for (auto b = banks.begin(); b != banks.end(); b++)
+	for (auto b = banks.begin(); b != banks.end(); b++) {
 		delete* b;
+	}
 	banks.clear();
 	used_banks.clear();
 
@@ -91,8 +92,10 @@ void ModuleAudio::LoadUsedBanks()
 {
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
-		WwiseT::LoadBank(((*i)->name + ".bnk").c_str());
-		(*i)->loaded = true;
+		if (!(*i)->loaded) {
+			WwiseT::LoadBank(((*i)->name + ".bnk").c_str());
+			(*i)->loaded = true;
+		}
 	}
 }
 
@@ -101,8 +104,10 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 {
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
-		WwiseT::UnLoadBank((*it)->name.c_str());
-		(*it)->loaded = false;
+		if ((*it)->loaded) {
+			WwiseT::UnLoadBank((*it)->name.c_str());
+			(*it)->loaded = false;
+		}
 	}
 	//banks.clear();
 
@@ -113,7 +118,10 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
-		WwiseT::UnLoadBank((*it)->name.c_str());
+		if ((*it)->loaded) {
+			WwiseT::UnLoadBank((*it)->name.c_str());
+			(*it)->loaded = false;
+		}
 	}
 	//used_banks.clear();
 

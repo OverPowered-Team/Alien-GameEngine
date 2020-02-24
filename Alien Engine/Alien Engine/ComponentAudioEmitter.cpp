@@ -57,7 +57,6 @@ void ComponentAudioEmitter::Mute(bool mute)
 void ComponentAudioEmitter::StartSound()
 {	
 	source->PlayEventByName(audio_name.c_str());
-	//timer.Start();	
 }
 
 void ComponentAudioEmitter::UpdateSourcePos()
@@ -73,6 +72,7 @@ void ComponentAudioEmitter::UpdateSourcePos()
 		source->SetSourcePos(vector_pos.x, vector_pos.y, vector_pos.z, 0, 0, 1, 0, 1, 0);
 	}
 }
+
 void ComponentAudioEmitter::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetString("ID", std::to_string(ID));
@@ -126,22 +126,23 @@ bool ComponentAudioEmitter::DrawInspector()
 			ImGui::EndCombo();
 		}
 
-		if (ImGui::BeginCombo("Events", 
-			(bk == nullptr) ? 
-			"" : (bk->events.find(current_event) != bk->events.end()) ?
-			bk->events.at(current_event).c_str() : ""))
-		{
-			for (auto i = bk->events.begin(); i != bk->events.end(); ++i)
+		if(bk != nullptr)
+			if (ImGui::BeginCombo("Events",
+				(bk == nullptr) ?
+				"NONE" : (bk->events.find(current_event) != bk->events.end()) ?
+				bk->events.at(current_event).c_str() : "NONE"))
 			{
-				bool is_selected = (current_event == (*i).first);
-				if (ImGui::Selectable((*i).second.c_str(), is_selected))
+				for (auto i = bk->events.begin(); i != bk->events.end(); ++i)
 				{
-					current_event = (*i).first;
-					audio_name = (*i).second;
+					bool is_selected = (current_event == (*i).first);
+					if (ImGui::Selectable((*i).second.c_str(), is_selected))
+					{
+						current_event = (*i).first;
+						audio_name = (*i).second;
+					}
 				}
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
-		}
 		if(ImGui::Button("Play"))
 		{
 			App->audio->LoadUsedBanks();

@@ -23,6 +23,11 @@
     "Path": "SFX.bnk",
     "IncludedEvents": [
      {
+      "Id": "1970334122",
+      "Name": "absorb",
+      "ObjectPath": "\\Events\\Default Work Unit\\absorb"
+     },
+     {
       "Id": "3677180323",
       "Name": "health",
       "ObjectPath": "\\Events\\Default Work Unit\\health"
@@ -34,6 +39,12 @@
       "Language": "SFX",
       "ShortName": "111-pokemon-recovery.wav",
       "Path": "SFX\\111-pokemon-recovery_1C9C67B2.wem"
+     },
+     {
+      "Id": "1038143432",
+      "Language": "SFX",
+      "ShortName": "Absorb.wav",
+      "Path": "SFX\\Absorb_1C9C67B2.wem"
      }
     ]
    },
