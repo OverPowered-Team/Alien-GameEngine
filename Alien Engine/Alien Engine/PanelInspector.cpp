@@ -6,6 +6,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ComponentBoxCollider.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -307,7 +308,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -378,7 +379,13 @@ void PanelInspector::ButtonAddComponent()
 					LOG_ENGINE("The selected object already has this component!");
 
 				break; }
+			case ComponentType::BOX_COLLIDER: {
+
+				comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
+				App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				break; }
 			}
+	
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);

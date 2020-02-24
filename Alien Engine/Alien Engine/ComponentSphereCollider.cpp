@@ -23,7 +23,7 @@
 //	shape = new btSphereShape(1.f);
 //}
 //
-//void ComponentSphereCollider::AdjustShape()
+//void ComponentSphereCollider::AdjustShapeToAABB()
 //{
 //	scaled_center = center;
 //	float scaled_size = radius *  linked_go->transform->scale.Abs().MaxElement();

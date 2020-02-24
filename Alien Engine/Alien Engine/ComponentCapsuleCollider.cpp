@@ -52,7 +52,7 @@
 //	}
 //}
 //
-//void ComponentCapsuleCollider::AdjustShape()
+//void ComponentCapsuleCollider::AdjustShapeToAABB()
 //{
 //	static CapsuleType last_type = capsule_type;
 //

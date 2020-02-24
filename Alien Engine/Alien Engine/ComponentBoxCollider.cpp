@@ -1,29 +1,58 @@
 #include "ComponentBoxCollider.h"
+#include "ComponentRigidBody.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ModulePhysics.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
 
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
 	type = ComponentType::BOX_COLLIDER;
+	rigid_body = game_object_attached->GetComponent<ComponentRigidBody>();
+
+	if (!game_object_attached->HasComponent(ComponentType::RIGID_BODY))
+	{
+		game_object_attached->AddComponent(new ComponentRigidBody(game_object_attached));
+	}
+
+	rigid_body = game_object_attached->GetComponent<ComponentRigidBody>();
+
+	CreateShape();
+	AdjustShapeToMesh();
+
+	size = float3::one();
+	center = float3::zero();
 }
 
-void ComponentBoxCollider::CreateShape(ComponentMesh* mesh)
+void ComponentBoxCollider::CreateShape() 
 {
-	size = (mesh != nullptr) ? mesh->local_aabb.Size() :  float3::one();
-	center = (mesh != nullptr) ? mesh->local_aabb.CenterPoint() : float3::zero();
+	//size = (mesh != nullptr) ? mesh->local_aabb.Size() :  float3::one();
+	//center = (mesh != nullptr) ? mesh->local_aabb.CenterPoint() : float3::zero();
 	
-	float3 shape_size = float3::one() * 0.5f;
-	shape = new btBoxShape(btVector3(shape_size.x, shape_size.y, shape_size.z));
-}
+	if (shape != nullptr)
+	{
+		rigid_body->RemoveCollider(this);
+		delete shape;
+	}
 
-void ComponentBoxCollider::AdjustShape()
-{
-	scaled_center = center;
 	float3 scaled_size = size.Mul(transform->GetGlobalScale().Abs());
 	scaled_size = CheckInvalidCollider(scaled_size);
-	shape->setLocalScaling(btVector3(scaled_size.x, scaled_size.y, scaled_size.z));
+	float3 final_size = scaled_size * 0.5f;
+	shape = new btBoxShape(ToBtVector3(final_size));
+	shape->setUserPointer(this);
+	rigid_body->AddCollider(this);
+}
+
+void ComponentBoxCollider::AdjustShapeToMesh()
+{
+	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+
+	if (mesh != nullptr) 
+	{
+		size = mesh->local_aabb.Size();
+		CreateShape();
+	}
 }
 
 void ComponentBoxCollider::Reset()
@@ -51,7 +80,25 @@ float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
 
 bool ComponentBoxCollider::DrawInspector()
 {
-	ImGui::Title("Size", 1);	ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX);
+	static float3 last_scale = transform->GetGlobalScale();
+	static float3 last_size = size;
+
+	ComponentCollider::DrawInspector();
+
+	if (ImGui::CollapsingHeader("Box Collider", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Spacing();
+		ImGui::Title("Center", 1);			ImGui::DragFloat3("##center", center.ptr(), 0.1f);
+		ImGui::Title("Size", 1);			ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX);
+		ImGui::Spacing();
+	}
+
+	if (!last_scale.Equals( transform->GetGlobalScale()) || !last_size.Equals(size))
+	{
+		CreateShape();
+	}
+
+
 	return true;
 }
 

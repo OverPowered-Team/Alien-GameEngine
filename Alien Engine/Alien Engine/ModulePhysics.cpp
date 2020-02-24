@@ -12,6 +12,16 @@ ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 
 ModulePhysics::~ModulePhysics()
 {
+	LOG_ENGINE("Destroying 3D Physics simulation");
+
+	for (int i = world->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = world->getCollisionObjectArray()[i];
+		world->removeCollisionObject(obj);
+	}
+
+	delete vehicle_raycaster;
+	delete world;
 	delete debug_renderer;
 	delete solver;
 	delete broad_phase;
@@ -58,9 +68,9 @@ bool ModulePhysics::Start()
 // ---------------------------------------------------------
 update_status ModulePhysics::PreUpdate(float dt)
 {
-	if (dt != 0.f)
+	if (Time::GetDT() != 0.f)
 	{
-		world->stepSimulation(dt, 20);
+		world->stepSimulation(Time::GetDT(), 5);
 	}
 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
@@ -96,17 +106,6 @@ update_status ModulePhysics::PostUpdate(float dt)
 
 bool ModulePhysics::CleanUp()
 {
-	LOG_ENGINE("Destroying 3D Physics simulation");
-
-	for (int i = world->getNumCollisionObjects() - 1; i >= 0; i--)
-	{
-		btCollisionObject* obj = world->getCollisionObjectArray()[i];
-		world->removeCollisionObject(obj);
-	}
-
-	delete vehicle_raycaster;
-	delete world;
-
 	return true;
 }
 
@@ -114,8 +113,7 @@ void ModulePhysics::RenderCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	//ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
-
-	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform(), collider->shape, btVector3(0.f, 1.f, 0.f));
+	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform() /** ToBtTransform(collider->center, collider->rotation)*/ , collider->shape, btVector3(0.f, 1.f, 0.f));
 	//ModuleRenderer3D::EndDebugDraw();
 }
 

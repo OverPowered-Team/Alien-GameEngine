@@ -7,6 +7,7 @@
 #include "ComponentMesh.h"
 #include "ReturnZ.h"
 #include "ComponentTransform.h"
+#include "ComponentBoxCollider.h"
 
 PanelCreateObject::PanelCreateObject(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) :
 	Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -73,6 +74,8 @@ void PanelCreateObject::PanelLogic()
 			ComponentTransform* transform = new ComponentTransform(object, { x,y,z }, { 0,0,0,0 }, { 1,1,1 });
 			ComponentMesh* mesh = new ComponentMesh(object);
 			ComponentMaterial* material = new ComponentMaterial(object);
+			ComponentBoxCollider* collider = new ComponentBoxCollider(object);
+
 			switch (objects_combo)
 			{
 			case 0: {
@@ -110,6 +113,7 @@ void PanelCreateObject::PanelLogic()
 			object->AddComponent(mesh);
 			object->AddComponent(material);
 			mesh->RecalculateAABB_OBB();
+			object->AddComponent(collider);
 			App->objects->SetNewSelectedObject(object);
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 			create_color = { 1,1,1 };

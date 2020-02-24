@@ -14,8 +14,10 @@ class ComponentCapsuleCollider;
 
 class __declspec(dllexport) ComponentRigidBody : public Component
 {
+	friend class GameObject;
 	friend class ModulePhysics;
 	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
 	//friend class C_JointP2P;
 	//friend class C_Vehicle;
 
@@ -56,13 +58,15 @@ public:
 private:
 
 	void Update();
-	void Render();
+	void Draw();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);
 	void SaveComponent(JSONArraypack* config);
 	void LoadComponent(JSONArraypack* config);
 
+	void AddCollider(ComponentCollider* collider);
+	void RemoveCollider(ComponentCollider* collider);
 	void CreateBody();
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 
@@ -96,6 +100,8 @@ private:
 	ComponentTransform* transform = nullptr;
 	// MotionState 
 	btMotionState* motion_state = nullptr;
+
+	int colliders_index = 0;
 };
 
 #endif // !_C_RIGID_BODY_H__

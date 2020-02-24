@@ -27,7 +27,7 @@
 //
 //	void CreateShape(C_Mesh* mesh);
 //
-//	void AdjustShape();
+//	void AdjustShapeToAABB();
 //
 //	void SaveCollider(Config& config);
 //

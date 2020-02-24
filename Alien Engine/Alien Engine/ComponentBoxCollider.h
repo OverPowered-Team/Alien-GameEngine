@@ -9,7 +9,8 @@ class ModulePhysics;
 
 class ComponentBoxCollider : public ComponentCollider
 {
-	friend ModulePhysics;
+	friend class ModulePhysics;
+	friend class GameObject;
 
 public:
 
@@ -21,19 +22,15 @@ private:
 
 	// Virtual Functions ------------------------------
 
-	void CreateShape(ComponentMesh* mesh);
-
-	void AdjustShape();
-
-	void Reset();
-
-	void SaveComponent(JSONArraypack* to_save);
-
-	void LoadComponent(JSONArraypack* to_load);
-
 	bool DrawInspector();
 
+	void Reset();
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
 
+	void CreateShape();
+	void AdjustShapeToMesh();
+	void AdjustToScale();
 
 private:
 

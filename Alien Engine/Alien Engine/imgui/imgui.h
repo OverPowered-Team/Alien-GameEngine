@@ -1371,9 +1371,9 @@ enum ImGuiSeparationType
 struct ImGuiStyle
 {
     // Team Solid ------------------
-    float       MaxColumnSeparation;
-    float       TitleSeparation;
-    float       SubTitleSeparation;
+    float                   MaxColumnSeparation;
+    float                   TitleSeparation;
+    float                   SubTitleSeparation;
     ImGuiSeparationType     SeparationType;
     // ------------------------------
 

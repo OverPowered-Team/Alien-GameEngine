@@ -13,6 +13,7 @@ class ComponentTransform;
 
 class __declspec(dllexport) ComponentCollider : public Component
 {
+	friend class GameObject;
 	friend class ModuleObjects;
 	friend class ModulePhysics;
 	friend class ReturnZ;
@@ -27,23 +28,22 @@ public:
 
 protected:
 
-	void AddToRigidBody();
-	void RemoveFromRigidBody();
 	float3 GetWorldCenter();
 
 	// Virtual Functions ------------------------------
 
 	virtual void Update();
-	virtual void Render();
+	virtual void DrawCollider();
 	virtual bool DrawInspector();
+
 	virtual void Reset();
 	virtual void Clone(Component* clone) {}
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
 
-	virtual void CreateShape(ComponentMesh* mesh) {};
-	virtual void AdjustShape() {}; 	// Adjust shape to scale and other factors
+	virtual void CreateShape() {};
+	virtual void AdjustShapeToMesh() {}; 	// Adjust shape to scale and other factors
 
 protected:
 
@@ -55,4 +55,6 @@ protected:
 	btCollisionShape* shape = nullptr;
 	ComponentTransform* transform = nullptr;
 	ComponentRigidBody* rigid_body = nullptr;
+	int child_collider_index = 0;
+	bool is_added = false;
 };

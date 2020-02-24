@@ -7,12 +7,13 @@
 
 ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 {
-	Reset();
+	type = ComponentType::RIGID_BODY;
+	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
 
 	// Create compund shape --------------------------
 
-	compound_shape = new btCompoundShape(btVector3(1.f, 1.f, 1.f));
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, nullptr, compound_shape);
+	compound_shape = new btCompoundShape(true, 4);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(1.f, nullptr, compound_shape);
 
 	body = new btRigidBody(rbInfo);
 	body->setUserPointer(go);
@@ -40,22 +41,133 @@ void ComponentRigidBody::Update()
 {
 	// Update Local Vars  ------------------------
 
-	float3 go_offset =/* (compound_shape != nullptr) ? compound_shape->GetWorldCenter() : */float3::zero();     // Update Go Offset
-	float current_mass = (game_object_attached->is_static) ? 0.f : mass;						// Update Mass
+	float3 go_offset =/* (compound_shape != nullptr) ? compound_shape.tra() :*/ float3::zero();
+	//float current_mass = (game_object_attached->is_static) ? 0.f : mass;						// Update Mass
 
 	 // Update Inertia ---------------------------
 
-	compound_shape->calculateLocalInertia(current_mass, inertia);
-	body->setMassProps(current_mass, inertia);
 
+	body->activate(true);
 	// Update Rigid Body Vars ---------------------
 
-	if (is_trigger)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	else
-		body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	// Set Go Transform ---------------------------
 
-	SetMass(current_mass);
+	//SetBodyTranform(transform->GetGlobalPosition() + go_offset, transform->GetGlobalRotation());
+
+	//if (Time::GetGameState() == Time::GameState::PAUSE)
+	//{
+	//	SetBodyTranform(transform->GetGlobalPosition() + go_offset, transform->GetGlobalRotation());
+	//}
+	//else
+	//{
+	//	btTransform bt_transform = body->getCenterOfMassTransform();
+	//	btQuaternion rotation = bt_transform.getRotation();
+	//	btVector3 position = bt_transform.getOrigin() - ToBtVector3(go_offset);
+
+	//	body->activate(true);
+	//	transform->SetGlobalPosition(float3(position));
+	//	transform->SetGlobalRotation(math::Quat((btScalar*)rotation));
+
+	//	// Apply Forces ----------------------
+
+	//	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	//	{
+	//		if (!force_to_apply[i].Equals(float3::zero()))
+	//		{
+	//			switch ((ForceMode)i)
+	//			{
+	//			case ForceMode::FORCE:
+	//				body->applyCentralForce(ToBtVector3(force_to_apply[i]));
+	//				break;
+	//			case ForceMode::IMPULSE:
+	//				body->applyCentralImpulse(ToBtVector3(force_to_apply[i]));
+	//				break;
+	//			}
+	//			force_to_apply[i] = float3::zero();
+	//		}
+	//	}
+
+	//	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	//	{
+	//		if (!torque_to_apply[i].Equals(float3::zero()))
+	//		{
+	//			switch ((ForceMode)i)
+	//			{
+	//			case ForceMode::FORCE:
+	//				body->applyTorque(ToBtVector3(torque_to_apply[i]));
+	//				break;
+	//			case ForceMode::IMPULSE:
+	//				body->applyTorqueImpulse(ToBtVector3(torque_to_apply[i]));
+	//				break;
+	//			}
+
+	//			torque_to_apply[i] = float3::zero();
+	//		}
+	//	}
+	//}
+}
+
+void ComponentRigidBody::Draw()
+{
+	glPushMatrix();
+	glMultMatrixf(float4x4::identity().Transposed().ptr());
+
+	float3 mass_center = (float3)body->getCenterOfMassTransform().getOrigin();
+	LOG_ENGINE("%f, %f, %f", mass_center.x, mass_center.y, mass_center.z);
+	glPointSize(20.f);
+	glColor3f(1.f, 0.f, 0.f);
+	glBegin(GL_POINTS);
+	glVertex3fv(&mass_center[0]);
+	glEnd();
+
+	glPopMatrix();
+}
+
+bool ComponentRigidBody::DrawInspector()
+{
+
+	// RigidBody Config --------------------------------------
+
+	if (ImGui::CollapsingHeader("Rigid Body", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Spacing();
+
+		ImGui::Title("Mass", 1);			ImGui::DragFloat("##mass", &mass, 0.01f, 0.00f, FLT_MAX);
+		ImGui::Title("Drag", 1);			ImGui::DragFloat("##drag", &drag, 0.01f, 0.00f, FLT_MAX);
+		ImGui::Title("Angular Drag", 1);	ImGui::DragFloat("##angular_drag", &angular_drag, 0.01f, 0.00f, FLT_MAX);
+
+		ImGui::Title("Freeze", 1);	ImGui::Text("");
+		ImGui::Spacing();
+		ImGui::PushID(freeze_position);
+		ImGui::Title("Position", 2);
+		ImGui::Checkbox("X", &freeze_position[0]); ImGui::SameLine();
+		ImGui::Checkbox("Y", &freeze_position[1]); ImGui::SameLine();
+		ImGui::Checkbox("Z", &freeze_position[2]);
+		ImGui::PopID();
+		ImGui::PushID(freeze_rotation);
+		ImGui::Title("Rotation", 2);
+		ImGui::Checkbox("X", &freeze_rotation[0]); ImGui::SameLine();
+		ImGui::Checkbox("Y", &freeze_rotation[1]); ImGui::SameLine();
+		ImGui::Checkbox("Z", &freeze_rotation[2]);
+		ImGui::PopID();
+		ImGui::Spacing();
+
+		ImGui::Spacing();
+		ImGui::Title("Is Trigger", 1);		ImGui::Checkbox("##is_trigger", &is_trigger);
+		ImGui::Spacing();
+		ImGui::Title("Physic Material", 1); ImGui::Text("");
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Title("Bouncing", 2);	    ImGui::DragFloat("##bouncing", &bouncing, 0.01f, 0.00f, 1.f);
+		ImGui::Title("Linear Fric.", 2);	ImGui::DragFloat("##friction", &friction, 0.01f, 0.00f, FLT_MAX);
+		ImGui::Title("Angular Fric.", 2);	ImGui::DragFloat("##angular_friction", &angular_friction, 0.01f, 0.00f, FLT_MAX);
+		ImGui::Spacing();
+	}
+
+	// Colliders Config -------------------------------------
+
+	SetIsTrigger(is_trigger);
+	SetMass(mass);
 	SetDrag(drag);
 	SetAngularDrag(angular_drag);
 	SetBouncing(bouncing);
@@ -75,109 +187,6 @@ void ComponentRigidBody::Update()
 		body->activate(true);
 		body->setAngularFactor(freeze_r);
 	}
-
-	// Set Go Transform ---------------------------
-
-	if (Time::GetGameState() == Time::GameState::PAUSE)
-	{
-		SetBodyTranform(transform->GetGlobalPosition() + go_offset, transform->GetGlobalRotation());
-	}
-	else
-	{
-		btTransform bt_transform = body->getCenterOfMassTransform();
-		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = bt_transform.getOrigin() - ToBtVector3(go_offset);
-
-		body->activate(true);
-		transform->SetGlobalPosition(float3(position));
-		transform->SetGlobalRotation(math::Quat((btScalar*)rotation));
-
-		// Apply Forces ----------------------
-
-		for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
-		{
-			if (!force_to_apply[i].Equals(float3::zero()))
-			{
-				switch ((ForceMode)i)
-				{
-				case ForceMode::FORCE:
-					body->applyCentralForce(ToBtVector3(force_to_apply[i]));
-					break;
-				case ForceMode::IMPULSE:
-					body->applyCentralImpulse(ToBtVector3(force_to_apply[i]));
-					break;
-				}
-				force_to_apply[i] = float3::zero();
-			}
-		}
-
-		for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
-		{
-			if (!torque_to_apply[i].Equals(float3::zero()))
-			{
-				switch ((ForceMode)i)
-				{
-				case ForceMode::FORCE:
-					body->applyTorque(ToBtVector3(torque_to_apply[i]));
-					break;
-				case ForceMode::IMPULSE:
-					body->applyTorqueImpulse(ToBtVector3(torque_to_apply[i]));
-					break;
-				}
-
-				torque_to_apply[i] = float3::zero();
-			}
-		}
-	}
-}
-
-bool ComponentRigidBody::DrawInspector()
-{
-	// RigidBody Config --------------------------------------
-
-	ImGui::Spacing();
-
-	ImGui::Title("Mass", 1);			ImGui::DragFloat("##mass", &mass, 0.01f, 0.00f, FLT_MAX);
-	ImGui::Title("Drag", 1);			ImGui::DragFloat("##drag", &drag, 0.01f, 0.00f, FLT_MAX);
-	ImGui::Title("Angular Drag", 1);	ImGui::DragFloat("##angular_drag", &angular_drag, 0.01f, 0.00f, FLT_MAX);
-
-	ImGui::Title("Freeze", 1);	ImGui::Text("");
-	ImGui::Spacing();
-	ImGui::PushID(freeze_position);
-	ImGui::Title("Position", 2);
-	ImGui::Checkbox("X", &freeze_position[0]); ImGui::SameLine();
-	ImGui::Checkbox("Y", &freeze_position[1]); ImGui::SameLine();
-	ImGui::Checkbox("Z", &freeze_position[2]);
-	ImGui::PopID();
-	ImGui::PushID(freeze_rotation);
-	ImGui::Title("Rotation", 2);
-	ImGui::Checkbox("X", &freeze_rotation[0]); ImGui::SameLine();
-	ImGui::Checkbox("Y", &freeze_rotation[1]); ImGui::SameLine();
-	ImGui::Checkbox("Z", &freeze_rotation[2]);
-	ImGui::PopID();
-
-	ImGui::Spacing();
-
-	// Colliders Config -------------------------------------
-
-	bool last_is_trigger = is_trigger;
-
-	ImGui::Spacing();
-	ImGui::Title("Is Trigger", 1);		ImGui::Checkbox("##is_trigger", &last_is_trigger);
-	ImGui::Spacing();
-	ImGui::Title("Physic Material", 1); ImGui::Text("");
-	ImGui::Spacing();
-	ImGui::Spacing();
-	ImGui::Title("Bouncing", 2);	    ImGui::DragFloat("##bouncing", &bouncing, 0.01f, 0.00f, 1.f);
-	ImGui::Title("Linear Fric.", 2);	ImGui::DragFloat("##friction", &friction, 0.01f, 0.00f, FLT_MAX);
-	ImGui::Title("Angular Fric.", 2);	ImGui::DragFloat("##angular_friction", &angular_friction, 0.01f, 0.00f, FLT_MAX);
-	ImGui::Spacing();
-
-	if (last_is_trigger != is_trigger)
-	{
-		SetIsTrigger(last_is_trigger);
-	}
-
 	return true;
 }
 
@@ -197,6 +206,7 @@ void ComponentRigidBody::Reset()
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
 	SetAngularFriction(0.1f);
+
 }
 
 void ComponentRigidBody::Clone(Component* clone)
@@ -228,7 +238,6 @@ void ComponentRigidBody::SaveComponent(JSONArraypack* to_save)
 
 void ComponentRigidBody::LoadComponent(JSONArraypack* to_load)
 {
-	Reset();
 
 	bouncing = to_load->GetNumber("Bouncing");
 	friction = to_load->GetNumber("Friction");
@@ -278,26 +287,30 @@ void ComponentRigidBody::AddTorque(const float3 force, ForceMode mode, Space spa
 
 // Rigid Body Values ----------------------------
 
-void ComponentRigidBody::SetMass(const float mass)
+void ComponentRigidBody::SetMass(const float value)
 {
-	if (mass != body->getMass())
+	if (value != body->getMass())
 	{
+		mass = value;
+		compound_shape->calculateLocalInertia(mass, inertia);
 		body->setMassProps(mass, inertia);
 	}
 }
 
-void ComponentRigidBody::SetDrag(const float drag)
+void ComponentRigidBody::SetDrag(const float value)
 {
-	if (drag != body->getLinearDamping())
+	if (value != body->getLinearDamping())
 	{
+		drag = value;
 		body->setDamping(drag, angular_drag);
 	}
 }
 
-void ComponentRigidBody::SetAngularDrag(const float angular_drag)
+void ComponentRigidBody::SetAngularDrag(const float value)
 {
-	if (angular_drag != body->getAngularDamping())
+	if (value != body->getAngularDamping())
 	{
+		angular_drag = value;
 		body->setDamping(drag, angular_drag);
 	}
 }
@@ -386,4 +399,25 @@ void ComponentRigidBody::CreateBody()
 void ComponentRigidBody::SetBodyTranform(const float3& pos, const Quat& rot)
 {
 	body->setWorldTransform(ToBtTransform(pos, rot));
+}
+
+void ComponentRigidBody::AddCollider(ComponentCollider* collider)
+{
+	if (collider->is_added == false)
+	{
+		collider->shape->setUserIndex(colliders_index++); 
+		compound_shape->calculateLocalInertia(mass, inertia);
+		body->setMassProps(mass, inertia); // Update Innertia
+		compound_shape->addChildShape(ToBtTransform(collider->scaled_center, collider->rotation), collider->shape);
+		collider->is_added = true;
+	}
+}
+
+void ComponentRigidBody::RemoveCollider(ComponentCollider* collider)
+{
+	if (collider->is_added == true)
+	{
+		compound_shape->removeChildShapeByIndex(collider->child_collider_index);
+		collider->is_added = false;
+	}
 }

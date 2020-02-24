@@ -9,6 +9,9 @@
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentRigidBody.h"
+#include "ComponentCollider.h"
+#include "ComponentBoxCollider.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -469,7 +472,9 @@ void GameObject::DrawScene()
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	
+	ComponentCollider* collider = (ComponentCollider*)GetComponent(ComponentType::BOX_COLLIDER);
+	ComponentRigidBody * rigid_body = (ComponentRigidBody*)GetComponent(ComponentType::RIGID_BODY);
+
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
@@ -493,6 +498,16 @@ void GameObject::DrawScene()
 			mesh->DrawGlobalAABB();
 		if (mesh->draw_OBB)
 			mesh->DrawOBB();
+	}
+
+	if (collider != nullptr)
+	{
+		collider->DrawCollider();
+	}
+
+	if (rigid_body != nullptr)
+	{
+		rigid_body->Draw();
 	}
 }
 
@@ -1398,6 +1413,16 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCamera* camera = new ComponentCamera(this);
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);

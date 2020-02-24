@@ -52,6 +52,14 @@ bool ModuleUI::Start()
 	io.IniFilename = NULL;
 	io.WantSaveIniSettings = false;
 
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.MaxColumnSeparation= 10;
+	style.TitleSeparation = 10;
+	style.SubTitleSeparation = 3;
+	style.SeparationType = ImGuiSeparationType::ImGui_WindowSeparation;
+
+
 	ChangeStyle(App->window->style);
 	ImGui_ImplOpenGL3_Init();
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);

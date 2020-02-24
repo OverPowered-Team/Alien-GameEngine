@@ -55,7 +55,7 @@
 //	return true;
 //}
 //
-//void ComponentConvexHullCollider::AdjustShape()
+//void ComponentConvexHullCollider::AdjustShapeToAABB()
 //{
 //	scaled_center = center.Mul(linked_go->transform->scale);
 //	float3 scaled_size = size.Mul(linked_go->transform->scale.Abs());

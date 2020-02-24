@@ -11,6 +11,7 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
+	RIGID_BODY,
 	BOX_COLLIDER,
 	SCRIPT,
 	UNKNOWN
@@ -23,6 +24,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentTransform;
 	friend class ComponentMesh;
 	friend class ComponentMaterial;
+	friend class ComponentRigidBody;
 	friend class ComponentCollider;
 	friend class ComponentScript;
 	friend class GameObject;
