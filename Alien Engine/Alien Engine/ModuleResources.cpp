@@ -10,6 +10,7 @@
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
+#include "ResourceAudio.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -560,6 +561,14 @@ void ModuleResources::ReadAllMetaData()
 
 	files.clear();
 	directories.clear();
+
+	// Init Audio
+	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
+
+	ReadAudio(directories, files, AUDIO_FOLDER);
+
+	files.clear();
+	directories.clear();
 #else
 
 	// textures
@@ -690,6 +699,34 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			if (files[i].find(".bnk") != std::string::npos) {
+				ResourceAudio* audio = new ResourceAudio();
+				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+					audio->CreateMetaData(0ull);
+				}
+			}
+			else if (files[i].find(".json") != std::string::npos) {
+				// TODO: Improve audio system to not depend on SounBanksInfo.json
+			}
+		}
+	}
+
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAudio(new_directories, new_files, dir);
 		}
 	}
 }

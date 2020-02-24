@@ -1080,6 +1080,9 @@
     <ClInclude Include="AK\WwiseAuthoringAPI\waapi.h">
       <Filter>Tools\Wwise\AK</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceAudio.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -1441,6 +1444,9 @@
     </ClCompile>
     <ClCompile Include="AK\Win32\stdafx.cpp">
       <Filter>Tools\Wwise\AK</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceAudio.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

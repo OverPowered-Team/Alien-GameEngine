@@ -468,6 +468,7 @@
     <ClInclude Include="RandomHelper.h" />
     <ClInclude Include="RayCreator.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceAudio.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourceModel.h" />
     <ClInclude Include="ResourcePrefab.h" />
@@ -590,6 +591,7 @@
     <ClCompile Include="Parson\parson.c" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
+    <ClCompile Include="ResourceAudio.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceModel.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />
