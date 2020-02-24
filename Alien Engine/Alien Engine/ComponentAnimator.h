@@ -19,8 +19,8 @@ public:
 	ResourceAnimatorController* GetResourceAnimatorController();
 	void SetAnimatorController(ResourceAnimatorController* controller);
 
-	//bool save(const nlohmann::json::iterator& it);
-	//bool load(const nlohmann::json comp);
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
 
 private:
 	ResourceAnimatorController* animator_controller;

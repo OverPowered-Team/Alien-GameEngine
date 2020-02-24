@@ -76,6 +76,17 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 	animator_controller->IncreaseReferences();
 }
 
+void ComponentAnimator::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("Type", (int)type);
+	//more stuff
+	to_save->SetBoolean("Enabled", enabled);
+}
+
+void ComponentAnimator::LoadComponent(JSONArraypack* to_load)
+{
+}
+
 bool ComponentAnimator::DrawInspector()
 {
 	if (ImGui::CollapsingHeader("Animator")) {

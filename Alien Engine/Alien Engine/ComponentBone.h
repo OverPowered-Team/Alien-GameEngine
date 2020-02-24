@@ -19,6 +19,9 @@ public:
 	uint GetBoneID();
 	ResourceBone* GetBone();
 
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
+
 private:
 	ResourceBone* bone = nullptr;
 };

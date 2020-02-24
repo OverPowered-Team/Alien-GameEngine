@@ -2,6 +2,7 @@
 #include "ModuleObjects.h"
 #include "ComponentAnimator.h"
 #include "ResourceAnimatorController.h"
+#include "Time.h"
 #include "PanelAnimTimeline.h"
 
 PanelAnimTimeline::PanelAnimTimeline(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
@@ -20,7 +21,7 @@ bool PanelAnimTimeline::FillInfo()
 	bool ret = false;
 
 	animations.clear();
-	num_frames_vector.clear();
+	current_animation = nullptr;
 	component_animator = nullptr;
 	animator = nullptr;
 	if (App->objects->GetSelectedObjects().size() > 0)	
@@ -44,7 +45,6 @@ bool PanelAnimTimeline::FillInfo()
 						if (animator->GetStates()[i]->GetClip())
 						{
 							animations.push_back(animator->GetStates()[i]->GetClip());
-							num_frames_vector.push_back(animator->GetStates()[i]->GetClip()->GetDuration());
 							ret = true;
 							changed = false;
 						}
@@ -68,22 +68,87 @@ void PanelAnimTimeline::PanelLogic()
 		FillInfo();
 	if (!changed)
 	{
+		current_animation = animations[0];
+		channel = &current_animation->channels[0];
+		current_num_frames = current_animation->end_tick - current_animation->start_tick;
+
+		// Buttons Play
+		
+		if (ImGui::Button("Play"))
+		{
+			play = true;
+			aux_time = Time::GetTimeSinceStart();
+			pause = false;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			pause = !pause;
+			mouse_mov.x = progress;
+			button_position = progress;
+			if(pause)
+				aux_time = animation_time;
+			else
+				aux_time = Time::GetTimeSinceStart() + animation_time;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Stop") && play)
+		{
+			play = false;
+			animation_time = 0.0f;
+			pause = false;
+		}
+
+		ImGui::SameLine();
+
 		//Animation bar Progress
-		ImGui::SetCursorPosX(85);
-		ImGui::ProgressBar(animation_time / (animations.back()->GetDuration() / animations.back()->ticks_per_second), { windows_size,0 });
+		ImGui::SetCursorPosX(165);
+		ImGui::ProgressBar(animation_time / current_animation->GetDuration(), { windows_size,0 });
+
+
+		//Choose Animations
+		ImGui::BeginGroup();
+
+		ImGui::BeginChild("All Animations", ImVec2(150, 140), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+
+		
+		for (int i = 0; i < animations.size(); i++)
+		{
+			if (ImGui::Button(animations[i]->name.c_str()))
+			{
+				current_animation = animations[i];
+				current_num_frames = current_animation->end_tick - current_animation->start_tick;
+			}
+		}
+		
+		ImGui::EndChild();
+
+		ImGui::BeginChild("Selected Animation", ImVec2(150, 30), true);
+
+		if (current_animation != nullptr)
+		{
+			ImGui::Text(current_animation->name.c_str());
+		}
+
+		ImGui::EndChild();
+		ImGui::EndGroup();
+
+		ImGui::SameLine();
+
+		//ALL TIMELINE
+		ImGui::BeginChild("Timeline", ImVec2(windows_size, 170), true);
 
 		//Animation types of Keys
 		ImGui::BeginGroup();
-
-		ImGui::SetCursorPosY(85);
+		ImGui::SetCursorPosY(45);
 
 		ImGui::Text("Position");
 
-		ImGui::SetCursorPosY(125);
+		ImGui::SetCursorPosY(85);
 
 		ImGui::Text("Rotation");
 
-		ImGui::SetCursorPosY(165);
+		ImGui::SetCursorPosY(125);
 
 		ImGui::Text("Scale");
 
@@ -92,34 +157,34 @@ void PanelAnimTimeline::PanelLogic()
 		ImGui::SameLine();
 
 		//Animation TimeLine
-		ImGui::BeginChild("TimeLine", ImVec2(windows_size, 180), true, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild("TimeLine", ImVec2(windows_size - 80, 150), true, ImGuiWindowFlags_HorizontalScrollbar);
 		ImVec2 p = ImGui::GetCursorScreenPos();
 		ImVec2 redbar = ImGui::GetCursorScreenPos();
-		/*ImGui::InvisibleButton("scrollbar", { num_frames_vector.back() * zoom ,140 });*/
+		ImGui::InvisibleButton("scrollbar", { current_num_frames * zoom + zoom,140 });
 		ImGui::SetCursorScreenPos(p);
 
-		for (int i = 0; i < num_frames_vector.back(); i++)
+		for (int i = 0; i <= current_num_frames; i++)
 		{
 			ImGui::BeginGroup();
 
-			ImGui::GetWindowDrawList()->AddLine({ p.x,p.y }, ImVec2(p.x, p.y + 135), IM_COL32(100, 100, 100, 255), 1.0f);
+			ImGui::GetWindowDrawList()->AddLine({ p.x,p.y + 15 }, ImVec2(p.x, p.y + 135), IM_COL32(100, 100, 100, 255), 1.0f);
 
 			char frame[8];
 			sprintf(frame, "%01d", i);
-			ImVec2 aux = { p.x + 3,p.y };
+			ImVec2 aux = { p.x - 4,p.y };
 			ImGui::GetWindowDrawList()->AddText(aux, ImColor(1.0f, 1.0f, 1.0f, 1.0f), frame);
 
-			if (animations.back() != nullptr && channel != nullptr)
+			if (current_animation != nullptr && channel != nullptr)
 			{
-				if (channel->position_keys->time == i)
+				if (channel->position_keys[i].time == i)
 				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 35), 6.0f, ImColor(1.0f, 0.0f, 0.0f, 0.5f));
 				}
-				if (channel->rotation_keys->time == i)
+				if (channel->rotation_keys[i].time == i)
 				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 75), 6.0f, ImColor(0.0f, 1.0f, 0.0f, 0.5f));
 				}
-				if (channel->scale_keys->time == i)
+				if (channel->scale_keys[i].time == i)
 				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 115), 6.0f, ImColor(0.0f, 0.0f, 1.0f, 0.5f));
 				}
@@ -128,7 +193,7 @@ void PanelAnimTimeline::PanelLogic()
 			p = { p.x + zoom,p.y };
 
 			ImGui::EndGroup();
-
+			
 			ImGui::SameLine();
 
 		}
@@ -136,27 +201,30 @@ void PanelAnimTimeline::PanelLogic()
 		//RedLine 
 		if (!play)
 		{
-			ImGui::GetWindowDrawList()->AddLine({ redbar.x,redbar.y - 10 }, ImVec2(redbar.x, redbar.y + 165), IM_COL32(255, 0, 0, 100), 1.0f);
+			ImGui::GetWindowDrawList()->AddLine({ redbar.x,redbar.y - 10 }, ImVec2(redbar.x, redbar.y + 135), IM_COL32(255, 0, 0, 100), 1.0f);
 			progress = 0.0f;
-			ImGui::SetScrollX(0);
 		}
 		else
 		{
+			
 			float aux_progression_bar = progress;
 
-			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 165), IM_COL32(255, 0, 0, 255), 1.0f);
+			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
 			if (!pause)
 			{
-				progress = (animations.back()->GetDuration() * animations.back()->ticks_per_second) * zoom;
-				scrolled = false;
+				animation_time = Time::GetTimeSinceStart() - aux_time;
+				progress = (animation_time * current_animation->ticks_per_second) * zoom;
 			}
 
-			if (progress != 0 && progress > windows_size && !scrolled)
+			if (progress != 0 && progress > windows_size + ImGui::GetScrollX())
 			{
-				float scroolPos = ImGui::GetScrollX();
-				ImGui::SetScrollX(scroolPos + windows_size);
-				scrolled = true;
+				ImGui::SetScrollX(progress);
+
+			}
+			else if (progress == 0)
+			{
+				ImGui::SetScrollX(0);
 			}
 
 			if (aux_progression_bar > progress)
@@ -167,27 +235,28 @@ void PanelAnimTimeline::PanelLogic()
 		}
 
 		ImGui::EndChild();
+		ImGui::EndChild();
 
 		ImGui::SameLine();
 
 		ImGui::BeginGroup();
 
-		ImGui::BeginChild("All Animations", ImVec2(250, 140), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+		ImGui::BeginChild("All Bones", ImVec2(150, 140), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
-		if (animations.back() != nullptr)
+		if (current_animation != nullptr)
 		{
-			for (int i = 0; i < animations.back()->num_channels; i++)
+			for (int i = 0; i < current_animation->num_channels; i++)
 			{
-				if (ImGui::Button(animations.back()->channels[i].name.c_str()))
+				if (ImGui::Button(current_animation->channels[i].name.c_str()))
 				{
-					channel = &animations.back()->channels[i];
+					channel = &current_animation->channels[i];
 				}
 			}
 		}
 
 		ImGui::EndChild();
 
-		ImGui::BeginChild("Selected Bone", ImVec2(250, 30), true);
+		ImGui::BeginChild("Selected Bone", ImVec2(150, 30), true);
 
 		if (channel != nullptr)
 		{

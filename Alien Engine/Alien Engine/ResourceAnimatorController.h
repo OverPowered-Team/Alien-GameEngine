@@ -29,7 +29,6 @@ public:
 	State();
 	State(std::string name, ResourceAnimation* clip);
 
-public:
 	void SetName(std::string name);
 	void SetClip(ResourceAnimation* clip);
 	void SetSpeed(float speed);
@@ -98,9 +97,13 @@ public:
 	void SetInt(std::string name, int value);
 
 public:
+    void FreeMemory();
+	bool LoadMemory();
+	bool ReadBaseInfo(const char* meta_file_path);
+	bool CreateMetaData(const u64& force_id = 0) override;
+	bool DeleteMetaData() override;
+	bool SaveAsset(const u64& force_id = 0);
 
-/*	virtual void FreeMemory();
-	virtual bool LoadMemory()*/;
 	//AnimationHandle
 	void Play();
 	void Play(std::string state_name);
@@ -109,8 +112,6 @@ public:
 	void Stop();
 	std::vector<bool> GetTriggers() const { return triggers; }
 	void CheckTriggers();
-
-	//void SaveAsset();
 
 	//Transform
 	bool GetTransform(std::string channel_name, float3& position, Quat& rotation, float3& scale);

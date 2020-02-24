@@ -6,10 +6,10 @@
         "NumAnimations": 1,
         "Animations": [
             {
-                "Name": "Take 001",
-                "Loops": false,
+                "Name": "Idle",
+                "Loops": true,
                 "Start_Tick": 0,
-                "End_Tick": 119
+                "End_Tick": 47
             }
         ],
         "PathMeshes": [

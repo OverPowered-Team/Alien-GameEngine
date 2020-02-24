@@ -626,3 +626,20 @@ void PanelProject::RefreshAllNodes()
 	current_active_file = nullptr;
 }
 
+void PanelProject::GetUniqueFileName(std::string& asset_name, const std::string& asset_path)
+{
+	FileNode* asset_node = assets->FindChildrenByPath(asset_path);
+
+	if (asset_node == nullptr)
+		return;
+
+	int asset_number = 0;
+
+	for (uint i = 0; i < asset_node->children.size(); ++i) {
+		if (App->StringCmp(asset_node->children[i]->name.data(), asset_name.data())) {
+			++asset_number;
+		}
+	}
+	if (asset_number > 0)
+		asset_name = asset_name + " (" + std::to_string(asset_number) + ")";
+}
