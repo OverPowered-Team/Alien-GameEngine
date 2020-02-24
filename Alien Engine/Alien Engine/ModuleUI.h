@@ -122,7 +122,7 @@ private:
 	PanelInspector* panel_inspector = nullptr;
 	PanelBuild* panel_build = nullptr;
 	PanelLayout* panel_layout = nullptr;
-	PanelAnimTimeline* panel_animtimeline = nullptr;
+	
 
 	// ShortCuts
 	ShortCut* shortcut_demo = nullptr;
@@ -190,6 +190,7 @@ public:
 	PanelGame* panel_game = nullptr;
 	PanelHierarchy* panel_hierarchy = nullptr;
 	PanelTextEditor* panel_text_editor = nullptr;
+	PanelAnimTimeline* panel_animtimeline = nullptr;
 	PanelAnimator* panel_animator = nullptr;
 
 	// layouts

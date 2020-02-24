@@ -17,6 +17,7 @@
 #include "ModuleRenderer3D.h"
 #include "ComponentScript.h"
 #include "PanelHierarchy.h"
+#include "PanelAnimTimeline.h"
 #include "Gizmos.h"
 #include "Alien.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
@@ -468,6 +469,9 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
+
+	//For Animations Timeline
+	App->ui->panel_animtimeline->changed = true;
 }
 
 const std::list<GameObject*>& ModuleObjects::GetSelectedObjects()
