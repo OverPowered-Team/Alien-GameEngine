@@ -25,6 +25,9 @@ public:
 	void LoadComponent(JSONArraypack* to_load);
 	bool DrawInspector();
 	bool AlreadyUsedBank(const Bank* bk);
+	void OnEnable() override;
+	void OnDisable() override;
+
 public:
 	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;
