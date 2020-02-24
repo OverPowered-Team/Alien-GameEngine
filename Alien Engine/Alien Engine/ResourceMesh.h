@@ -27,8 +27,6 @@ public:
 
 	bool DeleteMetaData();
 
-	void ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link = std::pair<GameObject*, GameObject*>(nullptr,nullptr));
-
 	void InitBuffers();
 
 	void Reset();

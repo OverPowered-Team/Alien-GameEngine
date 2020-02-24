@@ -160,7 +160,7 @@ bool ResourceMesh::ReadBaseInfo(const char* meta_file_path)
 		char* cursor = data;
 		bytes_moved = 0;
 
-		uint ranges[9];
+		uint ranges[6];
 		uint bytes = sizeof(ranges);
 		memcpy(ranges, cursor, bytes);
 		cursor += bytes;
@@ -253,7 +253,7 @@ bool ResourceMesh::LoadMemory()
 	if (size > 0) {
 		char* cursor = data;
 
-		uint ranges[9];
+		uint ranges[6];
 		uint bytes = sizeof(ranges);
 		memcpy(ranges, cursor, bytes);
 		cursor += bytes_moved;
@@ -326,76 +326,6 @@ bool ResourceMesh::DeleteMetaData()
 	delete this;
 
 	return true;
-}
-
-void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link)
-{
-	//IncreaseReferences();
-	//// get the parent
-	//GameObject* obj = nullptr;
-
-	//// if parent name is not null, search the parent name
-	//if (!App->StringCmp(parent_name.data(), "null") && objects_created != nullptr) {
-	//	std::vector<std::pair<u64, GameObject*>>::iterator item = objects_created->begin();
-	//	for (; item != objects_created->end(); ++item) {
-	//		if ((*item).second != nullptr && App->StringCmp((*item).second->GetName(), parent_name.data()) && family_number -1 == (*item).first) {
-	//			obj = new GameObject((*item).second);
-	//			break;
-	//		}
-	//	}
-	//	objects_created->push_back({ family_number, obj });
-	//}
-	//else if (objects_created != nullptr) { // parent name == null so, the parent must be the one created before
-	//	obj = new GameObject(objects_created->at(0).second);
-	//	objects_created->push_back({ family_number, obj });
-	//}
-	//else { // if objects created == nullptr then parent must be the root
-	//	obj = new GameObject(App->objects->GetRoot(false));
-	//}
-
-	//obj->SetName(name.data());
-	//obj->transform->SetLocalPosition(pos);
-	//obj->transform->SetLocalRotation(rot);
-	//obj->transform->SetLocalScale(scale);
-
-	//if (num_vertex != 0) {
-	//	if (!deformable) //review this
-	//	{
-	//		ComponentMesh* mesh = new ComponentMesh(obj);
-	//		mesh->mesh = this;
-	//		mesh->RecalculateAABB_OBB();
-
-	//		obj->AddComponent(mesh);
-	//	}	
-	//	else
-	//	{
-	//		ComponentDeformableMesh* mesh = new ComponentDeformableMesh(obj);
-	//		mesh->mesh = this;
-	//		mesh->RecalculateAABB_OBB();
-	//		skeleton_link.first = obj;
-
-	//		obj->AddComponent(mesh);
-	//	}
-
-	//	ComponentMaterial* material = new ComponentMaterial(obj);
-
-	//	if (texture != nullptr) {
-	//		material->SetTexture(texture);
-	//	}
-	//	material->color = material_color;
-
-	//	obj->AddComponent(material);
-	//}
-
-	//if (bone_id != 0)
-	//{
-	//	if (skeleton_link.second == nullptr)
-	//		skeleton_link.second = obj;
-	//	ComponentBone* bone = new ComponentBone(obj);
-	//	bone->AddBone((ResourceBone*)App->resources->GetResourceWithID(bone_id));
-	//	bone->GetBone()->IncreaseReferences();
-	//	obj->AddComponent(bone);
-	//}
 }
 
 void ResourceMesh::InitBuffers()
