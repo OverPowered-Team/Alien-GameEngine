@@ -300,7 +300,8 @@ bool ComponentMaterial::DrawInspector()
 
 					std::vector<ResourceShader*> shaders;
 					App->resources->GetShaders(shaders);
-					for (auto i = shaders.begin(); i != shaders.end(); ++i) {
+					for (auto i = shaders.begin(); i != shaders.end(); ++i)
+					{
 						if (ImGui::Button((*i)->GetName()))
 						{
 							u64 id_s = App->resources->GetIDFromAlienPath(std::string(std::string((*i)->GetAssetsPath()) + "_meta.alien").data());

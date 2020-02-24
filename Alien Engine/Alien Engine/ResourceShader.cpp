@@ -19,10 +19,9 @@ ResourceShader::ResourceShader(const char* path, const u64& id) : Resource()
 
 ResourceShader::ResourceShader(const char* path)
 {
-	name = App->file_system->GetBaseFileName(path);
+	SetName(App->file_system->GetBaseFileName(path).c_str());
 	this->path = std::string(path);
 	type = ResourceType::RESOURCE_SHADER;
-	//ParseAndCreateShader();
 }
 
 ResourceShader::~ResourceShader()
@@ -92,6 +91,8 @@ bool ResourceShader::ReadBaseInfo(const char* assets_path)
 
 	this->path = assets_path;
 	std::string alien_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
+
+	this->name = App->file_system->GetBaseFileName(path.c_str());
 
 	JSON_Value* value = json_parse_file(alien_path.data());
 	JSON_Object* object = json_value_get_object(value);
