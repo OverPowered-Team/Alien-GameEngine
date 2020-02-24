@@ -48,7 +48,6 @@ public:
 public:
 	bool loops = false;
 	std::string name = "";
-	uint tick_duration = 0;
 	uint ticks_per_second = 0;
 	uint start_tick = 0;
 	uint end_tick = 0;

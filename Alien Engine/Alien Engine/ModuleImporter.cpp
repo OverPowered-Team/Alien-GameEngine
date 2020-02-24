@@ -319,14 +319,14 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 		channel.num_scale_keys = anim->mChannels[i]->mNumScalingKeys;
 		channel.num_rotation_keys = anim->mChannels[i]->mNumRotationKeys;
 
-		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys];
-		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys];
-		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys];
+		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys]();
+		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys]();
+		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys]();
 
 		//Load position keys
 		for (uint j = 0; j < channel.num_position_keys; j++)
 		{
-			channel.position_keys[j].value = float3(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
+			channel.position_keys[j].value.Set(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
 				anim->mChannels[i]->mPositionKeys[j].mValue.z);
 			channel.position_keys[j].time = anim->mChannels[i]->mPositionKeys[j].mTime;
 		}
@@ -334,7 +334,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 		//Load scaling keys
 		for (uint j = 0; j < channel.num_scale_keys; j++)
 		{
-			channel.scale_keys[j].value = float3(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
+			channel.scale_keys[j].value.Set(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
 				anim->mChannels[i]->mScalingKeys[j].mValue.z);
 			channel.scale_keys[j].time = anim->mChannels[i]->mScalingKeys[j].mTime;
 		}
@@ -342,8 +342,8 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 		//Load rotation keys
 		for (uint j = 0; j < channel.num_rotation_keys; j++)
 		{
-			channel.rotation_keys[j].value = { anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
-				anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w };
+			channel.rotation_keys[j].value.Set(anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
+				anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w );
 			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
 	}
