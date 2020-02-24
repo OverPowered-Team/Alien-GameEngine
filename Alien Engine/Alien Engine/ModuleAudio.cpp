@@ -50,7 +50,7 @@ update_status ModuleAudio::Update(float dt)
 {
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
-			UnloadAllUsedBanks();
+			UnloadAllUsedBanksFromWwise();
 			play_mode = false;
 		}
 	}
@@ -77,7 +77,10 @@ bool ModuleAudio::CleanUp()
 	emitters.clear();
 
 	WwiseT::StopAllEvents();
-	UnloadAllBanks();
+
+	banks.clear();
+	banks.shrink_to_fit();
+	used_banks.clear();
 	return WwiseT::CloseSoundEngine();
 }
 
@@ -90,24 +93,24 @@ void ModuleAudio::LoadUsedBanks()
 }
 
 
-bool ModuleAudio::UnloadAllBanks()
+bool ModuleAudio::UnloadAllBanksFromWwise()
 {
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
 		WwiseT::UnLoadBank((*it).name.c_str());
 	}
-	banks.clear();
+	//banks.clear();
 
 	return true;
 }
 
-void ModuleAudio::UnloadAllUsedBanks()
+void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
 		WwiseT::UnLoadBank((*it).name.c_str());
 	}
-	used_banks.clear();
+	//used_banks.clear();
 
 }
 
