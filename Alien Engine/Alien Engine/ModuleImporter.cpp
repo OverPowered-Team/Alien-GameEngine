@@ -362,31 +362,37 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 			mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
 		}
 		else if (extern_path != nullptr) {
+			std::string aiPath;
 			int dots = 0;
 			int under = 0;
 			std::string hole_name(ai_path.C_Str());
 			App->file_system->NormalizePath(hole_name);
 			std::string::iterator item = hole_name.begin();
+			bool ignore = false;
 			for (; item != hole_name.end(); ++item)
 			{
-				if (*item == '.') {
+				if (*item == '.' && !ignore) {
 					++dots;
 					if (dots == 2) {
 						++under;
 						dots = 0;
 					}
 				}
-				else if (*item != '/') {
-					break;
+				else  {
+					ignore = true;
+					aiPath.push_back(*item);
 				}
 			}
 
 			std::string copy;
 			if (under != 0) {
-				std::string exterString(extern_path);
-				std::string::iterator it = exterString.begin();
+				std::string normal(extern_path);
+				App->file_system->NormalizePath(normal);
+				std::string exterString = App->file_system->GetCurrentHolePathFolder(normal);
+				std::string::reverse_iterator it = exterString.rbegin();
 				bool start_copy = false;
-				for (; it != exterString.end(); ++it)
+				bool start_cpoy2 = false;
+				for (; it != exterString.rend(); ++it)
 				{
 					if (!start_copy) {
 						if (*it == '/') {
@@ -397,7 +403,14 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 						}
 					}
 					else {
-						copy.push_back(*it);
+						if (!start_cpoy2) {
+							if (*it == '/') {
+								start_cpoy2 = true;
+							}
+						}
+						else {
+							copy = *it + copy;
+						}
 					}
 				}
 			}
@@ -406,7 +419,16 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 				App->file_system->NormalizePath(copy);
 			}
 
-			std::string path = App->file_system->GetCurrentHolePathFolder(copy) + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
+			std::string path;
+
+			if (ai_path.data[0] == '.') {
+				path = copy + "/" + aiPath;
+			}
+			else {
+				std::string normal(extern_path);
+				App->file_system->NormalizePath(normal);
+				path = App->file_system->GetCurrentHolePathFolder(normal) + ai_path.C_Str();
+			}
 			
 			if (std::experimental::filesystem::exists(path)) {
 				std::string assets_path = TEXTURES_FOLDER + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
