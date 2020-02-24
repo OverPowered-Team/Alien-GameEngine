@@ -1,0 +1,40 @@
+{
+    "Meta": {
+        "ID": "18023689832462167483",
+        "Name": "wooden watch tower2",
+        "NumBones": 0,
+        "NumMeshes": 1,
+        "NumAnimations": 0,
+        "Animations": [],
+        "PathMeshes": [
+            "Library\/Meshes\/4073459905046216021.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": []
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                67.149971008300781,
+                0
+            ],
+            "scale": [
+                100,
+                100,
+                100
+            ],
+            "rot": [
+                -0.7071068286895752,
+                0,
+                0,
+                0.70710670948028564
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "watchtowerHigh",
+            "parentName": "wooden watch tower2",
+            "meshIndex": 0
+        }
+    ]
+}

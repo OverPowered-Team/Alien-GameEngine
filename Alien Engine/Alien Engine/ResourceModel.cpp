@@ -354,7 +354,6 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 			}
 		}
 
-
 		JSONArraypack* nodes = model->GetArray("Nodes");
 		nodes->GetFirstNode();
 		for (uint i = 0; i < nodes->GetArraySize(); ++i) {

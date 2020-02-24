@@ -1,0 +1,370 @@
+{
+    "Meta": {
+        "ID": "10578766021915905094",
+        "Name": "Tank",
+        "NumBones": 0,
+        "NumMeshes": 9,
+        "NumAnimations": 0,
+        "Animations": [],
+        "PathMeshes": [
+            "Library\/Meshes\/6856024244555327546.alienMesh",
+            "Library\/Meshes\/5757944266386675402.alienMesh",
+            "Library\/Meshes\/17762627494614553350.alienMesh",
+            "Library\/Meshes\/10879410216543038250.alienMesh",
+            "Library\/Meshes\/14297041663377432133.alienMesh",
+            "Library\/Meshes\/17895798740570407464.alienMesh",
+            "Library\/Meshes\/4501790788887238387.alienMesh",
+            "Library\/Meshes\/4314557200845723178.alienMesh",
+            "Library\/Meshes\/12663026368863896144.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": []
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTurret0",
+            "parentName": "TankTurret",
+            "meshIndex": 0
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTurret1",
+            "parentName": "TankTurret",
+            "meshIndex": 1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "TankTurret",
+            "parentName": "TankRenderers",
+            "meshIndex": -1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTracksLeft0",
+            "parentName": "TankTracksLeft",
+            "meshIndex": 2
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTracksLeft1",
+            "parentName": "TankTracksLeft",
+            "meshIndex": 3
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "TankTracksLeft",
+            "parentName": "TankRenderers",
+            "meshIndex": -1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTracksRight0",
+            "parentName": "TankTracksRight",
+            "meshIndex": 4
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankTracksRight1",
+            "parentName": "TankTracksRight",
+            "meshIndex": 5
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "TankTracksRight",
+            "parentName": "TankRenderers",
+            "meshIndex": -1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankChassis0",
+            "parentName": "TankChassis",
+            "meshIndex": 6
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankChassis1",
+            "parentName": "TankChassis",
+            "meshIndex": 7
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "TankChassis2",
+            "parentName": "TankChassis",
+            "meshIndex": 8
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "TankChassis",
+            "parentName": "TankRenderers",
+            "meshIndex": -1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "TankRenderers",
+            "parentName": "Tank",
+            "meshIndex": -1
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Tank",
+            "parentName": "Tank",
+            "meshIndex": -1
+        }
+    ]
+}

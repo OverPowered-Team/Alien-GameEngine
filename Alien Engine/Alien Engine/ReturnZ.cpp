@@ -419,6 +419,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 					case ComponentType::TRANSFORM: {
 						CompTransformZ* transZ = (CompTransformZ*)(*item);
 						ComponentTransform* transform = new ComponentTransform(new_obj);
+						new_obj->transform = transform;
 						CompZ::SetComponent(transform, transZ);
 						new_obj->AddComponent(transform);
 						break; }
