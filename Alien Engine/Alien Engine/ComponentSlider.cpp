@@ -192,6 +192,9 @@ void ComponentSlider::Draw(bool isGame)
 	transform->global_transformation[0][3] = transform->global_transformation[0][3] + offsetX;
 	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY;
 
+	sliderX = transform->global_transformation[0][3];
+	sliderXmax = transform->global_transformation[0][3];
+
 	DrawTexture(isGame, sliderTexture);
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
@@ -202,6 +205,7 @@ void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
 		UILogicSlider();
+		GetValue();
 
 		switch (state)
 		{
@@ -249,7 +253,7 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
 		float3 canvas_pos = canvas_trans->GetGlobalPosition();
 		float3 object_pos = transform->GetGlobalPosition();
 		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
-		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
+		float2 origin = float2((transform->global_transformation[0][3] - canvasPivot.x) / (canvas->width), (transform->global_transformation[1][3] - canvasPivot.y) / (canvas->height));
 		if (tex == sliderTexture)
 		{
 			sliderX = origin.x * App->ui->panel_game->width;
@@ -348,42 +352,18 @@ bool ComponentSlider::OnPressed()
 	float width = (sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
-	int x = App->input->GetMouseXMotion();
-	offsetX = offsetX + (x * 0.25f);
+	int xmotion = App->input->GetMouseXMotion();
+	offsetX = offsetX + (xmotion * 0.25f);
+	float offsetXdt = xmotion * 0.25f;
 
-
-	float3 canvas_pos = canvas_trans->GetGlobalPosition();
-	float3 object_pos = trans->GetGlobalPosition();
-	float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
-	float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
-	if (sliderTexture == sliderTexture)
-	{
-		sliderX = origin.x * App->ui->panel_game->width;
-		sliderY = -origin.y * App->ui->panel_game->height;
-	}
-
-
-#ifndef GAME_VERSION
-	x = origin.x * App->ui->panel_game->width;
-	y = -origin.y * App->ui->panel_game->height;
-#else
-	x = origin.x * App->window->width;
-	y = origin.y * App->window->height;
-#endif
-
-	origin.x = (origin.x - 0.5F) * 2;
-	origin.y = -(-origin.y - 0.5F) * 2;
-	trans->global_transformation[0][3] = origin.x;
-	trans->global_transformation[1][3] = origin.y;
-
-	LOG_ENGINE("POSITION: %f", sliderX);
 	if ((sliderX + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
 	{
-		//hola
+		offsetX = sliderXmax - 1.0f;
+		
 	}
 	if ((sliderX - (width * 0.5f)) <= (x - (width_bg * 0.5f)))
 	{
-		//hello
+		offsetX = sliderXmax + 1.0f;
 	}
 
 
@@ -395,6 +375,20 @@ bool ComponentSlider::OnRelease()
 {
 	current_color = idle_color;
 	return true;
+}
+
+float ComponentSlider::GetValue()
+{
+	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
+	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
+	float width = (sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
+	
+	float startPos = (x - (width_bg * 0.5f));
+	float endPos = (x + (width_bg * 0.5f)- width);
+	float thumbPos = sliderX - width * 0.5f;
+	LOG_ENGINE("SLIDER VALUE: %f", (thumbPos - startPos) / (endPos - startPos));
+	return((thumbPos - startPos) / (endPos - startPos));
+
 }
 
 void ComponentSlider::UILogicSlider()
