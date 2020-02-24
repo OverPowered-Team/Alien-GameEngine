@@ -37,6 +37,7 @@ void ComponentParticleSystem::PreUpdate()
 
 void ComponentParticleSystem::Update()
 {
+	if (particleSystem->isPlaying())
 		particleSystem->Update(Time::GetCurrentDT());
 }
 
