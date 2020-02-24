@@ -73,8 +73,8 @@ private:
 	std::vector<bool> triggers;
 
 	std::vector <std::pair <std::string, int>> int_parameters;
-	std::vector < std::pair <std::string, float>> float_parameters;
-	std::vector < std::pair <std::string, bool>> bool_parameters;
+	std::vector <std::pair <std::string, float>> float_parameters;
+	std::vector <std::pair <std::string, bool>> bool_parameters;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
@@ -86,9 +86,18 @@ public:
 	std::string name = "New Animator Controller";
 
 	//Parameters things
-	std::vector < std::pair <std::string, bool>> GetBoolParameters();
-	std::vector < std::pair <std::string, float>> GetFloatParameters();
-	std::vector <std::pair <std::string, int>> GetIntParameters();
+
+	//Getters / Setters
+	const std::vector <std::pair <std::string, bool>>& GetBoolParameters();
+	const std::vector <std::pair <std::string, float>>& GetFloatParameters();
+	const std::vector <std::pair <std::string, int>>& GetIntParameters();
+	void SetBoolParametersName(uint index, const std::string& name);
+	void SetFloatParametersName(uint index, const std::string& name);
+	void SetIntParametersName(uint index, const std::string& name);
+	void SetBoolParametersValue(uint index, const bool& value);
+	void SetFloatParametersValue(uint index, const float& value);
+	void SetIntParametersValue(uint index, const int& value);
+
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
