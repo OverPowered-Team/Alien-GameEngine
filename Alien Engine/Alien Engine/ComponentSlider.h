@@ -15,6 +15,10 @@ public:
 
 	bool DrawInspector();
 
+	void Draw(bool isGame) override;
+	void Update() override;
+	void DrawTexture(bool isGame, ResourceTexture* tex);
+
 	void Reset();
 	void SetComponent(Component* component);
 	void Clone(Component* clone);
@@ -22,20 +26,25 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+public:
 	bool OnHover();
 	bool OnClick();
 	bool OnPressed();
 	bool OnRelease();
-
-	void UILogic() override;
-	bool CheckMouseInside(float3 mouse_pos) override;
-	float GetValue();
-
 private:
-	GameObject* dot = nullptr;
-
+	void UILogicSlider();
+	bool CheckMouseInsideSlider(float3 mouse_pos);
 
 public:
+	ResourceTexture* sliderTexture = nullptr;
+	float sliderScaleX = 0.2F;
+	float sliderScaleY = 0.9F;
+
+	float sliderX = 0.0F;
+	float sliderY = 0.0F;
+
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
 
 	Color idle_color = { 0.8f,0.8f,0.8f,1.0f };
 	Color hover_color = { 1.0f,1.0f,1.0f,1.0f };

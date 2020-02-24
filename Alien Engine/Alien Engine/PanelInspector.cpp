@@ -434,7 +434,7 @@ void PanelInspector::ButtonAddComponent()
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-					selected->children[0]->GetComponent<ComponentImage>()->SetCanvas(canvas);
+					//selected->children[0]->GetComponent<ComponentImage>()->SetCanvas(canvas);
 				}
 
 				else
