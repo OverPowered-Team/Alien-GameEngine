@@ -1529,7 +1529,6 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 					slider->ui_type = typeUI;
 					slider->LoadComponent(components_to_load);
 					AddComponent(slider);
-					children[0]->GetComponent<ComponentImage>()->SetCanvas(slider->game_object_attached->GetCanvas());
 					break; }
 				default:
 					LOG_ENGINE("Unknown component UItype while loading");
