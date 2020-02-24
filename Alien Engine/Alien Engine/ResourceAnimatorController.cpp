@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include "ResourceAnimatorController.h"
-
+#include "mmgr/mmgr.h"
 
 
 ResourceAnimatorController::ResourceAnimatorController() : Resource()

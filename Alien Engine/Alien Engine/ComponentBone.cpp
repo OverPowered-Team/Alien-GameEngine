@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentBone.h"
-
+#include "mmgr/mmgr.h"
 
 
 ComponentBone::ComponentBone(GameObject* gameobject) : Component(gameobject)

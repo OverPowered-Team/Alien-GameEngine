@@ -7,6 +7,7 @@
 #include "ComponentDeformableMesh.h"
 #include "ResourceTexture.h"
 #include "ResourceBone.h"
+#include "mmgr/mmgr.h"
 
 ResourceMesh::ResourceMesh() : Resource()
 {

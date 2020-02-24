@@ -11,6 +11,7 @@
 #include "Octree.h"
 #include "PanelTextEditor.h"
 #include "ComponentScript.h"
+#include "mmgr/mmgr.h"
 
 bool ReturnZ::eraseY = false;
 

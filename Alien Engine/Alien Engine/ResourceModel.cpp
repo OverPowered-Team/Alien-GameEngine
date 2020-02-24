@@ -11,6 +11,7 @@
 #include "ResourceMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "mmgr/mmgr.h"
 
 ResourceModel::ResourceModel() : Resource()
 {

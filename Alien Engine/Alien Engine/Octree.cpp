@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
+#include "mmgr/mmgr.h"
 
 OctreeNode::OctreeNode(const float3& min, const float3& max)
 {

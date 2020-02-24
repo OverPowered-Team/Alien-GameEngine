@@ -7,6 +7,7 @@
 #include "ResourceMesh.h"
 #include "ResourceBone.h"
 #include "ComponentDeformableMesh.h"
+#include "mmgr/mmgr.h"
 
 ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : ComponentMesh(attach)
 {

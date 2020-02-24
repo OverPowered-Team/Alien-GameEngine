@@ -1,5 +1,6 @@
 #include "ResourceMaterial.h"
 #include "Application.h"
+#include "mmgr/mmgr.h"
 
 ResourceMaterial::ResourceMaterial() : Resource()
 {
@@ -35,7 +36,7 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		alien->FinishSave();
 		delete alien;
 	}
-
+	App->resources->AddResource(this);
 	return true;
 }
 
@@ -62,6 +63,7 @@ void ResourceMaterial::ReadLibrary(const char* meta_data)
 
 		delete meta;
 	}
+	App->resources->AddResource(this);
 }
 
 bool ResourceMaterial::DeleteMetaData()

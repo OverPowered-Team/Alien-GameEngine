@@ -8,6 +8,7 @@
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 Component::Component(GameObject* attach)
 {

@@ -14,6 +14,7 @@
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 GameObject::GameObject(GameObject* parent)
 {

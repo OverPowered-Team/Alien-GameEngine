@@ -7,6 +7,7 @@
 #include "ResourceAnimation.h"
 
 #include "PanelAnimator.h"
+#include "mmgr/mmgr.h"
 
 #define CHECKBOX_SIZE 50
 

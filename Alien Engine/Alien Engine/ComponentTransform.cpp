@@ -8,6 +8,7 @@
 #include "PanelScene.h"
 #include "ResourcePrefab.h"
 #include "PanelProject.h"
+#include "mmgr/mmgr.h"
 
 ComponentTransform::ComponentTransform(GameObject* attach) : Component(attach)
 {

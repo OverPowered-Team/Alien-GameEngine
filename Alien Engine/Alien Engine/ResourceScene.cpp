@@ -1,5 +1,6 @@
 #include "ResourceScene.h"
 #include "Application.h"
+#include "mmgr/mmgr.h"
 
 ResourceScene::ResourceScene() : Resource()
 {

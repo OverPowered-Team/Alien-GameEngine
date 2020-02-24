@@ -1,6 +1,7 @@
 #include "ResourceTexture.h"
 #include "ModuleResources.h"
 #include "Application.h"
+#include "mmgr/mmgr.h"
 
 ResourceTexture::ResourceTexture(const char* path, const uint& id, const uint& width, const uint& height) : Resource()
 {

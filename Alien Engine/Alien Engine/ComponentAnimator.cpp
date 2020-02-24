@@ -7,6 +7,7 @@
 #include "ResourceAnimation.h"
 #include "ResourceAnimatorController.h"
 #include "ComponentAnimator.h"
+#include "mmgr/mmgr.h"
 
 ComponentAnimator::ComponentAnimator(GameObject* gameobject) : Component(gameobject)
 {
