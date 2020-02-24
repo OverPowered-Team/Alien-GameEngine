@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "PanelCreateMaterial.h"
-#include "GameObject.h"
+#include "ResourceShader.h"
 #include "ModuleObjects.h"
 #include "Shapes.h"
 #include "ComponentMaterial.h"
@@ -35,13 +35,9 @@ void PanelCreateMaterial::PanelLogic()
 		ImGui::Spacing();
 		ImGui::Spacing();
 
-		ImGui::SetCursorPosX(10);
-		ImGui::InputText("Save Path", path, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
-		//ImGui::Combo("Select Object", &objects_combo, "Cube\0Sphere\0Rock\0Dodecahedron\0Icosahedron\0Octahedron\0Torus\0Klein Bottle\0");
-
+		/*ImGui::SetCursorPosX(10);
+		ImGui::InputText("Save Path", path, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);*/
 		ImGui::Spacing();
-
-		ImGui::ColorEdit3("Select Color", (float*)&create_color, ImGuiColorEditFlags_Float);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -60,14 +56,20 @@ void PanelCreateMaterial::PanelLogic()
 		ImGui::Columns(1);
 
 		ImGui::Spacing();
-		ImGui::Separator();
+
+		for (int i = 0; i < uniforms.size(); ++i)
+		{
+			ImGui::Separator();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text(uniforms[i]->uniform_name);
+			ImGui::Text("Vec4");
+		}
 		ImGui::Spacing();
 		ImGui::Spacing();
 
 		SetUniforms();
-
-		ImGui::Spacing();
-		ImGui::Spacing();
 
 		if (ImGui::Button("Create", { ImGui::GetWindowWidth() - 16,25 }))
 		{
@@ -83,21 +85,26 @@ void PanelCreateMaterial::PanelLogic()
 
 void PanelCreateMaterial::SetUniforms()
 {
+	static char uniform_name[MAX_PATH] = "save path";
+	static Color create_color;
 	ImGui::Separator();
 	ImGui::Text("Variable name: "); ImGui::SameLine();
 	ImGui::InputText("###variable_name", uniform_name, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
 	ImGui::Text("Type: "); ImGui::SameLine();
-	if (ImGui::BeginMenu(uniform_type_char))
+
+	static int uniform_type_int = 0;
+
+	ImGui::Combo(" ", &uniform_type_int, "No type\0Vec4");
+
+	ImGui::ColorEdit3("Select Color", (float*)&create_color, ImGuiColorEditFlags_Float);
+
+	if (ImGui::Button("Create"))
 	{
-		if (ImGui::MenuItem("Vec4"))
-		{
-			uniform_type_char = "vec4";
-			
-		}
-		else if (ImGui::MenuItem("Sampler2D"))
-		{
-			uniform_type_char = "Sampler2D";
-		}
-		ImGui::EndMenu();
+		UniformData* new_u = new UniformData();
+		new_u->create_color = create_color;
+		*new_u->uniform_name = *uniform_name;
+		new_u->type = uniform_type_int;
+		uniforms.push_back(new_u);
 	}
 }
+

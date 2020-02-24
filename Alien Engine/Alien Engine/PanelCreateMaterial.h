@@ -2,6 +2,13 @@
 
 #include "Panel.h"
 
+struct UniformData
+{
+	char uniform_name[MAX_PATH] = "uniform name";
+	Color create_color{ 1,1,1 };
+	int type = 0;
+};
+
 class PanelCreateMaterial : public Panel {
 
 public:
@@ -12,9 +19,7 @@ public:
 	void SetUniforms();
 
 private:
-	Color create_color{ 1,1,1 };
 	char path[MAX_PATH] = "path";
-	char uniform_name[MAX_PATH] = "uniform name";
-	char* uniform_type_char = "no type";
+	std::vector<UniformData*>uniforms;
 };
 
