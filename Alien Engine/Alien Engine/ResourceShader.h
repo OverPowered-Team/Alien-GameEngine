@@ -1,6 +1,8 @@
 #ifndef __RESOURCE_SHADER_H__
 #define __RESOURCE_SHADER_H__
 
+#include <unordered_map>
+
 #include "MathGeoLib/include/MathGeoLib.h"
 
 #include "Resource_.h"
@@ -52,12 +54,14 @@ private:
 	uint CreateShader(const std::string& vertex_shader, const std::string& fragment_shader);
 	uint CompileShader(const uint& shader_type, const std::string& shader_source);
 
-	int GetUniformLocation(const std::string& name) const;
+	int GetUniformLocation(const std::string& name);
 
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
 	uint renderer_id = 0u;
+
+	std::unordered_map<std::string, int> uniform_location_cache;
 };
 
 #endif /* __RESOURCE_SHADER_H__ */

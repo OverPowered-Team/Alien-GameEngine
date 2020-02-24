@@ -17,7 +17,7 @@ void main()
 #shader fragment
 #version 330 core
 
-uniform vec4 custom_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform vec4 custom_color = vec4(0.2, 0.7, 0.5, 1.0);
 
 out vec4 color;
 
@@ -25,6 +25,7 @@ void main()
 {
 	color = custom_color;
 }
+
 
 
 

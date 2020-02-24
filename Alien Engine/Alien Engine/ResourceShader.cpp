@@ -263,13 +263,18 @@ uint ResourceShader::CompileShader(const uint& shader_type, const std::string& s
 	return shader_id;
 }
 
-int ResourceShader::GetUniformLocation(const std::string& name) const
+int ResourceShader::GetUniformLocation(const std::string& name)
 {
+	if (uniform_location_cache.find(name) != uniform_location_cache.end())
+		return uniform_location_cache[name];
+
 	int location = glGetUniformLocation(renderer_id, name.c_str());
 	if (location == -1)
 	{
 		LOG_ENGINE("WARNING: Uniform %s doesn't exist...", name.c_str());
 	}
+
+	uniform_location_cache[name] = location;
 
 	return location;
 }
