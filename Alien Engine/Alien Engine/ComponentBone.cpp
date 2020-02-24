@@ -42,6 +42,14 @@ ResourceBone* ComponentBone::GetBone()
 	return bone;
 }
 
+void ComponentBone::SaveComponent(JSONArraypack* to_save)
+{
+}
+
+void ComponentBone::LoadComponent(JSONArraypack* to_load)
+{
+}
+
 //bool ComponentBone::Save(const nlohmann::json::iterator& it)
 //{
 //	nlohmann::json object = {

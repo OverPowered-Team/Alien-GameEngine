@@ -6,6 +6,7 @@
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
+#include "ResourceAnimatorController.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
 #include "PanelProject.h"
@@ -777,6 +778,32 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 		}
 	}
 }
+
+void ModuleResources::CreateAsset(AssetType type)
+{
+	switch (type)
+	{
+	case AssetType::ANIM_CONTROLLER:
+		CreateAnimatorController();
+		break;
+	case AssetType::ANIM:
+		break;
+	case AssetType::UNKONWN:
+		break;
+	}
+}
+
+void ModuleResources::CreateAnimatorController()
+{
+	std::string asset_name = "NewAnimatorController";
+	App->ui->panel_project->GetUniqueFileName(asset_name, ANIM_CONTROLLER_FOLDER);
+
+	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
+	new_controller->name = asset_name;
+	new_controller->SaveAsset();
+}
+
+
 
 
 

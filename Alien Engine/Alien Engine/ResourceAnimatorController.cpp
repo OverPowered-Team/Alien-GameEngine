@@ -113,151 +113,280 @@ void ResourceAnimatorController::CheckTriggers()
 	}
 }
 
-//void ResourceAnimatorController::SaveAsset()
-//{
-//	nlohmann::json j_states;
-//	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
-//	{
-//		nlohmann::json j_state = {
-//			{"name", (*it)->GetName()},
-//			{"speed", (*it)->GetSpeed()},
-//			{"clip", (*it)->GetClip() ? (*it)->GetClip()->GetID() : 0}
-//		};
-//		j_states.push_back(j_state);
-//	}
-//
-//	nlohmann::json j_transitions;
-//	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
-//	{
-//		nlohmann::json j_transition = {
-//			{ "source", (*it)->GetSource()->GetName() },
-//			{ "target", (*it)->GetTarget()->GetName() },
-//			{ "trigger", (*it)->GetTrigger() },
-//			{ "blend", (*it)->GetBlend()}
-//		};
-//		j_transitions.push_back(j_transition);
-//	}
-//
-//	nlohmann::json file = {
-//		{ "name", name },
-//		{ "states", j_states},
-//		{ "transitions", j_transitions}
-//	};
-//
-//	std::ofstream o(meta->original_file);
-//	o << std::setw(4) << file << std::endl;
-//
-//	meta->id = id;
-//	App->importer->anim_controller->Save(meta->original_file, this);
-//}
+bool ResourceAnimatorController::SaveAsset(const u64& force_id)
+{
+	if (force_id == 0)
+		ID = App->resources->GetRandomID();
+	else
+		ID = force_id;
+	
+	path = std::string(ANIM_CONTROLLER_FOLDER + name + ".animController");
 
-//void ResourceAnimatorController::FreeMemory()
-//{
-//}
-//
-//bool ResourceAnimatorController::LoadMemory()
-//{
-//	char* buffer;
-//	uint size = App->file_system->Load(meta_data_path.data(), &buffer);
-//
-//	if (size > 0)
-//	{
-//		char* cursor = buffer;
-//
-//		//Load name size
-//		uint bytes = sizeof(uint);
-//		uint name_size;
-//		memcpy(&name_size, cursor, bytes);
-//		cursor += bytes;
-//
-//		//Load name
-//		bytes = name_size;
-//		resource->name.resize(bytes);
-//		memcpy(&resource->name[0], cursor, bytes);
-//		cursor += bytes;
-//
-//		//Load transitions and states nums
-//		bytes = sizeof(uint);
-//		uint num_states;
-//		memcpy(&num_states, cursor, bytes);
-//		cursor += bytes;
-//		uint num_transitions;
-//		memcpy(&num_transitions, cursor, bytes);
-//		cursor += bytes;
-//
-//		for (int i = 0; i < num_states; i++)
-//		{
-//			//Load name size
-//			uint bytes = sizeof(uint);
-//			name_size;
-//			memcpy(&name_size, cursor, bytes);
-//			cursor += bytes;
-//			//Load name
-//			bytes = name_size;
-//			std::string tmp_name;
-//			tmp_name.resize(name_size);
-//			memcpy(&tmp_name[0], cursor, bytes);
-//			cursor += bytes;
-//
-//			//Load clip id and speed
-//			bytes = sizeof(uint);
-//			uint clip_id;
-//			memcpy(&clip_id, cursor, bytes);
-//			cursor += bytes;
-//			bytes = sizeof(float);
-//			float speed;
-//			memcpy(&speed, cursor, bytes);
-//			cursor += bytes;
-//
-//			resource->AddState(tmp_name, (ResourceAnimation*)App->resources->GetAndReference(clip_id), speed);
-//		}
-//
-//		for (int i = 0; i < num_transitions; ++i)
-//		{
-//			//Load name size
-//			uint bytes = sizeof(uint);
-//			name_size;
-//			memcpy(&name_size, cursor, bytes);
-//			cursor += bytes;
-//			//Load name
-//			bytes = name_size;
-//			std::string tmp_source;
-//			tmp_source.resize(name_size);
-//			memcpy(&tmp_source[0], cursor, bytes);
-//			cursor += bytes;
-//
-//			//Load name size
-//			bytes = sizeof(uint);
-//			name_size;
-//			memcpy(&name_size, cursor, bytes);
-//			cursor += bytes;
-//			//Load name
-//			bytes = name_size;
-//			std::string tmp_target;
-//			tmp_target.resize(name_size);
-//			memcpy(&tmp_target[0], cursor, bytes);
-//			cursor += bytes;
-//
-//			bytes = sizeof(uint);
-//			uint tmp_trigger;
-//			memcpy(&tmp_trigger, cursor, bytes);
-//			cursor += bytes;
-//
-//			bytes = sizeof(float);
-//			float tmp_blend;
-//			memcpy(&tmp_blend, cursor, bytes);
-//			cursor += bytes;
-//
-//			resource->AddTransition(resource->FindState(tmp_source), resource->FindState(tmp_target), tmp_blend, tmp_trigger);
-//		}
-//
-//		LOG_ENGINE("Loaded Anim Controller %s", resource->GetExportedFile());
-//
-//		RELEASE_ARRAY(buffer);
-//		return true;
-//	}
-//	return false
-//}
+	JSON_Value* asset_value = json_value_init_object();
+	JSON_Object* asset_object = json_value_get_object(asset_value);
+	json_serialize_to_file_pretty(asset_value, path.data());
+
+	JSONfilepack* asset = new JSONfilepack(path, asset_object, asset_value);
+	asset->StartSave();
+	asset->SetString("Controller.Name", name);
+	asset->SetNumber("Controller.NumStates", states.size());
+	asset->SetNumber("Controller.NumTransitions", transitions.size());
+	
+	JSONArraypack* states_array = asset->InitNewArray("Controller.States");
+	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
+	{
+		states_array->SetAnotherNode();
+		states_array->SetString("Name", (*it)->GetName());
+		states_array->SetNumber("Speed", (*it)->GetSpeed());
+		states_array->SetNumber("Clip", (*it)->GetClip() ? (*it)->GetClip()->GetID() : 0);
+	}
+
+	JSONArraypack* transitions_array = asset->InitNewArray("Controller.Transitions");
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
+	{
+		transitions_array->SetAnotherNode();
+		transitions_array->SetString("Source", (*it)->GetSource()->GetName());
+		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
+		transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
+		transitions_array->SetNumber("Blend", (*it)->GetBlend());
+	}
+
+	asset->FinishSave();
+	CreateMetaData(ID);
+
+	return true;
+}
+
+void ResourceAnimatorController::FreeMemory()
+{
+
+}
+bool ResourceAnimatorController::LoadMemory()
+{
+	char* buffer;
+	uint size = App->file_system->Load(meta_data_path.data(), &buffer);
+
+	if (size > 0)
+	{
+		char* cursor = buffer;
+
+		//Load name size
+		uint bytes = sizeof(uint);
+		uint name_size;
+		memcpy(&name_size, cursor, bytes);
+		cursor += bytes;
+
+		//Load name
+		bytes = name_size;
+		name.resize(bytes);
+		memcpy(&name[0], cursor, bytes);
+		cursor += bytes;
+
+		//Load transitions and states nums
+		bytes = sizeof(uint);
+		uint num_states;
+		memcpy(&num_states, cursor, bytes);
+		cursor += bytes;
+		uint num_transitions;
+		memcpy(&num_transitions, cursor, bytes);
+		cursor += bytes;
+
+		for (int i = 0; i < num_states; i++)
+		{
+			//Load name size
+			uint bytes = sizeof(uint);
+			name_size;
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+			//Load name
+			bytes = name_size;
+			std::string tmp_name;
+			tmp_name.resize(name_size);
+			memcpy(&tmp_name[0], cursor, bytes);
+			cursor += bytes;
+
+			//Load clip id and speed
+			bytes = sizeof(uint);
+			uint clip_id;
+			memcpy(&clip_id, cursor, bytes);
+			cursor += bytes;
+			bytes = sizeof(float);
+			float speed;
+			memcpy(&speed, cursor, bytes);
+			cursor += bytes;
+
+			AddState(tmp_name, (ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
+		}
+
+		for (int i = 0; i < num_transitions; ++i)
+		{
+			//Load name size
+			uint bytes = sizeof(uint);
+			name_size;
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+			//Load name
+			bytes = name_size;
+			std::string tmp_source;
+			tmp_source.resize(name_size);
+			memcpy(&tmp_source[0], cursor, bytes);
+			cursor += bytes;
+
+			//Load name size
+			bytes = sizeof(uint);
+			name_size;
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+			//Load name
+			bytes = name_size;
+			std::string tmp_target;
+			tmp_target.resize(name_size);
+			memcpy(&tmp_target[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(uint);
+			uint tmp_trigger;
+			memcpy(&tmp_trigger, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			float tmp_blend;
+			memcpy(&tmp_blend, cursor, bytes);
+			cursor += bytes;
+
+			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_trigger);
+		}
+		LOG_ENGINE("Loaded Anim Controller %s", meta_data_path.data());
+
+		RELEASE_ARRAY(buffer);
+		return true;
+	}
+	return false;
+}
+
+bool ResourceAnimatorController::ReadBaseInfo(const char* meta_file_path)
+{
+	return false;
+}
+
+bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
+{
+	if (force_id == 0)
+		ID = App->resources->GetRandomID();
+	else
+		ID = force_id;
+
+	meta_data_path = std::string(LIBRARY_ANIM_CONTROLLERS_FOLDER + std::to_string(ID) + ".alienAnimController");
+
+	//SAVE META FILE
+	std::string meta_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
+
+	JSON_Value* meta_value = json_value_init_object();
+	JSON_Object* meta_object = json_value_get_object(meta_value);
+	json_serialize_to_file_pretty(meta_value, meta_path.data());
+
+	if (meta_value != nullptr && meta_object != nullptr)
+	{
+		JSONfilepack* meta = new JSONfilepack(meta_path, meta_object, meta_value);
+		meta->StartSave();
+		meta->SetString("Meta.ID", std::to_string(ID));
+		meta->FinishSave();
+	}
+
+	//SAVE LIBRARY FILE
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 2;
+	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
+	{
+		size += sizeof(uint) + (*it)->GetName().size() + sizeof(u64) + sizeof(float);
+	}
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
+	{
+		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(uint) + sizeof(float);
+	}
+	// Allocate
+	char* data = new char[size];
+	char* cursor = data;
+
+	// Store name size and name
+	uint bytes = sizeof(uint);
+	uint name_size = name.size();
+	memcpy(cursor, &name_size, bytes);
+	cursor += bytes;
+	bytes = name.size();
+	memcpy(cursor, name.c_str(), bytes);
+	cursor += bytes;
+
+	//Store transitions and states nums
+	bytes = sizeof(uint);
+	uint num_states = states.size();
+	memcpy(cursor, &num_states, bytes);
+	cursor += bytes;
+	uint num_transitions = transitions.size();
+	memcpy(cursor, &num_transitions, bytes);
+	cursor += bytes;
+
+	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
+	{
+		// Store name size and name
+		bytes = sizeof(uint);
+		name_size = (*it)->GetName().size();
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, (*it)->GetName().data(), bytes);
+		cursor += bytes;
+
+		//Store clip id and speed
+		bytes = sizeof(u64);
+		memcpy(cursor, &(*it)->GetClip()->GetID(), bytes);
+		cursor += bytes;
+		bytes = sizeof(float);
+		float st_speed = (*it)->GetSpeed();
+		memcpy(cursor, &st_speed, bytes);
+		cursor += bytes;
+	}
+
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
+	{
+		// Store name size and name
+		bytes = sizeof(uint);
+		name_size = (*it)->GetSource()->GetName().size();
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, (*it)->GetSource()->GetName().data(), bytes);
+		cursor += bytes;
+
+		// Store name size and name
+		bytes = sizeof(uint);
+		name_size = (*it)->GetTarget()->GetName().size();
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, (*it)->GetTarget()->GetName().data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(uint);
+		uint trigger_id = (*it)->GetTrigger();
+		memcpy(cursor, &trigger_id, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(float);
+		float tr_blend = (*it)->GetBlend();
+		memcpy(cursor, &tr_blend, bytes);
+		cursor += bytes;
+	}
+
+	App->file_system->Save(meta_data_path.data(), data, size);
+	RELEASE_ARRAY(data);
+
+	return true;
+}
+
+bool ResourceAnimatorController::DeleteMetaData()
+{
+	return false;
+}
 
 void ResourceAnimatorController::Play()
 {
@@ -484,27 +613,6 @@ std::string ResourceAnimatorController::GetName()
 {
 	return name;
 }
-
-//void ResourceAnimatorController::UnLoad()
-//{
-//	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
-//	{
-//		if ((*it)->GetClip())
-//			(*it)->GetClip()->RemoveReference();
-//		delete (*it);
-//	}
-//	states.clear();
-//	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
-//	{
-//		delete (*it);
-//	}
-//	transitions.clear();
-//}
-//
-//void ResourceAnimatorController::Load()
-//{
-//	App->importer->anim_controller->Load(this);
-//}
 
 void ResourceAnimatorController::Reset()
 {

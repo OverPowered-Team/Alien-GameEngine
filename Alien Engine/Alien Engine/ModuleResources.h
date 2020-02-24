@@ -42,6 +42,14 @@ struct Icons {
 	ResourceTexture* prefab_lock = nullptr;
 };
 
+enum class AssetType
+{
+	ANIM_CONTROLLER,
+	ANIM,
+
+	UNKONWN
+};
+
 
 class ModuleResources : public Module
 {
@@ -56,6 +64,7 @@ public:
 
 	void AddResource(Resource* resource);
 	void RemoveResource(Resource* resource);
+	void CreateAsset(AssetType type);
 
 	// meta path
 	bool CreateNewModelInstanceOf(const char* path);
@@ -96,6 +105,8 @@ private:
 	void ReadScripts();
 
 	void GetAllScriptsPath(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder, std::vector<std::string>* scripts);
+
+	void CreateAnimatorController();
 
 public:
 

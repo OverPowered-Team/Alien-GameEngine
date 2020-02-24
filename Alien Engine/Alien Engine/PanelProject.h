@@ -4,7 +4,6 @@
 
 #include "FileNode.h"
 
-
 class PanelProject : public Panel {
 
 public:
@@ -16,6 +15,8 @@ public:
 	bool SelectFile(const char* path, FileNode* node);
 	FileNode* GetSelectedFile();
 	void RefreshAllNodes();
+
+	void GetUniqueFileName(std::string& asset_name, const std::string& asset_node);
 
 public:
 
@@ -31,7 +32,6 @@ private:
 	void RightClickToWindow(bool pop_up_item);
 	bool MoveToFolder(FileNode* node, bool inside);
 	void DeleteNodes(FileNode* node);
-
 
 	int colum_width[2];
 

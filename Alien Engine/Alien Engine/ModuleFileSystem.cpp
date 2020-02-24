@@ -45,16 +45,18 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 #ifndef GAME_VERSION
 	// Make sure standard paths exist
 	const char* dirs[] = {
-		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,
+		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER, ANIM_CONTROLLER_FOLDER,
 		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER,
-		ASSETS_PREFAB_FOLDER, SCRIPTS_DLL_OUTPUT, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER,LIBRARY_ANIMATIONS_FOLDER , LIBRARY_BONES_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		ASSETS_PREFAB_FOLDER, SCRIPTS_DLL_OUTPUT, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
+		LIBRARY_BONES_FOLDER, LIBRARY_SCRIPTS_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER
 	};
 #else
 	// Make sure standard paths exist
 	const char* dirs[] = {
 		LIBRARY_FOLDER, CONFIGURATION_FOLDER,
-		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
-		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
+		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
+		LIBRARY_BONES_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, LIBRARY_ANIMATIONS_FOLDER
 	};
 #endif
 	for (uint i = 0; i < sizeof(dirs) / sizeof(const char*); ++i)
@@ -222,7 +224,9 @@ void ModuleFileSystem::DiscoverEverythig(FileNode* node)
 	GetPreviousNames(previous_names, node);
 	node->path = previous_names;
 
-	if (App->StringCmp(node->path.data(), MODELS_FOLDER) || App->StringCmp(node->path.data(), SCENE_FOLDER) || App->StringCmp(node->path.data(), TEXTURES_FOLDER) || App->StringCmp(node->path.data(), SCRIPTS_FOLDER) || App->StringCmp(node->path.data(), ASSETS_PREFAB_FOLDER))
+	if (App->StringCmp(node->path.data(), MODELS_FOLDER) || App->StringCmp(node->path.data(), SCENE_FOLDER) || App->StringCmp(node->path.data(), TEXTURES_FOLDER)
+		|| App->StringCmp(node->path.data(), SCRIPTS_FOLDER) || App->StringCmp(node->path.data(), ASSETS_PREFAB_FOLDER)
+		|| App->StringCmp(node->path.data(), ANIM_CONTROLLER_FOLDER))
 		node->is_base_file = true;
 
 	if (!node->is_file) {

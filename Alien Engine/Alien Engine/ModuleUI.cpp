@@ -569,9 +569,21 @@ void ModuleUI::MainMenuBar()
 		}
 		ImGui::EndMenu();
 	}
+	if (ImGui::BeginMenu("Assets"))
+	{
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("Animator Controller"))
+			{
+				App->resources->CreateAsset(AssetType::ANIM_CONTROLLER);
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenu();
+	}
 	if (ImGui::BeginMenu("Create"))
 	{
-		if (ImGui::MenuItem("Crete Empty GameObject"))
+		if (ImGui::MenuItem("Create Empty GameObject"))
 		{
 			App->objects->CreateEmptyGameObject(nullptr);
 		}
