@@ -34,6 +34,25 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing();
 
+		ImGui::Text("Value:		"); ImGui::SameLine();
+		if (ImGui::DragFloat("##MinValue", &minValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
+		{
+			
+		}
+
+		ImGui::Text("Max value:	"); ImGui::SameLine();
+		if (ImGui::DragFloat("##MaxValue", &maxValue, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+		{
+			
+		}
+
+		ImGui::Text("Current value:	"); ImGui::SameLine();
+		if (ImGui::DragFloat("##CurrentValue", &currentValue, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+		{
+
+		}
+
+
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Background Texture");
 
@@ -159,9 +178,9 @@ bool ComponentBar::DrawInspector()
 			set_Z = true;
 		}
 		ImGui::Spacing();
-		float barScale[] = { barScaleY };
-		if (ImGui::DragFloat2("Slider Scale", barScale, 0.1F)) {
-			barScaleY = barScale[0];
+		ImGui::Text("Slider Scale:	"); ImGui::SameLine();
+		if (ImGui::DragFloat("##Slider Scale", &barScaleY, 0.1F)) {
+			
 		}
 
 		ImGui::Spacing();
@@ -184,7 +203,7 @@ void ComponentBar::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY;
-	transform->global_transformation[0][3] = transform->global_transformation[0][3];
+	transform->global_transformation[0][3] = (transform->global_transformation[0][3]- transform->global_transformation[0][0]);
 	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
 	barX = transform->global_transformation[0][3] = transform->global_transformation[0][3];
