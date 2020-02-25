@@ -82,10 +82,11 @@ void PanelCreateMaterial::PanelLogic()
 		{
 			ResourceShader* n_shader = new ResourceShader(path);
 			n_shader->IncreaseReferences();
-
+			n_shader->SetAssetsPath((SHADERS_FOLDER + std::string(path) + std::string(".Shader")).c_str());
 			n_shader->CreateShaderFolder(1,true,path);
 			n_shader->CreateMetaData(n_shader->GetID());
 			n_shader->ParseAndCreateShader();
+			n_shader->Bind();
 			ChangeEnable();
 		}
 
