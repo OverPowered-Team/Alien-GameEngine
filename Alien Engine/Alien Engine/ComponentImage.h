@@ -21,7 +21,6 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-	void UpdateBar(float factor);
 };
 
 #endif // !_COMPONENT_IMAGE_H_

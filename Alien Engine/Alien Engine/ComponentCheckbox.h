@@ -40,7 +40,6 @@ public:
 	void AddListenerOnClickRepeat(std::function<void()> funct);
 	void AddListenerOnRelease(std::function<void()> funct);
 
-	
 	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 
 	void SaveComponent(JSONArraypack* to_save);
@@ -51,14 +50,11 @@ private:
 
 private:
 	bool active = true;
-
-public:
 	bool clicked = false;
 	float crossScaleX = 0.5F;
 	float crossScaleY = 0.5F;
 	float tickScaleX = 0.5F;
 	float tickScaleY = 0.5F;
-
 
 private:
 	std::vector<std::function<void()>> listenersOnHover;

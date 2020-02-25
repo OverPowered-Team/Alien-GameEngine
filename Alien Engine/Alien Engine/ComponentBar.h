@@ -27,7 +27,6 @@ public:
 
 	//Script
 	void CalculateValue();
-	void SetBackgroundColor(float r, float g, float b, float a);
 	void SetBarColor(float r, float g, float b, float a);
 
 public:
