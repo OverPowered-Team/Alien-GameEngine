@@ -229,15 +229,32 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name.c_str())) {
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name.c_str())) {
 				ImGui::OpenPopup("Select bool parameter");
 			}
 
 			if (ImGui::BeginPopup("Select bool parameter")) {
-				for (int i = 0; i < current_animator->GetBoolParameters().size(); i++)
+				for (int j = 0; j < current_animator->GetBoolParameters().size(); j++)
 				{
-					if (ImGui::Selectable(current_animator->GetBoolParameters()[i].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(current_animator->GetBoolParameters()[i]);
+					if (ImGui::Selectable(current_animator->GetBoolParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(current_animator->GetBoolParameters()[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select comparison");
+			}
+
+			if (ImGui::BeginPopup("Select comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts[j]);
 					}
 				}
 

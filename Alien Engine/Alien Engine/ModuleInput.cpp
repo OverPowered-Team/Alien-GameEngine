@@ -34,10 +34,11 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
-	//if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
-	//{
-	//	LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
-	//}
+	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+	{
+		LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
+	}
+
 	if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
 	{
 		LOG_ENGINE("SDL_GAMECONTROLLER HAPTIC could not initialize! SDL_Error: %s\n", SDL_GetError());
