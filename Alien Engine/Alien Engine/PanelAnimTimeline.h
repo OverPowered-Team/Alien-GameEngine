@@ -27,15 +27,9 @@ private:
 	ResourceAnimatorController* animator = nullptr;
 	ResourceAnimation* current_animation = nullptr;
 	std::vector<ResourceAnimation*> animations;
-	float current_num_frames;
-
-
-	ImVec2 bar_mov = { 0, 0 };
-	ImVec2 mouse_mov = { 0, 0 };
+	float num_frames;
 
 	float button_position = 0.0f;
-
-
 	float offset = 0.0f;
 
 	bool setted = false;
@@ -52,6 +46,8 @@ private:
 	bool pause = false;
 	bool stop = false;
 	bool stop_in_game = false;
+
+	bool dragging = false;
 
 	float animation_time = 0.0f;
 	float aux_time = 0.0f;
