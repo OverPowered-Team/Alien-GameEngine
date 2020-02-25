@@ -11,12 +11,14 @@
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
+#include <map>
 
 class ReturnZ;
 class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;

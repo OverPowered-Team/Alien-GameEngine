@@ -14,6 +14,7 @@ class ResourceModel;
 class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
+class ResourceFont;
 
 struct Icons {
 
@@ -82,6 +83,7 @@ public:
 	void ReloadScripts();
 
 	ResourceScene* GetSceneByName(const char* name);
+	ResourceFont* GetFontByName(const char* name);
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
@@ -91,6 +93,7 @@ private:
 	void ReadModels(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadScenes(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadScripts();
 
 	void GetAllScriptsPath(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder, std::vector<std::string>* scripts);
@@ -103,6 +106,7 @@ public:
 
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
+	ResourceFont* default_font = nullptr;
 	FileNode* assets = nullptr;
 
 private:

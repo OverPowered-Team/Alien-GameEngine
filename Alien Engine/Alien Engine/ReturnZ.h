@@ -123,6 +123,7 @@ public:
 	static void AttachCompZToGameObject(CompZ* compZ);
 
 	ComponentType type = ComponentType::UNKNOWN;
+	ComponentType ui_type = ComponentType::UNKNOWN;
 	u64 objectID = 0;
 	u64 compID = 0;
 	bool enabled = true;
@@ -168,6 +169,41 @@ public:
 	u64 resourceID = 0;
 	bool need_alien = false;
 };
+
+class CompImageZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	Color color = Color::White();
+};
+
+class CompBarZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceBarID = 0;
+	Color color = Color::White();
+};
+
+class CompCheckboxZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceCrossID = 0;
+	u64 resourceTickID = 0;
+	Color color = Color::White();
+};
+
+class CompButtonZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	Color color = Color::White();
+};
+
+class CompSliderZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceSliderID = 0;
+	Color color = Color::White();
+};
+
 
 class CompCameraZ : public CompZ {
 public:

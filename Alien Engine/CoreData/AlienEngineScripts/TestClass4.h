@@ -3,20 +3,20 @@
 #include "..\..\Alien Engine\Alien.h"
 #include "Macros/AlienScripts.h"
 
-class ALIEN_ENGINE_API JsonCreate : public Alien {
+class ALIEN_ENGINE_API TestClass4 : public Alien {
 
 public:
 
-	JsonCreate();
-	virtual ~JsonCreate();
+	TestClass4();
+	virtual ~TestClass4();
 	
 	void Start();
 	void Update();
 
 };
 
-ALIEN_FACTORY JsonCreate* CreateJsonCreate() {
-	JsonCreate* alien = new JsonCreate();
+ALIEN_FACTORY TestClass4* CreateTestClass4() {
+	TestClass4* alien = new TestClass4();
 	// To show in inspector here
 
 	return alien;

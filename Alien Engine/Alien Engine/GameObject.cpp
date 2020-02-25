@@ -6,11 +6,19 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCanvas.h"
+#include "ComponentText.h"
+#include "ComponentButton.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentParticleSystem.h"
 #include "ParticleSystem.h"
+#include "ComponentImage.h"
+#include "ComponentBar.h"
+#include "ComponentUI.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -575,12 +583,46 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		}
 	}
 
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr && canvas->IsEnabled())
+	{
+		canvas->Draw();
+	}
+
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
 			(*child)->SetDrawList(to_draw, camera);
 		}
 	}
+
+	ComponentUI* ui = GetComponent<ComponentUI>();
+
+	if (ui != nullptr && ui->IsEnabled())
+	{
+		ui->Draw(!App->objects->printing_scene);
+	}
+}
+
+ComponentCanvas* GameObject::GetCanvas()
+{
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr) {
+		return canvas;
+	}
+
+	std::vector<GameObject*>::iterator item = children.begin();
+	for (; item != children.end(); ++item) {
+		if (*item != nullptr) {
+			canvas = (*item)->GetCanvas();
+			if (canvas != nullptr)
+				break;
+		}
+	}
+
+	return canvas;
 }
 
 void GameObject::AddComponent(Component* component)
@@ -776,10 +818,20 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item) {
-		if (*item != nullptr && (*item)->GetType() == type) {
-			return *item;
+	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE) {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == ComponentType::UI && dynamic_cast<ComponentUI*>(*item)->ui_type == type) {
+				return *item;
+			}
+		}
+	}
+	else {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == type) {
+				return *item;
+			}
 		}
 	}
 	return nullptr;
@@ -958,6 +1010,26 @@ void GameObject::SetNewParent(GameObject* new_parent)
 		}
 		else {
 			transform->Reparent(transform->global_transformation);
+		}
+
+		ComponentUI* ui = GetComponent<ComponentUI>();
+		if (ui != nullptr) {
+			GameObject* p = new_parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent <ComponentCanvas>();
+					if (canvas != nullptr) {
+						ui->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					ui->SetCanvas(nullptr);
+				}
+			}
 		}
 	}
 	else {
@@ -1302,6 +1374,7 @@ AABB GameObject::GetBB() const
 		{
 			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
 			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
+			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
 			if (camera != nullptr) {
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1320,6 +1393,14 @@ AABB GameObject::GetBB() const
 				light->bulb->RecalculateAABB_OBB();
 				transform->global_transformation = to_save;
 				return light->bulb->GetGlobalAABB();
+			}
+			else if (ui != nullptr) {
+				AABB aabb_ui;
+				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+				float3 pos = transform->GetGlobalPosition();
+				float3 scale = transform->GetGlobalScale();
+				aabb_ui.SetFromCenterAndSize(pos, { scale.x * 2,scale.y * 2,2 });
+				return aabb_ui;
 			}
 
 			AABB aabb_null;
@@ -1451,12 +1532,60 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 			case (int)ComponentType::PARTICLES: {
 				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
 				particleSystem->LoadComponent(components_to_load);
-				AddComponent(particleSystem);
+				AddComponent(particleSystem);}
+			case (int)ComponentType::CANVAS: {
+				ComponentCanvas* canvas = new ComponentCanvas(this);
+				canvas->LoadComponent(components_to_load);
+				AddComponent(canvas);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
 				// dont need to addcomponent, load script does it
+				break; }
+			case (int)ComponentType::UI: {
+				ComponentType typeUI = (ComponentType)(int)components_to_load->GetNumber("UIType");
+				switch (typeUI) {
+				case ComponentType::UI_IMAGE: {
+					ComponentImage* image = new ComponentImage(this);
+					image->ui_type = typeUI;
+					image->LoadComponent(components_to_load);
+					AddComponent(image);
+					break; }
+				case ComponentType::UI_TEXT: {
+					ComponentText* text = new ComponentText(this);
+					text->ui_type = typeUI;
+					text->LoadComponent(components_to_load);
+					AddComponent(text);
+					break; }
+				case ComponentType::UI_BUTTON: {
+					ComponentButton* button = new ComponentButton(this);
+					button->ui_type = typeUI;
+					button->LoadComponent(components_to_load);
+					AddComponent(button);
+					break; }
+				case ComponentType::UI_BAR: {
+					ComponentBar* bar = new ComponentBar(this);
+					bar->ui_type = typeUI;
+					bar->LoadComponent(components_to_load);
+					AddComponent(bar);
+					break; }
+				case ComponentType::UI_CHECKBOX: {
+					ComponentCheckbox* checkbox = new ComponentCheckbox(this);
+					checkbox->ui_type = typeUI;
+					checkbox->LoadComponent(components_to_load);
+					AddComponent(checkbox);
+					break; }
+				case ComponentType::UI_SLIDER: {
+					ComponentSlider* slider = new ComponentSlider(this);
+					slider->ui_type = typeUI;
+					slider->LoadComponent(components_to_load);
+					AddComponent(slider);
+					break; }
+				default:
+					LOG_ENGINE("Unknown component UItype while loading");
+					break;
+				}
 				break; }
 			default:
 				LOG_ENGINE("Unknown component type while loading");
@@ -1524,6 +1653,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(material);
 					clone->AddComponent(material);
 					break; }
+				case ComponentType::CANVAS: {
+					ComponentCanvas* canvas = new ComponentCanvas(clone);
+					(*item)->Clone(canvas);
+					clone->AddComponent(canvas);
+					break; }
 				case ComponentType::MESH: {
 					ComponentMesh* mesh = new ComponentMesh(clone);
 					(*item)->Clone(mesh);
@@ -1539,6 +1673,27 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(script);
 					// dont need to addcomponent, clone script does it
 					break; }
+				case ComponentType::UI: {
+					ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
+					switch (ui->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						ComponentImage* image = new ComponentImage(clone);
+						(*item)->Clone(image);
+						clone->AddComponent(image);
+						break; }
+					case ComponentType::UI_TEXT: {
+						ComponentText* text = new ComponentText(clone);
+						(*item)->Clone(text);
+						clone->AddComponent(text);
+						break; }
+					case ComponentType::UI_BUTTON: {
+						ComponentButton* button = new ComponentButton(clone);
+						(*item)->Clone(button);
+						clone->AddComponent(button);
+						break; }
+					}
+					break; }
+
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;
@@ -1577,6 +1732,12 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
 			mesh->mesh = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_FONT: {
+		ComponentText* text = (ComponentText*)GetComponent(ComponentType::UI_TEXT);
+		if (text != nullptr && text->GetFont() == (ResourceFont*)to_delete) {
+			text->SetFont(nullptr);
 		}
 		break; }
 	}

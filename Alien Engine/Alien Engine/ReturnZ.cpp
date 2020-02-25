@@ -10,6 +10,12 @@
 #include "Maths.h"
 #include "Octree.h"
 #include "PanelTextEditor.h"
+#include "ComponentImage.h"
+#include "ComponentUI.h"
+#include "ComponentBar.h"
+#include "ComponentButton.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
 #include "ComponentScript.h"
 #include "ComponentParticleSystem.h"
 #include "ParticleSystem.h"
@@ -226,6 +232,10 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					ComponentMesh* mesh = (ComponentMesh*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(mesh, comp->comp);
 					break; }
+				case ComponentType::CANVAS: {
+					ComponentCanvas* canvas = (ComponentCanvas*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(canvas, comp->comp);
+					break; }
 				case ComponentType::MATERIAL: {
 					ComponentMaterial* material = (ComponentMaterial*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(material, comp->comp);
@@ -244,7 +254,30 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					break; }
 				case ComponentType::PARTICLES: {
 					ComponentParticleSystem* ps = (ComponentParticleSystem*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
-					CompZ::SetComponent(ps, comp->comp);
+					CompZ::SetComponent(ps, comp->comp);}
+				case ComponentType::UI: {
+					switch (comp->comp->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						ComponentImage* image = (ComponentImage*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(image, comp->comp);
+						break; }
+					case ComponentType::UI_BAR: {
+						ComponentBar* bar = (ComponentBar*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(bar, comp->comp);
+						break; }
+					case ComponentType::UI_CHECKBOX: {
+						ComponentCheckbox * checkbox = (ComponentCheckbox*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(checkbox, comp->comp);
+						break; }
+					case ComponentType::UI_BUTTON: {
+						ComponentButton* button = (ComponentButton*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(button, comp->comp);
+						break; }
+					case ComponentType::UI_SLIDER: {
+						ComponentSlider* slider = (ComponentSlider*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+						CompZ::SetComponent(slider, comp->comp);
+						break; }
+					}
 					break; }
 				}
 			}
@@ -348,6 +381,11 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompZ::SetCompZ((*item), (CompZ**)&meshZ);
 					comp = meshZ;
 					break; }
+				case ComponentType::CANVAS: {
+					CompZ* canvasZ = nullptr;
+					CompZ::SetCompZ((*item), (CompZ**)&canvasZ);
+					comp = canvasZ;
+					break; }
 				case ComponentType::MATERIAL: {
 					CompMaterialZ* materialZ = nullptr;
 					CompZ::SetCompZ((*item), (CompZ**)&materialZ);
@@ -367,6 +405,36 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompScriptZ* scriptZ = nullptr;
 					CompZ::SetCompZ((*item), (CompZ**)&scriptZ);
 					comp = scriptZ;
+					break; }
+				case ComponentType::UI: {
+					ComponentUI* ui = (ComponentUI*)*item;
+					switch (ui->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						CompImageZ* imageZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&imageZ);
+						comp = imageZ;
+						break; }
+					case ComponentType::UI_BAR: {
+						CompBarZ* barZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&barZ);
+						comp = barZ;
+						break; }
+					case ComponentType::UI_CHECKBOX: {
+						CompCheckboxZ* checkZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&checkZ);
+						comp = checkZ;
+						break; }
+					case ComponentType::UI_BUTTON: {
+						CompButtonZ* buttonZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&buttonZ);
+						comp = buttonZ;
+						break; }
+					case ComponentType::UI_SLIDER: {
+						CompSliderZ* sliderZ = nullptr;
+						CompZ::SetCompZ((*item), (CompZ**)&sliderZ);
+						comp = sliderZ;
+						break; }
+					}
 					break; }
 				default:
 					LOG_ENGINE("A component hasn't been saved");
@@ -435,6 +503,11 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						CompZ::SetComponent(mesh, meshZ);
 						new_obj->AddComponent(mesh);
 						break; }
+					case ComponentType::CANVAS: {
+						ComponentCanvas* canvas = new ComponentCanvas(new_obj);
+						CompZ::SetComponent(canvas, (*item));
+						new_obj->AddComponent(canvas);
+						break; }
 					case ComponentType::MATERIAL: {
 						ComponentMaterial* material = new ComponentMaterial(new_obj);
 						CompMaterialZ* materialZ = (CompMaterialZ*)(*item);
@@ -457,6 +530,40 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						ComponentScript* script = new ComponentScript(new_obj);
 						CompScriptZ* scriptZ = (CompScriptZ*)(*item);
 						CompZ::SetComponent(script, scriptZ);
+						break; }
+					case ComponentType::UI: {
+						switch ((*item)->ui_type) {
+						case ComponentType::UI_IMAGE: {
+							ComponentImage* image = new ComponentImage(new_obj);
+							CompImageZ* imageZ = (CompImageZ*)(*item);
+							CompZ::SetComponent(image, imageZ);
+							new_obj->AddComponent(image);
+							break; }
+						case ComponentType::UI_BAR: {
+							ComponentBar* bar = new ComponentBar(new_obj);
+							CompBarZ* barZ = (CompBarZ*)(*item);
+							CompZ::SetComponent(bar, barZ);
+							new_obj->AddComponent(bar);
+							break; }
+						case ComponentType::UI_CHECKBOX: {
+							ComponentCheckbox* check = new ComponentCheckbox(new_obj);
+							CompCheckboxZ* checkZ = (CompCheckboxZ*)(*item);
+							CompZ::SetComponent(check, checkZ);
+							new_obj->AddComponent(check);
+							break; }
+						case ComponentType::UI_BUTTON: {
+							ComponentButton* button = new ComponentButton(new_obj);
+							CompButtonZ* buttonZ = (CompButtonZ*)(*item);
+							CompZ::SetComponent(button, buttonZ);
+							new_obj->AddComponent(button);
+							break; }
+						case ComponentType::UI_SLIDER: {
+							ComponentSlider* slider = new ComponentSlider(new_obj);
+							CompSliderZ* sliderZ = (CompSliderZ*)(*item);
+							CompZ::SetComponent(slider, sliderZ);
+							new_obj->AddComponent(slider);
+							break; }
+						}
 						break; }
 					default:
 						break;
@@ -548,6 +655,11 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		lightZ->ambient = light->ambient;
 		lightZ->objectID = light->game_object_attached->ID;
 		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = (ComponentCanvas*)component;
+		CompZ* canvasZ = new CompZ();
+		*compZ = canvasZ;
+		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = (ComponentScript*)component;
 		CompScriptZ* scriptZ = new CompScriptZ();
@@ -575,7 +687,54 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		psZ->duration = ps->particleSystem->emmitter.GetMaxLife();
 		psZ->objectID = ps->game_object_attached->ID;
 		//psZ->enabled = true;
-	}
+		break;}
+	case ComponentType::UI: {
+		ComponentUI* ui = (ComponentUI*)component;
+		switch (ui->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			CompImageZ* imageZ = new CompImageZ();
+			*compZ = imageZ;
+			imageZ->color = ui->current_color;
+			imageZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			imageZ->ui_type = ComponentType::UI_IMAGE;
+			break; }
+		case ComponentType::UI_BAR: {
+			ComponentBar* bar = (ComponentBar*)ui;
+			CompBarZ* barZ = new CompBarZ();
+			*compZ = barZ;
+			barZ->color = ui->current_color;
+			barZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			barZ->resourceBarID = (bar->barTexture != nullptr) ? bar->barTexture->GetID() : 0;
+			barZ->ui_type = ComponentType::UI_BAR;
+			break; }
+		case ComponentType::UI_CHECKBOX: {
+			ComponentCheckbox* check = (ComponentCheckbox*)ui;
+			CompCheckboxZ* checkZ = new CompCheckboxZ();
+			*compZ = checkZ;
+			checkZ->color = ui->current_color;
+			checkZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			checkZ->resourceCrossID = (check->crossTexture != nullptr) ? check->crossTexture->GetID() : 0;
+			checkZ->resourceTickID = (check->tickTexture != nullptr) ? check->tickTexture->GetID() : 0;
+			checkZ->ui_type = ComponentType::UI_CHECKBOX;
+			break; }
+		case ComponentType::UI_BUTTON: {
+			CompButtonZ* buttonZ = new CompButtonZ();
+			*compZ = buttonZ;
+			buttonZ->color = ui->current_color;
+			buttonZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			buttonZ->ui_type = ComponentType::UI_BUTTON;
+			break; }
+		case ComponentType::UI_SLIDER: {
+			ComponentSlider* slider = (ComponentSlider*)ui;
+			CompSliderZ* sliderZ = new CompSliderZ();
+			*compZ = sliderZ;
+			sliderZ->color = ui->current_color;
+			sliderZ->resourceID = (ui->texture != nullptr) ? ui->texture->GetID() : 0;
+			sliderZ->resourceID = (slider->sliderTexture != nullptr) ? slider->sliderTexture->GetID() : 0;
+			sliderZ->ui_type = ComponentType::UI_SLIDER;
+			break; }
+		}
+		break; }
 	default: {
 		break;
 	}
@@ -669,6 +828,286 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		light->ambient = lightZ->ambient;
 		light->diffuse = lightZ->diffuse;
 		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = (ComponentCanvas*)component;
+		CompZ* canvasZ = (CompZ*)compZ;
+		break; }
+	case ComponentType::UI: {
+		switch (compZ->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			ComponentImage* image = (ComponentImage*)component;
+			CompImageZ* imageZ = (CompImageZ*)compZ;
+			image->current_color = imageZ->color;
+			if (imageZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(imageZ->resourceID);
+				if (tex != nullptr) {
+					image->SetTexture(tex);
+				}
+				else {
+					image->ClearTexture();
+				}
+			}
+			else {
+				image->ClearTexture();
+			}
+
+			GameObject* p = image->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						image->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					image->SetCanvas(nullptr);
+				}
+			}
+			break; }
+		case ComponentType::UI_BAR: {
+			ComponentBar* bar = (ComponentBar*)component;
+			CompBarZ* barZ = (CompBarZ*)compZ;
+			bar->current_color = barZ->color;
+			if (barZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(barZ->resourceID);
+				if (tex != nullptr) {
+					bar->SetTexture(tex);
+				}
+				else {
+					bar->ClearTexture();
+				}
+			}
+			else {
+				bar->ClearTexture();
+			}
+			//----------------
+			if (barZ->resourceBarID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(barZ->resourceBarID);
+				if (tex != nullptr) {
+					if (tex != nullptr && tex != bar->barTexture) {
+						tex->IncreaseReferences();
+						if (bar->barTexture != nullptr) {
+							bar->barTexture->DecreaseReferences();
+						}
+						bar->barTexture = tex;
+					}
+				}
+				else {
+					if (bar->barTexture != nullptr) {
+						bar->barTexture->DecreaseReferences();
+						bar->barTexture = nullptr;
+					}
+				}
+			}
+			else {
+				if (bar->barTexture != nullptr) {
+					bar->barTexture->DecreaseReferences();
+					bar->barTexture = nullptr;
+				}
+			}
+			//---------------
+			GameObject* p = bar->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						bar->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					bar->SetCanvas(nullptr);
+				}
+			}
+			break; }
+		case ComponentType::UI_CHECKBOX: {
+			ComponentCheckbox* checkbox = (ComponentCheckbox*)component;
+			CompCheckboxZ* checkZ = (CompCheckboxZ*)compZ;
+			checkbox->current_color = checkZ->color;
+			if (checkZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(checkZ->resourceID);
+				if (tex != nullptr) {
+					checkbox->SetTexture(tex);
+				}
+				else {
+					checkbox->ClearTexture();
+				}
+			}
+			else {
+				checkbox->ClearTexture();
+			}
+			//----------------
+			if (checkZ->resourceCrossID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(checkZ->resourceCrossID);
+				if (tex != nullptr) {
+					if (tex != nullptr && tex != checkbox->crossTexture) {
+						tex->IncreaseReferences();
+						if (checkbox->crossTexture != nullptr) {
+							checkbox->crossTexture->DecreaseReferences();
+						}
+						checkbox->crossTexture = tex;
+					}
+				}
+				else {
+					if (checkbox->crossTexture != nullptr) {
+						checkbox->crossTexture->DecreaseReferences();
+						checkbox->crossTexture = nullptr;
+					}
+				}
+			}
+			else {
+				if (checkbox->crossTexture != nullptr) {
+					checkbox->crossTexture->DecreaseReferences();
+					checkbox->crossTexture = nullptr;
+				}
+			}
+			//---------------
+			if (checkZ->resourceTickID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(checkZ->resourceTickID);
+				if (tex != nullptr) {
+					if (tex != nullptr && tex != checkbox->tickTexture) {
+						tex->IncreaseReferences();
+						if (checkbox->tickTexture != nullptr) {
+							checkbox->tickTexture->DecreaseReferences();
+						}
+						checkbox->tickTexture = tex;
+					}
+				}
+				else {
+					if (checkbox->tickTexture != nullptr) {
+						checkbox->tickTexture->DecreaseReferences();
+						checkbox->tickTexture = nullptr;
+					}
+				}
+			}
+			else {
+				if (checkbox->tickTexture != nullptr) {
+					checkbox->tickTexture->DecreaseReferences();
+					checkbox->tickTexture = nullptr;
+				}
+			}
+			//---------------
+			GameObject* p = checkbox->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						checkbox->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					checkbox->SetCanvas(nullptr);
+				}
+			}
+			break; }
+
+		case ComponentType::UI_BUTTON: {
+			ComponentButton* button = (ComponentButton*)component;
+			CompButtonZ* buttonZ = (CompButtonZ*)compZ;
+			button->current_color = buttonZ->color;
+			if (buttonZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(buttonZ->resourceID);
+				if (tex != nullptr) {
+					button->SetTexture(tex);
+				}
+				else {
+					button->ClearTexture();
+				}
+			}
+			else {
+				button->ClearTexture();
+			}
+			//----------------
+			//---------------
+			GameObject* p = button->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						button->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					button->SetCanvas(nullptr);
+				}
+			}
+			break; }
+		case ComponentType::UI_SLIDER: {
+			ComponentSlider* slider = (ComponentSlider*)component;
+			CompSliderZ* sliderZ = (CompSliderZ*)compZ;
+			slider->current_color = sliderZ->color;
+			if (sliderZ->resourceID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(sliderZ->resourceID);
+				if (tex != nullptr) {
+					slider->SetTexture(tex);
+				}
+				else {
+					slider->ClearTexture();
+				}
+			}
+			else {
+				slider->ClearTexture();
+			}
+			//----------------
+			if (sliderZ->resourceSliderID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(sliderZ->resourceSliderID);
+				if (tex != nullptr) {
+					if (tex != nullptr && tex != slider->sliderTexture) {
+						tex->IncreaseReferences();
+						if (slider->sliderTexture != nullptr) {
+							slider->sliderTexture->DecreaseReferences();
+						}
+						slider->sliderTexture = tex;
+					}
+				}
+				else {
+					if (slider->sliderTexture != nullptr) {
+						slider->sliderTexture->DecreaseReferences();
+						slider->sliderTexture = nullptr;
+					}
+				}
+			}
+			else {
+				if (slider->sliderTexture != nullptr) {
+					slider->sliderTexture->DecreaseReferences();
+					slider->sliderTexture = nullptr;
+				}
+			}
+			//---------------
+			GameObject* p = slider->game_object_attached->parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+					if (canvas != nullptr) {
+						slider->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					slider->SetCanvas(nullptr);
+				}
+			}
+			break; }
+		}
+		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = (ComponentScript*)component;
 		CompScriptZ* scriptZ = (CompScriptZ*)compZ;
@@ -733,10 +1172,24 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		CompZ::SetComponent(light, compZ);
 		obj->AddComponent(light);
 		break; }
+	case ComponentType::CANVAS: {
+		ComponentCanvas* canvas = new ComponentCanvas(obj);
+		CompZ::SetComponent(canvas, compZ);
+		obj->AddComponent(canvas);
+		break; }
 	case ComponentType::CAMERA: {
 		ComponentCamera* camera = new ComponentCamera(obj);
 		CompZ::SetComponent(camera, compZ);
 		obj->AddComponent(camera);
+		break; }
+	case ComponentType::UI: {
+		switch (compZ->ui_type) {
+		case ComponentType::UI_IMAGE: {
+			ComponentImage* image = new ComponentImage(obj);
+			CompZ::SetComponent(image, compZ);
+			obj->AddComponent(image);
+			break; }
+		}
 		break; }
 	case ComponentType::SCRIPT: {
 		ComponentScript* script = new ComponentScript(obj);

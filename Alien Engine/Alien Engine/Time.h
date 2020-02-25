@@ -15,6 +15,10 @@ private:
 	friend class PanelInspector;
 	friend class ResourcePrefab;
 	friend class ComponentParticleSystem;
+	friend class ComponentUI;
+	friend class ComponentCheckbox;
+	friend class ComponentSlider;
+	friend class ComponentBar;
 
 	enum class GameState {
 		NONE,

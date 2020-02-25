@@ -66,6 +66,9 @@
     </Filter>
     <Filter Include="Components\ParticleSystem">
       <UniqueIdentifier>{e633960d-eb91-4a91-8a5d-65579cacfd40}</UniqueIdentifier>
+      </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{a9b87688-5623-488f-8d32-013fcbbf96fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -564,6 +567,33 @@
     <ClInclude Include="Event.h">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentUI.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCanvas.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentImage.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentButton.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCheckbox.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentText.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceFont.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSlider.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentBar.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -910,6 +940,33 @@
     </ClCompile>
     <ClCompile Include="PanelParticleSystem.cpp">
       <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCanvas.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentUI.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentImage.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentButton.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCheckbox.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentText.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceFont.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSlider.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentBar.cpp">
+      <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
