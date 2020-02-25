@@ -26,9 +26,12 @@ public:
 
 	void GetValue();
 
+public:
+	float currentValue = 0.0f;
+
 private:
 	ResourceTexture* barTexture = nullptr;
-	float maxValue = 100.0f, minValue = 0.0f, currentValue = 0.0f, factor = 0.0f;
+	float maxValue = 100.0f, minValue = 0.0f,  factor = 0.0f;
 	float barScaleY = 0.8F;
 
 	float offsetX = 0.0f;
