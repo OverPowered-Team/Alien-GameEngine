@@ -303,9 +303,12 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
 				if (ImGui::Button("Delete", { 60,20 })) {
 					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+					texture->DecreaseReferences();
 					texture = nullptr;
 					particleSystem->texture = texture;
 					selected_texture = nullptr;	
+
+					
 				}
 
 				ImGui::PopStyleColor();
@@ -510,11 +513,27 @@ void ComponentParticleSystem::TextureBrowser()
 			particleSystem->texture = texture;
 			selected_texture = nullptr;
 			change_texture_menu = false;
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+
+					if (*item != texture)
+						(*item)->DecreaseReferences();
+				}
+			}
 		}
 		ImGui::SameLine(237);
 		if (ImGui::Button("Cancel", { 120,20 })) {
 			selected_texture = nullptr;
 			change_texture_menu = false;
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+						(*item)->DecreaseReferences();
+				}
+			}
 		}
 		ImGui::EndPopup();
 	}
