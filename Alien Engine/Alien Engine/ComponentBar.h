@@ -13,6 +13,10 @@ public:
 
 	bool DrawInspector();
 
+	void Draw(bool isGame) override;
+	void Update() override;
+	void DrawTexture(bool isGame, ResourceTexture* tex);
+
 	void Reset() {};
 	void SetComponent(Component* component) {};
 	void Clone(Component* clone) {};
@@ -20,10 +24,15 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-private:
-	GameObject* bar = nullptr;
+	void GetValue();
 
-	float maxValue = 100.0f, value = 0.0f;
+private:
+	ResourceTexture* barTexture = nullptr;
+	float maxValue = 100.0f, minValue = 0.0f, currentValue = 0.0f, factor = 0.0f;
+	float barScaleY = 1.0F;
+
+	float barX = 0.0F;
+	float barY = 0.0F;
 };
 
 #endif // !_COMPONENT_BAR_H_
