@@ -13,7 +13,7 @@ ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 	Reset();
 	// Get GameObject Components ----------------------------
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
-
+	
 }
 
 void ComponentCollider::SaveComponent(JSONArraypack* to_save)
@@ -25,13 +25,17 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 {
 	center = to_load->GetFloat3("Center");
+	CreateShape();
 }
 
 void ComponentCollider::Update()
 {
-	// Match Size Scalling ----------------------------------
-	float3 world_center = GetWorldCenter();
 
+}
+
+void ComponentCollider::DrawScene()
+{
+	DrawCollider();
 }
 
 void ComponentCollider::DrawCollider()
@@ -52,14 +56,12 @@ bool ComponentCollider::DrawInspector()
 {
 	static bool check;
 
-	ImGui::PushID(this);
 	check = enabled;
 	if (ImGui::Checkbox("##CmpActive", &check)) {
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 		enabled = check;
 	}
 
-	ImGui::PopID();
 	ImGui::SameLine();
 
 	return true;

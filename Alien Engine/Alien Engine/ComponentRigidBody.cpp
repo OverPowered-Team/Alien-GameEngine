@@ -10,6 +10,14 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 	type = ComponentType::RIGID_BODY;
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
 	mass = 1.f;
+
+	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	{
+		force_to_apply[i] = float3::zero();
+		torque_to_apply[i] = float3::zero();
+	}
+
+
 	// Create compund shape --------------------------
 
 	compound_shape = new btCompoundShape(true, 4);
@@ -39,77 +47,60 @@ ComponentRigidBody::~ComponentRigidBody()
 
 void ComponentRigidBody::Update()
 {
-	// Update Local Vars  ------------------------
-
-	float3 go_offset =/* (compound_shape != nullptr) ? compound_shape.tra() :*/ float3::zero();
-	//float current_mass = (game_object_attached->is_static) ? 0.f : mass;						// Update Mass
-
-	 // Update Inertia ---------------------------
-
-
-	body->activate(true);
 	// Update Rigid Body Vars ---------------------
 
 	// Set Go Transform ---------------------------
 
-	//SetBodyTranform(transform->GetGlobalPosition() + go_offset, transform->GetGlobalRotation());
+	if (Time::GetGameState() != Time::GameState::NONE)
+	{
+		btTransform bt_transform = body->getCenterOfMassTransform();
+		btQuaternion rotation = bt_transform.getRotation();
+		btVector3 position = bt_transform.getOrigin();
 
-	//if (Time::GetGameState() == Time::GameState::PAUSE)
-	//{
-	//	SetBodyTranform(transform->GetGlobalPosition() + go_offset, transform->GetGlobalRotation());
-	//}
-	//else
-	//{
-		//btTransform bt_transform = body->getCenterOfMassTransform();
-		//btQuaternion rotation = bt_transform.getRotation();
-		//btVector3 position = bt_transform.getOrigin() - ToBtVector3(go_offset);
-
-		//body->activate(true);
-		//transform->SetGlobalPosition(float3(position));
-		//transform->SetGlobalRotation(math::Quat((btScalar*)rotation));
-
+		body->activate(true);
+		transform->SetGlobalPosition(float3(position));
+		transform->SetGlobalRotation(math::Quat(rotation));
+	}
+	else
+	{
+		SetBodyTranform(transform->GetGlobalPosition(), transform->GetGlobalRotation());
+	}
 	//	// Apply Forces ----------------------
 
-	//	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
-	//	{
-	//		if (!force_to_apply[i].Equals(float3::zero()))
-	//		{
-	//			switch ((ForceMode)i)
-	//			{
-	//			case ForceMode::FORCE:
-	//				body->applyCentralForce(ToBtVector3(force_to_apply[i]));
-	//				break;
-	//			case ForceMode::IMPULSE:
-	//				body->applyCentralImpulse(ToBtVector3(force_to_apply[i]));
-	//				break;
-	//			}
-	//			force_to_apply[i] = float3::zero();
-	//		}
-	//	}
+	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	{
+		if (!force_to_apply[i].Equals(float3::zero()))
+		{
+			switch ((ForceMode)i)
+			{
+			case ForceMode::FORCE:
+				body->applyCentralForce(ToBtVector3(force_to_apply[i]));
+				break;
+			case ForceMode::IMPULSE:
+				body->applyCentralImpulse(ToBtVector3(force_to_apply[i]));
+				break;
+			}
+			force_to_apply[i] = float3::zero();
+		}
+	}
 
-	//	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
-	//	{
-	//		if (!torque_to_apply[i].Equals(float3::zero()))
-	//		{
-	//			switch ((ForceMode)i)
-	//			{
-	//			case ForceMode::FORCE:
-	//				body->applyTorque(ToBtVector3(torque_to_apply[i]));
-	//				break;
-	//			case ForceMode::IMPULSE:
-	//				body->applyTorqueImpulse(ToBtVector3(torque_to_apply[i]));
-	//				break;
-	//			}
+	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
+	{
+		if (!torque_to_apply[i].Equals(float3::zero()))
+		{
+			switch ((ForceMode)i)
+			{
+			case ForceMode::FORCE:
+				body->applyTorque(ToBtVector3(torque_to_apply[i]));
+				break;
+			case ForceMode::IMPULSE:
+				body->applyTorqueImpulse(ToBtVector3(torque_to_apply[i]));
+				break;
+			}
 
-	//			torque_to_apply[i] = float3::zero();
-	//		}
-	//	}
-	//}
-}
-
-void ComponentRigidBody::Draw()
-{
-
+			torque_to_apply[i] = float3::zero();
+		}
+	}
 }
 
 bool ComponentRigidBody::DrawInspector()
@@ -195,7 +186,6 @@ void ComponentRigidBody::Reset()
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
 	SetAngularFriction(0.1f);
-
 }
 
 void ComponentRigidBody::Clone(Component* clone)
@@ -394,7 +384,7 @@ void ComponentRigidBody::AddCollider(ComponentCollider* collider)
 {
 	if (collider->is_added == false)
 	{
-		collider->shape->setUserIndex(colliders_index++); 
+		collider->shape->setUserIndex(colliders_index++);
 		compound_shape->addChildShape(ToBtTransform(collider->scaled_center, collider->rotation), collider->shape);
 		compound_shape->calculateLocalInertia(mass, inertia);
 		body->setMassProps(mass, inertia); // Update Innertia

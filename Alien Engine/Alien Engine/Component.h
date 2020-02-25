@@ -11,8 +11,8 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
-	RIGID_BODY,
 	BOX_COLLIDER,
+	RIGID_BODY,
 	SCRIPT,
 	UNKNOWN
 };
@@ -53,6 +53,8 @@ protected:
 	virtual void PreUpdate() {}
 	virtual void Update() {}
 	virtual void PostUpdate() {}
+	virtual void DrawScene() {}
+	virtual void DrawGame() {}
 
 	void ResetIDs();
 

@@ -472,8 +472,6 @@ void GameObject::DrawScene()
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	ComponentCollider* collider = (ComponentCollider*)GetComponent(ComponentType::BOX_COLLIDER);
-	ComponentRigidBody * rigid_body = (ComponentRigidBody*)GetComponent(ComponentType::RIGID_BODY);
 
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -500,14 +498,13 @@ void GameObject::DrawScene()
 			mesh->DrawOBB();
 	}
 
-	if (collider != nullptr)
-	{
-		collider->DrawCollider();
-	}
 
-	if (rigid_body != nullptr)
+	for (Component* component : components)
 	{
-		rigid_body->Draw();
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawCollider();
+		}
 	}
 }
 

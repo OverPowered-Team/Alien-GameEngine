@@ -94,9 +94,9 @@ void ComponentTransform::SetGlobalPosition(const float3& pos)
 	RecalculateTransform();
 }
 
-void ComponentTransform::SetGlobalRotation(const Quat& rotation)
+void ComponentTransform::SetGlobalRotation(Quat rotation)
 {
-	global_transformation.SetRotatePart(rotation);
+	global_transformation = float4x4::FromTRS(global_transformation.TranslatePart(), rotation, global_transformation.GetScale());
 	GameObject* parent = game_object_attached->parent;
 
 

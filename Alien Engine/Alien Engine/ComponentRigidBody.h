@@ -58,7 +58,6 @@ public:
 private:
 
 	void Update();
-	void Draw();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);

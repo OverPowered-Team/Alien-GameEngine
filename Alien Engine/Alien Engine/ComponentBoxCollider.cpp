@@ -36,8 +36,11 @@ void ComponentBoxCollider::CreateShape()
 		delete shape;
 	}
 
-	float3 scaled_size = size.Mul(transform->GetGlobalScale().Abs());
+	float3 current_scale = transform->GetGlobalScale().Abs();
+	float3 scaled_size = size.Mul(current_scale);
 	scaled_size = CheckInvalidCollider(scaled_size);
+	scaled_center = center.Mul(current_scale);
+
 	float3 final_size = scaled_size * 0.5f;
 	shape = new btBoxShape(ToBtVector3(final_size));
 	shape->setUserPointer(this);
@@ -65,13 +68,13 @@ void ComponentBoxCollider::Reset()
 void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
 {
 	ComponentCollider::SaveComponent(to_save);
-	to_save->SetFloat3("size", size);
+	to_save->SetFloat3("Size", size);
 }
 
 void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	size = to_load->GetFloat3("size");
+	size = to_load->GetFloat3("Size");
 }
 
 float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
@@ -85,7 +88,9 @@ bool ComponentBoxCollider::DrawInspector()
 	float3 last_center = center;
 	float3 last_size = size;
 
+	ImGui::PushID(this);
 	ComponentCollider::DrawInspector();
+
 
 	if (ImGui::CollapsingHeader("Box Collider", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -98,10 +103,9 @@ bool ComponentBoxCollider::DrawInspector()
 	if (!last_scale.Equals( transform->GetGlobalScale()) || !last_size.Equals(size) || !last_center.Equals(center))
 	{
 		last_scale = transform->GetGlobalScale();
-		scaled_center = center.Mul(last_scale);
 		CreateShape();
 	}
-
+	ImGui::PopID();
 
 	return true;
 }

@@ -29,10 +29,13 @@ public:
 protected:
 
 	float3 GetWorldCenter();
+	void DrawScene();
 
 	// Virtual Functions ------------------------------
 
 	virtual void Update();
+
+
 	virtual void DrawCollider();
 	virtual bool DrawInspector();
 

@@ -36,6 +36,7 @@ public:
 	void SetLocalRotation(const Quat& new_local_rotation);
 	void SetLocalRotation(const float& x, const float& y, const float& z, const float& angle);
 	
+	void SetGlobalRotation(Quat rotation);
 	const Quat GetLocalRotation() const;
 	const Quat GetGlobalRotation() const;
 
@@ -62,7 +63,6 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void SetGlobalTransformation(const float4x4& global_transformation);
-	void SetGlobalRotation(const Quat& rotation);
 
 	void AddPosition(const float3 pos);
 	void AddScale(const float3 scale);

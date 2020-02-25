@@ -74,6 +74,7 @@ update_status ModulePhysics::PreUpdate(float dt)
 	}
 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
+	//world->getDispatcher().
 
 	//for (int i = 0; i < numManifolds; i++)
 	//{

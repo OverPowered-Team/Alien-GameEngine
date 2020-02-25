@@ -56,6 +56,25 @@
             "Save": true,
             "Text Editor": false,
             "Build": false
+        },
+        {
+            "Active": false,
+            "Name": "alejandro",
+            "Path": "Configuration\/Layouts\/alejandro.ini",
+            "About Alien Engine": false,
+            "Configuration": false,
+            "Console": true,
+            "Panel Project": true,
+            "Render Options": false,
+            "Panel Hierarchy": true,
+            "Create Object": false,
+            "Inspector": true,
+            "Game": false,
+            "Scene": true,
+            "Layout Editor": false,
+            "Save": true,
+            "Text Editor": false,
+            "Build": false
         }
     ]
 }
