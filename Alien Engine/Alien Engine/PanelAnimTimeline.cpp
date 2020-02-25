@@ -65,41 +65,83 @@ void PanelAnimTimeline::PanelLogic()
 	ImGui::Begin("Animation Timeline", &enabled, aboutFlags);
 
 	if (changed)
-		FillInfo();
-	if (!changed)
 	{
-		current_animation = animations[0];
-		channel = &current_animation->channels[0];
+		FillInfo();
+		ImGui::Text("ANIMATION NOT SELECTED");
+		setted = false;
+		
+	}
+	else
+	{
+		if (!setted)
+		{
+			current_animation = animations[0];
+			channel = &current_animation->channels[0];
+			setted = true;
+		}
+		
 		current_num_frames = current_animation->end_tick - current_animation->start_tick;
 
-		// Buttons Play
-		
-		if (ImGui::Button("Play"))
+		if (Time::IsPlaying() && !play)
 		{
 			play = true;
 			aux_time = Time::GetTimeSinceStart();
 			pause = false;
+			stop_in_game = true;
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
+		else if (Time::IsPlaying() && pause)
 		{
-			pause = !pause;
-			mouse_mov.x = progress;
-			button_position = progress;
-			if(pause)
-				aux_time = animation_time;
-			else
-				aux_time = Time::GetTimeSinceStart() + animation_time;
+			aux_time = Time::GetTimeSinceStart() - animation_time;
+			pause = false;
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Stop") && play)
+		else if (Time::IsPaused())
+		{
+			pause = true;
+			aux_time = animation_time;
+		}
+		else if (!Time::IsInGameState() && stop_in_game)
 		{
 			play = false;
 			animation_time = 0.0f;
 			pause = false;
+			stop = true;
+			stop_in_game = false;
 		}
+		else
+		{
+			// Buttons Play
+			if (ImGui::Button("Play"))
+			{
+				if (!pause)
+				{
+					aux_time = Time::GetTimeSinceStart();
+				}
+				else
+				{
+					aux_time = Time::GetTimeSinceStart() - animation_time;
+				}
+				play = true;
+				pause = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Pause"))
+			{
+				pause = !pause;
+				if (!pause)
+					aux_time = Time::GetTimeSinceStart() - animation_time;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Stop") && play)
+			{
+				play = false;
+				animation_time = 0.0f;
+				pause = false;
+				stop = true;
+			}
 
-		ImGui::SameLine();
+			ImGui::SameLine();
+		}
+		
 
 		//Animation bar Progress
 		ImGui::SetCursorPosX(165);
@@ -203,11 +245,15 @@ void PanelAnimTimeline::PanelLogic()
 		{
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x,redbar.y - 10 }, ImVec2(redbar.x, redbar.y + 135), IM_COL32(255, 0, 0, 100), 1.0f);
 			progress = 0.0f;
+			
+			if (stop)
+			{
+				ImGui::SetScrollX(0);
+				stop = false;
+			}
 		}
 		else
 		{
-			
-			float aux_progression_bar = progress;
 
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
@@ -222,16 +268,14 @@ void PanelAnimTimeline::PanelLogic()
 				ImGui::SetScrollX(progress);
 
 			}
-			else if (progress == 0)
-			{
-				ImGui::SetScrollX(0);
-			}
 
-			if (aux_progression_bar > progress)
+			if (animation_time > current_animation->GetDuration())
 			{
 				progress = 0.0f;
 				ImGui::SetScrollX(0);
+				aux_time = Time::GetTimeSinceStart();
 			}
+			
 		}
 
 		ImGui::EndChild();

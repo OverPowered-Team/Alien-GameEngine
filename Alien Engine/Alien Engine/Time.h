@@ -16,6 +16,7 @@ private:
 	friend class ResourcePrefab;
 	friend class ResourceAnimatorController;
 	friend class ComponentAnimator;
+	friend class PanelAnimTimeline;
 
 	enum class GameState {
 		NONE,
@@ -31,6 +32,7 @@ private:
 	static void Pause();
 	static void PlayOnce();
 	static bool IsPlaying();
+	static bool IsPaused();
 	static bool IsInGameState();
 	static void Stop();
 
