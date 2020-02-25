@@ -9,6 +9,7 @@
 #include "ResourceFont.h"
 #include "PanelGame.h"
 #include "PanelScene.h"
+#include "mmgr/mmgr.h"
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {

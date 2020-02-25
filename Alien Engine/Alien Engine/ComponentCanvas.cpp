@@ -4,6 +4,7 @@
 #include "glew/include/glew.h"
 #include "imgui/imgui.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 
 ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)

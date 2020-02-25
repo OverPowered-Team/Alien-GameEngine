@@ -12,6 +12,7 @@
 #include "Application.h"
 #include "PanelProject.h"
 #include "ComponentTransform.h"
+#include "mmgr/mmgr.h"
 
 ComponentCheckbox::ComponentCheckbox(GameObject* obj) : ComponentUI(obj)
 {

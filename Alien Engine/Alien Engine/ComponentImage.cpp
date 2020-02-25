@@ -5,6 +5,7 @@
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
+#include "mmgr/mmgr.h"
 
 ComponentImage::ComponentImage(GameObject* obj) : ComponentUI(obj)
 {

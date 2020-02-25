@@ -9,6 +9,7 @@
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
 #include "imgui/imgui.h"
+#include "mmgr/mmgr.h"
 
 ComponentBar::ComponentBar(GameObject* obj):ComponentUI(obj)
 {

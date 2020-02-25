@@ -175,6 +175,35 @@ public:
 	Color color = Color::White();
 };
 
+class CompBarZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceBarID = 0;
+	Color color = Color::White();
+};
+
+class CompCheckboxZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceCrossID = 0;
+	u64 resourceTickID = 0;
+	Color color = Color::White();
+};
+
+class CompButtonZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	Color color = Color::White();
+};
+
+class CompSliderZ : public CompZ {
+public:
+	u64 resourceID = 0;
+	u64 resourceSliderID = 0;
+	Color color = Color::White();
+};
+
+
 class CompCameraZ : public CompZ {
 public:
 	float vertical_fov = 0.f;

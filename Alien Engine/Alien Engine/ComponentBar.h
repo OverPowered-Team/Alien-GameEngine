@@ -7,6 +7,8 @@ class ResourceTexture;
 
 class __declspec(dllexport) ComponentBar :public ComponentUI
 {
+	friend class ReturnZ;
+	friend class CompZ;
 public:
 	ComponentBar(GameObject* obj);
 	~ComponentBar() {};

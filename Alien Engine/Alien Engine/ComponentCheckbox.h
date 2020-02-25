@@ -10,6 +10,8 @@ class ComponentCanvas;
 
 class __declspec(dllexport) ComponentCheckbox :public ComponentUI
 {
+	friend class ReturnZ;
+	friend class CompZ;
 public:
 
 	ComponentCheckbox(GameObject* obj);

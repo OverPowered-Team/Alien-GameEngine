@@ -9,6 +9,8 @@ class ResourceTexture;
 
 class __declspec(dllexport) ComponentSlider : public ComponentUI
 {
+	friend class ReturnZ;
+	friend class CompZ;
 public:
 	ComponentSlider(GameObject* obj);
 	~ComponentSlider() {};
