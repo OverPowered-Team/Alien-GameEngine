@@ -448,7 +448,7 @@ void PanelInspector::ButtonAddComponent()
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-					
+
 				}
 
 				else
@@ -499,12 +499,15 @@ void PanelInspector::ButtonAddComponent()
 			}
 
 
-			if (comp != nullptr) {
-				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
+										 if (comp != nullptr) {
+											 ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
+										 }
+										 component = 0;
 			}
-			component = 0;
 		}
 	}
+
+	
 }
 
 ComponentCanvas* PanelInspector::GetCanvas()
