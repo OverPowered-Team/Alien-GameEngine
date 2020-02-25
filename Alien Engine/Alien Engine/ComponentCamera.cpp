@@ -14,6 +14,7 @@
 #include "ReturnZ.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentMesh.h"
+#include "mmgr/mmgr.h"
 
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {

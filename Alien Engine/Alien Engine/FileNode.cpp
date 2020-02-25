@@ -8,6 +8,8 @@
 #include <experimental/filesystem>
 #include <fstream>
 #include "Prefab.h"
+#include "mmgr/mmgr.h"
+
 FileNode::FileNode()
 {
 }

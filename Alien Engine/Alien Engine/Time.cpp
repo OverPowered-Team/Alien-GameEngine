@@ -16,6 +16,7 @@ float Time::scale_time = 1.0F;
 Timer* Time::start_timer = new Timer();
 Timer* Time::game_timer = new Timer();
 
+#include "mmgr/mmgr.h"
 
 void Time::Start()
 {

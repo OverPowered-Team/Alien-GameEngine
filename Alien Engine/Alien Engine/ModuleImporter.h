@@ -28,6 +28,8 @@
 class ResourceModel;
 class ResourceMesh;
 class ResourceTexture;
+class ResourceMaterial;
+enum class TextureType;
 
 class ModuleImporter : public Module
 {
@@ -40,7 +42,7 @@ public:
 	bool CleanUp();
 
 	// models
-	bool LoadModelFile(const char* path); // when dropped
+	bool LoadModelFile(const char* path, const char* extern_path); // when dropped
 	void LoadParShapesMesh(par_shapes_mesh* p_mesh, ResourceMesh* mesh);
 	ResourceMesh* LoadEngineModels(const char* path);
 	bool ReImportModel(ResourceModel* model); // when dropped
@@ -56,13 +58,14 @@ public:
 private:
 	
 	// models
-	void InitScene(const char* path, const aiScene* scene);
+	void InitScene(const char* path, const aiScene* scene, const char* extern_path);
 
-	// mesh
-	void LoadSceneNode(const aiNode* node, const aiScene* scene, ResourceMesh* parent, uint family_number);
-	ResourceMesh* LoadNodeMesh(const aiScene * scene, const aiNode* node, const aiMesh* mesh, ResourceMesh* parent);
 	void LoadAnimation(const aiAnimation* animation);
 	void LoadBone(const aiBone* bone);
+	void LoadMesh(const aiMesh* mesh);
+	void LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum);
+	void LoadMaterials(const aiMaterial* material, const char* extern_path);
+	void LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path);
 
 private:
 	ResourceModel* model = nullptr;

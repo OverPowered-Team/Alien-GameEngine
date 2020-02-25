@@ -307,6 +307,7 @@
     <ClInclude Include="ResourceAnimation.h" />
     <ClInclude Include="ResourceAnimatorController.h" />
     <ClInclude Include="ResourceBone.h" />
+    <ClInclude Include="ResourceMaterial.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourceModel.h" />
     <ClInclude Include="ResourcePrefab.h" />
@@ -431,6 +432,7 @@
     <ClCompile Include="ResourceAnimation.cpp" />
     <ClCompile Include="ResourceAnimatorController.cpp" />
     <ClCompile Include="ResourceBone.cpp" />
+    <ClCompile Include="ResourceMaterial.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceModel.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />

@@ -1,6 +1,6 @@
 #include "JSONfilepack.h"
 #include "Color.h"
-
+#include "mmgr/mmgr.h"
 
 JSONfilepack::JSONfilepack(const std::string& path, JSON_Object*& object, JSON_Value*& value)
 	: path(path), object(object), value(value)

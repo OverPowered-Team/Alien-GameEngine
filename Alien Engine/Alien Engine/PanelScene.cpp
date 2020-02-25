@@ -122,7 +122,7 @@ void PanelScene::PanelLogic()
 
 				if (!App->resources->CreateNewModelInstanceOf(meta_path.data())) { // if it goes here it is because this file wasn't imported yet, so import it now
 
-					App->importer->LoadModelFile(std::string(node->path + node->name).data());
+					App->importer->LoadModelFile(std::string(node->path + node->name).data(), nullptr);
 					ID = App->resources->GetIDFromAlienPath(path.data());
 					meta_path = LIBRARY_MODELS_FOLDER + std::to_string(ID) + ".alienModel";
 					App->resources->CreateNewModelInstanceOf(meta_path.data());

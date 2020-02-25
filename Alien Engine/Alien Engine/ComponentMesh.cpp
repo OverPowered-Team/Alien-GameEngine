@@ -8,6 +8,7 @@
 #include "Color.h"
 #include "ResourceMesh.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {

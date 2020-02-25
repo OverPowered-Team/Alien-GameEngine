@@ -17,11 +17,25 @@
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
 	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
+
+	if (parent != nullptr) {
+		this->parent = parent;
+		parent->AddChild(this);
+	}
+
+}
+
+GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale)
+{
+	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, pos, rot, scale);
 	AddComponent(transform);
 
 	if (parent != nullptr) {

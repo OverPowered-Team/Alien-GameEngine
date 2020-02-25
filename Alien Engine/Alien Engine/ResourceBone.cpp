@@ -2,7 +2,7 @@
 #include "ModuleImporter.h"
 
 #include "ResourceBone.h"
-
+#include "mmgr/mmgr.h"
 
 
 ResourceBone::ResourceBone() : Resource()

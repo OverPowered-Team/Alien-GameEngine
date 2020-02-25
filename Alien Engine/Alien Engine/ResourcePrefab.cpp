@@ -4,6 +4,7 @@
 #include "ComponentLight.h"
 #include "ComponentTransform.h"
 #include "PanelHierarchy.h"
+#include "mmgr/mmgr.h"
 
 ResourcePrefab::ResourcePrefab() : Resource()
 {
