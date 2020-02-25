@@ -400,6 +400,8 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has this component!");
 
+				break; }
+
 			case ComponentType::CANVAS: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CANVAS))
 				{
@@ -507,8 +509,6 @@ void PanelInspector::ButtonAddComponent()
 		}
 	}
 
-	
-}
 
 ComponentCanvas* PanelInspector::GetCanvas()
 {
