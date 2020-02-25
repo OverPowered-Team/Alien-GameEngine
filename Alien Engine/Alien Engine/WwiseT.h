@@ -1,6 +1,8 @@
 #ifndef WWISET_H_
 #define WWISET_H_
 
+#include <string>
+
 #include "Globals.h"
 
 #include "AK/SoundEngine/Common/AkTypes.h"
@@ -51,7 +53,7 @@ namespace WwiseT
 
 	private:
 		unsigned int id;
-		const char* name = nullptr; // Event name
+		std::string name; // Event name
 		AkSoundPosition source_pos;
 		AkListenerPosition listener_pos;
 	};

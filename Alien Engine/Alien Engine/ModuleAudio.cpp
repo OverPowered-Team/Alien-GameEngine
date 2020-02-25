@@ -13,12 +13,8 @@ ModuleAudio::~ModuleAudio()
 
 bool ModuleAudio::Start()
 {
-	bool ret = true;
-
 	// Init wwise and audio banks
-	ret = WwiseT::InitSoundEngine();
-	
-	return ret;
+	return WwiseT::InitSoundEngine();
 }
 
 void ModuleAudio::LoadBanksInfo()
@@ -56,7 +52,7 @@ update_status ModuleAudio::Update(float dt)
 	else if (Time::state == Time::GameState::PLAY) {
 		if (!play_mode) {
 			LoadUsedBanks();
-			//WwiseT::LoadBank("Main.bnk");
+
 			play_mode = true;
 		}
 	}
@@ -84,8 +80,6 @@ bool ModuleAudio::CleanUp()
 		delete* b;
 	banks.clear();
 
-	/*for (auto u_b = used_banks.begin(); u_b != used_banks.end(); ++u_b)
-		delete* u_b;*/
 	used_banks.clear();
 
 	return WwiseT::CloseSoundEngine();
@@ -126,8 +120,6 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 			(*it)->loaded = false;
 		}
 	}
-	//used_banks.clear();
-
 }
 
 void ModuleAudio::AddBank(Bank* bk)
@@ -164,10 +156,6 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 			return *i;
 	}
 	return nullptr;
-}
-
-void ModuleAudio::Play(const char* event)
-{
 }
 
 void ModuleAudio::Play()

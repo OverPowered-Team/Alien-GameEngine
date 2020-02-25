@@ -32,6 +32,8 @@
 #include <assert.h>
 #include <vector>
 
+#include "mmgr/mmgr.h"
+
 
 CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
 
@@ -272,9 +274,8 @@ void WwiseT::ResumeAll()
 WwiseT::AudioSource::AudioSource(const char* event_name)
 {
 	id = 0;// App->GenerateRandomNumber();
-	name = new char[128];
-	name = event_name;
-	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name);
+	name.assign(event_name);
+	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name.c_str());
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not register GameObject. See eResult variable to more info");
@@ -285,9 +286,8 @@ WwiseT::AudioSource::AudioSource(const char* event_name)
 WwiseT::AudioSource::AudioSource(uint pre_id, const char * event_name)
 {
 	id = pre_id;
-	name = new char[128];
-	name = event_name;
-	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name);
+	name.assign(event_name);
+	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name.c_str());
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not register GameObject. See eResult variable to more info");
@@ -298,7 +298,6 @@ WwiseT::AudioSource::AudioSource(uint pre_id, const char * event_name)
 WwiseT::AudioSource::~AudioSource()
 {
 	AKRESULT eResult = AK::SoundEngine::UnregisterGameObj(id);
-	//RELEASE_ARRAY(name);
 	if (eResult != AK_Success)
 	{
 		assert(!"Could not unregister GameObject. See eResult variable to more info");
@@ -386,7 +385,7 @@ uint WwiseT::AudioSource::GetID()const
 
 const char * WwiseT::AudioSource::GetName() const
 {
-	return name;
+	return name.c_str();
 }
 
 void WwiseT::AudioSource::SetSourcePos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z)

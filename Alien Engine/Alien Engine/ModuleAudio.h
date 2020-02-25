@@ -32,7 +32,6 @@ public:
 	void UnloadAllUsedBanksFromWwise();
 	void AddBank(Bank* bk);
 	// Utils
-	void Play(const char* event);
 	void Play();
 	void Stop();
 	void Pause() const;
