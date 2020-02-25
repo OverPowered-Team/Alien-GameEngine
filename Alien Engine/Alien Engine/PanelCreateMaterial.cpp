@@ -107,7 +107,7 @@ void PanelCreateMaterial::SetUniforms()
 
 	ImGui::ColorEdit3("Select Color", (float*)&create_color, ImGuiColorEditFlags_Float);
 
-	if (ImGui::Button("Create"))
+	if (ImGui::Button("Create Uniform"))
 	{
 		UniformData* new_u = new UniformData();
 		new_u->create_color = create_color;
