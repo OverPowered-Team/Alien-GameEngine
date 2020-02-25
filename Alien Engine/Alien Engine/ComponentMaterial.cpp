@@ -308,7 +308,9 @@ bool ComponentMaterial::DrawInspector()
 			// Can select desired shader in the shaders folder
 			if (select_shader)
 			{
-				if (ImGui::Begin("Select Shader", &select_shader))
+				ImGui::OpenPopup("Select Shader");
+				ImGui::SetNextWindowSize(ImVec2(600.0f, 800.0f));
+				if (ImGui::BeginPopupModal("Select Shader"))
 				{
 					if (ImGui::Button("Close"))
 					{
@@ -335,7 +337,7 @@ bool ComponentMaterial::DrawInspector()
 						}
 					}
 
-					ImGui::End();
+					ImGui::EndPopup();
 				}
 			}
 
