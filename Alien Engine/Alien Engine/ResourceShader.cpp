@@ -134,10 +134,12 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 	App->resources->AddResource(this);
 }
 
-void ResourceShader::ParseAndCreateShader()
+uint ResourceShader::ParseAndCreateShader()
 {
 	SHADER_PROGRAM_SOURCE source = ParseShader(path);
 	renderer_id = CreateShader(source.vertex_source, source.fragment_source);
+
+	return renderer_id;
 }
 
 void ResourceShader::Bind() const
@@ -207,6 +209,13 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	glAttachShader(program, fragment_s);
 
 	glLinkProgram(program);
+	int status;
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+	{
+		LOG_ENGINE("Shader was not linked successfully...");
+	}
+
 	glValidateProgram(program);
 
 	glDetachShader(program, vertex_s);
@@ -214,6 +223,9 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 
 	glDeleteShader(vertex_s);
 	glDeleteShader(fragment_s);
+
+	if (vertex_s == 0 || fragment_s == 0)
+		return 0u;
 
 	return program;
 }
@@ -258,7 +270,7 @@ uint ResourceShader::CompileShader(const uint& shader_type, const std::string& s
 
 		glDeleteShader(shader_id);
 
-		return 0;
+		return 0u;
 	}
 
 	return shader_id;

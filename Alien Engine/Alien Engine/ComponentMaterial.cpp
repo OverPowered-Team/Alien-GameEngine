@@ -227,10 +227,25 @@ bool ComponentMaterial::DrawInspector()
 				show_shader_text_editor = true;
 			}
 
+			static const char* text_compilation_shader = "";
+			static bool compiled_shader_success = false;
+
 			if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
 			{
-				used_shader->ParseAndCreateShader();
+				if (used_shader->ParseAndCreateShader() == 0)
+				{
+					compiled_shader_success = false;
+					text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
+				}
+				else
+				{
+					compiled_shader_success = true;
+					text_compilation_shader = "Shader compilation successful.";
+				}
 			}
+
+			compiled_shader_success ? ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), text_compilation_shader)
+				: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), text_compilation_shader);
 
 			ImGui::Separator();
 

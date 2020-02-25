@@ -43,7 +43,7 @@ public:
 	void ReadLibrary(const char* meta_data);
 
 public:
-	void ParseAndCreateShader();
+	uint ParseAndCreateShader();
 
 	void Bind() const;
 	void Unbind() const;
