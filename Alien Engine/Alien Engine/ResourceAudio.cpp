@@ -38,7 +38,7 @@ bool ResourceAudio::CreateMetaData(const u64& force_id)
 		delete file;
 	}
 
-	meta_data_path = LIBRARY_AUDIO_FOLDER + std::to_string(ID) + ".alienBank";
+	meta_data_path = LIBRARY_AUDIO_FOLDER + std::to_string(ID) + ".bnk";
 
 	App->file_system->Copy(path.c_str(), meta_data_path.c_str());
 
@@ -57,7 +57,7 @@ bool ResourceAudio::ReadBaseInfo(const char* assets_file_path)
 	ID = App->resources->GetIDFromAlienPath(meta_path.data());
 
 	if (ID != 0) {
-		meta_data_path = LIBRARY_AUDIO_FOLDER + std::to_string(ID) + ".alienBank";
+		meta_data_path = LIBRARY_AUDIO_FOLDER + std::to_string(ID) + ".bnk";
 
 		if (!App->file_system->Exists(meta_data_path.data())) {
 			App->file_system->Copy(assets_file_path, meta_data_path.data());

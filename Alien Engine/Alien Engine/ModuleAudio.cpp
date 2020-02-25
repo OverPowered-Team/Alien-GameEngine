@@ -17,9 +17,7 @@ bool ModuleAudio::Start()
 
 	// Init wwise and audio banks
 	ret = WwiseT::InitSoundEngine();
-	//WwiseT::LoadBank("Main.bnk");
-	//PrepareAllBanks();
-	LoadBanksInfo();
+	
 	return ret;
 }
 
@@ -98,7 +96,7 @@ void ModuleAudio::LoadUsedBanks()
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
 		if (!(*i)->loaded) {
-			WwiseT::LoadBank(((*i)->name + ".bnk").c_str());
+			WwiseT::LoadBank((std::to_string((*i)->id) + ".bnk").c_str());
 			(*i)->loaded = true;
 		}
 	}
@@ -110,7 +108,7 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
 		if ((*it)->loaded) {
-			WwiseT::UnLoadBank((*it)->name.c_str());
+			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
 			(*it)->loaded = false;
 		}
 	}
@@ -124,7 +122,7 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
 		if ((*it)->loaded) {
-			WwiseT::UnLoadBank((*it)->name.c_str());
+			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
 			(*it)->loaded = false;
 		}
 	}

@@ -139,7 +139,7 @@ bool WwiseT::InitSoundEngine()
 	}
 #endif // AK_OPTIMIZED
 
-	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("./Assets/AudioBanks/"));
+	AKRESULT base_path_res = g_lowLevelIO.SetBasePath(AKTEXT("./Library/Audio/"));
 	if (base_path_res != AK_Success)
 	{
 		assert(!"Invalid base path!");
@@ -148,7 +148,7 @@ bool WwiseT::InitSoundEngine()
 	}
 
 	// Load the init soundbank
-	LoadBank("Init.bnk");
+	LoadBank("../../DLLs/Init.bnk");
 
 	AKRESULT res = AK::StreamMgr::SetCurrentLanguage((AkOSChar*)"English");
 	if (res == AK_Fail)

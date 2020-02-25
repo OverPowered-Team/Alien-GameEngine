@@ -26,10 +26,10 @@ Application::Application()
 	// Main Modules
 	AddModule(window);
 	AddModule(input);
-	AddModule(audio);
 	AddModule(file_system);
 	AddModule(resources);
 	AddModule(importer);
+	AddModule(audio);
 	// Scenes
 	AddModule(objects);
 #ifndef GAME_VERSION

@@ -565,6 +565,7 @@ void ModuleResources::ReadAllMetaData()
 	// Init Audio
 	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
 
+	App->audio->LoadBanksInfo();
 	ReadAudio(directories, files, AUDIO_FOLDER);
 
 	files.clear();
@@ -705,16 +706,18 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 
 void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
 {
+	auto banks = App->audio->GetBanks();
 	for (uint i = 0; i < files.size(); ++i) {
 		if (files[i].find("_meta.alien") == std::string::npos) {
 			if (files[i].find(".bnk") != std::string::npos) {
 				ResourceAudio* audio = new ResourceAudio();
 				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
-					audio->CreateMetaData(0ull);
+					for (auto b = banks.begin(); b != banks.end(); ++b) {
+						if (files[i].compare((*b)->name + ".bnk") == 0) {
+							audio->CreateMetaData((*b)->id);
+						}
+					}
 				}
-			}
-			else if (files[i].find(".json") != std::string::npos) {
-				// TODO: Improve audio system to not depend on SounBanksInfo.json
 			}
 		}
 	}
