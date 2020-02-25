@@ -36,8 +36,10 @@ private:
 public:
 	Color color{ 1,1,1,1 };
 	bool texture_activated = true;
-private:
+public:
 	ResourceTexture* texture = nullptr;
+
+private:
 	bool change_texture_menu = false;
 
 // Shaders

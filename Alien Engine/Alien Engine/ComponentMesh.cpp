@@ -10,6 +10,7 @@
 #include "ResourceMesh.h"
 #include "ReturnZ.h"
 #include "ModuleCamera3D.h"
+#include "ResourceTexture.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
@@ -81,6 +82,10 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
+
+	// Not sure if we need to set this uniform every time, as the texture does not change TODO. most likely not
+	if(material->texture != nullptr)
+		material->used_shader->SetUniform1i("tex", (int)material->texture->id);
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
