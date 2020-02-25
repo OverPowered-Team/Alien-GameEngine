@@ -130,6 +130,11 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 
 }
 
+void ModuleAudio::AddBank(Bank* bk)
+{
+	banks.push_back(bk);
+}
+
 WwiseT::AudioSource * ModuleAudio::CreateSoundEmitter(const char * name)
 {
 	return WwiseT::CreateAudSource(name);

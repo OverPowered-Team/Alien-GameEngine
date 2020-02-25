@@ -30,6 +30,7 @@ public:
 	bool CleanUp();
 	bool UnloadAllBanksFromWwise();
 	void UnloadAllUsedBanksFromWwise();
+	void AddBank(Bank* bk);
 	// Utils
 	void Play(const char* event);
 	void Play();

@@ -608,6 +608,15 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// audio
+	App->file_system->DiscoverFiles(LIBRARY_AUDIO_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAudio* audio = new ResourceAudio();
+		audio->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
 	// scripts
 	App->file_system->DiscoverFiles(LIBRARY_SCRIPTS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

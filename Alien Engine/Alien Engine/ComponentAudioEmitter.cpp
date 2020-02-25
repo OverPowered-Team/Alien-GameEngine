@@ -96,8 +96,8 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	current_bank = std::stoull(to_load->GetString("Bank"));
 	current_event = std::stoull(to_load->GetString("Event"));
 
-	if(enabled)
-		audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
+	/*if(enabled)
+		audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);*/
 
 	auto bank = App->audio->GetBankByID(current_bank);
 	if (!AlreadyUsedBank(bank))

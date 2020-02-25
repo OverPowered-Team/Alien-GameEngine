@@ -78,3 +78,17 @@ bool ResourceAudio::ReadBaseInfo(const char* assets_file_path)
 	}
 	return false;
 }
+
+void ResourceAudio::ReadLibrary(const char* meta_data)
+{
+	meta_data_path = meta_data;
+	ID = std::stoul(App->file_system->GetBaseFileName(meta_data_path.data()));
+
+	Bank* bk = new Bank();
+	bk->id = (u32)ID;
+	bk->name.assign(std::to_string(bk->id));
+	
+	App->audio->AddBank(bk);
+
+	App->resources->AddResource(this);
+}
