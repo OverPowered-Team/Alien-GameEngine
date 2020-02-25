@@ -83,8 +83,6 @@ public:
 	ResourceAnimatorController();
 	~ResourceAnimatorController();
 
-	std::string name = "New Animator Controller";
-
 	//Parameters things
 
 	//Getters / Setters

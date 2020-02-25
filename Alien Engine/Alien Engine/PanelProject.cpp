@@ -205,10 +205,15 @@ void PanelProject::SeeFiles()
 			ImGui::PopStyleColor();
 
 			// set the file clicked
-			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
+			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1)) ||
+				(ImGui::IsMouseReleased(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))) 
+			{
 				current_active_file = current_active_folder->children[i];
-				App->objects->DeselectObjects();
-				OnFileSelection();
+				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
+				{
+					App->objects->DeselectObjects();
+					OnFileSelection(); //TOdo: do this with an event system
+				}		
 			}
 
 			// double click script

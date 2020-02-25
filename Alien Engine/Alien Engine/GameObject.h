@@ -22,6 +22,8 @@ class __declspec(dllexport) GameObject
 	friend class ComponentTransform;
 	friend class ComponentMesh;
 	friend class ComponentDeformableMesh;
+	friend class ComponentBone;
+	friend class ComponentAnimator;
 	friend class ComponentMaterial;
 	friend class ComponentScript;
 	friend class GameObject;

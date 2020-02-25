@@ -16,23 +16,31 @@ ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : Component
 
 ComponentDeformableMesh::~ComponentDeformableMesh()
 {
-	/*if (game_object_attached != nullptr && game_object_attached->HasComponent(ComponentType::MATERIAL))
+	if (game_object_attached != nullptr && game_object_attached->HasComponent(ComponentType::MATERIAL))
 	{
 		static_cast<ComponentMaterial*>(game_object_attached->GetComponent(ComponentType::MATERIAL))->not_destroy = false;
 	}
 	if (mesh != nullptr && mesh->is_custom) {
 		mesh->DecreaseReferences();
-	}*/
+	}
 	//clear deformable mesh?
 }
 
 void ComponentDeformableMesh::AttachSkeleton(ComponentTransform* root)
 {
+	root_bone_id = root->game_object_attached->ID;
+
 	//Duplicate mesh
 	if (mesh)
 		deformable_mesh = new ResourceMesh(mesh);
 	
 	AttachBone(root);
+}
+
+void ComponentDeformableMesh::AttachSkeleton()
+{
+	if (root_bone_id != 0)
+		AttachSkeleton(App->objects->GetGameObjectByID(root_bone_id)->transform);
 }
 
 void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
@@ -146,5 +154,43 @@ void ComponentDeformableMesh::DrawPolygon()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
+}
+
+void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetBoolean("ViewMesh", view_mesh);
+	to_save->SetBoolean("Wireframe", wireframe);
+	to_save->SetBoolean("ViewVertexNormals", view_vertex_normals);
+	to_save->SetBoolean("ViewFaceNormals", view_face_normals);
+	to_save->SetBoolean("DrawAABB", draw_AABB);
+	to_save->SetBoolean("DrawOBB", draw_OBB);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("MeshID", mesh ? std::to_string(mesh->GetID()) : std::to_string(0));
+	to_save->SetString("RootBoneID", root_bone_id != 0 ? std::to_string(root_bone_id) : std::to_string(0));
+	to_save->SetBoolean("Enabled", enabled);
+}
+
+void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
+{
+	view_mesh = to_load->GetBoolean("ViewMesh");
+	wireframe = to_load->GetBoolean("Wireframe");
+	view_vertex_normals = to_load->GetBoolean("ViewVertexNormals");
+	view_face_normals = to_load->GetBoolean("ViewFaceNormals");
+	draw_AABB = to_load->GetBoolean("DrawAABB");
+	draw_OBB = to_load->GetBoolean("DrawOBB");
+	enabled = to_load->GetBoolean("Enabled");
+	root_bone_id = std::stoull(to_load->GetString("RootBoneID"));
+	ID = std::stoull(to_load->GetString("ID"));
+	u64 mesh_ID = std::stoull(to_load->GetString("MeshID"));
+	if (mesh_ID != 0)
+	{
+		mesh = (ResourceMesh*)App->resources->GetResourceWithID(mesh_ID);
+		if (mesh != nullptr)
+			mesh->IncreaseReferences();
+	}
+
+	GenerateAABB();
+	RecalculateAABB_OBB();
 }
 

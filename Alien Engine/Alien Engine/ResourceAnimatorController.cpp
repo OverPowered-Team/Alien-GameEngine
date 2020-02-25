@@ -20,10 +20,7 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 		triggers.push_back(false);
 	}
 
-	name = "Animator Controller";
-
 	default_state = nullptr;
-
 }
 
 ResourceAnimatorController::~ResourceAnimatorController()
@@ -257,6 +254,7 @@ void ResourceAnimatorController::FreeMemory()
 		delete (*it);
 	}
 	transitions.clear();
+	default_state = nullptr;
 }
 bool ResourceAnimatorController::LoadMemory()
 {
@@ -697,6 +695,8 @@ void ResourceAnimatorController::RemoveState(std::string name)
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it) {
 		if ((*it)->GetName() == name) {
+			if ((*it)->GetClip())
+				(*it)->GetClip()->DecreaseReferences();
 			delete (*it);
 			it = states.erase(it);
 			break;
@@ -792,7 +792,8 @@ State::State()
 State::State(std::string name, ResourceAnimation* clip)
 {
 	this->name = name;
-	this->clip = clip;
+	if (clip)
+		SetClip(clip);
 }
 
 void State::SetSpeed(float speed)

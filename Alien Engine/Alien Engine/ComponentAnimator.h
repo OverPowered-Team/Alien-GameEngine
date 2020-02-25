@@ -4,9 +4,12 @@
 class ResourceAnimatorController;
 
 
-class ComponentAnimator :
-	public Component
+class __declspec(dllexport) ComponentAnimator : public Component
 {
+	friend class ReturnZ;
+	friend class CompZ;
+	friend class GameObject;
+	friend class ModuleImporter;
 public:
 	ComponentAnimator(GameObject* gameobject);
 	virtual ~ComponentAnimator();

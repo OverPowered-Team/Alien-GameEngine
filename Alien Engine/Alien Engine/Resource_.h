@@ -59,6 +59,7 @@ public:
 public:
 
 	uint references = 0u;
+	std::string name = "";
 
 protected:
 
@@ -66,8 +67,6 @@ protected:
 
 	std::string path;
 	std::string meta_data_path;
-	std::string name;
 
 	u64 ID = 0;
-
 };

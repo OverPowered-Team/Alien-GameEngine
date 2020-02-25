@@ -7,6 +7,9 @@
 #include "ComponentMesh.h"
 #include "ComponentDeformableMesh.h"
 #include "ComponentLight.h"
+#include "ComponentBone.h"
+#include "ComponentAnimator.h"
+#include "ComponentDeformableMesh.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
@@ -30,6 +33,8 @@ GameObject::GameObject(GameObject* parent)
 
 GameObject::GameObject()
 {
+	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
 }
 
 GameObject::~GameObject()
@@ -1404,9 +1409,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 			SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
-				ComponentTransform* transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
-				AddComponent(transform);
 				break; }
 			case (int)ComponentType::LIGHT: {
 				ComponentLight* light = new ComponentLight(this);
@@ -1427,6 +1430,21 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCamera* camera = new ComponentCamera(this);
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
+				break; }
+			case (int)ComponentType::DEFORMABLE_MESH: {
+				ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(this);
+				def_mesh->LoadComponent(components_to_load);
+				AddComponent(def_mesh);
+				break; }
+			case (int)ComponentType::ANIMATOR: {
+				ComponentAnimator* anim = new ComponentAnimator(this);
+				anim->LoadComponent(components_to_load);
+				AddComponent(anim);
+				break; }
+			case (int)ComponentType::BONE: {
+				ComponentBone* bone = new ComponentBone(this);
+				bone->LoadComponent(components_to_load);
+				AddComponent(bone);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
