@@ -209,15 +209,3 @@ void ComponentImage::LoadComponent(JSONArraypack* to_load)
 		}
 	}
 }
-
-void ComponentImage::UpdateBar(float factor)
-{
-	vertices[0] = { 0,0,0 };
-	vertices[1] = { 0,size.y,0 };
-	vertices[2] = { size.x * factor, size.y,0 };
-	vertices[3] = { size.x * factor, 0,0 };
-
-	glGenBuffers(1, &verticesID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
-}

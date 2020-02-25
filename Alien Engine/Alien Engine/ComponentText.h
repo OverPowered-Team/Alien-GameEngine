@@ -26,8 +26,10 @@ public:
 	void SetFont(ResourceFont* font);
 	ResourceFont* GetFont() const;
 
-private:
+public:
 	std::string		text = "Non-Text";
+
+private:
 	ResourceFont*	font = nullptr;
 };
 

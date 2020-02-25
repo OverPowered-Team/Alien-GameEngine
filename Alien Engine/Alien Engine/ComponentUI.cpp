@@ -251,3 +251,8 @@ void ComponentUI::UILogic()
 		break;
 	}
 }
+
+void ComponentUI::SetBackgroundColor(float r, float g, float b, float a)
+{
+	current_color = { r,g,b,a };
+}

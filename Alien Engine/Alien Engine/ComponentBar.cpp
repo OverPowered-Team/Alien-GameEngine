@@ -421,11 +421,6 @@ void ComponentBar::CalculateValue()
 	factor = (((currentValue - minValue) * 100.0f) / (maxValue - minValue)) / 100.0f;
 }
 
-void ComponentBar::SetBackgroundColor(float r, float g, float b, float a)
-{
-	current_color = { r,g,b,a };
-}
-
 void ComponentBar::SetBarColor(float r, float g, float b, float a)
 {
 	bar_color = { r,g,b,a };
