@@ -386,7 +386,10 @@ void ParticleEmmitter::SetCurrentLife(float currentLife)
 
 void ParticleEmmitter::SetSpawnRate(float spawnRate)
 {
-	this->spawnRate = 1.f / spawnRate;
+	if (spawnRate == 0)
+		this->spawnRate = 0.f;
+	else
+		this->spawnRate = 1.f / spawnRate;
 }
 
 void ParticleEmmitter::SetDelay(float delay)
@@ -475,7 +478,10 @@ float ParticleEmmitter::GetCurrentLife() const
 
 float ParticleEmmitter::GetSpawnRate() const
 {
-	return 1.f / spawnRate;
+	if (spawnRate == 0)
+		return 0.f;
+	else
+		return 1.f / spawnRate;
 }
 
 float ParticleEmmitter::GetDelay() const

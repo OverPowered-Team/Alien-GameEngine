@@ -168,7 +168,7 @@ bool ComponentParticleSystem::DrawInspector()
 			if (ImGui::Checkbox("Looping", &loop)) { emmitter->SetLoop(loop); }
 
 			float spawnRate = emmitter->GetSpawnRate();
-			if (ImGui::DragFloat("Spawn Rate", &spawnRate, 0.2f, 0.01f, FLT_MAX)) { emmitter->SetSpawnRate(spawnRate); }
+			if (ImGui::DragFloat("Spawn Rate", &spawnRate, 0.2f, 0.00f, FLT_MAX)) { emmitter->SetSpawnRate(spawnRate); }
 
 			float3 pos = particleSystem->emmitter.GetRelativePosition();
 			if (ImGui::DragFloat3("Position", (float*)&pos)) { emmitter->SetRelativePosition(pos); }
