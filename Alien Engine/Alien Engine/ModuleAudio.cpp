@@ -151,7 +151,7 @@ const Bank* ModuleAudio::GetBankByName(const char* name) const
 	return bk;
 }
 
-const Bank* ModuleAudio::GetBankByID(const u64& id) const
+Bank* ModuleAudio::GetBankByID(const u64& id) const
 {
 	for (auto i = banks.begin(); i != banks.end(); ++i)
 	{

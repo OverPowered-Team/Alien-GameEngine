@@ -40,7 +40,7 @@ public:
 	WwiseT::AudioSource* CreateSoundEmitter(const char * name);
 	const std::vector<Bank*> GetBanks() const;
 	const Bank* GetBankByName(const char* name) const;
-	const Bank* GetBankByID(const u64& id) const;
+	Bank* GetBankByID(const u64& id) const;
 private:
 	WwiseT::AudioSource* listener;
 	std::vector <Bank*> banks;

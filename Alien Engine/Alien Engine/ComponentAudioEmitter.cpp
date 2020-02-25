@@ -84,6 +84,7 @@ void ComponentAudioEmitter::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Mute", mute);
 	to_save->SetString("Bank", std::to_string(current_bank));
 	to_save->SetString("Event", std::to_string(current_event));
+	to_save->SetBoolean("PlayOnAwake", play_on_awake);
 }
 void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 {
@@ -91,10 +92,16 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 	enabled = to_load->GetBoolean("Enabled");
 	volume = to_load->GetNumber("Volume");
 	mute = to_load->GetBoolean("Mute");
+	play_on_awake = to_load->GetBoolean("PlayOnAwake");
 	current_bank = std::stoull(to_load->GetString("Bank"));
 	current_event = std::stoull(to_load->GetString("Event"));
+
 	if(enabled)
 		audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);
+
+	auto bank = App->audio->GetBankByID(current_bank);
+	if (!AlreadyUsedBank(bank))
+		App->audio->used_banks.push_back(bank);
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
