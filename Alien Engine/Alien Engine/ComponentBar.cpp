@@ -34,24 +34,35 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing();
 
-		ImGui::Text("Value:		"); ImGui::SameLine();
+		ImGui::Text("Min Value: "); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##MinValue", &minValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
 			
 		}
 
-		ImGui::Text("Max value:	"); ImGui::SameLine();
-		if (ImGui::DragFloat("##MaxValue", &maxValue, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+		ImGui::Text("Max value:	"); ImGui::SameLine(150);
+		if (ImGui::DragFloat("##MaxValue", &maxValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
 			
 		}
 
-		ImGui::Text("Current value:	"); ImGui::SameLine();
-		if (ImGui::DragFloat("##CurrentValue", &currentValue, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
+		ImGui::Text("Current value:	"); ImGui::SameLine(150);
+		if (ImGui::DragFloat("##CurrentValue", &currentValue, 0.5F, minValue, maxValue, "%.1f", 1, game_object_attached->is_static))
+		{
+
+		}
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Text("Offset X:	"); ImGui::SameLine(150);
+		if (ImGui::DragFloat("##OffsetX", &offsetX, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
 
 		}
 
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Background Texture");
@@ -163,7 +174,7 @@ bool ComponentBar::DrawInspector()
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Color");
-		ImGui::SameLine(85);
+		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 		static bool set_Z = true;
 		static Color col;
@@ -178,7 +189,9 @@ bool ComponentBar::DrawInspector()
 			set_Z = true;
 		}
 		ImGui::Spacing();
-		ImGui::Text("Slider Scale:	"); ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Text("Slider Scale:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##Slider Scale", &barScaleY, 0.1F)) {
 			
 		}
@@ -201,13 +214,13 @@ void ComponentBar::Draw(bool isGame)
 	}
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
-	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor;
+	
+	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor - offsetX;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY;
-	transform->global_transformation[0][3] = (transform->global_transformation[0][3]- transform->global_transformation[0][0]);
+	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX;
 	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
-	barX = transform->global_transformation[0][3] = transform->global_transformation[0][3];
-
+	
 
 	DrawTexture(isGame, barTexture);
 	transform->global_transformation = matrix;
