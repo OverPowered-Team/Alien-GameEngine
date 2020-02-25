@@ -3,6 +3,8 @@
 #include <string>
 #include "JSONfilepack.h"
 
+enum class EventType; 
+
 class Module
 {
 private :
@@ -49,6 +51,8 @@ public:
 		return true; 
 	}
 		
+	virtual void HandleEvent(EventType eventType) {}
+
 	std::string name;
 
 };

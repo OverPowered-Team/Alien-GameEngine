@@ -561,6 +561,9 @@
     <ClInclude Include="PanelParticleSystem.h">
       <Filter>Panels</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">

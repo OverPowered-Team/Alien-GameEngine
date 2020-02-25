@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+enum class EventType; 
+
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
 		this->line = line;
@@ -99,6 +101,7 @@ public:
 	bool IsQuiting() const;
 
 	void OpenWebsite(const std::string& website);
+	void CastEvent(EventType eventType);
 
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);

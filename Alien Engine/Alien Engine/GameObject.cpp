@@ -1102,6 +1102,39 @@ void GameObject::OnDisable()
 	}
 }
 
+void GameObject::OnPlay()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnPlay();
+	}
+}
+
+void GameObject::OnPause()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnPause();
+	}
+}
+
+void GameObject::OnStop()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnStop();
+	}
+}
+
 void GameObject::ScaleNegative(const bool& is_negative)
 {
 	std::vector<GameObject*>::iterator item = children.begin();

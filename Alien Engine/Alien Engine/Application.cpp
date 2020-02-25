@@ -379,6 +379,12 @@ void Application::OpenWebsite(const std::string& website)
 	ShellExecuteA(NULL, "open", website.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
+void Application::CastEvent(EventType eventType)
+{
+	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end(); ++item)
+		(*item)->HandleEvent(eventType);
+}
+
 void Application::AddModule(Module* mod)
 {
 	list_modules.push_back(mod);

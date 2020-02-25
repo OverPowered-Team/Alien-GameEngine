@@ -48,6 +48,10 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save) {}
 	virtual void LoadComponent(JSONArraypack* to_load) {}
 
+	virtual void OnPlay() {}
+	virtual void OnPause() {}
+	virtual void OnStop() {}
+
 	virtual void PreUpdate() {}
 	virtual void Update() {}
 	virtual void PostUpdate() {}
