@@ -236,11 +236,13 @@ bool ComponentMaterial::DrawInspector()
 				{
 					compiled_shader_success = false;
 					text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
+					LOG_ENGINE("Shader compiled unsuccessfully...");
 				}
 				else
 				{
 					compiled_shader_success = true;
 					text_compilation_shader = "Shader compilation successful.";
+					LOG_ENGINE("Shader compiled successfully.");
 				}
 			}
 
