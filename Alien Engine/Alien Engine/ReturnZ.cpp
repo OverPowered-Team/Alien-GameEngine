@@ -11,6 +11,9 @@
 #include "Octree.h"
 #include "PanelTextEditor.h"
 #include "ComponentScript.h"
+#include "ComponentParticleSystem.h"
+#include "ParticleSystem.h"
+#include "ParticleEmitter.h"
 
 bool ReturnZ::eraseY = false;
 
@@ -238,6 +241,10 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 				case ComponentType::LIGHT: {
 					ComponentLight* light = (ComponentLight*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(light, comp->comp);
+					break; }
+				case ComponentType::PARTICLES: {
+					ComponentParticleSystem* ps = (ComponentParticleSystem*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(ps, comp->comp);
 					break; }
 				}
 			}
@@ -561,6 +568,14 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		cameraZ->objectID = camera->game_object_attached->ID;
 		cameraZ->near_plane = camera->near_plane;
 		break; }
+	case ComponentType::PARTICLES: {
+		ComponentParticleSystem* ps = (ComponentParticleSystem*)component;
+		CompParticleSystemZ* psZ = new CompParticleSystemZ();
+		*compZ = psZ;
+		psZ->duration = ps->particleSystem->emmitter.GetMaxLife();
+		psZ->objectID = ps->game_object_attached->ID;
+		//psZ->enabled = true;
+	}
 	default: {
 		break;
 	}
@@ -683,7 +698,15 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		camera->frustum.nearPlaneDistance = camera->near_plane;
 		camera->frustum.farPlaneDistance = camera->far_plane;
 		break; }
+
+	case ComponentType::PARTICLES: {
+		ComponentParticleSystem* ps = (ComponentParticleSystem*)component;
+		CompParticleSystemZ* psZ = (CompParticleSystemZ*)compZ;
+		ps->particleSystem->emmitter.SetMaxLife(psZ->duration);
+
+		break; }
 	}
+
 	component->SetEnable(compZ->enabled);
 	component->ID = compZ->compID;
 }

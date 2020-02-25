@@ -9,6 +9,8 @@
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentParticleSystem.h"
+#include "ParticleSystem.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
@@ -547,6 +549,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
 	}
 
+	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
+	
+	if(partSystem != nullptr)
+	{
+		partSystem->Draw();
+	}
+
+
 	if (App->objects->printing_scene)
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
@@ -558,7 +568,13 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		{
 			light->DrawIconLight();
 		}
+
+		if (partSystem != nullptr)
+		{
+			partSystem->DebugDraw();
+		}
 	}
+
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
@@ -1431,6 +1447,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCamera* camera = new ComponentCamera(this);
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
+				break; }
+			case (int)ComponentType::PARTICLES: {
+				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
+				particleSystem->LoadComponent(components_to_load);
+				AddComponent(particleSystem);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);

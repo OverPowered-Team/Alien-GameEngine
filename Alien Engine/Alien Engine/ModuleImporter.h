@@ -50,6 +50,7 @@ public:
 	ResourceTexture* LoadEngineTexture(const char* path);
 	void LoadTextureToResource(const char* path, ResourceTexture* texture);
 	void ApplyTextureToSelectedObject(ResourceTexture* texture);
+	void ApplyParticleSystemToSelectedObject(std::string path); // For the moment there are no resource particle system (no need meta)
 
 private:
 	

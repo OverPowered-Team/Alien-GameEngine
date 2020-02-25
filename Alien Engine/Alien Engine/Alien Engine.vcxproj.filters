@@ -64,6 +64,9 @@
     <Filter Include="Tools\TextEdit">
       <UniqueIdentifier>{987d3c13-1318-45bd-80aa-53653a15e71f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\ParticleSystem">
+      <UniqueIdentifier>{e633960d-eb91-4a91-8a5d-65579cacfd40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -540,6 +543,24 @@
     <ClInclude Include="ResourceScene.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentParticleSystem.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelParticleSystem.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Tools</Filter>
     </ClInclude>
@@ -871,6 +892,24 @@
     </ClCompile>
     <ClCompile Include="ResourceScene.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentParticleSystem.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Components\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelParticleSystem.cpp">
+      <Filter>Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

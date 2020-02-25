@@ -8,6 +8,9 @@
 #include "..\..\..\Alien Engine\ComponentLight.h"
 #include "..\..\..\Alien Engine\ComponentMaterial.h"
 #include "..\..\..\Alien Engine\ComponentMesh.h"
+#include "..\..\..\Alien Engine\ComponentParticleSystem.h"
+#include "..\..\..\Alien Engine\ParticleSystem.h"
+#include "..\..\..\Alien Engine\ParticleEmitter.h"
 /*-----------------COMPONENTS-------------------*/
 
 /*-----------------MATH-------------------*/
