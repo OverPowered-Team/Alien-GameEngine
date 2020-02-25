@@ -80,6 +80,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4f4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
