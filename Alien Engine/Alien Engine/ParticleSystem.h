@@ -3,10 +3,11 @@
 #include "Globals.h"
 #include <vector>
 #include "Billboard.h"
-
-#include "Particle.h"
+#include "ResourceTexture.h"
 #include "ParticleEmitter.h"
 #include <map>
+
+#include "Particle.h"
 
 #define MAX_PARTICLES 10000
 #define MAX_PARTICLES_TO_BURST 500
@@ -63,9 +64,6 @@ private:
 
 public: 
 
-	void SetBillboardType(BillboardType type);
-	BillboardType GetBillboardType() const;
-	uint GetTotalParticles() const;
 
 	bool isSystemActive() const;
 
@@ -75,16 +73,42 @@ public:
 	void Restart();
 	void ResetSystem();
 
-public:
+
+	void SetBillboardType(BillboardType type);
+	BillboardType GetBillboardType() const;
+	uint GetTotalParticles() const;
+
+	// ------------------------------ PARTICLE INFO ------------------------------
+
+	// -------- Global Properties --------
+
+	void SetParticleSpeed(const float& initialSpeed);
+	void SetParticlelMaxLifeTime(float maxLifeTime);
+	void SetParticleGlobal(bool global);
+
+	// -------- Init Properties ----------
+
+	void SetParticleInitialSize(float size);
+	void SetParticleInitialColor(const float4& initialColor);
+	void SetParticleInitialForce(const float3& initialForce);
+
+	// -------- Final Properties ----------
+
+	void SetParticleFinalSize(float size);
+	void SetParticleFinalColor(const float4& initialColor);
+	void SetParticleFinalForce(const float3& initialForce);
+
+	// ---------------------------------------------------------------------------
+
+public: 
 
 	ParticleEmmitter emmitter;
 	BillboardType bbType = BillboardType::SCREEN;
 
-	ParticleInfo particleInfo;
-	ParticleMutableInfo startInfo;
-	ParticleMutableInfo endInfo;
-
 private:
+
+	ParticleInfo particleInfo;
+	ParticleMutableInfo endInfo;
 
 	bool playing = true;
 	//std::map<float, Particle*> sortedParticles;
