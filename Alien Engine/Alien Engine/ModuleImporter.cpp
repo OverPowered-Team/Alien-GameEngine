@@ -448,43 +448,15 @@ void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
 		if (*item != nullptr) {
 			
 
-			if (!(*item)->HasComponent(ComponentType::PARTICLES)) {
-
+			if (!(*item)->HasComponent(ComponentType::PARTICLES)) 
 				(*item)->AddComponent(new ComponentParticleSystem(*item));
+			
 
-				std::string name = path;
-				App->file_system->NormalizePath(name);
+			std::string name = path;
+			App->file_system->NormalizePath(name);
 
-				JSON_Value* value = json_parse_file(name.data());
-				JSON_Object* object = json_value_get_object(value);
-
-
-				if (value != nullptr && object != nullptr)
-				{
-					JSONfilepack* particles = new JSONfilepack(name.data(), object, value);
-
-					JSONArraypack* properties = particles->GetArray("ParticleSystem.Properties");
-
-					if (properties != nullptr) {
-						ComponentParticleSystem* particleSystem = (ComponentParticleSystem*)(*item)->GetComponent(ComponentType::PARTICLES);
-						particleSystem->LoadComponent(properties);
-					}
-
-					delete particles;
-				}
-				else {
-					LOG_ENGINE("Error loading particle system %s", name.data());
-				}
-
-
-
-			}
-			else {
-				std::string name = path;
-				App->file_system->NormalizePath(name);
-
-				JSON_Value* value = json_parse_file(name.data());
-				JSON_Object* object = json_value_get_object(value);
+			JSON_Value* value = json_parse_file(name.data());
+			JSON_Object* object = json_value_get_object(value);
 
 
 				if (value != nullptr && object != nullptr)
@@ -503,14 +475,14 @@ void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
 				else {
 					LOG_ENGINE("Error loading particle system %s", name.data());
 				}
-			}
+			}	
 		}
 	}
 
 
 
 
-}
+
 
 void ModuleImporter::LoadParShapesMesh(par_shapes_mesh* shape, ResourceMesh* mesh)
 {
