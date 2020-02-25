@@ -220,29 +220,106 @@ void PanelAnimator::ShowLinkPopup()
 {
 	if (ImGui::BeginPopup("Link popup")) {
 
-		if (current_animator->GetTransitions()[selected_link_index]->GetTrigger() > 0) {
-			std::string trigger_slot_selected = "Current Trigger slot: 0";
-			trigger_slot_selected.append(std::to_string(current_animator->GetTransitions()[selected_link_index]->GetTrigger()));
-			ImGui::Text(trigger_slot_selected.c_str());
-		}else
-			ImGui::Text("Select trigger slot");
+		//----------Bools-----------------
 
+		ImGui::Text("Bool Conditions");
 		ImGui::Separator();
-		
-		for (int i = 0; i < current_animator->GetTriggers().size(); ++i) {
-			std::string trigger_slot = "Trigger_slot 0";
-			trigger_slot.append(std::to_string(i + 1));
-			if (ImGui::Selectable(trigger_slot.c_str())) {
-				current_animator->GetTransitions()[selected_link_index]->SetTrigger(i + 1);
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetBoolConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name.c_str())) {
+				ImGui::OpenPopup("Select bool parameter");
 			}
+
+			if (ImGui::BeginPopup("Select bool parameter")) {
+				for (int i = 0; i < current_animator->GetBoolParameters().size(); i++)
+				{
+					if (ImGui::Selectable(current_animator->GetBoolParameters()[i].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(current_animator->GetBoolParameters()[i]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+		}
+
+		//----------Floats-----------------
+
+		ImGui::Text("Float Conditions");
+		ImGui::Separator();
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetFloatConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name.c_str())) {
+				ImGui::OpenPopup("Select float parameter");
+			}
+
+			if (ImGui::BeginPopup("Select float parameter")) {
+				for (int i = 0; i < current_animator->GetFloatParameters().size(); i++)
+				{
+					if (ImGui::Selectable(current_animator->GetFloatParameters()[i].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(current_animator->GetFloatParameters()[i]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+		}
+
+		//----------Ints-----------------
+
+		ImGui::Text("Int Conditions");
+		ImGui::Separator();
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetIntConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name.c_str())) {
+				ImGui::OpenPopup("Select bool parameter");
+			}
+
+			if (ImGui::BeginPopup("Select bool parameter")) {
+				for (int i = 0; i < current_animator->GetIntParameters().size(); i++)
+				{
+					if (ImGui::Selectable(current_animator->GetIntParameters()[i].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(current_animator->GetIntParameters()[i]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
 		}
 
 		ImGui::Separator();
 
-		if (ImGui::Selectable("Reset trigger")) {
-			current_animator->GetTransitions()[selected_link_index]->SetTrigger(0);
+		if (ImGui::Button("Add bool Condition"))
+		{
+			current_animator->GetTransitions()[selected_link_index]->AddBoolCondition();
+		}		
+		
+		if (ImGui::Button("Add float Condition"))
+		{
+			current_animator->GetTransitions()[selected_link_index]->AddFloatCondition();
 		}
 
+		if (ImGui::Button("Add int Condition"))
+		{
+			current_animator->GetTransitions()[selected_link_index]->AddIntCondition();
+		}
+
+		//ImGui::SameLine();
+		//if (ImGui::Button("Remove int Condition") && current_animator->GetTransitions()[selected_link_index]->GetConditions().size() > 1)
+		//{
+
+		//}
 		ImGui::Separator();
 
 		float blend_v = (float)current_animator->GetTransitions()[selected_link_index]->GetBlend();

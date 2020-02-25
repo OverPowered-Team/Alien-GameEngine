@@ -145,13 +145,13 @@ void ResourceAnimatorController::UpdateState(State* state)
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
-				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
-					if ((*it)->GetTrigger() == 0) {
-						state->next_state = (*it)->GetTarget();
-						state->fade_duration = (*it)->GetBlend();
-						break;
-					}
-				}
+				//for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
+				//	if ((*it)->GetTrigger() == 0) {
+				//		state->next_state = (*it)->GetTarget();
+				//		state->fade_duration = (*it)->GetBlend();
+				//		break;
+				//	}
+				//}
 			}
 			if (state->GetClip()->loops)
 				state->time = 0;
@@ -187,16 +187,16 @@ void ResourceAnimatorController::Stop()
 
 void ResourceAnimatorController::CheckTriggers()
 {
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
-		if ((*it)->GetTrigger() > 0)
-		{
-			if (triggers[(*it)->GetTrigger() - 1] == true) {
-				current_state->next_state = (*it)->GetTarget();
-				current_state->fade_duration = (*it)->GetBlend();
-				triggers[(*it)->GetTrigger() - 1] = false;
-			}
-		}
-	}
+	//for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+	//	if ((*it)->GetTrigger() > 0)
+	//	{
+	//		if (triggers[(*it)->GetTrigger() - 1] == true) {
+	//			current_state->next_state = (*it)->GetTarget();
+	//			current_state->fade_duration = (*it)->GetBlend();
+	//			triggers[(*it)->GetTrigger() - 1] = false;
+	//		}
+	//	}
+	//}
 }
 
 bool ResourceAnimatorController::SaveAsset(const u64& force_id)
@@ -233,7 +233,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		transitions_array->SetAnotherNode();
 		transitions_array->SetString("Source", (*it)->GetSource()->GetName());
 		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
-		transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
+		//transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
 	}
 
@@ -351,7 +351,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_blend, cursor, bytes);
 			cursor += bytes;
 
-			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_trigger);
+			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend);
 		}
 		LOG_ENGINE("Loaded Anim Controller %s", meta_data_path.data());
 
@@ -524,10 +524,10 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		memcpy(cursor, (*it)->GetTarget()->GetName().data(), bytes);
 		cursor += bytes;
 
-		bytes = sizeof(uint);
-		uint trigger_id = (*it)->GetTrigger();
-		memcpy(cursor, &trigger_id, bytes);
-		cursor += bytes;
+		//bytes = sizeof(uint);
+		//uint trigger_id = (*it)->GetTrigger();
+		//memcpy(cursor, &trigger_id, bytes);
+		//cursor += bytes;
 
 		bytes = sizeof(float);
 		float tr_blend = (*it)->GetBlend();
@@ -735,14 +735,6 @@ void ResourceAnimatorController::AddTransition(State* source, State* target, flo
 	transitions.push_back(new_transition);
 }
 
-void ResourceAnimatorController::AddTransition(State* source, State* target, float blend, uint trigger)
-{
-	Transition* new_transition = new Transition(source, target, blend);
-	new_transition->SetTrigger(trigger);
-
-	transitions.push_back(new_transition);
-}
-
 void ResourceAnimatorController::RemoveTransition(std::string source_name, std::string target_name)
 {
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
@@ -847,10 +839,6 @@ void Transition::SetTarget(State* target)
 	this->target = target;
 }
 
-void Transition::SetTrigger(uint trigger)
-{
-	this->trigger = trigger;
-}
 
 void Transition::SetBlend(float blend)
 {
@@ -867,13 +855,74 @@ State* Transition::GetTarget()
 	return target;
 }
 
-uint Transition::GetTrigger()
-{
-	return trigger;
-}
 
 float Transition::GetBlend()
 {
 	return blend;
 }
 
+void Transition::AddIntCondition()
+{
+	IntCondition* new_condition = new IntCondition("int", { "", 0 }, 0);
+	int_conditions.push_back(new_condition);
+}
+
+void Transition::AddFloatCondition()
+{
+	FloatCondition* new_condition = new FloatCondition("float", { "", 0.0f }, 0.0f);
+	float_conditions.push_back(new_condition);
+}
+
+void Transition::AddBoolCondition()
+{
+	BoolCondition* new_condition = new BoolCondition("bool", { "", false });
+	bool_conditions.push_back(new_condition);
+}
+
+bool IntCondition::Compare()
+{
+	bool ret = false;
+
+	if (comp_text == "Equal") {
+		ret = parameter.second == comp;
+	}
+	else if (comp_text == "NotEqual") {
+		ret = parameter.second != comp;
+	}
+	else if (comp_text == "Greater") {
+		ret = parameter.second > comp;
+	}
+	else if (comp_text == "Lesser") {
+		ret = parameter.second < comp;
+	}
+
+	return ret;
+}
+
+bool FloatCondition::Compare()
+{
+	bool ret = false;
+
+	if (comp_text == "Greater") {
+		ret = parameter.second > comp;
+	}
+	else if (comp_text == "Lesser") {
+		ret = parameter.second < comp;
+	}
+
+	return ret;
+}
+
+bool BoolCondition::Compare()
+{
+	bool ret = false;
+
+	if (comp_text == "False") {
+		if(!parameter.second) ret = true;
+	}
+	else if (comp_text == "True") {
+		if (parameter.second) ret = true;
+	}
+
+	return ret;
+}

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef _ANIMATOR_CONTROLLER_H_
-#define _ANIMATOR_CONTROLLER_H_
 
 #include "Resource.h"
 #include "Globals.h"
@@ -38,12 +36,83 @@ public:
 	ResourceAnimation* GetClip();
 };
 
+class Condition {
+public:
+	std::string type = "";
+	std::string param_name = "";
+	std::vector<std::string> comp_texts;
+	std::string comp_text = "";
+
+public:
+	Condition(std::string type, std::string comp_text = "") { this->type = type; }
+	virtual bool Compare() { return false; }
+
+};
+
+class IntCondition : public Condition {
+public:
+	std::pair <std::string, int> parameter;
+	int comp;
+
+public:
+	IntCondition(std::string type, std::pair <std::string, int> parameter, int comp) : Condition(type) {
+		this->parameter = parameter;
+		this->comp = comp;
+		this->param_name = parameter.first;
+		comp_texts.push_back("Equal");
+		comp_texts.push_back("Not Equal");
+		comp_texts.push_back("Greater");
+		comp_texts.push_back("Lesser");
+	}
+	bool Compare();
+	void SetParameter(std::pair <std::string, int> parameter) { this->parameter = parameter; }
+	void SetCompValue(int comp) { this->comp = comp; }
+
+};
+
+class FloatCondition : public Condition {
+public:
+	std::pair <std::string, float> parameter;
+	float comp;
+
+public:
+	FloatCondition(std::string type, std::pair <std::string, float> parameter, float comp) : Condition(type) {
+		this->parameter = parameter;
+		this->comp = comp;
+		this->param_name = parameter.first;
+		comp_texts.push_back("Greater");
+		comp_texts.push_back("Lesser");
+	}
+	bool Compare();
+	void SetParameter(std::pair <std::string, float> parameter) { this->parameter = parameter; }
+	void SetCompValue(float comp) { this->comp = comp; }
+};
+
+class BoolCondition : public Condition {
+public:
+	std::pair <std::string, bool> parameter;
+
+public:
+	BoolCondition(std::string type, std::pair <std::string, bool> parameter) : Condition(type) {
+		this->parameter = parameter;
+		this->param_name = parameter.first;
+		comp_texts.push_back("True");
+		comp_texts.push_back("False");
+	}
+	bool Compare();
+	void SetParameter(std::pair <std::string, bool> parameter) { this->parameter = parameter; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
+};
+
+
 class Transition
 {
 private:
 	State* source;
 	State* target;
-	uint trigger = 0;
+	std::vector<IntCondition*> int_conditions;
+	std::vector<FloatCondition*> float_conditions;
+	std::vector<BoolCondition*> bool_conditions;
 	float blend = 2;
 
 public:
@@ -53,15 +122,20 @@ public:
 public:
 	void SetSource(State* source);
 	void SetTarget(State* target);
-	void SetTrigger(uint trigger);
 	void SetBlend(float blend);
 
 	State* GetSource();
 	State* GetTarget();
-	uint GetTrigger();
 	float GetBlend();
-};
 
+	//Handle Conditions
+	void AddIntCondition();
+	void AddFloatCondition();
+	void AddBoolCondition();
+	std::vector<IntCondition*> GetIntConditions() { return int_conditions; }
+	std::vector<FloatCondition*> GetFloatConditions() { return float_conditions; }
+	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
+};
 
 class ResourceAnimatorController : public Resource
 {
@@ -139,7 +213,6 @@ public:
 
 	//Transitions
 	void AddTransition(State* source, State* target, float blend);
-	void AddTransition(State* source, State* target, float blend, uint trigger);
 	void RemoveTransition(std::string source_name, std::string target_name);
 	std::vector<Transition*> GetTransitions() const { return transitions; }
 	uint GetNumTransitions() const { return transitions.size(); }
@@ -158,5 +231,3 @@ public:
 
 	friend class Time;
 };
-
-#endif // !__ANIMATOR_CONTROLLER_H_

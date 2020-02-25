@@ -54,5 +54,7 @@ private:
 	//creation management
 	ax::NodeEditor::PinId new_node_id = 0;
 	State* source_state = nullptr;
+
+	bool show_transition_window = false;
 };
 
