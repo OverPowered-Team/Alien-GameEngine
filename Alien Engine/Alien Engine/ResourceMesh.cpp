@@ -86,7 +86,7 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 
 	uint size = sizeof(ranges) + name.size() +
 		sizeof(float) * 4 + sizeof(float) * 3 + sizeof(float) * 4 + sizeof(float) * 3 + vertex_size +
-		index_size + normals_size + uv_size + sizeof(bool) + sizeof(u64);
+		index_size + normals_size + uv_size + sizeof(bool);
 
 	char* data = new char[size]; 
 	char* cursor = data;
@@ -103,11 +103,6 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 
 	bytes = sizeof(bool);
 	memcpy(cursor, &deformable, bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
-	bytes = sizeof(u64);
-	memcpy(cursor, &bone_id, bytes);
 	cursor += bytes;
 	bytes_moved += bytes;
 
@@ -178,11 +173,6 @@ bool ResourceMesh::ReadBaseInfo(const char* meta_file_path)
 
 		bytes = sizeof(bool);
 		memcpy(&deformable, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
-		bytes = sizeof(u64);
-		memcpy(&bone_id, cursor, bytes);
 		cursor += bytes;
 		bytes_moved += bytes;
 

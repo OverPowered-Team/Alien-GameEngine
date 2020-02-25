@@ -110,6 +110,7 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene, const cha
 			//Import bones of mesh
 			if (scene->mMeshes[i]->HasBones())
 			{
+				model->meshes_attached[i]->deformable = true;
 				for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
 				{
 					LoadBone(scene->mMeshes[i]->mBones[j]);
@@ -326,6 +327,14 @@ void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nod
 			nodeMesh.node_num = nodeNum + 2;
 			nodeMesh.parent_num = nodeNum + 1;
 			model->model_nodes.push_back(nodeMesh);
+		}
+	}
+	for (uint i = 0; i < model->bones_attached.size(); ++i)
+	{
+		if (model->bones_attached[i]->name == model_node.name)
+		{
+			model_node.bone = i;
+			break;
 		}
 	}
 	aiVector3D pos, scale;

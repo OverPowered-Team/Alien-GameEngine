@@ -11,6 +11,7 @@
 #include "ResourceMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentBone.h"
 #include "mmgr/mmgr.h"
 
 ResourceModel::ResourceModel() : Resource()
@@ -101,16 +102,6 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		for (; item != meshes_attached.end(); ++item) {
 			if ((*item) != nullptr) 
 			{
-				if (bones_attached.size() > 0) //Check if this resourcemesh is a bone to link
-				{
-					for each (ResourceBone * bone in bones_attached)
-					{
-						if (bone->name == (*item)->name)
-						{
-							(*item)->bone_id = bone->GetID();
-						}
-					}
-				}
 				if (meta_mesh_paths != nullptr) {
 					std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
 					(*item)->CreateMetaData(std::stoull(path_));
@@ -182,6 +173,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			nodes->SetString("parentName", model_nodes[i].parent_name);
 			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
 			nodes->SetNumber("materialIndex", model_nodes[i].material);
+			nodes->SetNumber("boneIndex", model_nodes[i].material);
 		}
 
 		if (meta_mesh_paths != nullptr)
@@ -279,6 +271,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			node.parent_name = nodes->GetString("parentName");
 			node.mesh = nodes->GetNumber("meshIndex");
 			node.material = nodes->GetNumber("materialIndex");
+			node.bone = nodes->GetNumber("boneIndex");
 			model_nodes.push_back(node);
 			nodes->GetAnotherNode();
 		}
@@ -303,6 +296,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
 			std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
 			std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+			std::string* bones_path = model->GetArrayString("Meta.PathBones");
 
 			for (uint i = 0; i < num_meshes; ++i) {
 				ResourceMesh* r_mesh = new ResourceMesh();
@@ -326,11 +320,11 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			}
 			for (uint i = 0; i < num_bones; ++i) {
 				ResourceBone* r_bone = new ResourceBone();
-				if (r_bone->ReadBaseInfo(bones_paths[i].data())) {
+				if (r_bone->ReadBaseInfo(bones_path[i].data())) {
 					bones_attached.push_back(r_bone);
 				}
 				else {
-					LOG_ENGINE("Error loading %s", bones_paths[i].data());
+					LOG_ENGINE("Error loading %s", bones_path[i].data());
 					delete r_bone;
 				}
 			}
@@ -349,6 +343,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			delete[] anim_path;
 			delete[] mesh_path;
 			delete[] materials_path;
+			delete[] bones_path;
 			delete model;
 			App->resources->AddResource(this);
 		}
@@ -550,11 +545,14 @@ void ResourceModel::ConvertToGameObjects()
 	std::vector<std::pair<uint, GameObject*>> objects_created;
 	objects_created.push_back({ 1,parent });
 
+	std::pair<GameObject*, GameObject*> skeleton_link = { nullptr, nullptr };
 	for (uint i = 0; i < model_nodes.size(); ++i) {
-		CreateGameObject(model_nodes[i], objects_created);
+		CreateGameObject(model_nodes[i], objects_created, skeleton_link);
 	}
 	App->objects->GetRoot(false)->children.back()->transform->RecalculateTransform();
 	App->objects->ignore_cntrlZ = false;
+	if (skeleton_link.first != nullptr && skeleton_link.second != nullptr)
+		((ComponentDeformableMesh*)skeleton_link.first->GetComponent(ComponentType::DEFORMABLE_MESH))->AttachSkeleton(skeleton_link.second->transform);
 
 	App->objects->SetNewSelectedObject(App->objects->GetRoot(false)->children.back());
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
@@ -567,7 +565,7 @@ bool ResourceModel::SortByFamilyNumber(const ModelNode& node1, const ModelNode& 
 	return node1.node_num < node2.node_num;
 }
 
-GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created)
+GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, std::pair<GameObject*, GameObject*>& skeleton_link)
 {
 	GameObject* ret = nullptr;
 
@@ -579,11 +577,23 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 			if (node.mesh >= 0) {
 				ResourceMesh* mesh = meshes_attached[node.mesh];
 				if (mesh != nullptr) {
-					ComponentMesh* Cmesh = new ComponentMesh(ret);
-					mesh->IncreaseReferences();
-					Cmesh->mesh = mesh;
-					Cmesh->RecalculateAABB_OBB();
-					ret->AddComponent(Cmesh);
+					if (mesh->deformable)
+					{
+						ComponentDeformableMesh* Cmesh = new ComponentDeformableMesh(ret);
+						mesh->IncreaseReferences();
+						Cmesh->mesh = mesh;
+						Cmesh->RecalculateAABB_OBB();
+						ret->AddComponent(Cmesh);
+						skeleton_link.first = ret;
+					}
+					else
+					{
+						ComponentMesh* Cmesh = new ComponentMesh(ret);
+						mesh->IncreaseReferences();
+						Cmesh->mesh = mesh;
+						Cmesh->RecalculateAABB_OBB();
+						ret->AddComponent(Cmesh);
+					}
 				}
 
 				if (node.material >= 0) {
@@ -606,6 +616,19 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					}
 				}
 
+			}
+			if (node.bone >= 0)
+			{
+				if (skeleton_link.second == nullptr)
+					skeleton_link.second = ret;
+
+				ResourceBone* bone = bones_attached[node.bone];
+				if (bone != nullptr) {
+					ComponentBone* c_bone = new ComponentBone(ret);
+					bone->IncreaseReferences();
+					c_bone->bone = bone;
+					ret->AddComponent(c_bone);
+				}
 			}
 			objects_created.push_back({ node.node_num, ret });
 			break;

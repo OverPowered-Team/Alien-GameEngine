@@ -9,6 +9,7 @@ class ComponentTransform;
 class ComponentBone : public Component
 {
 	friend class GameObject;
+	friend class ResourceModel;
 public:
 	ComponentBone(GameObject* gameobject);
 	~ComponentBone();
