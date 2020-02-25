@@ -4,7 +4,7 @@
 
 struct UniformData
 {
-	char* uniform_name = "uniform name";
+	char uniform_name[MAX_PATH];
 	Color create_color{ 1,1,1 };
 	int type = 0;
 };

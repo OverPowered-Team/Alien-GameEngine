@@ -64,7 +64,10 @@ void PanelCreateMaterial::PanelLogic()
 			ImGui::Spacing();
 
 			ImGui::Text(uniforms[i]->uniform_name);
-			ImGui::Text("Vec4");
+			if(uniforms[i]->type == 0)
+				ImGui::Text("no type");
+			if (uniforms[i]->type == 1)
+				ImGui::Text("Vec4");
 		}
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -91,7 +94,7 @@ void PanelCreateMaterial::PanelLogic()
 
 void PanelCreateMaterial::SetUniforms()
 {
-	static char uniform_name[MAX_PATH] = "save path";
+	static char uniform_name[MAX_PATH] = "name";
 	static Color create_color;
 	ImGui::Separator();
 	ImGui::Text("Variable name: "); ImGui::SameLine();
@@ -108,7 +111,7 @@ void PanelCreateMaterial::SetUniforms()
 	{
 		UniformData* new_u = new UniformData();
 		new_u->create_color = create_color;
-		new_u->uniform_name = uniform_name;
+		strncpy(new_u->uniform_name, uniform_name, MAX_PATH);
 		new_u->type = uniform_type_int;
 		uniforms.push_back(new_u);
 	}
