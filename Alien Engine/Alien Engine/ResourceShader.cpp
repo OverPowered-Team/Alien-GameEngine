@@ -279,3 +279,48 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 
 	return location;
 }
+
+void ResourceShader::CreateShaderFolder(const int& type, bool to_export, const char* name)
+{
+	std::string file_output = std::string(SHADERS_FOLDER + std::string(name) + std::string(".Shader"));
+	switch (type) {
+	case 1: { // class
+		if (to_export) {
+			App->file_system->Copy(std::string(SHADERS_FOLDER + std::string("default.Shader")).c_str(), file_output.data());
+		}
+		else {
+			App->file_system->Copy(CLASS_FILE_TEMPLATE, file_output.data());
+		}
+		break; }
+	case 2: { // struct
+		if (to_export) {
+			App->file_system->Copy(EXPORT_FILE_STRUCT_TEMPLATE, file_output.data());
+		}
+		else {
+			App->file_system->Copy(STRUCT_FILE_TEMPLATE, file_output.data());
+		}
+		break; }
+	default:
+		break;
+	}
+
+	// change de .h
+	std::ifstream file(file_output);
+	std::string file_str;
+	if (file.is_open()) {
+		std::string line;
+		while (std::getline(file, line)) {
+			while (line.find("DataAlienTypeName") != std::string::npos) {
+				line.replace(line.find("DataAlienTypeName"), 17, std::string(name));
+			}
+			if (file_str.empty()) {
+				file_str = line;
+			}
+			else {
+				file_str += std::string("\n") + line;
+			}
+		}
+		file.close();
+	}
+	App->file_system->Save(file_output.data(), file_str.data(), file_str.size());
+}

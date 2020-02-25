@@ -81,6 +81,10 @@ void PanelCreateMaterial::PanelLogic()
 		if (ImGui::Button("Create", { ImGui::GetWindowWidth() - 16,25 }))
 		{
 			ResourceShader* n_shader = new ResourceShader(path);
+			n_shader->IncreaseReferences();
+
+			n_shader->CreateShaderFolder(1,true,path);
+			n_shader->CreateMetaData(n_shader->GetID());
 			n_shader->ParseAndCreateShader();
 			ChangeEnable();
 		}
