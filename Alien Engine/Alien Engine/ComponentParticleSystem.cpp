@@ -114,6 +114,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 			if (ImGui::TreeNode("Shape Options"))
 			{
+				shapeSelected = (int)particleSystem->emmitter.GetShape();
 				if (ImGui::Combo("Shape", &shapeSelected, "Sphere\0Hemisphere\0Cube\0Cone\0\0")) { emmitter->SetShape((Emmitter_Shape)shapeSelected); }
 
 				switch (emmitter->GetShape())
@@ -561,7 +562,7 @@ void ComponentParticleSystem::Restart()
 	particleSystem->Restart();
 }
 
-ParticleSystem* ComponentParticleSystem::GetSystem() const
+ParticleSystem* ComponentParticleSystem::GetSystem()
 {
 	return particleSystem;
 }

@@ -263,3 +263,63 @@ bool compareParticles(Particle* a, Particle* b)
 {
 	return a->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition()) < b->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition());
 }
+
+// ------------------------------ PARTICLE INFO ------------------------------
+
+
+// -------- Global Properties --------
+
+void ParticleSystem::SetParticleSpeed(const float& initialSpeed)
+{
+	particleInfo.speed = initialSpeed;
+}
+
+void ParticleSystem::SetParticlelMaxLifeTime(float maxLifeTime)
+{
+	particleInfo.maxLifeTime = maxLifeTime;
+}
+
+void ParticleSystem::SetParticleGlobal(bool global)
+{
+	particleInfo.globalTransform = global;
+}
+
+
+// -------- Init Properties ----------
+
+
+void ParticleSystem::SetParticleInitialSize(float size)
+{
+	particleInfo.size = size;
+}
+
+void ParticleSystem::SetParticleInitialColor(const float4& initialColor)
+{
+	particleInfo.color = initialColor;
+}
+
+void ParticleSystem::SetParticleInitialForce(const float3& initialForce)
+{
+	particleInfo.force = initialForce;
+}
+
+
+// -------- Final Properties ----------
+
+
+void ParticleSystem::SetParticleFinalSize(float size)
+{
+	endInfo.size = size;
+}
+
+void ParticleSystem::SetParticleFinalColor(const float4& initialColor)
+{
+	endInfo.color = initialColor;
+}
+
+void ParticleSystem::SetParticleFinalForce(const float3& initialForce)
+{
+	endInfo.force = initialForce;
+}
+
+// ------------------------------ PARTICLE INFO ------------------------------

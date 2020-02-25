@@ -45,7 +45,7 @@ private:
 
 public: 
 
-	ParticleSystem* GetSystem() const;
+	ParticleSystem* GetSystem();
 	void SetTexture(ResourceTexture* tex);
 
 	void Play();
