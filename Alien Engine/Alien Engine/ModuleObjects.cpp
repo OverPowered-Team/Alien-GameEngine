@@ -973,7 +973,8 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		delete scene;
 		if (force_with_path == nullptr) {
 			current_scene = to_load_scene;
-			std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			//std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			App->file_system->Copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
 		}
 	}
 	else {
