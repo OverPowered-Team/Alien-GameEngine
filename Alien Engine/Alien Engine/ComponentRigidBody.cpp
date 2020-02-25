@@ -60,13 +60,13 @@ void ComponentRigidBody::Update()
 	//}
 	//else
 	//{
-	//	btTransform bt_transform = body->getCenterOfMassTransform();
-	//	btQuaternion rotation = bt_transform.getRotation();
-	//	btVector3 position = bt_transform.getOrigin() - ToBtVector3(go_offset);
+		//btTransform bt_transform = body->getCenterOfMassTransform();
+		//btQuaternion rotation = bt_transform.getRotation();
+		//btVector3 position = bt_transform.getOrigin() - ToBtVector3(go_offset);
 
-	//	body->activate(true);
-	//	transform->SetGlobalPosition(float3(position));
-	//	transform->SetGlobalRotation(math::Quat((btScalar*)rotation));
+		//body->activate(true);
+		//transform->SetGlobalPosition(float3(position));
+		//transform->SetGlobalRotation(math::Quat((btScalar*)rotation));
 
 	//	// Apply Forces ----------------------
 
