@@ -38,7 +38,7 @@ private:
 
 	float offset = 0.0f;
 
-	bool dragging = false;
+	bool setted = false;
 	bool scrolled = false;
 
 	float recSize = 1000;
@@ -51,6 +51,7 @@ private:
 	bool play = false;
 	bool pause = false;
 	bool stop = false;
+	bool stop_in_game = false;
 
 	float animation_time = 0.0f;
 	float aux_time = 0.0f;

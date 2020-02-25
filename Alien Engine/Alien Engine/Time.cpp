@@ -146,6 +146,11 @@ bool Time::IsPlaying()
 		return false;
 }
 
+bool Time::IsPaused()
+{
+	return state == GameState::PAUSE;
+}
+
 bool Time::IsInGameState()
 {
 	return state != GameState::NONE;
