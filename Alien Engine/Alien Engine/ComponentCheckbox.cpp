@@ -367,8 +367,6 @@ bool ComponentCheckbox::OnClick()
 	if (active)
 	{ 
 		clicked = !clicked;
-		/*tick->enabled = !tick->enabled;
-		cross->enabled = !cross->enabled;*/
 		
 		current_color = clicked_color;
 
