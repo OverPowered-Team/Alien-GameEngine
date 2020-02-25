@@ -1,5 +1,6 @@
 #include "ResourceAudio.h"
 #include "Application.h"
+#include "mmgr/mmgr.h"
 
 ResourceAudio::ResourceAudio() : Resource() {
 	type = ResourceType::RESOURCE_AUDIOBANK;

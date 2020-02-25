@@ -306,6 +306,12 @@ WwiseT::AudioSource::~AudioSource()
 	}
 }
 
+void WwiseT::AudioSource::PlayEventByID(uint ev_id)
+{
+	AkUniqueID u_id = ev_id;
+	AK::SoundEngine::PostEvent(u_id, id);
+}
+
 void WwiseT::AudioSource::PlayEventByName(const char * name)
 {
 	AK::SoundEngine::PostEvent(name, id);

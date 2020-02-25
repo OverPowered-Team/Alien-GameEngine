@@ -28,6 +28,7 @@ namespace WwiseT
 		~AudioSource();
 
 		// Events
+		void PlayEventByID(uint id);
 		void PlayEventByName(const char* name);
 		void StopEventByName(const char* name);
 		void PauseEventByName(const char* name);

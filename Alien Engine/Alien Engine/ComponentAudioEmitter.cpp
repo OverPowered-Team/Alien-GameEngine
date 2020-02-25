@@ -4,6 +4,7 @@
 #include "ComponentTransform.h"
 #include "ReturnZ.h"
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "mmgr/mmgr.h"
 
 ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(parent)
 {
@@ -56,7 +57,8 @@ void ComponentAudioEmitter::Mute(bool mute)
 
 void ComponentAudioEmitter::StartSound()
 {	
-	source->PlayEventByName(audio_name.c_str());
+	//source->PlayEventByName(audio_name.c_str());
+	source->PlayEventByID(current_event);
 }
 
 void ComponentAudioEmitter::UpdateSourcePos()

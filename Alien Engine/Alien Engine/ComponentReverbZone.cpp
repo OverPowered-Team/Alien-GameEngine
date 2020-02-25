@@ -3,6 +3,7 @@
 #include "ComponentTransform.h"
 #include "ComponentReverbZone.h"
 #include "ModuleAudio.h"
+#include "mmgr/mmgr.h"
 
 #define MAX(a,b) ((a)>(b)) ? (a) : (b)
 
