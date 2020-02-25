@@ -224,9 +224,6 @@ ResourceFont* ComponentText::GetFont() const
 	return font;
 }
 
-std::string ComponentText::GetText() const
-{
-	return text;
-}
+
 
 
