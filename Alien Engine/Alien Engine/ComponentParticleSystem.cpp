@@ -24,6 +24,11 @@ ComponentParticleSystem::~ComponentParticleSystem()
 	}
 }
 
+void ComponentParticleSystem::OnPlay()
+{
+	particleSystem->Restart();
+}
+
 void ComponentParticleSystem::PreUpdate()
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);

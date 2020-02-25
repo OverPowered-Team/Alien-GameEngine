@@ -19,6 +19,8 @@ public:
 
 private:
 
+	void OnPlay() override; 
+
 	void PreUpdate() override; 
 	void Update() override;
 	void PostUpdate() override;
