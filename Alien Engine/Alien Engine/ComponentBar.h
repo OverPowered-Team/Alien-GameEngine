@@ -34,13 +34,10 @@ public:
 private:
 	ResourceTexture* barTexture = nullptr;
 	float factor = 0.0f;
-	float barScaleY = 0.8F;
+	float barScaleY = 0.8F, barScaleX = 1.0f;
 
-	float offsetX = 0.0f;
+	float offsetX = 0.0f, offsetY = 0.0f;
 	Color bar_color = { 1.0f, 1.0f,1.0f,1.0f };
-
-	float barX = 0.0F;
-	float barY = 0.0F;
 };
 
 #endif // !_COMPONENT_BAR_H_

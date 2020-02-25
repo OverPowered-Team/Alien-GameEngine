@@ -54,11 +54,13 @@ bool ComponentBar::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Spacing();
 		ImGui::Spacing();
-		ImGui::Text("Offset X:	"); ImGui::SameLine(150);
-		if (ImGui::DragFloat("##OffsetX", &offsetX, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
-		{
 
-		}
+		ImGui::PushID(this);
+		ImGui::Text("Offset:	"); ImGui::SameLine(150); ImGui::SetNextItemWidth(100);
+		ImGui::DragFloat("X", &offsetX, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
+		ImGui::SameLine(); ImGui::SetNextItemWidth(100);
+		ImGui::DragFloat("Y", &barScaleY, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
+		ImGui::PopID();
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -173,13 +175,14 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("BackgroundColor");
+
+		ImGui::Text("Background Color");
 		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 		static bool set_bg_Z = true;
 		static Color bg_col;
 		bg_col = current_color;
-		if (ImGui::ColorEdit4("##Color", &current_color, ImGuiColorEditFlags_Float)) {
+		if (ImGui::ColorEdit4("##Color", &bg_col, ImGuiColorEditFlags_Float)) {
 			if (set_bg_Z)
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			set_bg_Z = false;
@@ -207,10 +210,12 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-		ImGui::Text("Slider Scale:	"); ImGui::SameLine(150);
-		if (ImGui::DragFloat("##Slider Scale", &barScaleY, 0.1F)) {
-			
-		}
+		ImGui::PushID("ScaleBar");
+		ImGui::Text("Slider Scale:	"); ImGui::SameLine(150); ImGui::SetNextItemWidth(100);
+		ImGui::DragFloat("X", &barScaleX, 0.05F); 
+		ImGui::SameLine(); ImGui::SetNextItemWidth(100);
+		ImGui::DragFloat("Y", &barScaleY, 0.05F);
+		ImGui::PopID();
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -230,13 +235,12 @@ void ComponentBar::Draw(bool isGame)
 	}
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
-	
-	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor - offsetX;
-	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY;
-	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX;
-	transform->global_transformation[1][3] = transform->global_transformation[1][3];
-
+	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor * barScaleX; //w
+	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY; //h
+	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX; //x
+	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY; //y
 	DrawTexture(isGame, barTexture);
+
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
@@ -265,12 +269,6 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		float3 object_pos = transform->GetGlobalPosition();
 		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
 		float2 origin = float2((transform->global_transformation[0][3] - canvasPivot.x) / (canvas->width), (transform->global_transformation[1][3] - canvasPivot.y) / (canvas->height));
-		if (tex == barTexture)
-		{
-			barX = origin.x * App->ui->panel_game->width;
-			barY = -origin.y * App->ui->panel_game->height;
-		}
-
 
 #ifndef GAME_VERSION
 		x = origin.x * App->ui->panel_game->width;
@@ -292,7 +290,7 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
-	if(tex = texture)
+	if(tex == texture)
 		glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
 	else
 		glColor4f(bar_color.r, bar_color.g, bar_color.b, bar_color.a);
@@ -348,10 +346,10 @@ void ComponentBar::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("minValue", minValue);
 	to_save->SetNumber("currentValue", currentValue);
 	to_save->SetNumber("factor", factor);
+	to_save->SetNumber("barScaleX", barScaleX);
 	to_save->SetNumber("barScaleY", barScaleY);
 	to_save->SetNumber("offsetX", offsetX);
-	to_save->SetNumber("barX", barX);
-	to_save->SetNumber("barY", barY);
+	to_save->SetNumber("offsetY", offsetY);
 	
 }
 
@@ -369,10 +367,10 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	minValue = to_load->GetNumber("minValue");
 	currentValue = to_load->GetNumber("currentValue");
 	factor = to_load->GetNumber("factor");
+	barScaleX = to_load->GetNumber("barScaleX");
 	barScaleY = to_load->GetNumber("barScaleY");
 	offsetX = to_load->GetNumber("offsetX");
-	barX = to_load->GetNumber("barX");
-	barY = to_load->GetNumber("barY");
+	offsetY = to_load->GetNumber("offsetY");
 
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
