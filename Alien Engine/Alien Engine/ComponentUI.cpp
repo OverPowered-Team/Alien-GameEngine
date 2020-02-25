@@ -12,7 +12,6 @@
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
 {
-	//ChangeVertex(10,10);
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
@@ -55,11 +54,6 @@ void ComponentUI::ChangeVertex(float width, float height)
 
 void ComponentUI::UpdateVertex()
 {
-	/*vertices[0] = { 0,0,0 };
-	vertices[1] = { 0, -size.y,0 };
-	vertices[2] = { size.x, -size.y,0 };
-	vertices[3] = { size.x, 0,0 };*/
-
 	vertices[0] = { -size.x,size.y,0 };
 	vertices[1] = { -size.x, -size.y,0 };
 	vertices[2] = { size.x, -size.y,0 };

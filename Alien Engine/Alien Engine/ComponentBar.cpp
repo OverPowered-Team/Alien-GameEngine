@@ -37,19 +37,19 @@ bool ComponentBar::DrawInspector()
 		ImGui::Text("Min Value: "); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##MinValue", &minValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
-			
+			CalculateValue();
 		}
 
 		ImGui::Text("Max value:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##MaxValue", &maxValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
-			
+			CalculateValue();
 		}
 
 		ImGui::Text("Current value:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##CurrentValue", &currentValue, 0.5F, minValue, maxValue, "%.1f", 1, game_object_attached->is_static))
 		{
-
+			CalculateValue();
 		}
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -173,24 +173,40 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Color");
+		ImGui::Text("BackgroundColor");
 		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		static bool set_Z = true;
-		static Color col;
-		col = current_color;
-		if (ImGui::ColorEdit4("##RendererColor", &col, ImGuiColorEditFlags_Float)) {
-			if (set_Z)
+		static bool set_bg_Z = true;
+		static Color bg_col;
+		bg_col = current_color;
+		if (ImGui::ColorEdit4("##Color", &current_color, ImGuiColorEditFlags_Float)) {
+			if (set_bg_Z)
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			set_Z = false;
-			current_color = col;
+			set_bg_Z = false;
+			current_color = bg_col;
 		}
-		else if (!set_Z && ImGui::IsMouseReleased(0)) {
-			set_Z = true;
+		else if (!set_bg_Z && ImGui::IsMouseReleased(0)) {
+			set_bg_Z = true;
 		}
-		ImGui::Spacing();
-		ImGui::Spacing();
-		ImGui::Spacing();
+
+		ImGui::Text("Bar Color");
+		ImGui::SameLine(150);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		static bool set_bar_Z = true;
+		static Color bar_col;
+		bar_col = bar_color;
+		if (ImGui::ColorEdit4("##BarColor", &bar_col, ImGuiColorEditFlags_Float)) {
+			if (set_bar_Z)
+				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			set_bar_Z = false;
+			bar_color = bar_col;
+		}
+		else if (!set_bar_Z && ImGui::IsMouseReleased(0)) {
+			set_bar_Z = true;
+		}
+
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
 		ImGui::Text("Slider Scale:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##Slider Scale", &barScaleY, 0.1F)) {
 			
@@ -220,19 +236,9 @@ void ComponentBar::Draw(bool isGame)
 	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX;
 	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
-	
-
 	DrawTexture(isGame, barTexture);
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
-}
-
-void ComponentBar::Update()
-{
-	if (Time::IsPlaying()) {
-		
-		GetValue();
-	}
 }
 
 void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
@@ -286,7 +292,10 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
-	glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
+	if(tex = texture)
+		glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
+	else
+		glColor4f(bar_color.r, bar_color.g, bar_color.b, bar_color.a);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -333,6 +342,7 @@ void ComponentBar::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
 	to_save->SetString("sliderTexture", (barTexture != nullptr) ? std::to_string(barTexture->GetID()) : "0");
 	to_save->SetColor("Color", current_color);
+	to_save->SetColor("BarColor", bar_color);
 
 	to_save->SetNumber("maxValue", maxValue);
 	to_save->SetNumber("minValue", minValue);
@@ -353,6 +363,7 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 
 	enabled = to_load->GetBoolean("Enabled");
 	current_color = to_load->GetColor("Color");
+	bar_color = to_load->GetColor("BarColor");
 
 	maxValue = to_load->GetNumber("maxValue");
 	minValue = to_load->GetNumber("minValue");
@@ -403,11 +414,21 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	}
 }
 
-void ComponentBar::GetValue()
+void ComponentBar::CalculateValue()
 {
 	if (currentValue > maxValue) currentValue = maxValue;
 	if (currentValue < minValue) currentValue = minValue;
 
 
 	factor = (((currentValue - minValue) * 100.0f) / (maxValue - minValue)) / 100.0f;
+}
+
+void ComponentBar::SetBackgroundColor(float r, float g, float b, float a)
+{
+	current_color = { r,g,b,a };
+}
+
+void ComponentBar::SetBarColor(float r, float g, float b, float a)
+{
+	bar_color = { r,g,b,a };
 }

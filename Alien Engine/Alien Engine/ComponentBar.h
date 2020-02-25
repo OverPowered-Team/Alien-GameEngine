@@ -14,7 +14,6 @@ public:
 	bool DrawInspector();
 
 	void Draw(bool isGame) override;
-	void Update() override;
 	void DrawTexture(bool isGame, ResourceTexture* tex);
 
 	void Reset() {};
@@ -24,18 +23,21 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-	void GetValue();
+	//Script
+	void CalculateValue();
+	void SetBackgroundColor(float r, float g, float b, float a);
+	void SetBarColor(float r, float g, float b, float a);
 
 public:
-	float currentValue = 0.0f;
+	float currentValue = 0.0f, maxValue = 100.0f, minValue = 0.0f;
 
 private:
 	ResourceTexture* barTexture = nullptr;
-	float maxValue = 100.0f, minValue = 0.0f,  factor = 0.0f;
+	float factor = 0.0f;
 	float barScaleY = 0.8F;
 
 	float offsetX = 0.0f;
-
+	Color bar_color = { 1.0f, 1.0f,1.0f,1.0f };
 
 	float barX = 0.0F;
 	float barY = 0.0F;
