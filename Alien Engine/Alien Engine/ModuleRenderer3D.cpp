@@ -99,19 +99,20 @@ bool ModuleRenderer3D::Init()
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
-
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		glClearDepth(1.0f);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_LINE_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);				
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
+		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_NORMALIZE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	}
 
 	// Projection matrix for
@@ -173,11 +174,11 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 #ifndef GAME_VERSION
-	glViewport(0, 0, width, height);
+	//glViewport(0, 0, width, height);
 	App->window->width = width;
 	App->window->height = height;
 
-	CreateRenderTexture();
+	//CreateRenderTexture();
 #else 
 	glViewport(0, 0, width, height);
 	App->window->width = width;

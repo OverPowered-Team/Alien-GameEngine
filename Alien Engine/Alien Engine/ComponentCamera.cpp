@@ -14,6 +14,7 @@
 #include "ReturnZ.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentMesh.h"
+#include "Viewport.h"
 
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {
@@ -37,6 +38,7 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 		if (App->renderer3D->actual_game_camera == nullptr)
 		{
 			App->renderer3D->actual_game_camera = this;
+			App->objects->game_viewport->SetCamera(this);
 		}
 		App->objects->game_cameras.push_back(this);
 	}
@@ -58,16 +60,20 @@ ComponentCamera::~ComponentCamera()
 				if (!App->objects->game_cameras.empty())
 				{
 					App->renderer3D->actual_game_camera = App->objects->game_cameras.front();
+					App->objects->game_viewport->SetCamera(App->objects->game_cameras.front());
 					#ifndef GAME_VERSION
 						App->ui->actual_name = App->renderer3D->actual_game_camera->game_object_attached->GetName();
 					#endif
 				}
-				else
+				else {
 					App->renderer3D->actual_game_camera = nullptr;
+					App->objects->game_viewport->SetCamera(nullptr);
+				}
 			}
 			if (App->renderer3D->selected_game_camera == this)
 			{
 				App->renderer3D->selected_game_camera = nullptr;
+				App->camera->selected_viewport->SetCamera(nullptr);
 			}
 			break;
 		}

@@ -19,7 +19,7 @@ class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
-
+class Viewport;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -238,6 +238,10 @@ public:
 	ComponentScript* actual_script_loading = nullptr;
 
 	std::vector<std::string> tags;
+
+	std::vector<Viewport*> viewports;
+
+	Viewport* game_viewport = nullptr;
 
 private:
 	// root

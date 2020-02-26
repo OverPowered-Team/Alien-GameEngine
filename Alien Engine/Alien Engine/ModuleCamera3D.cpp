@@ -10,6 +10,7 @@
 #include "PanelScene.h"
 #include "ComponentMesh.h"
 #include "ResourceMesh.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
@@ -27,7 +28,8 @@ bool ModuleCamera3D::Start()
 {
 	LOG_ENGINE("Setting up the camera");
 	bool ret = true;
-
+	scene_viewport = new Viewport(fake_camera);
+	selected_viewport = new Viewport(nullptr);
 	return ret;
 }
 

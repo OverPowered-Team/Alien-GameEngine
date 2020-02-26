@@ -75,7 +75,7 @@
     </Filter>
     <Filter Include="Components\ParticleSystem">
       <UniqueIdentifier>{e633960d-eb91-4a91-8a5d-65579cacfd40}</UniqueIdentifier>
-      </Filter>
+    </Filter>
     <Filter Include="Components\UI">
       <UniqueIdentifier>{a9b87688-5623-488f-8d32-013fcbbf96fc}</UniqueIdentifier>
     </Filter>
@@ -1137,6 +1137,9 @@
     <ClInclude Include="ComponentBar.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Viewport.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -1546,6 +1549,9 @@
     </ClCompile>
     <ClCompile Include="ComponentBar.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

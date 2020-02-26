@@ -5,7 +5,9 @@
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
 #include "PanelSceneSelector.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
+
 
 PanelGame::PanelGame(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -24,7 +26,7 @@ void PanelGame::PanelLogic()
 {
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	if (height > ImGui::GetWindowHeight())
+	/*if (height > ImGui::GetWindowHeight())
 	{
 		height = ImGui::GetWindowHeight();
 		width = (height * 16) / 9;
@@ -46,16 +48,42 @@ void PanelGame::PanelLogic()
 			width = ImGui::GetWindowWidth();
 			height = (width * 9) / 16;
 		}
-	}
+	}*/
 
 	if (App->objects->game_cameras.empty())
 	{
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() * 0.5f) - 80);
 		ImGui::SetCursorPosY((ImGui::GetWindowHeight() * 0.5f));
 		ImGui::Text("No Cameras Available :(");
+		App->objects->game_viewport->active = false;
+	}
+	else {
+		viewport_min = ImGui::GetCursorScreenPos();
+		viewport_max = ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail();
+
+		// Attach texture to window ----------------------------------------
+
+		current_viewport_size = ImGui::GetContentRegionAvail();
+		posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
+		posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
+		ImGui::Image((ImTextureID)App->objects->game_viewport->GetTexture(), ImVec2(current_viewport_size.x, current_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+		width = current_viewport_size.x;
+		height = current_viewport_size.y;
+
+		// Set viewport values --------------------------------------------
+
+		App->objects->game_viewport->SetPos(float2(viewport_min.x, viewport_min.y)); // Viewport position after menu bar 
+
+		if (!(current_viewport_size == viewport_size)) // Viewport resize if window size change
+		{
+			viewport_size = current_viewport_size;
+			App->objects->game_viewport->SetSize(viewport_size.x, viewport_size.y);
+		}
+
+		App->objects->game_viewport->active = enabled; // Active/disavtive with window active
 	}
 
-	ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
+	/*ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
 	ImGui::SetCursorPosY((ImGui::GetWindowHeight() - height) * 0.5f);
 
 	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
@@ -63,14 +91,15 @@ void PanelGame::PanelLogic()
 
 	if (App->renderer3D->actual_game_camera != nullptr)
 	{
-		ImGui::Image((ImTextureID)App->renderer3D->game_tex->id, { width,height }, { 0,1 }, { 1,0 });
+		Viewport* viewport = App->objects->game_viewport;
+		ImGui::Image((ImTextureID)viewport->GetTexture(), { width,height }, { 0,1 }, { 1,0 });
 	}
 
 	if (ImGui::IsWindowHovered()) {
 		float2 origin = float2((App->input->GetMousePosition().x - posX), (App->input->GetMousePosition().y - posY));
 	}
 
-	lastHeight = ImGui::GetWindowHeight();
+	lastHeight = ImGui::GetWindowHeight();*/
 
 	if (ImGui::IsWindowFocused()) {
 		game_focused = true;
