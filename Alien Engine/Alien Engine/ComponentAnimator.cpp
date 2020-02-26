@@ -71,10 +71,13 @@ ResourceAnimatorController* ComponentAnimator::GetResourceAnimatorController()
 
 void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* controller)
 {
-	if (animator_controller)
+	if (animator_controller) {
 		animator_controller->DecreaseReferences();
+		animator_controller->times_attached--;
+	}
 
 	animator_controller = controller;
+	animator_controller->times_attached++;
 	animator_controller->IncreaseReferences();
 }
 
