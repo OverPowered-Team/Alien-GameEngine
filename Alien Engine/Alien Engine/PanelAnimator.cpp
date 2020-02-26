@@ -229,6 +229,7 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
+			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name);
 			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name.c_str())) {
 				ImGui::OpenPopup("Select bool parameter");
 			}
@@ -261,6 +262,9 @@ void PanelAnimator::ShowLinkPopup()
 				ImGui::EndPopup();
 			}
 
+			ImGui::PopID();
+
+
 		}
 
 		//----------Floats-----------------
@@ -272,6 +276,7 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
+			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name);
 			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name.c_str())) {
 				ImGui::OpenPopup("Select float parameter");
 			}
@@ -293,6 +298,7 @@ void PanelAnimator::ShowLinkPopup()
 				ImGui::OpenPopup("Select float comparison");
 			}
 
+
 			if (ImGui::BeginPopup("Select float comparison")) {
 				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts.size(); j++)
 				{
@@ -308,6 +314,9 @@ void PanelAnimator::ShowLinkPopup()
 
 			ImGui::InputFloat("", &current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp);
 
+			ImGui::PopID();
+
+
 		}
 
 		//----------Ints-----------------
@@ -319,6 +328,7 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
+			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name);
 			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name.c_str())) {
 				ImGui::OpenPopup("Select Int parameter");
 			}
@@ -355,6 +365,7 @@ void PanelAnimator::ShowLinkPopup()
 
 			ImGui::InputInt("", &current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp);
 
+			ImGui::PopID();
 		}
 
 		ImGui::Separator();
