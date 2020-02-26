@@ -145,13 +145,13 @@ void ResourceAnimatorController::UpdateState(State* state)
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
-				//for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
-				//	if ((*it)->GetTrigger() == 0) {
-				//		state->next_state = (*it)->GetTarget();
-				//		state->fade_duration = (*it)->GetBlend();
-				//		break;
-				//	}
-				//}
+				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
+					if ((*it)->GetBoolConditions().size() == 0 && (*it)->GetFloatConditions().size() == 0 && (*it)->GetIntConditions().size() == 0) {
+						state->next_state = (*it)->GetTarget();
+						state->fade_duration = (*it)->GetBlend();
+						break;
+					}
+				}
 			}
 			if (state->GetClip()->loops)
 				state->time = 0;
@@ -197,6 +197,30 @@ void ResourceAnimatorController::CheckTriggers()
 	//		}
 	//	}
 	//}
+
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+		for (int i = 0; i < (*it)->GetBoolConditions().size(); i++) {
+			if ((*it)->GetBoolConditions()[i]->Compare()) {
+				current_state->next_state = (*it)->GetTarget();
+				current_state->fade_duration = (*it)->GetBlend();
+				break;
+			}
+		}
+		for (int i = 0; i < (*it)->GetFloatConditions().size(); i++) {
+			if ((*it)->GetFloatConditions()[i]->Compare()) {
+				current_state->next_state = (*it)->GetTarget();
+				current_state->fade_duration = (*it)->GetBlend();
+				break;
+			}
+		}
+		for (int i = 0; i < (*it)->GetIntConditions().size(); i++) {
+			if ((*it)->GetIntConditions()[i]->Compare()) {
+				current_state->next_state = (*it)->GetTarget();
+				current_state->fade_duration = (*it)->GetBlend();
+				break;
+			}
+		}
+	}
 }
 
 bool ResourceAnimatorController::SaveAsset(const u64& force_id)
