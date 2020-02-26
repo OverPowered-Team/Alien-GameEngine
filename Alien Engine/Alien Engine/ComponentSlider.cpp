@@ -190,11 +190,12 @@ void ComponentSlider::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * sliderScaleX;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * sliderScaleY;
-	transform->global_transformation[0][3] = transform->global_transformation[0][3] + offsetX;
+	transform->global_transformation[0][3] = (factor * ((matrix[0][3] + matrix[0][0]- transform->global_transformation[0][0]) - (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]))) + (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]);
 	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY;
 
+	
 	sliderX = transform->global_transformation[0][3];
-	sliderXmax = transform->global_transformation[0][3];
+
 
 	DrawTexture(isGame, sliderTexture);
 	transform->global_transformation = matrix;
@@ -439,17 +440,30 @@ bool ComponentSlider::OnPressed()
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
 	int xmotion = App->input->GetMouseXMotion();
-	offsetX = offsetX + (xmotion * 0.25f);
-	float offsetXdt = xmotion * 0.25f;
-
-	if ((sliderX + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
+	//offsetX = offsetX + (xmotion * 0.25f);
+	/*if (xmotion > 0 && xmotion < 2)
 	{
-		offsetX = sliderXmax - 1.0f;
-		
+		factor += 0.01f;
 	}
-	if ((sliderX - (width * 0.5f)) <= (x - (width_bg * 0.5f)))
+	if (xmotion < 0 && xmotion > -2)
 	{
-		offsetX = sliderXmax + 1.0f;
+		factor += 0.01f;
+	}*/
+	if (xmotion > 0)
+	{
+		factor += (0.01f* xmotion);
+	}
+	if (xmotion < 0)
+	{
+		factor += (0.01f* xmotion);
+	}
+	if (factor>=1.0f)
+	{
+		factor = 1.0f;
+	}
+	if (factor <= 0.0f)
+	{
+		factor = 0.0f;
 	}
 
 

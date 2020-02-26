@@ -46,6 +46,8 @@ public:
 	float sliderScaleX = 0.2F;
 	float sliderScaleY = 0.9F;
 
+	float factor = 0.5f;
+
 	float sliderX = 0.0F;
 	float sliderY = 0.0F;
 
