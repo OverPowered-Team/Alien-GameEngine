@@ -26,7 +26,9 @@ public:
 	void LoadComponent(JSONArraypack* to_load);
 
 	//Script
-	void CalculateValue();
+	void CalculateFactor();
+	float GetBarValue();
+	void SetBarValue(float factor);
 	void SetBarColor(float r, float g, float b, float a);
 
 public:
