@@ -51,6 +51,9 @@ void ComponentBoxCollider::UpdateShape()
 		delete shape;
 	}
 
+	//float3 t = { transform->global_transformation[0][0], transform->global_transformation[1][1], transform->global_transformation[2][2] };
+	//float3 final_size = CheckInvalidCollider(size.Mul(t)) * 0.5f;
+
 	float3 final_size = CheckInvalidCollider(size.Mul(transform->GetGlobalScale().Abs())) * 0.5f;
 	shape = new btBoxShape(ToBtVector3(final_size));
 	aux_body->setCollisionShape(shape);
