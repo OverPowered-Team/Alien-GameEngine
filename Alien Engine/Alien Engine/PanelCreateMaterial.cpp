@@ -80,13 +80,11 @@ void PanelCreateMaterial::PanelLogic()
 
 		if (ImGui::Button("Create", { ImGui::GetWindowWidth() - 16,25 }))
 		{
-			ResourceShader* n_shader = new ResourceShader(path);
+			ResourceShader* n_shader = new ResourceShader((SHADERS_FOLDER + std::string(path) + std::string(".shader")).c_str());
 			n_shader->IncreaseReferences();
-			n_shader->SetAssetsPath((SHADERS_FOLDER + std::string(path) + std::string(".Shader")).c_str());
-			n_shader->CreateShaderFolder(1,true,path);
+			n_shader->CreateShaderDoc(1,path);
 			n_shader->CreateMetaData(n_shader->GetID());
-			n_shader->ParseAndCreateShader();
-			n_shader->Bind();
+			App->resources->AddResource(n_shader);
 			ChangeEnable();
 		}
 

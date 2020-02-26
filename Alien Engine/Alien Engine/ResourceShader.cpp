@@ -297,25 +297,13 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 	return location;
 }
 
-void ResourceShader::CreateShaderFolder(const int& type, bool to_export, const char* name)
+void ResourceShader::CreateShaderDoc(const int& type, const char* name)
 {
-	std::string file_output = std::string(SHADERS_FOLDER + std::string(name) + std::string(".Shader"));
+	std::string file_output = std::string(SHADERS_FOLDER + std::string(name) + std::string(".shader"));
 	switch (type) {
 	case 1: { // class
-		if (to_export) {
-			App->file_system->Copy(std::string(SHADERS_FOLDER + std::string("default.Shader")).c_str(), file_output.data());
-		}
-		else {
-			App->file_system->Copy(CLASS_FILE_TEMPLATE, file_output.data());
-		}
-		break; }
-	case 2: { // struct
-		if (to_export) {
-			App->file_system->Copy(EXPORT_FILE_STRUCT_TEMPLATE, file_output.data());
-		}
-		else {
-			App->file_system->Copy(STRUCT_FILE_TEMPLATE, file_output.data());
-		}
+	
+			App->file_system->Copy(std::string(SHADERS_FOLDER + std::string("default.shader")).c_str(), file_output.data());
 		break; }
 	default:
 		break;
