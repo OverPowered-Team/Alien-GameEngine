@@ -158,6 +158,11 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 	return nullptr;
 }
 
+WwiseT::AudioSource* ModuleAudio::GetListener() const
+{
+	return listener;
+}
+
 void ModuleAudio::Play()
 {
 	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)

@@ -17,8 +17,6 @@ void ComponentAudioEmitter::Update()
 {
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
-			//source->StopEventByName(audio_name.c_str());
-			//audio_name = App->audio->a
 			play_mode = false;
 		}
 	}
