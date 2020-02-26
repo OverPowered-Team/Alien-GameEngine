@@ -247,10 +247,10 @@ void PanelAnimator::ShowLinkPopup()
 			ImGui::SameLine();
 
 			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_text.c_str())) {
-				ImGui::OpenPopup("Select comparison");
+				ImGui::OpenPopup("Select bool comparison");
 			}
 
-			if (ImGui::BeginPopup("Select comparison")) {
+			if (ImGui::BeginPopup("Select bool comparison")) {
 				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts.size(); j++)
 				{
 					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts[j].c_str())) {
@@ -272,20 +272,41 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name.c_str())) {
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name.c_str())) {
 				ImGui::OpenPopup("Select float parameter");
 			}
 
 			if (ImGui::BeginPopup("Select float parameter")) {
-				for (int i = 0; i < current_animator->GetFloatParameters().size(); i++)
+				for (int j = 0; j < current_animator->GetFloatParameters().size(); j++)
 				{
-					if (ImGui::Selectable(current_animator->GetFloatParameters()[i].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(current_animator->GetFloatParameters()[i]);
+					if (ImGui::Selectable(current_animator->GetFloatParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(current_animator->GetFloatParameters()[j]);
 					}
 				}
 
 				ImGui::EndPopup();
 			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select float comparison");
+			}
+
+			if (ImGui::BeginPopup("Select float comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			ImGui::InputFloat("", &current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp);
 
 		}
 
@@ -298,20 +319,41 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name.c_str())) {
-				ImGui::OpenPopup("Select bool parameter");
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name.c_str())) {
+				ImGui::OpenPopup("Select Int parameter");
 			}
 
-			if (ImGui::BeginPopup("Select bool parameter")) {
-				for (int i = 0; i < current_animator->GetIntParameters().size(); i++)
+			if (ImGui::BeginPopup("Select Int parameter")) {
+				for (int j = 0; j < current_animator->GetIntParameters().size(); j++)
 				{
-					if (ImGui::Selectable(current_animator->GetIntParameters()[i].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(current_animator->GetIntParameters()[i]);
+					if (ImGui::Selectable(current_animator->GetIntParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(current_animator->GetIntParameters()[j]);
 					}
 				}
 
 				ImGui::EndPopup();
 			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select Int comparison");
+			}
+
+			if (ImGui::BeginPopup("Select Int comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			ImGui::InputInt("", &current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp);
 
 		}
 

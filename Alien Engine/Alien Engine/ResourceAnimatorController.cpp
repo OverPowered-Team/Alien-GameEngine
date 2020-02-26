@@ -863,19 +863,19 @@ float Transition::GetBlend()
 
 void Transition::AddIntCondition()
 {
-	IntCondition* new_condition = new IntCondition("int", { "", 0 }, 0);
+	IntCondition* new_condition = new IntCondition("int", { "iparameter", 0 }, 0);
 	int_conditions.push_back(new_condition);
 }
 
 void Transition::AddFloatCondition()
 {
-	FloatCondition* new_condition = new FloatCondition("float", { "", 0.0f }, 0.0f);
+	FloatCondition* new_condition = new FloatCondition("float", { "fparameter", 0.0f }, 0.0f);
 	float_conditions.push_back(new_condition);
 }
 
 void Transition::AddBoolCondition()
 {
-	BoolCondition* new_condition = new BoolCondition("bool", { "", false });
+	BoolCondition* new_condition = new BoolCondition("bool", { "bparameter", false });
 	bool_conditions.push_back(new_condition);
 }
 

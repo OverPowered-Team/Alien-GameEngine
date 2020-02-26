@@ -63,10 +63,12 @@ public:
 		comp_texts.push_back("Not Equal");
 		comp_texts.push_back("Greater");
 		comp_texts.push_back("Lesser");
+		comp_text = "Greater";
 	}
 	bool Compare();
-	void SetParameter(std::pair <std::string, int> parameter) { this->parameter = parameter; }
+	void SetParameter(std::pair <std::string, int> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
 	void SetCompValue(int comp) { this->comp = comp; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 
 };
 
@@ -82,10 +84,12 @@ public:
 		this->param_name = parameter.first;
 		comp_texts.push_back("Greater");
 		comp_texts.push_back("Lesser");
+		comp_text = "Greater";
 	}
 	bool Compare();
-	void SetParameter(std::pair <std::string, float> parameter) { this->parameter = parameter; }
+	void SetParameter(std::pair <std::string, float> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
 	void SetCompValue(float comp) { this->comp = comp; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 };
 
 class BoolCondition : public Condition {
@@ -98,9 +102,10 @@ public:
 		this->param_name = parameter.first;
 		comp_texts.push_back("True");
 		comp_texts.push_back("False");
+		comp_text = "True";
 	}
 	bool Compare();
-	void SetParameter(std::pair <std::string, bool> parameter) { this->parameter = parameter; }
+	void SetParameter(std::pair <std::string, bool> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 };
 
@@ -175,6 +180,7 @@ public:
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
+	//string to const char for scripting
 	void SetBool(std::string name, bool value);
 	void SetFloat(std::string name, float value);
 	void SetInt(std::string name, int value);
