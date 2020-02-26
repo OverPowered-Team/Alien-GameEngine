@@ -158,21 +158,18 @@ void PanelScene::PanelLogic()
 		ImGui::SetNextWindowPos(ImVec2(max_space.x - 212, max_space.y - 154));
 		ImGui::SetNextWindowSize(ImVec2(192, 134));
 		ImGui::Begin("Camera Selected Preview", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing);
-		Viewport* viewport = nullptr;
-		for (Viewport* viewPort : App->objects->viewports) {
-			if (viewPort->GetCamera() == App->renderer3D->selected_game_camera) {
-				viewport = viewPort;
-				break;
-			}
+		Viewport* viewport = App->camera->selected_viewport;
+		if (viewport->GetCamera() != App->renderer3D->selected_game_camera) {
+			viewport->SetCamera(App->renderer3D->selected_game_camera);
 		}
 		if (viewport != nullptr) {
 			ImGui::Image((ImTextureID)viewport->GetTexture(), { 176,99 }, { 0,1 }, { 1,0 });
 		}
 		ImGui::End();
-		App->camera->scene_viewport->active = enabled;
+		App->camera->selected_viewport->active = enabled;
 	}
 	else {
-		App->camera->scene_viewport->active = false; // Active/disavtive with window active
+		App->camera->selected_viewport->active = false; // Active/disavtive with window active
 	}
 
 	ImGui::End();

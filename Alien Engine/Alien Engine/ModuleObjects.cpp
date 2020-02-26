@@ -161,7 +161,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ScriptsPostUpdate();
 
 	for (Viewport* viewport : viewports) {
-		if (!viewport->active)
+		if (!viewport->active && !viewport->CanRender())
 			continue;
 
 		viewport->BeginViewport();
@@ -452,6 +452,10 @@ bool ModuleObjects::CleanUp()
 	}
 
 	DeleteReturns();
+
+	for (Viewport* viewport : viewports) {
+		delete viewport;
+	}
 	
 	return true;
 }
