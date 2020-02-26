@@ -164,7 +164,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
-		if (!viewport->active && !viewport->CanRender())
+		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
 			continue;
 
 		viewport->BeginViewport();

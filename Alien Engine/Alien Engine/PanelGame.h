@@ -24,8 +24,6 @@ private:
 	ImVec2 viewport_min = { 0.f, 0.f };
 	ImVec2 viewport_max = { 0.f, 0.f };
 	ImVec2 current_viewport_size = { 0.f, 0.f };
-
-	float lastHeight = 540;
 };
 
 #pragma once

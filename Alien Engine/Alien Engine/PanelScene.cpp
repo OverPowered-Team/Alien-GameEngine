@@ -36,8 +36,6 @@ void PanelScene::PanelLogic()
 	viewport_min = ImGui::GetCursorScreenPos();
 	viewport_max = ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail();
 
-	// Attach texture to window ----------------------------------------
-
 	current_viewport_size = ImGui::GetContentRegionAvail();
 	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
 	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
@@ -46,18 +44,16 @@ void PanelScene::PanelLogic()
 	height = current_viewport_size.y;
 	App->camera->is_scene_hovered = ImGui::IsItemHovered();
 
-	// Set viewport values --------------------------------------------
+	App->camera->scene_viewport->SetPos(float2(viewport_min.x, viewport_min.y));
 
-	App->camera->scene_viewport->SetPos(float2(viewport_min.x, viewport_min.y)); // Viewport position after menu bar 
-
-	if (!(current_viewport_size == viewport_size)) // Viewport resize if window size change
+	if (!(current_viewport_size == viewport_size))
 	{
 		viewport_size = current_viewport_size;
 		App->camera->scene_viewport->SetSize(viewport_size.x, viewport_size.y);
 	}
 
 
-	App->camera->scene_viewport->active = enabled; // Active/disavtive with window active
+	App->camera->scene_viewport->active = enabled; 
 
 	// drop a fbx/texture in the window
 	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
