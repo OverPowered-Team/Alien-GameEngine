@@ -500,8 +500,6 @@ void ModuleObjects::DeselectObject(GameObject* obj)
 void ModuleObjects::OnPlay() const
 {
 	InitScripts();
-
-	base_game_object->Awake();
 }
 
 void ModuleObjects::InitScripts() const

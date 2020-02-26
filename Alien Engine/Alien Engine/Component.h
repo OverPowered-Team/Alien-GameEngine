@@ -9,12 +9,10 @@ typedef unsigned long long u64;
 enum class ComponentType {
 	TRANSFORM = 0,
 	MESH,
-	DEFORMABLE_MESH,
 	MATERIAL,
 	LIGHT,
 	CAMERA,
 	ANIMATOR,
-	BONE,
 	PARTICLES,
 	A_EMITTER,
 	A_LISTENER,
@@ -26,6 +24,8 @@ enum class ComponentType {
 	UI_CHECKBOX,
 	UI_SLIDER,
 	UI_BAR, 
+	DEFORMABLE_MESH,
+	BONE,
 	SCRIPT,
 	UI,// UI MUST BE THE LAST
 
@@ -70,7 +70,6 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save) {}
 	virtual void LoadComponent(JSONArraypack* to_load) {}
 
-	virtual void Awake() {}
 	virtual void OnPlay() {}
 	virtual void OnPause() {}
 	virtual void OnStop() {}

@@ -1,9 +1,15 @@
 {
     "Controller": {
         "Name": "NewAnimatorController",
-        "NumStates": 0,
+        "NumStates": 1,
         "NumTransitions": 0,
-        "States": [],
+        "States": [
+            {
+                "Name": "New state0",
+                "Speed": 1,
+                "Clip": "16734450695673769463"
+            }
+        ],
         "Transitions": []
     }
 }

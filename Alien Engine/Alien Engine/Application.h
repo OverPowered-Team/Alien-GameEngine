@@ -71,13 +71,12 @@ private:
 	bool quit = false;
 
 	j1PerfTimer			ptimer;
-	unsigned __int64				frame_count = 0;
+	unsigned __int64	frame_count = 0;
 	Timer				startup_time;
 	Timer				frame_time;
 	Timer				last_sec_frame_time;
-	unsigned __int32				last_sec_frame_count = 0;
-	unsigned __int32				prev_last_sec_frame_count = 0;
-	
+	unsigned __int32	last_sec_frame_count = 0;
+	unsigned __int32	prev_last_sec_frame_count = 0;
 	float				dt;
 
 public:

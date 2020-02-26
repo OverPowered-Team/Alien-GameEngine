@@ -691,19 +691,6 @@ void GameObject::PostUpdate()
 	}
 }
 
-void GameObject::Awake()
-{
-	for each (Component* c in components)
-	{
-		c->Awake();
-	}
-
-	for each (GameObject* go in children)
-	{
-		go->Awake();
-	}
-}
-
 void GameObject::PreUpdate()
 {
 	if (!components.empty()) {

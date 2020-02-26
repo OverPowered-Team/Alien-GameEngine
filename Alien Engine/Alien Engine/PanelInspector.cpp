@@ -339,7 +339,8 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0DeformableMesh\0Material\0Light\0Camera\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0Animator\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, 
+			"Select Component\0Mesh\0Material\0Light\0Camera\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0UI\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -412,6 +413,7 @@ void PanelInspector::ButtonAddComponent()
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR))
 				{
 					comp = new ComponentAnimator(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 				else
 					LOG_ENGINE("The selected object already has this component!");
@@ -496,21 +498,6 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-			case ComponentType::UI_SLIDER: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
-				{
-					ComponentCanvas* canvas = GetCanvas();
-					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentSlider(selected);
-					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
-					selected->AddComponent(comp);
-					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-
-				}
-
-				else
-					LOG_ENGINE("The selected object already has Component UI!");
-				break; }
 			case ComponentType::UI_TEXT: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -524,7 +511,6 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
 			case ComponentType::UI_CHECKBOX: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -539,6 +525,20 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
+			case ComponentType::UI_SLIDER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentSlider(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+
+				}
+				else
+					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
 			case ComponentType::UI_BAR: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -549,7 +549,6 @@ void PanelInspector::ButtonAddComponent()
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 				}
-
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
