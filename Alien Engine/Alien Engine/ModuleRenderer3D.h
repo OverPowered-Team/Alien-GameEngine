@@ -21,17 +21,9 @@ public:
 
 	void OnResize(int width, int height);
 
-	void CreateRenderTexture();
-
-	void DeleteFrameBuffers();
-
 	void RenderGrid();
 
-	void ChangeDrawFrameBuffer(bool normal_frameBuffer);
-
 	void UpdateCameraMatrix(ComponentCamera* camera);
-
-	bool SetCameraToDraw(const ComponentCamera* camera);
 
 	bool IsInsideFrustum(const ComponentCamera* camera, const AABB& aabb);
 
@@ -39,34 +31,7 @@ public:
 
 public:
 
-	// buffers to draw scene
-	uint scene_frame_buffer = 0;
-	uint scene_render_texture = 0;
-	uint scene_depthrenderbuffer = 0;
-
-	// buffers to draw game
-	uint game_frame_buffer = 0;
-	uint game_render_texture = 0;
-	uint game_depthrenderbuffer = 0;
-
-	// buffers to draw game inside selected camera
-	uint sc_game_frame_buffer = 0;
-	uint sc_game_render_texture = 0;
-	uint sc_game_depthrenderbuffer = 0;
-
-	// scene texture
-	ResourceTexture* scene_tex = nullptr;
-
-	// Game texture
-	ResourceTexture* game_tex = nullptr;
-	ResourceTexture* sc_game_tex = nullptr;
-
-	uint z_framebuffer;
-
 	SDL_GLContext context;
-
-	
-	bool render_zbuffer = false;
 
 public:
 

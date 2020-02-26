@@ -1188,6 +1188,9 @@
     <ClInclude Include="ComponentBar.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Viewport.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -1639,6 +1642,9 @@
     </ClCompile>
     <ClCompile Include="ComponentBar.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

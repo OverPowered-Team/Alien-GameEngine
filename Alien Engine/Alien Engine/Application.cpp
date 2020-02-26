@@ -208,6 +208,10 @@ bool Application::Init()
 
 	ret = window->CreateCoreWindow();
 
+#ifdef GAME_VERSION
+	renderer3D->OnResize(window->width, window->height);
+#endif
+
 	return ret;
 }
 

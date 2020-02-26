@@ -6,6 +6,7 @@
 #include "imgui/examples/imgui_impl_opengl3.h"
 #include <gl/GL.h>
 #include "PanelAbout.h"
+#include "Viewport.h"
 #include "PanelConfig.h"
 #include "PanelBuild.h"
 #include "PanelConsole.h"
@@ -868,6 +869,7 @@ void ModuleUI::SecondMenuBar()
 			{
 				ImGui::SetItemDefaultFocus();
 				App->renderer3D->actual_game_camera = (*iter);
+				App->objects->game_viewport->SetCamera(*iter);
 			}
 		}
 		ImGui::EndCombo();
