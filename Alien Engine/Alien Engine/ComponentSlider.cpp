@@ -149,7 +149,7 @@ bool ComponentSlider::DrawInspector()
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Color");
-		ImGui::SameLine(85);
+		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 		static bool set_Z = true;
 		static Color col;
@@ -164,10 +164,19 @@ bool ComponentSlider::DrawInspector()
 			set_Z = true;
 		}
 		ImGui::Spacing();
+		ImGui::Text("Slider Scale");
+		ImGui::SameLine(150);
 		float sliderScale[] = { sliderScaleX, sliderScaleY };
-		if (ImGui::DragFloat2("Slider Scale", sliderScale, 0.1F)) {
+		if (ImGui::DragFloat2("##Slider Scale", sliderScale, 0.1F)) {
 			sliderScaleX = sliderScale[0];
 			sliderScaleY = sliderScale[1];
+		}
+		ImGui::Spacing(); 	ImGui::Spacing(); 	ImGui::Spacing();
+		ImGui::Text("Factor");
+		ImGui::SameLine(150);
+		static float factor_slider = factor;
+		if (ImGui::DragFloat("##Factor", &factor_slider, 0.01f, 0.0f, 1.0f, "%.3f")) {
+			SetValue(factor_slider);
 		}
 
 		ImGui::Spacing();
@@ -191,7 +200,7 @@ void ComponentSlider::Draw(bool isGame)
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * sliderScaleX;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * sliderScaleY;
 	transform->global_transformation[0][3] = (factor * ((matrix[0][3] + matrix[0][0]- transform->global_transformation[0][0]) - (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]))) + (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]);
-	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY;
+	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
 	
 	sliderX = transform->global_transformation[0][3];
@@ -347,9 +356,7 @@ void ComponentSlider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("sliderScaleY", sliderScaleY);
 	to_save->SetNumber("sliderX", sliderX);
 	to_save->SetNumber("sliderY", sliderY);
-	to_save->SetNumber("sliderXmax", sliderXmax);
-	to_save->SetNumber("offsetX", offsetX);
-	to_save->SetNumber("offsetY", offsetY);
+	to_save->SetNumber("factor", factor);
 
 	to_save->SetColor("ColorCurrent", current_color);
 	to_save->SetColor("ColorIdle", idle_color);
@@ -372,9 +379,8 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 	sliderScaleY = to_load->GetNumber("sliderScaleY");
 	sliderX = to_load->GetNumber("sliderX");
 	sliderY = to_load->GetNumber("sliderY");
-	sliderXmax = to_load->GetNumber("sliderXmax");
-	offsetX = to_load->GetNumber("offsetX");
-	offsetY = to_load->GetNumber("offsetY");
+	factor = to_load->GetNumber("factor");
+
 
 	current_color = to_load->GetColor("ColorCurrent");
 	idle_color = to_load->GetColor("ColorIdle");
@@ -475,6 +481,14 @@ bool ComponentSlider::OnRelease()
 {
 	current_color = idle_color;
 	return true;
+}
+
+void ComponentSlider::SetValue(float factor)
+{
+	if (factor >= 0.0f && factor <= 1.0f)
+	{
+		this->factor = factor;
+	}
 }
 
 float ComponentSlider::GetValue()

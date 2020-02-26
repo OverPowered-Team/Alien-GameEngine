@@ -34,6 +34,7 @@ public:
 	bool OnPressed();
 	bool OnRelease();
 
+	void SetValue(float factor);
 	float GetValue();
 
 private:
@@ -50,11 +51,6 @@ public:
 
 	float sliderX = 0.0F;
 	float sliderY = 0.0F;
-
-	float sliderXmax = 0.0f;
-
-	float offsetX = 0.0f;
-	float offsetY = 0.0f;
 
 	Color idle_color = { 0.8f,0.8f,0.8f,1.0f };
 	Color hover_color = { 1.0f,1.0f,1.0f,1.0f };
