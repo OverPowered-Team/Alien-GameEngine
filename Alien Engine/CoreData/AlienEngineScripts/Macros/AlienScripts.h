@@ -69,3 +69,7 @@
 
 #define LOG(format, ...) Debug::Log(__FILE__, __LINE__, format, __VA_ARGS__);
 
+#define SELF self
+#define CREATESELF(NAME) typedef NAME SELF;
+
+#define toFunct(funct) std::bind(&SELF::funct, this)

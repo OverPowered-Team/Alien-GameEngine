@@ -3,7 +3,13 @@
 #include "..\..\Alien Engine\Alien.h"
 #include "Macros/AlienScripts.h"
 
+#define ListenerButton ListenerButton
+#define TOstring(name) #name
+#define LISTENERBUTTONFACTORY Create + TOstring(ListenerButton)
+
 class ALIEN_ENGINE_API ListenerButton : public Alien {
+
+	CREATESELF(ListenerButton)
 
 public:
 
@@ -15,7 +21,7 @@ public:
 
 	void Exit();
 
-
+	void NeFunct();
 };
 
 ALIEN_FACTORY ListenerButton* CreateListenerButton() {
