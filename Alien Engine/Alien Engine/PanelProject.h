@@ -5,7 +5,7 @@
 #include "FileNode.h"
 
 class PanelProject : public Panel {
-
+	friend class PanelAnimator;
 public:
 
 	PanelProject(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat = SDL_SCANCODE_UNKNOWN, const SDL_Scancode& key3_repeat_extra = SDL_SCANCODE_UNKNOWN);
@@ -32,7 +32,6 @@ private:
 	void RightClickToWindow(bool pop_up_item);
 	bool MoveToFolder(FileNode* node, bool inside);
 	void DeleteNodes(FileNode* node);
-	void OnFileSelection();
 
 	int colum_width[2];
 

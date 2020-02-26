@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentBone.h"
-
+#include "mmgr/mmgr.h"
 
 
 ComponentBone::ComponentBone(GameObject* gameobject) : Component(gameobject)
@@ -16,6 +16,10 @@ ComponentBone::ComponentBone(GameObject* gameobject) : Component(gameobject)
 
 ComponentBone::~ComponentBone()
 {
+	if (bone)
+		bone->DecreaseReferences();
+
+	bone = nullptr;
 }
 
 void ComponentBone::Draw()
@@ -44,31 +48,21 @@ ResourceBone* ComponentBone::GetBone()
 
 void ComponentBone::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("BoneID", bone ? std::to_string(bone->GetID()) : std::to_string(0));
+	to_save->SetBoolean("Enabled", enabled);
 }
 
 void ComponentBone::LoadComponent(JSONArraypack* to_load)
 {
+	enabled = to_load->GetBoolean("Enabled");
+	ID = std::stoull(to_load->GetString("ID"));
+	u64 bone_ID = std::stoull(to_load->GetString("BoneID"));
+	if (bone_ID != 0)
+	{
+		bone = (ResourceBone*)App->resources->GetResourceWithID(bone_ID);
+		if (bone != nullptr)
+			bone->IncreaseReferences();
+	}
 }
-
-//bool ComponentBone::Save(const nlohmann::json::iterator& it)
-//{
-//	nlohmann::json object = {
-//		{ "active", active },
-//		{ "type", type },
-//		{ "resource", bone->GetID() },
-//		{ "debug_draw", debug_draw },
-//	};
-//
-//	it.value().push_back(object);
-//	return true;
-//}
-//
-//bool ComponentBone::Load(const nlohmann::json comp)
-//{
-//	active = comp["active"];
-//	type = comp["type"];
-//	bone = (ResourceBone*)App->resources->GetAndReference(comp["resource"]);
-//	debug_draw = comp["debug_draw"];
-//
-//	return true;
-//}

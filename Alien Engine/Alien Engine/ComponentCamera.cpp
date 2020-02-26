@@ -14,6 +14,8 @@
 #include "ReturnZ.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentMesh.h"
+#include "mmgr/mmgr.h"
+#include "Viewport.h"
 
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {
@@ -37,6 +39,7 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 		if (App->renderer3D->actual_game_camera == nullptr)
 		{
 			App->renderer3D->actual_game_camera = this;
+			App->objects->game_viewport->SetCamera(this);
 		}
 		App->objects->game_cameras.push_back(this);
 	}
@@ -58,17 +61,23 @@ ComponentCamera::~ComponentCamera()
 				if (!App->objects->game_cameras.empty())
 				{
 					App->renderer3D->actual_game_camera = App->objects->game_cameras.front();
+					App->objects->game_viewport->SetCamera(App->objects->game_cameras.front());
 					#ifndef GAME_VERSION
 						App->ui->actual_name = App->renderer3D->actual_game_camera->game_object_attached->GetName();
 					#endif
 				}
-				else
+				else {
 					App->renderer3D->actual_game_camera = nullptr;
+					App->objects->game_viewport->SetCamera(nullptr);
+				}
 			}
+			#ifndef GAME_VERSION
 			if (App->renderer3D->selected_game_camera == this)
 			{
 				App->renderer3D->selected_game_camera = nullptr;
+				App->camera->selected_viewport->SetCamera(nullptr);
 			}
+			#endif
 			break;
 		}
 	}
@@ -286,6 +295,11 @@ float* ComponentCamera::GetViewMatrix() const
 	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;
 }
 
+float4x4 ComponentCamera::GetViewMatrix4x4() const
+{
+	return float4x4(frustum.ViewMatrix()).Transposed();
+}
+
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
 {
 	this->vertical_fov = vertical_fov;
@@ -427,6 +441,7 @@ void ComponentCamera::Clone(Component* clone)
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("VerticalFov", vertical_fov);
 	to_save->SetNumber("HoritzontalFov", horizontal_fov);
@@ -444,6 +459,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 {
+	enabled = to_load->GetBoolean("Enabled");
 	vertical_fov = to_load->GetNumber("VerticalFov");
 	horizontal_fov = to_load->GetNumber("HoritzontalFov");
 	far_plane = to_load->GetNumber("FarPlane");

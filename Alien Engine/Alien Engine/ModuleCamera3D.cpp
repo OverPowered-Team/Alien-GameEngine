@@ -1,13 +1,16 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleObjects.h"
+#include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "PanelScene.h"
 #include "ComponentMesh.h"
 #include "ResourceMesh.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
@@ -25,7 +28,8 @@ bool ModuleCamera3D::Start()
 {
 	LOG_ENGINE("Setting up the camera");
 	bool ret = true;
-
+	scene_viewport = new Viewport(fake_camera);
+	selected_viewport = new Viewport(nullptr);
 	return ret;
 }
 
@@ -234,16 +238,12 @@ void ModuleCamera3D::CreateRay()
 	if (App->objects->GetRoot(true)->children.empty())
 		return;
 
-	//App->renderer3D->SetCameraToDraw(fake_camera);
-	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY) / App->ui->panel_scene->height);
+	float2 origin = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
 
-	origin.x = (origin.x - 0.5F) * 2;
-	origin.y = -(origin.y - 0.5F) * 2;
-
-	if (origin.x > 1 || origin.x < -1 || origin.y > 1 || origin.y < -1)
+	if (!scene_viewport->ScreenPointToViewport(origin))
 		return;
 
-	ray = fake_camera->frustum.UnProjectLineSegment(origin.x, origin.y);
+	ray = scene_viewport->GetCamera()->frustum.UnProjectLineSegment(origin.x, origin.y);
 
 	std::vector<std::pair<float, GameObject*>> hits;
 

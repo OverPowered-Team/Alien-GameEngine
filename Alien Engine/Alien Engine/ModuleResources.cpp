@@ -3,6 +3,7 @@
 #include "Resource_.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "ResourceFont.h"
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
@@ -11,6 +12,7 @@
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
+#include "ResourceAudio.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -75,6 +77,8 @@ bool ModuleResources::Start()
 	// TODO: look if all meta data has its fbx or texture if not remove meta data
 
 	ReadAllMetaData();
+
+	default_font = GetFontByName("Arialn");
 
 	return true;
 }
@@ -471,10 +475,7 @@ void ModuleResources::ReloadScripts()
 					ResourceScript* script = (ResourceScript*)*item;
 					if (App->StringCmp(script->header_path.data(), files[i].data())) {
 						if (script->NeedReload()) {
-							remove(script->GetAssetsPath());
-							remove(script->GetLibraryPath());
-							script->data_structures.clear();
-							script->CreateMetaData(script->GetID());
+							script->Reimport();
 						}
 						exists = true;
 						script->reload_completed = true;
@@ -520,6 +521,19 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_SCENE) {
 			if (App->StringCmp((*item)->GetName(), name)) {
 				return dynamic_cast<ResourceScene*>(*item);
+			}
+		}
+	}
+	return nullptr;
+}
+
+ResourceFont* ModuleResources::GetFontByName(const char* name)
+{
+	auto item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_FONT) {
+			if (App->StringCmp((*item)->GetName(), name)) {
+				return dynamic_cast<ResourceFont*>(*item);
 			}
 		}
 	}
@@ -576,6 +590,13 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Fonts
+	App->file_system->DiscoverFiles(FONTS_FOLDER, files, directories);
+	ReadFonts(directories, files, FONTS_FOLDER);
+
+	files.clear();
+	directories.clear();
+
 	// Init Scripts
 	ReadScripts();
 
@@ -585,6 +606,15 @@ void ModuleResources::ReadAllMetaData()
 
 
 	ReadScenes(directories, files, SCENE_FOLDER);
+
+	files.clear();
+	directories.clear();
+
+	// Init Audio
+	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
+
+	App->audio->LoadBanksInfo();
+	ReadAudio(directories, files, AUDIO_FOLDER);
 
 	files.clear();
 	directories.clear();
@@ -631,6 +661,21 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourcePrefab* prefab = new ResourcePrefab();
 		prefab->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// audio
+	App->file_system->DiscoverFiles(LIBRARY_AUDIO_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAudio* audio = new ResourceAudio();
+		audio->ReadLibrary(files[i].data());
+	}
+	// fonts
+	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceFont* font = ResourceFont::LoadFile(files[i].data(), std::stoull(App->file_system->GetBaseFileName(files[i].data()).data()));
+		AddResource(font);
 	}
 	files.clear();
 	directories.clear();
@@ -748,6 +793,55 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	auto banks = App->audio->GetBanks();
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			if (files[i].find(".bnk") != std::string::npos) {
+				ResourceAudio* audio = new ResourceAudio();
+				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+					for (auto b = banks.begin(); b != banks.end(); ++b) {
+						if (files[i].compare((*b)->name + ".bnk") == 0) {
+							audio->CreateMetaData((*b)->id);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAudio(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			std::string path = App->file_system->GetPathWithoutExtension(std::string(current_folder + files[i]).data()) + "_meta.alien";
+			ResourceFont* font = ResourceFont::ImportFile(std::string(current_folder + files[i]).data(), GetIDFromAlienPath(path.data()));
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadFonts(new_directories, new_files, dir);
 		}
 	}
 }

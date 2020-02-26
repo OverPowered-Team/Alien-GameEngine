@@ -3,7 +3,9 @@
 #include "ComponentAnimator.h"
 #include "ResourceAnimatorController.h"
 #include "Time.h"
+#include "ComponentTransform.h"
 #include "PanelAnimTimeline.h"
+#include "mmgr/mmgr.h"
 
 PanelAnimTimeline::PanelAnimTimeline(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -16,15 +18,21 @@ PanelAnimTimeline::~PanelAnimTimeline()
 {
 }
 
-bool PanelAnimTimeline::FillInfo()
+void PanelAnimTimeline::CleanUp()
 {
-	bool ret = false;
-
 	animations.clear();
 	current_animation = nullptr;
 	component_animator = nullptr;
 	animator = nullptr;
-	if (App->objects->GetSelectedObjects().size() > 0)	
+}
+
+bool PanelAnimTimeline::FillInfo()
+{
+	bool ret = false;
+
+	CleanUp();
+	
+	if (App->objects->GetSelectedObjects().size() > 0)
 	{
 
 		std::list<GameObject*> selected = App->objects->GetSelectedObjects();
@@ -36,7 +44,7 @@ bool PanelAnimTimeline::FillInfo()
 			{
 				component_animator = (ComponentAnimator*)(*go)->GetComponent(ComponentType::ANIMATOR);
 
-				if (component_animator->GetResourceAnimatorController() != nullptr)	
+				if (component_animator->GetResourceAnimatorController() != nullptr)
 				{
 					animator = component_animator->GetResourceAnimatorController();
 
@@ -48,7 +56,6 @@ bool PanelAnimTimeline::FillInfo()
 							ret = true;
 							changed = false;
 						}
-						
 					}
 				}
 			}
@@ -57,6 +64,47 @@ bool PanelAnimTimeline::FillInfo()
 	return ret;
 }
 
+void PanelAnimTimeline::Play()
+{
+	if (!pause)	aux_time = Time::GetTimeSinceStart();
+	else aux_time = Time::GetTimeSinceStart() - animation_time;
+	play = true;
+	pause = false;
+	button_position = 0.0f;
+}
+
+void PanelAnimTimeline::Stop()
+{
+	play = false;
+	animation_time = 0.0f;
+	pause = false;
+	stop = true;
+	button_position = 0.0f;
+}
+
+void PanelAnimTimeline::MoveBones(GameObject* go)
+{
+	if (go)
+	{
+		uint channel_index = current_animation->GetChannelIndex(go->GetName());
+		key = (int)progress / zoom;
+		if (channel_index < current_animation->num_channels)
+		{
+			if (current_animation->channels[channel_index].position_keys[key].time == key)
+				go->transform->SetLocalPosition(current_animation->channels[channel_index].position_keys[key].value);
+			if (current_animation->channels[channel_index].rotation_keys[key].time == key)
+				go->transform->SetLocalRotation(current_animation->channels[channel_index].rotation_keys[key].value);
+			if (current_animation->channels[channel_index].scale_keys[key].time == key)
+				go->transform->SetLocalScale(current_animation->channels[channel_index].scale_keys[key].value);
+		}
+
+
+		for (int i = 0; i < go->GetChildren().size(); i++)
+		{
+			MoveBones(go->GetChildren()[i]);
+		}
+	}
+}
 
 void PanelAnimTimeline::PanelLogic()
 {
@@ -64,42 +112,69 @@ void PanelAnimTimeline::PanelLogic()
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animation Timeline", &enabled, aboutFlags);
 
-	if (changed)
-		FillInfo();
-	if (!changed)
+	if (current_animation && !current_animation->channels)
 	{
-		current_animation = animations[0];
-		channel = &current_animation->channels[0];
-		current_num_frames = current_animation->end_tick - current_animation->start_tick;
+		changed = true;
+	}
 
-		// Buttons Play
-		
-		if (ImGui::Button("Play"))
+	if (changed)
+	{
+		FillInfo();
+		ImGui::Text("ANIMATION NOT SELECTED");
+		setted = false;
+	}
+	else
+	{
+		if (!setted)
 		{
-			play = true;
-			aux_time = Time::GetTimeSinceStart();
-			pause = false;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			pause = !pause;
-			mouse_mov.x = progress;
-			button_position = progress;
-			if(pause)
-				aux_time = animation_time;
-			else
-				aux_time = Time::GetTimeSinceStart() + animation_time;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Stop") && play)
-		{
-			play = false;
-			animation_time = 0.0f;
-			pause = false;
+			current_animation = animations[0];
+			channel = &current_animation->channels[0];
+			setted = true;
 		}
 
-		ImGui::SameLine();
+		num_frames = current_animation->end_tick - current_animation->start_tick;
+
+		if (Time::IsPlaying() && !in_game)
+		{
+			Play();
+			in_game = true;
+		}
+		else if (Time::IsPaused())
+		{
+			pause = true;
+			in_game = false;
+			aux_time = animation_time;
+		}
+		else if (!Time::IsInGameState() && in_game)
+		{
+			Stop();
+			in_game = false;
+		}
+		else
+		{
+			// Buttons Play
+			if (ImGui::Button("Play"))
+			{
+				if(!play)
+					Play();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Pause") && progress != 0.0f)
+			{
+				pause = !pause;
+				play = !play;
+				button_position = progress;
+				if (!pause)	aux_time = Time::GetTimeSinceStart() - animation_time;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Stop"))
+			{
+				Stop();
+			}
+
+			ImGui::SameLine();
+		}
+
 
 		//Animation bar Progress
 		ImGui::SetCursorPosX(165);
@@ -111,24 +186,21 @@ void PanelAnimTimeline::PanelLogic()
 
 		ImGui::BeginChild("All Animations", ImVec2(150, 140), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
-		
+
 		for (int i = 0; i < animations.size(); i++)
 		{
 			if (ImGui::Button(animations[i]->name.c_str()))
 			{
 				current_animation = animations[i];
-				current_num_frames = current_animation->end_tick - current_animation->start_tick;
+				num_frames = current_animation->end_tick - current_animation->start_tick;
 			}
 		}
-		
+
 		ImGui::EndChild();
 
 		ImGui::BeginChild("Selected Animation", ImVec2(150, 30), true);
 
-		if (current_animation != nullptr)
-		{
-			ImGui::Text(current_animation->name.c_str());
-		}
+		if (current_animation != nullptr) ImGui::Text(current_animation->name.c_str());
 
 		ImGui::EndChild();
 		ImGui::EndGroup();
@@ -160,10 +232,10 @@ void PanelAnimTimeline::PanelLogic()
 		ImGui::BeginChild("TimeLine", ImVec2(windows_size - 80, 150), true, ImGuiWindowFlags_HorizontalScrollbar);
 		ImVec2 p = ImGui::GetCursorScreenPos();
 		ImVec2 redbar = ImGui::GetCursorScreenPos();
-		ImGui::InvisibleButton("scrollbar", { current_num_frames * zoom + zoom,140 });
+		ImGui::InvisibleButton("scrollbar", { num_frames * zoom + zoom,100 });
 		ImGui::SetCursorScreenPos(p);
 
-		for (int i = 0; i <= current_num_frames; i++)
+		for (int i = 0; i <= num_frames; i++)
 		{
 			ImGui::BeginGroup();
 
@@ -177,38 +249,35 @@ void PanelAnimTimeline::PanelLogic()
 			if (current_animation != nullptr && channel != nullptr)
 			{
 				if (channel->position_keys[i].time == i)
-				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 35), 6.0f, ImColor(1.0f, 0.0f, 0.0f, 0.5f));
-				}
+
 				if (channel->rotation_keys[i].time == i)
-				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 75), 6.0f, ImColor(0.0f, 1.0f, 0.0f, 0.5f));
-				}
+
 				if (channel->scale_keys[i].time == i)
-				{
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 115), 6.0f, ImColor(0.0f, 0.0f, 1.0f, 0.5f));
-				}
+
 			}
 
 			p = { p.x + zoom,p.y };
 
 			ImGui::EndGroup();
-			
-			ImGui::SameLine();
 
+			ImGui::SameLine();
 		}
 
 		//RedLine 
 		if (!play)
 		{
-			ImGui::GetWindowDrawList()->AddLine({ redbar.x,redbar.y - 10 }, ImVec2(redbar.x, redbar.y + 135), IM_COL32(255, 0, 0, 100), 1.0f);
-			progress = 0.0f;
+			if (stop)
+			{
+				progress = 0.0f;
+				ImGui::SetScrollX(0);
+				stop = false;
+			}
 		}
 		else
 		{
-			
-			float aux_progression_bar = progress;
-
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
 			if (!pause)
@@ -217,22 +286,57 @@ void PanelAnimTimeline::PanelLogic()
 				progress = (animation_time * current_animation->ticks_per_second) * zoom;
 			}
 
-			if (progress != 0 && progress > windows_size + ImGui::GetScrollX())
-			{
-				ImGui::SetScrollX(progress);
+			if (progress != 0 && progress > windows_size - margin + ImGui::GetScrollX())
+				ImGui::SetScrollX(10 + ImGui::GetScrollX());
 
-			}
-			else if (progress == 0)
-			{
-				ImGui::SetScrollX(0);
-			}
-
-			if (aux_progression_bar > progress)
+			if (animation_time > current_animation->GetDuration())
 			{
 				progress = 0.0f;
 				ImGui::SetScrollX(0);
+				aux_time = Time::GetTimeSinceStart();
 			}
 		}
+
+		if (!play)
+		{
+			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
+
+			ImGui::SetCursorPos({ button_position,ImGui::GetCursorPosY() });
+			ImGui::PushID("scrollButton");
+			ImGui::Button("", { 20, 15 });
+			ImGui::PopID();
+
+			
+			if (ImGui::IsItemClicked(1) && dragging == false)
+			{
+				dragging = true;
+			}
+
+			if (dragging && ImGui::IsMouseDown(1))
+			{
+				button_position = ImGui::GetMousePos().x - ImGui::GetWindowPos().x + ImGui::GetScrollX();
+				if (button_position < 0)
+					button_position = 0;
+				if (button_position > num_frames* zoom)
+					button_position = num_frames * zoom;
+
+				if (button_position > windows_size - margin + ImGui::GetScrollX())
+					ImGui::SetScrollX(10 + ImGui::GetScrollX());
+				else if (button_position < ImGui::GetScrollX() + margin)
+					ImGui::SetScrollX(ImGui::GetScrollX() - 10);
+
+				progress = button_position;
+				animation_time = progress / (current_animation->ticks_per_second * zoom);
+
+			}
+			else
+			{
+				dragging = false;
+			}
+
+			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 165), IM_COL32(255, 0, 0, 255), 1.0f);
+		}
+
 
 		ImGui::EndChild();
 		ImGui::EndChild();
@@ -248,9 +352,7 @@ void PanelAnimTimeline::PanelLogic()
 			for (int i = 0; i < current_animation->num_channels; i++)
 			{
 				if (ImGui::Button(current_animation->channels[i].name.c_str()))
-				{
 					channel = &current_animation->channels[i];
-				}
 			}
 		}
 
@@ -258,10 +360,7 @@ void PanelAnimTimeline::PanelLogic()
 
 		ImGui::BeginChild("Selected Bone", ImVec2(150, 30), true);
 
-		if (channel != nullptr)
-		{
-			ImGui::Text(channel->name.c_str());
-		}
+		if (channel != nullptr)	ImGui::Text(channel->name.c_str());
 
 		ImGui::EndChild();
 		ImGui::EndGroup();
@@ -270,4 +369,9 @@ void PanelAnimTimeline::PanelLogic()
 	}
 
 	ImGui::End();
+
+	if (!in_game && setted)
+	{
+		MoveBones(component_animator->game_object_attached);
+	}
 }

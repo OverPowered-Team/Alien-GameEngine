@@ -12,7 +12,6 @@ public:
 	ResourceBone();
 	~ResourceBone();
 
-	std::string name = "";
 	float4x4 matrix;
 
 	uint num_weights = 0;

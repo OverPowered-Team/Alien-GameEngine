@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "PanelConfig.h"
 #include <algorithm>
+#include "mmgr/mmgr.h"
 
 ShortCutManager::ShortCutManager()
 {

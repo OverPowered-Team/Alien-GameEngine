@@ -27,5 +27,5 @@ public:
 	uint height = 0;
 	uint width = 0;
 	uint id = 0;
-
+	float alpha_test = 0.1f;
 };

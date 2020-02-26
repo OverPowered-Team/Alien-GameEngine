@@ -7,15 +7,18 @@
 #include "ResourceScene.h"
 #include "Resource_.h"
 #include "PanelScene.h"
+#include "Event.h"
 
 Time::GameState Time::state = Time::GameState::NONE;
 float Time::time_since_start = 0.0F;
 float Time::game_time = 0.0F;
 float Time::delta_time = 0.0F;
+float Time::engine_dt = 0.0F;
 float Time::scale_time = 1.0F;
 Timer* Time::start_timer = new Timer();
 Timer* Time::game_timer = new Timer();
 
+#include "mmgr/mmgr.h"
 
 void Time::Start()
 {
@@ -49,7 +52,7 @@ void Time::Play()
 		App->ui->panel_console->game_console = true;
 #endif
 		state = GameState::PLAY;
-		App->objects->OnPlay();
+		App->CastEvent(EventType::ON_PLAY);
 		game_time = 0.0F;
 		game_timer->Start();
 	}
@@ -60,6 +63,7 @@ void Time::Play()
 	else if (state == GameState::PLAY) {
 		App->objects->CleanUpScriptsOnStop();
 		state = GameState::NONE;
+		App->CastEvent(EventType::ON_STOP);
 		game_time = 0.0F;
 		App->objects->LoadScene("Library/play_scene.alienScene", false);
 		App->objects->ignore_cntrlZ = false;
@@ -85,6 +89,7 @@ void Time::Pause()
 	}
 	else if (state == GameState::PLAY || state == GameState::PLAY_ONCE) {
 		state = GameState::PAUSE;
+		App->CastEvent(EventType::ON_PAUSE);
 		game_timer->Pause();
 	}
 }
@@ -118,6 +123,14 @@ void Time::SetDT(const float& dt)
 	delta_time = dt;
 }
 
+float Time::GetCurrentDT()
+{
+	if (state == GameState::NONE)
+		return engine_dt;
+	else
+		return delta_time * scale_time; // GetDT()
+}
+
 float Time::GetDT()
 {
 	return delta_time * scale_time;
@@ -144,6 +157,11 @@ bool Time::IsPlaying()
 		return true;
 	else
 		return false;
+}
+
+bool Time::IsPaused()
+{
+	return state == GameState::PAUSE;
 }
 
 bool Time::IsInGameState()

@@ -83,11 +83,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +144,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,9 +153,182 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AK\AkPlatforms.h" />
+    <ClInclude Include="AK\AkWwiseSDKVersion.h" />
+    <ClInclude Include="AK\Comm\AkCommunication.h" />
+    <ClInclude Include="AK\DSP\AkApplyGain.h" />
+    <ClInclude Include="AK\DSP\AkDelayLineMemory.h" />
+    <ClInclude Include="AK\DSP\AkDelayLineMemoryStream.h" />
+    <ClInclude Include="AK\DSP\AkModulatorProcess.h" />
+    <ClInclude Include="AK\DSP\AkVolAutomation.h" />
+    <ClInclude Include="AK\DSP\Generic\AkDelayLineMemory.h" />
+    <ClInclude Include="AK\DSP\Generic\AkDelayLineMemoryStream.h" />
+    <ClInclude Include="AK\IBytes.h" />
+    <ClInclude Include="AK\MotionEngine\Common\AkMotionEngine.h" />
+    <ClInclude Include="AK\MotionEngine\Common\IAkMotionMixBus.h" />
+    <ClInclude Include="AK\MusicEngine\Common\AkMusicEngine.h" />
+    <ClInclude Include="AK\Plugin\AkAudioInputPlugin.h" />
+    <ClInclude Include="AK\Plugin\AkAudioInputSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkCompressorFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkConvolutionReverbFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkDelayFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkExpanderFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkFlangerFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkGainFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkGuitarDistortionFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkHarmonizerFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkMatrixReverbFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkMeterFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkMotionGeneratorFactory.h" />
+    <ClInclude Include="AK\Plugin\AkMotionGeneratorSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkMotionSinkFactory.h" />
+    <ClInclude Include="AK\Plugin\AkParametricEQFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkPeakLimiterFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkPitchShifterFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkRecorderFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkReflectFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkReflectGameData.h" />
+    <ClInclude Include="AK\Plugin\AkRoomVerbFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkRumbleFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSilenceSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSineSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSinkFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSoundSeedImpactFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSoundSeedWindFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSoundSeedWindSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSoundSeedWooshFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSoundSeedWooshSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkStereoDelayFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSynthOneFactory.h" />
+    <ClInclude Include="AK\Plugin\AkSynthOneSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkTimeStretchFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkToneSourceFactory.h" />
+    <ClInclude Include="AK\Plugin\AkTremoloFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AkVorbisDecoderFactory.h" />
+    <ClInclude Include="AK\Plugin\AllPluginsFactories.h" />
+    <ClInclude Include="AK\Plugin\AllPluginsRegistrationHelpers.h" />
+    <ClInclude Include="AK\Plugin\AuroHeadphoneFXFactory.h" />
+    <ClInclude Include="AK\Plugin\AuroPannerMixerFactory.h" />
+    <ClInclude Include="AK\Plugin\CrankcaseAudioREVModelPlayerFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZHybridReverbFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashBoxModelerFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashDelayFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashDistortionFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashDynamicsFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashFiltersFXFactory.h" />
+    <ClInclude Include="AK\Plugin\iZTrashMultibandDistortionFXFactory.h" />
+    <ClInclude Include="AK\Plugin\McDSPFutzBoxFXFactory.h" />
+    <ClInclude Include="AK\Plugin\McDSPLimiterFXFactory.h" />
+    <ClInclude Include="AK\Plugin\MSHRTFFXFactory.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkFXDurationHandler.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkFXParameterChangeHandler.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkFXTailHandler.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkMixerInputMap.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkValueRamp.h" />
+    <ClInclude Include="AK\Plugin\PluginServices\AkVectorValueRamp.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkBytesMem.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkCallback.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkCommonDefs.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkDynamicDialogue.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkDynamicSequence.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkFPUtilities.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkMemoryMgr.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkMidiTypes.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkModule.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkQueryParameters.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkSimd.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkSoundEngine.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkSoundEngineExport.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkSpeakerConfig.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkSpeakerVolumes.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkStreamMgrModule.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkTypes.h" />
+    <ClInclude Include="AK\SoundEngine\Common\AkVirtualAcoustics.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkMixerPlugin.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkPlugin.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkPluginMemAlloc.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkProcessorFeatures.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkRTPCSubscriber.h" />
+    <ClInclude Include="AK\SoundEngine\Common\IAkStreamMgr.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\arm_neon\AkSimd.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\arm_neon\AkSimdShuffle.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\Generic\AkSimd.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\Generic\AkSpeakerVolumes.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\POSIX\AkTypes.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\SSE\AkSimd.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkSimd.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkTypes.h" />
+    <ClInclude Include="AK\SoundEngine\Platforms\Windows\AkWinSoundEngine.h" />
+    <ClInclude Include="AK\SoundFrame\SF.h" />
+    <ClInclude Include="AK\SoundFrame\SFObjects.h" />
+    <ClInclude Include="AK\SpatialAudio\Common\AkSpatialAudio.h" />
+    <ClInclude Include="AK\SpatialAudio\Common\AkSpatialAudioTypes.h" />
+    <ClInclude Include="AK\Tools\Common\AkAllocator.h" />
+    <ClInclude Include="AK\Tools\Common\AkArray.h" />
+    <ClInclude Include="AK\Tools\Common\AkAssert.h" />
+    <ClInclude Include="AK\Tools\Common\AkAutoLock.h" />
+    <ClInclude Include="AK\Tools\Common\AkBankReadHelpers.h" />
+    <ClInclude Include="AK\Tools\Common\AkDynaBlkPool.h" />
+    <ClInclude Include="AK\Tools\Common\AkFNVHash.h" />
+    <ClInclude Include="AK\Tools\Common\AkHashList.h" />
+    <ClInclude Include="AK\Tools\Common\AkKeyArray.h" />
+    <ClInclude Include="AK\Tools\Common\AkKeyDef.h" />
+    <ClInclude Include="AK\Tools\Common\AkListBare.h" />
+    <ClInclude Include="AK\Tools\Common\AkListBareLight.h" />
+    <ClInclude Include="AK\Tools\Common\AkLock.h" />
+    <ClInclude Include="AK\Tools\Common\AkMonitorError.h" />
+    <ClInclude Include="AK\Tools\Common\AkObject.h" />
+    <ClInclude Include="AK\Tools\Common\AkPlatformFuncs.h" />
+    <ClInclude Include="AK\Tools\Common\AkSet.h" />
+    <ClInclude Include="AK\Tools\Common\AkSmartPtr.h" />
+    <ClInclude Include="AK\Tools\Common\AkString.h" />
+    <ClInclude Include="AK\Tools\Common\AkSyncCaller.h" />
+    <ClInclude Include="AK\Tools\Common\AkVectors.h" />
+    <ClInclude Include="AK\Tools\POSIX\AkLock.h" />
+    <ClInclude Include="AK\Tools\POSIX\AkPlatformFuncs.h" />
+    <ClInclude Include="AK\Tools\Win32\AkLock.h" />
+    <ClInclude Include="AK\Tools\Win32\AkPlatformFuncs.h" />
+    <ClInclude Include="AK\Win32\AkDefaultIOHookBlocking.h" />
+    <ClInclude Include="AK\Win32\AkDefaultIOHookDeferred.h" />
+    <ClInclude Include="AK\Win32\AkFileHelpers.h" />
+    <ClInclude Include="AK\Win32\AkFileLocationBase.h" />
+    <ClInclude Include="AK\Win32\AkFilePackage.h" />
+    <ClInclude Include="AK\Win32\AkFilePackageLowLevelIO.h" />
+    <ClInclude Include="AK\Win32\AkFilePackageLowLevelIOBlocking.h" />
+    <ClInclude Include="AK\Win32\AkFilePackageLowLevelIODeferred.h" />
+    <ClInclude Include="AK\Win32\AkFilePackageLUT.h" />
+    <ClInclude Include="AK\Win32\stdafx.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\AkJson.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\AkVariant.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\autobahn.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\civetweb.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\Client.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\FutureUtils.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\IWebSocketClientHandler.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\JsonProvider.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\Logger.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkAutobahn\WebSocketClient.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkGuid.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkJsonBase.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\AkVariantBase.h" />
+    <ClInclude Include="AK\WwiseAuthoringAPI\waapi.h" />
+    <ClInclude Include="AK\Wwise\AudioPlugin.h" />
+    <ClInclude Include="AK\Wwise\IXmlTextReader.h" />
+    <ClInclude Include="AK\Wwise\IXmlTextWriter.h" />
+    <ClInclude Include="AK\Wwise\MotionPlugin.h" />
+    <ClInclude Include="AK\Wwise\PlatformID.h" />
+    <ClInclude Include="AK\Wwise\SourceControl\ISourceControl.h" />
+    <ClInclude Include="AK\Wwise\SourceControl\ISourceControlDialogBase.h" />
+    <ClInclude Include="AK\Wwise\SourceControl\ISourceControlOperationProgress.h" />
+    <ClInclude Include="AK\Wwise\SourceControl\ISourceControlUtilities.h" />
+    <ClInclude Include="AK\Wwise\SourceControl\SourceControlContainers.h" />
+    <ClInclude Include="AK\Wwise\TargetVer.h" />
+    <ClInclude Include="AK\Wwise\Undo.h" />
+    <ClInclude Include="AK\Wwise\Utilities.h" />
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienEngine.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
@@ -160,11 +336,22 @@
     <ClInclude Include="ComponentBone.h" />
     <ClInclude Include="ComponentCamera.h" />
     <ClInclude Include="ComponentDeformableMesh.h" />
+    <ClInclude Include="ComponentAudioEmitter.h" />
+    <ClInclude Include="ComponentAudioListener.h" />
+    <ClInclude Include="ComponentButton.h" />
+    <ClInclude Include="ComponentCanvas.h" />
+    <ClInclude Include="ComponentCheckbox.h" />
+    <ClInclude Include="ComponentImage.h" />
     <ClInclude Include="ComponentLight.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentReverbZone.h" />
+    <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentScript.h" />
+    <ClInclude Include="ComponentSlider.h" />
+    <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="ComponentUI.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Devil\include\config.h" />
     <ClInclude Include="Devil\include\devil_internal_exports.h" />
@@ -174,6 +361,7 @@
     <ClInclude Include="Devil\include\ilut_config.h" />
     <ClInclude Include="Devil\include\ilu_region.h" />
     <ClInclude Include="Devil\include\il_wrap.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="FileNode.h" />
     <ClInclude Include="Gizmos.h" />
     <ClInclude Include="glew\include\eglew.h" />
@@ -183,6 +371,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="gpudetect\DeviceId.h" />
     <ClInclude Include="gpudetect\dxgi1_4.h" />
+    <ClInclude Include="ComponentBar.h" />
     <ClInclude Include="ImGuizmos\ImCurveEdit.h" />
     <ClInclude Include="ImGuizmos\ImGradient.h" />
     <ClInclude Include="ImGuizmos\ImGuizmo.h" />
@@ -262,6 +451,7 @@
     <ClInclude Include="mmgr\mmgr.h" />
     <ClInclude Include="mmgr\nommgr.h" />
     <ClInclude Include="Module.h" />
+    <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCamera3D.h" />
     <ClInclude Include="ModuleFileSystem.h" />
     <ClInclude Include="ModuleImporter.h" />
@@ -290,6 +480,7 @@
     <ClInclude Include="PanelHierarchy.h" />
     <ClInclude Include="PanelInspector.h" />
     <ClInclude Include="PanelLayout.h" />
+    <ClInclude Include="PanelParticleSystem.h" />
     <ClInclude Include="PanelProject.h" />
     <ClInclude Include="PanelRender.h" />
     <ClInclude Include="PanelScene.h" />
@@ -297,6 +488,9 @@
     <ClInclude Include="PanelTextEditor.h" />
     <ClInclude Include="PanelAnimTimeline.h" />
     <ClInclude Include="Parson\parson.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PCG\pcg_extras.hpp" />
     <ClInclude Include="PCG\pcg_random.hpp" />
     <ClInclude Include="PCG\pcg_uint128.hpp" />
@@ -307,6 +501,9 @@
     <ClInclude Include="ResourceAnimation.h" />
     <ClInclude Include="ResourceAnimatorController.h" />
     <ClInclude Include="ResourceBone.h" />
+    <ClInclude Include="ResourceMaterial.h" />
+    <ClInclude Include="ResourceAudio.h" />
+    <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourceModel.h" />
     <ClInclude Include="ResourcePrefab.h" />
@@ -323,11 +520,20 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Viewport.h" />
+    <ClInclude Include="WwiseT.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AK\Win32\AkDefaultIOHookBlocking.cpp" />
+    <ClCompile Include="AK\Win32\AkDefaultIOHookDeferred.cpp" />
+    <ClCompile Include="AK\Win32\AkFileLocationBase.cpp" />
+    <ClCompile Include="AK\Win32\AkFilePackage.cpp" />
+    <ClCompile Include="AK\Win32\AkFilePackageLUT.cpp" />
+    <ClCompile Include="AK\Win32\stdafx.cpp" />
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienEngine.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -335,11 +541,23 @@
     <ClCompile Include="ComponentBone.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentDeformableMesh.cpp" />
+    <ClCompile Include="ComponentAudioEmitter.cpp" />
+    <ClCompile Include="ComponentAudioListener.cpp" />
+    <ClCompile Include="ComponentBar.cpp" />
+    <ClCompile Include="ComponentButton.cpp" />
+    <ClCompile Include="ComponentCanvas.cpp" />
+    <ClCompile Include="ComponentCheckbox.cpp" />
+    <ClCompile Include="ComponentImage.cpp" />
     <ClCompile Include="ComponentLight.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentReverbZone.cpp" />
+    <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentScript.cpp" />
+    <ClCompile Include="ComponentSlider.cpp" />
+    <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="FileNode.cpp" />
     <ClCompile Include="Gizmos.cpp" />
@@ -393,6 +611,7 @@
     <ClCompile Include="MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Maths.cpp" />
     <ClCompile Include="mmgr\mmgr.cpp" />
+    <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCamera3D.cpp" />
     <ClCompile Include="ModuleFileSystem.cpp" />
     <ClCompile Include="ModuleImporter.cpp" />
@@ -419,6 +638,7 @@
     <ClCompile Include="PanelHierarchy.cpp" />
     <ClCompile Include="PanelInspector.cpp" />
     <ClCompile Include="PanelLayout.cpp" />
+    <ClCompile Include="PanelParticleSystem.cpp" />
     <ClCompile Include="PanelProject.cpp" />
     <ClCompile Include="PanelRender.cpp" />
     <ClCompile Include="PanelScene.cpp" />
@@ -426,11 +646,17 @@
     <ClCompile Include="PanelTextEditor.cpp" />
     <ClCompile Include="PanelAnimTimeline.cpp" />
     <ClCompile Include="Parson\parson.c" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
     <ClCompile Include="ResourceAnimation.cpp" />
     <ClCompile Include="ResourceAnimatorController.cpp" />
     <ClCompile Include="ResourceBone.cpp" />
+    <ClCompile Include="ResourceMaterial.cpp" />
+    <ClCompile Include="ResourceAudio.cpp" />
+    <ClCompile Include="ResourceFont.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceModel.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />
@@ -447,9 +673,12 @@
     <ClCompile Include="TextEdit\TextEditor.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Viewport.cpp" />
+    <ClCompile Include="WwiseT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json" />
+    <None Include="AK\Win32\AkFilePackageLowLevelIO.inl" />
     <None Include="Game\Configuration\LayoutsInfo.json" />
     <None Include="MathGeoLib\include\Geometry\KDTree.inl" />
     <None Include="MathGeoLib\include\Geometry\QuadTree.inl" />

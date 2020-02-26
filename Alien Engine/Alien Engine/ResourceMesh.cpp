@@ -7,6 +7,7 @@
 #include "ComponentDeformableMesh.h"
 #include "ResourceTexture.h"
 #include "ResourceBone.h"
+#include "mmgr/mmgr.h"
 
 ResourceMesh::ResourceMesh() : Resource()
 {
@@ -53,11 +54,6 @@ ResourceMesh::ResourceMesh(ResourceMesh* r_mesh)
 		memcpy(uv_cords, r_mesh->uv_cords, bytes);
 	}
 
-	if (r_mesh->texture_id != 0) {
-		texture_id = r_mesh->texture_id;
-		texture = (ResourceTexture*)App->resources->GetResourceWithID(r_mesh->texture_id);
-	}
-
 	if (num_vertex != 0) {
 		InitBuffers();
 	}
@@ -70,9 +66,6 @@ ResourceMesh::~ResourceMesh()
 
 bool ResourceMesh::CreateMetaData(const u64& force_id)
 {
-	if (parent_name.empty()) {
-		parent_name.assign("null");
-	}
 	if (force_id == 0) {
 		ID = App->resources->GetRandomID();
 	}
@@ -82,19 +75,18 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 
 	meta_data_path = std::string(LIBRARY_MESHES_FOLDER + std::to_string(ID) + ".alienMesh");
 
-	uint ranges[9] = { num_index, num_vertex, num_faces, family_number, (normals != nullptr) ? true : false, 
-		(uv_cords != nullptr) ? true : false,  (texture != nullptr) ? true : false, parent_name.size(), name.size() };
+	uint ranges[6] = { num_index, num_vertex, num_faces, (normals != nullptr) ? true : false, 
+		(uv_cords != nullptr) ? true : false, name.size() };
 
-	uint texture_size = (texture != nullptr) ? sizeof(u64) : 0;
 	uint uv_size = (uv_cords != nullptr) ? sizeof(float) * num_vertex * 3 : 0;
 	uint normals_size = (normals != nullptr) ? sizeof(float) * num_vertex * 3 + sizeof(float) * num_faces * 3 +
 		sizeof(float) * num_faces * 3 : 0;
 	uint vertex_size = sizeof(float) * num_vertex * 3;
 	uint index_size = sizeof(uint) * num_index;
 
-	uint size = sizeof(ranges) + parent_name.size() + name.size() + texture_size +
+	uint size = sizeof(ranges) + name.size() +
 		sizeof(float) * 4 + sizeof(float) * 3 + sizeof(float) * 4 + sizeof(float) * 3 + vertex_size +
-		index_size + normals_size + uv_size + sizeof(bool) + sizeof(u64);
+		index_size + normals_size + uv_size + sizeof(bool);
 
 	char* data = new char[size]; 
 	char* cursor = data;
@@ -104,50 +96,13 @@ bool ResourceMesh::CreateMetaData(const u64& force_id)
 	cursor += bytes; 
 	bytes_moved += bytes;
 
-	bytes = parent_name.size();
-	memcpy(cursor, parent_name.c_str(), bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
 	bytes = name.size();
 	memcpy(cursor, name.c_str(), bytes);
 	cursor += bytes;
 	bytes_moved += bytes;
 
-	if (texture != nullptr) {
-		bytes = sizeof(u64);
-		memcpy(cursor, &texture->GetID(), bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-	}
-
-	bytes = sizeof(float) * 4;
-	memcpy(cursor, &material_color, bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
-	bytes = sizeof(float) * 3;
-	memcpy(cursor, pos.ptr(), bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
-	bytes = sizeof(float) * 4;
-	memcpy(cursor, rot.ptr(), bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
-	bytes = sizeof(float) * 3;
-	memcpy(cursor, scale.ptr(), bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
 	bytes = sizeof(bool);
 	memcpy(cursor, &deformable, bytes);
-	cursor += bytes;
-	bytes_moved += bytes;
-
-	bytes = sizeof(u64);
-	memcpy(cursor, &bone_id, bytes);
 	cursor += bytes;
 	bytes_moved += bytes;
 
@@ -201,67 +156,23 @@ bool ResourceMesh::ReadBaseInfo(const char* meta_file_path)
 		char* cursor = data;
 		bytes_moved = 0;
 
-		uint ranges[9];
+		uint ranges[6];
 		uint bytes = sizeof(ranges);
 		memcpy(ranges, cursor, bytes);
 		cursor += bytes;
 		bytes_moved += bytes;
 
-		family_number = ranges[3];
-
-		char* p_name = new char[ranges[7] + 1];
-		bytes = sizeof(char) * ranges[7];
-		memcpy(p_name, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-		p_name[ranges[7]] = '\0';
-		parent_name = std::string(p_name);
-		delete[] p_name;
-
-		char* m_name = new char[ranges[8] + 1];
-		bytes = sizeof(char) * ranges[8];
+		char* m_name = new char[ranges[5] + 1];
+		bytes = sizeof(char) * ranges[5];
 		memcpy(m_name, cursor, bytes);
 		cursor += bytes;
 		bytes_moved += bytes;
-		m_name[ranges[8]] = '\0';
+		m_name[ranges[5]] = '\0';
 		name = std::string(m_name);
 		delete[] m_name;
 
-		// texture
-		if (ranges[6]) {
-			bytes = sizeof(u64);
-			memcpy(&texture_id, cursor, bytes);
-			cursor += bytes;
-			bytes_moved += bytes;
-		}
-
-		bytes = sizeof(float) * 4;
-		memcpy(&material_color, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
-		bytes = sizeof(float) * 3;
-		memcpy(&pos, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
-		bytes = sizeof(float) * 4;
-		memcpy(&rot, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
-		bytes = sizeof(float) * 3;
-		memcpy(&scale, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
 		bytes = sizeof(bool);
 		memcpy(&deformable, cursor, bytes);
-		cursor += bytes;
-		bytes_moved += bytes;
-
-		bytes = sizeof(u64);
-		memcpy(&bone_id, cursor, bytes);
 		cursor += bytes;
 		bytes_moved += bytes;
 
@@ -333,7 +244,7 @@ bool ResourceMesh::LoadMemory()
 	if (size > 0) {
 		char* cursor = data;
 
-		uint ranges[9];
+		uint ranges[6];
 		uint bytes = sizeof(ranges);
 		memcpy(ranges, cursor, bytes);
 		cursor += bytes_moved;
@@ -357,7 +268,7 @@ bool ResourceMesh::LoadMemory()
 		cursor += bytes;
 
 		// normals
-		if (ranges[4]) {
+		if (ranges[3]) {
 			bytes = sizeof(float) * num_vertex * 3;
 			normals = new float[num_vertex * 3];
 			memcpy(normals, cursor, bytes);
@@ -375,14 +286,10 @@ bool ResourceMesh::LoadMemory()
 		}
 
 		// uv
-		if (ranges[5]) {
+		if (ranges[4]) {
 			bytes = sizeof(float) * num_vertex * 3;
 			uv_cords = new float[num_vertex * 3];
 			memcpy(uv_cords, cursor, bytes);
-		}
-
-		if (texture_id != 0) {
-			texture = (ResourceTexture*)App->resources->GetResourceWithID(texture_id);
 		}
 
 		if (num_vertex != 0) {
@@ -391,10 +298,11 @@ bool ResourceMesh::LoadMemory()
 		else {
 			--references;
 		}
-
+		delete[] data;
 		return true;
 	}
 	else {
+		delete[] data;
 		return false;
 	}
 }
@@ -410,76 +318,6 @@ bool ResourceMesh::DeleteMetaData()
 	delete this;
 
 	return true;
-}
-
-void ResourceMesh::ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created, std::pair<GameObject*, GameObject*>& skeleton_link)
-{
-	IncreaseReferences();
-	// get the parent
-	GameObject* obj = nullptr;
-
-	// if parent name is not null, search the parent name
-	if (!App->StringCmp(parent_name.data(), "null") && objects_created != nullptr) {
-		std::vector<std::pair<u64, GameObject*>>::iterator item = objects_created->begin();
-		for (; item != objects_created->end(); ++item) {
-			if ((*item).second != nullptr && App->StringCmp((*item).second->GetName(), parent_name.data()) && family_number -1 == (*item).first) {
-				obj = new GameObject((*item).second);
-				break;
-			}
-		}
-		objects_created->push_back({ family_number, obj });
-	}
-	else if (objects_created != nullptr) { // parent name == null so, the parent must be the one created before
-		obj = new GameObject(objects_created->at(0).second);
-		objects_created->push_back({ family_number, obj });
-	}
-	else { // if objects created == nullptr then parent must be the root
-		obj = new GameObject(App->objects->GetRoot(false));
-	}
-
-	obj->SetName(name.data());
-	obj->transform->SetLocalPosition(pos);
-	obj->transform->SetLocalRotation(rot);
-	obj->transform->SetLocalScale(scale);
-
-	if (num_vertex != 0) {
-		if (!deformable) //review this
-		{
-			ComponentMesh* mesh = new ComponentMesh(obj);
-			mesh->mesh = this;
-			mesh->RecalculateAABB_OBB();
-
-			obj->AddComponent(mesh);
-		}	
-		else
-		{
-			ComponentDeformableMesh* mesh = new ComponentDeformableMesh(obj);
-			mesh->mesh = this;
-			mesh->RecalculateAABB_OBB();
-			skeleton_link.first = obj;
-
-			obj->AddComponent(mesh);
-		}
-
-		ComponentMaterial* material = new ComponentMaterial(obj);
-
-		if (texture != nullptr) {
-			material->SetTexture(texture);
-		}
-		material->color = material_color;
-
-		obj->AddComponent(material);
-	}
-
-	if (bone_id != 0)
-	{
-		if (skeleton_link.second == nullptr)
-			skeleton_link.second = obj;
-		ComponentBone* bone = new ComponentBone(obj);
-		bone->AddBone((ResourceBone*)App->resources->GetResourceWithID(bone_id));
-		bone->GetBone()->IncreaseReferences();
-		obj->AddComponent(bone);
-	}
 }
 
 void ResourceMesh::InitBuffers()

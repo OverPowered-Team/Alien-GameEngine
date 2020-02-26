@@ -2,7 +2,7 @@
 #include "ModuleImporter.h"
 
 #include "ResourceBone.h"
-
+#include "mmgr/mmgr.h"
 
 
 ResourceBone::ResourceBone() : Resource()
@@ -83,7 +83,11 @@ bool ResourceBone::LoadMemory()
 	uint name_size;
 	memcpy(&name_size, cursor, bytes);
 	cursor += bytes;
+
+	//Load name
 	bytes = name_size;
+	name.resize(bytes);
+	memcpy(&name[0], cursor, bytes);
 	cursor += bytes;
 
 	//Load matrix
@@ -115,8 +119,17 @@ bool ResourceBone::LoadMemory()
 
 void ResourceBone::FreeMemory()
 {
-	delete[] vertex_ids;
-	delete[] weights;
+	if (vertex_ids)
+	{
+		delete[] vertex_ids;
+		vertex_ids = nullptr;
+	}
+	if (weights)
+	{
+		delete[] weights;
+		weights = nullptr;
+	}
+		
 }
 
 bool ResourceBone::ReadBaseInfo(const char* meta_file_path)

@@ -22,6 +22,7 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class Gizmos;
 	friend class Octree;
 	friend class OctreeNode;
+	friend class ResourceModel;
 	friend class PanelCreateObject;
 	friend class PanelRender;
 public:
@@ -31,8 +32,8 @@ public:
 protected:
 
 	virtual void DrawPolygon();
-	void DrawOutLine();
-	void DrawMesh();
+	virtual void DrawOutLine();
+	virtual void DrawMesh();
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();

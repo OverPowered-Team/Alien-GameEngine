@@ -8,7 +8,11 @@
 #include "Application.h"
 #include <algorithm>
 #include "ReturnZ.h"
+#include "ResourceMaterial.h"
 #include "ComponentTransform.h"
+#include "ComponentMaterial.h"
+#include "ComponentBone.h"
+#include "mmgr/mmgr.h"
 
 ResourceModel::ResourceModel() : Resource()
 {
@@ -37,6 +41,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 	std::string* meta_mesh_paths = nullptr;
 	std::string* meta_animation_paths = nullptr;
 	std::string* meta_bones_paths = nullptr;
+	std::string* meta_materials_paths = nullptr;
 	int num_anims = 0;
 	if (force_id != 0) 
 	{
@@ -50,6 +55,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			meta_mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 			meta_animation_paths = meta->GetArrayString("Meta.PathAnimations");
 			meta_bones_paths = meta->GetArrayString("Meta.PathBones");
+			meta_materials_paths = meta->GetArrayString("Meta.PathMaterials");
 			num_anims = meta->GetNumber("Meta.NumAnimations");
 			delete meta;
 		}
@@ -69,132 +75,129 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 		std::string library_path = std::string(LIBRARY_MODELS_FOLDER) + std::string(std::to_string(ID) + ".alienModel");
 
-		JSON_Value* model_value = json_value_init_object();
-		JSON_Object* model_object = json_value_get_object(model_value);
-		json_serialize_to_file_pretty(model_value, library_path.data());
+		alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
 
-		if (model_value != nullptr && model_object != nullptr) 
+		std::string* meshes_paths = new std::string[meshes_attached.size()];
+		std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
+		for (; item != meshes_attached.end(); ++item) {
+			if ((*item) != nullptr) 
+			{
+				if (meta_mesh_paths != nullptr) {
+					std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
+					(*item)->CreateMetaData(std::stoull(path_));
+				}
+				else {
+					(*item)->CreateMetaData();
+				}
+
+				meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
+			}
+		}
+		alien->SetString("Meta.Name", name);
+		alien->SetNumber("Meta.NumBones", bones_attached.size());
+
+		std::string* bones_paths = new std::string[bones_attached.size()];
+		for (int i = 0; i < bones_attached.size(); ++i)
 		{
-			JSONfilepack* meta = new JSONfilepack(library_path, model_object, model_value);
-
-			meta->StartSave();
-			meta->SetString("Model.Name", name);
-
-			meta->SetNumber("Model.NumBones", bones_attached.size());
-			alien->SetNumber("Meta.NumBones", bones_attached.size());
-
-			std::string* bones_paths = new std::string[bones_attached.size()];
-			for (int i = 0; i < bones_attached.size(); ++i)
-			{
-				if (meta_bones_paths != nullptr)
-				{
-					std::string path_ = App->file_system->GetBaseFileName(meta_bones_paths[i].data()); //std::stoull().data());
-					bones_attached[i]->CreateMetaData(std::stoull(path_));
-				}
-				else
-				{
-					bones_attached[i]->CreateMetaData();
-				}
-
-				bones_paths[i] = bones_attached[i]->GetLibraryPath();
-				LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
-			}
-
-			meta->SetNumber("Model.NumMeshes", meshes_attached.size());
-			alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
-
-			std::string* meshes_paths = new std::string[meshes_attached.size()];
-			std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
-			for (; item != meshes_attached.end(); ++item) {
-				if ((*item) != nullptr) 
-				{
-					if (bones_attached.size() > 0) //Check if this resourcemesh is a bone to link
-					{
-						for each (ResourceBone * bone in bones_attached)
-						{
-							if (bone->name == (*item)->name)
-							{
-								(*item)->bone_id = bone->GetID();
-							}
-						}
-					}
-					if (meta_mesh_paths != nullptr) {
-						std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
-						(*item)->CreateMetaData(std::stoull(path_));
-					}
-					else {
-						(*item)->CreateMetaData();
-					}
-
-					meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
-					LOG_ENGINE("Created alienMesh file %s", (*item)->GetLibraryPath());
-				}
-			}
-
-			meta->SetNumber("Model.NumAnimations", animations_attached.size());
-			alien->SetNumber("Meta.NumAnimations", animations_attached.size()); 
-			JSONArraypack* anim_array = meta->InitNewArray("Model.Animations");
-			JSONArraypack* anim_array_alien = alien->InitNewArray("Meta.Animations");
-
-			std::string* animation_paths = new std::string[animations_attached.size()];
-			for (int i = 0; i < animations_attached.size(); ++i)
-			{
-				if (meta_animation_paths != nullptr && i < num_anims)
-				{
-					std::string path_ = App->file_system->GetBaseFileName(meta_animation_paths[i].data()); //std::stoull().data());
-					animations_attached[i]->CreateMetaData(std::stoull(path_));
-				}
-				else 
-				{
-					animations_attached[i]->CreateMetaData();
-				}
-				anim_array->SetAnotherNode();
-				anim_array_alien->SetAnotherNode();
-				anim_array->SetString("Name",animations_attached[i]->name.data());
-				anim_array_alien->SetString("Name", animations_attached[i]->name.data());
-				anim_array->SetBoolean("Loops", animations_attached[i]->loops);
-				anim_array_alien->SetBoolean("Loops", animations_attached[i]->loops);
-				anim_array->SetNumber("Start_Tick", animations_attached[i]->start_tick);
-				anim_array_alien->SetNumber("Start_Tick", animations_attached[i]->start_tick);
-				anim_array->SetNumber("End_Tick", animations_attached[i]->end_tick);
-				anim_array_alien->SetNumber("End_Tick", animations_attached[i]->end_tick);
-
-				animation_paths[i] = animations_attached[i]->GetLibraryPath();
-				LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
-			}
-
-			meta->SetArrayString("Model.PathMeshes", meshes_paths, meshes_attached.size());
-			alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
-			meta->SetArrayString("Model.PathAnimations", animation_paths, animations_attached.size());
-			alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
-			meta->SetArrayString("Model.PathBones", bones_paths, bones_attached.size());
-			alien->SetArrayString("Meta.PathBones", bones_paths, bones_attached.size());
-
-			if (meta_mesh_paths != nullptr)
-				delete[] meta_mesh_paths;
-			delete[] meshes_paths;
-
-			if (meta_animation_paths != nullptr)
-				delete[] meta_animation_paths;
-			delete[] animation_paths;
-
 			if (meta_bones_paths != nullptr)
-				delete[] meta_bones_paths;
-			delete[] bones_paths;
+			{
+				std::string path_ = App->file_system->GetBaseFileName(meta_bones_paths[i].data()); //std::stoull().data());
+				bones_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else
+			{
+				bones_attached[i]->CreateMetaData();
+			}
 
-			// Create the file
-			LOG_ENGINE("Created alien file %s", library_path.data());
+			bones_paths[i] = bones_attached[i]->GetLibraryPath();
+			LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
+		}
+
+		alien->SetNumber("Meta.NumAnimations", animations_attached.size()); 
+		JSONArraypack* anim_array_alien = alien->InitNewArray("Meta.Animations");
+
+		std::string* animation_paths = new std::string[animations_attached.size()];
+		for (int i = 0; i < animations_attached.size(); ++i)
+		{
+			if (meta_animation_paths != nullptr && i < num_anims)
+			{
+				std::string path_ = App->file_system->GetBaseFileName(meta_animation_paths[i].data()); //std::stoull().data());
+				animations_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else 
+			{
+				animations_attached[i]->CreateMetaData();
+			}
+
+			anim_array_alien->SetAnotherNode();
+			anim_array_alien->SetString("Name", animations_attached[i]->name.data());
+			anim_array_alien->SetBoolean("Loops", animations_attached[i]->loops);
+			anim_array_alien->SetNumber("Start_Tick", animations_attached[i]->start_tick);
+			anim_array_alien->SetNumber("End_Tick", animations_attached[i]->end_tick);
+
+			animation_paths[i] = animations_attached[i]->GetLibraryPath();
+			LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
+		}
+
+		alien->SetNumber("Meta.NumMaterials", materials_attached.size());
+
+		std::string* materials_path = new std::string[materials_attached.size()];
+		for (int i = 0; i < materials_attached.size(); ++i)
+		{
+			if (meta_materials_paths != nullptr) {
+				std::string path_ = App->file_system->GetBaseFileName(meta_materials_paths[i].data()); //std::stoull().data());
+				materials_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else {
+				materials_attached[i]->CreateMetaData();
+			}
+
+			materials_path[i] = materials_attached[i]->GetLibraryPath();
+		}
+
+		alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
+		alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
+		alien->SetArrayString("Meta.PathBones", bones_paths, bones_attached.size());
+		alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
+
+		JSONArraypack* nodes = alien->InitNewArray("Nodes");
+		for (uint i = 0; i < model_nodes.size(); ++i) {
+			nodes->SetAnotherNode();
+			nodes->SetFloat3("pos", model_nodes[i].pos);
+			nodes->SetFloat3("scale", model_nodes[i].scale);
+			nodes->SetQuat("rot", model_nodes[i].rot);
+			nodes->SetNumber("nodeNum", model_nodes[i].node_num);
+			nodes->SetNumber("parentNum", model_nodes[i].parent_num);
+			nodes->SetString("nodeName", model_nodes[i].name);
+			nodes->SetString("parentName", model_nodes[i].parent_name);
+			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
+			nodes->SetNumber("materialIndex", model_nodes[i].material);
+			nodes->SetNumber("boneIndex", model_nodes[i].bone);
+		}
+
+		if (meta_mesh_paths != nullptr)
+			delete[] meta_mesh_paths;
+		delete[] meshes_paths;
+
+		if (meta_animation_paths != nullptr)
+			delete[] meta_animation_paths;
+		delete[] animation_paths;
+
+		if (meta_materials_paths != nullptr)
+			delete[] meta_materials_paths;
+		delete[] materials_path;
+
+		if (meta_bones_paths != nullptr)
+			delete[] meta_bones_paths;
+		delete[] bones_paths;
 			
-			meta->FinishSave();
-			alien->FinishSave();
-			delete alien;
-			delete meta;
-			return true;
-		}
-		else {
-			return false;
-		}
+		alien->FinishSave();
+		delete alien;
 
+		App->file_system->Copy(alien_path.data(), library_path.data());
+		meta_data_path = alien_path.data();
+
+		return true;
 	}
 	else {
 		LOG_ENGINE("Error creating meta with path %s", meta_data_path.data());
@@ -220,9 +223,11 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		int num_meshes = meta->GetNumber("Meta.NumMeshes");
 		int num_anims = meta->GetNumber("Meta.NumAnimations");
 		int num_bones = meta->GetNumber("Meta.NumBones");
+		int num_materials = meta->GetNumber("Meta.NumMaterials");
 		std::string* mesh_paths = meta->GetArrayString("Meta.PathMeshes");
 		std::string* anim_paths = meta->GetArrayString("Meta.PathAnimations");
 		std::string* bones_paths = meta->GetArrayString("Meta.PathBones");
+		std::string* materials_path = meta->GetArrayString("Meta.PathMaterials");
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			if (!App->file_system->Exists(mesh_paths[i].data())) {
@@ -245,9 +250,36 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 				return false;
 			}
 		}
+		for (uint i = 0; i < num_materials; ++i) {
+			if (!App->file_system->Exists(materials_path[i].data())) {
+				delete[] materials_path;
+				delete meta;
+				return false;
+			}
+		}
+
+		JSONArraypack* nodes = meta->GetArray("Nodes");
+		nodes->GetFirstNode();
+		for (uint i = 0; i < nodes->GetArraySize(); ++i) {
+			ModelNode node;
+			node.pos = nodes->GetFloat3("pos");
+			node.scale = nodes->GetFloat3("scale");
+			node.rot = nodes->GetQuat("rot");
+			node.node_num = nodes->GetNumber("nodeNum");
+			node.parent_num = nodes->GetNumber("parentNum");
+			node.name = nodes->GetString("nodeName");
+			node.parent_name = nodes->GetString("parentName");
+			node.mesh = nodes->GetNumber("meshIndex");
+			node.material = nodes->GetNumber("materialIndex");
+			node.bone = nodes->GetNumber("boneIndex");
+			model_nodes.push_back(node);
+			nodes->GetAnotherNode();
+		}
 
 		delete[] anim_paths;
 		delete[] mesh_paths;
+		delete[] materials_path;
+		delete[] bones_paths;
 		delete meta;
 
 		// InitMeshes
@@ -259,10 +291,12 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 
 			JSONfilepack* model = new JSONfilepack(library_path, mesh_object, mesh_value);
 
-			name = model->GetString("Model.Name");
+			name = model->GetString("Meta.Name");
 
-			std::string* mesh_path = model->GetArrayString("Model.PathMeshes");
-			std::string* anim_path = model->GetArrayString("Model.PathAnimations");
+			std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
+			std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
+			std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+			std::string* bones_path = model->GetArrayString("Meta.PathBones");
 
 			for (uint i = 0; i < num_meshes; ++i) {
 				ResourceMesh* r_mesh = new ResourceMesh();
@@ -286,19 +320,36 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 			}
 			for (uint i = 0; i < num_bones; ++i) {
 				ResourceBone* r_bone = new ResourceBone();
-				if (r_bone->ReadBaseInfo(bones_paths[i].data())) {
+				if (r_bone->ReadBaseInfo(bones_path[i].data())) {
 					bones_attached.push_back(r_bone);
 				}
 				else {
-					LOG_ENGINE("Error loading %s", bones_paths[i].data());
+					LOG_ENGINE("Error loading %s", bones_path[i].data());
 					delete r_bone;
 				}
 			}
+
+			for (uint i = 0; i < num_materials; ++i) {
+				ResourceMaterial* r_material = new ResourceMaterial();
+				if (r_material->ReadBaseInfo(materials_path[i].data())) {
+					materials_attached.push_back(r_material);
+				}
+				else {
+					LOG_ENGINE("Error loading %s", materials_path[i].data());
+					delete r_material;
+				}
+			}
+
 			delete[] anim_path;
 			delete[] mesh_path;
+			delete[] materials_path;
+			delete[] bones_path;
 			delete model;
 			App->resources->AddResource(this);
 		}
+	}
+	else {
+		ret = false;
 	}
 	return ret;
 }
@@ -315,13 +366,26 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 
 		JSONfilepack* model = new JSONfilepack(meta_data_path, mesh_object, mesh_value);
 
-		name = model->GetString("Model.Name");
-		int num_meshes = model->GetNumber("Model.NumMeshes");
-		std::string* mesh_path = model->GetArrayString("Model.PathMeshes");
-		int num_anims = model->GetNumber("Model.NumAnimations");
-		std::string* anim_path = model->GetArrayString("Model.PathAnimations");
-		int num_bones = model->GetNumber("Model.NumBones");
-		std::string* bones_path = model->GetArrayString("Model.PathBones");
+		name = model->GetString("Meta.Name");
+		int num_meshes = model->GetNumber("Meta.NumMeshes");
+		std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
+		int num_anims = model->GetNumber("Meta.NumAnimations");
+		std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
+		int num_bones = model->GetNumber("Meta.NumBones");
+		std::string* bones_path = model->GetArrayString("Meta.PathBones");
+		int num_materials = model->GetNumber("Meta.NumMaterials");
+		std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+
+		for (uint i = 0; i < num_materials; ++i) {
+			ResourceMaterial* r_material = new ResourceMaterial();
+			if (r_material->ReadBaseInfo(materials_path[i].data())) {
+				materials_attached.push_back(r_material);
+			}
+			else {
+				LOG_ENGINE("Error loading %s", materials_path[i].data());
+				delete r_material;
+			}
+		}
 
 		for (uint i = 0; i < num_meshes; ++i) {
 			ResourceMesh* r_mesh = new ResourceMesh();
@@ -353,9 +417,29 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 				delete r_bone;
 			}
 		}
+
+		JSONArraypack* nodes = model->GetArray("Nodes");
+		nodes->GetFirstNode();
+		for (uint i = 0; i < nodes->GetArraySize(); ++i) {
+			ModelNode node;
+			node.pos = nodes->GetFloat3("pos");
+			node.scale = nodes->GetFloat3("scale");
+			node.rot = nodes->GetQuat("rot");
+			node.node_num = nodes->GetNumber("nodeNum");
+			node.parent_num = nodes->GetNumber("parentNum");
+			node.name = nodes->GetString("nodeName");
+			node.parent_name = nodes->GetString("parentName");
+			node.mesh = nodes->GetNumber("meshIndex");
+			node.material = nodes->GetNumber("materialIndex");
+			node.bone = nodes->GetNumber("boneIndex");
+			model_nodes.push_back(node);
+			nodes->GetAnotherNode();
+		}
+
 		delete[] mesh_path;
 		delete[] anim_path;
 		delete[] bones_path;
+		delete[] materials_path;
 		delete model;
 		App->resources->AddResource(this);
 	}
@@ -421,6 +505,16 @@ bool ResourceModel::DeleteMetaData()
 	}
 	bones_attached.clear();
 
+	std::vector<ResourceMaterial*>::iterator item_mat = materials_attached.begin();
+	for (; item_mat != materials_attached.end(); ++item_mat)
+	{
+		if ((*item_mat) != nullptr)
+		{
+			(*item_mat)->DeleteMetaData();
+		}
+	}
+	materials_attached.clear();
+
 	std::vector<Resource*>::iterator position = std::find(App->resources->resources.begin(), App->resources->resources.end(), static_cast<Resource*>(this));
 	if (position != App->resources->resources.end()) 
 		App->resources->resources.erase(position);
@@ -430,54 +524,212 @@ bool ResourceModel::DeleteMetaData()
 	return true;
 }
 
+void ResourceModel::UpdateAnimationInfo()
+{
+	JSON_Value* mesh_value = json_parse_file(meta_data_path.data());
+	JSON_Object* mesh_object = json_value_get_object(mesh_value);
+
+	if (mesh_value != nullptr && mesh_object != nullptr) {
+
+		JSONfilepack* model = new JSONfilepack(meta_data_path, mesh_object, mesh_value);
+
+		name = model->GetString("Meta.Name");
+		int num_meshes = model->GetNumber("Meta.NumMeshes");
+		std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
+		int num_anims = model->GetNumber("Meta.NumAnimations");
+		std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
+		int num_bones = model->GetNumber("Meta.NumBones");
+		std::string* bones_path = model->GetArrayString("Meta.PathBones");
+		int num_materials = model->GetNumber("Meta.NumMaterials");
+		std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+
+		std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
+
+		JSON_Value* alien_value = json_value_init_object();
+		JSON_Object* alien_object = json_value_get_object(alien_value);
+		json_serialize_to_file_pretty(alien_value, alien_path.data());
+		JSONfilepack* alien = new JSONfilepack(alien_path, alien_object, alien_value);
+		alien->StartSave();
+		alien->SetString("Meta.ID", std::to_string(ID));
+
+		std::string library_path = std::string(LIBRARY_MODELS_FOLDER) + std::string(std::to_string(ID) + ".alienModel");
+
+		alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
+		alien->SetString("Meta.Name", name);
+		alien->SetNumber("Meta.NumBones", bones_attached.size());
+		alien->SetNumber("Meta.NumAnimations", animations_attached.size());
+		alien->SetNumber("Meta.NumMaterials", materials_attached.size());
+
+
+		JSONArraypack* anim_array_alien = alien->InitNewArray("Meta.Animations");
+
+		std::string* animation_paths = new std::string[animations_attached.size()];
+		for (int i = 0; i < animations_attached.size(); ++i)
+		{
+			if (anim_path != nullptr && i < num_anims)
+			{
+				std::string path_ = App->file_system->GetBaseFileName(anim_path[i].data()); //std::stoull().data());
+				animations_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else
+			{
+				animations_attached[i]->CreateMetaData();
+			}
+
+			anim_array_alien->SetAnotherNode();
+			anim_array_alien->SetString("Name", animations_attached[i]->name.data());
+			anim_array_alien->SetBoolean("Loops", animations_attached[i]->loops);
+			anim_array_alien->SetNumber("Start_Tick", animations_attached[i]->start_tick);
+			anim_array_alien->SetNumber("End_Tick", animations_attached[i]->end_tick);
+
+			animation_paths[i] = animations_attached[i]->GetLibraryPath();
+			LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
+		}
+
+		alien->SetArrayString("Meta.PathMeshes", mesh_path, meshes_attached.size());
+		alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
+		alien->SetArrayString("Meta.PathBones", bones_path, bones_attached.size());
+		alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
+
+		JSONArraypack* nodes = alien->InitNewArray("Nodes");
+		for (uint i = 0; i < model_nodes.size(); ++i) {
+			nodes->SetAnotherNode();
+			nodes->SetFloat3("pos", model_nodes[i].pos);
+			nodes->SetFloat3("scale", model_nodes[i].scale);
+			nodes->SetQuat("rot", model_nodes[i].rot);
+			nodes->SetNumber("nodeNum", model_nodes[i].node_num);
+			nodes->SetNumber("parentNum", model_nodes[i].parent_num);
+			nodes->SetString("nodeName", model_nodes[i].name);
+			nodes->SetString("parentName", model_nodes[i].parent_name);
+			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
+			nodes->SetNumber("materialIndex", model_nodes[i].material);
+			nodes->SetNumber("boneIndex", model_nodes[i].bone);
+		}
+
+		alien->FinishSave();
+		delete alien;
+
+		App->file_system->Copy(alien_path.data(), library_path.data());
+
+		delete[] mesh_path;
+		delete[] anim_path;
+		delete[] bones_path;
+		delete[] materials_path;
+		delete model;
+	}
+}
+
 void ResourceModel::ConvertToGameObjects()
 {
-	if (meshes_attached.empty())
+	if (model_nodes.empty())
 		return;
 
-	std::sort(meshes_attached.begin(), meshes_attached.end(), ResourceModel::SortByFamilyNumber);
+	App->objects->ignore_cntrlZ = true;
 
-	if (meshes_attached.size() > 1) { // needs an empty gameobject
-		
-		GameObject* parent = nullptr;
-		if (meshes_attached.at(0)->family_number == meshes_attached.at(1)->family_number) {
-			parent = new GameObject(App->objects->GetRoot(false));
-			parent->SetName(name.data());
-		}
-		else {
-			parent = App->objects->GetRoot(false);
-		}
-		
-		// vector to find the parents
-		std::vector<std::pair<u64,GameObject*>> objects_created;
-		objects_created.push_back({ 0,parent });
-		std::pair<GameObject*, GameObject*> skeleton_link = { nullptr, nullptr };
+	std::sort(model_nodes.begin(), model_nodes.end(), ResourceModel::SortByFamilyNumber);
 
-		std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
-		for (; item != meshes_attached.end(); ++item) {
-			if (*item != nullptr) {
-				(*item)->ConvertToGameObject(&objects_created, skeleton_link);
-			}
-		}
+	GameObject* parent = nullptr;
 
-		if (skeleton_link.first != nullptr && skeleton_link.second != nullptr)
-			((ComponentDeformableMesh*)skeleton_link.first->GetComponent(ComponentType::DEFORMABLE_MESH))->AttachSkeleton(skeleton_link.second->transform);
-		objects_created.clear();
-
-		//// set it selected
-		//App->objects->SetNewSelectedObject(parent);
-		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, parent);
+	if (model_nodes.size() > 1) {
+		parent = App->objects->CreateEmptyGameObject(nullptr, false);
+		parent->SetName(name.data());
 	}
-	else { 
-		meshes_attached.at(0)->ConvertToGameObject(nullptr);
+	else {
+		parent = App->objects->GetRoot(false);
 	}
+
+	std::vector<std::pair<uint, GameObject*>> objects_created;
+	objects_created.push_back({ 1,parent });
+
+	std::pair<GameObject*, GameObject*> skeleton_link = { nullptr, nullptr };
+	for (uint i = 0; i < model_nodes.size(); ++i) {
+		CreateGameObject(model_nodes[i], objects_created, skeleton_link);
+	}
+	App->objects->GetRoot(false)->children.back()->transform->RecalculateTransform();
+	App->objects->ignore_cntrlZ = false;
+	if (skeleton_link.first != nullptr && skeleton_link.second != nullptr)
+		((ComponentDeformableMesh*)skeleton_link.first->GetComponent(ComponentType::DEFORMABLE_MESH))->AttachSkeleton(skeleton_link.second->transform);
+
 	App->objects->SetNewSelectedObject(App->objects->GetRoot(false)->children.back());
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
 	App->camera->fake_camera->Look(App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint());
 	App->camera->reference = App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint();
 }
 
-bool ResourceModel::SortByFamilyNumber(const ResourceMesh* mesh1, const ResourceMesh* mesh2)
+bool ResourceModel::SortByFamilyNumber(const ModelNode& node1, const ModelNode& node2)
 {
-	return mesh1->family_number < mesh2->family_number;
+	return node1.node_num < node2.node_num;
+}
+
+GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, std::pair<GameObject*, GameObject*>& skeleton_link)
+{
+	GameObject* ret = nullptr;
+
+	for (uint i = 0; i < objects_created.size(); ++i) {
+		if (objects_created[i].first == node.parent_num && strcmp(objects_created[i].second->name, (model_nodes.size() > 1) ? node.parent_name.data() : App->objects->GetRoot(true)->GetName()) == 0) {
+			ret = new GameObject(objects_created[i].second, node.pos, node.rot, node.scale);
+			ret->SetName(node.name.data());
+
+			if (node.mesh >= 0) {
+				ResourceMesh* mesh = meshes_attached[node.mesh];
+				if (mesh != nullptr) {
+					if (mesh->deformable)
+					{
+						ComponentDeformableMesh* Cmesh = new ComponentDeformableMesh(ret);
+						mesh->IncreaseReferences();
+						Cmesh->mesh = mesh;
+						Cmesh->RecalculateAABB_OBB();
+						ret->AddComponent(Cmesh);
+						skeleton_link.first = ret;
+					}
+					else
+					{
+						ComponentMesh* Cmesh = new ComponentMesh(ret);
+						mesh->IncreaseReferences();
+						Cmesh->mesh = mesh;
+						Cmesh->RecalculateAABB_OBB();
+						ret->AddComponent(Cmesh);
+					}
+				}
+
+				if (node.material >= 0) {
+					ResourceMaterial* material = materials_attached[node.material];
+					if (material != nullptr) {
+						ComponentMaterial* Cmat = new ComponentMaterial(ret);
+						Cmat->color = material->color;
+
+						// TODO: all texture types!!
+						/*for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+							alien->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
+						}*/
+
+						// CHANGE
+						if (material->texturesID[0] != 0) {
+							Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
+						}
+
+						ret->AddComponent(Cmat);
+					}
+				}
+
+			}
+			if (node.bone >= 0)
+			{
+				if (skeleton_link.second == nullptr)
+					skeleton_link.second = ret;
+
+				ResourceBone* bone = bones_attached[node.bone];
+				if (bone != nullptr) {
+					ComponentBone* c_bone = new ComponentBone(ret);
+					bone->IncreaseReferences();
+					c_bone->bone = bone;
+					ret->AddComponent(c_bone);
+				}
+			}
+			objects_created.push_back({ node.node_num, ret });
+			break;
+		}
+	}
+
+	return ret;
 }

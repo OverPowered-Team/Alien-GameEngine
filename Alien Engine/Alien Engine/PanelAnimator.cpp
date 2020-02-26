@@ -8,7 +8,9 @@
 #include "ResourceAnimatorController.h"
 #include "ResourceAnimation.h"
 
+#include "PanelProject.h"
 #include "PanelAnimator.h"
+#include "mmgr/mmgr.h"
 
 #define CHECKBOX_SIZE 50
 
@@ -490,6 +492,47 @@ void PanelAnimator::DrawParameterList()
 	}
 }
 
+void PanelAnimator::OnAssetSelect()
+{
+	if (App->ui->panel_project->current_active_file->type == FileDropType::ANIM_CONTROLLER)
+	{
+		std::string asset_path = App->ui->panel_project->current_active_file->path + App->ui->panel_project->current_active_file->name;
+		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
+		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
+		if (current_animator != anim_ctrl)
+		{
+			if(current_animator)
+				current_animator->SaveAsset(current_animator->GetID());
+			SetCurrentResourceAnimatorController(anim_ctrl);
+		}
+	}
+}
+
+void PanelAnimator::OnAssetDelete()
+{
+	if (App->ui->panel_project->current_active_file->type == FileDropType::ANIM_CONTROLLER)
+	{
+		std::string asset_path = App->ui->panel_project->current_active_file->path + App->ui->panel_project->current_active_file->name;
+		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
+		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
+		if(current_animator)
+			current_animator->DecreaseReferences();
+		current_animator = nullptr;
+	}
+}
+
+void PanelAnimator::OnObjectSelect()
+{
+	//TODO: Look for Animator Component on Go and select it if needed.
+}
+
+void PanelAnimator::OnObjectDelete()
+{
+	//TODO
+}
+
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController * animator)
 {
 	if (current_animator)
@@ -510,6 +553,8 @@ PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& 
 
 PanelAnimator::~PanelAnimator()
 {
+	if (current_animator)
+		current_animator->SaveAsset();
 }
 
 bool PanelAnimator::FillInfo()
@@ -519,9 +564,6 @@ bool PanelAnimator::FillInfo()
 
 void PanelAnimator::PanelLogic()
 {
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-		current_animator->SaveAsset(current_animator->GetID());
-
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animator", &enabled, aboutFlags);

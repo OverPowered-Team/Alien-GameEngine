@@ -1,0 +1,103 @@
+{
+    "Scene": {
+        "Name": "holaquetal",
+        "GameObjects": [
+            {
+                "Name": "Empty GameObject",
+                "FamilyNumber": 1,
+                "ID": "8190806892680718844",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3278615574108906874"
+                    },
+                    {
+                        "Type": 6,
+                        "Enabled": true,
+                        "ID": "11542887086810595871",
+                        "ListenerID": "0"
+                    }
+                ]
+            },
+            {
+                "Name": "Empty GameObject",
+                "FamilyNumber": 1,
+                "ID": "4138847008360553913",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18028780577634627293"
+                    },
+                    {
+                        "ID": "3670278702069296048",
+                        "Type": 5,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "393239870",
+                        "Event": "1970334122"
+                    },
+                    {
+                        "Type": 8,
+                        "ID": "16171025280491925049",
+                        "ResourceID": "1577992174811109157",
+                        "DataName": "Audio",
+                        "HasInspector": false
+                    }
+                ]
+            }
+        ]
+    }
+}

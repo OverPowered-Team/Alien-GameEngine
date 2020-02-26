@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {

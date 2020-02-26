@@ -7,6 +7,7 @@
 #include "ResourceMesh.h"
 #include "ResourceBone.h"
 #include "ComponentDeformableMesh.h"
+#include "mmgr/mmgr.h"
 
 ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : ComponentMesh(attach)
 {
@@ -16,23 +17,36 @@ ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : Component
 
 ComponentDeformableMesh::~ComponentDeformableMesh()
 {
-	/*if (game_object_attached != nullptr && game_object_attached->HasComponent(ComponentType::MATERIAL))
+	if (game_object_attached != nullptr && game_object_attached->HasComponent(ComponentType::MATERIAL))
 	{
 		static_cast<ComponentMaterial*>(game_object_attached->GetComponent(ComponentType::MATERIAL))->not_destroy = false;
 	}
 	if (mesh != nullptr && mesh->is_custom) {
 		mesh->DecreaseReferences();
-	}*/
+	}
+	if (deformable_mesh)
+	{
+		delete deformable_mesh;
+		deformable_mesh = nullptr;
+	}
 	//clear deformable mesh?
 }
 
 void ComponentDeformableMesh::AttachSkeleton(ComponentTransform* root)
 {
+	root_bone_id = root->game_object_attached->ID;
+
 	//Duplicate mesh
 	if (mesh)
 		deformable_mesh = new ResourceMesh(mesh);
 	
 	AttachBone(root);
+}
+
+void ComponentDeformableMesh::AttachSkeleton()
+{
+	if (root_bone_id != 0)
+		AttachSkeleton(App->objects->GetGameObjectByID(root_bone_id)->transform);
 }
 
 void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
@@ -84,7 +98,7 @@ void ComponentDeformableMesh::DrawPolygon()
 	if(deformable_mesh)
 		UpdateDeformableMesh();
 
-	if (deformable_mesh == nullptr || mesh->id_index <= 0)
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
 		return;
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
@@ -146,5 +160,117 @@ void ComponentDeformableMesh::DrawPolygon()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
+}
+
+void ComponentDeformableMesh::DrawOutLine()
+{
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
+		return;
+
+
+	if (!glIsEnabled(GL_STENCIL_TEST))
+		return;
+	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
+	{
+		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		glLineWidth(App->objects->parent_line_width);
+	}
+	else
+	{
+		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		glLineWidth(App->objects->no_child_line_width);
+	}
+
+	glStencilFunc(GL_NOTEQUAL, 1, -1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glPolygonMode(GL_FRONT, GL_LINE);
+
+	glPushMatrix();
+	ComponentTransform* transform = game_object_attached->transform;
+	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, deformable_mesh->id_index);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	glDrawElements(GL_TRIANGLES, deformable_mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glLineWidth(1);
+
+	glPopMatrix();
+}
+
+void ComponentDeformableMesh::DrawMesh()
+{
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
+		return;
+
+	ComponentTransform* transform = game_object_attached->transform;
+
+	glPushMatrix();
+	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glLineWidth(App->objects->mesh_line_width);
+	glColor3f(App->objects->mesh_color.r, App->objects->mesh_color.g, App->objects->mesh_color.b);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, deformable_mesh->id_index);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_TRIANGLES, deformable_mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+	glLineWidth(1);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
+void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetBoolean("ViewMesh", view_mesh);
+	to_save->SetBoolean("Wireframe", wireframe);
+	to_save->SetBoolean("ViewVertexNormals", view_vertex_normals);
+	to_save->SetBoolean("ViewFaceNormals", view_face_normals);
+	to_save->SetBoolean("DrawAABB", draw_AABB);
+	to_save->SetBoolean("DrawOBB", draw_OBB);
+	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("MeshID", mesh ? std::to_string(mesh->GetID()) : std::to_string(0));
+	to_save->SetString("RootBoneID", root_bone_id != 0 ? std::to_string(root_bone_id) : std::to_string(0));
+	to_save->SetBoolean("Enabled", enabled);
+}
+
+void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
+{
+	view_mesh = to_load->GetBoolean("ViewMesh");
+	wireframe = to_load->GetBoolean("Wireframe");
+	view_vertex_normals = to_load->GetBoolean("ViewVertexNormals");
+	view_face_normals = to_load->GetBoolean("ViewFaceNormals");
+	draw_AABB = to_load->GetBoolean("DrawAABB");
+	draw_OBB = to_load->GetBoolean("DrawOBB");
+	enabled = to_load->GetBoolean("Enabled");
+	root_bone_id = std::stoull(to_load->GetString("RootBoneID"));
+	ID = std::stoull(to_load->GetString("ID"));
+	u64 mesh_ID = std::stoull(to_load->GetString("MeshID"));
+	if (mesh_ID != 0)
+	{
+		mesh = (ResourceMesh*)App->resources->GetResourceWithID(mesh_ID);
+		if (mesh != nullptr)
+			mesh->IncreaseReferences();
+	}
+
+	GenerateAABB();
+	RecalculateAABB_OBB();
 }
 

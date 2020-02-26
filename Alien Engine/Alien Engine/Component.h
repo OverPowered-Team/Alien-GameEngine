@@ -9,13 +9,25 @@ typedef unsigned long long u64;
 enum class ComponentType {
 	TRANSFORM = 0,
 	MESH,
-	DEFORMABLE_MESH,
 	MATERIAL,
 	LIGHT,
 	CAMERA,
 	ANIMATOR,
+	PARTICLES,
+	A_EMITTER,
+	A_LISTENER,
+	A_REVERB,
+	CANVAS,
+	UI_IMAGE,
+	UI_BUTTON,
+	UI_TEXT,
+	UI_CHECKBOX,
+	UI_SLIDER,
+	UI_BAR, 
+	DEFORMABLE_MESH,
 	BONE,
 	SCRIPT,
+	UI,// UI MUST BE THE LAST
 
 	UNKNOWN
 };
@@ -26,8 +38,13 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
+	friend class ComponentDeformableMesh;
 	friend class ComponentMaterial;
+	friend class ComponentCanvas;
+	friend class ComponentUI;
 	friend class ComponentScript;
+	friend class ComponentImage;
+	friend class ComponentText;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class Prefab;
@@ -53,7 +70,10 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save) {}
 	virtual void LoadComponent(JSONArraypack* to_load) {}
 
-	virtual void Awake() {}
+	virtual void OnPlay() {}
+	virtual void OnPause() {}
+	virtual void OnStop() {}
+
 	virtual void PreUpdate() {}
 	virtual void Update() {}
 	virtual void PostUpdate() {}

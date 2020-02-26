@@ -16,9 +16,12 @@
 #include "ModuleImporter.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleAudio.h"
 
 #include <string>
 #include <vector>
+
+enum class EventType; 
 
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
@@ -37,16 +40,17 @@ struct LogInfo {
 class Application
 {
 public:
-	ModuleWindow* window = nullptr;
-	ModuleInput* input = nullptr;
-	ModuleRenderer3D* renderer3D = nullptr;
-	ModuleCamera3D* camera = nullptr;
-	ModuleUI* ui = nullptr;
-	ModuleImporter* importer = nullptr;
-	ShortCutManager* shortcut_manager = nullptr;
-	ModuleObjects* objects = nullptr;
-	ModuleFileSystem* file_system = nullptr;
-	ModuleResources* resources = nullptr;
+	ModuleWindow*		window = nullptr;
+	ModuleInput*		input = nullptr;
+	ModuleRenderer3D*	renderer3D = nullptr;
+	ModuleCamera3D*		camera = nullptr;
+	ModuleUI*			ui = nullptr;
+	ModuleImporter*		importer = nullptr;
+	ShortCutManager*	shortcut_manager = nullptr;
+	ModuleObjects*		objects = nullptr;
+	ModuleFileSystem*	file_system = nullptr;
+	ModuleResources*	resources = nullptr;
+	ModuleAudio*		audio = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;
@@ -62,18 +66,16 @@ private:
 	JSONfilepack* layout = nullptr;
 	
 	std::list<JSONfilepack*> json_files;
-
 	std::list<Module*> list_modules;
 	bool quit = false;
 
 	j1PerfTimer			ptimer;
-	unsigned __int64				frame_count = 0;
+	unsigned __int64	frame_count = 0;
 	Timer				startup_time;
 	Timer				frame_time;
 	Timer				last_sec_frame_time;
-	unsigned __int32				last_sec_frame_count = 0;
-	unsigned __int32				prev_last_sec_frame_count = 0;
-	
+	unsigned __int32	last_sec_frame_count = 0;
+	unsigned __int32	prev_last_sec_frame_count = 0;
 	float				dt;
 
 public:
@@ -99,6 +101,7 @@ public:
 	bool IsQuiting() const;
 
 	void OpenWebsite(const std::string& website);
+	void CastEvent(EventType eventType);
 
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);

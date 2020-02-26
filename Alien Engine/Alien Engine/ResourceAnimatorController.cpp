@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include "ResourceAnimatorController.h"
-
+#include "mmgr/mmgr.h"
 
 
 
@@ -20,10 +20,7 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 		triggers.push_back(false);
 	}
 
-	name = "Animator Controller";
-
 	default_state = nullptr;
-
 }
 
 ResourceAnimatorController::~ResourceAnimatorController()
@@ -140,7 +137,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT();
+		state->time += Time::GetDT() / times_attached;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -167,7 +164,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 			
-			state->fade_time += Time::GetDT();
+			state->fade_time += Time::GetDT() / times_attached;
 			UpdateState(state->next_state);
 		}
 		else {
@@ -281,6 +278,7 @@ void ResourceAnimatorController::FreeMemory()
 		delete (*it);
 	}
 	transitions.clear();
+	default_state = nullptr;
 }
 bool ResourceAnimatorController::LoadMemory()
 {
@@ -721,6 +719,8 @@ void ResourceAnimatorController::RemoveState(std::string name)
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it) {
 		if ((*it)->GetName() == name) {
+			if ((*it)->GetClip())
+				(*it)->GetClip()->DecreaseReferences();
 			delete (*it);
 			it = states.erase(it);
 			break;
@@ -808,7 +808,8 @@ State::State()
 State::State(std::string name, ResourceAnimation* clip)
 {
 	this->name = name;
-	this->clip = clip;
+	if (clip)
+		SetClip(clip);
 }
 
 void State::SetSpeed(float speed)

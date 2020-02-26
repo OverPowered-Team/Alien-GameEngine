@@ -14,12 +14,15 @@
 #include "Time.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
+#include "ComponentDeformableMesh.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentScript.h"
 #include "PanelHierarchy.h"
 #include "PanelAnimTimeline.h"
 #include "Gizmos.h"
+#include "Viewport.h"
 #include "Alien.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -66,15 +69,20 @@ bool ModuleObjects::Start()
 			delete json_tags;
 		}
 	}
-
+	game_viewport = new Viewport(nullptr);
 #ifndef GAME_VERSION
-	/*GameObject* light_test = new GameObject(base_game_object);
+	GameObject* light_test = new GameObject(base_game_object);
 	light_test->SetName("Light");
 
 	light_test->AddComponent(new ComponentLight(light_test));
 
 	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));*/
+	light_test->AddComponent(new ComponentLight(light_test));
+
+	GameObject* camera = new GameObject(base_game_object);
+	camera->SetName("Main Camera");
+	camera->AddComponent(new ComponentTransform(camera, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+	camera->AddComponent(new ComponentCamera(camera));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
 	App->camera->fake_camera->Look(float3(0, 0, 0));
@@ -89,6 +97,8 @@ bool ModuleObjects::Start()
 
 		SDL_SetWindowTitle(App->window->window, meta->GetString("Build.GameName"));
 		LoadScene(App->file_system->GetBaseFileName(meta->GetString("Build.FirstScene")).data());
+		game_viewport->SetPos({ 0,0 });
+		game_viewport->active = true;
 		Time::Play();
 
 		delete meta;
@@ -156,44 +166,46 @@ update_status ModuleObjects::PostUpdate(float dt)
 {
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
+
 #ifndef GAME_VERSION
-	if (App->renderer3D->SetCameraToDraw(App->camera->fake_camera)) {
-		printing_scene = true;
-		// Scene Drawing
-		if (App->renderer3D->render_zbuffer) {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->z_framebuffer);
+	for (Viewport* viewport : viewports) {
+		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
+			continue;
+
+		viewport->BeginViewport();
+		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
+		bool isGameCamera = (viewport == game_viewport) ? true : false;
+		if (printing_scene) {
+			if (draw_ray)
+				DrawRay();
+
+			if (allow_grid)
+				App->renderer3D->RenderGrid();
+
+			if (render_octree)
+				octree.Draw();
+
+			if (prefab_scene) {
+				static float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				static float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+				glEnable(GL_LIGHT0);
+			}
 		}
-		else {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->scene_frame_buffer);
-		}
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glClearStencil(0);
-
-		if (draw_ray)
-			DrawRay();
-
-		if (allow_grid)
-			App->renderer3D->RenderGrid();
-
-		if (render_octree)
-			octree.Draw();
 
 		if (base_game_object->HasChildren()) {
+			if (isGameCamera) {
+				OnPreCull(viewport->GetCamera());
+			}
+
 			std::vector<std::pair<float, GameObject*>> to_draw;
 
-			ComponentCamera* frustum_camera = nullptr;
+			ComponentCamera* frustum_camera = viewport->GetCamera();
 
-			if (!check_culling_in_scene)
-			{
-				frustum_camera = App->camera->fake_camera;
-			}
-			else if (check_culling_in_scene && App->renderer3D->actual_game_camera != nullptr)
+			if (check_culling_in_scene && App->renderer3D->actual_game_camera)
 			{
 				frustum_camera = App->renderer3D->actual_game_camera;
-			}
-			else {
-				frustum_camera = App->camera->fake_camera;
 			}
 
 			octree.SetStaticDrawList(&to_draw, frustum_camera);
@@ -204,137 +216,66 @@ update_status ModuleObjects::PostUpdate(float dt)
 					(*item)->SetDrawList(&to_draw, frustum_camera);
 				}
 			}
-			
-			if (prefab_scene) {
-				static float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				static float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-				glEnable(GL_LIGHT0);
-			}
+
 			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			if (isGameCamera) {
+				OnPreRender(viewport->GetCamera());
+			}
+
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
 					(*it).second->DrawScene();
 				}
 			}
-			OnDrawGizmos();
+			if (printing_scene)
+				OnDrawGizmos();
+			if (isGameCamera) {
+				OnPostRender(viewport->GetCamera());
+			}
 		}
 
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		viewport->EndViewport();
 	}
 
-	if (App->renderer3D->SetCameraToDraw(App->renderer3D->actual_game_camera)) {
-		printing_scene = false;
-		if (App->renderer3D->render_zbuffer) {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->z_framebuffer);
-		}
-		else {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->game_frame_buffer);
-		}
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glClearStencil(0);
-
-		if (allow_grid)
-			App->renderer3D->RenderGrid();
-
-		if (base_game_object->HasChildren()) {
-
-			OnPreCull(App->renderer3D->actual_game_camera);
-			std::vector<std::pair<float, GameObject*>> to_draw;
-			octree.SetStaticDrawList(&to_draw, App->renderer3D->actual_game_camera);
-
-			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-			for (; item != base_game_object->children.end(); ++item) {
-				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, App->renderer3D->actual_game_camera);
-				}
-			}
-
-			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-
-			OnPreRender(App->renderer3D->actual_game_camera);
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-					(*it).second->DrawGame();
-				}
-			}
-
-			OnPostRender(App->renderer3D->actual_game_camera);
-		}
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	}
-
-	if (App->renderer3D->selected_game_camera != nullptr && (App->objects->GetSelectedObjects().size() == 1 && App->renderer3D->actual_game_camera != App->objects->GetSelectedObjects().back()->GetComponent(ComponentType::CAMERA) && App->renderer3D->SetCameraToDraw(App->renderer3D->selected_game_camera)))
-	{
-		printing_scene = false;
-		if (App->renderer3D->render_zbuffer) {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->z_framebuffer);
-		}
-		else {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, App->renderer3D->sc_game_frame_buffer);
-		}
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glClearStencil(0);
-
-		if (allow_grid)
-			App->renderer3D->RenderGrid();
-
-		if (base_game_object->HasChildren()) {
-			std::vector<std::pair<float, GameObject*>> to_draw;
-
-			octree.SetStaticDrawList(&to_draw, App->renderer3D->selected_game_camera);
-
-			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-			for (; item != base_game_object->children.end(); ++item) {
-				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, App->renderer3D->selected_game_camera);
-				}
-			}
-
-			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-					(*it).second->DrawGame();
-				}
-			}
-		}
-
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	}
 #else
 
-	if (base_game_object->HasChildren() && App->renderer3D->actual_game_camera != nullptr) {
-		
-		OnPreCull(App->renderer3D->actual_game_camera);
+	if (!game_viewport->active && !game_viewport->CanRender())
+		return UPDATE_CONTINUE;
+
+	game_viewport->BeginViewport();
+
+	if (base_game_object->HasChildren()) {
+		OnPreCull(game_viewport->GetCamera());
+
 		std::vector<std::pair<float, GameObject*>> to_draw;
 
-		octree.SetStaticDrawList(&to_draw, App->renderer3D->actual_game_camera);
-		if (allow_grid) {
-			App->renderer3D->RenderGrid();
-		}
+		ComponentCamera* frustum_camera = game_viewport->GetCamera();
+
+		octree.SetStaticDrawList(&to_draw, frustum_camera);
+
 		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 		for (; item != base_game_object->children.end(); ++item) {
 			if (*item != nullptr && (*item)->IsEnabled()) {
-				(*item)->SetDrawList(&to_draw, App->renderer3D->actual_game_camera);
+				(*item)->SetDrawList(&to_draw, frustum_camera);
 			}
 		}
 
 		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-		OnPreRender(App->renderer3D->actual_game_camera);
+
+		OnPreRender(game_viewport->GetCamera());
+
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
 				(*it).second->DrawGame();
 			}
 		}
-		OnPostRender(App->renderer3D->actual_game_camera);
+
+		OnPostRender(game_viewport->GetCamera());
 	}
+
+	game_viewport->EndViewport();
 #endif
 	return UPDATE_CONTINUE;
 }
@@ -371,6 +312,10 @@ bool ModuleObjects::CleanUp()
 	}
 
 	DeleteReturns();
+
+	for (Viewport* viewport : viewports) {
+		delete viewport;
+	}
 	
 	return true;
 }
@@ -498,8 +443,6 @@ void ModuleObjects::DeselectObject(GameObject* obj)
 void ModuleObjects::OnPlay() const
 {
 	InitScripts();
-
-	base_game_object->Awake();
 }
 
 void ModuleObjects::InitScripts() const
@@ -985,7 +928,8 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		delete scene;
 		if (force_with_path == nullptr) {
 			current_scene = to_load_scene;
-			std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			//std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			App->file_system->Copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
 		}
 	}
 	else {
@@ -1059,6 +1003,12 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 						}
 					}
 					objects_created.push_back(obj);
+				}
+				for each (GameObject* obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+				{
+					ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
+					if (def_mesh)
+						def_mesh->AttachSkeleton();
 				}
 				delete scene;
 
@@ -1325,6 +1275,7 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
 //	auto item = invokes.begin();
@@ -1590,6 +1541,34 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetBoolean("Configuration.Renderer.DrawRay", draw_ray);
 	config->SetNumber("Configuration.Renderer.RayWidth", ray_width);
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
+}
+
+void ModuleObjects::HandleEvent(EventType eventType)
+{
+	std::vector<GameObject*> objects;
+	objects.push_back(base_game_object);
+
+	while (!objects.empty())
+	{
+		GameObject* currentGo = objects.back();
+		objects.pop_back();
+		objects.insert(objects.end(), currentGo->children.begin(), currentGo->children.end());
+
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			currentGo->OnPlay();
+			break;
+		case EventType::ON_PAUSE:
+			currentGo->OnPause();
+			break;
+		case EventType::ON_STOP:
+			currentGo->OnStop();
+			break;
+		}
+	}
+
+	objects.clear();
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)

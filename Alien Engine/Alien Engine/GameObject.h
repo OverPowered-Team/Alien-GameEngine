@@ -11,6 +11,7 @@
 enum class ResourceType;
 class Resource;
 class Prefab;
+class ComponentCanvas;
 class ComponentCamera;
 
 class __declspec(dllexport) GameObject
@@ -18,12 +19,21 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentLight;
+	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
 	friend class ComponentDeformableMesh;
+	friend class ComponentBone;
+	friend class ComponentAnimator;
 	friend class ComponentMaterial;
 	friend class ComponentScript;
+	friend class ComponentUI;
+	friend class ComponentCanvas;
+	friend class ComponentCheckbox;
+	friend class ComponentText;
+	friend class ComponentButton;
+	friend class ComponentBar;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -43,9 +53,12 @@ class __declspec(dllexport) GameObject
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
 	friend class ModuleObjects;
+	friend class ComponentImage;
+	friend class ComponentSlider;
 	friend class ModuleUI;
 public:
 	GameObject(GameObject* parent);
+	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
 	GameObject(); // just for loading objects, dont use it
 	virtual ~GameObject();
 
@@ -84,6 +97,7 @@ public:
 	bool HasComponent(ComponentType component) const;
 	Component* GetComponent(const ComponentType& type);
 	const Component* GetComponent(const ComponentType& type) const;
+	ComponentTransform* GetComponentTransform() const; //sorry ori
 	void* GetComponentScript(const char* script_class_name);
 	const void* GetComponentScript(const char* script_class_name) const;
 	Component* GetComponentInParent(const ComponentType& type);
@@ -131,17 +145,22 @@ private:
 	void OnEnable();
 	void OnDisable();
 
+	void OnPlay();
+	void OnPause();
+	void OnStop();
+
 	// here we call Component Mesh, Material & light
 	void DrawScene();
 	void DrawGame();
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
+
+	ComponentCanvas* GetCanvas();
 
 	Component* GetComponentWithID(const u64& ID);
 	const Component* GetComponentWithID(const u64& ID) const;
 	void RemoveComponent(Component* component);
 	void AddComponent(Component* component);
 
-	void Awake();
 	void PreUpdate();
 	void Update();
 	void PostUpdate();

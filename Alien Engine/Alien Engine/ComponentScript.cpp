@@ -8,6 +8,7 @@
 #include "FileNode.h"
 #include "ResourcePrefab.h"
 #include "Prefab.h"
+#include "mmgr/mmgr.h"
 
 ComponentScript::ComponentScript(GameObject* attach) : Component(attach)
 {

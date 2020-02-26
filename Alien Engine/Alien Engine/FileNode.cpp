@@ -1,13 +1,17 @@
 #include "FileNode.h"
 #include "Application.h"
+#include "ModuleResources.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
 #include "ResourcePrefab.h"
 #include "ResourceScene.h"
+#include "ResourceAnimatorController.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include <fstream>
 #include "Prefab.h"
+#include "mmgr/mmgr.h"
+
 FileNode::FileNode()
 {
 }
@@ -124,6 +128,15 @@ void FileNode::ResetPaths()
 			texture->SetAssetsPath(std::string(this->path + name).data());
 		}
 		break; }
+	case FileDropType::ANIM_CONTROLLER: {
+		std::string path = App->file_system->GetPathWithoutExtension(this->path + name);
+		path += "_meta.alien";
+		u64 ID = App->resources->GetIDFromAlienPath(path.data());
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(ID);
+		if (anim_ctrl != nullptr) {
+			anim_ctrl->SetAssetsPath(std::string(this->path + name).data());
+		}
+		break; }
 	case FileDropType::PREFAB: {
 		std::string path = App->file_system->GetPathWithoutExtension(this->path + name);
 		path += "_meta.alien";
@@ -203,7 +216,7 @@ FileNode* FileNode::FindChildrenByPath(const std::string& path)
 void FileNode::RemoveResourceOfGameObjects()
 {
 	if (is_file) {
-		SDL_assert((uint)FileDropType::UNKNOWN == 5);
+		SDL_assert((uint)FileDropType::UNKNOWN == 10);
 		switch (type) {
 		case FileDropType::SCENE:
 			static char curr_dir[MAX_PATH];
@@ -304,6 +317,10 @@ void FileNode::SetIcon()
 		else if (App->StringCmp(extension.data(), "animController")) {
 			icon = App->resources->icons.model;
 			type = FileDropType::ANIM_CONTROLLER;
+		}
+		else if (App->StringCmp(extension.data(), "alienParticles")) {
+			icon = App->resources->icons.model;
+			type = FileDropType::PARTICLES;
 		}
 		else {
 			// TODO: fer un icon que sigui unknown

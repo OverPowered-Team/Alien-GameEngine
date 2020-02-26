@@ -16,6 +16,14 @@ private:
 	friend class ResourcePrefab;
 	friend class ResourceAnimatorController;
 	friend class ComponentAnimator;
+	friend class PanelAnimTimeline;
+	friend class ComponentAudioEmitter;
+	friend class ModuleAudio;
+	friend class ComponentParticleSystem;
+	friend class ComponentUI;
+	friend class ComponentCheckbox;
+	friend class ComponentSlider;
+	friend class ComponentBar;
 
 	enum class GameState {
 		NONE,
@@ -31,16 +39,19 @@ private:
 	static void Pause();
 	static void PlayOnce();
 	static bool IsPlaying();
+	static bool IsPaused();
 	static bool IsInGameState();
 	static void Stop();
 
 	static void CleanUp();
 
 	static void SetDT(const float& dt);
+	static float GetCurrentDT();
 
 private:
 
 	static float delta_time;
+	static float engine_dt;
 	static Timer* game_timer;
 	static Timer* start_timer;
 
