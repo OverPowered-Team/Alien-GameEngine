@@ -98,7 +98,7 @@ void ComponentDeformableMesh::DrawPolygon()
 	if(deformable_mesh)
 		UpdateDeformableMesh();
 
-	if (deformable_mesh == nullptr || mesh->id_index <= 0)
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
 		return;
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {

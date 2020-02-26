@@ -12,6 +12,7 @@
 
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"
+#include "ResourceBone.h"
 #include "ResourceMesh.h"
 
 #include "ComponentAudioListener.h"
@@ -606,12 +607,7 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 		}
 		ImGui::Separator();
 		if (ImGui::Button("Save")) {
-			std::vector<ResourceMesh*>::iterator item = model->meshes_attached.begin();
-			for (; item != model->meshes_attached.end(); ++item) {
-				if (*item != nullptr) {
-					(*item)->LoadMemory();
-				}
-			}
+			//TODO: FIX THIS MESS OF CODE :|	
 			model->animations_attached[0]->LoadMemory();
 			if (model->animations_attached.size() > 1)
 			{
@@ -620,8 +616,7 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 					model->animations_attached[i]->Copy(model->animations_attached[0]);
 				}
 			}
-			model->CreateMetaData(model->GetID());
-			model->FreeMemory();
+			model->UpdateAnimationInfo();
 		}
 	}
 }

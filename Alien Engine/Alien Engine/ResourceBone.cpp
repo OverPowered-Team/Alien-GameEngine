@@ -83,7 +83,11 @@ bool ResourceBone::LoadMemory()
 	uint name_size;
 	memcpy(&name_size, cursor, bytes);
 	cursor += bytes;
+
+	//Load name
 	bytes = name_size;
+	name.resize(bytes);
+	memcpy(&name[0], cursor, bytes);
 	cursor += bytes;
 
 	//Load matrix

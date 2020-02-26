@@ -1795,7 +1795,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 5);
+	SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
@@ -1805,8 +1805,30 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		break; }
 	case ResourceType::RESOURCE_MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
-			mesh->mesh = nullptr;
+		if (!mesh)
+		{
+			ComponentDeformableMesh* d_mesh = (ComponentDeformableMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+			if (d_mesh != nullptr && d_mesh->mesh == (ResourceMesh*)to_delete) {
+				d_mesh->mesh = nullptr;
+			}
+		}
+		else
+		{
+			if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
+				mesh->mesh = nullptr;
+			}
+		}
+		break; }
+	case ResourceType::RESOURCE_BONE: {
+		ComponentBone* bone = (ComponentBone*)GetComponent(ComponentType::BONE);
+		if (bone != nullptr && bone->bone == (ResourceBone*)to_delete) {
+			bone->bone = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_ANIMATOR_CONTROLLER: {
+		ComponentAnimator* anim = (ComponentAnimator*)GetComponent(ComponentType::ANIMATOR);
+		if (anim != nullptr && anim->animator_controller == (ResourceAnimatorController*)to_delete) {
+			anim->animator_controller = nullptr;
 		}
 		break; }
 	case ResourceType::RESOURCE_FONT: {

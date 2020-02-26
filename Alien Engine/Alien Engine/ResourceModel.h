@@ -39,6 +39,7 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool LoadMemory();
 	bool DeleteMetaData();
+	void UpdateAnimationInfo();
 
 	// create GameObjects
 	void ConvertToGameObjects();

@@ -75,6 +75,24 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 		std::string library_path = std::string(LIBRARY_MODELS_FOLDER) + std::string(std::to_string(ID) + ".alienModel");
 
+		alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
+
+		std::string* meshes_paths = new std::string[meshes_attached.size()];
+		std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
+		for (; item != meshes_attached.end(); ++item) {
+			if ((*item) != nullptr) 
+			{
+				if (meta_mesh_paths != nullptr) {
+					std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
+					(*item)->CreateMetaData(std::stoull(path_));
+				}
+				else {
+					(*item)->CreateMetaData();
+				}
+
+				meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
+			}
+		}
 		alien->SetString("Meta.Name", name);
 		alien->SetNumber("Meta.NumBones", bones_attached.size());
 
@@ -93,25 +111,6 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 
 			bones_paths[i] = bones_attached[i]->GetLibraryPath();
 			LOG_ENGINE("Created alienBone file %s", bones_attached[i]->GetLibraryPath());
-		}
-
-		alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
-
-		std::string* meshes_paths = new std::string[meshes_attached.size()];
-		std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
-		for (; item != meshes_attached.end(); ++item) {
-			if ((*item) != nullptr) 
-			{
-				if (meta_mesh_paths != nullptr) {
-					std::string path_ = App->file_system->GetBaseFileName(meta_mesh_paths[item - meshes_attached.begin()].data()); //std::stoull().data());
-					(*item)->CreateMetaData(std::stoull(path_));
-				}
-				else {
-					(*item)->CreateMetaData();
-				}
-
-				meshes_paths[item - meshes_attached.begin()] = (*item)->GetLibraryPath();
-			}
 		}
 
 		alien->SetNumber("Meta.NumAnimations", animations_attached.size()); 
@@ -196,6 +195,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		delete alien;
 
 		App->file_system->Copy(alien_path.data(), library_path.data());
+		meta_data_path = alien_path.data();
 
 		return true;
 	}
@@ -522,6 +522,101 @@ bool ResourceModel::DeleteMetaData()
 	delete this;
 
 	return true;
+}
+
+void ResourceModel::UpdateAnimationInfo()
+{
+	JSON_Value* mesh_value = json_parse_file(meta_data_path.data());
+	JSON_Object* mesh_object = json_value_get_object(mesh_value);
+
+	if (mesh_value != nullptr && mesh_object != nullptr) {
+
+		JSONfilepack* model = new JSONfilepack(meta_data_path, mesh_object, mesh_value);
+
+		name = model->GetString("Meta.Name");
+		int num_meshes = model->GetNumber("Meta.NumMeshes");
+		std::string* mesh_path = model->GetArrayString("Meta.PathMeshes");
+		int num_anims = model->GetNumber("Meta.NumAnimations");
+		std::string* anim_path = model->GetArrayString("Meta.PathAnimations");
+		int num_bones = model->GetNumber("Meta.NumBones");
+		std::string* bones_path = model->GetArrayString("Meta.PathBones");
+		int num_materials = model->GetNumber("Meta.NumMaterials");
+		std::string* materials_path = model->GetArrayString("Meta.PathMaterials");
+
+		std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
+
+		JSON_Value* alien_value = json_value_init_object();
+		JSON_Object* alien_object = json_value_get_object(alien_value);
+		json_serialize_to_file_pretty(alien_value, alien_path.data());
+		JSONfilepack* alien = new JSONfilepack(alien_path, alien_object, alien_value);
+		alien->StartSave();
+		alien->SetString("Meta.ID", std::to_string(ID));
+
+		std::string library_path = std::string(LIBRARY_MODELS_FOLDER) + std::string(std::to_string(ID) + ".alienModel");
+
+		alien->SetNumber("Meta.NumMeshes", meshes_attached.size());
+		alien->SetString("Meta.Name", name);
+		alien->SetNumber("Meta.NumBones", bones_attached.size());
+		alien->SetNumber("Meta.NumAnimations", animations_attached.size());
+		alien->SetNumber("Meta.NumMaterials", materials_attached.size());
+
+
+		JSONArraypack* anim_array_alien = alien->InitNewArray("Meta.Animations");
+
+		std::string* animation_paths = new std::string[animations_attached.size()];
+		for (int i = 0; i < animations_attached.size(); ++i)
+		{
+			if (anim_path != nullptr && i < num_anims)
+			{
+				std::string path_ = App->file_system->GetBaseFileName(anim_path[i].data()); //std::stoull().data());
+				animations_attached[i]->CreateMetaData(std::stoull(path_));
+			}
+			else
+			{
+				animations_attached[i]->CreateMetaData();
+			}
+
+			anim_array_alien->SetAnotherNode();
+			anim_array_alien->SetString("Name", animations_attached[i]->name.data());
+			anim_array_alien->SetBoolean("Loops", animations_attached[i]->loops);
+			anim_array_alien->SetNumber("Start_Tick", animations_attached[i]->start_tick);
+			anim_array_alien->SetNumber("End_Tick", animations_attached[i]->end_tick);
+
+			animation_paths[i] = animations_attached[i]->GetLibraryPath();
+			LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
+		}
+
+		alien->SetArrayString("Meta.PathMeshes", mesh_path, meshes_attached.size());
+		alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
+		alien->SetArrayString("Meta.PathBones", bones_path, bones_attached.size());
+		alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
+
+		JSONArraypack* nodes = alien->InitNewArray("Nodes");
+		for (uint i = 0; i < model_nodes.size(); ++i) {
+			nodes->SetAnotherNode();
+			nodes->SetFloat3("pos", model_nodes[i].pos);
+			nodes->SetFloat3("scale", model_nodes[i].scale);
+			nodes->SetQuat("rot", model_nodes[i].rot);
+			nodes->SetNumber("nodeNum", model_nodes[i].node_num);
+			nodes->SetNumber("parentNum", model_nodes[i].parent_num);
+			nodes->SetString("nodeName", model_nodes[i].name);
+			nodes->SetString("parentName", model_nodes[i].parent_name);
+			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
+			nodes->SetNumber("materialIndex", model_nodes[i].material);
+			nodes->SetNumber("boneIndex", model_nodes[i].bone);
+		}
+
+		alien->FinishSave();
+		delete alien;
+
+		App->file_system->Copy(alien_path.data(), library_path.data());
+
+		delete[] mesh_path;
+		delete[] anim_path;
+		delete[] bones_path;
+		delete[] materials_path;
+		delete model;
+	}
 }
 
 void ResourceModel::ConvertToGameObjects()
