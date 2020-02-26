@@ -325,6 +325,8 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TweenDescr.h" />
+    <ClInclude Include="UITween.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />

@@ -66,9 +66,12 @@
     </Filter>
     <Filter Include="Components\ParticleSystem">
       <UniqueIdentifier>{e633960d-eb91-4a91-8a5d-65579cacfd40}</UniqueIdentifier>
-      </Filter>
+    </Filter>
     <Filter Include="Components\UI">
       <UniqueIdentifier>{a9b87688-5623-488f-8d32-013fcbbf96fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\UITween">
+      <UniqueIdentifier>{f924528a-80af-4b2e-ad61-a35e30b6d929}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -593,6 +596,12 @@
     </ClInclude>
     <ClInclude Include="ComponentBar.h">
       <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UITween.h">
+      <Filter>Tools\UITween</Filter>
+    </ClInclude>
+    <ClInclude Include="TweenDescr.h">
+      <Filter>Tools\UITween</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
