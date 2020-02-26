@@ -1,46 +1,80 @@
-//#include "C_SphereCollider.h"
-//#include "GameObject.h"
-//#include "C_Mesh.h"
-//#include "Bullet/include/BulletDynamics/Character/btKinematicCharacterController.h"
-//#include "Bullet/include/BulletDynamics/Character/btCharacterControllerInterface.h"
-//
-//ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentCollider(go)
-//{
-//	name.assign("Sphere Collider");
-//	type = ComponentType::SPHERE_COLLIDER;
-//	radius = 0.5f;
-//}
-//
-//void ComponentSphereCollider::CreateShape(C_Mesh* mesh)
-//{
-//	if (is_loaded == false)
-//	{
-//		
-//		radius = (mesh != nullptr) ? mesh->mesh_aabb.Size().MaxElement() * 0.5f : 0.5f;
-//		center = (mesh != nullptr) ? mesh->mesh_aabb.CenterPoint() : float3::zero;
-//	}
-//
-//	shape = new btSphereShape(1.f);
-//}
-//
-//void ComponentSphereCollider::AdjustShapeToAABB()
-//{
-//	scaled_center = center;
-//	float scaled_size = radius *  linked_go->transform->scale.Abs().MaxElement();
-//	shape->setLocalScaling(btVector3(scaled_size, scaled_size  , scaled_size));
-//}
-//
-//void ComponentSphereCollider::SaveCollider(Config& config)
-//{
-//	config.AddFloat("radius", radius);
-//}
-//
-//void ComponentSphereCollider::LoadCollider(Config& config)
-//{
-//	radius = config.GetFloat("radius", radius);
-//}
-//
-//void ComponentSphereCollider::DrawPanelColliderInfo()
-//{
-//	ImGui::Title("Radius", 1);	ImGui::DragFloat("##size", &radius, 0.1f, 0.01f, FLT_MAX);
-//}
+#include "ComponentSphereCollider.h"
+#include "ComponentTransform.h"
+#include "ComponentMesh.h"
+#include "GameObject.h"
+#include "imgui/imgui.h"
+
+
+ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentCollider(go)
+{
+	name.assign("Sphere Collider");
+	type = ComponentType::SPHERE_COLLIDER;
+
+	// More useful if its called externaly
+	Init();
+}
+
+void ComponentSphereCollider::SetRadius(float value)
+{
+	if (value != radius)
+	{
+		radius = value;
+		UpdateShape();
+	}
+}
+
+void ComponentSphereCollider::CreateShape()
+{
+	if (!WrapMesh())
+	{
+		// Default values 
+		SetRadius(0.5f);
+	}
+
+	if (shape == nullptr) UpdateShape();
+}
+
+void ComponentSphereCollider::UpdateShape()
+{
+	float final_radius = radius * transform->GetGlobalScale().Abs().MaxElement();
+	shape = new btSphereShape(final_radius);
+}
+
+bool ComponentSphereCollider::WrapMesh()
+{
+	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+
+	if (mesh != nullptr)
+	{
+		SetCenter(mesh->local_aabb.CenterPoint());
+		SetRadius(mesh->local_aabb.Size().MaxElement() * 0.5f);
+		return true;
+	}
+	return false;
+}
+
+void ComponentSphereCollider::DrawSpecificInspector()
+{
+	float current_radius = radius;
+	ImGui::Title("Radius", 1);	ImGui::DragFloat("##radius", &current_radius, 0.1f, 0.01f, FLT_MAX);
+	SetRadius(current_radius);
+}
+
+void ComponentSphereCollider::Reset()
+{
+	ComponentCollider::Reset();
+	SetRadius(0.5f);
+}
+
+void ComponentSphereCollider::SaveComponent(JSONArraypack* to_save)
+{
+	ComponentCollider::SaveComponent(to_save);
+	to_save->SetNumber("Radius", radius);
+}
+
+void ComponentSphereCollider::LoadComponent(JSONArraypack* to_load)
+{
+	ComponentCollider::LoadComponent(to_load);
+	SetRadius(to_load->GetNumber("Radius"));
+}
+

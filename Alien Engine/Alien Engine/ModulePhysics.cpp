@@ -70,7 +70,7 @@ update_status ModulePhysics::PreUpdate(float dt)
 {
 	if (Time::GetDT() != 0.f)
 	{
-		world->stepSimulation(Time::GetDT(), 5);
+		world->stepSimulation(Time::GetDT(), 10);
 	}
 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
@@ -114,7 +114,11 @@ void ModulePhysics::RenderCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
-	world->debugDrawObject(collider->rigid_body->body->getCenterOfMassTransform() * ToBtTransform(collider->scaled_center, collider->rotation) , collider->shape, btVector3(0.f, 1.f, 0.f));
+
+	world->debugDrawObject(
+		((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform()
+		, collider->shape, btVector3(0.f, 1.f, 0.f));
+
 	ModuleRenderer3D::EndDebugDraw();
 }
 
@@ -123,7 +127,7 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	btTransform worldTransform = collider->rigid_body->body->getCenterOfMassTransform();
+	btTransform worldTransform = ((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform();
 	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
 
 	if (hull == nullptr) return;
@@ -133,8 +137,8 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 	for (int i = 0; i < num_indices; i += 3)
 	{
 		btVector3 v0 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i]] * localScale);
-		btVector3 v1 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i+1]] * localScale);
-		btVector3 v2 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i+2]] * localScale);
+		btVector3 v1 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 1]] * localScale);
+		btVector3 v2 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 2]] * localScale);
 
 		btVector3 color = btVector3(0.f, 1.f, 0.f);
 		debug_renderer->drawLine(v0, v1, color);
@@ -229,12 +233,12 @@ btQuaternion ToBtQuaternion(const Quat& quat)
 	return btQuaternion(quat.x, quat.y, quat.z, quat.w);
 }
 
-btTransform ToBtTransform(const btVector3&  pos, const  btQuaternion& quat)
+btTransform ToBtTransform(const btVector3& pos, const  btQuaternion& quat)
 {
 	return btTransform(quat, pos);
 }
 
-btTransform ToBtTransform(const float3&  pos, const Quat& quat)
+btTransform ToBtTransform(const float3& pos, const Quat& quat)
 {
 	return btTransform(ToBtQuaternion(quat), ToBtVector3(pos));
 }

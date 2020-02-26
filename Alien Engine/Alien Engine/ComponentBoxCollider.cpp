@@ -8,61 +8,74 @@
 
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
+	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
-	size = float3::one();
-	center = float3::zero();
 
-	if (!game_object_attached->HasComponent(ComponentType::RIGID_BODY))
+	// More useful if its called externaly
+	Init();
+}
+
+void ComponentBoxCollider::SetSize(float3 value)
+{
+	if (!value.Equals(size))
 	{
-		game_object_attached->AddComponent(new ComponentRigidBody(game_object_attached));
+		size = value;
+		UpdateShape();
 	}
+}
 
-	rigid_body = game_object_attached->GetComponent<ComponentRigidBody>();
+void ComponentBoxCollider::DrawSpecificInspector()
+{
+	float3 current_size = size;
 
-	CreateShape();
-	AdjustShapeToMesh();
+	ImGui::Title("Size", 1);			ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX);
 
-
+	SetSize(current_size);
 }
 
 void ComponentBoxCollider::CreateShape() 
 {
-	//size = (mesh != nullptr) ? mesh->local_aabb.Size() :  float3::one();
-	//center = (mesh != nullptr) ? mesh->local_aabb.CenterPoint() : float3::zero();
-	
-	if (shape != nullptr)
+	if (!WrapMesh())
 	{
-		rigid_body->RemoveCollider(this);
+		// Default values 
+		SetSize(float3::one());
+	}
+
+	if (shape == nullptr) UpdateShape();
+}
+
+void ComponentBoxCollider::UpdateShape()
+{
+	if (shape == nullptr)
+	{
 		delete shape;
 	}
 
-	float3 current_scale = transform->GetGlobalScale().Abs();
-	float3 scaled_size = size.Mul(current_scale);
-	scaled_size = CheckInvalidCollider(scaled_size);
-	scaled_center = center.Mul(current_scale);
-
-	float3 final_size = scaled_size * 0.5f;
+	float3 final_size = CheckInvalidCollider(size.Mul(transform->GetGlobalScale().Abs())) * 0.5f;
 	shape = new btBoxShape(ToBtVector3(final_size));
-	shape->setUserPointer(this);
-	rigid_body->AddCollider(this);
+	aux_body->setCollisionShape(shape);
+
+	if (rb != nullptr)  rb->UpdateCollider();
 }
 
-void ComponentBoxCollider::AdjustShapeToMesh()
+bool ComponentBoxCollider::WrapMesh()
 {
 	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
 
-	if (mesh != nullptr) 
+	if (mesh != nullptr)
 	{
-		center = mesh->local_aabb.CenterPoint();
-		size = mesh->local_aabb.Size();
-		CreateShape();
+		SetCenter(mesh->local_aabb.CenterPoint());
+		SetSize(mesh->local_aabb.Size());
+		return true;
 	}
+
+	return false;
 }
 
 void ComponentBoxCollider::Reset()
 {
-	size.one();
 	ComponentCollider::Reset();
+	SetSize(float3::one());
 }
 
 void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
@@ -74,39 +87,10 @@ void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	size = to_load->GetFloat3("Size");
+	SetSize(to_load->GetFloat3("Size"));
 }
 
 float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
 {
 	return size.Max(float3(0.01, 0.01, 0.01));
 }
-
-bool ComponentBoxCollider::DrawInspector()
-{
-	static float3 last_scale = transform->GetGlobalScale();
-	float3 last_center = center;
-	float3 last_size = size;
-
-	ImGui::PushID(this);
-	ComponentCollider::DrawInspector();
-
-
-	if (ImGui::CollapsingHeader("Box Collider", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Spacing();
-		ImGui::Title("Center", 1);			ImGui::DragFloat3("##center", center.ptr(), 0.1f);
-		ImGui::Title("Size", 1);			ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX);
-		ImGui::Spacing();
-	}
-
-	if (!last_scale.Equals( transform->GetGlobalScale()) || !last_size.Equals(size) || !last_center.Equals(center))
-	{
-		last_scale = transform->GetGlobalScale();
-		CreateShape();
-	}
-	ImGui::PopID();
-
-	return true;
-}
-

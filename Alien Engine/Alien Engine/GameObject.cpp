@@ -503,7 +503,7 @@ void GameObject::DrawScene()
 	{
 		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
 		{
-			collider->DrawCollider();
+			collider->DrawScene();
 		}
 	}
 }

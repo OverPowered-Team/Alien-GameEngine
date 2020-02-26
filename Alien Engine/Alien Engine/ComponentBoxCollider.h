@@ -7,7 +7,7 @@
 class GameObject;
 class ModulePhysics;
 
-class ComponentBoxCollider : public ComponentCollider
+class __declspec(dllexport) ComponentBoxCollider : public ComponentCollider
 {
 	friend class ModulePhysics;
 	friend class GameObject;
@@ -16,25 +16,25 @@ public:
 
 	ComponentBoxCollider(GameObject* go);
 
+	void SetSize(float3 size);
+	float3 GetSize() { return size; }
+
 private:
 
 	float3 CheckInvalidCollider(float3 size);
-
-	// Virtual Functions ------------------------------
-
-	bool DrawInspector();
+	void DrawSpecificInspector();
 
 	void Reset();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
-
+	
 	void CreateShape();
-	void AdjustShapeToMesh();
-	void AdjustToScale();
+	void UpdateShape();
+	bool WrapMesh();
 
 private:
 
-	float3 size;
-
+	float3 final_size = float3::zero();
+	float3 size = float3::zero();
 };
 

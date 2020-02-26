@@ -7,6 +7,8 @@
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
 #include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentRigidBody.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
@@ -81,7 +83,7 @@ void PanelInspector::PanelLogic()
 					else {
 						trans = trans * (*item)->GetComponent<ComponentTransform>()->global_transformation;
 					}
-					
+
 				}
 			}
 			float3 view_pos, view_scale, view_rot;
@@ -239,7 +241,7 @@ void PanelInspector::ButtonAddComponent()
 {
 	ImGui::Spacing();
 
-	if (component == (uint)ComponentType::SCRIPT) { 
+	if (component == (uint)ComponentType::SCRIPT) {
 		if (ImGui::BeginCombo("##Scriptss", std::get<0>(script_info)))
 		{
 			bool sel = App->StringCmp("Return To Components", std::get<0>(script_info));
@@ -308,7 +310,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Rigid Body\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -380,12 +382,28 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 			case ComponentType::BOX_COLLIDER: {
-
-				comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
-				App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::SPHERE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::RIGID_BODY: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::RIGID_BODY))
+				{
+					comp = new ComponentRigidBody(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
 				break; }
 			}
-	
+
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);

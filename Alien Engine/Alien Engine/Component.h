@@ -12,6 +12,7 @@ enum class ComponentType {
 	LIGHT,
 	CAMERA,
 	BOX_COLLIDER,
+	SPHERE_COLLIDER,
 	RIGID_BODY,
 	SCRIPT,
 	UNKNOWN

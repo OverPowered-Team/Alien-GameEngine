@@ -44,17 +44,6 @@ public:
 	float3 GetAngularVelocity();
 	void SetAngularVelocity(const float3 velocity);
 
-	// Colliders values
-
-	void SetIsTrigger(bool is_trigger);
-	bool GetIsTrigger() { return is_trigger; }
-	void SetBouncing(const float bouncing);
-	float GetBouncing() { return bouncing; }
-	void SetFriction(const float v);
-	float GetFriction() { return friction; }
-	void SetAngularFriction(const float v);
-	float GetAngularFriction() { return angular_friction; }
-
 private:
 
 	void Update();
@@ -65,11 +54,15 @@ private:
 	void LoadComponent(JSONArraypack* config);
 
 	void AddCollider(ComponentCollider* collider);
-	void RemoveCollider(ComponentCollider* collider);
-	void CreateBody();
+	void UpdateCollider();
+	void RemoveCollider();
+	void UpdateBodyInertia();
+
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 
 private:
+	ComponentTransform* transform = nullptr;
+	ComponentCollider* collider = nullptr;
 
 	float3 velocity;
 	btVector3 inertia;
@@ -77,15 +70,9 @@ private:
 	float3 force_to_apply[(uint)ForceMode::MAX];
 	float3 torque_to_apply[(uint)ForceMode::MAX];
 
-	bool is_trigger = false;
-	float bouncing = 0.f;
-	float friction = 0.f;
-	float angular_friction = 0.f;
-
 	float mass = 0.0f;
 	float drag = 0.f;
 	float angular_drag = 0.f;
-
 	bool use_gravity = true;
 	bool is_kinematic = false;
 	bool freeze_position[3] = { false, false, false };
@@ -94,13 +81,7 @@ private:
 	// Body used in physics simulation
 	btRigidBody* body = nullptr;
 	// Used when GameObejct has not a collider
-	btCompoundShape* compound_shape = nullptr;
-	// Related components
-	ComponentTransform* transform = nullptr;
-	// MotionState 
-	btMotionState* motion_state = nullptr;
-
-	int colliders_index = 0;
+	btBoxShape* aux_shape = nullptr;
 };
 
 #endif // !_C_RIGID_BODY_H__
