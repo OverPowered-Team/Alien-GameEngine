@@ -120,6 +120,7 @@ public:
 	void Stop();
 	std::vector<bool> GetTriggers() const { return triggers; }
 	void CheckTriggers();
+	int times_attached = 0;
 
 	//Transform
 	bool GetTransform(std::string channel_name, float3& position, Quat& rotation, float3& scale);
