@@ -34,9 +34,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		return;
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
-		glEnable(GL_STENCIL_TEST);
+		/*glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_ALWAYS, 1, -1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 	}
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
@@ -45,37 +45,19 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	glPushMatrix();
-	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glEnable(GL_POLYGON_OFFSET_FILL);
+	//glPolygonOffset(1.0f, 0.1f);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0f, 0.1f);
-	/*glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
+	// -------------------------- Actual Drawing -------------------------- 
 
-	/*glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0f, 0.1f);
+	if (material->texture != nullptr)
+		glBindTexture(GL_TEXTURE_2D, material->texture->id);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	if (mesh->uv_cords != nullptr) {
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_uv);
-		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
-	}
-
-	if (mesh->normals != nullptr) {
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
-		glNormalPointer(GL_FLOAT, 0, 0);
-	}*/
-
-	glBindVertexArray(mesh->vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	material->used_shader->Bind();
+	glBindVertexArray(mesh->vao);
+
 
 	// Uniforms
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4f4()); // TODO: About in-game camera?
@@ -83,27 +65,22 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
-	// Not sure if we need to set this uniform every time, as the texture does not change TODO. most likely not
-	if(material->texture != nullptr)
-		material->used_shader->SetUniform1i("tex", (int)material->texture->id);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
+
+	// --------------------------------------------------------------------- 
+
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	material->used_shader->Unbind();
+	material->used_shader->Unbind();	
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
 
-	/*glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POLYGON_OFFSET_FILL);*/
-	glDisableClientState(GL_VERTEX_ARRAY);
-	/*glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);*/
 
-	glPopMatrix();
 }
 
 void ComponentMesh::DrawOutLine(ComponentCamera* camera)

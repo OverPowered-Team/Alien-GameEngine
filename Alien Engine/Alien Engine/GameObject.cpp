@@ -481,7 +481,7 @@ void GameObject::DrawScene(ComponentCamera* camera)
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
 			mesh->DrawPolygon(camera);
-		if ((selected || parent_selected) && App->objects->outline)
+		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine(camera);
 		if (mesh->view_mesh || mesh->wireframe)
 			mesh->DrawMesh(camera);
@@ -492,7 +492,7 @@ void GameObject::DrawScene(ComponentCamera* camera)
 		if (mesh->draw_AABB)
 			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB(camera);
+			mesh->DrawOBB(camera);*/
 	}
 }
 
@@ -551,12 +551,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
 		}
 	}
 	std::vector<GameObject*>::iterator child = children.begin();
