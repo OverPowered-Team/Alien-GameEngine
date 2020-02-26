@@ -162,6 +162,80 @@ void ComponentDeformableMesh::DrawPolygon()
 	glPopMatrix();
 }
 
+void ComponentDeformableMesh::DrawOutLine()
+{
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
+		return;
+
+
+	if (!glIsEnabled(GL_STENCIL_TEST))
+		return;
+	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
+	{
+		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		glLineWidth(App->objects->parent_line_width);
+	}
+	else
+	{
+		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		glLineWidth(App->objects->no_child_line_width);
+	}
+
+	glStencilFunc(GL_NOTEQUAL, 1, -1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glPolygonMode(GL_FRONT, GL_LINE);
+
+	glPushMatrix();
+	ComponentTransform* transform = game_object_attached->transform;
+	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, deformable_mesh->id_index);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	glDrawElements(GL_TRIANGLES, deformable_mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glLineWidth(1);
+
+	glPopMatrix();
+}
+
+void ComponentDeformableMesh::DrawMesh()
+{
+	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
+		return;
+
+	ComponentTransform* transform = game_object_attached->transform;
+
+	glPushMatrix();
+	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glLineWidth(App->objects->mesh_line_width);
+	glColor3f(App->objects->mesh_color.r, App->objects->mesh_color.g, App->objects->mesh_color.b);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, deformable_mesh->id_index);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_TRIANGLES, deformable_mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+	glLineWidth(1);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);

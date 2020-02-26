@@ -19,7 +19,10 @@ public:
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateDeformableMesh();
+
 	void DrawPolygon();
+	void DrawOutLine();
+	void DrawMesh();
 	
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);

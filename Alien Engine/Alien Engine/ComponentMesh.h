@@ -32,8 +32,8 @@ public:
 protected:
 
 	virtual void DrawPolygon();
-	void DrawOutLine();
-	void DrawMesh();
+	virtual void DrawOutLine();
+	virtual void DrawMesh();
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
