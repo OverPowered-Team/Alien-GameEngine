@@ -84,23 +84,25 @@ void PanelAnimTimeline::Stop()
 
 void PanelAnimTimeline::MoveBones(GameObject* go)
 {
-	
-	uint channel_index = current_animation->GetChannelIndex(go->GetName());
-	key = (int)progress / zoom;
-	if (channel_index < current_animation->num_channels)
+	if (go)
 	{
-		if (current_animation->channels[channel_index].position_keys[key].time == key)
-			go->transform->SetLocalPosition(current_animation->channels[channel_index].position_keys[key].value);
-		if (current_animation->channels[channel_index].rotation_keys[key].time == key)
-			go->transform->SetLocalRotation(current_animation->channels[channel_index].rotation_keys[key].value);
-		if (current_animation->channels[channel_index].scale_keys[key].time == key)
-			go->transform->SetLocalScale(current_animation->channels[channel_index].scale_keys[key].value);
-	}
+		uint channel_index = current_animation->GetChannelIndex(go->GetName());
+		key = (int)progress / zoom;
+		if (channel_index < current_animation->num_channels)
+		{
+			if (current_animation->channels[channel_index].position_keys[key].time == key)
+				go->transform->SetLocalPosition(current_animation->channels[channel_index].position_keys[key].value);
+			if (current_animation->channels[channel_index].rotation_keys[key].time == key)
+				go->transform->SetLocalRotation(current_animation->channels[channel_index].rotation_keys[key].value);
+			if (current_animation->channels[channel_index].scale_keys[key].time == key)
+				go->transform->SetLocalScale(current_animation->channels[channel_index].scale_keys[key].value);
+		}
 
 
-	for (int i = 0; i < go->GetChildren().size(); i++)
-	{
-		MoveBones(go->GetChildren()[i]);
+		for (int i = 0; i < go->GetChildren().size(); i++)
+		{
+			MoveBones(go->GetChildren()[i]);
+		}
 	}
 }
 

@@ -61,7 +61,10 @@ void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 void ComponentAnimator::OnPlay()
 {
 	if (animator_controller)
+	{
+		animator_controller->SaveAsset(animator_controller->GetID());
 		animator_controller->Play();
+	}
 }
 
 ResourceAnimatorController* ComponentAnimator::GetResourceAnimatorController()
