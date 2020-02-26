@@ -11,6 +11,7 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 	type = ComponentType::A_EMITTER;
 	source = App->audio->CreateSoundEmitter("Emitter");
 	App->audio->emitters.push_back(this);
+	//UpdateSourcePos();
 }
 
 void ComponentAudioEmitter::Update()
@@ -55,7 +56,6 @@ void ComponentAudioEmitter::Mute(bool mute)
 
 void ComponentAudioEmitter::StartSound()
 {	
-	//source->PlayEventByName(audio_name.c_str());
 	source->PlayEventByID(current_event);
 }
 

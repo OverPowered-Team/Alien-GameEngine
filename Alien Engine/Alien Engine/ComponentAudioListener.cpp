@@ -8,9 +8,10 @@
 ComponentAudioListener::ComponentAudioListener(GameObject * parent) : Component(parent)
 {
 	type = ComponentType::A_LISTENER;
-	listener = App->audio->CreateSoundEmitter("listener"); //CREATING LISTENER SAME AS AN EMITTER?
+	listener = App->audio->CreateSoundEmitter("Listener");
 	App->audio->SetListener(listener);
-	UpdateListenerPos();
+
+	//UpdateListenerPos();
 }
 
 ComponentAudioListener::~ComponentAudioListener()

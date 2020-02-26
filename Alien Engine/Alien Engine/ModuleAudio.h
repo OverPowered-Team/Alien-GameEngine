@@ -41,9 +41,8 @@ public:
 	const std::vector<Bank*> GetBanks() const;
 	const Bank* GetBankByName(const char* name) const;
 	Bank* GetBankByID(const u64& id) const;
-	WwiseT::AudioSource* GetListener() const;
+
 private:
-	WwiseT::AudioSource* listener = nullptr;
 	std::vector <Bank*> banks;
 	bool play_mode = false;
 
@@ -51,4 +50,6 @@ public:
 	std::list<ComponentAudioEmitter*> emitters;
 	std::list<Bank*> used_banks;
 	bool is_playing = false;
+	WwiseT::AudioSource* listener = nullptr;
+	WwiseT::AudioSource* default_listener = nullptr;
 };

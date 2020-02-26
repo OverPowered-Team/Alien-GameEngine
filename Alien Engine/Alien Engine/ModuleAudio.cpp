@@ -14,7 +14,12 @@ ModuleAudio::~ModuleAudio()
 bool ModuleAudio::Start()
 {
 	// Init wwise and audio banks
-	return WwiseT::InitSoundEngine();
+	bool ret = WwiseT::InitSoundEngine();
+	
+	default_listener = CreateSoundEmitter("Listener");
+	SetListener(default_listener);
+
+	return ret;
 }
 
 void ModuleAudio::LoadBanksInfo()
@@ -81,6 +86,9 @@ bool ModuleAudio::CleanUp()
 	banks.clear();
 
 	used_banks.clear();
+
+	delete default_listener;
+	default_listener = nullptr;
 
 	return WwiseT::CloseSoundEngine();
 }
@@ -158,11 +166,6 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 	return nullptr;
 }
 
-WwiseT::AudioSource* ModuleAudio::GetListener() const
-{
-	return listener;
-}
-
 void ModuleAudio::Play()
 {
 	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)
@@ -190,7 +193,11 @@ void ModuleAudio::Resume() const
 
 void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)
 {
+	if (new_listener == nullptr)
+		listener = default_listener;
+	else
 	listener = new_listener;
-	WwiseT::SetDefaultListener((listener == nullptr) ? 0u : new_listener->GetID());
+
+	WwiseT::SetDefaultListener(new_listener->GetID());
 }
 
