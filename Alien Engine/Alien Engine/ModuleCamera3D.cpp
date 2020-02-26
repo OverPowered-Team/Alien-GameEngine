@@ -237,7 +237,7 @@ void ModuleCamera3D::CreateRay()
 		return;
 
 	//App->renderer3D->SetCameraToDraw(fake_camera);
-	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY) / App->ui->panel_scene->height);
+	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY + 29) / App->ui->panel_scene->height);
 
 	origin.x = (origin.x - 0.5F) * 2;
 	origin.y = -(origin.y - 0.5F) * 2;

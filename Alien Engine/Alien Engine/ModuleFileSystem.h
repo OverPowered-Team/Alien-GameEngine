@@ -19,6 +19,7 @@ struct aiFileIO;
 #define LIBRARY_SCENES_FOLDER "Library/Scenes/"
 #define LIBRARY_PREFABS_FOLDER "Library/Prefabs/"
 #define LIBRARY_AUDIO_FOLDER "Library/Audio/"
+#define LIBRARY_FONTS_FOLDER "Library/Fonts/"
 #define CONFIGURATION_FOLDER "Configuration/"
 #define CONFIGURATION_LAYOUTS_FOLDER "Configuration/Layouts/"
 #define MODELS_FOLDER "Assets/Models/"
@@ -26,9 +27,11 @@ struct aiFileIO;
 #define SCRIPTS_FOLDER "Assets/Scripts/"
 #define SCENE_FOLDER "Assets/Scenes/"
 #define AUDIO_FOLDER "Assets/AudioBanks/"
+#define FONTS_FOLDER "Assets/Fonts/"
 #define ASSETS_PREFAB_FOLDER "Assets/Prefabs/"
 #define LIBRARY_SCRIPTS_FOLDER "Library/Scripts/"
 #define HEADER_SCRIPTS_FILE "AlienEngineScripts/"
+#define DEFAULT_FONT "Assets/Fonts/Arialn.ttf"
 // -------Foldres Paths--------
 
 // -------DLL Paths--------
@@ -63,6 +66,8 @@ enum class FileDropType {
 	SCRIPT,
 	SCENE,
 	PREFAB,
+	PARTICLES,
+	FONT,
 
 	UNKNOWN
 };

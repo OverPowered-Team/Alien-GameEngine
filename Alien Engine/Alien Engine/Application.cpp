@@ -216,6 +216,7 @@ void Application::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 	dt = frame_time.ReadSec();
+	Time::engine_dt = dt;
 	if (Time::IsPlaying()) {
 		Time::SetDT(dt);
 	}
@@ -378,6 +379,12 @@ bool Application::IsQuiting() const
 void Application::OpenWebsite(const std::string& website)
 {
 	ShellExecuteA(NULL, "open", website.c_str(), NULL, NULL, SW_SHOWNORMAL);
+}
+
+void Application::CastEvent(EventType eventType)
+{
+	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end(); ++item)
+		(*item)->HandleEvent(eventType);
 }
 
 void Application::AddModule(Module* mod)

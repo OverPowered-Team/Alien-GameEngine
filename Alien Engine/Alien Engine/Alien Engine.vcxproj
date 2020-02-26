@@ -104,6 +104,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +143,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -325,18 +327,27 @@
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienEngine.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentAudioEmitter.h" />
     <ClInclude Include="ComponentAudioListener.h" />
+    <ClInclude Include="ComponentButton.h" />
     <ClInclude Include="ComponentCamera.h" />
+    <ClInclude Include="ComponentCanvas.h" />
+    <ClInclude Include="ComponentCheckbox.h" />
+    <ClInclude Include="ComponentImage.h" />
     <ClInclude Include="ComponentLight.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentReverbZone.h" />
+    <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentScript.h" />
+    <ClInclude Include="ComponentSlider.h" />
+    <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="ComponentUI.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Devil\include\config.h" />
     <ClInclude Include="Devil\include\devil_internal_exports.h" />
@@ -346,6 +357,7 @@
     <ClInclude Include="Devil\include\ilut_config.h" />
     <ClInclude Include="Devil\include\ilu_region.h" />
     <ClInclude Include="Devil\include\il_wrap.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="FileNode.h" />
     <ClInclude Include="Gizmos.h" />
     <ClInclude Include="glew\include\eglew.h" />
@@ -355,6 +367,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="gpudetect\DeviceId.h" />
     <ClInclude Include="gpudetect\dxgi1_4.h" />
+    <ClInclude Include="ComponentBar.h" />
     <ClInclude Include="ImGuizmos\ImCurveEdit.h" />
     <ClInclude Include="ImGuizmos\ImGradient.h" />
     <ClInclude Include="ImGuizmos\ImGuizmo.h" />
@@ -455,12 +468,16 @@
     <ClInclude Include="PanelHierarchy.h" />
     <ClInclude Include="PanelInspector.h" />
     <ClInclude Include="PanelLayout.h" />
+    <ClInclude Include="PanelParticleSystem.h" />
     <ClInclude Include="PanelProject.h" />
     <ClInclude Include="PanelRender.h" />
     <ClInclude Include="PanelScene.h" />
     <ClInclude Include="PanelSceneSelector.h" />
     <ClInclude Include="PanelTextEditor.h" />
     <ClInclude Include="Parson\parson.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PCG\pcg_extras.hpp" />
     <ClInclude Include="PCG\pcg_random.hpp" />
     <ClInclude Include="PCG\pcg_uint128.hpp" />
@@ -469,6 +486,7 @@
     <ClInclude Include="RayCreator.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceAudio.h" />
+    <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourceModel.h" />
     <ClInclude Include="ResourcePrefab.h" />
@@ -497,18 +515,28 @@
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienEngine.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentAudioEmitter.cpp" />
     <ClCompile Include="ComponentAudioListener.cpp" />
+    <ClCompile Include="ComponentBar.cpp" />
+    <ClCompile Include="ComponentButton.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
+    <ClCompile Include="ComponentCanvas.cpp" />
+    <ClCompile Include="ComponentCheckbox.cpp" />
+    <ClCompile Include="ComponentImage.cpp" />
     <ClCompile Include="ComponentLight.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentReverbZone.cpp" />
+    <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentScript.cpp" />
+    <ClCompile Include="ComponentSlider.cpp" />
+    <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="FileNode.cpp" />
     <ClCompile Include="Gizmos.cpp" />
@@ -583,15 +611,20 @@
     <ClCompile Include="PanelHierarchy.cpp" />
     <ClCompile Include="PanelInspector.cpp" />
     <ClCompile Include="PanelLayout.cpp" />
+    <ClCompile Include="PanelParticleSystem.cpp" />
     <ClCompile Include="PanelProject.cpp" />
     <ClCompile Include="PanelRender.cpp" />
     <ClCompile Include="PanelScene.cpp" />
     <ClCompile Include="PanelSceneSelector.cpp" />
     <ClCompile Include="PanelTextEditor.cpp" />
     <ClCompile Include="Parson\parson.c" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
     <ClCompile Include="ResourceAudio.cpp" />
+    <ClCompile Include="ResourceFont.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceModel.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />

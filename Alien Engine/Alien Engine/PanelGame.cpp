@@ -59,7 +59,7 @@ void PanelGame::PanelLogic()
 	ImGui::SetCursorPosY((ImGui::GetWindowHeight() - height) * 0.5f);
 
 	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
-	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
+	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY() - ImGui::GetCurrentWindow()->TitleBarHeight() - 10;
 
 	if (App->renderer3D->actual_game_camera != nullptr)
 	{
@@ -67,7 +67,7 @@ void PanelGame::PanelLogic()
 	}
 
 	if (ImGui::IsWindowHovered()) {
-		float2 origin = float2((App->input->GetMousePosition().x - posX), (App->input->GetMousePosition().y - posY) - 19);
+		float2 origin = float2((App->input->GetMousePosition().x - posX), (App->input->GetMousePosition().y - posY));
 	}
 
 	lastHeight = ImGui::GetWindowHeight();

@@ -19,6 +19,7 @@
 #include "PanelHierarchy.h"
 #include "Gizmos.h"
 #include "Alien.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -67,10 +68,10 @@ bool ModuleObjects::Start()
 	}
 
 #ifndef GAME_VERSION
-	/*GameObject* light_test = new GameObject(base_game_object);
+	GameObject* light_test = new GameObject(base_game_object);
 	light_test->SetName("Light");
 	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));*/
+	light_test->AddComponent(new ComponentLight(light_test));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
 	App->camera->fake_camera->Look(float3(0, 0, 0));
@@ -1314,6 +1315,7 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
 //	auto item = invokes.begin();
@@ -1579,6 +1581,36 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetBoolean("Configuration.Renderer.DrawRay", draw_ray);
 	config->SetNumber("Configuration.Renderer.RayWidth", ray_width);
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
+}
+
+void ModuleObjects::HandleEvent(EventType eventType)
+{
+	std::vector<GameObject*> objects;
+	objects.push_back(base_game_object);
+
+	while (!objects.empty())
+	{
+		GameObject* currentGo = objects.back();
+		objects.pop_back();
+		objects.insert(objects.end(), currentGo->children.begin(), currentGo->children.end());
+
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			currentGo->OnPlay();
+			break;
+
+		case EventType::ON_PAUSE:
+			currentGo->OnPause();
+			break;
+
+		case EventType::ON_STOP:
+			currentGo->OnStop();
+			break;
+		}
+	}
+
+	objects.clear();
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
