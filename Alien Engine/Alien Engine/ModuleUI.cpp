@@ -10,6 +10,7 @@
 #include "PanelBuild.h"
 #include "PanelConsole.h"
 #include "PanelCreateObject.h"
+#include "PanelCreateMaterial.h"
 #include "PanelHierarchy.h"
 #include "PanelRender.h"
 #include "Time.h"
@@ -595,6 +596,10 @@ void ModuleUI::MainMenuBar()
 			panel_create_object->ChangeEnable();
 		}
 
+		if (ImGui::MenuItem("Material", panel_create_material->shortcut->GetNameScancodes()))
+		{
+			panel_create_material->ChangeEnable();
+		}
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Layout")) {
@@ -1073,6 +1078,7 @@ void ModuleUI::InitPanels()
 	panel_render = new PanelRender("Render Options", panel_render_codes[0], panel_render_codes[1], panel_render_codes[2]);
 	panel_hierarchy = new PanelHierarchy("Panel Hierarchy", panel_hierarchy_codes[0], panel_hierarchy_codes[1], panel_hierarchy_codes[2]);
 	panel_create_object = new PanelCreateObject("Create Object", panel_create_codes[0], panel_create_codes[1], panel_create_codes[2]);
+	panel_create_material = new PanelCreateMaterial("Create Material", panel_create_materials[0], panel_create_materials[1], panel_create_materials[2]);
 	panel_inspector = new PanelInspector("Inspector", panel_inspector_codes[0], panel_inspector_codes[1], panel_inspector_codes[2]);
 	panel_scene = new PanelScene("Scene", panel_scene_codes[0], panel_scene_codes[1], panel_scene_codes[2]);
 	panel_scene_selector = new PanelSceneSelector("Save", panel_scene_selector_codes[0], panel_scene_selector_codes[1], panel_scene_selector_codes[2]);
@@ -1088,6 +1094,7 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_render);
 	panels.push_back(panel_hierarchy);
 	panels.push_back(panel_create_object);
+	panels.push_back(panel_create_material);
 	panels.push_back(panel_inspector);
 	panels.push_back(panel_game);
 	panels.push_back(panel_scene);
