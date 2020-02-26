@@ -115,8 +115,17 @@ bool ResourceBone::LoadMemory()
 
 void ResourceBone::FreeMemory()
 {
-	delete[] vertex_ids;
-	delete[] weights;
+	if (vertex_ids)
+	{
+		delete[] vertex_ids;
+		vertex_ids = nullptr;
+	}
+	if (weights)
+	{
+		delete[] weights;
+		weights = nullptr;
+	}
+		
 }
 
 bool ResourceBone::ReadBaseInfo(const char* meta_file_path)

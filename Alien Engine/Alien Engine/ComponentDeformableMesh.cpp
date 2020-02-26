@@ -24,6 +24,11 @@ ComponentDeformableMesh::~ComponentDeformableMesh()
 	if (mesh != nullptr && mesh->is_custom) {
 		mesh->DecreaseReferences();
 	}
+	if (deformable_mesh)
+	{
+		delete deformable_mesh;
+		deformable_mesh = nullptr;
+	}
 	//clear deformable mesh?
 }
 

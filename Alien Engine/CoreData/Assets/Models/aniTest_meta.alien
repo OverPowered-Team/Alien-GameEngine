@@ -1,6 +1,6 @@
 {
     "Meta": {
-        "ID": "2727583436827210690",
+        "ID": "11171803799532923370",
         "Name": "aniTest",
         "NumBones": 34,
         "NumMeshes": 1,
@@ -15,49 +15,49 @@
         ],
         "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/6686187569314468945.alienMesh"
+            "Library\/Meshes\/3185712442545691709.alienMesh"
         ],
         "PathAnimations": [
-            "Library\/Animations\/7423102582436170205.alienAnimation"
+            "Library\/Animations\/6831246374777129959.alienAnimation"
         ],
         "PathBones": [
-            "Library\/Bones\/2899957506454133010.alienBone",
-            "Library\/Bones\/9946355371312364807.alienBone",
-            "Library\/Bones\/6674673298173016744.alienBone",
-            "Library\/Bones\/9587871988292681288.alienBone",
-            "Library\/Bones\/15285256855461031842.alienBone",
-            "Library\/Bones\/17762163203290574339.alienBone",
-            "Library\/Bones\/135501670642799629.alienBone",
-            "Library\/Bones\/17871410570998252880.alienBone",
-            "Library\/Bones\/16786012601248503975.alienBone",
-            "Library\/Bones\/2771930069061125279.alienBone",
-            "Library\/Bones\/11502773382009979268.alienBone",
-            "Library\/Bones\/4157431857148044296.alienBone",
-            "Library\/Bones\/12494653732316391455.alienBone",
-            "Library\/Bones\/13866356129982292341.alienBone",
-            "Library\/Bones\/7402176567341977646.alienBone",
-            "Library\/Bones\/17306868084747030554.alienBone",
-            "Library\/Bones\/1324890765885892430.alienBone",
-            "Library\/Bones\/16628512813887240064.alienBone",
-            "Library\/Bones\/3883313202001841138.alienBone",
-            "Library\/Bones\/16763286020875850569.alienBone",
-            "Library\/Bones\/5603487777227377470.alienBone",
-            "Library\/Bones\/12130198000215293171.alienBone",
-            "Library\/Bones\/3073462471025295324.alienBone",
-            "Library\/Bones\/919156332968969282.alienBone",
-            "Library\/Bones\/15979184765915711325.alienBone",
-            "Library\/Bones\/5194831881037285717.alienBone",
-            "Library\/Bones\/6511669734179387258.alienBone",
-            "Library\/Bones\/18028641872750564173.alienBone",
-            "Library\/Bones\/17600707247140969647.alienBone",
-            "Library\/Bones\/4412905537270815761.alienBone",
-            "Library\/Bones\/3416950087829039221.alienBone",
-            "Library\/Bones\/1726100376520329251.alienBone",
-            "Library\/Bones\/16428272214503895542.alienBone",
-            "Library\/Bones\/5658454980066176485.alienBone"
+            "Library\/Bones\/3066574294830398654.alienBone",
+            "Library\/Bones\/3342332591336801848.alienBone",
+            "Library\/Bones\/1857350467449881810.alienBone",
+            "Library\/Bones\/11476706610439881995.alienBone",
+            "Library\/Bones\/2791780038354529668.alienBone",
+            "Library\/Bones\/197930483769254561.alienBone",
+            "Library\/Bones\/677495468725761200.alienBone",
+            "Library\/Bones\/7281434515674199565.alienBone",
+            "Library\/Bones\/13841027639964313518.alienBone",
+            "Library\/Bones\/2612189980803848378.alienBone",
+            "Library\/Bones\/776848644521501050.alienBone",
+            "Library\/Bones\/4457428791072257894.alienBone",
+            "Library\/Bones\/13794484168617254951.alienBone",
+            "Library\/Bones\/3342825488334979309.alienBone",
+            "Library\/Bones\/11268996134322629822.alienBone",
+            "Library\/Bones\/1730218501711943325.alienBone",
+            "Library\/Bones\/18127554662154389656.alienBone",
+            "Library\/Bones\/411519254680683208.alienBone",
+            "Library\/Bones\/588413807503646169.alienBone",
+            "Library\/Bones\/4304600681248000297.alienBone",
+            "Library\/Bones\/8816995343264425280.alienBone",
+            "Library\/Bones\/2290807179378736763.alienBone",
+            "Library\/Bones\/14537939134816994182.alienBone",
+            "Library\/Bones\/8469402562562352994.alienBone",
+            "Library\/Bones\/7518608144345649676.alienBone",
+            "Library\/Bones\/3097445783227674534.alienBone",
+            "Library\/Bones\/16846555978672588107.alienBone",
+            "Library\/Bones\/10737948195680206249.alienBone",
+            "Library\/Bones\/194249559846055023.alienBone",
+            "Library\/Bones\/4149623788788991965.alienBone",
+            "Library\/Bones\/5157496276732025785.alienBone",
+            "Library\/Bones\/14450006328742019036.alienBone",
+            "Library\/Bones\/5562164096153496566.alienBone",
+            "Library\/Bones\/10489845401585936728.alienBone"
         ],
         "PathMaterials": [
-            "Library\/Materials\/16094079926812471676.alienMaterial"
+            "Library\/Materials\/7198055844268442911.alienMaterial"
         ]
     },
     "Nodes": [
@@ -84,7 +84,7 @@
             "parentName": "aniTest",
             "meshIndex": 0,
             "materialIndex": 0,
-            "boneIndex": 0
+            "boneIndex": -1
         },
         {
             "pos": [
@@ -109,7 +109,7 @@
             "parentName": "Bip001 L Finger01",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 9
         },
         {
             "pos": [
@@ -134,7 +134,7 @@
             "parentName": "Bip001 L Finger0",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 8
         },
         {
             "pos": [
@@ -159,7 +159,7 @@
             "parentName": "Bip001 L Hand",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 7
         },
         {
             "pos": [
@@ -184,7 +184,7 @@
             "parentName": "Bip001 L Finger11",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 6
         },
         {
             "pos": [
@@ -209,7 +209,7 @@
             "parentName": "Bip001 L Finger1",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 5
         },
         {
             "pos": [
@@ -234,7 +234,7 @@
             "parentName": "Bip001 L Hand",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 4
         },
         {
             "pos": [
@@ -259,7 +259,7 @@
             "parentName": "Bip001 L Forearm",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 3
         },
         {
             "pos": [
@@ -284,7 +284,7 @@
             "parentName": "Bip001 L UpperArm",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 2
         },
         {
             "pos": [
@@ -309,7 +309,7 @@
             "parentName": "Bip001 L Clavicle",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 0
         },
         {
             "pos": [
@@ -334,7 +334,7 @@
             "parentName": "Bip001 Neck",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 1
         },
         {
             "pos": [
@@ -359,7 +359,7 @@
             "parentName": "Bip001 R Finger01",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 27
         },
         {
             "pos": [
@@ -384,7 +384,7 @@
             "parentName": "Bip001 R Finger0",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 30
         },
         {
             "pos": [
@@ -409,7 +409,7 @@
             "parentName": "Bip001 R Hand",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 25
         },
         {
             "pos": [
@@ -434,7 +434,7 @@
             "parentName": "Bip001 R Finger11",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 26
         },
         {
             "pos": [
@@ -459,7 +459,7 @@
             "parentName": "Bip001 R Finger1",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 29
         },
         {
             "pos": [
@@ -484,7 +484,7 @@
             "parentName": "Bip001 R Hand",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 28
         },
         {
             "pos": [
@@ -509,7 +509,7 @@
             "parentName": "Bip001 R Forearm",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 24
         },
         {
             "pos": [
@@ -534,7 +534,7 @@
             "parentName": "Bip001 R UpperArm",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 23
         },
         {
             "pos": [
@@ -559,7 +559,7 @@
             "parentName": "Bip001 R Clavicle",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 18
         },
         {
             "pos": [
@@ -584,7 +584,7 @@
             "parentName": "Bip001 Neck",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 17
         },
         {
             "pos": [
@@ -609,7 +609,7 @@
             "parentName": "Bip001 Head",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 32
         },
         {
             "pos": [
@@ -634,7 +634,7 @@
             "parentName": "Bip001 Neck",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 31
         },
         {
             "pos": [
@@ -659,7 +659,7 @@
             "parentName": "Bip001 Spine1",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 33
         },
         {
             "pos": [
@@ -684,7 +684,7 @@
             "parentName": "Bip001 Spine",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 12
         },
         {
             "pos": [
@@ -709,7 +709,7 @@
             "parentName": "Bip001 L Foot",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 16
         },
         {
             "pos": [
@@ -734,7 +734,7 @@
             "parentName": "Bip001 L Calf",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 15
         },
         {
             "pos": [
@@ -759,7 +759,7 @@
             "parentName": "Bip001 L Thigh",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 14
         },
         {
             "pos": [
@@ -784,7 +784,7 @@
             "parentName": "Bip001 Spine",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 13
         },
         {
             "pos": [
@@ -809,7 +809,7 @@
             "parentName": "Bip001 R Foot",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 22
         },
         {
             "pos": [
@@ -834,7 +834,7 @@
             "parentName": "Bip001 R Calf",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 21
         },
         {
             "pos": [
@@ -859,7 +859,7 @@
             "parentName": "Bip001 R Thigh",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 20
         },
         {
             "pos": [
@@ -884,7 +884,7 @@
             "parentName": "Bip001 Spine",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 19
         },
         {
             "pos": [
@@ -909,7 +909,7 @@
             "parentName": "Bip001 Pelvis",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 11
         },
         {
             "pos": [
@@ -934,7 +934,7 @@
             "parentName": "transform1",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "boneIndex": 10
         },
         {
             "pos": [

@@ -173,7 +173,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			nodes->SetString("parentName", model_nodes[i].parent_name);
 			nodes->SetNumber("meshIndex", model_nodes[i].mesh);
 			nodes->SetNumber("materialIndex", model_nodes[i].material);
-			nodes->SetNumber("boneIndex", model_nodes[i].material);
+			nodes->SetNumber("boneIndex", model_nodes[i].bone);
 		}
 
 		if (meta_mesh_paths != nullptr)
@@ -431,6 +431,7 @@ void ResourceModel::ReadLibrary(const char* meta_data)
 			node.parent_name = nodes->GetString("parentName");
 			node.mesh = nodes->GetNumber("meshIndex");
 			node.material = nodes->GetNumber("materialIndex");
+			node.bone = nodes->GetNumber("boneIndex");
 			model_nodes.push_back(node);
 			nodes->GetAnotherNode();
 		}

@@ -16,6 +16,10 @@ ComponentBone::ComponentBone(GameObject* gameobject) : Component(gameobject)
 
 ComponentBone::~ComponentBone()
 {
+	if (bone)
+		bone->DecreaseReferences();
+
+	bone = nullptr;
 }
 
 void ComponentBone::Draw()
