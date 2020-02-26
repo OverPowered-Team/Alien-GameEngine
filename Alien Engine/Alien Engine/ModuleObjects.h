@@ -161,7 +161,7 @@ public:
 	Component* component_in_copy = nullptr;
 
 	bool prefab_scene = false;
-	bool printing_scene = true;
+	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 

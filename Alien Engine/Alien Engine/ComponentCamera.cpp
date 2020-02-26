@@ -70,11 +70,13 @@ ComponentCamera::~ComponentCamera()
 					App->objects->game_viewport->SetCamera(nullptr);
 				}
 			}
+			#ifndef GAME_VERSION
 			if (App->renderer3D->selected_game_camera == this)
 			{
 				App->renderer3D->selected_game_camera = nullptr;
 				App->camera->selected_viewport->SetCamera(nullptr);
 			}
+			#endif
 			break;
 		}
 	}

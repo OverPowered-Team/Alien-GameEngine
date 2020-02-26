@@ -1,0 +1,188 @@
+{
+    "Scene": {
+        "Name": "TEST",
+        "GameObjects": [
+            {
+                "Name": "Light",
+                "FamilyNumber": 1,
+                "ID": "9465060317114619004",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            15,
+                            2.5
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13291118974577503416"
+                    },
+                    {
+                        "Type": 3,
+                        "DiffuseColor": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "AmbienColor": [
+                            0.5,
+                            0.5,
+                            0.5,
+                            1
+                        ],
+                        "Enabled": true,
+                        "ID": "5309664405394653256",
+                        "PrintIcon": true
+                    }
+                ]
+            },
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "1526819295429766413",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            -21.297510147094727
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "701571612551475504"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 4,
+                        "VerticalFov": 60,
+                        "HoritzontalFov": 91,
+                        "BackCol": [
+                            0.83823525905609131,
+                            0.1766868531703949,
+                            0.1766868531703949,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "9001300678414332378",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": true,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Cylinder",
+                "FamilyNumber": 1,
+                "ID": "9397825767640866151",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.08980560302734375,
+                            1.33514404296875e-05,
+                            -0.81389379501342773
+                        ],
+                        "Rotation": [
+                            0.015425477176904678,
+                            -0.70693838596343994,
+                            -0.70693868398666382,
+                            -0.015425483696162701
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8514347838178589355"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": true,
+                        "DrawOBB": true,
+                        "ID": "6347735276023050612",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "12801038667721441805",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ],
+                        "TextureEnabled": true,
+                        "ID": "16925393164398750625",
+                        "HasTexture": false,
+                        "Enabled": true
+                    }
+                ]
+            }
+        ]
+    }
+}

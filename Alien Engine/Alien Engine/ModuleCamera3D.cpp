@@ -238,16 +238,12 @@ void ModuleCamera3D::CreateRay()
 	if (App->objects->GetRoot(true)->children.empty())
 		return;
 
-	//App->renderer3D->SetCameraToDraw(fake_camera);
-	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY + 29) / App->ui->panel_scene->height);
+	float2 origin = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
 
-	origin.x = (origin.x - 0.5F) * 2;
-	origin.y = -(origin.y - 0.5F) * 2;
-
-	if (origin.x > 1 || origin.x < -1 || origin.y > 1 || origin.y < -1)
+	if (!scene_viewport->ScreenPointToViewport(origin))
 		return;
 
-	ray = fake_camera->frustum.UnProjectLineSegment(origin.x, origin.y);
+	ray = scene_viewport->GetCamera()->frustum.UnProjectLineSegment(origin.x, origin.y);
 
 	std::vector<std::pair<float, GameObject*>> hits;
 

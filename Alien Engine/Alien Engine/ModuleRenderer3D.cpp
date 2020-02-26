@@ -10,6 +10,7 @@
 #include "ModuleCamera3D.h"
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
@@ -114,10 +115,6 @@ bool ModuleRenderer3D::Init()
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	}
-
-	// Projection matrix for
-	OnResize(App->window->width, App->window->height);
-
 	return ret;
 }
 
@@ -173,24 +170,10 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-#ifndef GAME_VERSION
-	//glViewport(0, 0, width, height);
 	App->window->width = width;
 	App->window->height = height;
-
-	//CreateRenderTexture();
-#else 
-	glViewport(0, 0, width, height);
-	App->window->width = width;
-	App->window->height = height;
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	if (actual_game_camera != nullptr) {
-		glLoadMatrixf(actual_game_camera->GetProjectionMatrix());
-	}
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+#ifdef GAME_VERSION
+	App->objects->game_viewport->SetSize(width, height);
 #endif
 }
 
