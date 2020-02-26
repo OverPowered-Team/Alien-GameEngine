@@ -21,6 +21,7 @@
 #include "PanelAnimTimeline.h"
 #include "Gizmos.h"
 #include "Alien.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -986,7 +987,8 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		delete scene;
 		if (force_with_path == nullptr) {
 			current_scene = to_load_scene;
-			std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			//std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			App->file_system->Copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
 		}
 	}
 	else {
@@ -1332,6 +1334,7 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
 //	auto item = invokes.begin();
@@ -1597,6 +1600,36 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetBoolean("Configuration.Renderer.DrawRay", draw_ray);
 	config->SetNumber("Configuration.Renderer.RayWidth", ray_width);
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
+}
+
+void ModuleObjects::HandleEvent(EventType eventType)
+{
+	std::vector<GameObject*> objects;
+	objects.push_back(base_game_object);
+
+	while (!objects.empty())
+	{
+		GameObject* currentGo = objects.back();
+		objects.pop_back();
+		objects.insert(objects.end(), currentGo->children.begin(), currentGo->children.end());
+
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			currentGo->OnPlay();
+			break;
+
+		case EventType::ON_PAUSE:
+			currentGo->OnPause();
+			break;
+
+		case EventType::ON_STOP:
+			currentGo->OnStop();
+			break;
+		}
+	}
+
+	objects.clear();
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)

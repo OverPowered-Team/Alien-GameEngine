@@ -1,5 +1,6 @@
 #include "FileNode.h"
 #include "Application.h"
+#include "ModuleResources.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
 #include "ResourcePrefab.h"
@@ -306,6 +307,10 @@ void FileNode::SetIcon()
 		else if (App->StringCmp(extension.data(), "animController")) {
 			icon = App->resources->icons.model;
 			type = FileDropType::ANIM_CONTROLLER;
+		}
+		else if (App->StringCmp(extension.data(), "alienParticles")) {
+			icon = App->resources->icons.model;
+			type = FileDropType::PARTICLES;
 		}
 		else {
 			// TODO: fer un icon que sigui unknown

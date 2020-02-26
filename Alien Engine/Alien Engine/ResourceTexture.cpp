@@ -120,6 +120,8 @@ bool ResourceTexture::ReadBaseInfo(const char* assets_path)
 	this->path = assets_path;
 	std::string alien_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
 
+	name = App->file_system->GetBaseFileName(assets_path);
+
 	JSON_Value* value = json_parse_file(alien_path.data());
 	JSON_Object* object = json_value_get_object(value);
 

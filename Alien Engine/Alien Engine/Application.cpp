@@ -16,6 +16,7 @@ Application::Application()
 	objects = new ModuleObjects();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
+	audio = new ModuleAudio();
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,16 +26,15 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-#ifndef GAME_VERSION
-	AddModule(camera);
-#endif
 	AddModule(input);
 	AddModule(file_system);
 	AddModule(resources);
 	AddModule(importer);
+	AddModule(audio);
 	// Scenes
 	AddModule(objects);
 #ifndef GAME_VERSION
+	AddModule(camera);
 	AddModule(ui);
 #endif
 	// Renderer last!
@@ -217,6 +217,7 @@ void Application::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 	dt = frame_time.ReadSec();
+	Time::engine_dt = dt;
 	if (Time::IsPlaying()) {
 		Time::SetDT(dt);
 	}
@@ -345,6 +346,8 @@ bool Application::CleanUp()
 	while(item != list_modules.rend() && ret == true)
 	{
 		ret = (*item)->CleanUp();
+		if (!ret)
+			LOG_ENGINE("Module %s failed to CleanUp", (*item)->name);
 		++item;
 	}
 	return ret;
@@ -377,6 +380,12 @@ bool Application::IsQuiting() const
 void Application::OpenWebsite(const std::string& website)
 {
 	ShellExecuteA(NULL, "open", website.c_str(), NULL, NULL, SW_SHOWNORMAL);
+}
+
+void Application::CastEvent(EventType eventType)
+{
+	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end(); ++item)
+		(*item)->HandleEvent(eventType);
 }
 
 void Application::AddModule(Module* mod)

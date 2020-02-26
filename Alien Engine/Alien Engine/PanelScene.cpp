@@ -83,6 +83,15 @@ void PanelScene::PanelLogic()
 		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
 			FileNode* node = *(FileNode**)payload->Data;
 
+			// drop particle system
+			if (node != nullptr && node->type == FileDropType::PARTICLES && !App->objects->GetSelectedObjects().empty()) {
+				std::string file_path = node->path + node->name;
+				std::string path = App->file_system->GetPathWithoutExtension(file_path);
+				path += ".alienParticles";
+
+				App->importer->ApplyParticleSystemToSelectedObject(path);
+			}
+
 			// drop texture
 			if (node != nullptr && node->type == FileDropType::TEXTURE && !App->objects->GetSelectedObjects().empty()) {
 				std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
@@ -198,7 +207,7 @@ void PanelScene::GuizmosLogic()
 		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation, guizmo_mode, object_transform_matrix.ptr(), delta_matrix.ptr());
 		static bool guizmo_return = true;
 		static bool duplicate = false;
-		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && !block_move)
+		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && !block_move && ImGui::IsWindowFocused())
 		{
 			if (!duplicate && (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)) {
 				duplicate = true;

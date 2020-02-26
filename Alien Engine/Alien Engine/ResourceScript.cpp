@@ -103,55 +103,48 @@ bool ResourceScript::ReadBaseInfo(const char* assets_file_path)
 	
 	ID = App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(assets_file_path) + "_meta.alien").data());
 	meta_data_path = LIBRARY_SCRIPTS_FOLDER + std::to_string(ID) + ".alienPrefab";
-	remove(assets_file_path);
-	std::ifstream file(header_path);
-	if (file.is_open()) {
-		std::string line;
-		while (std::getline(file, line)) {
-			if (line.find("ALIEN_ENGINE_API") != std::string::npos) {
-				bool alien = false;
-				if (line.find("Alien") != std::string::npos) {
-					alien = true;
-				}
-				std::string class_name = GetDataStructure(line, "ALIEN_ENGINE_API");
-				data_structures.push_back({ class_name, alien });
-			}
+	
+	struct stat header, meta;
+	if (stat(header_path.c_str(), &header) == 0 && stat(path.c_str(), &meta) == 0)
+	{
+		if (header.st_mtime > meta.st_mtime) {
+			Reimport();
+			App->resources->AddResource(this);
+			return true;
 		}
-		file.close();
 	}
 
-	JSON_Value* value = json_value_init_object();
-	JSON_Object* json_object = json_value_get_object(value);
-	json_serialize_to_file_pretty(value, path.data());
+	JSON_Value* value = json_parse_file(path.data());
+	JSON_Object* object = json_value_get_object(value);
 
-	if (value != nullptr && json_object != nullptr) {
-		JSONfilepack* script = new JSONfilepack(path.data(), json_object, value);
-		script->StartSave();
+	if (value != nullptr && object != nullptr)
+	{
+		JSONfilepack* meta = new JSONfilepack(path, object, value);
 
-		struct stat file;
-		if (stat(meta_data_path.c_str(), &file) == 0)
-		{
-			last_time_mod = file.st_mtime;
-		}
-		if (!data_structures.empty()) {
-			script->SetBoolean("HasData", true);
-			JSONArraypack* structures = script->InitNewArray("DataStructure");
-
-			for (uint i = 0; i < data_structures.size(); ++i) {
-				structures->SetAnotherNode();
-				structures->SetString("DataName", data_structures[i].first);
-				structures->SetBoolean("UsesAlien", data_structures[i].second);
+		if (meta->GetBoolean("HasData")) {
+			JSONArraypack* structures = meta->GetArray("DataStructure");
+			for (uint i = 0; i < structures->GetArraySize(); ++i) {
+				data_structures.push_back({ structures->GetString("DataName"), structures->GetBoolean("UsesAlien") });
+				structures->GetAnotherNode();
 			}
 		}
-		else {
-			script->SetBoolean("HasData", false);
-		}
-		script->FinishSave();
-		delete script;
+
+		delete meta;
+	}
+
+
+	if (!App->file_system->Exists(meta_data_path.data())) {
 		App->file_system->Copy(path.data(), meta_data_path.data());
-
-		App->resources->AddResource(this);
 	}
+	else {
+		struct stat metaFile;
+		if (stat(meta_data_path.c_str(), &metaFile) == 0 && metaFile.st_mtime != meta.st_mtime) {
+			remove(meta_data_path.data());
+			App->file_system->Copy(path.data(), meta_data_path.data());
+		}
+	}
+	App->resources->AddResource(this);
+	
 	return true;
 }
 
@@ -185,7 +178,7 @@ bool ResourceScript::NeedReload() const
 	bool ret = false;
 
 	struct stat file;
-	if (stat(meta_data_path.c_str(), &file) == 0)
+	if (stat(header_path.c_str(), &file) == 0)
 	{
 		if (file.st_mtime != last_time_mod) {
 			ret = true;
@@ -193,6 +186,86 @@ bool ResourceScript::NeedReload() const
 	}
 
 	return ret;
+}
+
+void ResourceScript::Reimport()
+{
+	remove(path.data());
+	remove(meta_data_path.data());
+	data_structures.clear();
+
+	std::ifstream file(header_path);
+	if (file.is_open()) {
+		std::string line;
+		while (std::getline(file, line)) {
+			if (line.find("ALIEN_ENGINE_API") != std::string::npos) {
+				bool alien = false;
+				if (line.find("Alien") != std::string::npos) {
+					alien = true;
+				}
+				std::string class_name = GetDataStructure(line, "ALIEN_ENGINE_API");
+				data_structures.push_back({ class_name, alien });
+			}
+		}
+		file.close();
+	}
+
+	JSON_Value* value = json_value_init_object();
+	JSON_Object* json_object = json_value_get_object(value);
+	json_serialize_to_file_pretty(value, path.data());
+
+	if (value != nullptr && json_object != nullptr) {
+		JSONfilepack* script = new JSONfilepack(path.data(), json_object, value);
+		script->StartSave();
+
+		struct stat file;
+		if (stat(header_path.c_str(), &file) == 0)
+		{
+			last_time_mod = file.st_mtime;
+		}
+		if (!data_structures.empty()) {
+			script->SetBoolean("HasData", true);
+			JSONArraypack* structures = script->InitNewArray("DataStructure");
+
+			for (uint i = 0; i < data_structures.size(); ++i) {
+				structures->SetAnotherNode();
+				structures->SetString("DataName", data_structures[i].first);
+				structures->SetBoolean("UsesAlien", data_structures[i].second);
+			}
+		}
+		else {
+			script->SetBoolean("HasData", false);
+		}
+		script->FinishSave();
+		delete script;
+
+		JSON_Value* value = json_value_init_object();
+		JSON_Object* json_object = json_value_get_object(value);
+
+		std::string meta_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
+
+		json_serialize_to_file_pretty(value, meta_path.data());
+
+		if (value != nullptr && json_object != nullptr) {
+
+			JSONfilepack* file = new JSONfilepack(meta_path, json_object, value);
+			file->StartSave();
+			file->SetString("Meta.ID", std::to_string(ID));
+			file->FinishSave();
+			delete file;
+		}
+
+		App->file_system->Copy(path.data(), meta_data_path.data());
+	}
+}
+
+bool ResourceScript::DeleteMetaData()
+{
+	remove(path.data());
+	remove(std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien").data());
+	remove(meta_data_path.data());
+
+	return true;
 }
 
 std::string ResourceScript::GetDataStructure(const std::string& line, const std::string& api)

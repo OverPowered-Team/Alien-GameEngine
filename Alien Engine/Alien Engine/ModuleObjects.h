@@ -5,18 +5,21 @@
 #include "GameObject.h"
 #include "Color.h"
 #include <vector>
+#include <list>
 #include <map>
 #include <utility>
 #include "Octree.h"
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
+#include <map>
 
 class ReturnZ;
 class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -62,6 +65,8 @@ public:
 	// config
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
+
+	void HandleEvent(EventType eventType) override;
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);

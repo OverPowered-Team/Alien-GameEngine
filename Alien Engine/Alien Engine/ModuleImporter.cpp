@@ -8,6 +8,7 @@
 
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentParticleSystem.h"
 #include "GameObject.h"
 #include "ModuleCamera3D.h"
 
@@ -18,11 +19,13 @@
 #include "ResourceAnimation.h"
 #include "ResourceBone.h"
 #include "ResourceMaterial.h"
+#include "ResourceFont.h"
 
 #include "ReturnZ.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "mmgr/mmgr.h"
+#include "FreeType/include/freetype/freetype.h"
 
 ModuleImporter::ModuleImporter(bool start_enabled) : Module(start_enabled)
 {
@@ -44,6 +47,12 @@ bool ModuleImporter::Init()
 	ilutInit();
 	LOG_ENGINE("Initing Devil");
 
+	if (FT_Init_FreeType(&library)) {
+		LOG_ENGINE("Error when it's initialization FreeType");
+	}
+	else
+		LOG_ENGINE("FreeType initialized!");
+
 	return true;
 }
 
@@ -56,7 +65,8 @@ bool ModuleImporter::Start()
 bool ModuleImporter::CleanUp()
 {
 	aiDetachAllLogStreams();
-	
+	FT_Done_FreeType(library);
+
 	return true;
 }
 
@@ -535,6 +545,17 @@ ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 	return texture;
 }
 
+ResourceFont* ModuleImporter::LoadFontFile(const char* path)
+{
+	ResourceFont* font = nullptr;
+
+	if (!App->resources->GetFontByName(App->file_system->GetBaseFileName(path).c_str())) {
+		font = ResourceFont::ImportFile(path);
+	}
+
+	return font;
+}
+
 void ModuleImporter::LoadTextureToResource(const char* path, ResourceTexture* texture)
 {
 	ILuint new_image_id = 0;
@@ -595,9 +616,70 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture* texture)
 			}
 			else
 				LOG_ENGINE("Selected GameObject has no mesh");
+
+
+			if ((*item)->HasComponent(ComponentType::PARTICLES)) {
+
+				ComponentParticleSystem* particleSystem = (ComponentParticleSystem*)(*item)->GetComponent(ComponentType::PARTICLES);
+
+				if(texture->NeedToLoad())
+					texture->LoadMemory();
+
+				particleSystem->SetTexture(texture);
+			
+			}
+			else
+				LOG_ENGINE("Selected GameObject has no particle system");
+
+
 		}
 	}	
 }
+
+void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
+{
+
+	std::list<GameObject*> selected = App->objects->GetSelectedObjects();
+	auto item = selected.begin();
+	for (; item != selected.end(); ++item) {
+		if (*item != nullptr) {
+			
+
+			if (!(*item)->HasComponent(ComponentType::PARTICLES)) 
+				(*item)->AddComponent(new ComponentParticleSystem(*item));
+			
+
+			std::string name = path;
+			App->file_system->NormalizePath(name);
+
+			JSON_Value* value = json_parse_file(name.data());
+			JSON_Object* object = json_value_get_object(value);
+
+
+				if (value != nullptr && object != nullptr)
+				{
+					JSONfilepack* particles = new JSONfilepack(name.data(), object, value);
+
+					JSONArraypack* properties = particles->GetArray("ParticleSystem.Properties");
+
+					if (properties != nullptr) {
+						ComponentParticleSystem* particleSystem = (ComponentParticleSystem*)(*item)->GetComponent(ComponentType::PARTICLES);
+						particleSystem->LoadComponent(properties);
+					}
+
+					delete particles;
+				}
+				else {
+					LOG_ENGINE("Error loading particle system %s", name.data());
+				}
+			}	
+		}
+	}
+
+
+
+
+
 
 void ModuleImporter::LoadParShapesMesh(par_shapes_mesh* shape, ResourceMesh* mesh)
 {

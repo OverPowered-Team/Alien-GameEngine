@@ -136,6 +136,36 @@ float3 JSONfilepack::GetFloat3(const std::string& name)
 	return numbers;
 }
 
+void JSONfilepack::SetFloat4(const std::string& name, const float4& numbers)
+{
+	JSON_Array* arr = json_object_dotget_array(save_object, name.data());
+	if (arr == nullptr) {
+		JSON_Value* new_val = json_value_init_array();
+		arr = json_value_get_array(new_val);
+		json_object_dotset_value(save_object, name.data(), new_val);
+	}
+	else {
+		json_array_clear(arr);
+	}
+	json_array_append_number(arr, numbers.x);
+	json_array_append_number(arr, numbers.y);
+	json_array_append_number(arr, numbers.z);
+	json_array_append_number(arr, numbers.w);
+}
+
+float4 JSONfilepack::GetFloat4(const std::string& name)
+{
+	JSON_Array* arr = json_object_dotget_array(object, name.data());
+
+	float4 numbers;
+	numbers.x = json_array_get_number(arr, 0);
+	numbers.y = json_array_get_number(arr, 1);
+	numbers.z = json_array_get_number(arr, 2);
+	numbers.w = json_array_get_number(arr, 3);
+
+	return numbers;
+}
+
 void JSONfilepack::SetQuat(const std::string& name, const Quat& numbers)
 {
 	JSON_Array* arr = json_object_dotget_array(save_object, name.data());
@@ -442,6 +472,37 @@ float3 JSONArraypack::GetFloat3(const std::string& name)
 	numbers.x = json_array_get_number(arr, 0);
 	numbers.y = json_array_get_number(arr, 1);
 	numbers.z = json_array_get_number(arr, 2);
+
+	return numbers;
+}
+
+
+void JSONArraypack::SetFloat4(const std::string& name, const float4& numbers)
+{
+	JSON_Array* arr = json_object_dotget_array(json_value_get_object(value), name.data());
+	if (arr == nullptr) {
+		JSON_Value* new_val = json_value_init_array();
+		arr = json_value_get_array(new_val);
+		json_object_dotset_value(json_value_get_object(value), name.data(), new_val);
+	}
+	else {
+		json_array_clear(arr);
+	}
+	json_array_append_number(arr, numbers.x);
+	json_array_append_number(arr, numbers.y);
+	json_array_append_number(arr, numbers.z);
+	json_array_append_number(arr, numbers.w);
+}
+
+float4 JSONArraypack::GetFloat4(const std::string& name)
+{
+	JSON_Array* arr = json_object_dotget_array(json_value_get_object(value), name.data());
+
+	float4 numbers;
+	numbers.x = json_array_get_number(arr, 0);
+	numbers.y = json_array_get_number(arr, 1);
+	numbers.z = json_array_get_number(arr, 2);
+	numbers.w = json_array_get_number(arr, 3);
 
 	return numbers;
 }

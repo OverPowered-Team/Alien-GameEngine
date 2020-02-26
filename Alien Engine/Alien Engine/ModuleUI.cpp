@@ -27,6 +27,8 @@
 #include <string>
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
+#include "PanelTextEditor.h"
+#include "PanelParticleSystem.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
 
@@ -1110,6 +1112,7 @@ void ModuleUI::InitPanels()
 	panel_build = new PanelBuild("Build", panel_build_codes[0], panel_build_codes[1], panel_build_codes[2]);
 	panel_animtimeline = new PanelAnimTimeline("Animation Timeline", panel_animtimeline_codes[0], panel_animtimeline_codes[1], panel_animtimeline_codes[2]);
 	panel_animator = new PanelAnimator("Animator", panel_animator_codes[0], panel_animator_codes[1], panel_animator_codes[2]);
+	panel_particles = new PanelParticleSystem("Particle System", panel_particles_codes[0], panel_particles_codes[1], panel_particles_codes[2]);
 
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
@@ -1127,6 +1130,7 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_build);
 	panels.push_back(panel_animtimeline);
 	panels.push_back(panel_animator);
+	panels.push_back(panel_particles);
 }
 
 void ModuleUI::UpdatePanels()

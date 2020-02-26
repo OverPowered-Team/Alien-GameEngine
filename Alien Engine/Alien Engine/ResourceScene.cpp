@@ -23,18 +23,31 @@ bool ResourceScene::CreateMetaData(const u64& force_id)
 	App->file_system->NormalizePath(path);
 	name = App->file_system->GetBaseFileName(path.data());
 
-	App->file_system->CreateNewFile(path.data());
-
 	JSON_Value* value = json_value_init_object();
 	JSON_Object* json_object = json_value_get_object(value);
+	json_serialize_to_file_pretty(value, path.data());
+
+	if (value != nullptr && json_object != nullptr) {
+		JSONfilepack* file = new JSONfilepack(path, json_object, value);
+		file->StartSave();
+
+		file->SetString("Scene.Name", name);
+		file->InitNewArray("Scene.GameObjects");
+		file->FinishSave();
+		delete file;
+	}
+
+
+	JSON_Value* value2 = json_value_init_object();
+	JSON_Object* json_object2 = json_value_get_object(value2);
 
 	std::string meta_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien");
 
-	json_serialize_to_file_pretty(value, meta_path.data());
+	json_serialize_to_file_pretty(value2, meta_path.data());
 
-	if (value != nullptr && json_object != nullptr) {
+	if (value2 != nullptr && json_object2 != nullptr) {
 
-		JSONfilepack* file = new JSONfilepack(meta_path, json_object, value);
+		JSONfilepack* file = new JSONfilepack(meta_path, json_object2, value2);
 		file->StartSave();
 		file->SetString("Meta.ID", std::to_string(ID));
 		file->FinishSave();
@@ -42,7 +55,7 @@ bool ResourceScene::CreateMetaData(const u64& force_id)
 	}
 
 	meta_data_path = LIBRARY_SCENES_FOLDER + std::to_string(ID) + ".alienScene";
-	App->file_system->CreateNewFile(meta_data_path.data());
+	App->file_system->Copy(path.data(), meta_data_path.data());
 	App->resources->AddResource(this);
 	return true;
 }

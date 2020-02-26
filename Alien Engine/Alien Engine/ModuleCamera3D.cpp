@@ -1,7 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleObjects.h"
+#include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float4x4.h"
@@ -235,7 +237,7 @@ void ModuleCamera3D::CreateRay()
 		return;
 
 	//App->renderer3D->SetCameraToDraw(fake_camera);
-	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY) / App->ui->panel_scene->height);
+	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY + 29) / App->ui->panel_scene->height);
 
 	origin.x = (origin.x - 0.5F) * 2;
 	origin.y = -(origin.y - 0.5F) * 2;

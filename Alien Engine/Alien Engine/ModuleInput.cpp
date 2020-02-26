@@ -307,6 +307,10 @@ update_status ModuleInput::PreUpdate(float dt)
 bool ModuleInput::CleanUp()
 {
 	LOG_ENGINE("Quitting SDL input event subsystem");
+
+	for (auto gpads = game_pads.begin(); gpads != game_pads.end(); ++gpads)
+		delete (*gpads).second;
+
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
 }

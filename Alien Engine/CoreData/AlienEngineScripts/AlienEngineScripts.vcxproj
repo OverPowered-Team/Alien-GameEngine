@@ -167,10 +167,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="ListenerButton.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
+    <ClInclude Include="TestClass4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="ListenerButton.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
+    <ClCompile Include="TestClass4.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

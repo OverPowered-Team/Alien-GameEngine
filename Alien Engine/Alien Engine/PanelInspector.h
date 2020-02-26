@@ -2,6 +2,8 @@
 
 #include "Panel.h"
 
+class ComponentCanvas;
+
 class PanelInspector : public Panel {
 
 public:
@@ -16,6 +18,10 @@ public:
 
 private:
 	void ShowModelImportSettings(ResourceModel* model);
+
+	ComponentCanvas* GetCanvas();
+
+private:
 
 	std::tuple<const char*, bool, u64> script_info = { "Return To Components", false, 0 };
 

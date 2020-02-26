@@ -11,6 +11,7 @@
 enum class ResourceType;
 class Resource;
 class Prefab;
+class ComponentCanvas;
 class ComponentCamera;
 
 class __declspec(dllexport) GameObject
@@ -26,6 +27,12 @@ class __declspec(dllexport) GameObject
 	friend class ComponentAnimator;
 	friend class ComponentMaterial;
 	friend class ComponentScript;
+	friend class ComponentUI;
+	friend class ComponentCanvas;
+	friend class ComponentCheckbox;
+	friend class ComponentText;
+	friend class ComponentButton;
+	friend class ComponentBar;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -45,6 +52,8 @@ class __declspec(dllexport) GameObject
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
 	friend class ModuleObjects;
+	friend class ComponentImage;
+	friend class ComponentSlider;
 	friend class ModuleUI;
 public:
 	GameObject(GameObject* parent);
@@ -87,6 +96,7 @@ public:
 	bool HasComponent(ComponentType component) const;
 	Component* GetComponent(const ComponentType& type);
 	const Component* GetComponent(const ComponentType& type) const;
+	ComponentTransform* GetComponentTransform() const; //sorry ori
 	void* GetComponentScript(const char* script_class_name);
 	const void* GetComponentScript(const char* script_class_name) const;
 	Component* GetComponentInParent(const ComponentType& type);
@@ -134,10 +144,16 @@ private:
 	void OnEnable();
 	void OnDisable();
 
+	void OnPlay();
+	void OnPause();
+	void OnStop();
+
 	// here we call Component Mesh, Material & light
 	void DrawScene();
 	void DrawGame();
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
+
+	ComponentCanvas* GetCanvas();
 
 	Component* GetComponentWithID(const u64& ID);
 	const Component* GetComponentWithID(const u64& ID) const;
