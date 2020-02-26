@@ -10,6 +10,13 @@
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCanvas.h"
+#include "ComponentImage.h"
+#include "ComponentBar.h"
+#include "ComponentButton.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
+#include "ComponentText.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -1493,6 +1500,19 @@ void ModuleObjects::DeleteReturns()
 	}
 }
 
+ComponentCanvas* ModuleObjects::GetCanvas()
+{
+	ComponentCanvas* canvas = GetRoot(true)->GetCanvas();
+	if (canvas == nullptr) {
+		GameObject* obj = new GameObject(GetRoot(false));
+		obj->SetName("Canvas");
+		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+		canvas = new ComponentCanvas(obj);
+		obj->AddComponent(canvas);
+	}
+	return canvas;
+}
+
 bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
 {
 	return std::get<0>(tuple1) < std::get<0>(tuple2);
@@ -1659,5 +1679,71 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	mesh->RecalculateAABB_OBB();
 	SetNewSelectedObject(object);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+void ModuleObjects::CreateBaseUI(ComponentType type)
+{
+	GameObject* object = CreateEmptyGameObject(nullptr);
+	Component* comp = nullptr;
+	switch (type)
+	{
+	case ComponentType::CANVAS: {
+		comp = new ComponentCanvas(object);
+		object->AddComponent(comp);
+		object->SetName("Canvas");
+		break; }
+
+	case ComponentType::UI_IMAGE: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentImage(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_BUTTON: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentButton(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_TEXT: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentText(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_CHECKBOX: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentCheckbox(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_SLIDER: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentSlider(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_BAR: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentBar(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	default: {
+		break; }
+	}
+
 }
 
