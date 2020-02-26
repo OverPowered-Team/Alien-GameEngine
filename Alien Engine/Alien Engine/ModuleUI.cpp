@@ -27,6 +27,7 @@
 #include <string>
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
+#include "Event.h"
 #include "PanelTextEditor.h"
 #include "PanelParticleSystem.h"
 #include <fstream>
@@ -39,6 +40,7 @@ ModuleUI::ModuleUI(bool start_enabled) : Module(start_enabled)
 
 ModuleUI::~ModuleUI()
 {
+
 }
 
 // Load assets
@@ -1181,6 +1183,37 @@ void ModuleUI::LoadActiveLayout()
 				}
 			}
 			ImGui::LoadIniSettingsFromDisk((*item)->path.data());
+			break;
+		}
+	}
+}
+
+void ModuleUI::HandleEvent(EventType eventType)
+{
+	for each (Panel* p in panels)
+	{
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			p->OnPlay();
+			break;
+		case EventType::ON_PAUSE:
+			p->OnPause();
+			break;
+		case EventType::ON_STOP:
+			p->OnStop();
+			break;
+		case EventType::ON_ASSET_SELECT:
+			p->OnAssetSelect();
+			break;
+		case EventType::ON_ASSET_DELETE:
+			p->OnAssetDelete();
+			break;
+		case EventType::ON_GO_SELECT:
+			p->OnObjectSelect();
+			break;
+		case EventType::ON_GO_DELETE:
+			p->OnObjectDelete();
 			break;
 		}
 	}

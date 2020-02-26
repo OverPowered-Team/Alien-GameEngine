@@ -1616,11 +1616,9 @@ void ModuleObjects::HandleEvent(EventType eventType)
 		case EventType::ON_PLAY:
 			currentGo->OnPlay();
 			break;
-
 		case EventType::ON_PAUSE:
 			currentGo->OnPause();
 			break;
-
 		case EventType::ON_STOP:
 			currentGo->OnStop();
 			break;

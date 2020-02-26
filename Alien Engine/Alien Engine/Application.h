@@ -66,7 +66,6 @@ private:
 	JSONfilepack* layout = nullptr;
 	
 	std::list<JSONfilepack*> json_files;
-
 	std::list<Module*> list_modules;
 	bool quit = false;
 

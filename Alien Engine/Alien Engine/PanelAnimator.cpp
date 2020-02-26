@@ -8,6 +8,7 @@
 #include "ResourceAnimatorController.h"
 #include "ResourceAnimation.h"
 
+#include "PanelProject.h"
 #include "PanelAnimator.h"
 #include "mmgr/mmgr.h"
 
@@ -342,6 +343,43 @@ void PanelAnimator::DrawParameterList()
 			ImGui::Separator();
 		}
 	}
+}
+
+void PanelAnimator::OnAssetSelect()
+{
+	if (App->ui->panel_project->current_active_file->type == FileDropType::ANIM_CONTROLLER)
+	{
+		std::string asset_path = App->ui->panel_project->current_active_file->path + App->ui->panel_project->current_active_file->name;
+		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
+		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
+		if(current_animator != anim_ctrl)
+			SetCurrentResourceAnimatorController(anim_ctrl);
+	}
+}
+
+void PanelAnimator::OnAssetDelete()
+{
+	if (App->ui->panel_project->current_active_file->type == FileDropType::ANIM_CONTROLLER)
+	{
+		std::string asset_path = App->ui->panel_project->current_active_file->path + App->ui->panel_project->current_active_file->name;
+		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
+		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
+		if(current_animator)
+			current_animator->DecreaseReferences();
+		current_animator = nullptr;
+	}
+}
+
+void PanelAnimator::OnObjectSelect()
+{
+	//TODO: Look for Animator Component on Go and select it if needed.
+}
+
+void PanelAnimator::OnObjectDelete()
+{
+	//TODO
 }
 
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController * animator)

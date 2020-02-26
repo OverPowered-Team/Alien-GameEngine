@@ -30,6 +30,10 @@ public:
 	bool IsInside(const float2& pos) const;
 
 	void DrawParameterList();
+	void OnAssetSelect();
+	void OnAssetDelete();
+	void OnObjectSelect();
+	void OnObjectDelete();
 
 public:
 	ResourceAnimatorController* current_animator = nullptr;

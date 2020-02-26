@@ -9,6 +9,7 @@
 #include "ResourceScript.h"
 #include "ResourceScene.h"
 #include "PanelAnimator.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "mmgr/mmgr.h"
@@ -212,7 +213,7 @@ void PanelProject::SeeFiles()
 				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
 				{
 					App->objects->DeselectObjects();
-					OnFileSelection(); //TOdo: do this with an event system
+					App->CastEvent(EventType::ON_ASSET_SELECT);
 				}		
 			}
 
@@ -322,6 +323,7 @@ void PanelProject::DeleteSelectedAssetPopUp()
 				
 				for (; item != current_active_folder->children.end(); ++item) {
 					if (*item != nullptr && *item == current_active_file) {
+						App->CastEvent(EventType::ON_ASSET_DELETE);
 						delete* item;
 						*item = nullptr;
 						current_active_folder->children.erase(item);
@@ -652,21 +654,4 @@ void PanelProject::GetUniqueFileName(std::string& asset_name, const std::string&
 	}
 	if (asset_number > 0)
 		asset_name = asset_name + "(" + std::to_string(asset_number) + ")";
-}
-
-void PanelProject::OnFileSelection()
-{
-	switch (current_active_file->type)
-	{
-	case FileDropType::ANIM_CONTROLLER:
-	{
-		std::string asset_path = current_active_file->path + current_active_file->name;
-		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
-		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
-		App->ui->panel_animator->SetCurrentResourceAnimatorController((ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id));
-	}
-		break;
-	case FileDropType::ANIMATION:
-		break;
-	}
 }

@@ -85,6 +85,8 @@ public:
 	void SaveLayout(Layout* layout, bool is_new = true); // save x layout
 	void LoadActiveLayout(); // charge the active layout //
 
+	void HandleEvent(EventType eventType);
+
 private:
 
 	// panels
