@@ -7,7 +7,7 @@ class TweenDescr;
 enum TweenType {
 	MOVE_X,
 	MOVE_Y,
-	MOVE_X,
+	MOVE_Z,
 	MOVE_LOCAL_X,
 	MOVE_LOCAL_Y,
 	MOVE_LOCAL_Z,
