@@ -11,7 +11,7 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 	type = ComponentType::A_EMITTER;
 	source = App->audio->CreateSoundEmitter("Emitter");
 	App->audio->emitters.push_back(this);
-	//UpdateSourcePos();
+
 }
 
 void ComponentAudioEmitter::Update()
@@ -28,6 +28,7 @@ void ComponentAudioEmitter::Update()
 			play_mode = true;
 		}
 	}
+	UpdateSourcePos();
 }
 
 ComponentAudioEmitter::~ComponentAudioEmitter()

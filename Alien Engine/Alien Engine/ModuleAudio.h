@@ -41,7 +41,6 @@ public:
 	const std::vector<Bank*> GetBanks() const;
 	const Bank* GetBankByName(const char* name) const;
 	Bank* GetBankByID(const u64& id) const;
-
 private:
 	std::vector <Bank*> banks;
 	bool play_mode = false;

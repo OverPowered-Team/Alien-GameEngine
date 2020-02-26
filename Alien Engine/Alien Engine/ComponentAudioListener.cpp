@@ -10,8 +10,6 @@ ComponentAudioListener::ComponentAudioListener(GameObject * parent) : Component(
 	type = ComponentType::A_LISTENER;
 	listener = App->audio->CreateSoundEmitter("Listener");
 	App->audio->SetListener(listener);
-
-	//UpdateListenerPos();
 }
 
 ComponentAudioListener::~ComponentAudioListener()
@@ -22,6 +20,7 @@ ComponentAudioListener::~ComponentAudioListener()
 
 void ComponentAudioListener::Update()
 {
+	UpdateListenerPos();
 }
 
 void ComponentAudioListener::UpdateListenerPos()
@@ -35,7 +34,7 @@ void ComponentAudioListener::UpdateListenerPos()
 		math::float3 vector_front = rotation * math::float3::unitZ();
 		math::float3 vector_up = rotation * math::float3::unitY();
 
-		listener->SetListenerPos(
+		App->audio->listener->SetListenerPos(
 			vector_pos.x, vector_pos.y, vector_pos.z, 
 			vector_front.x, vector_front.y, vector_front.z,
 			vector_up.x, vector_up.y, vector_up.z);

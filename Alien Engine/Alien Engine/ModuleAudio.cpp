@@ -200,4 +200,3 @@ void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)
 
 	WwiseT::SetDefaultListener(new_listener->GetID());
 }
-
