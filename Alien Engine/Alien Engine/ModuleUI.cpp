@@ -591,6 +591,34 @@ void ModuleUI::MainMenuBar()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
+			}
+			if (ImGui::MenuItem("Button"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BUTTON);
+			}
+			if (ImGui::MenuItem("Checkbox"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_CHECKBOX);
+			}
+			if (ImGui::MenuItem("Text"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_TEXT);
+			}
+			if (ImGui::MenuItem("Slider"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
+			}
+			if (ImGui::MenuItem("Bar"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::MenuItem("Create...", panel_create_object->shortcut->GetNameScancodes()))
 		{
 			panel_create_object->ChangeEnable();

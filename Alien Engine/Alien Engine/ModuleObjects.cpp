@@ -1688,15 +1688,17 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	switch (type)
 	{
 	case ComponentType::CANVAS: {
+		object->SetName("Canvas");
+		object->AddComponent(new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		comp = new ComponentCanvas(object);
 		object->AddComponent(comp);
-		object->SetName("Canvas");
 		break; }
 
 	case ComponentType::UI_IMAGE: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentImage(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Image");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
@@ -1705,6 +1707,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Button");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
@@ -1713,6 +1716,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentText(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Text");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
@@ -1721,6 +1725,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentCheckbox(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Checkbox");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
@@ -1729,6 +1734,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentSlider(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Slider");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
@@ -1737,6 +1743,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentBar(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Bar");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
