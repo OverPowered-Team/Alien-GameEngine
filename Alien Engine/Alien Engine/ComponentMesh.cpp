@@ -75,6 +75,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	material->used_shader->ActualitzateUniformPreBind();
 	material->used_shader->Unbind();	
 
 	if (transform->IsScaleNegative())

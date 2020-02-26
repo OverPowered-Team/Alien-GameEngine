@@ -13,6 +13,15 @@ struct SHADER_PROGRAM_SOURCE
 	std::string fragment_source;
 };
 
+struct Material {
+	Color custom_color = { 0,0,0,0 };
+	float time = 1.0f;
+	float amplitude = 0.75;
+	uint shader_id;
+	uint texture_id;
+	int type;
+};
+
 enum class SHADER_TYPE
 {
 	UNKNOWN = -1,
@@ -45,6 +54,7 @@ public:
 public:
 	uint ParseAndCreateShader();
 
+	void ActualitzateUniformPreBind();
 	void Bind() const;
 	void Unbind() const;
 	
@@ -65,8 +75,7 @@ private:
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
-	uint renderer_id = 0u;
-
+	Material material;
 	std::unordered_map<std::string, int> uniform_location_cache;
 };
 

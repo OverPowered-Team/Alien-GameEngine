@@ -17,6 +17,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 	used_shader->IncreaseReferences();
 	file_to_edit = used_shader->path;
+	used_shader->material.shader_id = id_s;
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -252,56 +253,67 @@ bool ComponentMaterial::DrawInspector()
 			ImGui::Separator();
 
 			/* Set shader unifroms from Inspector */
-			ImGui::Text("--Uniforms--");
-			static bool editing_uniform = false;
-			
-			GLint uniform_count = 0;
-			const GLsizei u_buff_size = 24;
-			glGetProgramiv(used_shader->renderer_id, GL_ACTIVE_UNIFORMS, &uniform_count);
-			for (GLuint i = 0; i < uniform_count; ++i)
+			int prev_type = used_shader->material.type;
+			ImGui::Combo("##Edit shader", &used_shader->material.type, "diffuse\0wave");
+			//change shader
+			if (prev_type != used_shader->material.type)
 			{
-				GLsizei length;
-				GLint size;
-				GLenum type;
-				GLchar name[u_buff_size];
-				glGetActiveUniform(used_shader->renderer_id, i, (GLsizei)20, &length, &size, &type, name);
-				
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s(%u)", (const char*)name, (unsigned int)type);
-				ImGui::SameLine();
-				ImGui::PushID(i);
-				if (ImGui::Button("Edit uniform"))
-				{
-					editing_uniform = !editing_uniform;
+				switch (used_shader->material.type) {
+				case 0: {//defusse
+					used_shader->material.shader_id = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien");
+					std::string p = std::string(SHADERS_FOLDER + std::string("default_meta.alien"));
+					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+					if (used_shader != nullptr) {
+						used_shader->DecreaseReferences();
+					}
+					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+					if (used_shader != nullptr) {
+						used_shader->IncreaseReferences();
+					}
+					break; }
+
+				case 1: {//wave
+					used_shader->material.shader_id = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "shader_wave_meta.alien");
+					std::string p = std::string(SHADERS_FOLDER  + std::string("shader_wave_meta.alien"));
+					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+					if (used_shader != nullptr) {
+						used_shader->DecreaseReferences();
+					}
+					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+					if (used_shader != nullptr) {
+						used_shader->IncreaseReferences();
+					}
+					break; }
+
 				}
 
-				if (editing_uniform)
-				{
-					switch (type)
-					{
-					case GL_FLOAT_VEC4:
-					{
-						ImVec4 values;
-						glGetUniformfv(used_shader->renderer_id, (GLint)used_shader->GetUniformLocation(name),
-							(float*)&values);
-
-						ImVec4 color_to_use = ImVec4(values.x, values.y, values.z, values.w);
-
-						if (ImGui::ColorEdit4("vec4", &color_to_use.x))
-						{
-							glUseProgram(used_shader->renderer_id);
-							used_shader->SetUniform4f(name, color_to_use.x,
-								color_to_use.y, color_to_use.z, color_to_use.w);
-						}
-					}
-					break;
-					default:
-						LOG_ENGINE("We currently don't support editing this type of uniform...");
-						break;
-					}
-				}
-
-				ImGui::PopID();
 			}
+
+			switch (used_shader->material.type) {
+			case 0: {//difusse
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+				ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);
+				break; }
+			case 1: {//wave
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+				ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);
+
+				ImGui::Spacing();
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "velocity", (unsigned int)type); ImGui::SameLine();
+				ImGui::InputFloat(" ", &used_shader->material.time,0,0,2);
+
+				ImGui::Spacing();
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "amplitude", (unsigned int)type); ImGui::SameLine();
+				ImGui::InputFloat("  ", &used_shader->material.amplitude,0,0,2);
+					
+				break; }
+			default:
+				LOG_ENGINE("We currently don't support editing this type of uniform...");
+				break;
+				}
+
 
 			ImGui::Separator();
 

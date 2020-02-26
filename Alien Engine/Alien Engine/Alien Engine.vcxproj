@@ -273,7 +273,6 @@
     <ClInclude Include="PanelBuild.h" />
     <ClInclude Include="PanelConfig.h" />
     <ClInclude Include="PanelConsole.h" />
-    <ClInclude Include="PanelCreateMaterial.h" />
     <ClInclude Include="PanelCreateObject.h" />
     <ClInclude Include="PanelGame.h" />
     <ClInclude Include="PanelHierarchy.h" />
@@ -391,7 +390,6 @@
     <ClCompile Include="PanelBuild.cpp" />
     <ClCompile Include="PanelConfig.cpp" />
     <ClCompile Include="PanelConsole.cpp" />
-    <ClCompile Include="PanelCreateMaterial.cpp" />
     <ClCompile Include="PanelCreateObject.cpp" />
     <ClCompile Include="PanelGame.cpp" />
     <ClCompile Include="PanelHierarchy.cpp" />

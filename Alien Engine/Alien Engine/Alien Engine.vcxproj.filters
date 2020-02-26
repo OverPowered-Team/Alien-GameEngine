@@ -414,9 +414,6 @@
     <ClInclude Include="ComponentTransform.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentMaterial.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="PanelHierarchy.h">
       <Filter>Panels</Filter>
     </ClInclude>
@@ -543,8 +540,8 @@
     <ClInclude Include="ResourceShader.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="PanelCreateMaterial.h">
-      <Filter>Panels</Filter>
+    <ClInclude Include="ComponentMaterial.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -749,9 +746,6 @@
     <ClCompile Include="ComponentTransform.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentMaterial.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="PanelHierarchy.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
@@ -878,8 +872,8 @@
     <ClCompile Include="ResourceShader.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="PanelCreateMaterial.cpp">
-      <Filter>Panels</Filter>
+    <ClCompile Include="ComponentMaterial.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
