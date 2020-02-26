@@ -353,8 +353,12 @@ void PanelAnimator::OnAssetSelect()
 		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
 		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
 		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
-		if(current_animator != anim_ctrl)
+		if (current_animator != anim_ctrl)
+		{
+			if(current_animator)
+				current_animator->SaveAsset(current_animator->GetID());
 			SetCurrentResourceAnimatorController(anim_ctrl);
+		}
 	}
 }
 
@@ -402,6 +406,8 @@ PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& 
 
 PanelAnimator::~PanelAnimator()
 {
+	if (current_animator)
+		current_animator->SaveAsset();
 }
 
 bool PanelAnimator::FillInfo()
@@ -411,9 +417,6 @@ bool PanelAnimator::FillInfo()
 
 void PanelAnimator::PanelLogic()
 {
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-		current_animator->SaveAsset(current_animator->GetID());
-
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animator", &enabled, aboutFlags);

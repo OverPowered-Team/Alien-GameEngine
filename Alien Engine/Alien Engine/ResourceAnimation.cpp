@@ -186,6 +186,7 @@ void ResourceAnimation::Copy(ResourceAnimation* anim)
 	uint size = 0;
 	for (uint i = 0; i < anim->num_channels; i++)
 	{
+		channels[i].name = anim->channels[i].name;
 		channels[i].num_position_keys = anim->channels[i].num_position_keys;
 		channels[i].num_scale_keys = anim->channels[i].num_scale_keys;
 		channels[i].num_rotation_keys = anim->channels[i].num_rotation_keys;
