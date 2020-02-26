@@ -84,6 +84,7 @@ void PanelAnimTimeline::Stop()
 
 void PanelAnimTimeline::MoveBones(GameObject* go)
 {
+	
 	uint channel_index = current_animation->GetChannelIndex(go->GetName());
 	key = (int)progress / zoom;
 	if (channel_index < current_animation->num_channels)
@@ -95,8 +96,8 @@ void PanelAnimTimeline::MoveBones(GameObject* go)
 		if (current_animation->channels[channel_index].scale_keys[key].time == key)
 			go->transform->SetLocalScale(current_animation->channels[channel_index].scale_keys[key].value);
 	}
-	
-	
+
+
 	for (int i = 0; i < go->GetChildren().size(); i++)
 	{
 		MoveBones(go->GetChildren()[i]);
@@ -108,6 +109,11 @@ void PanelAnimTimeline::PanelLogic()
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animation Timeline", &enabled, aboutFlags);
+
+	if (current_animation && !current_animation->channels)
+	{
+		changed = true;
+	}
 
 	if (changed)
 	{
@@ -362,7 +368,7 @@ void PanelAnimTimeline::PanelLogic()
 
 	ImGui::End();
 
-	if (!in_game && progress != 0.0f)
+	if (!in_game && setted)
 	{
 		MoveBones(component_animator->game_object_attached);
 	}
