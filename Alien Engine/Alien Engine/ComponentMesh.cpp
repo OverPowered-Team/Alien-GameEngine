@@ -54,8 +54,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	if (material->texture != nullptr)
 		glBindTexture(GL_TEXTURE_2D, material->texture->id);
 
-
 	material->used_shader->Bind();
+	material->used_shader->ActualitzateUniforms();
+
 	glBindVertexArray(mesh->vao);
 
 

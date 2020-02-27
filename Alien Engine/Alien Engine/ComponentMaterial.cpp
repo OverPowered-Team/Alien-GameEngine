@@ -253,55 +253,35 @@ bool ComponentMaterial::DrawInspector()
 
 			/* Set shader unifroms from Inspector */
 			ImGui::Text("--Uniforms--");
-			static bool editing_uniform = false;
-			
-			GLint uniform_count = 0;
-			const GLsizei u_buff_size = 24;
-			glGetProgramiv(used_shader->renderer_id, GL_ACTIVE_UNIFORMS, &uniform_count);
-			for (GLuint i = 0; i < uniform_count; ++i)
+			if (used_shader->ChangeTemplate())
 			{
-				GLsizei length;
-				GLint size;
-				GLenum type;
-				GLchar name[u_buff_size];
-				glGetActiveUniform(used_shader->renderer_id, i, (GLsizei)20, &length, &size, &type, name);
-				
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s(%u)", (const char*)name, (unsigned int)type);
-				ImGui::SameLine();
-				ImGui::PushID(i);
-				if (ImGui::Button("Edit uniform"))
-				{
-					editing_uniform = !editing_uniform;
+				if (used_shader != nullptr) {
+					used_shader->DecreaseReferences();
 				}
 
-				if (editing_uniform)
-				{
-					switch (type)
-					{
-					case GL_FLOAT_VEC4:
-					{
-						ImVec4 values;
-						glGetUniformfv(used_shader->renderer_id, (GLint)used_shader->GetUniformLocation(name),
-							(float*)&values);
-
-						ImVec4 color_to_use = ImVec4(values.x, values.y, values.z, values.w);
-
-						if (ImGui::ColorEdit4("vec4", &color_to_use.x))
-						{
-							glUseProgram(used_shader->renderer_id);
-							used_shader->SetUniform4f(name, color_to_use.x,
-								color_to_use.y, color_to_use.z, color_to_use.w);
-						}
+				switch (used_shader->uniform_data.type) {
+				case SHADER_TEMPLATE::DIFUSSE: {//defusse
+					std::string p = std::string(SHADERS_FOLDER + std::string("default_meta.alien"));
+					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+					if (used_shader != nullptr) {
+						used_shader->IncreaseReferences();
 					}
-					break;
-					default:
-						LOG_ENGINE("We currently don't support editing this type of uniform...");
-						break;
+					break; }
+
+				case SHADER_TEMPLATE::WAVE: {//wave
+
+					std::string p = std::string(SHADERS_FOLDER + std::string("shader_wave_meta.alien"));
+					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+					if (used_shader != nullptr) {
+						used_shader->IncreaseReferences();	
 					}
+					break; }
 				}
-
-				ImGui::PopID();
+				file_to_edit = used_shader->path;
 			}
+			used_shader->HieracityUniforms();
 
 			ImGui::Separator();
 

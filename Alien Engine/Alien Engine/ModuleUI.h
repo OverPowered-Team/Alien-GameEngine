@@ -15,7 +15,6 @@ class PanelConfig;
 class PanelAbout;
 class PanelConsole;
 class PanelCreateObject;
-class PanelCreateMaterial;
 class PanelRender;
 class PanelHierarchy;
 class PanelInspector;
@@ -182,7 +181,6 @@ public:
 	PanelConfig* panel_config = nullptr;
 	PanelConsole* panel_console = nullptr;
 	PanelCreateObject* panel_create_object = nullptr;
-	PanelCreateMaterial* panel_create_material = nullptr;
 	PanelProject* panel_project = nullptr;
 	PanelSceneSelector* panel_scene_selector = nullptr;
 	PanelScene* panel_scene = nullptr;

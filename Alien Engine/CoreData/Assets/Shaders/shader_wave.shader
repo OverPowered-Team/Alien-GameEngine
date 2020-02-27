@@ -10,6 +10,9 @@ uniform mat4 model;
 uniform mat4 projection;
 
 uniform float time;
+uniform float mult_time;
+
+uniform float amplitude;
 
 out vec3 position_l;
 out float max_height;
@@ -18,9 +21,7 @@ void main()
 {
     position_l = position;
 
-    float amplitude = 0.75;
-
-    position_l.z += sin(time + (position.x * 50.0 + position.y * 50.0)) * amplitude;
+    position_l.z += sin(time * mult_time + (position.x * 50.0 + position.y * 50.0)) * amplitude;
 
     max_height = sin(1) * amplitude;
 

@@ -26,7 +26,7 @@ ResourceShader::ResourceShader(const char* path)
 
 ResourceShader::~ResourceShader()
 {
-	glDeleteProgram(renderer_id);
+	glDeleteProgram(uniform_data.shader_id);
 }
 
 bool ResourceShader::LoadMemory()
@@ -38,7 +38,7 @@ bool ResourceShader::LoadMemory()
 
 void ResourceShader::FreeMemory()
 {
-	glDeleteProgram(renderer_id);
+	glDeleteProgram(uniform_data.shader_id);
 }
 
 bool ResourceShader::CreateMetaData(const u64& force_id)
@@ -137,14 +137,73 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 uint ResourceShader::ParseAndCreateShader()
 {
 	SHADER_PROGRAM_SOURCE source = ParseShader(path);
-	renderer_id = CreateShader(source.vertex_source, source.fragment_source);
+	uniform_data.shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
-	return renderer_id;
+	return uniform_data.shader_id;
+}
+
+bool ResourceShader::ChangeTemplate()
+{
+	bool ret = false;
+	static int prev_type = (int)uniform_data.type;
+	ImGui::Combo("##Edit shader", &prev_type, "diffuse\0wave\0\0");
+	{
+		//change shader
+		if (prev_type != (int)uniform_data.type)
+		{
+			uniform_data.type = (SHADER_TEMPLATE)prev_type;
+
+			ret = true;
+		}
+	}
+	return ret;
+}
+
+void ResourceShader::HieracityUniforms()
+{
+	switch (uniform_data.type) {
+	case SHADER_TEMPLATE::DIFUSSE: {//difusse
+		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+		break; }
+	case SHADER_TEMPLATE::WAVE: {//wave
+		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+
+		ImGui::Spacing();
+
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "velocity", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputFloat("## ", &uniform_data.mult_time, 0, 0, 2);
+
+		ImGui::Spacing();
+
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "amplitude", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputFloat("##", &uniform_data.amplitude, 0, 0, 2);
+
+		break; }
+	default:
+		LOG_ENGINE("We currently don't support editing this type of uniform...");
+		break;
+	}
+}
+
+void ResourceShader::ActualitzateUniforms()
+{
+	switch (uniform_data.type) {
+	case SHADER_TEMPLATE::DIFUSSE: {//difusse
+		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+		break; }
+	case SHADER_TEMPLATE::WAVE: {//wave
+		SetUniform1f("mult_time", uniform_data.mult_time);
+		SetUniform1f("amplitude", uniform_data.amplitude);
+		break; }
+	}
 }
 
 void ResourceShader::Bind() const
 {
-	glUseProgram(renderer_id);
+	glUseProgram(uniform_data.shader_id);
 }
 
 void ResourceShader::Unbind() const
@@ -286,7 +345,7 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 	if (uniform_location_cache.find(name) != uniform_location_cache.end())
 		return uniform_location_cache[name];
 
-	int location = glGetUniformLocation(renderer_id, name.c_str());
+	int location = glGetUniformLocation(uniform_data.shader_id, name.c_str());
 	if (location == -1)
 	{
 		LOG_ENGINE("WARNING: Uniform %s doesn't exist...", name.c_str());

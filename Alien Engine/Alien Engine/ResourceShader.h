@@ -20,6 +20,22 @@ enum class SHADER_TYPE
 	FRAGMENT
 };
 
+enum class SHADER_TEMPLATE
+{
+	NO_TEMPLATE = -1,
+	DIFUSSE,
+	WAVE
+};
+
+struct UniformData2
+{
+	uint shader_id = 0;
+	uint textures_id = 0;
+	float mult_time = 1.0f;
+	float amplitude = 0.75f;
+	SHADER_TEMPLATE type = SHADER_TEMPLATE::DIFUSSE;
+};
+
 class ResourceShader : public Resource
 {
 	friend class ComponentMaterial;
@@ -44,7 +60,11 @@ public:
 
 public:
 	uint ParseAndCreateShader();
+	bool ChangeTemplate();
+	void HieracityUniforms();
 
+
+	void ActualitzateUniforms();
 	void Bind() const;
 	void Unbind() const;
 	
@@ -65,8 +85,7 @@ private:
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
-	uint renderer_id = 0u;
-
+	UniformData2 uniform_data;
 	std::unordered_map<std::string, int> uniform_location_cache;
 };
 

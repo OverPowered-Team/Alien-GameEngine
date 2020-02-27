@@ -2,7 +2,6 @@
 #include "ModuleObjects.h"
 #include "GameObject.h"
 #include "PanelCreateObject.h"
-#include "PanelCreateMaterial.h"
 #include "ResourceScene.h"
 #include "ResourcePrefab.h"
 #include "imgui/imgui_internal.h"
@@ -504,10 +503,7 @@ void PanelHierarchy::RightClickMenu()
 		{
 			App->ui->panel_create_object->ChangeEnable();
 		}
-		if (ImGui::MenuItem("Create Material"))
-		{
-			App->ui->panel_create_material->ChangeEnable();
-		}
+
 		ImGui::EndPopup();
 	}
 	else if (in_menu) {
