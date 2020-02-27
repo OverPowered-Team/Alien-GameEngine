@@ -17,6 +17,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 	used_shader->IncreaseReferences();
 	file_to_edit = used_shader->path;
+	used_shader->uniform_data;
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -275,12 +276,13 @@ bool ComponentMaterial::DrawInspector()
 					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
 					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
 					if (used_shader != nullptr) {
-						used_shader->IncreaseReferences();	
+						used_shader->IncreaseReferences();
 					}
 					break; }
 				}
 				file_to_edit = used_shader->path;
 			}
+			
 			used_shader->HieracityUniforms();
 
 			ImGui::Separator();

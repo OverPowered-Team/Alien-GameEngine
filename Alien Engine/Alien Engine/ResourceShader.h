@@ -27,7 +27,7 @@ enum class SHADER_TEMPLATE
 	WAVE
 };
 
-struct UniformData2
+struct UniformData
 {
 	uint shader_id = 0;
 	uint textures_id = 0;
@@ -85,7 +85,7 @@ private:
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
-	UniformData2 uniform_data;
+	UniformData uniform_data;
 	std::unordered_map<std::string, int> uniform_location_cache;
 };
 
