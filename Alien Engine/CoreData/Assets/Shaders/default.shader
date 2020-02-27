@@ -22,11 +22,12 @@ void main()
 #version 330 core
 
 uniform sampler2D tex;
+uniform vec4 custom_color;
 
 out vec4 FragColor;
 in vec2 texCoords;
 
 void main()
 {
-    FragColor = texture(tex, texCoords);
+    FragColor = vec4(texture(tex, texCoords).rgb,1.0) * custom_color;
 }

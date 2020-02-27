@@ -163,8 +163,8 @@ void ResourceShader::HieracityUniforms()
 {
 	switch (uniform_data.type) {
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
-		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+		ImGui::ColorEdit3(" ", &uniform_data.custom_color.r);
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
 		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
@@ -187,12 +187,11 @@ void ResourceShader::HieracityUniforms()
 	}
 }
 
-void ResourceShader::ActualitzateUniforms()
+void ResourceShader::UpdateUniforms()
 {
 	switch (uniform_data.type) {
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
-		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+		SetUniform4f("custom_color", uniform_data.custom_color.r, uniform_data.custom_color.g, uniform_data.custom_color.b, uniform_data.custom_color.a);
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
 		SetUniform1f("mult_time", uniform_data.mult_time);

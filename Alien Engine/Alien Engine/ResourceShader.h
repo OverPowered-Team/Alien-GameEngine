@@ -33,6 +33,7 @@ struct UniformData
 	uint textures_id = 0;
 	float mult_time = 1.0f;
 	float amplitude = 0.75f;
+	Color custom_color = { 1,1,1,1 };
 	SHADER_TEMPLATE type = SHADER_TEMPLATE::DIFUSSE;
 };
 
@@ -64,7 +65,7 @@ public:
 	void HieracityUniforms();
 
 
-	void ActualitzateUniforms();
+	void UpdateUniforms();
 	void Bind() const;
 	void Unbind() const;
 	
