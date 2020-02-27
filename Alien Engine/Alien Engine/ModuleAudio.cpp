@@ -75,14 +75,20 @@ update_status ModuleAudio::PostUpdate(float dt)
 bool ModuleAudio::CleanUp()
 {
 	for (auto i = emitters.begin(); i != emitters.end(); i++)
-		delete* i;
+	{
+		if((*i))
+			delete* i;
+	}		
 	emitters.clear();
 
 	WwiseT::StopAllEvents();
 
 	UnloadAllBanksFromWwise();
 	for (auto b = banks.begin(); b != banks.end(); b++)
-		delete* b;
+	{
+		if ((*b))
+			delete* b;
+	}	
 	banks.clear();
 
 	used_banks.clear();
@@ -109,12 +115,14 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 {
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
 		}
 	}
-	//banks.clear();
 
 	return true;
 }
@@ -123,10 +131,13 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
-		}
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
+		}	
 	}
 }
 
