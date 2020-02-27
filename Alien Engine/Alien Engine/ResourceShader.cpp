@@ -26,8 +26,7 @@ ResourceShader::ResourceShader(const char* path)
 
 ResourceShader::~ResourceShader()
 {
-
-	glDeleteProgram(material.shader_id);
+	glDeleteProgram(renderer_id);
 }
 
 bool ResourceShader::LoadMemory()
@@ -39,7 +38,7 @@ bool ResourceShader::LoadMemory()
 
 void ResourceShader::FreeMemory()
 {
-	glDeleteProgram(material.shader_id);
+	glDeleteProgram(renderer_id);
 }
 
 bool ResourceShader::CreateMetaData(const u64& force_id)
@@ -138,31 +137,14 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 uint ResourceShader::ParseAndCreateShader()
 {
 	SHADER_PROGRAM_SOURCE source = ParseShader(path);
-	material.shader_id = CreateShader(source.vertex_source, source.fragment_source);
+	renderer_id = CreateShader(source.vertex_source, source.fragment_source);
 
-	return material.shader_id;
-}
-
-void ResourceShader::ActualitzateUniformPreBind()
-{
-	SetUniform4f("custom_color", material.custom_color.r, material.custom_color.g, material.custom_color.b, material.custom_color.a);
-	SetUniform1i("tex", material.texture_id);
-	switch (material.type)
-	{
-	case 0: { //diffuse
-		break; }
-	case 1: { //wave
-		SetUniform1f("mult_time", material.time);
-		SetUniform1f("amplitude", material.amplitude);
-		break; }
-	default:
-		break;
-	}
+	return renderer_id;
 }
 
 void ResourceShader::Bind() const
 {
-	glUseProgram(material.shader_id);
+	glUseProgram(renderer_id);
 }
 
 void ResourceShader::Unbind() const
@@ -304,7 +286,7 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 	if (uniform_location_cache.find(name) != uniform_location_cache.end())
 		return uniform_location_cache[name];
 
-	int location = glGetUniformLocation(material.shader_id, name.c_str());
+	int location = glGetUniformLocation(renderer_id, name.c_str());
 	if (location == -1)
 	{
 		LOG_ENGINE("WARNING: Uniform %s doesn't exist...", name.c_str());
