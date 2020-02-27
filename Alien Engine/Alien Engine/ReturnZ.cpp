@@ -64,6 +64,7 @@ void ReturnZ::SetAction(const ReturnActions& type, void* data)
 		Component* component = (Component*)data;
 		comp->compID = component->ID;
 		comp->objectID = component->game_object_attached->ID;
+		action = comp;
 		break; }
 	case ReturnActions::REPARENT_HIERARCHY: {
 		ActionReparent* reparent = new ActionReparent();
@@ -465,7 +466,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 {
 	GameObject* parent = App->objects->GetGameObjectByID(obj->object->parentID);
 	if (parent != nullptr) {
-		GameObject* new_obj = new GameObject();
+		GameObject* new_obj = new GameObject(true);
 		new_obj->parent = parent;
 		if (new_obj->parent != nullptr) {
 			new_obj->parent->AddChild(new_obj);
@@ -489,7 +490,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 			std::vector<CompZ*>::iterator item = obj->object->comps.begin();
 			for (; item != obj->object->comps.end(); ++item) {
 				if (*item != nullptr) {
-					SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
+					SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 					switch ((*item)->type)
 					{
 					case ComponentType::TRANSFORM: {
@@ -768,6 +769,7 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		transform->euler_rotation.z = RadToDeg(transform->euler_rotation.z);
 		transform->LookScale();
 		transform->RecalculateTransform();
+		transform->game_object_attached->transform = transform;
 		break; }
 	case ComponentType::MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)component;
@@ -1204,12 +1206,6 @@ ActionDeleteObject::~ActionDeleteObject()
 {
 	if (object != nullptr)
 		delete object;
-}
-
-ActionComponent::~ActionComponent()
-{
-	if (comp != nullptr)
-		delete comp;
 }
 
 ObjZ::~ObjZ()

@@ -168,6 +168,8 @@ void OctreeNode::SaveGameObjects(std::vector<GameObject*>* to_save, AABB* new_se
 		for (; item != game_objects.end(); ++item) {
 			if (*item != nullptr) {
 				ComponentMesh* mesh = (ComponentMesh*)(*item)->GetComponent(ComponentType::MESH);
+				if (mesh == nullptr)
+					mesh = (ComponentMesh*)(*item)->GetComponent(ComponentType::DEFORMABLE_MESH);
 				AABB aabb = mesh->GetGlobalAABB();
 				new_section->minPoint = { min(new_section->minPoint.x, aabb.minPoint.x), min(new_section->minPoint.y, aabb.minPoint.y),min(new_section->minPoint.z, aabb.minPoint.z) };
 				new_section->maxPoint = { max(new_section->maxPoint.x, aabb.maxPoint.x), max(new_section->maxPoint.y, aabb.maxPoint.y),max(new_section->maxPoint.z, aabb.maxPoint.z) };
@@ -209,6 +211,8 @@ void OctreeNode::SetStaticDrawList(std::vector<std::pair<float, GameObject*>>* t
 			for (; item != game_objects.end(); ++item) {
 				if (*item != nullptr && (*item)->IsParentEnabled()) {
 					ComponentMesh* mesh = (ComponentMesh*)(*item)->GetComponent(ComponentType::MESH);
+					if (mesh == nullptr)
+						mesh = (ComponentMesh*)(*item)->GetComponent(ComponentType::DEFORMABLE_MESH);
 					if (mesh != nullptr && mesh->mesh != nullptr) {
 						if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
 							float3 obj_pos = static_cast<ComponentTransform*>((*item)->GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
@@ -278,6 +282,8 @@ void OctreeNode::Subdivide()
 			uint intersections = 0;
 			for (; item != children.end(); ++item) {
 				ComponentMesh* mesh = (ComponentMesh*)(*objs)->GetComponent(ComponentType::MESH);
+				if (mesh == nullptr)
+					mesh = (ComponentMesh*)(*objs)->GetComponent(ComponentType::DEFORMABLE_MESH);
 				if (*item != nullptr && (*item)->section.Contains(mesh->GetGlobalAABB().minPoint) && (*item)->section.Contains(mesh->GetGlobalAABB().maxPoint)) {
 					(*item)->Insert(*objs, mesh->GetGlobalAABB());
 					to_delete = true;
@@ -307,6 +313,8 @@ Octree::~Octree()
 void Octree::Insert(GameObject* object, bool add_children)
 {
 	ComponentMesh* mesh_parent = (ComponentMesh*)object->GetComponent(ComponentType::MESH);
+	if (mesh_parent == nullptr)
+		mesh_parent = (ComponentMesh*)object->GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (mesh_parent != nullptr && mesh_parent->mesh != nullptr) {
 		if (root == nullptr) {
@@ -388,6 +396,8 @@ void Octree::Recalculate(GameObject* new_object)
 
 	if (new_object != nullptr) {
 		ComponentMesh* mesh = (ComponentMesh*)new_object->GetComponent(ComponentType::MESH);
+		if (mesh == nullptr)
+			mesh = (ComponentMesh*)new_object->GetComponent(ComponentType::DEFORMABLE_MESH);
 		new_section = mesh->GetGlobalAABB();
 	}
 
@@ -432,6 +442,8 @@ bool Octree::Exists(GameObject* object)
 void Octree::RemoveRecursively(GameObject* obj)
 {
 	ComponentMesh* mesh_parent = (ComponentMesh*)obj->GetComponent(ComponentType::MESH);
+	if (mesh_parent == nullptr)
+		mesh_parent = (ComponentMesh*)(obj)->GetComponent(ComponentType::DEFORMABLE_MESH);
 	if (mesh_parent != nullptr && mesh_parent->mesh != nullptr) {
 		if (root->Remove(obj))
 			all_objects.remove(obj);

@@ -398,7 +398,6 @@ void PanelProject::PrintNodeNameUnderIcon(const uint& i)
 				}
 
 				current_active_folder->children[i]->name = name_before_rename;
-
 				current_active_folder->children[i]->ResetPaths();
 
 				LOG_ENGINE("New file/folder renamed correctly to %s", current_active_folder->children[i]->name.data());
@@ -485,8 +484,7 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 
 			if (inside) {
 				if (node_to_move->is_file) { // move file up
-					if (rename(std::string(node_to_move->path + node_to_move->name).data(), std::string(node->path + node_to_move->name).data()) == 0) {
-						
+					if (rename(std::string(node_to_move->path + node_to_move->name).data(), std::string(node->path + node_to_move->name).data()) == 0) {				
 						// move the .alien too
 						rename(std::string(App->file_system->GetPathWithoutExtension(std::string(node_to_move->path + node_to_move->name)) + "_meta.alien").data(), std::string(App->file_system->GetPathWithoutExtension(std::string(node->path + node_to_move->name)) + "_meta.alien").data());
 

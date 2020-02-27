@@ -738,7 +738,7 @@ void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, 
 		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
 		if (!anim_ctrl->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
 			u64 id = anim_ctrl->GetID();
-			anim_ctrl->CreateMetaData(id);
+			anim_ctrl->ReImport(id);
 		}
 	}
 	if (!directories.empty()) {

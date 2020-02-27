@@ -12,6 +12,11 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT,
 	CAMERA,
+	BOX_COLLIDER,
+	SPHERE_COLLIDER,
+	CAPSULE_COLLIDER,
+	CONVEX_HULL_COLLIDER,
+	RIGID_BODY,
 	ANIMATOR,
 	PARTICLES,
 	A_EMITTER,
@@ -28,7 +33,6 @@ enum class ComponentType {
 	BONE,
 	SCRIPT,
 	UI,// UI MUST BE THE LAST
-
 	UNKNOWN
 };
 
@@ -42,6 +46,8 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentCanvas;
 	friend class ComponentUI;
+	friend class ComponentRigidBody;
+	friend class ComponentCollider;
 	friend class ComponentScript;
 	friend class ComponentImage;
 	friend class ComponentText;
@@ -77,6 +83,8 @@ protected:
 	virtual void PreUpdate() {}
 	virtual void Update() {}
 	virtual void PostUpdate() {}
+	virtual void DrawScene() {}
+	virtual void DrawGame() {}
 
 	void ResetIDs();
 

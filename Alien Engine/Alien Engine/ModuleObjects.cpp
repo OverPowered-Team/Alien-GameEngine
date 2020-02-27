@@ -10,6 +10,8 @@
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCollider.h"
+#include "ComponentBoxCollider.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -989,7 +991,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
 				for (; item != objects_to_create.end(); ++item) {
 					game_objects->GetNode(std::get<2>(*item));
-					GameObject* obj = new GameObject();
+					GameObject* obj = new GameObject(true);
 					if (std::get<0>(*item) == 1) { // family number == 1 so parent is the base game object
 						obj->LoadObject(game_objects, base_game_object);
 					}
@@ -1576,7 +1578,8 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	GameObject* object = new GameObject(GetRoot(false));
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
-	
+	ComponentCollider* collider = nullptr;
+
 	switch (type) {
 	case PrimitiveType::CUBE: {
 		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
@@ -1613,6 +1616,22 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->RecalculateAABB_OBB();
+
+	// Add collider --------------------------------------------
+
+	switch (type) {
+	case PrimitiveType::CUBE: {
+		collider = new ComponentBoxCollider(object);
+		break; }
+	}
+
+	if (collider != nullptr)
+	{
+		object->AddComponent(collider);
+	}
+	// ---------------------------------------------------------
+
+
 	SetNewSelectedObject(object);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }

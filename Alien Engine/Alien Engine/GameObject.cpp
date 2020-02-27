@@ -32,6 +32,12 @@
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
@@ -58,10 +64,12 @@ GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, c
 
 }
 
-GameObject::GameObject()
+GameObject::GameObject(bool ignore_transform)
 {
-	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
-	AddComponent(transform);
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -510,6 +518,7 @@ void GameObject::DrawScene()
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
@@ -536,6 +545,15 @@ void GameObject::DrawScene()
 			mesh->DrawGlobalAABB();
 		if (mesh->draw_OBB)
 			mesh->DrawOBB();
+	}
+
+
+	for (Component* component : components)
+	{
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawScene();
+		}
 	}
 }
 
@@ -1384,6 +1402,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{
@@ -1545,10 +1565,12 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 21); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
+				AddComponent(transform);
 				break; }
 			case (int)ComponentType::LIGHT: {
 				ComponentLight* light = new ComponentLight(this);
@@ -1610,6 +1632,32 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
 				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
