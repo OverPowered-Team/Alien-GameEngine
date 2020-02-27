@@ -10,7 +10,7 @@
 #include <regex>
 #include "..\imgui\imgui.h"
 
-class TextEditor
+class __declspec(dllexport) TextEditor
 {
 public:
 	enum class PaletteIndex
