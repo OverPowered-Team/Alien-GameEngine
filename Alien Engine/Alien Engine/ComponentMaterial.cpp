@@ -279,11 +279,21 @@ bool ComponentMaterial::DrawInspector()
 						used_shader->IncreaseReferences();
 					}
 					break; }
+
+				case SHADER_TEMPLATE::BASIC_LIGHTING: {//wave
+
+					std::string p = std::string(SHADERS_FOLDER + std::string("basic_lighting_meta.alien"));
+					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+					if (used_shader != nullptr) {
+						used_shader->IncreaseReferences();
+					}
+					break; }
 				}
 				file_to_edit = used_shader->path;
 			}
 			
-			used_shader->HieracityUniforms();
+			used_shader->HierarchyUniforms();
 
 			ImGui::Separator();
 

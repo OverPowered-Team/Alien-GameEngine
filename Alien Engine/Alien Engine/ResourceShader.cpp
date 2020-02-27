@@ -146,7 +146,7 @@ bool ResourceShader::ChangeTemplate()
 {
 	bool ret = false;
 	static int prev_type = (int)uniform_data.type;
-	ImGui::Combo("##Edit shader", &prev_type, "diffuse\0wave\0\0");
+	ImGui::Combo("##Edit shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
 	{
 		//change shader
 		if (prev_type != (int)uniform_data.type)
@@ -159,31 +159,43 @@ bool ResourceShader::ChangeTemplate()
 	return ret;
 }
 
-void ResourceShader::HieracityUniforms()
+void ResourceShader::HierarchyUniforms()
 {
-	switch (uniform_data.type) {
-	case SHADER_TEMPLATE::DIFUSSE: {//difusse
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-		ImGui::ColorEdit3(" ", &uniform_data.custom_color.r);
-		break; }
-	case SHADER_TEMPLATE::WAVE: {//wave
-		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-		ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
+	switch (uniform_data.type) 
+	{
+		case SHADER_TEMPLATE::DIFUSSE: {//difusse
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+			ImGui::ColorEdit3("", uniform_data.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
+			break; }
+		case SHADER_TEMPLATE::WAVE: {//wave
+			/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+			ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
 
-		ImGui::Spacing();
+			ImGui::Spacing();
 
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "velocity", (unsigned int)type); ImGui::SameLine();
-		ImGui::InputFloat("## ", &uniform_data.mult_time, 0, 0, 2);
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "velocity", (unsigned int)type); ImGui::SameLine();
+			ImGui::InputFloat("## ", &uniform_data.waveShaderProperties.mult_time, 0, 0, 2);
 
-		ImGui::Spacing();
+			ImGui::Spacing();
 
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "amplitude", (unsigned int)type); ImGui::SameLine();
-		ImGui::InputFloat("##", &uniform_data.amplitude, 0, 0, 2);
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "amplitude", (unsigned int)type); ImGui::SameLine();
+			ImGui::InputFloat("##", &uniform_data.waveShaderProperties.amplitude, 0, 0, 2);
 
-		break; }
-	default:
-		LOG_ENGINE("We currently don't support editing this type of uniform...");
-		break;
+			break; }
+
+		case SHADER_TEMPLATE::BASIC_LIGHTING: {
+			ImGui::ColorEdit3("Albedo", uniform_data.basicLightingShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
+
+			ImGui::ColorEdit3("Lighting Color", uniform_data.basicLightingShaderProperties.lightColor.ptr(), ImGuiColorEditFlags_Float);
+			ImGui::DragFloat3("Lighting Position", uniform_data.basicLightingShaderProperties.lightPosition.ptr());
+			ImGui::DragFloat("Ambient Light Strength", &uniform_data.basicLightingShaderProperties.ambient_strength, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Specular Light Strength", &uniform_data.basicLightingShaderProperties.specular_strength, 0.1f, 0.0f, 1.0f);
+
+			break; }
+
+		default:
+			LOG_ENGINE("We currently don't support editing this type of uniform...");
+			break;
 	}
 }
 
@@ -191,12 +203,33 @@ void ResourceShader::UpdateUniforms()
 {
 	switch (uniform_data.type) {
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
-		SetUniform4f("custom_color", uniform_data.custom_color.r, uniform_data.custom_color.g, uniform_data.custom_color.b, uniform_data.custom_color.a);
+		// Object Material Properties
+		SetUniformFloat3("diffuse_color", uniform_data.standardShaderProperties.diffuse_color);
+
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
-		SetUniform1f("mult_time", uniform_data.mult_time);
-		SetUniform1f("amplitude", uniform_data.amplitude);
+		SetUniform1f("mult_time", uniform_data.waveShaderProperties.mult_time);
+		SetUniform1f("amplitude", uniform_data.waveShaderProperties.amplitude);
 		break; }
+
+	case SHADER_TEMPLATE::BASIC_LIGHTING: {
+
+		SetUniformFloat3("objectColor", uniform_data.basicLightingShaderProperties.object_color);
+		// Lighting
+		SetUniformFloat3("lightColor", uniform_data.basicLightingShaderProperties.lightColor);
+
+		SetUniformFloat3("lightPos", uniform_data.basicLightingShaderProperties.lightPosition);
+		SetUniform1f("ambientStrength", uniform_data.basicLightingShaderProperties.ambient_strength);
+		SetUniform1f("specularStrength", uniform_data.basicLightingShaderProperties.specular_strength);
+
+		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());
+
+		break; }
+
+	default:
+		LOG_ENGINE("We currently don't support editing this type of uniform...");
+		break;
+
 	}
 }
 
@@ -220,9 +253,19 @@ void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 	glUniform1f(GetUniformLocation(name), value);
 }
 
+void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
+{
+	glUniform3f(GetUniformLocation(name), vec.x, vec.y, vec.z);
+}
+
 void ResourceShader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
 	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+}
+
+void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
+{
+	glUniform4f(GetUniformLocation(name), vec.x, vec.y, vec.z, vec.w);
 }
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
