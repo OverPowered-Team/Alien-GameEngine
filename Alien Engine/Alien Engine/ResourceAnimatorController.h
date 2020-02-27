@@ -135,8 +135,11 @@ public:
 
 	//Handle Conditions
 	void AddIntCondition();
+	void AddIntCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, int> parameter, int comp);
 	void AddFloatCondition();
+	void AddFloatCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, float> parameter, float comp);
 	void AddBoolCondition();
+	void AddBoolCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, bool> parameter);
 	std::vector<IntCondition*> GetIntConditions() { return int_conditions; }
 	std::vector<FloatCondition*> GetFloatConditions() { return float_conditions; }
 	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
@@ -191,6 +194,10 @@ public:
 	bool CreateMetaData(const u64& force_id = 0) override;
 	bool DeleteMetaData() override;
 	bool SaveAsset(const u64& force_id = 0);
+	void LoadIntConditions(char* cursor, Transition* transition);
+	void LoadFloatConditions(char* cursor, Transition* transition);
+	void LoadBoolConditions(char* cursor, Transition* transition);
+
 
 	//AnimationHandle
 	void Play();

@@ -1,9 +1,66 @@
 {
     "Controller": {
         "Name": "NewAnimatorController",
-        "NumStates": 0,
-        "NumTransitions": 0,
-        "States": [],
-        "Transitions": []
+        "NumStates": 2,
+        "NumTransitions": 1,
+        "States": [
+            {
+                "Name": "New state0",
+                "Speed": 1,
+                "Clip": "11375678878322153165"
+            },
+            {
+                "Name": "New state1",
+                "Speed": 1,
+                "Clip": "6300869279387270450"
+            }
+        ],
+        "Transitions": [
+            {
+                "Source": "New state0",
+                "Target": "New state1",
+                "Blend": 0,
+                "IntConditions": [
+                    {
+                        "Type": "int",
+                        "ParamName": "NewInt",
+                        "CompText": "Greater",
+                        "ParameterPairName": "NewInt",
+                        "ParameterPairValue": 0,
+                        "CompValue": 2
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "ParamName": "NewFloat",
+                        "CompText": "Lesser",
+                        "ParameterPairName": "NewFloat",
+                        "ParameterPairValue": 0,
+                        "CompValue": 2
+                    }
+                ],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "ParamName": "NewBool",
+                        "CompText": "False",
+                        "ParameterPairName": 0
+                    }
+                ]
+            }
+        ],
+        "IntParameters": [
+            {
+                "Name": "NewInt",
+                "Value": 0
+            }
+        ],
+        "FloatParameters": [
+            {
+                "Name": "NewBool",
+                "Value": false
+            }
+        ]
     }
 }
