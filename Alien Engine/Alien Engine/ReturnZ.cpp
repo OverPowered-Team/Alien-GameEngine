@@ -489,7 +489,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 			std::vector<CompZ*>::iterator item = obj->object->comps.begin();
 			for (; item != obj->object->comps.end(); ++item) {
 				if (*item != nullptr) {
-					SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
+					SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 					switch ((*item)->type)
 					{
 					case ComponentType::TRANSFORM: {
