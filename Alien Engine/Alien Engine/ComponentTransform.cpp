@@ -267,6 +267,8 @@ void ComponentTransform::RecalculateTransform()
 	}
 
 	ComponentMesh* mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::DEFORMABLE_MESH);
 	if (mesh != nullptr)
 	{
 		mesh->RecalculateAABB_OBB();

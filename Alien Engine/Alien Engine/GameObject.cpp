@@ -1400,6 +1400,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{

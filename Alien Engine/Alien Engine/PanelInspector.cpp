@@ -347,7 +347,7 @@ void PanelInspector::ButtonAddComponent()
 
 	else {
 		ImGui::Combo("##choose component", &component, 
-			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0UI\0"); // SCRIPT MUST BE THE LAST ONE
+			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
