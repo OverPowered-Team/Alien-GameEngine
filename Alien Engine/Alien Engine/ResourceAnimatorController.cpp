@@ -256,6 +256,61 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
 		//transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
+
+		JSONArraypack* int_conditions_array = asset->InitNewArray("Transitions.IntConditions");
+		for (std::vector<IntCondition*>::iterator it_int = (*it)->GetIntConditions().begin(); it_int != (*it)->GetIntConditions().end();  ++it_int) {
+			int_conditions_array->SetAnotherNode();
+			int_conditions_array->SetString("Type", (*it_int)->type);
+			int_conditions_array->SetString("ParamName", (*it_int)->param_name);
+
+			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			int count = 0;
+			for (std::vector<std::string>::iterator it_ct = (*it_int)->comp_texts.begin(); it_ct != (*it_int)->comp_texts.end(); ++it_ct) {
+				count++;
+				comp_texts_array->SetString("CompTexts" + count, (*it_ct));
+			}
+
+			int_conditions_array->SetString("CompText", (*it_int)->comp_text);
+			int_conditions_array->SetString("ParameterPairName", (*it_int)->parameter.first);
+			int_conditions_array->SetNumber("ParameterPairValue", (*it_int)->parameter.second);
+			int_conditions_array->SetNumber("CompValue", (*it_int)->comp);
+		}
+
+		JSONArraypack* float_conditions_array = asset->InitNewArray("Transitions.FloatConditions");
+		for (std::vector<FloatCondition*>::iterator it_float = (*it)->GetFloatConditions().begin(); it_float != (*it)->GetFloatConditions().end(); ++it_float) {
+			int_conditions_array->SetAnotherNode();
+			int_conditions_array->SetString("Type", (*it_float)->type);
+			int_conditions_array->SetString("ParamName", (*it_float)->param_name);
+
+			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			int count = 0;
+			for (std::vector<std::string>::iterator it_ct = (*it_float)->comp_texts.begin(); it_ct != (*it_float)->comp_texts.end(); ++it_ct) {
+				count++;
+				comp_texts_array->SetString("CompTexts" + count, (*it_ct));
+			}
+
+			int_conditions_array->SetString("CompText", (*it_float)->comp_text);
+			int_conditions_array->SetString("ParameterPairName", (*it_float)->parameter.first);
+			int_conditions_array->SetNumber("ParameterPairValue", (*it_float)->parameter.second);
+			int_conditions_array->SetNumber("CompValue", (*it_float)->comp);
+		}
+
+		JSONArraypack* bool_conditions_array = asset->InitNewArray("Transitions.BoolConditions");
+		for (std::vector<BoolCondition*>::iterator it_bool = (*it)->GetBoolConditions().begin(); it_bool != (*it)->GetBoolConditions().end(); ++it_bool) {
+			int_conditions_array->SetAnotherNode();
+			int_conditions_array->SetString("Type", (*it_bool)->type);
+			int_conditions_array->SetString("ParamName", (*it_bool)->param_name);
+
+			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			int count = 0;
+			for (std::vector<std::string>::iterator it_ct = (*it_bool)->comp_texts.begin(); it_ct != (*it_bool)->comp_texts.end(); ++it_ct) {
+				count++;
+				comp_texts_array->SetString("CompTexts" + count, (*it_ct));
+			}
+
+			int_conditions_array->SetString("CompText", (*it_bool)->comp_text);
+			int_conditions_array->SetString("ParameterPairName", (*it_bool)->parameter.first);
+			int_conditions_array->SetNumber("ParameterPairName", (*it_bool)->parameter.second);		}
 	}
 
 	asset->FinishSave();
