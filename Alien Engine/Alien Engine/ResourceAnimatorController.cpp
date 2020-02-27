@@ -257,13 +257,13 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		//transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
 
-		JSONArraypack* int_conditions_array = asset->InitNewArray("Transitions.IntConditions");
+		JSONArraypack* int_conditions_array = transitions_array->InitNewArray("IntConditions");
 		for (std::vector<IntCondition*>::iterator it_int = (*it)->GetIntConditions().begin(); it_int != (*it)->GetIntConditions().end();  ++it_int) {
 			int_conditions_array->SetAnotherNode();
 			int_conditions_array->SetString("Type", (*it_int)->type);
 			int_conditions_array->SetString("ParamName", (*it_int)->param_name);
 
-			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			JSONArraypack* comp_texts_array = int_conditions_array->InitNewArray("CompTexts");
 			int count = 0;
 			for (std::vector<std::string>::iterator it_ct = (*it_int)->comp_texts.begin(); it_ct != (*it_int)->comp_texts.end(); ++it_ct) {
 				count++;
@@ -276,13 +276,13 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 			int_conditions_array->SetNumber("CompValue", (*it_int)->comp);
 		}
 
-		JSONArraypack* float_conditions_array = asset->InitNewArray("Transitions.FloatConditions");
+		JSONArraypack* float_conditions_array = transitions_array->InitNewArray("FloatConditions");
 		for (std::vector<FloatCondition*>::iterator it_float = (*it)->GetFloatConditions().begin(); it_float != (*it)->GetFloatConditions().end(); ++it_float) {
 			int_conditions_array->SetAnotherNode();
 			int_conditions_array->SetString("Type", (*it_float)->type);
 			int_conditions_array->SetString("ParamName", (*it_float)->param_name);
 
-			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			JSONArraypack* comp_texts_array = int_conditions_array->InitNewArray("CompTexts");
 			int count = 0;
 			for (std::vector<std::string>::iterator it_ct = (*it_float)->comp_texts.begin(); it_ct != (*it_float)->comp_texts.end(); ++it_ct) {
 				count++;
@@ -295,13 +295,13 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 			int_conditions_array->SetNumber("CompValue", (*it_float)->comp);
 		}
 
-		JSONArraypack* bool_conditions_array = asset->InitNewArray("Transitions.BoolConditions");
+		JSONArraypack* bool_conditions_array = transitions_array->InitNewArray("BoolConditions");
 		for (std::vector<BoolCondition*>::iterator it_bool = (*it)->GetBoolConditions().begin(); it_bool != (*it)->GetBoolConditions().end(); ++it_bool) {
 			int_conditions_array->SetAnotherNode();
 			int_conditions_array->SetString("Type", (*it_bool)->type);
 			int_conditions_array->SetString("ParamName", (*it_bool)->param_name);
 
-			JSONArraypack* comp_texts_array = asset->InitNewArray("Conditions.CompTexts");
+			JSONArraypack* comp_texts_array = int_conditions_array->InitNewArray("CompTexts");
 			int count = 0;
 			for (std::vector<std::string>::iterator it_ct = (*it_bool)->comp_texts.begin(); it_ct != (*it_bool)->comp_texts.end(); ++it_ct) {
 				count++;
@@ -311,6 +311,27 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 			int_conditions_array->SetString("CompText", (*it_bool)->comp_text);
 			int_conditions_array->SetString("ParameterPairName", (*it_bool)->parameter.first);
 			int_conditions_array->SetNumber("ParameterPairName", (*it_bool)->parameter.second);		}
+	}
+
+	JSONArraypack* int_parameters_array = asset->InitNewArray("Controller.IntParameters");
+	for (std::vector <std::pair <std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
+		int_parameters_array->SetAnotherNode();
+		int_parameters_array->SetString("Name", (*it).first);
+		int_parameters_array->SetNumber("Value", (*it).second);
+	}
+
+	JSONArraypack* float_parameters_array = asset->InitNewArray("Controller.FloatParameters");
+	for (std::vector <std::pair <std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
+		float_parameters_array->SetAnotherNode();
+		float_parameters_array->SetString("Name", (*it).first);
+		float_parameters_array->SetNumber("Value", (*it).second);
+	}
+
+	JSONArraypack* bool_parameters_array = asset->InitNewArray("Controller.FloatParameters");
+	for (std::vector <std::pair <std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
+		bool_parameters_array->SetAnotherNode();
+		bool_parameters_array->SetString("Name", (*it).first);
+		bool_parameters_array->SetBoolean("Value", (*it).second);
 	}
 
 	asset->FinishSave();
