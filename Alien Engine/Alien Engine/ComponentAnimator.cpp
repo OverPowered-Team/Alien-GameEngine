@@ -142,5 +142,5 @@ bool ComponentAnimator::DrawInspector()
 		}
 	}
 
-	return false;
+	return true;
 }
