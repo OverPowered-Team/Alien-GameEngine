@@ -1,5 +1,6 @@
 #include "PanelConsole.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 PanelConsole::PanelConsole(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) :
 	Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -13,7 +14,7 @@ PanelConsole::~PanelConsole()
 
 void PanelConsole::PanelLogic()
 {
-
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse);
 
 	ImGui::BeginChild("#console buttons", { ImGui::GetWindowWidth(),30 });

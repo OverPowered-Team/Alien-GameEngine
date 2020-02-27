@@ -7,6 +7,7 @@
 #include "PanelSceneSelector.h"
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 
 PanelGame::PanelGame(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
@@ -24,6 +25,7 @@ PanelGame::~PanelGame()
 
 void PanelGame::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 	if (App->objects->game_cameras.empty())
