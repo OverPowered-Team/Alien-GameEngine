@@ -991,7 +991,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
 				for (; item != objects_to_create.end(); ++item) {
 					game_objects->GetNode(std::get<2>(*item));
-					GameObject* obj = new GameObject();
+					GameObject* obj = new GameObject(true);
 					if (std::get<0>(*item) == 1) { // family number == 1 so parent is the base game object
 						obj->LoadObject(game_objects, base_game_object);
 					}

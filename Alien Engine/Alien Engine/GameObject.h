@@ -64,7 +64,7 @@ class __declspec(dllexport) GameObject
 public:
 	GameObject(GameObject* parent);
 	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
-	GameObject(); // just for loading objects, dont use it
+	GameObject(bool ignore_transform = false); // just for loading objects, dont use it
 	virtual ~GameObject();
 
 public:

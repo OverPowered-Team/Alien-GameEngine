@@ -465,7 +465,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 {
 	GameObject* parent = App->objects->GetGameObjectByID(obj->object->parentID);
 	if (parent != nullptr) {
-		GameObject* new_obj = new GameObject();
+		GameObject* new_obj = new GameObject(true);
 		new_obj->parent = parent;
 		if (new_obj->parent != nullptr) {
 			new_obj->parent->AddChild(new_obj);
@@ -768,6 +768,7 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		transform->euler_rotation.z = RadToDeg(transform->euler_rotation.z);
 		transform->LookScale();
 		transform->RecalculateTransform();
+		transform->game_object_attached->transform = transform;
 		break; }
 	case ComponentType::MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)component;

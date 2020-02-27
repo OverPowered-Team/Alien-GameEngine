@@ -64,10 +64,12 @@ GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, c
 
 }
 
-GameObject::GameObject()
+GameObject::GameObject(bool ignore_transform)
 {
-	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
-	AddComponent(transform);
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -1563,10 +1565,12 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 21); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
+				AddComponent(transform);
 				break; }
 			case (int)ComponentType::LIGHT: {
 				ComponentLight* light = new ComponentLight(this);
