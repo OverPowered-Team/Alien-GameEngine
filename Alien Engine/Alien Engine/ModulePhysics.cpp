@@ -6,6 +6,7 @@
 #include "ComponentRigidBody.h"
 #include "ComponentScript.h"
 #include "Alien.h"
+#include "Optick/include/optick.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -42,6 +43,7 @@ void ModulePhysics::SaveConfig(JSONfilepack*& config)
 
 bool ModulePhysics::Init()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Creating 3D Physics simulation");
 
 	bool ret = true;
@@ -70,6 +72,7 @@ bool ModulePhysics::Start()
 // ---------------------------------------------------------
 update_status ModulePhysics::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 	if (Time::GetDT() != 0.f)
 	{
 		world->stepSimulation(Time::GetDT(), 10);

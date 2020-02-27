@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleWindow::ModuleWindow(bool start_enabled) : Module(start_enabled)
 {
@@ -19,6 +20,7 @@ ModuleWindow::~ModuleWindow()
 // Called before render is available
 bool ModuleWindow::Init()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Init SDL window & surface");
 	bool ret = true;
 
@@ -62,6 +64,7 @@ bool ModuleWindow::Init()
 // Called before quitting
 bool ModuleWindow::CleanUp()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Destroying SDL window and quitting all SDL systems");
 
 	//Destroy window

@@ -29,6 +29,7 @@
 #include <experimental/filesystem>
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -53,6 +54,7 @@ bool ModuleObjects::Init()
 
 bool ModuleObjects::Start()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
 
@@ -115,6 +117,7 @@ bool ModuleObjects::Start()
 
 update_status ModuleObjects::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 	// delete objects
 	if (need_to_delete_objects) { 
 		need_to_delete_objects = false;
@@ -159,6 +162,7 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->Update();
 	ScriptsUpdate();
 	return UPDATE_CONTINUE;
@@ -166,6 +170,7 @@ update_status ModuleObjects::Update(float dt)
 
 update_status ModuleObjects::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
@@ -299,6 +304,7 @@ void ModuleObjects::DrawRay()
 
 bool ModuleObjects::CleanUp()
 {
+	OPTICK_EVENT();
 	Gizmos::ClearAllCurrentGizmos();
 
 	if (Time::IsInGameState()) {
@@ -877,6 +883,7 @@ void ModuleObjects::ReparentGameObject(GameObject* object, GameObject* next_pare
 
 void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_with_path)
 {
+	OPTICK_EVENT();
 	if (to_load_scene == nullptr && force_with_path == nullptr) {
 		LOG_ENGINE("Scene to load was nullptr");
 		return;
@@ -941,6 +948,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
+	OPTICK_EVENT();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
