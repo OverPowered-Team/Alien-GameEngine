@@ -135,6 +135,7 @@ void FileNode::ResetPaths()
 		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(ID);
 		if (anim_ctrl != nullptr) {
 			anim_ctrl->SetAssetsPath(std::string(this->path + name).data());
+			anim_ctrl->name = App->file_system->GetBaseFileName(std::string(this->path + name).data()).data();
 		}
 		break; }
 	case FileDropType::PREFAB: {
