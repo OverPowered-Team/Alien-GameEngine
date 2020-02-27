@@ -10,6 +10,7 @@
 #include "Prefab.h"
 #include "ReturnZ.h"
 #include "PanelGame.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
 
 PanelScene::PanelScene(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
@@ -32,40 +33,27 @@ void PanelScene::PanelLogic()
 
 	App->camera->is_scene_focused = ImGui::IsWindowFocused();
 
-	if (height > ImGui::GetWindowHeight())
-	{
-		height = ImGui::GetWindowHeight();
-		width = (height * 16) / 9;
-	}
-	else if ((width > ImGui::GetWindowWidth()) || (width > ImGui::GetWindowWidth() && height > ImGui::GetWindowHeight()))
-	{
-		width = ImGui::GetWindowWidth();
-		height = (width * 9) / 16;
-	}
-	else if((width < ImGui::GetWindowWidth() && height < ImGui::GetWindowHeight()))
-	{
-		if ((ImGui::GetWindowHeight()-lastHeight)!=0)
-		{
-			height = ImGui::GetWindowHeight();
-			width = (height * 16) / 9;
-		}
-		else
-		{
-			width = ImGui::GetWindowWidth();
-			height = (width * 9) / 16;
-		}
-	}
+	viewport_min = ImGui::GetCursorScreenPos();
+	viewport_max = ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail();
 
-	ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
-	ImGui::SetCursorPosY((ImGui::GetWindowHeight() - height) * 0.5f);
-
+	current_viewport_size = ImGui::GetContentRegionAvail();
 	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
 	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
-
-	ImGui::Image((ImTextureID)App->renderer3D->scene_tex->id, { width,height }, { 0,1 }, { 1,0 });
+	ImGui::Image((ImTextureID)App->camera->scene_viewport->GetTexture(), ImVec2(current_viewport_size.x, current_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+	width = current_viewport_size.x;
+	height = current_viewport_size.y;
 	App->camera->is_scene_hovered = ImGui::IsItemHovered();
 
-	lastHeight = ImGui::GetWindowHeight();
+	App->camera->scene_viewport->SetPos(float2(viewport_min.x, viewport_min.y));
+
+	if (!(current_viewport_size == viewport_size))
+	{
+		viewport_size = current_viewport_size;
+		App->camera->scene_viewport->SetSize(viewport_size.x, viewport_size.y);
+	}
+
+
+	App->camera->scene_viewport->active = enabled; 
 
 	// drop a fbx/texture in the window
 	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
@@ -131,7 +119,7 @@ void PanelScene::PanelLogic()
 
 				if (!App->resources->CreateNewModelInstanceOf(meta_path.data())) { // if it goes here it is because this file wasn't imported yet, so import it now
 
-					App->importer->LoadModelFile(std::string(node->path + node->name).data());
+					App->importer->LoadModelFile(std::string(node->path + node->name).data(), nullptr);
 					ID = App->resources->GetIDFromAlienPath(path.data());
 					meta_path = LIBRARY_MODELS_FOLDER + std::to_string(ID) + ".alienModel";
 					App->resources->CreateNewModelInstanceOf(meta_path.data());
@@ -166,13 +154,18 @@ void PanelScene::PanelLogic()
 		ImGui::SetNextWindowPos(ImVec2(max_space.x - 212, max_space.y - 154));
 		ImGui::SetNextWindowSize(ImVec2(192, 134));
 		ImGui::Begin("Camera Selected Preview", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing);
-
-		if (App->renderer3D->actual_game_camera != App->renderer3D->selected_game_camera)
-			ImGui::Image((ImTextureID)App->renderer3D->sc_game_tex->id, { 176,99 }, { 0,1 }, { 1,0 });
-		else
-			ImGui::Image((ImTextureID)App->renderer3D->game_tex->id, { 176,99 }, { 0,1 }, { 1,0 });
-
+		Viewport* viewport = App->camera->selected_viewport;
+		if (viewport->GetCamera() != App->renderer3D->selected_game_camera) {
+			viewport->SetCamera(App->renderer3D->selected_game_camera);
+		}
+		if (viewport != nullptr) {
+			ImGui::Image((ImTextureID)viewport->GetTexture(), { 176,99 }, { 0,1 }, { 1,0 });
+		}
 		ImGui::End();
+		App->camera->selected_viewport->active = enabled;
+	}
+	else {
+		App->camera->selected_viewport->active = false; // Active/disavtive with window active
 	}
 
 	ImGui::End();
@@ -202,8 +195,9 @@ void PanelScene::GuizmosLogic()
 		object_transform_matrix.Transpose();
 		float4x4 delta_matrix;
 
-		ImGuizmo::SetRect(posX, posY, width, height);
+		ImGuizmo::SetRect(viewport_min.x, viewport_min.y, current_viewport_size.x, current_viewport_size.y);
 		ImGuizmo::SetDrawlist();
+
 		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation, guizmo_mode, object_transform_matrix.ptr(), delta_matrix.ptr());
 		static bool guizmo_return = true;
 		static bool duplicate = false;

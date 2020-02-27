@@ -8,10 +8,12 @@
 #include "Color.h"
 #include "ResourceMesh.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
+	name = "Mesh";
 }
 
 ComponentMesh::~ComponentMesh()
@@ -36,7 +38,7 @@ void ComponentMesh::DrawPolygon()
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	}
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -46,7 +48,7 @@ void ComponentMesh::DrawPolygon()
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_POLYGON_OFFSET_FILL);
@@ -92,12 +94,12 @@ void ComponentMesh::DrawOutLine()
 		return;
 	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
 	{
-		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b, 1.f));
 		glLineWidth(App->objects->parent_line_width);
 	}
 	else
 	{
-		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b, 1.f));
 		glLineWidth(App->objects->no_child_line_width);
 	}
 
@@ -108,7 +110,7 @@ void ComponentMesh::DrawOutLine()
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glPushMatrix();
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -132,7 +134,7 @@ void ComponentMesh::DrawMesh()
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -164,7 +166,7 @@ void ComponentMesh::DrawVertexNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -190,7 +192,7 @@ void ComponentMesh::DrawFaceNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -223,7 +225,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Mesh", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
@@ -455,7 +457,7 @@ AABB ComponentMesh::GenerateAABB()
 
 void ComponentMesh::RecalculateAABB_OBB()
 {
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	obb = GenerateAABB();
 	obb.Transform(transform->global_transformation);
 

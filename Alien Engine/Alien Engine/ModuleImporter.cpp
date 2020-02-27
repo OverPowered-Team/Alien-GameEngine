@@ -16,8 +16,14 @@
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
 #include "ResourceTexture.h"
+#include "ResourceAnimation.h"
+#include "ResourceBone.h"
+#include "ResourceMaterial.h"
 #include "ResourceFont.h"
+
 #include "ReturnZ.h"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
 #include "mmgr/mmgr.h"
 #include "FreeType/include/freetype/freetype.h"
 
@@ -64,7 +70,7 @@ bool ModuleImporter::CleanUp()
 	return true;
 }
 
-bool ModuleImporter::LoadModelFile(const char* path)
+bool ModuleImporter::LoadModelFile(const char* path, const char* extern_path)
 {
 	bool ret = true;
 
@@ -75,10 +81,10 @@ bool ModuleImporter::LoadModelFile(const char* path)
 	if (!App->resources->Exists(path, &model)) {
 		
 		const aiScene* scene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
-			aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
+			aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes | aiProcess_LimitBoneWeights);
 		
 		if (scene != nullptr) {
-			InitScene(path, scene);
+			InitScene(path, scene, extern_path);
 			LOG_ENGINE("Succesfully loaded %s", path);
 		}
 		else {
@@ -97,15 +103,50 @@ bool ModuleImporter::LoadModelFile(const char* path)
 	return ret;
 }
 
-void ModuleImporter::InitScene(const char* path, const aiScene* scene)
+void ModuleImporter::InitScene(const char* path, const aiScene* scene, const char* extern_path)
 {
 	model = new ResourceModel();
 	model->name = App->file_system->GetBaseFileName(path);
 	model->path = std::string(path);
 
+	//Import meshes & bones
+	if (scene->HasMeshes())
+	{
+		for (int i = 0; i < scene->mNumMeshes; ++i)
+		{
+			//Import mesh here.
+			LoadMesh(scene->mMeshes[i]);
+			
+			//Import bones of mesh
+			if (scene->mMeshes[i]->HasBones())
+			{
+				model->meshes_attached[i]->deformable = true;
+				for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
+				{
+					LoadBone(scene->mMeshes[i]->mBones[j]);
+				}
+			}
+		}
+	}
+	
+	if (scene->HasMaterials()) {
+		for (uint i = 0; i < scene->mNumMaterials; ++i) {
+			LoadMaterials(scene->mMaterials[i], extern_path);
+		}
+	}
+
+	// Import animations
+	if (scene->HasAnimations())
+	{
+		for (int i = 0; i < scene->mNumAnimations; ++i)
+		{
+			LoadAnimation(scene->mAnimations[i]);
+		}
+	}
+
 	// start recursive function to all nodes
 	for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
-		LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
+		LoadNode(scene->mRootNode->mChildren[i], scene, 1);
 	}
 
 	// create the meta data files like .alien
@@ -118,111 +159,119 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene)
 	model = nullptr;
 }
 
-
-void ModuleImporter::LoadSceneNode(const aiNode* node, const aiScene* scene, ResourceMesh* parent, uint family_number)
+void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 {
-	LOG_ENGINE("Loading node with name %s", node->mName.C_Str());
-	ResourceMesh* next_parent = nullptr;
+	ResourceAnimation* resource_animation = new ResourceAnimation();
+	resource_animation->name = anim->mName.C_Str();
+	resource_animation->ticks_per_second = anim->mTicksPerSecond;
+	resource_animation->num_channels = anim->mNumChannels;
+	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];
+	resource_animation->start_tick = 0;
+	resource_animation->end_tick = anim->mDuration;
+	resource_animation->max_tick = anim->mDuration;
 
-	aiMatrix4x4 mat; 
-	while (std::string(node->mName.C_Str()).find("_$AssimpFbx$_") != std::string::npos) { 
-		mat = mat * node->mTransformation;    
-		node = node->mChildren[0];
-	}
+	for (uint i = 0u; i < resource_animation->num_channels; ++i)
+	{
+		ResourceAnimation::Channel& channel = resource_animation->channels[i];
+		channel.name = anim->mChannels[i]->mNodeName.C_Str();
 
-	if (node->mNumMeshes == 1) {
-		const aiMesh* mesh = scene->mMeshes[node->mMeshes[0]];
-		next_parent = LoadNodeMesh(scene, node, mesh, parent);
-		next_parent->family_number = family_number;
-		App->resources->AddResource(next_parent);
-		model->meshes_attached.push_back(next_parent);
-	}
-	else if (node->mNumMeshes > 1) {
-		ResourceMesh* parent_node = new ResourceMesh();
-		parent_node->family_number = family_number;
-		App->resources->AddResource(parent_node);
-		model->meshes_attached.push_back(parent_node);
-		parent_node->SetName(node->mName.C_Str());
-		if (parent != nullptr)
-			parent_node->parent_name = parent->name;
+		channel.num_position_keys = anim->mChannels[i]->mNumPositionKeys;
+		channel.num_scale_keys = anim->mChannels[i]->mNumScalingKeys;
+		channel.num_rotation_keys = anim->mChannels[i]->mNumRotationKeys;
 
-		for (uint i = 0; i < node->mNumMeshes; ++i) {
-			const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			next_parent = LoadNodeMesh(scene, node, mesh, parent_node);
-			next_parent->name += std::to_string(i);
-			next_parent->family_number = family_number + 1;
-			App->resources->AddResource(next_parent);
-			model->meshes_attached.push_back(next_parent);
+		channel.position_keys = new KeyAnimation<float3>[channel.num_position_keys]();
+		channel.scale_keys = new KeyAnimation<float3>[channel.num_scale_keys]();
+		channel.rotation_keys = new KeyAnimation<Quat>[channel.num_rotation_keys]();
+
+		//Load position keys
+		for (uint j = 0; j < channel.num_position_keys; j++)
+		{
+			channel.position_keys[j].value.Set(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
+				anim->mChannels[i]->mPositionKeys[j].mValue.z);
+			channel.position_keys[j].time = anim->mChannels[i]->mPositionKeys[j].mTime;
 		}
-		next_parent = parent_node;
-	}
-	else if (node->mNumMeshes == 0) {
-		next_parent = new ResourceMesh();
-		next_parent->family_number = family_number;
-		App->resources->AddResource(next_parent);
-		model->meshes_attached.push_back(next_parent);
-		next_parent->SetName(node->mName.C_Str());
-		if (parent != nullptr)
-			next_parent->parent_name = parent->name;
+
+		//Load scaling keys
+		for (uint j = 0; j < channel.num_scale_keys; j++)
+		{
+			channel.scale_keys[j].value.Set(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
+				anim->mChannels[i]->mScalingKeys[j].mValue.z);
+			channel.scale_keys[j].time = anim->mChannels[i]->mScalingKeys[j].mTime;
+		}
+
+		//Load rotation keys
+		for (uint j = 0; j < channel.num_rotation_keys; j++)
+		{
+			channel.rotation_keys[j].value.Set(anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
+				anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w );
+			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
+		}
 	}
 
-	if (next_parent != nullptr) {
-		mat = mat * node->mTransformation;
-		aiVector3D pos, scale;
-		aiQuaternion rot;
-		mat.Decompose(scale, rot, pos);
-		next_parent->pos = { pos.x,pos.y,pos.z };
-		next_parent->scale = { scale.x,scale.y,scale.z };
-		next_parent->rot = { rot.x,rot.y,rot.z,rot.w };
-	}
-
-	for (uint i = 0; i < node->mNumChildren; ++i) {
-		LOG_ENGINE("Loading children of node %s", node->mName.C_Str());
-		uint fam_num = 1;
-		if (next_parent != nullptr)
-			fam_num = next_parent->family_number + 1;
-		LoadSceneNode(node->mChildren[i], scene, next_parent, fam_num);
-	}
+	App->resources->AddResource(resource_animation);
+	model->animations_attached.push_back(resource_animation);
 }
 
-ResourceMesh* ModuleImporter::LoadNodeMesh(const aiScene * scene, const aiNode* node, const aiMesh* ai_mesh, ResourceMesh* parent)
+void ModuleImporter::LoadBone(const aiBone* bone)
+{
+	ResourceBone* r_bone = new ResourceBone();
+
+	r_bone->name = bone->mName.C_Str();
+	r_bone->matrix = float4x4(float4(bone->mOffsetMatrix.a1, bone->mOffsetMatrix.b1, bone->mOffsetMatrix.c1, bone->mOffsetMatrix.d1),
+		float4(bone->mOffsetMatrix.a2, bone->mOffsetMatrix.b2, bone->mOffsetMatrix.c2, bone->mOffsetMatrix.d2),
+		float4(bone->mOffsetMatrix.a3, bone->mOffsetMatrix.b3, bone->mOffsetMatrix.c3, bone->mOffsetMatrix.d3),
+		float4(bone->mOffsetMatrix.a4, bone->mOffsetMatrix.b4, bone->mOffsetMatrix.c4, bone->mOffsetMatrix.d4));
+
+	r_bone->num_weights = bone->mNumWeights;
+	r_bone->weights = new float[r_bone->num_weights];
+	r_bone->vertex_ids = new uint[r_bone->num_weights];
+
+	for (uint i = 0; i < r_bone->num_weights; i++)
+	{
+		memcpy(&r_bone->weights[i], &bone->mWeights[i].mWeight, sizeof(float));
+		memcpy(&r_bone->vertex_ids[i], &bone->mWeights[i].mVertexId, sizeof(uint));
+	}
+
+	App->resources->AddResource(r_bone);
+	model->bones_attached.push_back(r_bone);
+}
+
+void ModuleImporter::LoadMesh(const aiMesh* mesh)
 {
 	ResourceMesh* ret = new ResourceMesh();
-	if (parent != nullptr)
-		ret->parent_name = parent->name;
-
+	
 	// get vertex
-	ret->vertex = new float[ai_mesh->mNumVertices * 3];
-	memcpy(ret->vertex, ai_mesh->mVertices, sizeof(float) * ai_mesh->mNumVertices * 3);
-	ret->num_vertex = ai_mesh->mNumVertices;
+	ret->vertex = new float[mesh->mNumVertices * 3];
+	memcpy(ret->vertex, mesh->mVertices, sizeof(float) * mesh->mNumVertices * 3);
+	ret->num_vertex = mesh->mNumVertices;
 
 	// get index
-	if (ai_mesh->HasFaces())
+	if (mesh->HasFaces())
 	{
-		ret->num_index = ai_mesh->mNumFaces * 3;
+		ret->num_index = mesh->mNumFaces * 3;
 		ret->index = new uint[ret->num_index]; // assume each face is a triangle
-		for (uint i = 0; i < ai_mesh->mNumFaces; ++i)
+		for (uint i = 0; i < mesh->mNumFaces; ++i)
 		{
-			if (ai_mesh->mFaces[i].mNumIndices != 3) {
+			if (mesh->mFaces[i].mNumIndices != 3) {
 				uint non[3] = { 0,0,0 };
 				memcpy(&ret->index[i * 3], non, 3 * sizeof(uint));
 				LOG_ENGINE("WARNING, geometry face with != 3 indices!");
 			}
 			else {
-				memcpy(&ret->index[i * 3], ai_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+				memcpy(&ret->index[i * 3], mesh->mFaces[i].mIndices, 3 * sizeof(uint));
 			}
 		}
 	}
 	// get normals
-	if (ai_mesh->HasNormals())
+	if (mesh->HasNormals())
 	{
-		ret->normals = new float[ai_mesh->mNumVertices * 3];
-		memcpy(ret->normals, ai_mesh->mNormals, sizeof(float) * ai_mesh->mNumVertices * 3);
+		ret->normals = new float[mesh->mNumVertices * 3];
+		memcpy(ret->normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
 
-		ret->center_point_normal = new float[ai_mesh->mNumFaces * 3];
-		ret->center_point = new float[ai_mesh->mNumFaces * 3];
-		ret->num_faces = ai_mesh->mNumFaces;
-		for (uint i = 0; i < ret->num_index; i+=3)
+		ret->center_point_normal = new float[mesh->mNumFaces * 3];
+		ret->center_point = new float[mesh->mNumFaces * 3];
+		ret->num_faces = mesh->mNumFaces;
+		for (uint i = 0; i < ret->num_index; i += 3)
 		{
 			uint index1 = ret->index[i] * 3;
 			uint index2 = ret->index[i + 1] * 3;
@@ -248,30 +297,178 @@ ResourceMesh* ModuleImporter::LoadNodeMesh(const aiScene * scene, const aiNode* 
 		}
 	}
 	// get UV
-	if (ai_mesh->HasTextureCoords(0)) {
-		ret->uv_cords = new float[ai_mesh->mNumVertices * 3];
-		memcpy(ret->uv_cords, (float*)ai_mesh->mTextureCoords[0], sizeof(float) * ai_mesh->mNumVertices * 3);
+	if (mesh->HasTextureCoords(0)) {
+		ret->uv_cords = new float[mesh->mNumVertices * 3];
+		memcpy(ret->uv_cords, (float*)mesh->mTextureCoords[0], sizeof(float) * mesh->mNumVertices * 3);
 	}
 
+	ret->name = std::string(mesh->mName.C_Str());
 	ret->InitBuffers();
-	
-	// set the material
-	aiMaterial* ai_material = scene->mMaterials[ai_mesh->mMaterialIndex];
-	aiString path;
-	ai_material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-	aiColor4D col;
-	if (AI_SUCCESS == aiGetMaterialColor(ai_material, AI_MATKEY_COLOR_DIFFUSE, &col)) {
-		ret->material_color.r = col.r;
-		ret->material_color.g = col.g;
-		ret->material_color.b = col.b;
-		ret->material_color.a = col.a;
-	}
-	std::string normal_path = path.C_Str();
-	App->file_system->NormalizePath(normal_path);
-	ret->texture = App->resources->GetTextureByName(normal_path.data());
-	ret->name = std::string(node->mName.C_Str());
+	App->resources->AddResource(ret);
+	model->meshes_attached.push_back(ret);
+}
 
-	return ret;
+void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum)
+{
+	aiMatrix4x4 mat;
+	while (std::string(node->mName.C_Str()).find("_$AssimpFbx$_") != std::string::npos) {
+		mat = mat * node->mTransformation;
+		node = node->mChildren[0];
+	}
+	if (mat.IsIdentity())
+		mat = node->mTransformation;
+
+	ModelNode model_node;
+	model_node.name = std::string(node->mName.C_Str());
+	model_node.parent_name = (nodeNum == 1) ? model->name : std::string(node->mParent->mName.C_Str());
+	model_node.parent_num = nodeNum;
+	model_node.node_num = nodeNum + 1;
+	if (node->mNumMeshes == 1) {
+		model_node.mesh = node->mMeshes[0];
+		model_node.material = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex;
+	}
+	else if (node->mNumMeshes > 1) {
+		for (uint i = 0; i < node->mNumMeshes; ++i) {
+			ModelNode nodeMesh;
+			nodeMesh.name = std::string(node->mName.C_Str() + std::to_string(i));
+			nodeMesh.mesh = node->mMeshes[i];
+			model_node.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
+			nodeMesh.parent_name = model_node.name;
+			nodeMesh.node_num = nodeNum + 2;
+			nodeMesh.parent_num = nodeNum + 1;
+			model->model_nodes.push_back(nodeMesh);
+		}
+	}
+	for (uint i = 0; i < model->bones_attached.size(); ++i)
+	{
+		if (model->bones_attached[i]->name == model_node.name)
+		{
+			model_node.bone = i;
+			break;
+		}
+	}
+	aiVector3D pos, scale;
+	aiQuaternion rot;
+	mat.Decompose(scale, rot, pos);
+	model_node.pos = float3(pos.x, pos.y, pos.z);
+	model_node.scale = float3(scale.x, scale.y, scale.z);
+	model_node.rot = Quat(rot.x, rot.y, rot.z, rot.w);
+
+	for (uint i = 0; i < node->mNumChildren; ++i) {
+		LoadNode(node->mChildren[i], scene, nodeNum + 1);
+	}
+
+	model->model_nodes.push_back(model_node);
+}
+
+void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* extern_path)
+{
+	ResourceMaterial* mat = new ResourceMaterial();
+
+	aiColor4D col;
+	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE,col)) {
+		mat->color.r = col.r;
+		mat->color.g = col.g;
+		mat->color.b = col.b;
+		mat->color.a = col.a;
+	}
+
+	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
+
+	App->resources->AddResource(mat);
+	model->materials_attached.push_back(mat);
+}
+
+void ModuleImporter::LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path)
+{
+	aiString ai_path;
+	if (AI_SUCCESS == material->GetTexture(assimp_type, 0, &ai_path)) {
+		std::string name = ai_path.C_Str();
+		App->file_system->NormalizePath(name);
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetTextureByName(name.data());
+		if (tex != nullptr) {
+			mat->texturesID[(uint)type] = tex->GetID();
+		}
+		else if (extern_path != nullptr) {
+			std::string aiPath;
+			int dots = 0;
+			int under = 0;
+			std::string hole_name(name);
+			std::string::iterator item = hole_name.begin();
+			bool ignore = false;
+			for (; item != hole_name.end(); ++item)
+			{
+				if (*item == '.' && !ignore) {
+					++dots;
+					if (dots == 2) {
+						++under;
+						dots = 0;
+					}
+				}
+				else {
+					ignore = true;
+					aiPath.push_back(*item);
+				}
+			}
+
+			std::string copy;
+			if (under != 0) {
+				std::string normal(extern_path);
+				App->file_system->NormalizePath(normal);
+				std::string exterString = App->file_system->GetCurrentHolePathFolder(normal);
+				std::string::reverse_iterator it = exterString.rbegin();
+				bool start_copy = false;
+				bool start_cpoy2 = false;
+				for (; it != exterString.rend(); ++it)
+				{
+					if (!start_copy) {
+						if (*it == '/') {
+							--under;
+							if (under == 0) {
+								start_copy = true;
+							}
+						}
+					}
+					else {
+						if (!start_cpoy2) {
+							if (*it == '/') {
+								start_cpoy2 = true;
+							}
+						}
+						else {
+							copy = *it + copy;
+						}
+					}
+				}
+			}
+			else {
+				copy = extern_path;
+				App->file_system->NormalizePath(copy);
+			}
+
+			std::string path;
+
+			if (ai_path.data[0] == '.') {
+				path = copy + "/" + aiPath;
+			}
+			else {
+				std::string normal(extern_path);
+				App->file_system->NormalizePath(normal);
+				path = App->file_system->GetCurrentHolePathFolder(normal) + ai_path.C_Str();
+			}
+
+			if (std::experimental::filesystem::exists(path)) {
+				std::string assets_path = TEXTURES_FOLDER + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
+				App->file_system->CopyFromOutsideFS(path.data(), assets_path.data());
+				tex = new ResourceTexture(assets_path.data());
+
+				tex->CreateMetaData();
+				App->resources->AddNewFileNode(assets_path, true);
+
+				mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
+			}
+		}
+	}
 }
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)
@@ -541,19 +738,83 @@ void ModuleImporter::LoadParShapesMesh(par_shapes_mesh* shape, ResourceMesh* mes
 
 ResourceMesh* ModuleImporter::LoadEngineModels(const char* path)
 {
-	ResourceMesh* r_mesh = nullptr;
+	ResourceMesh* ret = nullptr;
 
 	const aiScene* scene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
 
-	r_mesh = LoadNodeMesh(scene, scene->mRootNode, scene->mMeshes[0], nullptr);
+	ret = new ResourceMesh();
+
+	// get vertex
+	ret->vertex = new float[scene->mMeshes[0]->mNumVertices * 3];
+	memcpy(ret->vertex, scene->mMeshes[0]->mVertices, sizeof(float) * scene->mMeshes[0]->mNumVertices * 3);
+	ret->num_vertex = scene->mMeshes[0]->mNumVertices;
+
+	// get index
+	if (scene->mMeshes[0]->HasFaces())
+	{
+		ret->num_index = scene->mMeshes[0]->mNumFaces * 3;
+		ret->index = new uint[ret->num_index]; // assume each face is a triangle
+		for (uint i = 0; i < scene->mMeshes[0]->mNumFaces; ++i)
+		{
+			if (scene->mMeshes[0]->mFaces[i].mNumIndices != 3) {
+				uint non[3] = { 0,0,0 };
+				memcpy(&ret->index[i * 3], non, 3 * sizeof(uint));
+				LOG_ENGINE("WARNING, geometry face with != 3 indices!");
+			}
+			else {
+				memcpy(&ret->index[i * 3], scene->mMeshes[0]->mFaces[i].mIndices, 3 * sizeof(uint));
+			}
+		}
+	}
+	// get normals
+	if (scene->mMeshes[0]->HasNormals())
+	{
+		ret->normals = new float[scene->mMeshes[0]->mNumVertices * 3];
+		memcpy(ret->normals, scene->mMeshes[0]->mNormals, sizeof(float) * scene->mMeshes[0]->mNumVertices * 3);
+
+		ret->center_point_normal = new float[scene->mMeshes[0]->mNumFaces * 3];
+		ret->center_point = new float[scene->mMeshes[0]->mNumFaces * 3];
+		ret->num_faces = scene->mMeshes[0]->mNumFaces;
+		for (uint i = 0; i < ret->num_index; i += 3)
+		{
+			uint index1 = ret->index[i] * 3;
+			uint index2 = ret->index[i + 1] * 3;
+			uint index3 = ret->index[i + 2] * 3;
+
+			float3 x0(ret->vertex[index1], ret->vertex[index1 + 1], ret->vertex[index1 + 2]);
+			float3 x1(ret->vertex[index2], ret->vertex[index2 + 1], ret->vertex[index2 + 2]);
+			float3 x2(ret->vertex[index3], ret->vertex[index3 + 1], ret->vertex[index3 + 2]);
+
+			float3 v0 = x0 - x2;
+			float3 v1 = x1 - x2;
+			float3 n = v0.Cross(v1);
+
+			float3 normalized = n.Normalized();
+
+			ret->center_point[i] = (x0.x + x1.x + x2.x) / 3;
+			ret->center_point[i + 1] = (x0.y + x1.y + x2.y) / 3;
+			ret->center_point[i + 2] = (x0.z + x1.z + x2.z) / 3;
+
+			ret->center_point_normal[i] = normalized.x;
+			ret->center_point_normal[i + 1] = normalized.y;
+			ret->center_point_normal[i + 2] = normalized.z;
+		}
+	}
+	// get UV
+	if (scene->mMeshes[0]->HasTextureCoords(0)) {
+		ret->uv_cords = new float[scene->mMeshes[0]->mNumVertices * 3];
+		memcpy(ret->uv_cords, (float*)scene->mMeshes[0]->mTextureCoords[0], sizeof(float) * scene->mMeshes[0]->mNumVertices * 3);
+	}
+
+	ret->InitBuffers();
 
 
 	aiReleaseImport(scene);
-	if (r_mesh != nullptr) {
-		r_mesh->is_custom = false;
+	if (ret != nullptr) {
+		ret->is_custom = false;
 	}
-	return r_mesh;
+	return ret;
 }
 
 bool ModuleImporter::ReImportModel(ResourceModel* model)
@@ -566,10 +827,37 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 	if (scene != nullptr) {
 		model->name = App->file_system->GetBaseFileName(model->GetAssetsPath());
 		this->model = model;
-		// start recursive function to all nodes
 
+		//Import meshes & bones
+		if (scene->HasMeshes())
+		{
+			for (int i = 0; i < scene->mNumMeshes; ++i)
+			{
+				//Import mesh here.
+				LoadMesh(scene->mMeshes[i]);
+
+				//Import bones of mesh
+				if (scene->mMeshes[i]->HasBones())
+				{
+					model->meshes_attached[i]->deformable = true;
+					for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
+					{
+						LoadBone(scene->mMeshes[i]->mBones[j]);
+					}
+				}
+			}
+		}
+		ReImportAnimations(model, scene);
+
+		if (scene->HasMaterials()) {
+			for (uint i = 0; i < scene->mNumMaterials; ++i) {
+				LoadMaterials(scene->mMaterials[i], nullptr);
+			}
+		}
+
+		// start recursive function to all nodes
 		for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i) {
-			LoadSceneNode(scene->mRootNode->mChildren[i], scene, nullptr, 1);
+			LoadNode(scene->mRootNode->mChildren[i], scene, 1);
 		}
 
 		// create the meta data files like .alien
@@ -587,6 +875,44 @@ bool ModuleImporter::ReImportModel(ResourceModel* model)
 	aiReleaseImport(scene);
 
 	return ret;
+}
+
+void ModuleImporter::ReImportAnimations(ResourceModel* model, const aiScene* scene)
+{
+	if (scene->HasAnimations())
+	{
+		for (int i = 0; i < scene->mNumAnimations; i++)
+		{
+			LoadAnimation(scene->mAnimations[i]);
+		}
+
+		JSON_Value* value = json_parse_file(model->meta_data_path.data());
+		JSON_Object* object = json_value_get_object(value);
+
+		if (value != nullptr && object != nullptr)
+		{
+			JSONfilepack* meta = new JSONfilepack(model->meta_data_path.data(), object, value);
+			uint num_anims = meta->GetNumber("Meta.NumAnimations");
+			JSONArraypack* anims_meta = meta->GetArray("Meta.Animations");
+
+			for (int i = 0; i < num_anims; ++i)
+			{
+				if (i > 0)
+				{
+					ResourceAnimation* new_anim = new ResourceAnimation();
+					model->animations_attached.push_back(new_anim);
+					App->resources->AddResource(new_anim);
+					model->animations_attached[i]->Copy(model->animations_attached[0]);
+				}
+				anims_meta->GetNode(i);
+				model->animations_attached[i]->name = anims_meta->GetString("Name");
+				model->animations_attached[i]->loops = anims_meta->GetBoolean("Loops");
+				model->animations_attached[i]->start_tick = anims_meta->GetNumber("Start_Tick");
+				model->animations_attached[i]->end_tick = anims_meta->GetNumber("End_Tick");
+			}	
+			delete meta;
+		}
+	}
 }
 
 

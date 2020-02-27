@@ -22,6 +22,15 @@ public:
 	bool IsEnabled();
 	void SetEnable(const bool& enabled);
 	const std::string GetPanelName() const;
+
+	virtual void OnPlay() {}
+	virtual void OnPause() {}
+	virtual void OnStop() {}
+	virtual void OnObjectSelect() {}
+	virtual void OnAssetSelect() {}
+	virtual void OnObjectDelete() {}
+	virtual void OnAssetDelete() {}
+
 private:
 
 	virtual void OnPanelDesactive() {};

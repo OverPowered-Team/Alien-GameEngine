@@ -8,6 +8,8 @@
 #include "ResourcePrefab.h"
 #include "ResourceScript.h"
 #include "ResourceScene.h"
+#include "PanelAnimator.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "mmgr/mmgr.h"
@@ -34,7 +36,6 @@ PanelProject::~PanelProject()
 
 void PanelProject::PanelLogic()
 {
-
 	if (change_folder) {
 		current_active_folder = current_active_file;
 		current_active_file = nullptr;
@@ -205,8 +206,15 @@ void PanelProject::SeeFiles()
 			ImGui::PopStyleColor();
 
 			// set the file clicked
-			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
+			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1)) ||
+				(ImGui::IsMouseReleased(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))) 
+			{
 				current_active_file = current_active_folder->children[i];
+				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
+				{
+					App->objects->DeselectObjects();
+					App->CastEvent(EventType::ON_ASSET_SELECT);
+				}		
 			}
 
 			// double click script
@@ -315,6 +323,7 @@ void PanelProject::DeleteSelectedAssetPopUp()
 				
 				for (; item != current_active_folder->children.end(); ++item) {
 					if (*item != nullptr && *item == current_active_file) {
+						App->CastEvent(EventType::ON_ASSET_DELETE);
 						delete* item;
 						*item = nullptr;
 						current_active_folder->children.erase(item);
@@ -610,6 +619,11 @@ bool PanelProject::SelectFile(const char* path, FileNode* node)
 	return ret;
 }
 
+FileNode* PanelProject::GetSelectedFile()
+{
+	return current_active_file;
+}
+
 void PanelProject::RefreshAllNodes()
 {
 	std::string current_folder_path = current_active_folder->path;
@@ -621,3 +635,23 @@ void PanelProject::RefreshAllNodes()
 	current_active_file = nullptr;
 }
 
+void PanelProject::GetUniqueFileName(std::string& asset_name, const std::string& asset_path)
+{
+	FileNode* asset_node = assets->FindChildrenByPath(asset_path);
+
+	if (asset_node == nullptr)
+		return;
+
+	int asset_number = 0;
+
+	std::string tmp_name = asset_name;
+	for (uint i = 0; i < asset_node->children.size(); ++i) {
+		if (App->StringCmp(App->file_system->GetBaseFileName(asset_node->children[i]->name.data()).data(), tmp_name.data())) {
+			++asset_number;
+			tmp_name = asset_name + "(" + std::to_string(asset_number) + ")";
+			i = -1;
+		}
+	}
+	if (asset_number > 0)
+		asset_name = asset_name + "(" + std::to_string(asset_number) + ")";
+}

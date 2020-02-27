@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleResources.h"
 #include <fstream>
+#include "mmgr/mmgr.h"
 
 ResourceScript::ResourceScript()
 {
