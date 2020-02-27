@@ -15,6 +15,7 @@ class __declspec(dllexport) ComponentTransform : public Component {
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;
 	friend class ModuleUI;
+	friend class UITween;
 	friend class ComponentSlider;
 	friend class PanelInspector;
 public:
