@@ -91,6 +91,9 @@
     <Filter Include="Components\Physiscs\Colliders">
       <UniqueIdentifier>{d333f66d-da68-46f3-adda-33d2d14d7bba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\Optik">
+      <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -2273,6 +2276,12 @@
     </ClInclude>
     <ClInclude Include="ModulePhysics.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick.h">
+      <Filter>Tools\Optik</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick.config.h">
+      <Filter>Tools\Optik</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
