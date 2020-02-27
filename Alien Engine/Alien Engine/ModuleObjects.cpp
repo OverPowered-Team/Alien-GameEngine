@@ -10,6 +10,8 @@
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCollider.h"
+#include "ComponentBoxCollider.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -1576,7 +1578,8 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	GameObject* object = new GameObject(GetRoot(false));
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
-	
+	ComponentCollider* collider = nullptr;
+
 	switch (type) {
 	case PrimitiveType::CUBE: {
 		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
@@ -1613,6 +1616,22 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->RecalculateAABB_OBB();
+
+	// Add collider --------------------------------------------
+
+	switch (type) {
+	case PrimitiveType::CUBE: {
+		collider = new ComponentBoxCollider(object);
+		break; }
+	}
+
+	if (collider != nullptr)
+	{
+		object->AddComponent(collider);
+	}
+	// ---------------------------------------------------------
+
+
 	SetNewSelectedObject(object);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }

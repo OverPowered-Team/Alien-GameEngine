@@ -34,6 +34,12 @@
 
 #include "mmgr/mmgr.h"
 
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
 PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
 {
@@ -104,7 +110,7 @@ void PanelInspector::PanelLogic()
 					else {
 						trans = trans * (*item)->GetComponent<ComponentTransform>()->global_transformation;
 					}
-					
+
 				}
 			}
 			float3 view_pos, view_scale, view_rot;
@@ -341,7 +347,7 @@ void PanelInspector::ButtonAddComponent()
 
 	else {
 		ImGui::Combo("##choose component", &component, 
-			"Select Component\0Mesh\0Material\0Light\0Camera\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0UI\0"); // SCRIPT MUST BE THE LAST ONE
+			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0UI\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -553,7 +559,43 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
+			case ComponentType::BOX_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::SPHERE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CAPSULE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentCapsuleCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CONVEX_HULL_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::RIGID_BODY: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::RIGID_BODY))
+				{
+					comp = new ComponentRigidBody(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
 			}
+
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);

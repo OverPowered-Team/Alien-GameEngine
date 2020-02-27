@@ -27,6 +27,11 @@ class __declspec(dllexport) GameObject
 	friend class ComponentBone;
 	friend class ComponentAnimator;
 	friend class ComponentMaterial;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentRigidBody;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;

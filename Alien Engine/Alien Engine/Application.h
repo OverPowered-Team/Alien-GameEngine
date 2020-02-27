@@ -17,6 +17,7 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleAudio.h"
+#include "ModulePhysics.h"
 
 #include <string>
 #include <vector>
@@ -51,6 +52,7 @@ public:
 	ModuleFileSystem*	file_system = nullptr;
 	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
+	ModulePhysics* 		physics = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;

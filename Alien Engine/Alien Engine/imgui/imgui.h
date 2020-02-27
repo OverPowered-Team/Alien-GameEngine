@@ -219,9 +219,12 @@ struct ImVec4
 
 namespace ImGui
 {
+    IMGUI_API void          Title(const char* title, int hierarchy = 1);
+
     // Context creation and access
     // Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between imgui contexts.
     // All those functions are not reliant on the current context.
+
     IMGUI_API ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = NULL);
     IMGUI_API void          DestroyContext(ImGuiContext* ctx = NULL);   // NULL = destroy current context
     IMGUI_API ImGuiContext* GetCurrentContext();
@@ -432,6 +435,7 @@ namespace ImGui
     // - The new BeginCombo()/EndCombo() api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() items.
     // - The old Combo() api are helpers over BeginCombo()/EndCombo() which are kept available for convenience purpose.
     IMGUI_API bool          BeginCombo(const char* label, const char* preview_value, ImGuiComboFlags flags = 0);
+	IMGUI_API bool          BeginComboEx(const char* label, const char* preview_value, float width, ImGuiComboFlags flags);
     IMGUI_API void          EndCombo(); // only call EndCombo() if BeginCombo() returns true!
     IMGUI_API bool          Combo(const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items = -1);
     IMGUI_API bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items = -1);      // Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0"
@@ -1363,8 +1367,21 @@ struct ImVector
 // and ImGui::PushStyleColor(ImGuiCol_XXX)/PopStyleColor() for colors.
 //-----------------------------------------------------------------------------
 
+enum ImGuiSeparationType
+{
+    ImGui_MenuSeparation,
+    ImGui_WindowSeparation
+};
+
 struct ImGuiStyle
 {
+    // Team Solid ------------------
+    float                   MaxColumnSeparation;
+    float                   TitleSeparation;
+    float                   SubTitleSeparation;
+    ImGuiSeparationType     SeparationType;
+    // ------------------------------
+
     float       Alpha;                      // Global alpha applies to everything in Dear ImGui.
     ImVec2      WindowPadding;              // Padding within a window.
     float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows.

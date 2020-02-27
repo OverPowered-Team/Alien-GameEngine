@@ -14,6 +14,7 @@ Application::Application()
 #endif
 	importer = new ModuleImporter();
 	objects = new ModuleObjects();
+	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
 	audio = new ModuleAudio();
@@ -33,6 +34,7 @@ Application::Application()
 	AddModule(audio);
 	// Scenes
 	AddModule(objects);
+	AddModule(physics);
 #ifndef GAME_VERSION
 	AddModule(camera);
 	AddModule(ui);
