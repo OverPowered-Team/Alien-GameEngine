@@ -3,7 +3,7 @@
 #include "Component.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
 class GameObject;
 class ModulePhysics;
