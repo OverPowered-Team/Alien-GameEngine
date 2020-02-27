@@ -64,6 +64,7 @@ void ReturnZ::SetAction(const ReturnActions& type, void* data)
 		Component* component = (Component*)data;
 		comp->compID = component->ID;
 		comp->objectID = component->game_object_attached->ID;
+		action = comp;
 		break; }
 	case ReturnActions::REPARENT_HIERARCHY: {
 		ActionReparent* reparent = new ActionReparent();
@@ -1205,12 +1206,6 @@ ActionDeleteObject::~ActionDeleteObject()
 {
 	if (object != nullptr)
 		delete object;
-}
-
-ActionComponent::~ActionComponent()
-{
-	if (comp != nullptr)
-		delete comp;
 }
 
 ObjZ::~ObjZ()
