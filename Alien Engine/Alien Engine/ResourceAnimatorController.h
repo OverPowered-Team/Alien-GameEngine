@@ -83,6 +83,7 @@ public:
 	ResourceAnimatorController();
 	~ResourceAnimatorController();
 
+	void ReImport(const u64& force_id = 0);
 	//Parameters things
 
 	//Getters / Setters
