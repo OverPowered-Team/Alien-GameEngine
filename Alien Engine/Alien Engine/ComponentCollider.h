@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 
 class GameObject;
 class ModulePhysics;
@@ -27,7 +28,7 @@ public:
 
 	// Colliders values
 
-	void SetCenter(float3 center);
+	virtual void SetCenter(float3 center);
 	float3 GetCenter() { return center; }
 	void SetIsTrigger(bool is_trigger);
 	bool GetIsTrigger() { return is_trigger; }

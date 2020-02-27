@@ -1,4 +1,5 @@
 #include "ComponentSphereCollider.h"
+#include "ComponentRigidBody.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
@@ -36,8 +37,16 @@ void ComponentSphereCollider::CreateShape()
 
 void ComponentSphereCollider::UpdateShape()
 {
+	if (shape == nullptr)
+	{
+		delete shape;
+	}
+
 	float final_radius = radius * transform->GetGlobalScale().Abs().MaxElement();
 	shape = new btSphereShape(final_radius);
+	shape->setMargin(3.f);
+	aux_body->setCollisionShape(shape);
+	if (rb != nullptr)  rb->UpdateCollider();
 }
 
 bool ComponentSphereCollider::WrapMesh()

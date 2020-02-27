@@ -7,6 +7,7 @@
 class GameObject;
 class ModulePhysics;
 
+
 class __declspec(dllexport) ComponentBoxCollider : public ComponentCollider
 {
 	friend class ModulePhysics;
@@ -16,6 +17,7 @@ public:
 
 	ComponentBoxCollider(GameObject* go);
 
+	void SetCenter(float3 center);
 	void SetSize(float3 size);
 	float3 GetSize() { return size; }
 

@@ -15,6 +15,12 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	Init();
 }
 
+void ComponentBoxCollider::SetCenter(float3 value)
+{
+	center = value;
+	final_center = center.Mul(final_size);
+}
+
 void ComponentBoxCollider::SetSize(float3 value)
 {
 	if (!value.Equals(size))
@@ -44,6 +50,9 @@ void ComponentBoxCollider::CreateShape()
 	if (shape == nullptr) UpdateShape();
 }
 
+//float3 t = { transform->global_transformation[0][0], transform->global_transformation[1][1], transform->global_transformation[2][2] };
+//float3 final_size = CheckInvalidCollider(size.Mul(t)) * 0.5f;
+
 void ComponentBoxCollider::UpdateShape()
 {
 	if (shape == nullptr)
@@ -51,11 +60,10 @@ void ComponentBoxCollider::UpdateShape()
 		delete shape;
 	}
 
-	//float3 t = { transform->global_transformation[0][0], transform->global_transformation[1][1], transform->global_transformation[2][2] };
-	//float3 final_size = CheckInvalidCollider(size.Mul(t)) * 0.5f;
+	final_size = size.Mul(transform->GetGlobalScale());
+	final_center = center.Mul(final_size);
 
-	float3 final_size = CheckInvalidCollider(size.Mul(transform->GetGlobalScale().Abs())) * 0.5f;
-	shape = new btBoxShape(ToBtVector3(final_size));
+	shape = new btBoxShape(ToBtVector3(final_size.Abs() * 0.5f));
 	aux_body->setCollisionShape(shape);
 
 	if (rb != nullptr)  rb->UpdateCollider();

@@ -4,6 +4,8 @@
 #include "Bullet/include/BulletCollision/CollisionShapes/btShapeHull.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
+#include "ComponentScript.h"
+#include "Alien.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -74,28 +76,26 @@ update_status ModulePhysics::PreUpdate(float dt)
 	}
 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
-	//world->getDispatcher().
 
-	//for (int i = 0; i < numManifolds; i++)
-	//{
-	//	btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-	//	btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-	//	btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
+		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
 
-	//	int numContacts = contactManifold->getNumContacts();
+		int numContacts = contactManifold->getNumContacts();
 
-	//	if (numContacts > 0)
-	//	{
-	//		GameObject* go_a = (GameObject*)obA->getUserPointer();
-	//		GameObject* go_b = (GameObject*)obB->getUserPointer();
+		if (numContacts > 0)
+		{
+			GameObject* go_a = (GameObject*)obA->getUserPointer();
+			GameObject* go_b = (GameObject*)obB->getUserPointer();
 
-	//		if (go_a && go_b)
-	//		{
-	//			go_a->OnCollision();
-	//			go_b->OnCollision();
-	//		}
-	//	}
-	//}
+			if (go_a && go_b)
+			{
+				//GameObject* go = (GameObject*)obA->getUserPointer();
+			}
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }

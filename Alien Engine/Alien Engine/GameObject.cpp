@@ -9,13 +9,16 @@
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
-#include "ComponentRigidBody.h"
-#include "ComponentCollider.h"
-#include "ComponentBoxCollider.h"
 #include "ComponentScript.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
 
 GameObject::GameObject(GameObject* parent)
 {
@@ -1411,16 +1414,32 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
 				break; }
-			case (int)ComponentType::RIGID_BODY: {
-				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
-				rigi_body->LoadComponent(components_to_load);
-				AddComponent(rigi_body);
-				break; }
 			case (int)ComponentType::BOX_COLLIDER: {
 				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
 				box_collider->LoadComponent(components_to_load);
 				AddComponent(box_collider);
 				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);

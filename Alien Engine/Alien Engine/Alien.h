@@ -3,6 +3,7 @@
 #include <functional>
 
 class ComponentTransform;
+class ComponentCollider;
 class GameObject;
 enum class ComponentType;
 class Component;
@@ -36,6 +37,10 @@ public:
 	virtual void OnPostRender() {}
 
 	virtual void CleanUp() {}
+
+	void OnCollision(ComponentCollider* collider) {}
+	void OnTrigger(ComponentCollider* collider) {}
+
 
 	bool IsScriptEnabled() const;
 	void SetScriptEnable(const bool& enable);
@@ -81,6 +86,8 @@ public:
 	void CancelInvoke();
 	void InvokeRepeating(std::function<void()> void_no_params_function, float seconds_to_first_invoke, float seconds_between_each_call);
 	//bool IsInvoking(std::function<void()> void_no_params_function);
+
+
 
 	// Need
 	// TODO:

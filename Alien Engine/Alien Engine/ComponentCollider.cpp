@@ -63,12 +63,9 @@ void ComponentCollider::Init()
 
 void ComponentCollider::SetCenter(float3 value)
 {
-	if (!value.Equals(center))
-	{
-		center = value;
-		float3 current_scale = transform->GetGlobalScale();
-		final_center = center.Mul(current_scale);
-	}
+	center = value;
+	float3 current_scale = transform->GetGlobalScale();
+	final_center = center.Mul(current_scale);
 }
 
 void ComponentCollider::SetIsTrigger(bool value)
@@ -118,7 +115,7 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 	SetFriction(friction = to_load->GetNumber("Friction"));
 	SetAngularFriction(angular_friction = to_load->GetNumber("AngularFriction"));
 
-	CreateShape();
+	UpdateShape();
 }
 
 void ComponentCollider::CreateShape()
@@ -130,7 +127,6 @@ void ComponentCollider::Update()
 {
 	static float3 last_scale = transform->GetGlobalScale();
 	float3 current_scale = transform->GetGlobalScale();
-	final_center = center.Mul(current_scale);
 
 	if (!last_scale.Equals(current_scale))
 	{
@@ -140,7 +136,7 @@ void ComponentCollider::Update()
 
 	if (rb == nullptr)
 	{
-		aux_body->setWorldTransform( ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation() ));
+		aux_body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()));
 	}
 
 }
@@ -173,25 +169,31 @@ bool ComponentCollider::DrawInspector()
 		enabled = check;
 	}
 
+	float3 current_center = center;
+	bool current_is_trigger = is_trigger;
+	float current_bouncing = bouncing;
+	float current_friction = friction;
+	float current_angular_friction = angular_friction;
+
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
-		ImGui::Title("Center", 1);			ImGui::DragFloat3("##center", center.ptr(), 0.1f);
+		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.1f)) { SetCenter(current_center); }
 
 		DrawSpecificInspector();
 
 		ImGui::Spacing();
 		ImGui::Spacing();
-		ImGui::Title("Is Trigger", 1);		ImGui::Checkbox("##is_trigger", &is_trigger);
+		ImGui::Title("Is Trigger", 1);		if (ImGui::Checkbox("##is_trigger", &current_is_trigger)) { SetIsTrigger(current_is_trigger); }
 		ImGui::Spacing();
 		ImGui::Title("Physic Material", 1); ImGui::Text("");
 		ImGui::Spacing();
 		ImGui::Spacing();
-		ImGui::Title("Bouncing", 2);	    ImGui::DragFloat("##bouncing", &bouncing, 0.01f, 0.00f, 1.f);
-		ImGui::Title("Linear Fric.", 2);	ImGui::DragFloat("##friction", &friction, 0.01f, 0.00f, FLT_MAX);
-		ImGui::Title("Angular Fric.", 2);	ImGui::DragFloat("##angular_friction", &angular_friction, 0.01f, 0.00f, FLT_MAX);
+		ImGui::Title("Bouncing", 2);	    if (ImGui::DragFloat("##bouncing", &current_bouncing, 0.01f, 0.00f, 1.f)) { SetBouncing(current_bouncing); }
+		ImGui::Title("Linear Fric.", 2);	if (ImGui::DragFloat("##friction", &current_friction, 0.01f, 0.00f, FLT_MAX)) { SetFriction(current_friction); }
+		ImGui::Title("Angular Fric.", 2);	if (ImGui::DragFloat("##angular_friction", &current_angular_friction, 0.01f, 0.00f, FLT_MAX)) { SetAngularFriction(current_angular_friction); }
 		ImGui::Spacing();
 	}
 

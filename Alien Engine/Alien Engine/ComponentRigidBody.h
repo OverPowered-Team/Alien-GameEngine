@@ -18,6 +18,7 @@ class __declspec(dllexport) ComponentRigidBody : public Component
 	friend class ModulePhysics;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
 	//friend class C_JointP2P;
 	//friend class C_Vehicle;
 

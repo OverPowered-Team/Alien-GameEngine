@@ -18,7 +18,6 @@ public:
 
 	ComponentSphereCollider(GameObject* go);
 	void SetRadius(float radius);
-
 	float GetRadius() { return radius; }
 
 private:

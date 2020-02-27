@@ -6,13 +6,16 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
-#include "ComponentBoxCollider.h"
-#include "ComponentSphereCollider.h"
-#include "ComponentRigidBody.h"
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
 #include "mmgr/mmgr.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
 
 PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -310,7 +313,7 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Rigid Body\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 
 		ImGui::SameLine();
 
@@ -389,6 +392,20 @@ void PanelInspector::ButtonAddComponent()
 				}
 				break; }
 			case ComponentType::SPHERE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CAPSULE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentCapsuleCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CONVEX_HULL_COLLIDER: {
 				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
 				{
 					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
