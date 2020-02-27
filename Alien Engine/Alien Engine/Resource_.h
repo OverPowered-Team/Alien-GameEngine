@@ -13,7 +13,13 @@ enum class ResourceType {
 	RESOURCE_SHADER,
 	RESOURCE_SCRIPT,
 	RESOURCE_SCENE,
+	RESOURCE_ANIMATION,
+	RESOURCE_ANIMATOR_CONTROLLER,
+	RESOURCE_BONE,
 	RESOURCE_PREFAB,
+	RESOURCE_MATERIAL,
+	RESOURCE_FONT,
+	RESOURCE_AUDIOBANK,
 
 	RESOURECE_MAX
 };
@@ -57,6 +63,7 @@ public:
 public:
 
 	uint references = 0u;
+	std::string name = "";
 
 protected:
 
@@ -64,8 +71,6 @@ protected:
 
 	std::string path;
 	std::string meta_data_path;
-	std::string name;
 
 	u64 ID = 0;
-
 };

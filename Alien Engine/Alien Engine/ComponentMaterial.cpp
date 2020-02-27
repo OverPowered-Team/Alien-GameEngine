@@ -8,6 +8,7 @@
 #include "ResourceTexture.h"
 #include "ResourceShader.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
 
 ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {

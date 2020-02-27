@@ -3,14 +3,17 @@
 #include "Resource_.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "ResourceFont.h"
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
 #include "ResourceShader.h"
+#include "ResourceAnimatorController.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
+#include "ResourceAudio.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -78,6 +81,8 @@ bool ModuleResources::Start()
 
 	ReadAllMetaData();
 
+	default_font = GetFontByName("Arialn");
+
 	return true;
 }
 
@@ -121,6 +126,15 @@ void ModuleResources::AddResource(Resource* resource)
 	if (resource != nullptr) {
 		if (std::find(resources.begin(), resources.end(), resource) == resources.end())
 			resources.push_back(resource);
+	}
+}
+
+void ModuleResources::RemoveResource(Resource* resource)
+{
+	if (resource != nullptr) {
+		std::vector<Resource*>::iterator it = std::find(resources.begin(), resources.end(), resource);
+		if (it != resources.end())
+			resources.erase(it);
 	}
 }
 
@@ -179,6 +193,18 @@ const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 	}
 	LOG_ENGINE("No resource found with ID %i", ID);
 	return nullptr;
+}
+
+std::vector<Resource*> ModuleResources::GetResourcesWithType(ResourceType type)
+{
+	std::vector<Resource*> ret;
+	for each (Resource* r in resources)
+	{
+		if (r->GetType() == type)
+			ret.push_back(r);
+	}
+
+	return ret;
 }
 
 void ModuleResources::AddNewFileNode(const std::string& path, bool is_file)
@@ -452,10 +478,7 @@ void ModuleResources::ReloadScripts()
 					ResourceScript* script = (ResourceScript*)*item;
 					if (App->StringCmp(script->header_path.data(), files[i].data())) {
 						if (script->NeedReload()) {
-							remove(script->GetAssetsPath());
-							remove(script->GetLibraryPath());
-							script->data_structures.clear();
-							script->CreateMetaData(script->GetID());
+							script->Reimport();
 						}
 						exists = true;
 						script->reload_completed = true;
@@ -517,6 +540,19 @@ bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
 	return !to_fill.empty();
 }
 
+ResourceFont* ModuleResources::GetFontByName(const char* name)
+{
+	auto item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_FONT) {
+			if (App->StringCmp((*item)->GetName(), name)) {
+				return dynamic_cast<ResourceFont*>(*item);
+			}
+		}
+	}
+	return nullptr;
+}
+
 FileNode* ModuleResources::GetFileNodeByPath(const std::string& path, FileNode* node)
 {
 	FileNode* to_search = nullptr;
@@ -562,9 +598,20 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Controllers
+	App->file_system->DiscoverFiles(ANIM_CONTROLLER_FOLDER, files, directories);
+	ReadAnimControllers(directories, files, ANIM_CONTROLLER_FOLDER);
+
 	// Init Prefabs
 	App->file_system->DiscoverFiles(ASSETS_PREFAB_FOLDER, files, directories);
 	ReadPrefabs(directories, files, ASSETS_PREFAB_FOLDER);
+
+	files.clear();
+	directories.clear();
+
+	// Init Fonts
+	App->file_system->DiscoverFiles(FONTS_FOLDER, files, directories);
+	ReadFonts(directories, files, FONTS_FOLDER);
 
 	files.clear();
 	directories.clear();
@@ -575,7 +622,18 @@ void ModuleResources::ReadAllMetaData()
 	// Init Scenes
 	App->file_system->DiscoverFiles(SCENE_FOLDER, files, directories);
 
+
+
 	ReadScenes(directories, files, SCENE_FOLDER);
+
+	files.clear();
+	directories.clear();
+
+	// Init Audio
+	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
+
+	App->audio->LoadBanksInfo();
+	ReadAudio(directories, files, AUDIO_FOLDER);
 
 	files.clear();
 	directories.clear();
@@ -608,6 +666,15 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// anim controllers
+	App->file_system->DiscoverFiles(LIBRARY_ANIM_CONTROLLERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		anim_ctrl->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
 	// scenes
 	App->file_system->DiscoverFiles(LIBRARY_SCENES_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
@@ -622,6 +689,21 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourcePrefab* prefab = new ResourcePrefab();
 		prefab->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// audio
+	App->file_system->DiscoverFiles(LIBRARY_AUDIO_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAudio* audio = new ResourceAudio();
+		audio->ReadLibrary(files[i].data());
+	}
+	// fonts
+	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceFont* font = ResourceFont::LoadFile(files[i].data(), std::stoull(App->file_system->GetBaseFileName(files[i].data()).data()));
+		AddResource(font);
 	}
 	files.clear();
 	directories.clear();
@@ -699,6 +781,27 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 	}
 }
 
+void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		if (!anim_ctrl->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = anim_ctrl->GetID();
+			anim_ctrl->ReImport(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAnimControllers(new_directories, new_files, dir);
+		}
+	}
+}
+
 void ModuleResources::ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
 {
 	for (uint i = 0; i < files.size(); ++i) {
@@ -739,6 +842,55 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	auto banks = App->audio->GetBanks();
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			if (files[i].find(".bnk") != std::string::npos) {
+				ResourceAudio* audio = new ResourceAudio();
+				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+					for (auto b = banks.begin(); b != banks.end(); ++b) {
+						if (files[i].compare((*b)->name + ".bnk") == 0) {
+							audio->CreateMetaData((*b)->id);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAudio(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			std::string path = App->file_system->GetPathWithoutExtension(std::string(current_folder + files[i]).data()) + "_meta.alien";
+			ResourceFont* font = ResourceFont::ImportFile(std::string(current_folder + files[i]).data(), GetIDFromAlienPath(path.data()));
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadFonts(new_directories, new_files, dir);
 		}
 	}
 }
@@ -805,6 +957,32 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 		}
 	}
 }
+
+void ModuleResources::CreateAsset(FileDropType type)
+{
+	switch (type)
+	{
+	case FileDropType::ANIM_CONTROLLER:
+		CreateAnimatorController();
+		break;
+	case FileDropType::ANIMATION:
+		break;
+	}
+
+	App->ui->panel_project->RefreshAllNodes();
+}
+
+void ModuleResources::CreateAnimatorController()
+{
+	std::string asset_name = "NewAnimatorController";
+	App->ui->panel_project->GetUniqueFileName(asset_name, ANIM_CONTROLLER_FOLDER);
+
+	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
+	new_controller->name = asset_name;
+	new_controller->SaveAsset();
+}
+
+
 
 
 

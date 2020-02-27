@@ -5,18 +5,21 @@
 #include "GameObject.h"
 #include "Color.h"
 #include <vector>
+#include <list>
 #include <map>
 #include <utility>
 #include "Octree.h"
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
+#include <map>
 
 class ReturnZ;
 class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+class Viewport;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -63,6 +66,8 @@ public:
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
 
+	void HandleEvent(EventType eventType) override;
+
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
 
@@ -89,7 +94,8 @@ public:
 	void DeselectObject(GameObject* obj);
 
 	/*---------Scripts Calls-----------*/
-	void InitScriptsOnPlay() const;
+	void OnPlay() const;
+	void InitScripts() const;
 	void ScriptsPreUpdate() const;
 	void ScriptsUpdate() const;
 	void ScriptsPostUpdate() const;
@@ -156,7 +162,7 @@ public:
 	Component* component_in_copy = nullptr;
 
 	bool prefab_scene = false;
-	bool printing_scene = true;
+	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 
@@ -233,6 +239,10 @@ public:
 	ComponentScript* actual_script_loading = nullptr;
 
 	std::vector<std::string> tags;
+
+	std::vector<Viewport*> viewports;
+
+	Viewport* game_viewport = nullptr;
 
 private:
 	// root

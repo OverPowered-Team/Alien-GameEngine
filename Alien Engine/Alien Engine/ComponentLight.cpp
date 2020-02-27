@@ -7,6 +7,7 @@
 #include "ReturnZ.h"
 #include "ComponentMesh.h"
 #include "Gizmos.h"
+#include "mmgr/mmgr.h"
 
 ComponentLight::ComponentLight(GameObject* attach) : Component(attach)
 {

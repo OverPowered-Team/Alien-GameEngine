@@ -1,5 +1,6 @@
 #include "PanelRender.h"
 #include "Color.h"
+#include "mmgr/mmgr.h"
 
 PanelRender::PanelRender(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -67,12 +68,6 @@ void PanelRender::PanelLogic()
 		}
 		ImGui::Spacing();
 	}
-	/*if (ImGui::CollapsingHeader("Render Z-Buffer")) {
-		ImGui::Spacing();
-		if (ImGui::Checkbox("View Z-Buffer", &App->renderer3D->render_zbuffer)) {
-			App->renderer3D->ChangeDrawFrameBuffer(App->renderer3D->render_zbuffer);
-		}
-	}*/
 	if (ImGui::CollapsingHeader("Personalize Grid")) 
 	{
 		ImGui::Spacing();

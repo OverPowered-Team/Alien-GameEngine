@@ -15,6 +15,7 @@ class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
 class ResourceShader;
+class ResourceFont;
 
 struct Icons {
 
@@ -44,7 +45,6 @@ struct Icons {
 	ResourceTexture* prefab_lock = nullptr;
 };
 
-
 class ModuleResources : public Module
 {
 public:
@@ -57,6 +57,8 @@ public:
 	bool CleanUp();
 
 	void AddResource(Resource* resource);
+	void RemoveResource(Resource* resource);
+	void CreateAsset(FileDropType type);
 
 	// meta path
 	bool CreateNewModelInstanceOf(const char* path);
@@ -64,6 +66,7 @@ public:
 	u64 GetIDFromAlienPath(const char* path);
 	Resource* GetResourceWithID(const u64& ID);
 	const Resource* GetResourceWithID(const u64& ID) const;
+	std::vector<Resource*> GetResourcesWithType(ResourceType type);
 
 	void AddNewFileNode(const std::string& path, bool is_file);
 
@@ -84,6 +87,7 @@ public:
 	void ReloadScripts();
 
 	ResourceScene* GetSceneByName(const char* name);
+	ResourceFont* GetFontByName(const char* name);
 
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
@@ -95,11 +99,16 @@ private:
 	void ReadTextures(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadModels(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadScenes(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadScripts();
 
 	void GetAllScriptsPath(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder, std::vector<std::string>* scripts);
+
+	void CreateAnimatorController();
 
 public:
 
@@ -109,6 +118,7 @@ public:
 
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
+	ResourceFont* default_font = nullptr;
 	FileNode* assets = nullptr;
 
 private:

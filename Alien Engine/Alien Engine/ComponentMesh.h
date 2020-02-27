@@ -16,26 +16,30 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentCamera;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
 	friend class GameObject;
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;
 	friend class Gizmos;
 	friend class Octree;
 	friend class OctreeNode;
+	friend class ResourceModel;
 	friend class PanelCreateObject;
 	friend class PanelRender;
 public:
-
 	ComponentMesh(GameObject* attach);
 	virtual ~ComponentMesh();
 
-private:
+protected:
 
-	void DrawPolygon(ComponentCamera* camera);
-	void DrawOutLine(ComponentCamera* camera);
-	void DrawMesh(ComponentCamera* camera);
-	void DrawVertexNormals(ComponentCamera* camera);
-	void DrawFaceNormals(ComponentCamera* camera);
+	virtual void DrawPolygon(ComponentCamera* camera);
+	virtual void DrawOutLine();
+	virtual void DrawMesh();
+	void DrawVertexNormals();
+	void DrawFaceNormals();
 	bool DrawInspector();
 	void DrawGlobalAABB(ComponentCamera* camera);
 	void DrawOBB(ComponentCamera* camera);
@@ -54,7 +58,7 @@ private:
 
 	AABB GenerateAABB();
 
-private:
+protected:
 	
 	ResourceMesh* mesh = nullptr;
 

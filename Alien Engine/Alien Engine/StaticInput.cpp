@@ -40,7 +40,7 @@ SDL_Scancode Input::GetFirstKeyDown()
 float3 Input::GetMousePosition()
 {
 #ifndef GAME_VERSION
-	return float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY) - 19, App->input->GetMouseZ());
+	return float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
 #else
 	return App->input->GetMousePosition();
 #endif 
@@ -49,7 +49,7 @@ float3 Input::GetMousePosition()
 int Input::GetMouseY()
 {
 #ifndef GAME_VERSION
-	return App->input->GetMouseY() - App->ui->panel_game->posY - 19;
+	return App->input->GetMouseY() - App->ui->panel_game->posY;
 #else
 	return App->input->GetMouseY();
 #endif

@@ -30,10 +30,12 @@ private:
 
 	void Clone(Component* clone);
 
-	void SetTexture(ResourceTexture* tex);
 	const ResourceTexture* GetTexture() const;
 
 public:
+	void SetTexture(ResourceTexture* tex);
+
+
 	Color color{ 1,1,1,1 };
 	bool texture_activated = true;
 public:

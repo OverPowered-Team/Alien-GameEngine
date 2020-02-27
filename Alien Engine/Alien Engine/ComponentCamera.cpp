@@ -14,6 +14,8 @@
 #include "ReturnZ.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentMesh.h"
+#include "mmgr/mmgr.h"
+#include "Viewport.h"
 
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {
@@ -37,6 +39,7 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 		if (App->renderer3D->actual_game_camera == nullptr)
 		{
 			App->renderer3D->actual_game_camera = this;
+			App->objects->game_viewport->SetCamera(this);
 		}
 		App->objects->game_cameras.push_back(this);
 	}
@@ -58,17 +61,23 @@ ComponentCamera::~ComponentCamera()
 				if (!App->objects->game_cameras.empty())
 				{
 					App->renderer3D->actual_game_camera = App->objects->game_cameras.front();
+					App->objects->game_viewport->SetCamera(App->objects->game_cameras.front());
 					#ifndef GAME_VERSION
 						App->ui->actual_name = App->renderer3D->actual_game_camera->game_object_attached->GetName();
 					#endif
 				}
-				else
+				else {
 					App->renderer3D->actual_game_camera = nullptr;
+					App->objects->game_viewport->SetCamera(nullptr);
+				}
 			}
+			#ifndef GAME_VERSION
 			if (App->renderer3D->selected_game_camera == this)
 			{
 				App->renderer3D->selected_game_camera = nullptr;
+				App->camera->selected_viewport->SetCamera(nullptr);
 			}
+			#endif
 			break;
 		}
 	}
@@ -160,7 +169,7 @@ bool ComponentCamera::DrawInspector()
 				horizontal_fov = sup;
 				frustum.horizontalFov = horizontal_fov * Maths::Deg2Rad();
 				AspectRatio(16, 9, true);
-				vertical_fov = frustum.verticalFov * Maths::Rad2Deg();
+				//vertical_fov = frustum.verticalFov * Maths::Rad2Deg();
 				App->renderer3D->UpdateCameraMatrix(this);
 			}
 			else if (!cntrl_z && ImGui::IsMouseReleased(0)) {
@@ -179,7 +188,7 @@ bool ComponentCamera::DrawInspector()
 				vertical_fov = sup;
 				frustum.verticalFov = vertical_fov * Maths::Deg2Rad();
 				AspectRatio(16, 9);
-				horizontal_fov = frustum.horizontalFov * Maths::Rad2Deg();
+				//horizontal_fov = frustum.horizontalFov * Maths::Rad2Deg();
 				App->renderer3D->UpdateCameraMatrix(this);
 			}
 			else if (!cntrl_z && ImGui::IsMouseReleased(0)) {
@@ -261,6 +270,8 @@ void ComponentCamera::AspectRatio(int width_ratio, int height_ratio, bool fov_ty
 	{
 		frustum.verticalFov = (2.f * atanf(tanf(frustum.horizontalFov * 0.5f) * ((float)height_ratio) / (float)width_ratio));
 	}
+	vertical_fov = frustum.verticalFov * Maths::Rad2Deg();
+	horizontal_fov = frustum.horizontalFov * Maths::Rad2Deg();
 }
 
 void ComponentCamera::Look(const float3& position_to_look)
@@ -290,10 +301,9 @@ float* ComponentCamera::GetViewMatrix() const
 	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;
 }
 
-float4x4 ComponentCamera::GetViewMatrix4f4() const
+float4x4 ComponentCamera::GetViewMatrix4x4() const
 {
-	float4x4 view = frustum.ViewMatrix();
-	return view.Transposed();
+	return float4x4(frustum.ViewMatrix()).Transposed();
 }
 
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
@@ -405,7 +415,7 @@ void ComponentCamera::DrawIconCamera()
 {
 	if (mesh_camera != nullptr && print_icon)
 	{
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 		float3 position = transform->GetGlobalPosition() - frustum.front.Normalized() * 2;
 		Quat rotated = transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } * Quat{ 0.7071,0,0.7071,0 });
 		float4x4 matrix = float4x4::FromTRS(position, rotated, { 0.1F,0.1F,0.1F });
@@ -437,6 +447,7 @@ void ComponentCamera::Clone(Component* clone)
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("VerticalFov", vertical_fov);
 	to_save->SetNumber("HoritzontalFov", horizontal_fov);
@@ -454,6 +465,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 {
+	enabled = to_load->GetBoolean("Enabled");
 	vertical_fov = to_load->GetNumber("VerticalFov");
 	horizontal_fov = to_load->GetNumber("HoritzontalFov");
 	far_plane = to_load->GetNumber("FarPlane");
@@ -476,7 +488,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	frustum.horizontalFov = horizontal_fov * Maths::Deg2Rad();
 
 	if (game_object_attached != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 		frustum.pos = transform->GetGlobalPosition();
 		frustum.front = transform->GetLocalRotation().WorldZ();
 		frustum.up = transform->GetLocalRotation().WorldY();

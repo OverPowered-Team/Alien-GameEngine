@@ -25,6 +25,9 @@ class PanelSceneSelector;
 class PanelGame;
 class PanelBuild;
 class PanelTextEditor;
+class PanelAnimTimeline;
+class PanelAnimator;
+class PanelParticleSystem;
 
 struct ShortCut;
 
@@ -82,6 +85,8 @@ public:
 	void SaveLayout(Layout* layout, bool is_new = true); // save x layout
 	void LoadActiveLayout(); // charge the active layout //
 
+	void HandleEvent(EventType eventType);
+
 private:
 
 	// panels
@@ -120,6 +125,7 @@ private:
 	PanelInspector* panel_inspector = nullptr;
 	PanelBuild* panel_build = nullptr;
 	PanelLayout* panel_layout = nullptr;
+	PanelParticleSystem* panel_particles = nullptr;
 
 	// ShortCuts
 	ShortCut* shortcut_demo = nullptr;
@@ -155,6 +161,9 @@ private:
 	SDL_Scancode panel_render_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_scene_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_game_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_animtimeline_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_animator_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_particles_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_demo_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_report_bug_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_wireframe_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
@@ -176,7 +185,6 @@ private:
 	std::pair<bool, Time::GameState> change_game_state;
 
 public:
-
 	// public panels
 	PanelConfig* panel_config = nullptr;
 	PanelConsole* panel_console = nullptr;
@@ -187,6 +195,8 @@ public:
 	PanelGame* panel_game = nullptr;
 	PanelHierarchy* panel_hierarchy = nullptr;
 	PanelTextEditor* panel_text_editor = nullptr;
+	PanelAnimTimeline* panel_animtimeline = nullptr;
+	PanelAnimator* panel_animator = nullptr;
 
 	// layouts
 	std::vector<Layout*> layouts;

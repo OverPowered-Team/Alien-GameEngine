@@ -11,10 +11,12 @@
 #include "ReturnZ.h"
 #include "ModuleCamera3D.h"
 #include "ResourceTexture.h"
+#include "mmgr/mmgr.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
+	name = "Mesh";
 }
 
 ComponentMesh::~ComponentMesh()
@@ -39,7 +41,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 	}
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	if (transform->IsScaleNegative())
@@ -61,7 +63,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 
 	// Uniforms
-	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4f4()); // TODO: About in-game camera?
+	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
@@ -84,7 +86,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 }
 
-void ComponentMesh::DrawOutLine(ComponentCamera* camera)
+void ComponentMesh::DrawOutLine()
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -94,12 +96,12 @@ void ComponentMesh::DrawOutLine(ComponentCamera* camera)
 		return;
 	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
 	{
-		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b, 1.f));
 		glLineWidth(App->objects->parent_line_width);
 	}
 	else
 	{
-		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b, 1.f));
 		glLineWidth(App->objects->no_child_line_width);
 	}
 
@@ -110,7 +112,7 @@ void ComponentMesh::DrawOutLine(ComponentCamera* camera)
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glPushMatrix();
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -129,12 +131,12 @@ void ComponentMesh::DrawOutLine(ComponentCamera* camera)
 	glPopMatrix();
 }
 
-void ComponentMesh::DrawMesh(ComponentCamera* camera)
+void ComponentMesh::DrawMesh()
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -160,13 +162,13 @@ void ComponentMesh::DrawMesh(ComponentCamera* camera)
 
 }
 
-void ComponentMesh::DrawVertexNormals(ComponentCamera* camera)
+void ComponentMesh::DrawVertexNormals()
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -186,13 +188,13 @@ void ComponentMesh::DrawVertexNormals(ComponentCamera* camera)
 	}
 }
 
-void ComponentMesh::DrawFaceNormals(ComponentCamera* camera)
+void ComponentMesh::DrawFaceNormals()
 {
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -225,7 +227,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Mesh", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
@@ -457,7 +459,7 @@ AABB ComponentMesh::GenerateAABB()
 
 void ComponentMesh::RecalculateAABB_OBB()
 {
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	obb = GenerateAABB();
 	obb.Transform(transform->global_transformation);
 

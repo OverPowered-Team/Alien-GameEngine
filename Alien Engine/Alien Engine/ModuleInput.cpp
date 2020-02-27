@@ -110,14 +110,26 @@ update_status ModuleInput::PreUpdate(float dt)
 	
 	auto item = game_pads.begin();
 	for (; item != game_pads.end(); ++item) {
-		for (uint i = 0; i < MAX_GAMPAD_BUTTONS; ++i)
-		{
-			if ((*item).second != nullptr) {
-				if ((*item).second->controller_buttons[i] == KEY_DOWN) {
-					(*item).second->controller_buttons[i] = KEY_REPEAT;
+		if ((*item).second != nullptr) {
+			for (uint i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i)
+			{
+				Uint8 state = SDL_GameControllerGetButton((*item).second->controller, (SDL_GameControllerButton)i);
+				if (state == 1)
+				{
+					if ((*item).second->controller_buttons[i] == KEY_IDLE) {
+						(*item).second->controller_buttons[i] = KEY_DOWN;
+					}
+					else {
+						(*item).second->controller_buttons[i] = KEY_REPEAT;
+					}
 				}
-				if ((*item).second->controller_buttons[i] == KEY_UP) {
-					(*item).second->controller_buttons[i] = KEY_IDLE;
+				else
+				{
+					if ((*item).second->controller_buttons[i] == KEY_REPEAT || (*item).second->controller_buttons[i] == KEY_DOWN) {
+						(*item).second->controller_buttons[i] = KEY_UP;
+					}
+					else
+						(*item).second->controller_buttons[i] = KEY_IDLE;
 				}
 			}
 		}
@@ -222,26 +234,6 @@ update_status ModuleInput::PreUpdate(float dt)
 			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
 				App->renderer3D->OnResize(e.window.data1, e.window.data2);
 			break; }
-		case SDL_CONTROLLERAXISMOTION: {
-			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && e.caxis.value > DEAD_ZONE) {
-				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_RIGHTTRIGGER] = KEY_DOWN;
-			}
-			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && e.caxis.value < DEAD_ZONE) {
-				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_RIGHTTRIGGER] = KEY_UP;
-			}
-			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && e.caxis.value > DEAD_ZONE) {
-				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_LEFTTRIGGER] = KEY_DOWN;
-			}
-			if (e.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && e.caxis.value < DEAD_ZONE) {
-				game_pads[e.cdevice.which + 1]->controller_buttons[CONTROLLER_BUTTON_LEFTTRIGGER] = KEY_UP;
-			}
-			break; }
-		case SDL_CONTROLLERBUTTONUP: {
-			game_pads[e.cdevice.which + 1]->controller_buttons[e.cbutton.button] = KEY_UP; 
-			break; }
-		case SDL_CONTROLLERBUTTONDOWN: {
-			game_pads[e.cdevice.which + 1]->controller_buttons[e.cbutton.button] = KEY_DOWN;
-			break; }
 		case SDL_CONTROLLERDEVICEADDED: {
 			SDL_GameController* controller = SDL_GameControllerOpen(e.cdevice.which);
 			if (controller != nullptr) {
@@ -265,6 +257,7 @@ update_status ModuleInput::PreUpdate(float dt)
 					pad->controller = controller;
 					pad->haptic = haptic;
 					pad->number = e.cdevice.which + 1;
+					memset(pad->controller_buttons, KEY_IDLE, sizeof(KEY_STATE)* SDL_CONTROLLER_BUTTON_MAX);
 					game_pads.emplace(pad->number, pad);
 					LOG_ENGINE("Controller %i loaded correctly", pad->number);
 				}
@@ -281,7 +274,7 @@ update_status ModuleInput::PreUpdate(float dt)
 		case SDL_CONTROLLERDEVICEREMOVED: {
 			auto item = game_pads.begin();
 			for (; item != game_pads.end(); ++item) {
-				if ((*item).second != nullptr && (*item).first == e.cdevice.which + 1) {
+				if ((*item).second != nullptr && SDL_GameControllerGetAttached((*item).second->controller) == SDL_FALSE) {
 					SDL_HapticClose((*item).second->haptic);
 					(*item).second->haptic = nullptr;
 					SDL_GameControllerClose((*item).second->controller);
@@ -289,10 +282,17 @@ update_status ModuleInput::PreUpdate(float dt)
 					delete (*item).second;
 					(*item).second = nullptr;
 					game_pads.erase(item);
+					LOG_ENGINE("CONTROLLER ERASED");
 					break;
 				}
 			}
 			break; }
+		}
+	}
+
+	for (; item != game_pads.end(); ++item) {
+		if ((*item).second != nullptr) {
+
 		}
 	}
 
@@ -307,6 +307,10 @@ update_status ModuleInput::PreUpdate(float dt)
 bool ModuleInput::CleanUp()
 {
 	LOG_ENGINE("Quitting SDL input event subsystem");
+
+	for (auto gpads = game_pads.begin(); gpads != game_pads.end(); ++gpads)
+		delete (*gpads).second;
+
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
 }
