@@ -9,6 +9,7 @@ class ComponentDeformableMesh : public ComponentMesh
 {
 	friend class GameObject;
 	friend class ReturnZ;
+	friend class ResourceModel;
 public:
 	ComponentDeformableMesh(GameObject* attach);
 	virtual ~ComponentDeformableMesh();
@@ -26,9 +27,13 @@ protected:
 	
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
-
+	void SendWeightsAndID();
+	void FillWeights(int boneID, ComponentBone* Component_Bone);
 private:
 	ResourceMesh* deformable_mesh = nullptr;
 	std::vector<ComponentBone*> bones;
 	u64 root_bone_id = 0;
+	float* weights = nullptr;
+	int* bones_ID = nullptr;
+
 };

@@ -39,6 +39,8 @@ public:
 	uint id_vertex = 0;
 	uint id_normals = 0;
 	uint id_uv = 0;
+	uint id_weights = 0;
+	uint id_bones = 0;
 	// buffers size
 	uint num_index = 0;
 	uint num_vertex = 0;

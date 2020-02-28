@@ -51,6 +51,7 @@ private:
 
 	GameObject* CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, std::pair<GameObject*, GameObject*>& skeleton_link);
 
+	
 public:
 	std::vector<ModelNode> model_nodes;
 	std::vector<ResourceMesh*> meshes_attached;

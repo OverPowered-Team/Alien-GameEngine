@@ -648,7 +648,9 @@ void ResourceModel::ConvertToGameObjects()
 	App->objects->GetRoot(false)->children.back()->transform->RecalculateTransform();
 	App->objects->ignore_cntrlZ = false;
 	if (skeleton_link.first != nullptr && skeleton_link.second != nullptr)
+	{
 		((ComponentDeformableMesh*)skeleton_link.first->GetComponent(ComponentType::DEFORMABLE_MESH))->AttachSkeleton(skeleton_link.second->transform);
+	}
 
 	App->objects->SetNewSelectedObject(App->objects->GetRoot(false)->children.back());
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
@@ -666,7 +668,8 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 	GameObject* ret = nullptr;
 
 	for (uint i = 0; i < objects_created.size(); ++i) {
-		if (objects_created[i].first == node.parent_num && strcmp(objects_created[i].second->name, (model_nodes.size() > 1) ? node.parent_name.data() : App->objects->GetRoot(true)->GetName()) == 0) {
+		if (objects_created[i].first == node.parent_num && strcmp(objects_created[i].second->name, (model_nodes.size() > 1) ? node.parent_name.data() : App->objects->GetRoot(true)->GetName()) == 0) 
+		{
 			ret = new GameObject(objects_created[i].second, node.pos, node.rot, node.scale);
 			ret->SetName(node.name.data());
 
@@ -681,6 +684,12 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						Cmesh->RecalculateAABB_OBB();
 						ret->AddComponent(Cmesh);
 						skeleton_link.first = ret;
+						if (mesh->id_weights == 0)
+						{
+							Cmesh->SendWeightsAndID();
+						}
+
+
 					}
 					else
 					{
@@ -733,3 +742,5 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 
 	return ret;
 }
+
+

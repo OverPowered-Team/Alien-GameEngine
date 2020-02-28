@@ -194,6 +194,10 @@ void ResourceMesh::FreeMemory()
 		glDeleteBuffers(1, &id_normals);
 	if (id_uv != 0)
 		glDeleteBuffers(1, &id_uv);
+	if(id_weights!=0)
+		glDeleteBuffers(1, &id_weights);
+	if (id_bones != 0)
+		glDeleteBuffers(1, &id_bones);
 
 	if (index != nullptr) {
 		delete[] index;

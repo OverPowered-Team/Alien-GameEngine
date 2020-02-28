@@ -279,3 +279,73 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 	RecalculateAABB_OBB();
 }
 
+//TODO change this to execute this code only one time
+//When loading resouce model
+void ComponentDeformableMesh::SendWeightsAndID()
+{
+
+	int bone_id = 0;
+	//Genereting array of weights and bones_ID
+	if (weights != nullptr && bones_ID != nullptr)
+	{
+		weights = new float[mesh->num_vertex * 4];
+		bones_ID = new int[mesh->num_vertex * 4];
+
+		memset(weights, -1, sizeof(float) * mesh->num_vertex * 4);
+		memset(bones_ID, -1, sizeof(int) * mesh->num_vertex * 4);
+	}
+	for (std::vector<ComponentBone*>::iterator component_bone = bones.begin();
+		component_bone != bones.end(); component_bone++ , bone_id++)
+	{
+		FillWeights(bone_id, (*component_bone));
+	}
+	glBindVertexArray(mesh->vao);
+	if (mesh->id_weights == 0)
+	{
+		glGenBuffers(1, &mesh->id_weights);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_weights);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, weights, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(3);
+
+	if (mesh->id_bones == 0)
+	{
+		glGenBuffers(1, &mesh->id_bones);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_bones);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, bones_ID, GL_STATIC_DRAW);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(4);
+
+	if (weights)
+	{
+		delete weights;
+		weights = nullptr;
+	}
+	if (bones_ID)
+	{
+		delete bones_ID;
+		bones_ID = nullptr;
+	}
+}
+
+void ComponentDeformableMesh::FillWeights(int bone_ID, ComponentBone* component_bone)
+{
+	ResourceBone* bone = component_bone->GetBone();
+	for (int i = 0; i < bone->num_weights; i)
+	{
+		int vertex_id = bone->vertex_ids[i];
+		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
+		{
+			if (weights[j] == -1)
+			{
+				weights[j] = bone->weights[i];
+				bones_ID[j] = bone_ID;
+				break;
+			}
+		}
+	}
+}
+
