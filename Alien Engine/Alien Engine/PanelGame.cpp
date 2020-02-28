@@ -39,7 +39,8 @@ void PanelGame::PanelLogic()
 
 		current_viewport_size = ImGui::GetContentRegionAvail();
 		posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
-		posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY();
+		posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY() - ImGui::GetCurrentWindow()->TitleBarHeight() - 10;
+		
 		ImGui::Image((ImTextureID)App->objects->game_viewport->GetTexture(), ImVec2(current_viewport_size.x, current_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
 		width = current_viewport_size.x;
 		height = current_viewport_size.y;
