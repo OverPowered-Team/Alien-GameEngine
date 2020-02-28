@@ -5,6 +5,8 @@
 class Tween;
 class GameObject;
 
+#define MAX_TWEENS 20
+
 enum TweenAction {
 	NONE = -1,
 	MOVE,
@@ -14,8 +16,8 @@ enum TweenAction {
 	COLOR,
 };
 
-enum AnimTweenType {
-	notUsed, linear
+enum TweenType {
+	notUsed = -1, linear
 };
 
 class AnimTween: Module
@@ -24,12 +26,11 @@ public:
 	AnimTween() {};
 	~AnimTween() {};
 
-public:
-	static Tween* Move(GameObject * gameObject, const float3 & to, float time);
+	void Update();
 
 public:
-	static int maxTweens;
+	Tween* CreateTween(GameObject * gameObject, const float3 & to, float time, TweenAction action, TweenType type = linear );
 
 private:
-	static Tween* tweens;
+	std::vector<Tween*> tweens;
 };

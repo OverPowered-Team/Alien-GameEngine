@@ -327,6 +327,7 @@
     <ClInclude Include="AK\Wwise\Utilities.h" />
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienEngine.h" />
+    <ClInclude Include="AnimTween.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bullet\include\btBulletCollisionCommon.h" />
@@ -878,6 +879,7 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Tween.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="WwiseT.h" />
   </ItemGroup>
@@ -890,6 +892,7 @@
     <ClCompile Include="AK\Win32\stdafx.cpp" />
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienEngine.cpp" />
+    <ClCompile Include="AnimTween.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bullet\include\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.cpp" />
@@ -1230,6 +1233,7 @@
     <ClCompile Include="TextEdit\TextEditor.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Tween.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="WwiseT.cpp" />
   </ItemGroup>

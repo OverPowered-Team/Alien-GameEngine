@@ -91,6 +91,9 @@
     <Filter Include="Components\Physiscs\Colliders">
       <UniqueIdentifier>{d333f66d-da68-46f3-adda-33d2d14d7bba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\Tween">
+      <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -2274,6 +2277,12 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="AnimTween.h">
+      <Filter>Tools\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="Tween.h">
+      <Filter>Tools\Tween</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -3325,6 +3334,12 @@
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimTween.cpp">
+      <Filter>Tools\Tween</Filter>
+    </ClCompile>
+    <ClCompile Include="Tween.cpp">
+      <Filter>Tools\Tween</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
