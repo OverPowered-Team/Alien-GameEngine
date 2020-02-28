@@ -1,11 +1,11 @@
 {
     "Scene": {
-        "Name": "fdsfs",
+        "Name": "PlayerScene",
         "GameObjects": [
             {
                 "Name": "Light",
                 "FamilyNumber": 1,
-                "ID": "16541435888571595012",
+                "ID": "16131993768407967109",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -20,14 +20,14 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            0,
+                            30,
                             0
                         ],
                         "Rotation": [
                             0,
                             0,
                             0,
-                            0
+                            1
                         ],
                         "Scale": [
                             1,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "12507302722911253077"
+                        "ID": "10676385458023174923"
                     },
                     {
                         "Type": 3,
@@ -52,46 +52,7 @@
                             1
                         ],
                         "Enabled": true,
-                        "ID": "2294194668076250230",
-                        "PrintIcon": true
-                    },
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            15,
-                            2.5
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "2941763987765571132"
-                    },
-                    {
-                        "Type": 3,
-                        "DiffuseColor": [
-                            0.75,
-                            0.75,
-                            0.75,
-                            1
-                        ],
-                        "AmbienColor": [
-                            0.5,
-                            0.5,
-                            0.5,
-                            1
-                        ],
-                        "Enabled": true,
-                        "ID": "12005797309689240358",
+                        "ID": "7638642142621387829",
                         "PrintIcon": true
                     }
                 ]
@@ -99,7 +60,69 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "2539520698976949111",
+                "ID": "11576812963908154604",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            4.2520103454589844,
+                            -14.855585098266602
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5079031912819129677"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 4,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 91.492843627929688,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "9445517126169636402",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "aniTest",
+                "FamilyNumber": 1,
+                "ID": "3689049226018015970",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -114,117 +137,41 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            13.639702796936035,
-                            -32.018547058105469
+                            0,
+                            -0.25891709327697754
                         ],
                         "Rotation": [
                             0,
+                            1,
                             0,
-                            0,
-                            1
+                            -4.3711388286737929e-08
                         ],
                         "Scale": [
-                            1,
-                            1,
-                            1
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612
                         ],
                         "ScaleNegative": false,
-                        "ID": "17395262048998373045"
+                        "ID": "18247688664121929256"
                     },
                     {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "9267189153889305588"
-                    },
-                    {
-                        "Enabled": true,
-                        "Type": 4,
-                        "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 19.24835205078125,
-                        "BackCol": [
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            1
-                        ],
-                        "FarPlane": 200,
-                        "NearPlane": 0.10000000149011612,
-                        "isFovHori": 1,
-                        "ID": "6520667190889355233",
-                        "IsGameCamera": true,
-                        "IsSelectedCamera": true,
-                        "PrintIcon": true,
-                        "IconColor": [
-                            0.85000002384185791,
-                            0.85000002384185791,
-                            0.85000002384185791,
-                            1
-                        ]
-                    }
-                ]
-            },
-            {
-                "Name": "aniTest",
-                "FamilyNumber": 1,
-                "ID": "10822129078225185812",
-                "ParentID": "0",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "17577807744712070679"
+                        "Type": 24,
+                        "ID": "4075263483638007022",
+                        "ResourceID": "10023686211497671938",
+                        "DataName": "PlayerController",
+                        "HasInspector": false
                     }
                 ]
             },
             {
                 "Name": "Object02",
                 "FamilyNumber": 2,
-                "ID": "1168723554751304195",
-                "ParentID": "10822129078225185812",
+                "ID": "12653145715735707728",
+                "ParentID": "3689049226018015970",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -249,7 +196,7 @@
                             2.5399999618530273
                         ],
                         "ScaleNegative": false,
-                        "ID": "2098636092707387695"
+                        "ID": "4167889298540946886"
                     },
                     {
                         "Type": 22,
@@ -259,9 +206,9 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": true,
                         "DrawOBB": true,
-                        "ID": "7407950190034196117",
-                        "MeshID": "17332392395275080196",
-                        "RootBoneID": "15954011753817664602",
+                        "ID": "11285440577321391942",
+                        "MeshID": "7818945245893020137",
+                        "RootBoneID": "13266510403351287784",
                         "Enabled": true
                     },
                     {
@@ -273,7 +220,7 @@
                             1
                         ],
                         "TextureEnabled": true,
-                        "ID": "9647481052492998890",
+                        "ID": "10472037623174459339",
                         "HasTexture": false,
                         "Enabled": true
                     }
@@ -282,12 +229,12 @@
             {
                 "Name": "transform1",
                 "FamilyNumber": 2,
-                "ID": "8591699698964138573",
-                "ParentID": "10822129078225185812",
+                "ID": "1795983073810343520",
+                "ParentID": "3689049226018015970",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -312,19 +259,19 @@
                             2.5399999618530273
                         ],
                         "ScaleNegative": false,
-                        "ID": "16895322959136469497"
+                        "ID": "12379434492143833552"
                     }
                 ]
             },
             {
                 "Name": "Bip001 Pelvis",
                 "FamilyNumber": 3,
-                "ID": "15954011753817664602",
-                "ParentID": "8591699698964138573",
+                "ID": "13266510403351287784",
+                "ParentID": "1795983073810343520",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -349,12 +296,12 @@
                             0.99999982118606567
                         ],
                         "ScaleNegative": false,
-                        "ID": "10542006399680590039"
+                        "ID": "18291091173596097202"
                     },
                     {
                         "Type": 23,
-                        "ID": "13042008653885507340",
-                        "BoneID": "10496373039204574848",
+                        "ID": "9331771677994117335",
+                        "BoneID": "468747269900533734",
                         "Enabled": true
                     }
                 ]
@@ -362,12 +309,12 @@
             {
                 "Name": "Bip001 Spine",
                 "FamilyNumber": 4,
-                "ID": "8704672510280357062",
-                "ParentID": "15954011753817664602",
+                "ID": "3278294056997894271",
+                "ParentID": "13266510403351287784",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -392,12 +339,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "4037705297435339013"
+                        "ID": "4093065535727525816"
                     },
                     {
                         "Type": 23,
-                        "ID": "1453223684529372576",
-                        "BoneID": "407942441508515019",
+                        "ID": "8571706235654794498",
+                        "BoneID": "725718571540136931",
                         "Enabled": true
                     }
                 ]
@@ -405,12 +352,12 @@
             {
                 "Name": "Bip001 R Thigh",
                 "FamilyNumber": 5,
-                "ID": "9290948132587615774",
-                "ParentID": "8704672510280357062",
+                "ID": "4562141332694641321",
+                "ParentID": "3278294056997894271",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -435,12 +382,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "448398237338671133"
+                        "ID": "18150768182810116907"
                     },
                     {
                         "Type": 23,
-                        "ID": "1295125949586863114",
-                        "BoneID": "11793691876533886757",
+                        "ID": "17671613186583840073",
+                        "BoneID": "1907647119482920284",
                         "Enabled": true
                     }
                 ]
@@ -448,12 +395,12 @@
             {
                 "Name": "Bip001 R Calf",
                 "FamilyNumber": 6,
-                "ID": "9312911143391674979",
-                "ParentID": "9290948132587615774",
+                "ID": "1750773189939266419",
+                "ParentID": "4562141332694641321",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -478,12 +425,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "9406086920698687911"
+                        "ID": "10860955216478140495"
                     },
                     {
                         "Type": 23,
-                        "ID": "7481901691443956041",
-                        "BoneID": "8194956977765508093",
+                        "ID": "9914593265501918071",
+                        "BoneID": "7779642236181730449",
                         "Enabled": true
                     }
                 ]
@@ -491,12 +438,12 @@
             {
                 "Name": "Bip001 R Foot",
                 "FamilyNumber": 7,
-                "ID": "4807764893895252759",
-                "ParentID": "9312911143391674979",
+                "ID": "1084532390647018463",
+                "ParentID": "1750773189939266419",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -521,12 +468,12 @@
                             0.99999988079071045
                         ],
                         "ScaleNegative": false,
-                        "ID": "3371817570858250906"
+                        "ID": "13132657075304779220"
                     },
                     {
                         "Type": 23,
-                        "ID": "5203629150827522644",
-                        "BoneID": "4344421262378198002",
+                        "ID": "13957030197502306454",
+                        "BoneID": "7013695594689091612",
                         "Enabled": true
                     }
                 ]
@@ -534,12 +481,12 @@
             {
                 "Name": "Bip001 R Toe0",
                 "FamilyNumber": 8,
-                "ID": "5402682254995426152",
-                "ParentID": "4807764893895252759",
+                "ID": "12768773382055160452",
+                "ParentID": "1084532390647018463",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -564,12 +511,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "898659925177317801"
+                        "ID": "18356623309989208303"
                     },
                     {
                         "Type": 23,
-                        "ID": "14207658072851667544",
-                        "BoneID": "9181631175905029367",
+                        "ID": "15057566172906409000",
+                        "BoneID": "1634715268872473294",
                         "Enabled": true
                     }
                 ]
@@ -577,12 +524,12 @@
             {
                 "Name": "Bip001 L Thigh",
                 "FamilyNumber": 5,
-                "ID": "16482437762577445962",
-                "ParentID": "8704672510280357062",
+                "ID": "5433087454093835624",
+                "ParentID": "3278294056997894271",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -607,12 +554,12 @@
                             0.99999988079071045
                         ],
                         "ScaleNegative": false,
-                        "ID": "7571513309694896477"
+                        "ID": "4766224467925256422"
                     },
                     {
                         "Type": 23,
-                        "ID": "10051120242478636745",
-                        "BoneID": "651438528007674709",
+                        "ID": "14657906214985990912",
+                        "BoneID": "623971826318171792",
                         "Enabled": true
                     }
                 ]
@@ -620,12 +567,12 @@
             {
                 "Name": "Bip001 L Calf",
                 "FamilyNumber": 6,
-                "ID": "1544945041162229667",
-                "ParentID": "16482437762577445962",
+                "ID": "17841635064659203963",
+                "ParentID": "5433087454093835624",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -650,12 +597,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5730744589541658271"
+                        "ID": "6900769505855347411"
                     },
                     {
                         "Type": 23,
-                        "ID": "789932508096926782",
-                        "BoneID": "12605249639602210260",
+                        "ID": "5313126254739818301",
+                        "BoneID": "10944918822238063062",
                         "Enabled": true
                     }
                 ]
@@ -663,12 +610,12 @@
             {
                 "Name": "Bip001 L Foot",
                 "FamilyNumber": 7,
-                "ID": "9033977478712809537",
-                "ParentID": "1544945041162229667",
+                "ID": "7702986475442463940",
+                "ParentID": "17841635064659203963",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -693,12 +640,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "18143016267030695600"
+                        "ID": "16653862667009238171"
                     },
                     {
                         "Type": 23,
-                        "ID": "8489722216945041381",
-                        "BoneID": "10580014009773229467",
+                        "ID": "12643828869786138946",
+                        "BoneID": "10832502084295817226",
                         "Enabled": true
                     }
                 ]
@@ -706,12 +653,12 @@
             {
                 "Name": "Bip001 L Toe0",
                 "FamilyNumber": 8,
-                "ID": "11991408281322894533",
-                "ParentID": "9033977478712809537",
+                "ID": "11186252891664436932",
+                "ParentID": "7702986475442463940",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -736,12 +683,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "6743095917523498609"
+                        "ID": "12293092660145452144"
                     },
                     {
                         "Type": 23,
-                        "ID": "13975494481630836037",
-                        "BoneID": "5872170517671630723",
+                        "ID": "13140197133091185930",
+                        "BoneID": "17517805958118958971",
                         "Enabled": true
                     }
                 ]
@@ -749,12 +696,12 @@
             {
                 "Name": "Bip001 Spine1",
                 "FamilyNumber": 5,
-                "ID": "5339693970868317094",
-                "ParentID": "8704672510280357062",
+                "ID": "2431894049013715691",
+                "ParentID": "3278294056997894271",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -779,12 +726,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "8598503431918882075"
+                        "ID": "9081445505694465493"
                     },
                     {
                         "Type": 23,
-                        "ID": "5792224279993231379",
-                        "BoneID": "14598187358780574424",
+                        "ID": "13317784008527480986",
+                        "BoneID": "2915866271314517553",
                         "Enabled": true
                     }
                 ]
@@ -792,12 +739,12 @@
             {
                 "Name": "Bip001 Neck",
                 "FamilyNumber": 6,
-                "ID": "6491132039273099949",
-                "ParentID": "5339693970868317094",
+                "ID": "3115265388561136140",
+                "ParentID": "2431894049013715691",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -822,12 +769,12 @@
                             0.99999988079071045
                         ],
                         "ScaleNegative": false,
-                        "ID": "16096585918607565933"
+                        "ID": "16292256546155921093"
                     },
                     {
                         "Type": 23,
-                        "ID": "12397584297471592593",
-                        "BoneID": "14871060406041967671",
+                        "ID": "6510698646111510268",
+                        "BoneID": "16465817970501583639",
                         "Enabled": true
                     }
                 ]
@@ -835,12 +782,12 @@
             {
                 "Name": "Bip001 R Clavicle",
                 "FamilyNumber": 7,
-                "ID": "4951372859586164540",
-                "ParentID": "6491132039273099949",
+                "ID": "3335372993756341458",
+                "ParentID": "3115265388561136140",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -865,12 +812,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "9576213868771624566"
+                        "ID": "10922664695700406665"
                     },
                     {
                         "Type": 23,
-                        "ID": "13123386272036125751",
-                        "BoneID": "18243275228248435615",
+                        "ID": "14268188586177598526",
+                        "BoneID": "17719976530165125046",
                         "Enabled": true
                     }
                 ]
@@ -878,12 +825,12 @@
             {
                 "Name": "Bip001 R UpperArm",
                 "FamilyNumber": 8,
-                "ID": "6046308043766359483",
-                "ParentID": "4951372859586164540",
+                "ID": "4855320434448533220",
+                "ParentID": "3335372993756341458",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -908,12 +855,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "11839991493149780809"
+                        "ID": "5397841545873033997"
                     },
                     {
                         "Type": 23,
-                        "ID": "3378809619794157199",
-                        "BoneID": "5864134538839852183",
+                        "ID": "17520698162227822648",
+                        "BoneID": "16673151864830345070",
                         "Enabled": true
                     }
                 ]
@@ -921,12 +868,12 @@
             {
                 "Name": "Bip001 R Forearm",
                 "FamilyNumber": 9,
-                "ID": "4108635919894958696",
-                "ParentID": "6046308043766359483",
+                "ID": "12278596448548296482",
+                "ParentID": "4855320434448533220",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -951,12 +898,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "18050286971105982137"
+                        "ID": "14802337006431930618"
                     },
                     {
                         "Type": 23,
-                        "ID": "11939860400232162847",
-                        "BoneID": "4100528276924246897",
+                        "ID": "7276107455557970234",
+                        "BoneID": "10331627569747677403",
                         "Enabled": true
                     }
                 ]
@@ -964,12 +911,12 @@
             {
                 "Name": "Bip001 R Hand",
                 "FamilyNumber": 10,
-                "ID": "13007411616469195036",
-                "ParentID": "4108635919894958696",
+                "ID": "11123141408485673327",
+                "ParentID": "12278596448548296482",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -994,12 +941,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "9723009240240037076"
+                        "ID": "9703987654057573025"
                     },
                     {
                         "Type": 23,
-                        "ID": "13829759415845005145",
-                        "BoneID": "7633511610146346968",
+                        "ID": "17109387874334451956",
+                        "BoneID": "17214981540489276635",
                         "Enabled": true
                     }
                 ]
@@ -1007,12 +954,12 @@
             {
                 "Name": "Bip001 R Finger0",
                 "FamilyNumber": 11,
-                "ID": "18070874237019544691",
-                "ParentID": "13007411616469195036",
+                "ID": "12020916845134942668",
+                "ParentID": "11123141408485673327",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1037,12 +984,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5041248778461653592"
+                        "ID": "11890020341380738272"
                     },
                     {
                         "Type": 23,
-                        "ID": "5523658887438118240",
-                        "BoneID": "4117091069857839148",
+                        "ID": "4794239345832328372",
+                        "BoneID": "18063652841936017732",
                         "Enabled": true
                     }
                 ]
@@ -1050,12 +997,12 @@
             {
                 "Name": "Bip001 R Finger01",
                 "FamilyNumber": 12,
-                "ID": "6723327406294356693",
-                "ParentID": "18070874237019544691",
+                "ID": "12138391257269785447",
+                "ParentID": "12020916845134942668",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1080,12 +1027,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "17528919355581667004"
+                        "ID": "2076212784313087242"
                     },
                     {
                         "Type": 23,
-                        "ID": "15870464969411892582",
-                        "BoneID": "4479330697719995685",
+                        "ID": "3236859201894518816",
+                        "BoneID": "2745915335295301009",
                         "Enabled": true
                     }
                 ]
@@ -1093,12 +1040,12 @@
             {
                 "Name": "Bip001 R Finger02",
                 "FamilyNumber": 13,
-                "ID": "5644786230713655235",
-                "ParentID": "6723327406294356693",
+                "ID": "2209651496059132778",
+                "ParentID": "12138391257269785447",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1123,12 +1070,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "2702828588269554984"
+                        "ID": "15825357701409935107"
                     },
                     {
                         "Type": 23,
-                        "ID": "2214224973378867035",
-                        "BoneID": "2499517312274340351",
+                        "ID": "14381522886074274382",
+                        "BoneID": "12158914420017578023",
                         "Enabled": true
                     }
                 ]
@@ -1136,12 +1083,12 @@
             {
                 "Name": "Bip001 R Finger1",
                 "FamilyNumber": 11,
-                "ID": "1287334734065920528",
-                "ParentID": "13007411616469195036",
+                "ID": "16530480511863880848",
+                "ParentID": "11123141408485673327",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1166,12 +1113,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5234999046464403048"
+                        "ID": "5816706223031698578"
                     },
                     {
                         "Type": 23,
-                        "ID": "17396571619097511978",
-                        "BoneID": "16701840350240894457",
+                        "ID": "3081255448041507930",
+                        "BoneID": "15762904796062315845",
                         "Enabled": true
                     }
                 ]
@@ -1179,12 +1126,12 @@
             {
                 "Name": "Bip001 R Finger11",
                 "FamilyNumber": 12,
-                "ID": "4276515218027019104",
-                "ParentID": "1287334734065920528",
+                "ID": "12159874376069262764",
+                "ParentID": "16530480511863880848",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1209,12 +1156,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "15693368421676015282"
+                        "ID": "13823962653756420227"
                     },
                     {
                         "Type": 23,
-                        "ID": "16635888198494004482",
-                        "BoneID": "10115004861267206362",
+                        "ID": "7671838541153360980",
+                        "BoneID": "14136305636817630711",
                         "Enabled": true
                     }
                 ]
@@ -1222,12 +1169,12 @@
             {
                 "Name": "Bip001 R Finger12",
                 "FamilyNumber": 13,
-                "ID": "3132741366184137807",
-                "ParentID": "4276515218027019104",
+                "ID": "16778385687943208440",
+                "ParentID": "12159874376069262764",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1252,12 +1199,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "13531692291860394573"
+                        "ID": "16316795086876749288"
                     },
                     {
                         "Type": 23,
-                        "ID": "1377336189897271199",
-                        "BoneID": "2750215945232533943",
+                        "ID": "3460342190965386296",
+                        "BoneID": "16624291489935139678",
                         "Enabled": true
                     }
                 ]
@@ -1265,12 +1212,12 @@
             {
                 "Name": "Bip001 L Clavicle",
                 "FamilyNumber": 7,
-                "ID": "13606064345200446371",
-                "ParentID": "6491132039273099949",
+                "ID": "13342259273660644965",
+                "ParentID": "3115265388561136140",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1295,12 +1242,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "1990678735284521785"
+                        "ID": "9601483454235714336"
                     },
                     {
                         "Type": 23,
-                        "ID": "18205532679772023217",
-                        "BoneID": "436535995455138224",
+                        "ID": "3843716760582763350",
+                        "BoneID": "16020226434879525981",
                         "Enabled": true
                     }
                 ]
@@ -1308,12 +1255,12 @@
             {
                 "Name": "Bip001 L UpperArm",
                 "FamilyNumber": 8,
-                "ID": "14952864241503612290",
-                "ParentID": "13606064345200446371",
+                "ID": "13790082667875143721",
+                "ParentID": "13342259273660644965",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1338,12 +1285,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "12205492499068093358"
+                        "ID": "178320891982326501"
                     },
                     {
                         "Type": 23,
-                        "ID": "17671367716159184082",
-                        "BoneID": "6439420807975090659",
+                        "ID": "13894501158832843836",
+                        "BoneID": "13091505261624009257",
                         "Enabled": true
                     }
                 ]
@@ -1351,12 +1298,12 @@
             {
                 "Name": "Bip001 L Forearm",
                 "FamilyNumber": 9,
-                "ID": "6557777310372652914",
-                "ParentID": "14952864241503612290",
+                "ID": "17139554972656547836",
+                "ParentID": "13790082667875143721",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1381,12 +1328,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "11938473704784790631"
+                        "ID": "16211671396555603153"
                     },
                     {
                         "Type": 23,
-                        "ID": "7326427260865564877",
-                        "BoneID": "992130453180094951",
+                        "ID": "6056790090612447109",
+                        "BoneID": "12366127780494144470",
                         "Enabled": true
                     }
                 ]
@@ -1394,12 +1341,12 @@
             {
                 "Name": "Bip001 L Hand",
                 "FamilyNumber": 10,
-                "ID": "18011749973538283537",
-                "ParentID": "6557777310372652914",
+                "ID": "9039012838610770781",
+                "ParentID": "17139554972656547836",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1424,12 +1371,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5589586276535175893"
+                        "ID": "13458111711856849572"
                     },
                     {
                         "Type": 23,
-                        "ID": "10438719773560170413",
-                        "BoneID": "7156636996060026746",
+                        "ID": "7353832608066481493",
+                        "BoneID": "17792130260813092203",
                         "Enabled": true
                     }
                 ]
@@ -1437,12 +1384,12 @@
             {
                 "Name": "Bip001 L Finger1",
                 "FamilyNumber": 11,
-                "ID": "6540099526426031029",
-                "ParentID": "18011749973538283537",
+                "ID": "3868168915634166893",
+                "ParentID": "9039012838610770781",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1467,12 +1414,12 @@
                             0.99999988079071045
                         ],
                         "ScaleNegative": false,
-                        "ID": "8015587830167741122"
+                        "ID": "3136858877285031644"
                     },
                     {
                         "Type": 23,
-                        "ID": "15688912240531879318",
-                        "BoneID": "4526923152957754661",
+                        "ID": "13944170779709482600",
+                        "BoneID": "5784283242532727250",
                         "Enabled": true
                     }
                 ]
@@ -1480,12 +1427,12 @@
             {
                 "Name": "Bip001 L Finger11",
                 "FamilyNumber": 12,
-                "ID": "4378172563002191396",
-                "ParentID": "6540099526426031029",
+                "ID": "9505147954903553884",
+                "ParentID": "3868168915634166893",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1510,12 +1457,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "17907780647822747141"
+                        "ID": "17550835387920130362"
                     },
                     {
                         "Type": 23,
-                        "ID": "12072681535230479273",
-                        "BoneID": "3521795786997005658",
+                        "ID": "15336412904337771123",
+                        "BoneID": "2477544720036552163",
                         "Enabled": true
                     }
                 ]
@@ -1523,12 +1470,12 @@
             {
                 "Name": "Bip001 L Finger12",
                 "FamilyNumber": 13,
-                "ID": "2895726667273183575",
-                "ParentID": "4378172563002191396",
+                "ID": "9173485637769782213",
+                "ParentID": "9505147954903553884",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1553,12 +1500,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "6875703274337541099"
+                        "ID": "13329602676449904300"
                     },
                     {
                         "Type": 23,
-                        "ID": "5200739446228419751",
-                        "BoneID": "2766017269384845312",
+                        "ID": "10150051142982039582",
+                        "BoneID": "6521842408956685008",
                         "Enabled": true
                     }
                 ]
@@ -1566,12 +1513,12 @@
             {
                 "Name": "Bip001 L Finger0",
                 "FamilyNumber": 11,
-                "ID": "5874308526690903155",
-                "ParentID": "18011749973538283537",
+                "ID": "7126199979160222496",
+                "ParentID": "9039012838610770781",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1596,12 +1543,12 @@
                             0.99999982118606567
                         ],
                         "ScaleNegative": false,
-                        "ID": "1847633437291360446"
+                        "ID": "11663677034560591574"
                     },
                     {
                         "Type": 23,
-                        "ID": "3789680220473529996",
-                        "BoneID": "825935440373445257",
+                        "ID": "7480701841219162738",
+                        "BoneID": "13326465328152905061",
                         "Enabled": true
                     }
                 ]
@@ -1609,12 +1556,12 @@
             {
                 "Name": "Bip001 L Finger01",
                 "FamilyNumber": 12,
-                "ID": "15130827479874076902",
-                "ParentID": "5874308526690903155",
+                "ID": "9302749771687941472",
+                "ParentID": "7126199979160222496",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1639,12 +1586,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "7660231948909977766"
+                        "ID": "1146641404384387213"
                     },
                     {
                         "Type": 23,
-                        "ID": "835164868144978698",
-                        "BoneID": "11304140483703604848",
+                        "ID": "5024766708990843018",
+                        "BoneID": "8531586863304940488",
                         "Enabled": true
                     }
                 ]
@@ -1652,12 +1599,12 @@
             {
                 "Name": "Bip001 L Finger02",
                 "FamilyNumber": 13,
-                "ID": "12703015144874256807",
-                "ParentID": "15130827479874076902",
+                "ID": "18374744056207979515",
+                "ParentID": "9302749771687941472",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1682,12 +1629,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "4351098704362178852"
+                        "ID": "5362822928344152546"
                     },
                     {
                         "Type": 23,
-                        "ID": "15928441598697165536",
-                        "BoneID": "1084441224405060890",
+                        "ID": "16932155087677569296",
+                        "BoneID": "5702957645609333451",
                         "Enabled": true
                     }
                 ]
@@ -1695,12 +1642,12 @@
             {
                 "Name": "Bip001 Head",
                 "FamilyNumber": 7,
-                "ID": "3879607431682024501",
-                "ParentID": "6491132039273099949",
+                "ID": "3011386923085923090",
+                "ParentID": "3115265388561136140",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1725,12 +1672,12 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "7767949141606108468"
+                        "ID": "18071269589455910521"
                     },
                     {
                         "Type": 23,
-                        "ID": "5597140539106871098",
-                        "BoneID": "1362097411259887218",
+                        "ID": "16610465198203687443",
+                        "BoneID": "14161724541317442617",
                         "Enabled": true
                     }
                 ]
@@ -1738,12 +1685,12 @@
             {
                 "Name": "Bone001",
                 "FamilyNumber": 8,
-                "ID": "8610825331814741836",
-                "ParentID": "3879607431682024501",
+                "ID": "3184903114417628626",
+                "ParentID": "3011386923085923090",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1768,12 +1715,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6561150071868381998"
+                        "ID": "13350231560154725879"
                     },
                     {
                         "Type": 23,
-                        "ID": "13876715133832921974",
-                        "BoneID": "15003497430591417131",
+                        "ID": "10651611700181643892",
+                        "BoneID": "14626207114899471435",
                         "Enabled": true
                     }
                 ]

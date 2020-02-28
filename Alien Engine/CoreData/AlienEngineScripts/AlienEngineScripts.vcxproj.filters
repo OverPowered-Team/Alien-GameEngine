@@ -30,6 +30,12 @@
     <ClInclude Include="ControllerTest.h">
       <Filter>Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="asifhispfs.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Macros\dllmain.cpp">
@@ -45,6 +51,12 @@
       <Filter>Scripts</Filter>
     </ClCompile>
     <ClCompile Include="ControllerTest.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="asifhispfs.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>
