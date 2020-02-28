@@ -83,7 +83,8 @@ protected:
 
 	float2 size = { 10,10 };
 
-	
+	//UI FOCUS
+	u64 select_on_up = 0;
 
 };
 
