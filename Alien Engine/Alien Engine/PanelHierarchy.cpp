@@ -9,6 +9,7 @@
 #include "ResourceTexture.h"
 #include "ComponentTransform.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 PanelHierarchy::PanelHierarchy(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -23,6 +24,7 @@ PanelHierarchy::~PanelHierarchy()
 
 void PanelHierarchy::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse);
 
 	if (ImGui::IsWindowHovered()) {
@@ -499,10 +501,39 @@ void PanelHierarchy::RightClickMenu()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
+			}
+			if (ImGui::MenuItem("Button"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BUTTON);
+			}
+			if (ImGui::MenuItem("Checkbox"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_CHECKBOX);
+			}
+			if (ImGui::MenuItem("Text"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_TEXT);
+			}
+			if (ImGui::MenuItem("Slider"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
+			}
+			if (ImGui::MenuItem("Bar"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::MenuItem("Create..."))
 		{
 			App->ui->panel_create_object->ChangeEnable();
 		}
+
 		ImGui::EndPopup();
 	}
 	else if (in_menu) {

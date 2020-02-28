@@ -149,7 +149,7 @@ bool ComponentSlider::DrawInspector()
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Color");
-		ImGui::SameLine(85);
+		ImGui::SameLine(150);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 		static bool set_Z = true;
 		static Color col;
@@ -164,10 +164,19 @@ bool ComponentSlider::DrawInspector()
 			set_Z = true;
 		}
 		ImGui::Spacing();
+		ImGui::Text("Slider Scale");
+		ImGui::SameLine(150);
 		float sliderScale[] = { sliderScaleX, sliderScaleY };
-		if (ImGui::DragFloat2("Slider Scale", sliderScale, 0.1F)) {
+		if (ImGui::DragFloat2("##Slider Scale", sliderScale, 0.1F)) {
 			sliderScaleX = sliderScale[0];
 			sliderScaleY = sliderScale[1];
+		}
+		ImGui::Spacing(); 	ImGui::Spacing(); 	ImGui::Spacing();
+		ImGui::Text("Factor");
+		ImGui::SameLine(150);
+		float factor_slider = factor;
+		if (ImGui::DragFloat("##Factor", &factor_slider, 0.01f, 0.0f, 1.0f, "%.3f")) {
+			SetValue(factor_slider);
 		}
 
 		ImGui::Spacing();
@@ -190,11 +199,12 @@ void ComponentSlider::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * sliderScaleX;
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * sliderScaleY;
-	transform->global_transformation[0][3] = transform->global_transformation[0][3] + offsetX;
-	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY;
+	transform->global_transformation[0][3] = (factor * ((matrix[0][3] + matrix[0][0]- transform->global_transformation[0][0]) - (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]))) + (matrix[0][3] - matrix[0][0]+ transform->global_transformation[0][0]);
+	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
+	
 	sliderX = transform->global_transformation[0][3];
-	sliderXmax = transform->global_transformation[0][3];
+
 
 	DrawTexture(isGame, sliderTexture);
 	transform->global_transformation = matrix;
@@ -205,7 +215,7 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		UILogicSlider();
+		UILogic();
 		GetValue();
 
 		switch (state)
@@ -257,8 +267,8 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
 		float2 origin = float2((transform->global_transformation[0][3] - canvasPivot.x) / (canvas->width), (transform->global_transformation[1][3] - canvasPivot.y) / (canvas->height));
 		if (tex == sliderTexture)
 		{
-			sliderX = origin.x * App->ui->panel_game->width;
-			sliderY = -origin.y * App->ui->panel_game->height;
+			/*sliderX = origin.x * App->ui->panel_game->width;
+			sliderY = -origin.y * App->ui->panel_game->height;*/
 		}
 
 
@@ -346,9 +356,7 @@ void ComponentSlider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("sliderScaleY", sliderScaleY);
 	to_save->SetNumber("sliderX", sliderX);
 	to_save->SetNumber("sliderY", sliderY);
-	to_save->SetNumber("sliderXmax", sliderXmax);
-	to_save->SetNumber("offsetX", offsetX);
-	to_save->SetNumber("offsetY", offsetY);
+	to_save->SetNumber("factor", factor);
 
 	to_save->SetColor("ColorCurrent", current_color);
 	to_save->SetColor("ColorIdle", idle_color);
@@ -371,9 +379,8 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 	sliderScaleY = to_load->GetNumber("sliderScaleY");
 	sliderX = to_load->GetNumber("sliderX");
 	sliderY = to_load->GetNumber("sliderY");
-	sliderXmax = to_load->GetNumber("sliderXmax");
-	offsetX = to_load->GetNumber("offsetX");
-	offsetY = to_load->GetNumber("offsetY");
+	factor = to_load->GetNumber("factor");
+
 
 	current_color = to_load->GetColor("ColorCurrent");
 	idle_color = to_load->GetColor("ColorIdle");
@@ -439,17 +446,22 @@ bool ComponentSlider::OnPressed()
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
 	int xmotion = App->input->GetMouseXMotion();
-	offsetX = offsetX + (xmotion * 0.25f);
-	float offsetXdt = xmotion * 0.25f;
-
-	if ((sliderX + (width * 0.5f)) >= (x + (width_bg * 0.5f)))
+	
+	if (xmotion > 0)
 	{
-		offsetX = sliderXmax - 1.0f;
-		
+		factor += (0.01f* xmotion);
 	}
-	if ((sliderX - (width * 0.5f)) <= (x - (width_bg * 0.5f)))
+	if (xmotion < 0)
 	{
-		offsetX = sliderXmax + 1.0f;
+		factor += (0.01f* xmotion);
+	}
+	if (factor>=1.0f)
+	{
+		factor = 1.0f;
+	}
+	if (factor <= 0.0f)
+	{
+		factor = 0.0f;
 	}
 
 
@@ -461,6 +473,14 @@ bool ComponentSlider::OnRelease()
 {
 	current_color = idle_color;
 	return true;
+}
+
+void ComponentSlider::SetValue(float factor)
+{
+	if (factor >= 0.0f && factor <= 1.0f)
+	{
+		this->factor = factor;
+	}
 }
 
 float ComponentSlider::GetValue()
@@ -477,51 +497,6 @@ float ComponentSlider::GetValue()
 
 }
 
-void ComponentSlider::UILogicSlider()
-{
-	float3 mouse_pos;
 
-#ifndef GAME_VERSION
-	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
-#else
-	mouse_pos = App->input->GetMousePosition();
-#endif
 
-	switch (state)
-	{
-	case Idle:
-		if (CheckMouseInsideSlider(mouse_pos))
-			state = Hover;
-		break;
-	case Hover:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-			state = Click;
-		if (!CheckMouseInsideSlider(mouse_pos))
-			state = Release;
-		break;
-	case Click:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
-			state = Pressed;
-		break;
-	case Pressed:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInsideSlider(mouse_pos))
-			state = Hover;
-		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInsideSlider(mouse_pos))
-			state = Idle;
-		break;
-	case Release:
-		state = Idle;
-		break;
-	}
-}
 
-bool ComponentSlider::CheckMouseInsideSlider(float3 mouse_pos)
-{
-	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
-#ifdef GAME_VERSION
-	return (mouse_pos.x >= sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= sliderY - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= sliderY + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
-#else 
-	return (mouse_pos.x >= sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= sliderY - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= sliderY + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
-#endif	
-	//return false;
-}

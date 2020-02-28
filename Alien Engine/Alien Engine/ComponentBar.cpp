@@ -38,19 +38,19 @@ bool ComponentBar::DrawInspector()
 		ImGui::Text("Min Value: "); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##MinValue", &minValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
-			CalculateValue();
+			CalculateFactor();
 		}
 
 		ImGui::Text("Max value:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##MaxValue", &maxValue, 0.5F, 0, 0, "%.1f", 1, game_object_attached->is_static))
 		{
-			CalculateValue();
+			CalculateFactor();
 		}
 
 		ImGui::Text("Current value:	"); ImGui::SameLine(150);
 		if (ImGui::DragFloat("##CurrentValue", &currentValue, 0.5F, minValue, maxValue, "%.1f", 1, game_object_attached->is_static))
 		{
-			CalculateValue();
+			CalculateFactor();
 		}
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -413,13 +413,24 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	}
 }
 
-void ComponentBar::CalculateValue()
+void ComponentBar::CalculateFactor()
 {
 	if (currentValue > maxValue) currentValue = maxValue;
 	if (currentValue < minValue) currentValue = minValue;
 
 
 	factor = (((currentValue - minValue) * 100.0f) / (maxValue - minValue)) / 100.0f;
+}
+
+float ComponentBar::GetBarValue()
+{
+	return factor;
+}
+
+void ComponentBar::SetBarValue(float factor)
+{
+	this->factor = factor;
+	currentValue = (factor * (maxValue - minValue)) + minValue;
 }
 
 void ComponentBar::SetBarColor(float r, float g, float b, float a)

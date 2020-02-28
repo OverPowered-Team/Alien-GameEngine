@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "imgui/imgui.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
 #include "PanelSceneSelector.h"
@@ -12,6 +13,7 @@
 #include "PanelGame.h"
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 PanelScene::PanelScene(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -25,6 +27,7 @@ PanelScene::~PanelScene()
 
 void PanelScene::PanelLogic()
 {
+	OPTICK_EVENT();
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT || ImGuizmo::IsOver()) {
 		ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove);
 	}
@@ -91,6 +94,20 @@ void PanelScene::PanelLogic()
 
 				if (texture_dropped != nullptr) {
 					App->importer->ApplyTextureToSelectedObject(texture_dropped);
+				}
+			}
+
+			// drop shader
+			if (node != nullptr && node->type == FileDropType::SHADER && !App->objects->GetSelectedObjects().empty()) {
+				std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+				path += "_meta.alien";
+
+				u64 ID = App->resources->GetIDFromAlienPath(path.data());
+
+				ResourceShader* shader_dropped = (ResourceShader*)App->resources->GetResourceWithID(ID);
+
+				if (shader_dropped != nullptr) {
+					//App->importer->ApplyShaderToSelectedObject(shader_dropped); TODO
 				}
 			}
 

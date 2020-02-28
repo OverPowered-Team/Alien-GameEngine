@@ -72,7 +72,6 @@ public:
 	static float GetTimeSinceStart();
 	static float GetGameTime();
 	static float GetScaleTime();
-
 };
 
 #endif

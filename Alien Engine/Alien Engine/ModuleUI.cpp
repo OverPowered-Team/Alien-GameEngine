@@ -33,6 +33,7 @@
 #include "PanelParticleSystem.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleUI::ModuleUI(bool start_enabled) : Module(start_enabled)
 {
@@ -47,6 +48,7 @@ ModuleUI::~ModuleUI()
 // Load assets
 bool ModuleUI::Start()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Loading UI assets");
 	bool ret = true;
 
@@ -84,6 +86,7 @@ bool ModuleUI::Start()
 // Load assets
 bool ModuleUI::CleanUp()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Unloading UI scene");
 
 	if (!need_to_save_layouts) // just save to know which is active
@@ -364,6 +367,7 @@ void ModuleUI::SaveLayoutsActive()
 
 void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* name)
 {
+	OPTICK_EVENT();
 	std::string file_output = std::string(HEADER_SCRIPTS_FILE + std::string(name) + std::string(".h"));
 	switch (type) {
 	case 1: { // class
@@ -440,7 +444,7 @@ void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* nam
 
 update_status ModuleUI::PreUpdate(float dt)
 {
-
+	OPTICK_EVENT();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
@@ -471,6 +475,7 @@ update_status ModuleUI::PreUpdate(float dt)
 
 void ModuleUI::Draw() 
 {
+	OPTICK_EVENT();
 	if (show_demo_wndow) {
 		ImGui::ShowDemoWindow(&show_demo_wndow);
 	}
@@ -499,6 +504,7 @@ void ModuleUI::Draw()
 
 void ModuleUI::MainMenuBar()
 {
+	OPTICK_EVENT();
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
@@ -632,6 +638,34 @@ void ModuleUI::MainMenuBar()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
+			}
+			if (ImGui::MenuItem("Button"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BUTTON);
+			}
+			if (ImGui::MenuItem("Checkbox"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_CHECKBOX);
+			}
+			if (ImGui::MenuItem("Text"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_TEXT);
+			}
+			if (ImGui::MenuItem("Slider"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
+			}
+			if (ImGui::MenuItem("Bar"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::MenuItem("Create...", panel_create_object->shortcut->GetNameScancodes()))
 		{
 			panel_create_object->ChangeEnable();
@@ -695,6 +729,7 @@ void ModuleUI::MainMenuBar()
 
 void ModuleUI::SecondMenuBar()
 {
+	OPTICK_EVENT();
 	ImGui::SetNextWindowSize(ImVec2(App->window->width,52));
 	ImGui::Begin("## Tools", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
 
@@ -976,6 +1011,7 @@ void ModuleUI::SecondMenuBar()
 
 void ModuleUI::ResetImGui()
 {
+	OPTICK_EVENT();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -1114,6 +1150,7 @@ void ModuleUI::DeleteLayout(Layout* layout)
 
 void ModuleUI::InitPanels()
 {
+	OPTICK_EVENT();
 	panel_about = new PanelAbout("About Alien Engine", panel_about_codes[0], panel_about_codes[1], panel_about_codes[2]);
 	panel_project = new PanelProject("Panel Project", panel_project_codes[0], panel_project_codes[1], panel_project_codes[2]);
 	panel_config = new PanelConfig("Configuration", panel_config_codes[0], panel_config_codes[1], panel_config_codes[2]);
@@ -1135,6 +1172,8 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
 	panels.push_back(panel_console);
+	panels.push_back(panel_animtimeline);
+	panels.push_back(panel_animator);
 	panels.push_back(panel_project);
 	panels.push_back(panel_render);
 	panels.push_back(panel_hierarchy);
@@ -1146,13 +1185,12 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_scene_selector);
 	panels.push_back(panel_text_editor);
 	panels.push_back(panel_build);
-	panels.push_back(panel_animtimeline);
-	panels.push_back(panel_animator);
 	panels.push_back(panel_particles);
 }
 
 void ModuleUI::UpdatePanels()
 {
+	OPTICK_EVENT();
 	std::vector<Panel*>::iterator item = panels.begin();
 	for (; item != panels.end(); ++item) {
 		if (*item != nullptr) {

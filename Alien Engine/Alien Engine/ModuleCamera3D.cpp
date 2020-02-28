@@ -13,6 +13,8 @@
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 {
 	name.assign("Camera3D");
@@ -46,6 +48,7 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	OPTICK_EVENT();
 	frustum = &fake_camera->frustum;
 
 	speed = camera_speed * dt;
@@ -78,7 +81,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Movement();
 			}
 		}
-		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && is_scene_hovered)
 		{
 			Rotation(dt);
 		}
@@ -116,6 +119,7 @@ void ModuleCamera3D::Move(const float3& Movement)
 // -----------------------------------------------------------------
 void ModuleCamera3D::Movement()
 {
+	OPTICK_EVENT();
 	float3 movement(float3::zero());
 
 

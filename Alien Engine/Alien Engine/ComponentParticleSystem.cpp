@@ -9,6 +9,8 @@
 #include "imgui/imgui_internal.h"
 #include "PanelProject.h"
 
+#include "Optick/include/optick.h"
+
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::PARTICLES;
@@ -31,6 +33,7 @@ void ComponentParticleSystem::OnPlay()
 
 void ComponentParticleSystem::PreUpdate()
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
@@ -42,12 +45,14 @@ void ComponentParticleSystem::PreUpdate()
 
 void ComponentParticleSystem::Update()
 {
+	OPTICK_EVENT();
 	if (particleSystem->isPlaying())
 		particleSystem->Update(Time::GetCurrentDT());
 }
 
 void ComponentParticleSystem::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (particleSystem->isPlaying())
 		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
@@ -60,6 +65,7 @@ void ComponentParticleSystem::DebugDraw()
 
 void ComponentParticleSystem::Draw()
 {
+	OPTICK_EVENT();
 	particleSystem->DrawParticles();
 }
 
