@@ -580,7 +580,6 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 	App->file_system->Save(meta_data_path.data(), data, size);
 	App->resources->AddResource(this);
-	FreeMemory();
 	RELEASE_ARRAY(data);
 
 	return true;
