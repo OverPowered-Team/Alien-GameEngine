@@ -222,6 +222,36 @@ void ResourceAnimatorController::AddIntParameter(std::pair<std::string, int> par
 	int_parameters.push_back(param);
 }
 
+void ResourceAnimatorController::RemoveBoolParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			bool_parameters.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::RemoveFloatParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			float_parameters.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::RemoveIntParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			int_parameters.erase(it);
+			break;
+		}
+	}
+}
+
 void ResourceAnimatorController::SetBool(std::string name, bool value)
 {
 	for (int i = 0; i < bool_parameters.size(); i++) {
@@ -1487,6 +1517,39 @@ void Transition::AddBoolCondition(std::string type, std::string comp_text, uint 
 	BoolCondition* new_bool_condition = new BoolCondition(type, index);
 	new_bool_condition->SetCompText(comp_text);
 	bool_conditions.push_back(new_bool_condition);
+}
+
+void Transition::RemoveIntCondition(IntCondition* int_condition)
+{
+	for (std::vector<IntCondition*>::iterator it = int_conditions.begin(); it != int_conditions.end(); ++it) {
+		if ((*it) == int_condition) {
+			delete (*it);
+			it = int_conditions.erase(it);
+			break;
+		}
+	}
+}
+
+void Transition::RemoveFloatCondition(FloatCondition* float_condition)
+{
+	for (std::vector<FloatCondition*>::iterator it = float_conditions.begin(); it != float_conditions.end(); ++it) {
+		if ((*it) == float_condition) {
+			delete (*it);
+			it = float_conditions.erase(it);
+			break;
+		}
+	}
+}
+
+void Transition::RemoveBoolCondition(BoolCondition* bool_condition)
+{
+	for (std::vector<BoolCondition*>::iterator it = bool_conditions.begin(); it != bool_conditions.end(); ++it) {
+		if ((*it) == bool_condition) {
+			delete (*it);
+			it = bool_conditions.erase(it);
+			break;
+		}
+	}
 }
 
 bool IntCondition::Compare(ResourceAnimatorController* controller)

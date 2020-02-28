@@ -264,6 +264,12 @@ void PanelAnimator::ShowLinkPopup()
 				ImGui::EndPopup();
 			}
 
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveBoolCondition(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]);
+			}
+
 			ImGui::PopID();
 
 
@@ -316,6 +322,12 @@ void PanelAnimator::ShowLinkPopup()
 
 			ImGui::InputFloat("", &current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp);
 
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveFloatCondition(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]);
+			}
+
 			ImGui::PopID();
 
 
@@ -366,6 +378,12 @@ void PanelAnimator::ShowLinkPopup()
 			ImGui::SameLine();
 
 			ImGui::InputInt("", &current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp);
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveIntCondition(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]);
+			}
 
 			ImGui::PopID();
 		}
@@ -441,6 +459,11 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::Checkbox("##checkbox", &temp_value)) {
 				current_animator->SetBoolParametersValue(i, temp_value);
 			}
+
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveBoolParameter(current_animator->GetBoolParameters()[i].first);
+			}
+
 			ImGui::PopID();
 			ImGui::Separator();
 		}
@@ -463,8 +486,12 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::InputFloat("##inputfloat", &temp_value)) {
 				current_animator->SetFloatParametersValue(i, temp_value);
 			}
-			ImGui::PopID();
 
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveFloatParameter(current_animator->GetFloatParameters()[i].first);
+			}
+
+			ImGui::PopID();
 			ImGui::Separator();
 		}
 	}
@@ -485,8 +512,12 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::InputInt("##inputint", &temp_value)) {
 				current_animator->SetIntParametersValue(i, temp_value);
 			}
-			ImGui::PopID();
 
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveIntParameter(current_animator->GetIntParameters()[i].first);
+			}
+
+			ImGui::PopID();
 			ImGui::Separator();
 		}
 	}

@@ -133,6 +133,9 @@ public:
 	void AddFloatCondition(std::string type, std::string comp_text, uint index, float comp);
 	void AddBoolCondition();
 	void AddBoolCondition(std::string type, std::string comp_text, uint index);
+	void RemoveIntCondition(IntCondition* int_condition);
+	void RemoveFloatCondition(FloatCondition* float_condition);
+	void RemoveBoolCondition(BoolCondition* bool_condition);
 	std::vector<IntCondition*> GetIntConditions() { return int_conditions; }
 	std::vector<FloatCondition*> GetFloatConditions() { return float_conditions; }
 	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
@@ -175,10 +178,12 @@ public:
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
-
 	void AddBoolParameter(std::pair<std::string, bool> param); 
 	void AddFloatParameter(std::pair<std::string, float> param);
 	void AddIntParameter(std::pair<std::string, int> param);
+	void RemoveBoolParameter(std::string name);
+	void RemoveFloatParameter(std::string name);
+	void RemoveIntParameter(std::string name);
 	//string to const char for scripting
 	void SetBool(std::string name, bool value);
 	void SetFloat(std::string name, float value);
