@@ -251,9 +251,7 @@ void ComponentTransform::RecalculateTransform()
 	else {
 		global_transformation = local_transformation;
 	}
-	up = { 2 * (local_rotation.x * local_rotation.y - local_rotation.w * local_rotation.z),
-			1 - 2 * (local_rotation.x * local_rotation.x + local_rotation.z * local_rotation.z),
-			2 * (local_rotation.y * local_rotation.z + local_rotation.w * local_rotation.x) };
+	up = local_rotation.WorldY();
 	forward = { 2 * (local_rotation.x * local_rotation.z + local_rotation.w * local_rotation.y),
 				2 * (local_rotation.y * local_rotation.z - local_rotation.w * local_rotation.x),
 				1 - 2 * (local_rotation.x * local_rotation.x + local_rotation.y * local_rotation.y) };
@@ -270,12 +268,12 @@ void ComponentTransform::RecalculateTransform()
 	}
 
 	ComponentMesh* mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::MESH);
-	if (mesh == nullptr)
-		mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::DEFORMABLE_MESH);
-	if (mesh != nullptr)
-	{
-		mesh->RecalculateAABB_OBB();
-	}
+	//if (mesh == nullptr)
+	//	mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::DEFORMABLE_MESH);
+	//if (mesh != nullptr)
+	//{
+	//	mesh->RecalculateAABB_OBB();
+	//}
 }
 
 

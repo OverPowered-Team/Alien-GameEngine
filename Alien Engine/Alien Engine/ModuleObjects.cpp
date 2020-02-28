@@ -19,6 +19,7 @@
 #include "ComponentText.h"
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -1650,6 +1651,9 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	switch (type) {
 	case PrimitiveType::CUBE: {
 		collider = new ComponentBoxCollider(object);
+		break; }
+	case PrimitiveType::SPHERE_ALIEN: {
+		collider = new ComponentSphereCollider(object);
 		break; }
 	}
 
