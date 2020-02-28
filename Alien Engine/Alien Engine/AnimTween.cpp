@@ -11,5 +11,5 @@ Tween* AnimTween::Move(GameObject * gameObject, const float3 & to, float time)
 	tween->to = float4(to, 0.f);
 	tween->trans = gameObject;
 
-	return Tween();
+	return tween;
 }
