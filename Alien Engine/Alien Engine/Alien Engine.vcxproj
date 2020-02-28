@@ -325,12 +325,13 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="TweenDescr.h" />
+    <ClInclude Include="AnimTween.h" />
     <ClInclude Include="UITween.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienEngine.cpp" />
+    <ClCompile Include="AnimTween.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />

@@ -600,7 +600,7 @@
     <ClInclude Include="UITween.h">
       <Filter>Tools\UITween</Filter>
     </ClInclude>
-    <ClInclude Include="TweenDescr.h">
+    <ClInclude Include="AnimTween.h">
       <Filter>Tools\UITween</Filter>
     </ClInclude>
   </ItemGroup>
@@ -976,6 +976,9 @@
     </ClCompile>
     <ClCompile Include="ComponentBar.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimTween.cpp">
+      <Filter>Tools\UITween</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

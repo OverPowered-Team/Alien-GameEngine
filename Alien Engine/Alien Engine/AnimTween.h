@@ -5,19 +5,13 @@
 class TweenDescr;
 class GameObject;
 
-enum TweenType {
-	MOVE_X,
-	MOVE_Y,
-	MOVE_Z,
-	MOVE_LOCAL_X,
-	MOVE_LOCAL_Y,
-	MOVE_LOCAL_Z,
-	ROTATE_X,
-	ROTATE_Y,
-	ROTATE_Z,
-	SCALE_X,
-	SCALE_Y,
-	SCALE_Z
+enum TweenAction {
+	NONE = -1,
+	MOVE,
+	ROTATE,
+	SCALE,
+	ALPHA,
+	COLOR,
 };
 
 enum UITweenType {
