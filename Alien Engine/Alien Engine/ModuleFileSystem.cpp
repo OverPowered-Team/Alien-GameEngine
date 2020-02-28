@@ -11,6 +11,8 @@
 
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 using namespace std;
 
 ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
@@ -113,6 +115,7 @@ bool ModuleFileSystem::Init()
 
 update_status ModuleFileSystem::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	static std::string dll_path(std::string(SCRIPTS_DLL_OUTPUT + std::string("AlienEngineScripts.dll")));
 	if (Exists(dll_path.data())) {

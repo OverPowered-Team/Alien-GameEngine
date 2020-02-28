@@ -10,6 +10,8 @@
 #include "PanelProject.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ComponentTransform::ComponentTransform(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::TRANSFORM;	
@@ -233,6 +235,7 @@ const Quat ComponentTransform::GetGlobalRotation() const
 
 void ComponentTransform::RecalculateTransform()
 {
+	OPTICK_EVENT();
 	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);
 
 	if (game_object_attached == nullptr) 

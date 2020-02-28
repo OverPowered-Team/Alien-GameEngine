@@ -27,6 +27,8 @@
 #include "mmgr/mmgr.h"
 #include "FreeType/include/freetype/freetype.h"
 
+#include "Optick/include/optick.h"
+
 ModuleImporter::ModuleImporter(bool start_enabled) : Module(start_enabled)
 {
 	name = "Importer";
@@ -72,6 +74,7 @@ bool ModuleImporter::CleanUp()
 
 bool ModuleImporter::LoadModelFile(const char* path, const char* extern_path)
 {
+	OPTICK_EVENT();
 	bool ret = true;
 
 	LOG_ENGINE("Loading %s", path);
@@ -105,6 +108,7 @@ bool ModuleImporter::LoadModelFile(const char* path, const char* extern_path)
 
 void ModuleImporter::InitScene(const char* path, const aiScene* scene, const char* extern_path)
 {
+	OPTICK_EVENT();
 	model = new ResourceModel();
 	model->name = App->file_system->GetBaseFileName(path);
 	model->path = std::string(path);
@@ -161,6 +165,7 @@ void ModuleImporter::InitScene(const char* path, const aiScene* scene, const cha
 
 void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 {
+	OPTICK_EVENT();
 	ResourceAnimation* resource_animation = new ResourceAnimation();
 	resource_animation->name = anim->mName.C_Str();
 	resource_animation->ticks_per_second = anim->mTicksPerSecond;
@@ -214,6 +219,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation* anim)
 
 void ModuleImporter::LoadBone(const aiBone* bone)
 {
+	OPTICK_EVENT();
 	ResourceBone* r_bone = new ResourceBone();
 
 	r_bone->name = bone->mName.C_Str();
@@ -238,6 +244,7 @@ void ModuleImporter::LoadBone(const aiBone* bone)
 
 void ModuleImporter::LoadMesh(const aiMesh* mesh)
 {
+	OPTICK_EVENT();
 	ResourceMesh* ret = new ResourceMesh();
 	
 	// get vertex
@@ -310,6 +317,7 @@ void ModuleImporter::LoadMesh(const aiMesh* mesh)
 
 void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum)
 {
+	OPTICK_EVENT();
 	aiMatrix4x4 mat;
 	while (std::string(node->mName.C_Str()).find("_$AssimpFbx$_") != std::string::npos) {
 		mat = mat * node->mTransformation;
@@ -363,6 +371,7 @@ void ModuleImporter::LoadNode(const aiNode* node, const aiScene* scene, uint nod
 
 void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* extern_path)
 {
+	OPTICK_EVENT();
 	ResourceMaterial* mat = new ResourceMaterial();
 
 	aiColor4D col;
@@ -381,6 +390,7 @@ void ModuleImporter::LoadMaterials(const aiMaterial* material, const char* exter
 
 void ModuleImporter::LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path)
 {
+	OPTICK_EVENT();
 	aiString ai_path;
 	if (AI_SUCCESS == material->GetTexture(assimp_type, 0, &ai_path)) {
 		std::string name = ai_path.C_Str();
@@ -473,6 +483,7 @@ void ModuleImporter::LoadModelTexture(const aiMaterial* material, ResourceMateri
 
 ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been_dropped, bool is_custom)
 {
+	OPTICK_EVENT();
 	ResourceTexture* texture = nullptr;
 
 	if (!has_been_dropped && !App->file_system->Exists(path)) {
@@ -510,6 +521,7 @@ ResourceTexture* ModuleImporter::LoadTextureFile(const char* path, bool has_been
 
 ResourceTexture* ModuleImporter::LoadEngineTexture(const char* path)
 {
+	OPTICK_EVENT();
 	ResourceTexture* texture = nullptr;
 
 	ILuint new_image_id = 0;

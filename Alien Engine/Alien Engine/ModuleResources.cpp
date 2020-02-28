@@ -16,6 +16,7 @@
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 {
@@ -28,6 +29,7 @@ ModuleResources::~ModuleResources()
 
 bool ModuleResources::Start()
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	// Load Icons
 	icons.jpg_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_jpg.png");
@@ -90,6 +92,7 @@ update_status ModuleResources::Update(float dt)
 
 bool ModuleResources::CleanUp()
 {
+	OPTICK_EVENT();
 	try {
 		std::vector<Resource*>::iterator item = resources.begin();
 		for (; item != resources.end(); ++item) {
@@ -154,7 +157,7 @@ bool ModuleResources::CreateNewModelInstanceOf(const char* path)
 u64 ModuleResources::GetIDFromAlienPath(const char* path)
 {
 	u64 ID = 0;
-	
+	OPTICK_EVENT();
 	JSON_Value* value = json_parse_file(path);
 	JSON_Object* object = json_value_get_object(value);
 
@@ -172,6 +175,7 @@ u64 ModuleResources::GetIDFromAlienPath(const char* path)
 
 Resource* ModuleResources::GetResourceWithID(const u64& ID)
 {
+	OPTICK_EVENT();
 	std::vector<Resource*>::iterator item = resources.begin();
 	for (; item != resources.end(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -183,6 +187,7 @@ Resource* ModuleResources::GetResourceWithID(const u64& ID)
 
 const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 {
+	OPTICK_EVENT();
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
 	for (; item != resources.cend(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -194,6 +199,7 @@ const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 
 std::vector<Resource*> ModuleResources::GetResourcesWithType(ResourceType type)
 {
+	OPTICK_EVENT();
 	std::vector<Resource*> ret;
 	for each (Resource* r in resources)
 	{
@@ -233,6 +239,7 @@ u64 ModuleResources::GetRandomID()
 
 ResourceTexture * ModuleResources::GetTextureByName(const char * name)
 {
+	OPTICK_EVENT();
 	ResourceTexture* ret = nullptr;
 
 	std::vector<Resource*>::iterator item = resources.begin();
@@ -247,6 +254,7 @@ ResourceTexture * ModuleResources::GetTextureByName(const char * name)
 
 const ResourceTexture* ModuleResources::GetTextureByName(const char* name) const
 {
+	OPTICK_EVENT();
 	ResourceTexture* ret = nullptr;
 
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
@@ -461,6 +469,7 @@ void ModuleResources::ReadHeaderFile(const char* path, std::vector<std::string>&
 
 void ModuleResources::ReloadScripts()
 {
+	OPTICK_EVENT();
 	std::vector<std::string> files;
 	std::vector<std::string> directories;
 
@@ -559,6 +568,7 @@ FileNode* ModuleResources::GetFileNodeByPath(const std::string& path, FileNode* 
 
 void ModuleResources::ReadAllMetaData()
 {
+	OPTICK_EVENT();
 	std::vector<std::string> files;
 	std::vector<std::string> directories;
 

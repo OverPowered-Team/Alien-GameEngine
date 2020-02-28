@@ -11,6 +11,8 @@
 #include "ComponentAnimator.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ComponentAnimator::ComponentAnimator(GameObject* gameobject) : Component(gameobject)
 {
 	type = ComponentType::ANIMATOR;
@@ -25,6 +27,7 @@ ComponentAnimator::~ComponentAnimator()
 
 void ComponentAnimator::Update()
 {
+	OPTICK_EVENT();
 	if (!animator_controller)
 		return;
 

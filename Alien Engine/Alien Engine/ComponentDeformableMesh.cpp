@@ -9,6 +9,8 @@
 #include "ComponentDeformableMesh.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : ComponentMesh(attach)
 {
 	type = ComponentType::DEFORMABLE_MESH;
@@ -62,6 +64,7 @@ void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 
 void ComponentDeformableMesh::UpdateDeformableMesh()
 {
+	OPTICK_EVENT();
 	deformable_mesh->Reset();
 
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it)
@@ -95,6 +98,7 @@ void ComponentDeformableMesh::UpdateDeformableMesh()
 
 void ComponentDeformableMesh::DrawPolygon()
 {
+	OPTICK_EVENT();
 	if(deformable_mesh)
 		UpdateDeformableMesh();
 
@@ -208,6 +212,7 @@ void ComponentDeformableMesh::DrawOutLine()
 
 void ComponentDeformableMesh::DrawMesh()
 {
+	OPTICK_EVENT();
 	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
 		return;
 

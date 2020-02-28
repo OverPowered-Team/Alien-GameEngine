@@ -827,6 +827,8 @@
     <ClInclude Include="NodeEditor\Source\imgui_extra_math.h" />
     <ClInclude Include="NodeEditor\Source\imgui_node_editor_internal.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="Optick\include\optick.config.h" />
+    <ClInclude Include="Optick\include\optick.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="PanelAbout.h" />
     <ClInclude Include="PanelAnimator.h" />

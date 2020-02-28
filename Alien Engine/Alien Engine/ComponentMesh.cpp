@@ -10,6 +10,8 @@
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
@@ -29,6 +31,7 @@ ComponentMesh::~ComponentMesh()
 
 void ComponentMesh::DrawPolygon()
 {
+	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
@@ -131,6 +134,7 @@ void ComponentMesh::DrawOutLine()
 
 void ComponentMesh::DrawMesh()
 {
+	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 

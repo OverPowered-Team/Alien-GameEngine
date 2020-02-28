@@ -38,6 +38,8 @@
 #include "ComponentConvexHullCollider.h"
 #include "ComponentRigidBody.h"
 
+#include "Optick/include/optick.h"
+
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
@@ -515,6 +517,7 @@ bool GameObject::IsEnabled() const
 
 void GameObject::DrawScene()
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -560,6 +563,7 @@ void GameObject::DrawScene()
 
 void GameObject::DrawGame()
 {
+	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -692,6 +696,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -711,6 +716,7 @@ void GameObject::PostUpdate()
 
 void GameObject::PreUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -730,6 +736,7 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -1181,6 +1188,7 @@ void GameObject::FreeArrayMemory(void*** array_)
 
 GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position, GameObject* parent)
 {
+	OPTICK_EVENT();
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
@@ -1724,6 +1732,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 GameObject* GameObject::Clone(GameObject* parent)
 {
+	OPTICK_EVENT();
 	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);
