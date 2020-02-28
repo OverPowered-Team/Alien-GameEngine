@@ -39,34 +39,32 @@ public:
 class Condition {
 public:
 	std::string type = "";
-	std::string param_name = "";
+	uint parameter_index;
 	std::vector<std::string> comp_texts;
 	std::string comp_text = "";
 
 public:
 	Condition(std::string type, std::string comp_text = "") { this->type = type; }
-	virtual bool Compare() { return false; }
+	virtual bool Compare(ResourceAnimatorController* controller) { return false; }
 
 };
 
 class IntCondition : public Condition {
 public:
-	std::pair <std::string, int> parameter;
 	int comp;
 
 public:
-	IntCondition(std::string type, std::pair <std::string, int> parameter, int comp) : Condition(type) {
-		this->parameter = parameter;
+	IntCondition(std::string type, uint index, int comp) : Condition(type) {
 		this->comp = comp;
-		this->param_name = parameter.first;
+		this->parameter_index = index;
 		comp_texts.push_back("Equal");
 		comp_texts.push_back("Not Equal");
 		comp_texts.push_back("Greater");
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
-	bool Compare();
-	void SetParameter(std::pair <std::string, int> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(int comp) { this->comp = comp; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 
@@ -74,38 +72,33 @@ public:
 
 class FloatCondition : public Condition {
 public:
-	std::pair <std::string, float> parameter;
 	float comp;
 
 public:
-	FloatCondition(std::string type, std::pair <std::string, float> parameter, float comp) : Condition(type) {
-		this->parameter = parameter;
+	FloatCondition(std::string type, uint index, float comp) : Condition(type) {
 		this->comp = comp;
-		this->param_name = parameter.first;
+		this->parameter_index = index;
 		comp_texts.push_back("Greater");
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
-	bool Compare();
-	void SetParameter(std::pair <std::string, float> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(float comp) { this->comp = comp; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 };
 
 class BoolCondition : public Condition {
-public:
-	std::pair <std::string, bool> parameter;
 
 public:
-	BoolCondition(std::string type, std::pair <std::string, bool> parameter) : Condition(type) {
-		this->parameter = parameter;
-		this->param_name = parameter.first;
+	BoolCondition(std::string type, uint index) : Condition(type) {
+		this->parameter_index = index;
 		comp_texts.push_back("True");
 		comp_texts.push_back("False");
 		comp_text = "True";
 	}
-	bool Compare();
-	void SetParameter(std::pair <std::string, bool> parameter) { this->parameter = parameter; this->param_name = parameter.first; }
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
 };
 
@@ -135,11 +128,11 @@ public:
 
 	//Handle Conditions
 	void AddIntCondition();
-	void AddIntCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, int> parameter, int comp);
+	void AddIntCondition(std::string type, std::string comp_text, uint index, int comp);
 	void AddFloatCondition();
-	void AddFloatCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, float> parameter, float comp);
+	void AddFloatCondition(std::string type, std::string comp_text, uint index, float comp);
 	void AddBoolCondition();
-	void AddBoolCondition(std::string type, std::string param_name, std::string comp_text, std::pair<std::string, bool> parameter);
+	void AddBoolCondition(std::string type, std::string comp_text, uint index);
 	std::vector<IntCondition*> GetIntConditions() { return int_conditions; }
 	std::vector<FloatCondition*> GetFloatConditions() { return float_conditions; }
 	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
@@ -182,6 +175,10 @@ public:
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
+
+	void AddBoolParameter(std::pair<std::string, bool> param); 
+	void AddFloatParameter(std::pair<std::string, float> param);
+	void AddIntParameter(std::pair<std::string, int> param);
 	//string to const char for scripting
 	void SetBool(std::string name, bool value);
 	void SetFloat(std::string name, float value);
@@ -202,8 +199,7 @@ public:
 	void Update();
 	void UpdateState(State* state);
 	void Stop();
-	std::vector<bool> GetTriggers() const { return triggers; }
-	void CheckTriggers();
+	bool CheckTriggers();
 	int times_attached = 0;
 
 	//Transform

@@ -231,8 +231,8 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name);
-			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->param_name.c_str())) {
+			ImGui::PushID(current_animator->GetBoolParameters()[current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetBoolParameters()[current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->parameter_index].first.c_str())) {
 				ImGui::OpenPopup("Select bool parameter");
 			}
 
@@ -240,7 +240,7 @@ void PanelAnimator::ShowLinkPopup()
 				for (int j = 0; j < current_animator->GetBoolParameters().size(); j++)
 				{
 					if (ImGui::Selectable(current_animator->GetBoolParameters()[j].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(current_animator->GetBoolParameters()[j]);
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(j);
 					}
 				}
 
@@ -278,8 +278,8 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name);
-			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->param_name.c_str())) {
+			ImGui::PushID(current_animator->GetFloatParameters()[current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetFloatParameters()[current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->parameter_index].first.c_str())) {
 				ImGui::OpenPopup("Select float parameter");
 			}
 
@@ -287,7 +287,7 @@ void PanelAnimator::ShowLinkPopup()
 				for (int j = 0; j < current_animator->GetFloatParameters().size(); j++)
 				{
 					if (ImGui::Selectable(current_animator->GetFloatParameters()[j].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(current_animator->GetFloatParameters()[j]);
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(j);
 					}
 				}
 
@@ -330,8 +330,8 @@ void PanelAnimator::ShowLinkPopup()
 		{
 			ImGui::Separator();
 
-			ImGui::PushID(&current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name);
-			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->param_name.c_str())) {
+			ImGui::PushID(current_animator->GetIntParameters()[current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetIntParameters()[current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->parameter_index].first.c_str())) {
 				ImGui::OpenPopup("Select Int parameter");
 			}
 
@@ -339,7 +339,7 @@ void PanelAnimator::ShowLinkPopup()
 				for (int j = 0; j < current_animator->GetIntParameters().size(); j++)
 				{
 					if (ImGui::Selectable(current_animator->GetIntParameters()[j].first.c_str())) {
-						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(current_animator->GetIntParameters()[j]);
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(j);
 					}
 				}
 
