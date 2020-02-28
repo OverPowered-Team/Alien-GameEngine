@@ -196,22 +196,6 @@ public:
 	bool DeleteMetaData() override;
 	bool SaveAsset(const u64& force_id = 0);
 
-	//Conditions Save Load
-	void LoadIntConditions(char* cursor, Transition* transition);
-	void LoadFloatConditions(char* cursor, Transition* transition);
-	void LoadBoolConditions(char* cursor, Transition* transition);
-	void SaveIntConditions(char* cursor, Transition* transition);
-	void SaveFloatConditions(char* cursor, Transition* transition);
-	void SaveBoolConditions(char* cursor, Transition* transition);
-
-	//Parameters Save Load
-	void LoadIntParameters(char* cursor);
-	void LoadFloatParameters(char* cursor);
-	void LoadBoolParameters(char* cursor);
-	void SaveIntParameters(char* cursor);
-	void SaveFloatParameters(char* cursor);
-	void SaveBoolParameters(char* cursor);
-
 	//AnimationHandle
 	void Play();
 	void Play(std::string state_name);

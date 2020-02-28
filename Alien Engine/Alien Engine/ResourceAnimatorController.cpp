@@ -352,561 +352,6 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	return true;
 }
 
-void ResourceAnimatorController::LoadIntConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_conditions;
-	memcpy(&num_int_conditions, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_conditions; ++j) {
-
-		uint name_size;
-
-		//Load condition type size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition type
-		bytes = name_size;
-		std::string tmp_condition_type;
-		tmp_condition_type.resize(name_size);
-		memcpy(&tmp_condition_type[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name
-		bytes = name_size;
-		std::string tmp_condition_param_name;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text
-		bytes = name_size;
-		std::string tmp_condition_comp_text;
-		tmp_condition_comp_text.resize(name_size);
-		memcpy(&tmp_condition_comp_text[0], cursor, bytes);
-		cursor += bytes;
-
-		std::pair<std::string, int> parameter;
-
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(int);
-		int tmp_condition_param_value;
-		memcpy(&tmp_condition_param_value, cursor, bytes);
-		cursor += bytes;
-
-		parameter.first = tmp_condition_param_name;
-		parameter.second = tmp_condition_param_value;
-
-		bytes = sizeof(int);
-		int tmp_condition_comp_value;
-		memcpy(&tmp_condition_comp_value, cursor, bytes);
-		cursor += bytes;
-
-		transition->AddIntCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter, tmp_condition_comp_value);
-
-	}
-}
-
-void ResourceAnimatorController::LoadFloatConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_conditions;
-	memcpy(&num_int_conditions, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_conditions; ++j) {
-
-		uint name_size;
-
-		//Load condition type size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition type
-		bytes = name_size;
-		std::string tmp_condition_type;
-		tmp_condition_type.resize(name_size);
-		memcpy(&tmp_condition_type[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name
-		bytes = name_size;
-		std::string tmp_condition_param_name;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text
-		bytes = name_size;
-		std::string tmp_condition_comp_text;
-		tmp_condition_comp_text.resize(name_size);
-		memcpy(&tmp_condition_comp_text[0], cursor, bytes);
-		cursor += bytes;
-
-		std::pair<std::string, float> parameter;
-
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(float);
-		float tmp_condition_param_value;
-		memcpy(&tmp_condition_param_value, cursor, bytes);
-		cursor += bytes;
-
-		parameter.first = tmp_condition_param_name;
-		parameter.second = tmp_condition_param_value;
-
-		bytes = sizeof(float);
-		float tmp_condition_comp_value;
-		memcpy(&tmp_condition_comp_value, cursor, bytes);
-		cursor += bytes;
-
-		transition->AddFloatCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter, tmp_condition_comp_value);
-
-	}
-}
-
-void ResourceAnimatorController::LoadBoolConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_conditions;
-	memcpy(&num_int_conditions, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_conditions; ++j) {
-
-		uint name_size;
-
-		//Load condition type size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition type
-		bytes = name_size;
-		std::string tmp_condition_type;
-		tmp_condition_type.resize(name_size);
-		memcpy(&tmp_condition_type[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition param name
-		bytes = name_size;
-		std::string tmp_condition_param_name;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load condition comp text
-		bytes = name_size;
-		std::string tmp_condition_comp_text;
-		tmp_condition_comp_text.resize(name_size);
-		memcpy(&tmp_condition_comp_text[0], cursor, bytes);
-		cursor += bytes;
-
-		std::pair<std::string, bool> parameter;
-
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		tmp_condition_param_name.resize(name_size);
-		memcpy(&tmp_condition_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(bool);
-		bool tmp_condition_param_value;
-		memcpy(&tmp_condition_param_value, cursor, bytes);
-		cursor += bytes;
-
-		parameter.first = tmp_condition_param_name;
-		parameter.second = tmp_condition_param_value;
-
-		transition->AddBoolCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter);
-
-	}
-}
-
-void ResourceAnimatorController::SaveIntConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_conditions = transition->GetIntConditions().size();
-	memcpy(cursor, &num_int_conditions, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_conditions; ++j) {
-
-		//Save condition type and type size
-		uint name_size = transition->GetIntConditions()[j]->type.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetIntConditions()[j]->type.data(), bytes);
-		cursor += bytes;
-
-		//Save condition param name and size
-		name_size = transition->GetIntConditions()[j]->param_name.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetIntConditions()[j]->param_name.data(), bytes);
-		cursor += bytes;
-
-		//Save condition comp text and size 
-		name_size = transition->GetIntConditions()[j]->comp_text.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetIntConditions()[j]->comp_text.data(), bytes);
-		cursor += bytes;
-
-		//Load parameter name and size
-		name_size = transition->GetIntConditions()[j]->parameter.first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetIntConditions()[j]->parameter.first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(int);
-		memcpy(cursor, &transition->GetIntConditions()[j]->parameter.second, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(int);
-		memcpy(cursor, &transition->GetIntConditions()[j]->comp, bytes);
-		cursor += bytes;
-
-	}
-}
-
-void ResourceAnimatorController::SaveFloatConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_float_conditions = transition->GetFloatConditions().size();
-	memcpy(cursor, &num_float_conditions, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_float_conditions; ++j) {
-
-		//Save condition type and type size
-		uint name_size = transition->GetFloatConditions()[j]->type.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetFloatConditions()[j]->type.data(), bytes);
-		cursor += bytes;
-
-		//Save condition param name and size
-		name_size = transition->GetFloatConditions()[j]->param_name.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetFloatConditions()[j]->param_name.data(), bytes);
-		cursor += bytes;
-
-		//Save condition comp text and size 
-		name_size = transition->GetFloatConditions()[j]->comp_text.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetFloatConditions()[j]->comp_text.data(), bytes);
-		cursor += bytes;
-
-		//Load parameter name and size
-		name_size = transition->GetFloatConditions()[j]->parameter.first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetFloatConditions()[j]->parameter.first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(float);
-		memcpy(cursor, &transition->GetFloatConditions()[j]->parameter.second, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(float);
-		memcpy(cursor, &transition->GetFloatConditions()[j]->comp, bytes);
-		cursor += bytes;
-
-	}
-}
-
-void ResourceAnimatorController::SaveBoolConditions(char* cursor, Transition* transition)
-{
-	uint bytes = sizeof(uint);
-	uint num_bool_conditions = transition->GetBoolConditions().size();
-	memcpy(cursor, &num_bool_conditions, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_bool_conditions; ++j) {
-
-		//Save condition type and type size
-		uint name_size = transition->GetBoolConditions()[j]->type.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetBoolConditions()[j]->type.data(), bytes);
-		cursor += bytes;
-
-		//Save condition param name and size
-		name_size = transition->GetBoolConditions()[j]->param_name.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetBoolConditions()[j]->param_name.data(), bytes);
-		cursor += bytes;
-
-		//Save condition comp text and size 
-		name_size = transition->GetBoolConditions()[j]->comp_text.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetBoolConditions()[j]->comp_text.data(), bytes);
-		cursor += bytes;
-
-		//Load parameter name and size
-		name_size = transition->GetBoolConditions()[j]->parameter.first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, transition->GetBoolConditions()[j]->parameter.first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(bool);
-		memcpy(cursor, &transition->GetBoolConditions()[j]->parameter.second, bytes);
-		cursor += bytes;
-
-	}
-}
-
-void ResourceAnimatorController::LoadIntParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_parameters;
-	memcpy(&num_int_parameters, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_parameters; ++j) {
-		uint name_size;
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		std::string tmp_param_name;
-		tmp_param_name.resize(name_size);
-		memcpy(&tmp_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(int);
-		int tmp_param_value;
-		memcpy(&tmp_param_value, cursor, bytes);
-		cursor += bytes;
-
-		int_parameters.push_back({ tmp_param_name, tmp_param_value });
-	}
-}
-
-void ResourceAnimatorController::LoadFloatParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_float_parameters;
-	memcpy(&num_float_parameters, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_float_parameters; ++j) {
-		uint name_size;
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		std::string tmp_param_name;
-		tmp_param_name.resize(name_size);
-		memcpy(&tmp_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(float);
-		int tmp_param_value;
-		memcpy(&tmp_param_value, cursor, bytes);
-		cursor += bytes;
-
-		float_parameters.push_back({ tmp_param_name, tmp_param_value });
-	}
-}
-
-void ResourceAnimatorController::LoadBoolParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_bool_parameters;
-	memcpy(&num_bool_parameters, cursor, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_bool_parameters; ++j) {
-		uint name_size;
-		//Load parameter name size
-		bytes = sizeof(uint);
-		memcpy(&name_size, cursor, bytes);
-		cursor += bytes;
-
-		//Load parameter name
-		bytes = name_size;
-		std::string tmp_param_name;
-		tmp_param_name.resize(name_size);
-		memcpy(&tmp_param_name[0], cursor, bytes);
-		cursor += bytes;
-
-		bytes = sizeof(bool);
-		int tmp_param_value;
-		memcpy(&tmp_param_value, cursor, bytes);
-		cursor += bytes;
-
-		bool_parameters.push_back({ tmp_param_name, tmp_param_value });
-	}
-}
-
-void ResourceAnimatorController::SaveIntParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_int_parameters = int_parameters.size();
-	memcpy(cursor, &num_int_parameters, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_int_parameters; ++j) {
-
-		//Save condition type and type size
-		uint name_size = int_parameters[j].first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, int_parameters[j].first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(int);
-		memcpy(cursor, &int_parameters[j].second, bytes);
-		cursor += bytes;
-	}
-}
-
-void ResourceAnimatorController::SaveFloatParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_float_parameters = float_parameters.size();
-	memcpy(cursor, &num_float_parameters, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_float_parameters; ++j) {
-
-		//Save condition type and type size
-		uint name_size = float_parameters[j].first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, float_parameters[j].first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(float);
-		memcpy(cursor, &float_parameters[j].second, bytes);
-		cursor += bytes;
-	}
-}
-
-void ResourceAnimatorController::SaveBoolParameters(char* cursor)
-{
-	uint bytes = sizeof(uint);
-	uint num_bool_parameters = bool_parameters.size();
-	memcpy(cursor, &num_bool_parameters, bytes);
-	cursor += bytes;
-
-	for (int j = 0; j < num_bool_parameters; ++j) {
-
-		//Save condition type and type size
-		uint name_size = bool_parameters[j].first.size();
-		bytes = sizeof(uint);
-		memcpy(cursor, &name_size, bytes);
-		cursor += bytes;
-		bytes = name_size;
-		memcpy(cursor, bool_parameters[j].first.data(), bytes);
-		cursor += bytes;
-
-		bytes = sizeof(bool);
-		memcpy(cursor, &bool_parameters[j].second, bytes);
-		cursor += bytes;
-	}
-}
-
 void ResourceAnimatorController::FreeMemory()
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -944,9 +389,83 @@ bool ResourceAnimatorController::LoadMemory()
 		memcpy(&name[0], cursor, bytes);
 		cursor += bytes;
 
-		LoadIntParameters(cursor);
-		LoadFloatParameters(cursor);
-		LoadBoolParameters(cursor);
+		bytes = sizeof(uint);
+		uint num_int_parameters;
+		memcpy(&num_int_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_int_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(int);
+			int tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			int_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		bytes = sizeof(uint);
+		uint num_float_parameters;
+		memcpy(&num_float_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_float_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			int tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			float_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		bytes = sizeof(uint);
+		uint num_bool_parameters;
+		memcpy(&num_bool_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_bool_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(bool);
+			int tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			bool_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
 
 		//Load transitions and states nums
 		bytes = sizeof(uint);
@@ -988,7 +507,6 @@ bool ResourceAnimatorController::LoadMemory()
 		{
 			//Load name size
 			uint bytes = sizeof(uint);
-			name_size;
 			memcpy(&name_size, cursor, bytes);
 			cursor += bytes;
 			//Load name
@@ -1000,7 +518,6 @@ bool ResourceAnimatorController::LoadMemory()
 
 			//Load name size
 			bytes = sizeof(uint);
-			name_size;
 			memcpy(&name_size, cursor, bytes);
 			cursor += bytes;
 			//Load name
@@ -1010,11 +527,6 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_target[0], cursor, bytes);
 			cursor += bytes;
 
-			bytes = sizeof(uint);
-			uint tmp_trigger;
-			memcpy(&tmp_trigger, cursor, bytes);
-			cursor += bytes;
-
 			bytes = sizeof(float);
 			float tmp_blend;
 			memcpy(&tmp_blend, cursor, bytes);
@@ -1022,11 +534,218 @@ bool ResourceAnimatorController::LoadMemory()
 
 			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend);
 
-			LoadIntConditions(cursor, transitions[i]);
-			LoadFloatConditions(cursor, transitions[i]);
-			LoadBoolConditions(cursor, transitions[i]);
+			bytes = sizeof(uint);
+			uint num_int_conditions;
+			memcpy(&num_int_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_int_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name
+				bytes = name_size;
+				std::string tmp_condition_param_name;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				std::pair<std::string, int> parameter;
+
+				//Load parameter name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load parameter name
+				bytes = name_size;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(int);
+				int tmp_condition_param_value;
+				memcpy(&tmp_condition_param_value, cursor, bytes);
+				cursor += bytes;
+
+				parameter.first = tmp_condition_param_name;
+				parameter.second = tmp_condition_param_value;
+
+				bytes = sizeof(int);
+				int tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddIntCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter, tmp_condition_comp_value);
+			}
+
+			bytes = sizeof(uint);
+			uint num_float_conditions;
+			memcpy(&num_float_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_float_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name
+				bytes = name_size;
+				std::string tmp_condition_param_name;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				std::pair<std::string, float> parameter;
+
+				//Load parameter name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load parameter name
+				bytes = name_size;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(float);
+				float tmp_condition_param_value;
+				memcpy(&tmp_condition_param_value, cursor, bytes);
+				cursor += bytes;
+
+				parameter.first = tmp_condition_param_name;
+				parameter.second = tmp_condition_param_value;
+
+				bytes = sizeof(float);
+				float tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddFloatCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter, tmp_condition_comp_value);
+
+			}
+
+			bytes = sizeof(uint);
+			uint num_bool_conditions;
+			memcpy(&num_bool_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_bool_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition param name
+				bytes = name_size;
+				std::string tmp_condition_param_name;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				std::pair<std::string, bool> parameter;
+
+				//Load parameter name size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load parameter name
+				bytes = name_size;
+				tmp_condition_param_name.resize(name_size);
+				memcpy(&tmp_condition_param_name[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(bool);
+				bool tmp_condition_param_value;
+				memcpy(&tmp_condition_param_value, cursor, bytes);
+				cursor += bytes;
+
+				parameter.first = tmp_condition_param_name;
+				parameter.second = tmp_condition_param_value;
+
+				transitions[i]->AddBoolCondition(tmp_condition_type, tmp_condition_param_name, tmp_condition_comp_text, parameter);
+
+			}
 
 		}
+
 		LOG_ENGINE("Loaded Anim Controller %s", meta_data_path.data());
 
 		RELEASE_ARRAY(buffer);
@@ -1125,7 +844,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	//SAVE LIBRARY FILE
-	uint size = sizeof(uint) + name.size() + sizeof(uint) * 2;
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 5;
 
 	for (std::vector<std::pair<std::string, int>>::iterator int_pit = int_parameters.begin(); int_pit != int_parameters.end(); ++int_pit) {
 		size += sizeof(uint) + (*int_pit).first.size() + sizeof(int);
@@ -1145,7 +864,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
-		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float);
+		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(uint)*3;
 
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
 		for (std::vector<IntCondition*>::iterator int_it = int_conditions.begin(); int_it != int_conditions.end(); ++int_it) {
@@ -1175,9 +894,68 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	cursor += bytes;
 
 	// Store Controller Parameters
-	SaveIntParameters(cursor);
-	SaveFloatParameters(cursor);
-	SaveBoolParameters(cursor);
+	bytes = sizeof(uint);
+	uint num_int_parameters = int_parameters.size();
+	memcpy(cursor, &num_int_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_int_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = int_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, int_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(int);
+		memcpy(cursor, &int_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_float_parameters = float_parameters.size();
+	memcpy(cursor, &num_float_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_float_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = float_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, float_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(float);
+		memcpy(cursor, &float_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_bool_parameters = bool_parameters.size();
+	memcpy(cursor, &num_bool_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_bool_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = bool_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, bool_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(bool);
+		memcpy(cursor, &bool_parameters[j].second, bytes);
+		cursor += bytes;
+	}
 
 	//Store transitions and states nums
 	bytes = sizeof(uint);
@@ -1236,9 +1014,161 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		memcpy(cursor, &tr_blend, bytes);
 		cursor += bytes;
 
-		SaveIntConditions(cursor, (*it));
-		SaveFloatConditions(cursor, (*it));
-		SaveBoolConditions(cursor, (*it));
+		//Save int Conditions
+		bytes = sizeof(uint);
+		uint num_int_conditions = (*it)->GetIntConditions().size();
+		memcpy(cursor, &num_int_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_int_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetIntConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition param name and size
+			name_size = (*it)->GetIntConditions()[j]->param_name.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->param_name.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetIntConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			//Load parameter name and size
+			name_size = (*it)->GetIntConditions()[j]->parameter.first.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->parameter.first.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(int);
+			memcpy(cursor, &(*it)->GetIntConditions()[j]->parameter.second, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(int);
+			memcpy(cursor, &(*it)->GetIntConditions()[j]->comp, bytes);
+			cursor += bytes;
+
+		}
+
+		bytes = sizeof(uint);
+		uint num_float_conditions = (*it)->GetFloatConditions().size();
+		memcpy(cursor, &num_float_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_float_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetFloatConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition param name and size
+			name_size = (*it)->GetFloatConditions()[j]->param_name.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->param_name.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetFloatConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			//Load parameter name and size
+			name_size = (*it)->GetFloatConditions()[j]->parameter.first.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->parameter.first.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			memcpy(cursor, &(*it)->GetFloatConditions()[j]->parameter.second, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			memcpy(cursor, &(*it)->GetFloatConditions()[j]->comp, bytes);
+			cursor += bytes;
+
+		}
+
+		bytes = sizeof(uint);
+		uint num_bool_conditions = (*it)->GetBoolConditions().size();
+		memcpy(cursor, &num_bool_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_bool_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetBoolConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition param name and size
+			name_size = (*it)->GetBoolConditions()[j]->param_name.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->param_name.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetBoolConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			//Load parameter name and size
+			name_size = (*it)->GetBoolConditions()[j]->parameter.first.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->parameter.first.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(bool);
+			memcpy(cursor, &(*it)->GetBoolConditions()[j]->parameter.second, bytes);
+			cursor += bytes;
+
+		}
 	}
 
 	App->file_system->Save(meta_data_path.data(), data, size);
