@@ -1,6 +1,6 @@
 {
     "Build": {
-        "FirstScene": "Assets\/Scenes\/Assigment3TankScene.alienScene",
-        "GameName": "TankGame"
+        "FirstScene": "Assets\/Scenes\/TEST.alienScene",
+        "GameName": "mymegagame"
     }
 }

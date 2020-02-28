@@ -325,8 +325,8 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TweenDescr.h" />
     <ClInclude Include="AnimTween.h" />
-    <ClInclude Include="UITween.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
@@ -454,6 +454,7 @@
     <ClCompile Include="TextEdit\TextEditor.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TweenDescr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CoreData\Configuration\DefaultConfiguration.json" />

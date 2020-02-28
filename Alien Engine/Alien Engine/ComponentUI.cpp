@@ -220,7 +220,9 @@ void ComponentUI::UILogic()
 	float3 mouse_pos;
 
 	#ifndef GAME_VERSION
-	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
+	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY ), App->input->GetMouseZ());
+	LOG_ENGINE("%f", mouse_pos.y);
+	LOG_ENGINE("MOUSE POS: %i", App->input->GetMouseY());
 	#else
 	mouse_pos = App->input->GetMousePosition();
 	#endif

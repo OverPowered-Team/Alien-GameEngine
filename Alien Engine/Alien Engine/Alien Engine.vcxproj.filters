@@ -597,7 +597,7 @@
     <ClInclude Include="ComponentBar.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UITween.h">
+    <ClInclude Include="TweenDescr.h">
       <Filter>Tools\UITween</Filter>
     </ClInclude>
     <ClInclude Include="AnimTween.h">
@@ -976,6 +976,9 @@
     </ClCompile>
     <ClCompile Include="ComponentBar.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TweenDescr.cpp">
+      <Filter>Tools\UITween</Filter>
     </ClCompile>
     <ClCompile Include="AnimTween.cpp">
       <Filter>Tools\UITween</Filter>

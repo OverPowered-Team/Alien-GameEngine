@@ -5,7 +5,11 @@
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentLight.h"
+#include "ComponentBone.h"
+#include "ComponentAnimator.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentCanvas.h"
 #include "ComponentText.h"
 #include "ComponentButton.h"
@@ -20,22 +24,52 @@
 #include "ComponentCheckbox.h"
 #include "ComponentSlider.h"
 #include "ComponentScript.h"
+#include "ComponentAudioListener.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentReverbZone.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
 
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
 
 	if (parent != nullptr) {
 		this->parent = parent;
 		parent->AddChild(this);
 	}
+
 }
 
-GameObject::GameObject()
+GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale)
 {
+	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, pos, rot, scale);
+	AddComponent(transform);
+
+	if (parent != nullptr) {
+		this->parent = parent;
+		parent->AddChild(this);
+	}
+
+}
+
+GameObject::GameObject(bool ignore_transform)
+{
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -456,6 +490,11 @@ GameObject* GameObject::GetChildRecursive(const char* child_name)
 	}
 }
 
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	return children;
+}
+
 void GameObject::SetEnable(bool enable)
 {
 	if (enable != enabled) {
@@ -480,6 +519,9 @@ void GameObject::DrawScene()
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
@@ -504,6 +546,15 @@ void GameObject::DrawScene()
 		if (mesh->draw_OBB)
 			mesh->DrawOBB();
 	}
+
+
+	for (Component* component : components)
+	{
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawScene();
+		}
+	}
 }
 
 
@@ -512,6 +563,8 @@ void GameObject::DrawGame()
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if(mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -530,6 +583,8 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 {
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+		if (mesh == nullptr) //not sure if this is the best solution
+			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
@@ -846,6 +901,12 @@ const Component* GameObject::GetComponent(const ComponentType& type) const
 		}
 	}
 	return nullptr;
+}
+
+ComponentTransform* GameObject::GetComponentTransform() const
+{
+	auto ret = GetComponent(ComponentType::TRANSFORM);
+	return (ret == nullptr) ? nullptr : (ComponentTransform*)ret;
 }
 
 Component* GameObject::GetComponentWithID(const u64& compID)
@@ -1341,6 +1402,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{
@@ -1502,10 +1565,10 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
-				ComponentTransform* transform = new ComponentTransform(this);
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
 				AddComponent(transform);
 				break; }
@@ -1529,15 +1592,72 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
 				break; }
+			case (int)ComponentType::DEFORMABLE_MESH: {
+				ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(this);
+				def_mesh->LoadComponent(components_to_load);
+				AddComponent(def_mesh);
+				break; }
+			case (int)ComponentType::ANIMATOR: {
+				ComponentAnimator* anim = new ComponentAnimator(this);
+				anim->LoadComponent(components_to_load);
+				AddComponent(anim);
+				break; }
+			case (int)ComponentType::BONE: {
+				ComponentBone* bone = new ComponentBone(this);
+				bone->LoadComponent(components_to_load);
+				AddComponent(bone);
+				break; }
+			case (int)ComponentType::A_EMITTER: {
+				ComponentAudioEmitter* emitter = new ComponentAudioEmitter(this);
+				emitter->LoadComponent(components_to_load);
+				AddComponent(emitter);
+				break; }
+			case (int)ComponentType::A_LISTENER: {
+				ComponentAudioListener* listener = new ComponentAudioListener(this);
+				listener->LoadComponent(components_to_load);
+				AddComponent(listener);
+				break; }
+			case (int)ComponentType::A_REVERB: {
+				ComponentReverbZone* reverb = new ComponentReverbZone(this);
+				reverb->LoadComponent(components_to_load);
+				AddComponent(reverb);
+				break; }
 			case (int)ComponentType::PARTICLES: {
 				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
 				particleSystem->LoadComponent(components_to_load);
-				AddComponent(particleSystem);}
+				AddComponent(particleSystem);
+				break; }
 			case (int)ComponentType::CANVAS: {
 				ComponentCanvas* canvas = new ComponentCanvas(this);
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
 				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
@@ -1639,9 +1759,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					ComponentTransform* transform = new ComponentTransform(clone);
-					(*item)->Clone(transform);
-					clone->AddComponent(transform);
+					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
 				case ComponentType::LIGHT: {
 					ComponentLight* light = new ComponentLight(clone);
@@ -1667,6 +1785,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentCamera* camera = new ComponentCamera(clone);
 					(*item)->Clone(camera);
 					clone->AddComponent(camera);
+					break; }
+				case ComponentType::DEFORMABLE_MESH: {
+					ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(clone);
+					(*item)->Clone(def_mesh);
+					clone->AddComponent(def_mesh);
 					break; }
 				case ComponentType::SCRIPT: {
 					ComponentScript* script = new ComponentScript(clone);
@@ -1720,7 +1843,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 5);
+	SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
@@ -1730,8 +1853,30 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		break; }
 	case ResourceType::RESOURCE_MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
-			mesh->mesh = nullptr;
+		if (!mesh)
+		{
+			ComponentDeformableMesh* d_mesh = (ComponentDeformableMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+			if (d_mesh != nullptr && d_mesh->mesh == (ResourceMesh*)to_delete) {
+				d_mesh->mesh = nullptr;
+			}
+		}
+		else
+		{
+			if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
+				mesh->mesh = nullptr;
+			}
+		}
+		break; }
+	case ResourceType::RESOURCE_BONE: {
+		ComponentBone* bone = (ComponentBone*)GetComponent(ComponentType::BONE);
+		if (bone != nullptr && bone->bone == (ResourceBone*)to_delete) {
+			bone->bone = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_ANIMATOR_CONTROLLER: {
+		ComponentAnimator* anim = (ComponentAnimator*)GetComponent(ComponentType::ANIMATOR);
+		if (anim != nullptr && anim->animator_controller == (ResourceAnimatorController*)to_delete) {
+			anim->animator_controller = nullptr;
 		}
 		break; }
 	case ResourceType::RESOURCE_FONT: {

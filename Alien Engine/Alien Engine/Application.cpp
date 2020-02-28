@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Parson/parson.h"
 #include "Time.h"
+#include "mmgr/mmgr.h"
 
 Application::Application()
 {
@@ -13,9 +14,11 @@ Application::Application()
 #endif
 	importer = new ModuleImporter();
 	objects = new ModuleObjects();
+	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
-	tween = new UITween();
+	tween = new AnimTween();
+	audio = new ModuleAudio();
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,16 +28,16 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-#ifndef GAME_VERSION
-	AddModule(camera);
-#endif
 	AddModule(input);
 	AddModule(file_system);
 	AddModule(resources);
 	AddModule(importer);
+	AddModule(audio);
 	// Scenes
 	AddModule(objects);
+	AddModule(physics);
 #ifndef GAME_VERSION
+	AddModule(camera);
 	AddModule(ui);
 #endif
 	// Renderer last!
@@ -208,6 +211,10 @@ bool Application::Init()
 
 	ret = window->CreateCoreWindow();
 
+#ifdef GAME_VERSION
+	renderer3D->OnResize(window->width, window->height);
+#endif
+
 	return ret;
 }
 
@@ -346,6 +353,8 @@ bool Application::CleanUp()
 	while(item != list_modules.rend() && ret == true)
 	{
 		ret = (*item)->CleanUp();
+		if (!ret)
+			LOG_ENGINE("Module %s failed to CleanUp", (*item)->name);
 		++item;
 	}
 	return ret;

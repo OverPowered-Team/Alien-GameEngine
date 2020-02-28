@@ -16,6 +16,7 @@ class ResourceMesh : public Resource {
 public:
 
 	ResourceMesh();
+	ResourceMesh(ResourceMesh* r_mesh);
 	virtual ~ResourceMesh();
 
 	bool CreateMetaData(const u64& force_id = 0);
@@ -26,12 +27,11 @@ public:
 
 	bool DeleteMetaData();
 
-	void ConvertToGameObject(std::vector<std::pair<u64, GameObject*>>* objects_created);
-
 	void InitBuffers();
 
-public:
+	void Reset();
 
+public:
 	// buffers id
 	uint id_index = 0;
 	uint id_vertex = 0;
@@ -52,19 +52,6 @@ public:
 	bool is_primitive = false;
 	bool is_custom = true;
 private:
-
-	std::string parent_name;
-	u64 texture_id = 0;
-	uint family_number = 0;
-
-	ResourceTexture* texture = nullptr;
-
-	float3 pos = { 0,0,0 };
-	float3 scale = { 1,1,1 };
-	Quat rot = { 0,0,0,0 };
-
-	Color material_color;
-
+	bool deformable = false;
 	uint bytes_moved = 0;
-
 };

@@ -7,10 +7,12 @@
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
+#include "ResourceAnimatorController.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
+#include "ResourceAudio.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -124,6 +126,15 @@ void ModuleResources::AddResource(Resource* resource)
 	}
 }
 
+void ModuleResources::RemoveResource(Resource* resource)
+{
+	if (resource != nullptr) {
+		std::vector<Resource*>::iterator it = std::find(resources.begin(), resources.end(), resource);
+		if (it != resources.end())
+			resources.erase(it);
+	}
+}
+
 bool ModuleResources::CreateNewModelInstanceOf(const char* path)
 {
 	bool ret = false;
@@ -179,6 +190,18 @@ const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 	}
 	LOG_ENGINE("No resource found with ID %i", ID);
 	return nullptr;
+}
+
+std::vector<Resource*> ModuleResources::GetResourcesWithType(ResourceType type)
+{
+	std::vector<Resource*> ret;
+	for each (Resource* r in resources)
+	{
+		if (r->GetType() == type)
+			ret.push_back(r);
+	}
+
+	return ret;
 }
 
 void ModuleResources::AddNewFileNode(const std::string& path, bool is_file)
@@ -556,6 +579,10 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Controllers
+	App->file_system->DiscoverFiles(ANIM_CONTROLLER_FOLDER, files, directories);
+	ReadAnimControllers(directories, files, ANIM_CONTROLLER_FOLDER);
+
 	// Init Prefabs
 	App->file_system->DiscoverFiles(ASSETS_PREFAB_FOLDER, files, directories);
 	ReadPrefabs(directories, files, ASSETS_PREFAB_FOLDER);
@@ -576,11 +603,21 @@ void ModuleResources::ReadAllMetaData()
 	// Init Scenes
 	App->file_system->DiscoverFiles(SCENE_FOLDER, files, directories);
 
+
+
 	ReadScenes(directories, files, SCENE_FOLDER);
 
 	files.clear();
 	directories.clear();
 
+	// Init Audio
+	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
+
+	App->audio->LoadBanksInfo();
+	ReadAudio(directories, files, AUDIO_FOLDER);
+
+	files.clear();
+	directories.clear();
 #else
 
 	// textures
@@ -597,6 +634,15 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceModel* model = new ResourceModel();
 		model->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// anim controllers
+	App->file_system->DiscoverFiles(LIBRARY_ANIM_CONTROLLERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		anim_ctrl->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -619,6 +665,12 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// audio
+	App->file_system->DiscoverFiles(LIBRARY_AUDIO_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAudio* audio = new ResourceAudio();
+		audio->ReadLibrary(files[i].data());
+	}
 	// fonts
 	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
@@ -680,6 +732,27 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 	}
 }
 
+void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		if (!anim_ctrl->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = anim_ctrl->GetID();
+			anim_ctrl->ReImport(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAnimControllers(new_directories, new_files, dir);
+		}
+	}
+}
+
 void ModuleResources::ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
 {
 	for (uint i = 0; i < files.size(); ++i) {
@@ -720,6 +793,35 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	auto banks = App->audio->GetBanks();
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			if (files[i].find(".bnk") != std::string::npos) {
+				ResourceAudio* audio = new ResourceAudio();
+				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+					for (auto b = banks.begin(); b != banks.end(); ++b) {
+						if (files[i].compare((*b)->name + ".bnk") == 0) {
+							audio->CreateMetaData((*b)->id);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAudio(new_directories, new_files, dir);
 		}
 	}
 }
@@ -806,6 +908,32 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 		}
 	}
 }
+
+void ModuleResources::CreateAsset(FileDropType type)
+{
+	switch (type)
+	{
+	case FileDropType::ANIM_CONTROLLER:
+		CreateAnimatorController();
+		break;
+	case FileDropType::ANIMATION:
+		break;
+	}
+
+	App->ui->panel_project->RefreshAllNodes();
+}
+
+void ModuleResources::CreateAnimatorController()
+{
+	std::string asset_name = "NewAnimatorController";
+	App->ui->panel_project->GetUniqueFileName(asset_name, ANIM_CONTROLLER_FOLDER);
+
+	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
+	new_controller->name = asset_name;
+	new_controller->SaveAsset();
+}
+
+
 
 
 

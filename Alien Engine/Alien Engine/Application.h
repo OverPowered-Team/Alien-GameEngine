@@ -16,7 +16,9 @@
 #include "ModuleImporter.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
-#include "UITween.h"
+#include "AnimTween.h"
+#include "ModuleAudio.h"
+#include "ModulePhysics.h"
 
 #include <string>
 #include <vector>
@@ -50,7 +52,19 @@ public:
 	ModuleObjects* objects = nullptr;
 	ModuleFileSystem* file_system = nullptr;
 	ModuleResources* resources = nullptr;
-	UITween* tween = nullptr;
+	AnimTween* tween = nullptr;
+	ModuleWindow*		window = nullptr;
+	ModuleInput*		input = nullptr;
+	ModuleRenderer3D*	renderer3D = nullptr;
+	ModuleCamera3D*		camera = nullptr;
+	ModuleUI*			ui = nullptr;
+	ModuleImporter*		importer = nullptr;
+	ShortCutManager*	shortcut_manager = nullptr;
+	ModuleObjects*		objects = nullptr;
+	ModuleFileSystem*	file_system = nullptr;
+	ModuleResources*	resources = nullptr;
+	ModuleAudio*		audio = nullptr;
+	ModulePhysics* 		physics = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;
@@ -66,18 +80,16 @@ private:
 	JSONfilepack* layout = nullptr;
 	
 	std::list<JSONfilepack*> json_files;
-
 	std::list<Module*> list_modules;
 	bool quit = false;
 
 	j1PerfTimer			ptimer;
-	unsigned __int64				frame_count = 0;
+	unsigned __int64	frame_count = 0;
 	Timer				startup_time;
 	Timer				frame_time;
 	Timer				last_sec_frame_time;
-	unsigned __int32				last_sec_frame_count = 0;
-	unsigned __int32				prev_last_sec_frame_count = 0;
-	
+	unsigned __int32	last_sec_frame_count = 0;
+	unsigned __int32	prev_last_sec_frame_count = 0;
 	float				dt;
 
 public:
