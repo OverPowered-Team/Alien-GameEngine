@@ -59,4 +59,10 @@ private:
 
 	int key = 0;
 
+
+	//Events
+	void ShowNewEventPopUp();
+
+	void CreateAnimationEvent();
+
 };
