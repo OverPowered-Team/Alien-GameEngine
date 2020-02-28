@@ -12,6 +12,7 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -31,6 +32,7 @@ ModuleRenderer3D::~ModuleRenderer3D()
 // Called before render is available
 bool ModuleRenderer3D::Init()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Creating 3D Renderer context");
 	bool ret = true;
 	
@@ -127,6 +129,7 @@ bool ModuleRenderer3D::Start()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {	
+	OPTICK_EVENT();
 #ifdef GAME_VERSION
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearStencil(0);
@@ -146,6 +149,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	App->ui->Draw(); // last draw UI!!!
 #endif
@@ -178,6 +182,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 void ModuleRenderer3D::RenderGrid()
 {
+	OPTICK_EVENT();
+	//TODO: Change this to buffers
 	glLineWidth(line_grid_width);
 	glColor3f(grid_color.r, grid_color.g, grid_color.b);
 	glBegin(GL_LINES);
@@ -194,6 +200,7 @@ void ModuleRenderer3D::RenderGrid()
 
 void ModuleRenderer3D::UpdateCameraMatrix(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -246,4 +253,19 @@ ComponentCamera* ModuleRenderer3D::GetCurrentMainCamera()
 		currentMainCam = actual_game_camera;
 	
 	return currentMainCam;
+}
+void ModuleRenderer3D::BeginDebugDraw(float4& color)
+{
+	glDisable(GL_LIGHTING);
+	glColor4fv(&color[0]);
+	glLineWidth(4.f);
+}
+
+void ModuleRenderer3D::EndDebugDraw()
+{
+	GLfloat color_default[] = { 1.f, 1.f, 1.f, 1.f };
+	glEnable(GL_LIGHTING);
+	glColor4fv(color_default);
+	glLineWidth(1.f);
+
 }

@@ -27,6 +27,11 @@ public:
 
 	bool IsInsideFrustum(const ComponentCamera* camera, const AABB& aabb);
 
+	static void BeginDebugDraw(float4& color);
+
+	static void EndDebugDraw();
+
+
 	ComponentCamera* GetCurrentMainCamera();
 
 public:

@@ -28,6 +28,51 @@ ResourceAnimatorController::~ResourceAnimatorController()
 	ax::NodeEditor::DestroyEditor(ed_context);
 }
 
+void ResourceAnimatorController::ReImport(const u64& force_id)
+{
+	JSON_Value* value = json_parse_file(path.data());
+	JSON_Object* object = json_value_get_object(value);
+
+	if (value != nullptr && object != nullptr)
+	{
+		JSONfilepack* asset = new JSONfilepack(path, object, value);
+
+		name = asset->GetString("Controller.Name");
+		int num_states = asset->GetNumber("Controller.NumStates");
+		int num_transitions = asset->GetNumber("Controller.NumTransitions");
+
+		JSONArraypack* asset_states = asset->GetArray("Controller.States");
+		if (asset_states)
+		{
+			asset_states->GetFirstNode();
+			for (uint i = 0; i < asset_states->GetArraySize(); ++i)
+			{
+				std::string state_name = asset_states->GetString("Name");
+				int state_speed = asset_states->GetNumber("Speed");
+				u64 clip_id = std::stoull(asset_states->GetString("Clip"));
+				AddState(state_name, clip_id == 0 ? nullptr : (ResourceAnimation*)App->resources->GetResourceWithID(clip_id), state_speed);
+				asset_states->GetAnotherNode();
+			}
+		}
+		JSONArraypack* asset_transitions = asset->GetArray("Controller.Transitions");
+		if (asset_transitions)
+		{
+			asset_transitions->GetFirstNode();
+			for (uint i = 0; i < asset_transitions->GetArraySize(); ++i)
+			{
+				std::string source = asset_transitions->GetString("Source");
+				std::string target = asset_transitions->GetString("Target");
+				int trigger = asset_transitions->GetNumber("Trigger");
+				int blend = asset_transitions->GetNumber("Blend");
+				AddTransition(FindState(source), FindState(target), blend, trigger);
+				asset_transitions->GetAnotherNode();
+			}
+		}
+
+		CreateMetaData(ID);
+	}
+}
+
 const std::vector < std::pair <std::string, bool>>&  ResourceAnimatorController::GetBoolParameters() 
 {
 	return bool_parameters;
@@ -535,6 +580,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 	App->file_system->Save(meta_data_path.data(), data, size);
 	App->resources->AddResource(this);
+	FreeMemory();
 	RELEASE_ARRAY(data);
 
 	return true;

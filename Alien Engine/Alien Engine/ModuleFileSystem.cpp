@@ -11,6 +11,8 @@
 
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 using namespace std;
 
 ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
@@ -45,10 +47,9 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 #ifndef GAME_VERSION
 	// Make sure standard paths exist
 	const char* dirs[] = {
-
-		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER, FONTS_FOLDER,
+		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,SHADERS_FOLDER, FONTS_FOLDER,
 		ANIM_CONTROLLER_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER, ASSETS_PREFAB_FOLDER, AUDIO_FOLDER,
-		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, LIBRARY_MATERIALS_FOLDER, 
+		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, LIBRARY_SHADERS_FOLDER, LIBRARY_MATERIALS_FOLDER, 
 		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
 		LIBRARY_AUDIO_FOLDER, LIBRARY_BONES_FOLDER, LIBRARY_FONTS_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, 
 		SCRIPTS_DLL_OUTPUT
@@ -59,7 +60,7 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 	const char* dirs[] = {
 		LIBRARY_FOLDER, CONFIGURATION_FOLDER,
 		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
-		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
+		LIBRARY_SHADERS_FOLDER, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
 		LIBRARY_BONES_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, LIBRARY_ANIMATIONS_FOLDER
 		LIBRARY_AUDIO_FOLDER, LIBRARY_FONTS_FOLDER
 	};
@@ -113,6 +114,7 @@ bool ModuleFileSystem::Init()
 
 update_status ModuleFileSystem::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	static std::string dll_path(std::string(SCRIPTS_DLL_OUTPUT + std::string("AlienEngineScripts.dll")));
 	if (Exists(dll_path.data())) {
@@ -606,6 +608,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::TEXTURE:
 		final_path = TEXTURES_FOLDER + final_path;
 		break;
+	case FileDropType::SHADER:
+		final_path = SHADERS_FOLDER + final_path;
+		break;
 	case FileDropType::FONT:
 		final_path = FONTS_FOLDER + final_path;
 		break;
@@ -625,6 +630,10 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::TEXTURE:
 		LOG_ENGINE("Start Loading Texture");
 		App->importer->LoadTextureFile(final_path.data(), true);
+		break;
+	case FileDropType::SHADER:
+		LOG_ENGINE("Start Loading Shader");
+		App->importer->LoadShaderFile(final_path.data(), true);
 		break;
 	case FileDropType::FONT:
 		LOG_ENGINE("Start Loading Font");
@@ -651,6 +660,8 @@ const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_
 		ext_type = FileDropType::TEXTURE;
 	else if (App->StringCmp(extension.data(), "tga"))
 		ext_type = FileDropType::TEXTURE;
+	else if (App->StringCmp(extension.data(), "shader"))
+		ext_type = FileDropType::SHADER;
 	else if (App->StringCmp(extension.data(), "ttf"))
 		ext_type = FileDropType::FONT;
 	else if (App->StringCmp(extension.data(), "otf"))

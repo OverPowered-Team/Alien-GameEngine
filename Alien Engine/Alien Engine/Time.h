@@ -6,6 +6,15 @@
 class Timer;
 
 class __declspec(dllexport) Time {
+public:
+
+	enum class GameState {
+		NONE,
+		PLAY,
+		PAUSE,
+		PLAY_ONCE
+	};
+
 private:
 	friend class Application;
 	friend class ModuleUI;
@@ -24,13 +33,6 @@ private:
 	friend class ComponentCheckbox;
 	friend class ComponentSlider;
 	friend class ComponentBar;
-
-	enum class GameState {
-		NONE,
-		PLAY,
-		PAUSE,
-		PLAY_ONCE
-	};
 
 	static void Start();
 	static void Update();
@@ -64,12 +66,12 @@ private:
 
 public:
 
+	static GameState GetGameState();
 	static void SetScaleTime(const float& scale);
 	static float GetDT();
 	static float GetTimeSinceStart();
 	static float GetGameTime();
 	static float GetScaleTime();
-
 };
 
 #endif

@@ -10,6 +10,16 @@
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
 #include "ComponentLight.h"
+#include "ComponentCanvas.h"
+#include "ComponentImage.h"
+#include "ComponentBar.h"
+#include "ComponentButton.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
+#include "ComponentText.h"
+#include "ComponentCollider.h"
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -27,6 +37,7 @@
 #include <experimental/filesystem>
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -51,6 +62,7 @@ bool ModuleObjects::Init()
 
 bool ModuleObjects::Start()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
 
@@ -76,12 +88,9 @@ bool ModuleObjects::Start()
 
 	light_test->AddComponent(new ComponentLight(light_test));
 
-	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));
 
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
-	camera->AddComponent(new ComponentTransform(camera, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 	camera->AddComponent(new ComponentCamera(camera));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
@@ -113,6 +122,7 @@ bool ModuleObjects::Start()
 
 update_status ModuleObjects::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 	// delete objects
 	if (need_to_delete_objects) { 
 		need_to_delete_objects = false;
@@ -157,6 +167,7 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->Update();
 	ScriptsUpdate();
 	return UPDATE_CONTINUE;
@@ -164,6 +175,7 @@ update_status ModuleObjects::Update(float dt)
 
 update_status ModuleObjects::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
@@ -225,7 +237,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
-					(*it).second->DrawScene();
+					if (printing_scene)
+						(*it).second->DrawScene(viewport->GetCamera());
+					else
+						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
 			if (printing_scene)
@@ -268,7 +283,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame();
+				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
 			}
 		}
 
@@ -297,6 +312,7 @@ void ModuleObjects::DrawRay()
 
 bool ModuleObjects::CleanUp()
 {
+	OPTICK_EVENT();
 	Gizmos::ClearAllCurrentGizmos();
 
 	if (Time::IsInGameState()) {
@@ -875,6 +891,7 @@ void ModuleObjects::ReparentGameObject(GameObject* object, GameObject* next_pare
 
 void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_with_path)
 {
+	OPTICK_EVENT();
 	if (to_load_scene == nullptr && force_with_path == nullptr) {
 		LOG_ENGINE("Scene to load was nullptr");
 		return;
@@ -939,6 +956,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
+	OPTICK_EVENT();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
@@ -989,7 +1007,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
 				for (; item != objects_to_create.end(); ++item) {
 					game_objects->GetNode(std::get<2>(*item));
-					GameObject* obj = new GameObject();
+					GameObject* obj = new GameObject(true);
 					if (std::get<0>(*item) == 1) { // family number == 1 so parent is the base game object
 						obj->LoadObject(game_objects, base_game_object);
 					}
@@ -1453,6 +1471,19 @@ void ModuleObjects::DeleteReturns()
 	}
 }
 
+ComponentCanvas* ModuleObjects::GetCanvas()
+{
+	ComponentCanvas* canvas = GetRoot(true)->GetCanvas();
+	if (canvas == nullptr) {
+		GameObject* obj = new GameObject(GetRoot(false));
+		obj->SetName("Canvas");
+		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+		canvas = new ComponentCanvas(obj);
+		obj->AddComponent(canvas);
+	}
+	return canvas;
+}
+
 bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
 {
 	return std::get<0>(tuple1) < std::get<0>(tuple2);
@@ -1576,7 +1607,8 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	GameObject* object = new GameObject(GetRoot(false));
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
-	
+	ComponentCollider* collider = nullptr;
+
 	switch (type) {
 	case PrimitiveType::CUBE: {
 		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
@@ -1613,7 +1645,99 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->RecalculateAABB_OBB();
+
+	// Add collider --------------------------------------------
+
+	switch (type) {
+	case PrimitiveType::CUBE: {
+		collider = new ComponentBoxCollider(object);
+		break; }
+	case PrimitiveType::SPHERE_ALIEN: {
+		collider = new ComponentSphereCollider(object);
+		break; }
+	}
+
+	if (collider != nullptr)
+	{
+		object->AddComponent(collider);
+	}
+	// ---------------------------------------------------------
+
+
 	SetNewSelectedObject(object);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+void ModuleObjects::CreateBaseUI(ComponentType type)
+{
+	GameObject* object = CreateEmptyGameObject(nullptr);
+	Component* comp = nullptr;
+	switch (type)
+	{
+	case ComponentType::CANVAS: {
+		object->SetName("Canvas");
+		object->AddComponent(new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
+		comp = new ComponentCanvas(object);
+		object->AddComponent(comp);
+		break; }
+
+	case ComponentType::UI_IMAGE: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentImage(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Image");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_BUTTON: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentButton(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Button");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_TEXT: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentText(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Text");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_CHECKBOX: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentCheckbox(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Checkbox");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_SLIDER: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentSlider(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Slider");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	case ComponentType::UI_BAR: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentBar(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Bar");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+
+	default: {
+		break; }
+	}
+
 }
 

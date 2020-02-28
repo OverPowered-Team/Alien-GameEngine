@@ -32,6 +32,14 @@
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
+#include "Optick/include/optick.h"
+
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
@@ -58,10 +66,12 @@ GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, c
 
 }
 
-GameObject::GameObject()
+GameObject::GameObject(bool ignore_transform)
 {
-	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
-	AddComponent(transform);
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -505,11 +515,13 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
@@ -523,25 +535,35 @@ void GameObject::DrawScene()
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
-		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine(camera);
 		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh();
+			mesh->DrawMesh(camera);
 		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals();
+			mesh->DrawVertexNormals(camera);
 		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals();
+			mesh->DrawFaceNormals(camera);
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);*/
+	}
+
+
+	for (Component* component : components)
+	{
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawScene();
+		}
 	}
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -557,7 +579,7 @@ void GameObject::DrawGame()
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 
@@ -606,12 +628,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
 		}
 
 		if (partSystem != nullptr)
@@ -674,6 +696,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -693,6 +716,7 @@ void GameObject::PostUpdate()
 
 void GameObject::PreUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -712,6 +736,7 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -1163,6 +1188,7 @@ void GameObject::FreeArrayMemory(void*** array_)
 
 GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position, GameObject* parent)
 {
+	OPTICK_EVENT();
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
@@ -1384,6 +1410,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{
@@ -1415,29 +1443,9 @@ AABB GameObject::GetBB() const
 		}
 		else
 		{
-			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
-			if (camera != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float4x4 matrix = float4x4::FromTRS(transform->GetGlobalPosition() - camera->frustum.front.Normalized() * 2, transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } *Quat{ 0.7071,0,0.7071,0 }), { 0.1F,0.1F,0.1F });
-				float4x4 to_save = transform->global_transformation;
-				transform->global_transformation = matrix;
-				camera->mesh_camera->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return camera->mesh_camera->GetGlobalAABB();
-			}
-			else if (light != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float3 pos = transform->GetGlobalPosition();
-				float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
-				float4x4 to_save = transform->global_transformation;
-				light->bulb->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return light->bulb->GetGlobalAABB();
-			}
-			else if (ui != nullptr) {
+			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
@@ -1449,7 +1457,7 @@ AABB GameObject::GetBB() const
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 			float3 pos = transform->GetGlobalPosition();
-			aabb_null.SetFromCenterAndSize(pos, { 2,2,2 });
+			aabb_null.SetFromCenterAndSize(pos, { 1,1,1 });
 			return aabb_null;
 		}
 	}
@@ -1545,10 +1553,12 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 21); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
+				AddComponent(transform);
 				break; }
 			case (int)ComponentType::LIGHT: {
 				ComponentLight* light = new ComponentLight(this);
@@ -1610,6 +1620,32 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
 				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
@@ -1676,6 +1712,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 GameObject* GameObject::Clone(GameObject* parent)
 {
+	OPTICK_EVENT();
 	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);

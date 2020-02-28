@@ -7,6 +7,8 @@
 #include "PanelAnimTimeline.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 PanelAnimTimeline::PanelAnimTimeline(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
 {
@@ -28,6 +30,7 @@ void PanelAnimTimeline::CleanUp()
 
 bool PanelAnimTimeline::FillInfo()
 {
+	OPTICK_EVENT();
 	bool ret = false;
 
 	CleanUp();
@@ -84,6 +87,7 @@ void PanelAnimTimeline::Stop()
 
 void PanelAnimTimeline::MoveBones(GameObject* go)
 {
+	OPTICK_EVENT();
 	if (go)
 	{
 		uint channel_index = current_animation->GetChannelIndex(go->GetName());
@@ -108,6 +112,7 @@ void PanelAnimTimeline::MoveBones(GameObject* go)
 
 void PanelAnimTimeline::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animation Timeline", &enabled, aboutFlags);

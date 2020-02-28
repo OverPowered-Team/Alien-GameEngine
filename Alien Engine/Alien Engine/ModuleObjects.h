@@ -19,6 +19,9 @@ class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+class ComponentCanvas;
+enum class ComponentType;
+
 class Viewport;
 
 struct InvokeInfo {
@@ -70,6 +73,7 @@ public:
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
+	void CreateBaseUI(ComponentType type);
 
 	// poly options
 	void ChangeWireframeMode();
@@ -152,6 +156,7 @@ private:
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
 	void ReAssignScripts(JSONArraypack* to_load);
 	void DeleteReturns();
+	ComponentCanvas* GetCanvas();
 
 public:
 

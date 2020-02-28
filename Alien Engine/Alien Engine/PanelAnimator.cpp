@@ -12,10 +12,13 @@
 #include "PanelAnimator.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 #define CHECKBOX_SIZE 50
 
 void PanelAnimator::DrawStates()
 {
+	OPTICK_EVENT();
 	for (uint i = 0, count = current_animator->GetNumStates(); i < count; ++i)
 	{
 		// Start drawing nodes.
@@ -44,6 +47,7 @@ void PanelAnimator::DrawStates()
 
 void PanelAnimator::HandleContextMenu()
 {
+	OPTICK_EVENT();
 	ax::NodeEditor::Suspend();
 
 	context_node_id = 0;
@@ -70,6 +74,7 @@ void PanelAnimator::HandleContextMenu()
 
 void PanelAnimator::DrawTransitions()
 {
+	OPTICK_EVENT();
 	ax::NodeEditor::PushStyleVar(ax::NodeEditor::StyleVar_LinkStrength, 4.0f);
 	for (uint i = 0; i < current_animator->GetNumTransitions(); i++)
 	{
@@ -277,6 +282,7 @@ bool PanelAnimator::IsInside(const float2 & pos) const
 
 void PanelAnimator::DrawParameterList()
 {
+	OPTICK_EVENT();
 	if (current_animator->GetBoolParameters().size() > 0) {
 		for (int i = 0; i < current_animator->GetBoolParameters().size(); i++) {
 
@@ -417,6 +423,7 @@ bool PanelAnimator::FillInfo()
 
 void PanelAnimator::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animator", &enabled, aboutFlags);

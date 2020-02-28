@@ -14,6 +14,7 @@ class ResourceModel;
 class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
+class ResourceShader;
 class ResourceFont;
 
 struct Icons {
@@ -22,6 +23,7 @@ struct Icons {
 	ResourceTexture* png_file = nullptr;
 	ResourceTexture* dds_file = nullptr;
 	ResourceTexture* tga_file = nullptr;
+	ResourceTexture* shader_file = nullptr;
 	ResourceTexture* script_file = nullptr;
 	ResourceTexture* folder = nullptr;
 	ResourceTexture* prefab_icon = nullptr;
@@ -87,11 +89,15 @@ public:
 	ResourceScene* GetSceneByName(const char* name);
 	ResourceFont* GetFontByName(const char* name);
 
+	// Shaders
+	bool GetShaders(std::vector<ResourceShader*>& to_fill);
+
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
 
 	void ReadAllMetaData();
 	void ReadTextures(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
+	void ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadModels(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);
 	void ReadPrefabs(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder);

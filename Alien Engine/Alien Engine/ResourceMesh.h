@@ -32,6 +32,8 @@ public:
 	void Reset();
 
 public:
+	// Vertex Array Object
+	uint vao = 0u;
 	// buffers id
 	uint id_index = 0;
 	uint id_vertex = 0;

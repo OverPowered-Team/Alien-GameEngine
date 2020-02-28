@@ -32,6 +32,7 @@ class ResourceModel;
 class ResourceMesh;
 class ResourceTexture;
 class ResourceMaterial;
+class ResourceShader;
 enum class TextureType;
 class ResourceFont;
 
@@ -59,6 +60,10 @@ public:
 	void LoadTextureToResource(const char* path, ResourceTexture* texture);
 	void ApplyTextureToSelectedObject(ResourceTexture* texture);
 	void ApplyParticleSystemToSelectedObject(std::string path); // For the moment there are no resource particle system (no need meta)
+
+	// shaders
+	ResourceShader* LoadShaderFile(const char* path, bool has_been_dropped = false, bool is_custom = true); // when dropped
+	void ApplyShaderToSelectedObject(ResourceShader* shader);
 
 private:
 	

@@ -16,6 +16,10 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentCamera;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
 	friend class GameObject;
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;
@@ -31,14 +35,14 @@ public:
 
 protected:
 
-	virtual void DrawPolygon();
+	virtual void DrawPolygon(ComponentCamera* camera);
 	virtual void DrawOutLine();
 	virtual void DrawMesh();
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
-	void DrawGlobalAABB();
-	void DrawOBB();
+	void DrawGlobalAABB(ComponentCamera* camera);
+	void DrawOBB(ComponentCamera* camera);
 
 	void Reset();
 	void SetComponent(Component* component);
