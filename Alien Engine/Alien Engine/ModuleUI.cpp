@@ -1163,6 +1163,8 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
 	panels.push_back(panel_console);
+	panels.push_back(panel_animtimeline);
+	panels.push_back(panel_animator);
 	panels.push_back(panel_project);
 	panels.push_back(panel_render);
 	panels.push_back(panel_hierarchy);
@@ -1174,8 +1176,6 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_scene_selector);
 	panels.push_back(panel_text_editor);
 	panels.push_back(panel_build);
-	panels.push_back(panel_animtimeline);
-	panels.push_back(panel_animator);
 	panels.push_back(panel_particles);
 }
 

@@ -1,77 +1,63 @@
 {
     "Meta": {
-        "ID": "15326028179626298939",
+        "ID": "11562757458470660005",
         "NumMeshes": 1,
         "Name": "aniTest",
         "NumBones": 34,
-        "NumAnimations": 3,
+        "NumAnimations": 1,
         "Animations": [
             {
-                "Name": "Takedsdsadsa 001",
-                "Loops": true,
-                "Start_Tick": 40,
-                "End_Tick": 92
-            },
-            {
-                "Name": "New Clip",
-                "Loops": true,
-                "Start_Tick": 71,
-                "End_Tick": 92
-            },
-            {
-                "Name": "sadsda",
-                "Loops": true,
-                "Start_Tick": 65,
-                "End_Tick": 89
+                "Name": "Take 001",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 119
             }
         ],
         "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/17332392395275080196.alienMesh"
+            "Library\/Meshes\/7818945245893020137.alienMesh"
         ],
         "PathAnimations": [
-            "Library\/Animations\/11375678878322153165.alienAnimation",
-            "Library\/Animations\/9957713286011535491.alienAnimation",
-            "Library\/Animations\/6300869279387270450.alienAnimation"
+            "Library\/Animations\/6503356241319254334.alienAnimation"
         ],
         "PathBones": [
-            "Library\/Bones\/6439420807975090659.alienBone",
-            "Library\/Bones\/436535995455138224.alienBone",
-            "Library\/Bones\/992130453180094951.alienBone",
-            "Library\/Bones\/7156636996060026746.alienBone",
-            "Library\/Bones\/4526923152957754661.alienBone",
-            "Library\/Bones\/3521795786997005658.alienBone",
-            "Library\/Bones\/2766017269384845312.alienBone",
-            "Library\/Bones\/825935440373445257.alienBone",
-            "Library\/Bones\/11304140483703604848.alienBone",
-            "Library\/Bones\/1084441224405060890.alienBone",
-            "Library\/Bones\/10496373039204574848.alienBone",
-            "Library\/Bones\/407942441508515019.alienBone",
-            "Library\/Bones\/14598187358780574424.alienBone",
-            "Library\/Bones\/651438528007674709.alienBone",
-            "Library\/Bones\/12605249639602210260.alienBone",
-            "Library\/Bones\/10580014009773229467.alienBone",
-            "Library\/Bones\/5872170517671630723.alienBone",
-            "Library\/Bones\/18243275228248435615.alienBone",
-            "Library\/Bones\/5864134538839852183.alienBone",
-            "Library\/Bones\/11793691876533886757.alienBone",
-            "Library\/Bones\/8194956977765508093.alienBone",
-            "Library\/Bones\/4344421262378198002.alienBone",
-            "Library\/Bones\/9181631175905029367.alienBone",
-            "Library\/Bones\/4100528276924246897.alienBone",
-            "Library\/Bones\/7633511610146346968.alienBone",
-            "Library\/Bones\/4117091069857839148.alienBone",
-            "Library\/Bones\/2750215945232533943.alienBone",
-            "Library\/Bones\/2499517312274340351.alienBone",
-            "Library\/Bones\/16701840350240894457.alienBone",
-            "Library\/Bones\/10115004861267206362.alienBone",
-            "Library\/Bones\/4479330697719995685.alienBone",
-            "Library\/Bones\/1362097411259887218.alienBone",
-            "Library\/Bones\/15003497430591417131.alienBone",
-            "Library\/Bones\/14871060406041967671.alienBone"
+            "Library\/Bones\/13091505261624009257.alienBone",
+            "Library\/Bones\/16020226434879525981.alienBone",
+            "Library\/Bones\/12366127780494144470.alienBone",
+            "Library\/Bones\/17792130260813092203.alienBone",
+            "Library\/Bones\/5784283242532727250.alienBone",
+            "Library\/Bones\/2477544720036552163.alienBone",
+            "Library\/Bones\/6521842408956685008.alienBone",
+            "Library\/Bones\/13326465328152905061.alienBone",
+            "Library\/Bones\/8531586863304940488.alienBone",
+            "Library\/Bones\/5702957645609333451.alienBone",
+            "Library\/Bones\/468747269900533734.alienBone",
+            "Library\/Bones\/725718571540136931.alienBone",
+            "Library\/Bones\/2915866271314517553.alienBone",
+            "Library\/Bones\/623971826318171792.alienBone",
+            "Library\/Bones\/10944918822238063062.alienBone",
+            "Library\/Bones\/10832502084295817226.alienBone",
+            "Library\/Bones\/17517805958118958971.alienBone",
+            "Library\/Bones\/17719976530165125046.alienBone",
+            "Library\/Bones\/16673151864830345070.alienBone",
+            "Library\/Bones\/1907647119482920284.alienBone",
+            "Library\/Bones\/7779642236181730449.alienBone",
+            "Library\/Bones\/7013695594689091612.alienBone",
+            "Library\/Bones\/1634715268872473294.alienBone",
+            "Library\/Bones\/10331627569747677403.alienBone",
+            "Library\/Bones\/17214981540489276635.alienBone",
+            "Library\/Bones\/18063652841936017732.alienBone",
+            "Library\/Bones\/16624291489935139678.alienBone",
+            "Library\/Bones\/12158914420017578023.alienBone",
+            "Library\/Bones\/15762904796062315845.alienBone",
+            "Library\/Bones\/14136305636817630711.alienBone",
+            "Library\/Bones\/2745915335295301009.alienBone",
+            "Library\/Bones\/14161724541317442617.alienBone",
+            "Library\/Bones\/14626207114899471435.alienBone",
+            "Library\/Bones\/16465817970501583639.alienBone"
         ],
         "PathMaterials": [
-            "Library\/Materials\/2726707857714905926.alienMaterial"
+            "Library\/Materials\/3247434259831879017.alienMaterial"
         ]
     },
     "Nodes": [

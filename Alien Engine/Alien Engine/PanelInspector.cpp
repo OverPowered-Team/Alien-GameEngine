@@ -645,7 +645,6 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 			App->resources->RemoveResource(model->animations_attached[model->animations_attached.size() - 1]);
 			delete model->animations_attached[model->animations_attached.size() - 1];
 			model->animations_attached.pop_back();
-
 		}
 		ImGui::Separator();
 		if (ImGui::Button("Save")) {
