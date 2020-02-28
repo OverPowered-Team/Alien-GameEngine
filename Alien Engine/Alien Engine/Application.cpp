@@ -17,7 +17,6 @@ Application::Application()
 	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
-	tween = new AnimTween();
 	audio = new ModuleAudio();
 
 	// The order of calls is very important!

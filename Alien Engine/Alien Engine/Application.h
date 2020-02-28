@@ -16,7 +16,6 @@
 #include "ModuleImporter.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
-#include "AnimTween.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 
@@ -42,17 +41,16 @@ struct LogInfo {
 class Application
 {
 public:
-	ModuleWindow* window = nullptr;
-	ModuleInput* input = nullptr;
-	ModuleRenderer3D* renderer3D = nullptr;
-	ModuleCamera3D* camera = nullptr;
-	ModuleUI* ui = nullptr;
-	ModuleImporter* importer = nullptr;
-	ShortCutManager* shortcut_manager = nullptr;
-	ModuleObjects* objects = nullptr;
-	ModuleFileSystem* file_system = nullptr;
-	ModuleResources* resources = nullptr;
-	AnimTween* tween = nullptr;
+	ModuleWindow*		window = nullptr;
+	ModuleInput*		input = nullptr;
+	ModuleRenderer3D*	renderer3D = nullptr;
+	ModuleCamera3D*		camera = nullptr;
+	ModuleUI*			ui = nullptr;
+	ModuleImporter*		importer = nullptr;
+	ShortCutManager*	shortcut_manager = nullptr;
+	ModuleObjects*		objects = nullptr;
+	ModuleFileSystem*	file_system = nullptr;
+	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
 	ModulePhysics* 		physics = nullptr;
 
