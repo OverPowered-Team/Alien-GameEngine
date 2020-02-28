@@ -2,7 +2,7 @@
 
 #include "Module.h"
 
-class TweenDescr;
+class Tween;
 class GameObject;
 
 enum TweenAction {
@@ -14,25 +14,22 @@ enum TweenAction {
 	COLOR,
 };
 
-enum UITweenType {
+enum AnimTweenType {
 	notUsed, linear
 };
 
-class UITween: Module
+class AnimTween: Module
 {
 public:
-	UITween() {};
-	~UITween() {};
+	AnimTween() {};
+	~AnimTween() {};
 
 public:
-	static TweenDescr move(GameObject gameObject, float3 to, float time);
-	
-private:
-	static TweenDescr pushNewTween(GameObject gameObject, float3 to, float time, TweenDescr tween);
+	static Tween* Move(GameObject * gameObject, const float3 & to, float time);
 
 public:
 	static int maxTweens;
 
 private:
-	static TweenDescr* tweens;
+	static Tween* tweens;
 };

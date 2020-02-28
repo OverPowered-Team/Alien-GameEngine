@@ -8,20 +8,14 @@ class __declspec(dllexport) ComponentTransform : public Component {
 	friend class PanelScene;
 	friend class GameObject;
 	friend class ComponentMesh;
-	friend class ComponentAnimator;
 	friend class ComponentUI;
 	friend class ComponentText;
 	friend class ComponentCheckbox;
 	friend class ComponentBar;
-	friend class ComponentCollider;
-	friend class ComponentBoxCollider;
-	friend class ComponentRigidBody;
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;
-	friend class ComponentDeformableMesh;
-	friend class ResourceModel;
 	friend class ModuleUI;
-	friend class UITween;
+	friend class AnimTween;
 	friend class ComponentSlider;
 	friend class PanelInspector;
 public:
@@ -34,7 +28,6 @@ public:
 	void SetLocalPosition(const float& x, const float& y, const float& z);
 
 	const float3 GetLocalPosition() const;
-	void SetGlobalPosition(const float3& pos);
 	const float3 GetGlobalPosition() const;
 
 	void SetLocalScale(const float3& new_local_scale);
@@ -46,7 +39,6 @@ public:
 	void SetLocalRotation(const Quat& new_local_rotation);
 	void SetLocalRotation(const float& x, const float& y, const float& z, const float& angle);
 	
-	void SetGlobalRotation(Quat rotation);
 	const Quat GetLocalRotation() const;
 	const Quat GetGlobalRotation() const;
 
@@ -73,6 +65,7 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void SetGlobalTransformation(const float4x4& global_transformation);
+	void SetGlobalRotation(const Quat& rotation);
 
 	void AddPosition(const float3 pos);
 	void AddScale(const float3 scale);
