@@ -515,7 +515,7 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -535,19 +535,19 @@ void GameObject::DrawScene()
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
-		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine(camera);
 		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh();
+			mesh->DrawMesh(camera);
 		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals();
+			mesh->DrawVertexNormals(camera);
 		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals();
+			mesh->DrawFaceNormals(camera);
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);*/
 	}
 
 
@@ -561,7 +561,7 @@ void GameObject::DrawScene()
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
@@ -579,7 +579,7 @@ void GameObject::DrawGame()
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 
@@ -628,12 +628,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
 		}
 
 		if (partSystem != nullptr)

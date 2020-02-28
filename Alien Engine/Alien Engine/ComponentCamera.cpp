@@ -291,6 +291,10 @@ float* ComponentCamera::GetProjectionMatrix() const
 	return (float*)frustum.ProjectionMatrix().Transposed().v;
 }
 
+float4x4 ComponentCamera::GetProjectionMatrix4f4() const
+{
+	return frustum.ProjectionMatrix().Transposed();
+}
 
 float* ComponentCamera::GetViewMatrix() const
 {

@@ -238,9 +238,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
 					if (printing_scene)
-						(*it).second->DrawScene();
+						(*it).second->DrawScene(viewport->GetCamera());
 					else
-						(*it).second->DrawGame();
+						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
 			if (printing_scene)
@@ -283,7 +283,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame();
+				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
 			}
 		}
 

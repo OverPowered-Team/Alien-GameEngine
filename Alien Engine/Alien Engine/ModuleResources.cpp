@@ -7,6 +7,7 @@
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "ResourceAnimatorController.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
@@ -36,6 +37,7 @@ bool ModuleResources::Start()
 	icons.png_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_png.png");
 	icons.dds_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_dds.png");
 	icons.tga_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_tga.png");
+	icons.shader_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_shader.png");
 	icons.folder = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_folder.png");
 	icons.script_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_script.png");
 	icons.prefab_icon = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_prefab.png");
@@ -65,6 +67,7 @@ bool ModuleResources::Start()
 	assets->name = "Assets";
 
 	App->file_system->DiscoverEverythig(assets);
+
 #endif
 
 	// Load Primitives as resource
@@ -536,6 +539,16 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 	return nullptr;
 }
 
+bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
+{
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+			to_fill.push_back((ResourceShader*)(*res));
+	}
+
+	return !to_fill.empty();
+}
+
 ResourceFont* ModuleResources::GetFontByName(const char* name)
 {
 	auto item = resources.begin();
@@ -578,6 +591,12 @@ void ModuleResources::ReadAllMetaData()
 
 	ReadTextures(directories, files, TEXTURES_FOLDER);
 
+	files.clear();
+	directories.clear();
+
+	// Init Shaders
+	App->file_system->DiscoverFiles(SHADERS_FOLDER, files, directories);
+	ReadShaders(directories, files, SHADERS_FOLDER);
 	files.clear();
 	directories.clear();
 
@@ -635,6 +654,15 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceTexture* texture = new ResourceTexture();
 		texture->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// shaders
+	App->file_system->DiscoverFiles(LIBRARY_SHADERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		shader->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -717,6 +745,27 @@ void ModuleResources::ReadTextures(std::vector<std::string> directories, std::ve
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadTextures(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		if (!shader->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = shader->GetID();
+			shader->CreateMetaData(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadShaders(new_directories, new_files, dir);
 		}
 	}
 }

@@ -233,6 +233,11 @@ const Quat ComponentTransform::GetGlobalRotation() const
 	return rot;
 }
 
+float4x4 ComponentTransform::GetGlobalMatrix() const
+{
+	return global_transformation;
+}
+
 void ComponentTransform::RecalculateTransform()
 {
 	OPTICK_EVENT();

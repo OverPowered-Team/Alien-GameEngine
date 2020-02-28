@@ -533,6 +533,7 @@ void PanelHierarchy::RightClickMenu()
 		{
 			App->ui->panel_create_object->ChangeEnable();
 		}
+
 		ImGui::EndPopup();
 	}
 	else if (in_menu) {
