@@ -85,6 +85,9 @@ protected:
 
 	//UI FOCUS
 	u64 select_on_up = 0;
+	u64 select_on_down = 0;
+	u64 select_on_left = 0;
+	u64 select_on_right = 0;
 
 };
 

@@ -179,13 +179,46 @@ bool ComponentButton::DrawInspector()
 		if (ImGui::ColorEdit4("##RendererColorDisabled", &disabled_color, ImGuiColorEditFlags_Float)) {
 
 		}
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::TreeNode("Navigation"))
+		{
+			ImGui::Text(App->objects->GetGameObjectByID(select_on_up)->name);
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::Button((select_on_up != 0) ? std::string((App->objects->GetGameObjectByID(select_on_up)->name)).data() : "GameObject: NULL", { ImGui::GetWindowWidth() * 0.55F , 0 });
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+					GameObject* obj = *(GameObject * *)payload->Data;
+					if (obj != nullptr) {
+						select_on_up = obj->ID;
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID(select_on_up);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X")) {
+				if (select_on_up != 0) {
+					select_on_up = 0;
+				}
+			}
+			ImGui::PopStyleColor(3);
 
 
+			ImGui::TreePop();
+		}
 
-		ImGui::Spacing();
 		ImGui::Separator();
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 	}
 	else {
 		RightClickMenu("Button");
