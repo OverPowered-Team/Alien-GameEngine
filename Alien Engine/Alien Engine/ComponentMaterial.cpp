@@ -61,7 +61,13 @@ bool ComponentMaterial::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Text("Texture References: %i", texture->references);
 		}
+
 		ImGui::Spacing();
+		ImGui::Spacing();
+
+		InspectorShaderProperties();
+
+		/*ImGui::Spacing();
 		static bool set_Z = true;
 		ImGui::Spacing();
 		static Color col;
@@ -84,10 +90,9 @@ bool ComponentMaterial::DrawInspector()
 		}
 		else if (!set_Z && ImGui::IsMouseReleased(0)) {
 			set_Z = true;
-		}
+		}*/
 
 		ImGui::Spacing();
-
 		ImGui::Separator();
 		ImGui::Spacing();
 
@@ -201,149 +206,146 @@ bool ComponentMaterial::DrawInspector()
 				ImGui::EndPopup();
 			}
 		}
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
-		/* Shaders */
-		if (used_shader != nullptr)
-		{
-			ImGui::Text("Current shader: "); ImGui::SameLine();
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), used_shader->path.c_str());
-			if (ImGui::Button("Select Shader"))
-			{
-				select_shader = true;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Edit shader"))
-			{
-				{
-					std::ifstream t(file_to_edit.c_str());
-					if (t.good())
-					{
-						std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-						shader_editor.SetText(str);
-					}
-				}
-
-				show_shader_text_editor = true;
-			}
-
-			static const char* text_compilation_shader = "";
-			static bool compiled_shader_success = false;
-
-			if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
-			{
-				if (used_shader->ParseAndCreateShader() == 0)
-				{
-					compiled_shader_success = false;
-					text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
-					LOG_ENGINE("Shader compiled unsuccessfully...");
-				}
-				else
-				{
-					compiled_shader_success = true;
-					text_compilation_shader = "Shader compilation successful.";
-					LOG_ENGINE("Shader compiled successfully.");
-				}
-			}
-
-			compiled_shader_success ? ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), text_compilation_shader)
-				: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), text_compilation_shader);
-
-			ImGui::Separator();
-
-			/* Set shader unifroms from Inspector */
-			ImGui::Text("--Uniforms--");
-			if (used_shader->ChangeTemplate())
-			{
-				if (used_shader != nullptr) {
-					used_shader->DecreaseReferences();
-				}
-
-				switch (used_shader->uniform_data.type) {
-				case SHADER_TEMPLATE::DIFUSSE: {//defusse
-					std::string p = std::string(SHADERS_FOLDER + std::string("default_meta.alien"));
-					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
-					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-					if (used_shader != nullptr) {
-						used_shader->IncreaseReferences();
-					}
-					break; }
-
-				case SHADER_TEMPLATE::WAVE: {//wave
-
-					std::string p = std::string(SHADERS_FOLDER + std::string("shader_wave_meta.alien"));
-					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
-					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-					if (used_shader != nullptr) {
-						used_shader->IncreaseReferences();
-					}
-					break; }
-
-				case SHADER_TEMPLATE::BASIC_LIGHTING: {//wave
-
-					std::string p = std::string(SHADERS_FOLDER + std::string("basic_lighting_meta.alien"));
-					u64 id_s = App->resources->GetIDFromAlienPath(p.data());
-					used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-					if (used_shader != nullptr) {
-						used_shader->IncreaseReferences();
-					}
-					break; }
-				}
-				file_to_edit = used_shader->path;
-			}
-			
-			used_shader->HierarchyUniforms();
-
-			ImGui::Separator();
-
-			// Can select desired shader in the shaders folder
-			if (select_shader)
-			{
-				ImGui::OpenPopup("Select Shader");
-				ImGui::SetNextWindowSize(ImVec2(600.0f, 800.0f));
-				if (ImGui::BeginPopupModal("Select Shader"))
-				{
-					if (ImGui::Button("Close"))
-					{
-						select_shader = false;
-					}
-
-					std::vector<ResourceShader*> shaders;
-					App->resources->GetShaders(shaders);
-					for (auto i = shaders.begin(); i != shaders.end(); ++i)
-					{
-						if (ImGui::Button((*i)->GetName()))
-						{
-							std::string shader_name = (*i)->GetName();
-							std::string p = std::string(SHADERS_FOLDER + shader_name + "_meta.alien");
-							u64 id_s = App->resources->GetIDFromAlienPath(p.data());
-							if (used_shader != nullptr) {
-								used_shader->DecreaseReferences();
-							}
-							used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-							if (used_shader != nullptr) {
-								used_shader->IncreaseReferences();
-							}
-							file_to_edit = used_shader->path; // must test if it edits on library too in this engine
-						}
-					}
-
-					ImGui::EndPopup();
-				}
-			}
-
-			if (show_shader_text_editor)
-			{
-				ShowShaderTextEditor();
-			}
-		}
+		
 	}
 	else
 		RightClickMenu("Material");
 
 	return true;
+}
+
+void ComponentMaterial::InspectorShaderProperties()
+{
+	/* Shaders */
+	if (used_shader != nullptr)
+	{
+		/* Set shader unifroms from Inspector */
+		if (used_shader->ChangeTemplate())
+		{
+			if (used_shader != nullptr) {
+				used_shader->DecreaseReferences();
+			}
+
+			switch (used_shader->uniform_data.type) {
+			case SHADER_TEMPLATE::DIFUSSE: {//defusse
+				std::string p = std::string(SHADERS_FOLDER + std::string("default_meta.alien"));
+				u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+				used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+				if (used_shader != nullptr) {
+					used_shader->IncreaseReferences();
+				}
+				break; }
+
+			case SHADER_TEMPLATE::WAVE: {//wave
+
+				std::string p = std::string(SHADERS_FOLDER + std::string("shader_wave_meta.alien"));
+				u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+				used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+				if (used_shader != nullptr) {
+					used_shader->IncreaseReferences();
+				}
+				break; }
+
+			case SHADER_TEMPLATE::BASIC_LIGHTING: {//wave
+
+				std::string p = std::string(SHADERS_FOLDER + std::string("basic_lighting_meta.alien"));
+				u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+				used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+				if (used_shader != nullptr) {
+					used_shader->IncreaseReferences();
+				}
+				break; }
+			}
+			file_to_edit = used_shader->path;
+		}
+
+		used_shader->HierarchyUniforms();
+
+		ImGui::Separator();
+		ImGui::Text("Current shader: "); ImGui::SameLine();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), used_shader->path.c_str());
+		if (ImGui::Button("Select Shader"))
+		{
+			select_shader = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit shader"))
+		{
+			{
+				std::ifstream t(file_to_edit.c_str());
+				if (t.good())
+				{
+					std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+					shader_editor.SetText(str);
+				}
+			}
+
+			show_shader_text_editor = true;
+		}
+		ImGui::SameLine();
+
+		static const char* text_compilation_shader = "";
+		static bool compiled_shader_success = false;
+		if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
+		{
+			if (used_shader->ParseAndCreateShader() == 0)
+			{
+				compiled_shader_success = false;
+				text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
+				LOG_ENGINE("Shader compiled unsuccessfully...");
+			}
+			else
+			{
+				compiled_shader_success = true;
+				text_compilation_shader = "Shader compilation successful.";
+				LOG_ENGINE("Shader compiled successfully.");
+			}
+		}
+
+		compiled_shader_success ? ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), text_compilation_shader)
+			: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), text_compilation_shader);
+
+		// Can select desired shader in the shaders folder
+		if (select_shader)
+		{
+			ImGui::OpenPopup("Select Shader");
+			ImGui::SetNextWindowSize(ImVec2(600.0f, 800.0f));
+			if (ImGui::BeginPopupModal("Select Shader"))
+			{
+				if (ImGui::Button("Close"))
+				{
+					select_shader = false;
+				}
+
+				std::vector<ResourceShader*> shaders;
+				App->resources->GetShaders(shaders);
+				for (auto i = shaders.begin(); i != shaders.end(); ++i)
+				{
+					if (ImGui::Button((*i)->GetName()))
+					{
+						std::string shader_name = (*i)->GetName();
+						std::string p = std::string(SHADERS_FOLDER + shader_name + "_meta.alien");
+						u64 id_s = App->resources->GetIDFromAlienPath(p.data());
+						if (used_shader != nullptr) {
+							used_shader->DecreaseReferences();
+						}
+						used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+						if (used_shader != nullptr) {
+							used_shader->IncreaseReferences();
+						}
+						file_to_edit = used_shader->path; // must test if it edits on library too in this engine
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+		}
+
+		if (show_shader_text_editor)
+		{
+			ShowShaderTextEditor();
+		}
+	}
 }
 
 void ComponentMaterial::Reset()

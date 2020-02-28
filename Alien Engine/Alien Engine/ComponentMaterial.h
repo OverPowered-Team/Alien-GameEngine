@@ -22,6 +22,8 @@ private:
 	void BindTexture();
 	bool DrawInspector();
 
+	void InspectorShaderProperties();
+
 	void Reset();
 	void SetComponent(Component* component);
 

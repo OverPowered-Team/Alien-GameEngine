@@ -146,7 +146,7 @@ bool ResourceShader::ChangeTemplate()
 {
 	bool ret = false;
 	static int prev_type = (int)uniform_data.type;
-	ImGui::Combo("##Edit shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
+	ImGui::Combo("Select Shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
 	{
 		//change shader
 		if (prev_type != (int)uniform_data.type)
@@ -161,11 +161,12 @@ bool ResourceShader::ChangeTemplate()
 
 void ResourceShader::HierarchyUniforms()
 {
+	ImGui::Text("--Uniforms--");
 	switch (uniform_data.type) 
 	{
 		case SHADER_TEMPLATE::DIFUSSE: {//difusse
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-			ImGui::ColorEdit3("", uniform_data.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
+			//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
+			ImGui::ColorEdit3("Albedo", uniform_data.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
 			break; }
 		case SHADER_TEMPLATE::WAVE: {//wave
 			/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
