@@ -174,7 +174,7 @@ bool ComponentSlider::DrawInspector()
 		ImGui::Spacing(); 	ImGui::Spacing(); 	ImGui::Spacing();
 		ImGui::Text("Factor");
 		ImGui::SameLine(150);
-		static float factor_slider = factor;
+		float factor_slider = factor;
 		if (ImGui::DragFloat("##Factor", &factor_slider, 0.01f, 0.0f, 1.0f, "%.3f")) {
 			SetValue(factor_slider);
 		}
@@ -215,7 +215,7 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		UILogicSlider();
+		UILogic();
 		GetValue();
 
 		switch (state)
@@ -267,8 +267,8 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
 		float2 origin = float2((transform->global_transformation[0][3] - canvasPivot.x) / (canvas->width), (transform->global_transformation[1][3] - canvasPivot.y) / (canvas->height));
 		if (tex == sliderTexture)
 		{
-			sliderX = origin.x * App->ui->panel_game->width;
-			sliderY = -origin.y * App->ui->panel_game->height;
+			/*sliderX = origin.x * App->ui->panel_game->width;
+			sliderY = -origin.y * App->ui->panel_game->height;*/
 		}
 
 
@@ -446,15 +446,7 @@ bool ComponentSlider::OnPressed()
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
 	int xmotion = App->input->GetMouseXMotion();
-	//offsetX = offsetX + (xmotion * 0.25f);
-	/*if (xmotion > 0 && xmotion < 2)
-	{
-		factor += 0.01f;
-	}
-	if (xmotion < 0 && xmotion > -2)
-	{
-		factor += 0.01f;
-	}*/
+	
 	if (xmotion > 0)
 	{
 		factor += (0.01f* xmotion);
@@ -505,51 +497,6 @@ float ComponentSlider::GetValue()
 
 }
 
-void ComponentSlider::UILogicSlider()
-{
-	float3 mouse_pos;
 
-#ifndef GAME_VERSION
-	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
-#else
-	mouse_pos = App->input->GetMousePosition();
-#endif
 
-	switch (state)
-	{
-	case Idle:
-		if (CheckMouseInsideSlider(mouse_pos))
-			state = Hover;
-		break;
-	case Hover:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-			state = Click;
-		if (!CheckMouseInsideSlider(mouse_pos))
-			state = Release;
-		break;
-	case Click:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
-			state = Pressed;
-		break;
-	case Pressed:
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInsideSlider(mouse_pos))
-			state = Hover;
-		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInsideSlider(mouse_pos))
-			state = Idle;
-		break;
-	case Release:
-		state = Idle;
-		break;
-	}
-}
 
-bool ComponentSlider::CheckMouseInsideSlider(float3 mouse_pos)
-{
-	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
-#ifdef GAME_VERSION
-	return (mouse_pos.x >= sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.x <= sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->window->width) * 0.5F && mouse_pos.y >= sliderY - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->window->height) * 0.5F) && mouse_pos.y <= sliderY + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->window->height) * 0.5F);
-#else 
-	return (mouse_pos.x >= sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.x <= sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F && mouse_pos.y >= sliderY - ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F) && mouse_pos.y <= sliderY + ((trans->global_transformation[1][1] * sliderScaleY / (canvas->height * 0.5F)) * App->ui->panel_game->height) * 0.5F);
-#endif	
-	//return false;
-}
