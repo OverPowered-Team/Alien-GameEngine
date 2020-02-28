@@ -234,7 +234,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
-					(*it).second->DrawScene();
+					if (printing_scene)
+						(*it).second->DrawScene();
+					else
+						(*it).second->DrawGame();
 				}
 			}
 			if (printing_scene)
