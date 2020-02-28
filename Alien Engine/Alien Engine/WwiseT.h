@@ -7,6 +7,7 @@
 
 #include "AK/SoundEngine/Common/AkTypes.h"
 
+typedef uint32_t u32;
 // Wwise memory hooks
 namespace AK
 {
@@ -51,7 +52,7 @@ namespace WwiseT
 		unsigned int GetID() const;
 		const char* GetName() const;
 	private:
-		unsigned int id;
+		u32 id;
 		std::string name; // Event name
 		AkSoundPosition source_pos;
 		AkListenerPosition listener_pos;

@@ -10,7 +10,7 @@ ComponentAudioListener::ComponentAudioListener(GameObject * parent) : Component(
 	type = ComponentType::A_LISTENER;
 	listener = App->audio->CreateSoundEmitter("Listener");
 	App->audio->SetListener(listener);
-	listener->SetSpacializedListener();
+	//listener->SetSpacializedListener();
 }
 
 ComponentAudioListener::~ComponentAudioListener()

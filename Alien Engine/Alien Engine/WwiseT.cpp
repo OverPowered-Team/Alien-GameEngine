@@ -32,6 +32,7 @@
 #include <assert.h>
 #include <vector>
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "RandomHelper.h"
 #include "mmgr/mmgr.h"
 
 
@@ -271,7 +272,7 @@ void WwiseT::ResumeAll()
 
 WwiseT::AudioSource::AudioSource(const char* event_name)
 {
-	id = 0;// App->GenerateRandomNumber();
+	id = (u32)Random::GetRandomID();
 	name.assign(event_name);
 	AKRESULT eResult = AK::SoundEngine::RegisterGameObj(id, name.c_str());
 	if (eResult != AK_Success)
