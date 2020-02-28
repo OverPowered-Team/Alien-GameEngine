@@ -537,17 +537,17 @@ void GameObject::DrawScene(ComponentCamera* camera)
 		if (!mesh->wireframe)
 			mesh->DrawPolygon(camera);
 		/*if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine(camera);
+			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh(camera);
+			mesh->DrawMesh();
 		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals(camera);
+			mesh->DrawVertexNormals();
 		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals(camera);
+			mesh->DrawFaceNormals();
 		if (mesh->draw_AABB)
 			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB(camera);*/
+			mesh->DrawOBB(camera);
 	}
 
 
