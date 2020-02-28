@@ -83,6 +83,8 @@ protected:
 
 	float2 size = { 10,10 };
 
+	
+
 };
 
 

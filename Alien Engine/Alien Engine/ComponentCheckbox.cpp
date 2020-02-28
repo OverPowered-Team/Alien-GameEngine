@@ -468,7 +468,6 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 
 	enabled = to_load->GetBoolean("Enabled");
 	clicked = to_load->GetBoolean("clicked");
-	current_color = to_load->GetColor("Color");
 	crossScaleX = to_load->GetNumber("crossScaleX");
 	crossScaleY = to_load->GetNumber("crossScaleY");
 	tickScaleX = to_load->GetNumber("tickScaleX");

@@ -24,16 +24,28 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
 	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
-	to_save->SetColor("Color", current_color);
+	to_save->SetColor("ColorCurrent", current_color);
+	to_save->SetColor("ColorIdle", idle_color);
+	to_save->SetColor("ColorHover", hover_color);
+	to_save->SetColor("ColorClicked", clicked_color);
+	to_save->SetColor("ColorPressed", pressed_color);
+	to_save->SetColor("ColorDisabled", disabled_color);
 }
 
 void ComponentButton::LoadComponent(JSONArraypack* to_load)
 {
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
-	//UpdateVertex();
 
 	enabled = to_load->GetBoolean("Enabled");
-	current_color = to_load->GetColor("Color");
+	
+	current_color = to_load->GetColor("ColorCurrent");
+	idle_color = to_load->GetColor("ColorIdle");
+	hover_color = to_load->GetColor("ColorHover");
+	clicked_color = to_load->GetColor("ColorClicked");
+	pressed_color = to_load->GetColor("ColorPressed");
+	disabled_color = to_load->GetColor("ColorDisabled");
+
+
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
@@ -77,16 +89,6 @@ bool ComponentButton::DrawInspector()
 		RightClickMenu("Button");
 
 		ImGui::Spacing();
-
-		/*ImGui::PushID(this);
-		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-
-		ImGui::PopID();*/
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
@@ -279,46 +281,3 @@ void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
 	listenersOnRelease.push_back(funct);
 }
 
-//void ComponentButton::RemoveListenerOnHover(std::function<void()> funct)
-//{
-//	auto item = listenersOnHover.begin();
-//	for (; item != listenersOnHover.end(); ++item) {
-//		if (funct.target() == (*item).target()) {
-//			listenersOnHover.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClick(std::function<void()> funct)
-//{
-//	auto item = listenersOnClick.begin();
-//	for (; item != listenersOnClick.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClick.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClickRepeat(std::function<void()> funct)
-//{
-//	auto item = listenersOnClickRepeat.begin();
-//	for (; item != listenersOnClickRepeat.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClickRepeat.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnRelease(std::function<void()> funct)
-//{
-//	auto item = listenersOnRelease.begin();
-//	for (; item != listenersOnRelease.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnRelease.erase(item);
-//			break;
-//		}
-//	}
-//}
