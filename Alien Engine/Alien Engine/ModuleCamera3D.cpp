@@ -78,7 +78,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Movement();
 			}
 		}
-		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && is_scene_hovered)
 		{
 			Rotation(dt);
 		}
