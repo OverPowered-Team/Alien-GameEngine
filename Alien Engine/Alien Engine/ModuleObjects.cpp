@@ -85,12 +85,9 @@ bool ModuleObjects::Start()
 
 	light_test->AddComponent(new ComponentLight(light_test));
 
-	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));
 
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
-	camera->AddComponent(new ComponentTransform(camera, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 	camera->AddComponent(new ComponentCamera(camera));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };

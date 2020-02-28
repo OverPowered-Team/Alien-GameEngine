@@ -1435,29 +1435,9 @@ AABB GameObject::GetBB() const
 		}
 		else
 		{
-			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
-			if (camera != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float4x4 matrix = float4x4::FromTRS(transform->GetGlobalPosition() - camera->frustum.front.Normalized() * 2, transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } *Quat{ 0.7071,0,0.7071,0 }), { 0.1F,0.1F,0.1F });
-				float4x4 to_save = transform->global_transformation;
-				transform->global_transformation = matrix;
-				camera->mesh_camera->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return camera->mesh_camera->GetGlobalAABB();
-			}
-			else if (light != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float3 pos = transform->GetGlobalPosition();
-				float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
-				float4x4 to_save = transform->global_transformation;
-				light->bulb->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return light->bulb->GetGlobalAABB();
-			}
-			else if (ui != nullptr) {
+			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
@@ -1469,7 +1449,7 @@ AABB GameObject::GetBB() const
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 			float3 pos = transform->GetGlobalPosition();
-			aabb_null.SetFromCenterAndSize(pos, { 2,2,2 });
+			aabb_null.SetFromCenterAndSize(pos, { 1,1,1 });
 			return aabb_null;
 		}
 	}

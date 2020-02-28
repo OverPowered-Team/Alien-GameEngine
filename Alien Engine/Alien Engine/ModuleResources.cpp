@@ -701,10 +701,9 @@ void ModuleResources::ReadTextures(std::vector<std::string> directories, std::ve
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadTextures(new_directories, new_files, dir);
@@ -721,10 +720,9 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadModels(new_directories, new_files, dir);
@@ -742,10 +740,9 @@ void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, 
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadAnimControllers(new_directories, new_files, dir);
@@ -763,10 +760,9 @@ void ModuleResources::ReadPrefabs(std::vector<std::string> directories, std::vec
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadPrefabs(new_directories, new_files, dir);
@@ -835,10 +831,9 @@ void ModuleResources::ReadFonts(std::vector<std::string> directories, std::vecto
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadFonts(new_directories, new_files, dir);
