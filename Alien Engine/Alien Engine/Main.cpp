@@ -10,7 +10,7 @@
 
 #ifdef _DEBUG
 #pragma comment(lib, "Optick/libx86/debugx86/OptickCore.lib")
-#elif
+#else
 #pragma comment(lib, "Optick/libx86/releasex86/OptickCore.lib")
 #endif
 

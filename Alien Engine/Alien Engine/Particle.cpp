@@ -29,12 +29,17 @@ void Particle::Update(float dt)
 {
 	// Apply forces
 	particleInfo.velocity += particleInfo.force * dt;
-	//particleInfo.angularVelocity += particleInfo.angularAcceleration * dt;
+	
 
 	// Move
 	particleInfo.position += particleInfo.velocity * dt;
-	//particleInfo.angle += particleInfo.angularVelocity * dt;
-	//Rotate
+
+
+	//Rotate (Angular Velocity in degrees per second)
+	if (particleInfo.rotateOverTime) 
+		particleInfo.angle += particleInfo.angularVelocity * dt;
+		
+	
 }
 
 void Particle::PostUpdate(float dt)
@@ -42,7 +47,7 @@ void Particle::PostUpdate(float dt)
 	if (particleInfo.changeOverLifeTime) {
 
 		InterpolateValues(dt);
-		//particleInfo.angle += particleInfo.angularVelocity * dt;
+		
 	}
 }
 
@@ -50,9 +55,7 @@ void Particle::Draw()
 {
 	glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
 
-	//particleInfo.rotation = Quat(0.f, 0.f, 0.5f, 1.f);
 	
-
 	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size, 1.f));
 	float4x4 particleGlobal = particleLocal;
 
@@ -179,15 +182,8 @@ void Particle::Orientate(ComponentCamera* camera)
 
 void Particle::Rotate()
 {
+	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateZ(particleInfo.angle* DEGTORAD));
 	
-	
-		particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateZ(particleInfo.angle));
-
-		if (particleInfo.changeOverLifeTime)
-		{
-
-		}
-
 }
 
 void Particle::InterpolateValues(float dt)

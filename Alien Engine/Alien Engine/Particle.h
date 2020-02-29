@@ -11,6 +11,9 @@
 class ParticleSystem;
 class ComponentCamera;
 
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
+
 struct ParticleInfo
 {
 	float3 position = float3::zero();
@@ -18,7 +21,6 @@ struct ParticleInfo
 	float3 velocity = float3(0.f, 5.f, 0.f); // float3::zero;
 
 	float angularVelocity = 0.f;
-	float angularAcceleration = 0.f;
 	float angle = 0.f;
 
 	float3 force = float3(0.f, 0.0f, 0.f); // float3::zero;
