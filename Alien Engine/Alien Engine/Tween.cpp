@@ -14,6 +14,9 @@ bool Tween::UpdateInternal()
 	case TweenAction::MOVE:
 		MoveInternal();
 		break;
+	case TweenAction::MOVE_TO:
+		MoveInternal();
+		break;
 	}
 
 	if (current_time > time)

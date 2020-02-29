@@ -11,6 +11,7 @@ class __declspec(dllexport) Tween {
 public:
 	enum {
 		NONE = -1,
+		MOVE_TO,
 		MOVE,
 		ROTATE,
 		SCALE,

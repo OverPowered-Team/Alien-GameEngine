@@ -20,7 +20,7 @@ update_status AnimTween::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-Tween* AnimTween::CreateTween(GameObject * gameObject, const float3 & to, float time, TweenAction action, TweenType type)
+Tween* AnimTween::CreateTween(GameObject * gameObject, const float4 & to, float time, TweenAction action, TweenType type)
 {
 	if (tweens.size() > MAX_TWEENS)
 	{
@@ -30,7 +30,12 @@ Tween* AnimTween::CreateTween(GameObject * gameObject, const float3 & to, float 
 		
 	Tween* tween = new Tween();
 	tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
-	tween->to = float4(to, 0.f);
+
+	if (action == TweenAction::MOVE_TO)
+		tween->to = to;
+	else
+		tween->to = to + tween->from;
+
 	tween->trans = gameObject->transform;
 	tween->time = time;
 	tween->action = action;
