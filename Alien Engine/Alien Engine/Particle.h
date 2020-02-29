@@ -11,6 +11,9 @@
 class ParticleSystem;
 class ComponentCamera;
 
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
+
 struct ParticleInfo
 {
 	float3 position = float3::zero();
@@ -32,6 +35,7 @@ struct ParticleInfo
 
 	bool globalTransform = true;
 	bool changeOverLifeTime = false;
+	bool rotateOverTime = false;
 };
 
 struct ParticleMutableInfo
