@@ -973,6 +973,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 		if (value != nullptr && object != nullptr)
 		{
+			App->CastEvent(EventType::ON_UNLOAD_SCENE);
 			octree.Clear();
 			Gizmos::ClearAllCurrentGizmos();
 			delete base_game_object;
@@ -1602,6 +1603,9 @@ void ModuleObjects::HandleEvent(EventType eventType)
 
 	if (eventType == EventType::ON_PLAY) {
 		InitScripts();
+	}
+	else if (eventType == EventType::ON_UNLOAD_SCENE) {
+		App->ui->panel_animtimeline->changed = true;
 	}
 
 }
