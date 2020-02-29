@@ -164,8 +164,10 @@ void PanelAnimator::HandleDropLink()
 				else
 					end_is_input = false;
 
-				State* start_node = current_animator->FindStateFromPinId(start_pin_id.Get());
-				State* end_node = current_animator->FindStateFromPinId(end_pin_id.Get());
+				State* start_node = nullptr;
+				start_node = current_animator->FindStateFromPinId(start_pin_id.Get());
+				State* end_node = nullptr;
+				end_node = current_animator->FindStateFromPinId(end_pin_id.Get());
 
 				if (start_pin_id == end_pin_id)
 					ax::NodeEditor::RejectNewItem(ImColor(255, 0, 0), 2.0f);
