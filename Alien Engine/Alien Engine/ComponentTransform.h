@@ -51,11 +51,9 @@ public:
 
 	float4x4 GetGlobalMatrix() const;
 
-	void AddPosition(const float3& to_add);
-
-	void AddScale(const float3& to_add);
-
-	void AddRotation(const Quat& to_add_euler);
+	void AddPosition(const float3 pos);
+	void AddScale(const float3 scale);
+	void AddRotation(const float3 rot);
 
 private:
 
@@ -80,10 +78,6 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void SetGlobalTransformation(const float4x4& global_transformation);
-
-	void AddPosition(const float3 pos);
-	void AddScale(const float3 scale);
-	void AddRotation(const float3 rot);
 
 public:
 

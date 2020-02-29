@@ -205,7 +205,7 @@ public:
 	void UpdateState(State* state);
 	void Stop();
 	bool CheckTriggers();
-	int times_attached = 0;
+
 
 	//Transform
 	bool GetTransform(std::string channel_name, float3& position, Quat& rotation, float3& scale);

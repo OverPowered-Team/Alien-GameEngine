@@ -295,7 +295,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT() / times_attached;
+		state->time += Time::GetDT() / references;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -322,7 +322,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 			
-			state->fade_time += Time::GetDT() / times_attached;
+			state->fade_time += Time::GetDT() / references;
 			UpdateState(state->next_state);
 		}
 		else {

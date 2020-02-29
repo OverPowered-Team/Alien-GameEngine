@@ -23,7 +23,6 @@ ComponentAnimator::~ComponentAnimator()
 {
 	if (animator_controller)
 	{
-		animator_controller->times_attached--;
 		animator_controller->DecreaseReferences();
 	}
 
@@ -83,11 +82,9 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 {
 	if (animator_controller) {
 		animator_controller->DecreaseReferences();
-		animator_controller->times_attached--;
 	}
 
 	animator_controller = controller;
-	animator_controller->times_attached++;
 	animator_controller->IncreaseReferences();
 }
 
@@ -161,6 +158,10 @@ bool ComponentAnimator::DrawInspector()
 				}
 			}
 			ImGui::EndDragDropTarget();
+		}
+
+		if (animator_controller != nullptr) {
+			ImGui::Text("References: %i", animator_controller->references);
 		}
 	}
 
