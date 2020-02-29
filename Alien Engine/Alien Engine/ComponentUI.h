@@ -62,7 +62,8 @@ public:
 	//Script
 	void SetBackgroundColor(float r, float g, float b, float a);
 	
-
+private:
+	void CheckFirstSelected();
 public:
 	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 
@@ -93,6 +94,8 @@ protected:
 	u64 select_on_down		= 0;
 	u64 select_on_left		= 0;
 	u64 select_on_right		= 0;
+
+
 
 };
 

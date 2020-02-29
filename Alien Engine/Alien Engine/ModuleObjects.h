@@ -249,6 +249,8 @@ public:
 
 	Viewport* game_viewport = nullptr;
 
+	bool first_assigned_selected = false;
+
 private:
 	// root
 	GameObject* base_game_object = nullptr;
