@@ -593,7 +593,7 @@ PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& 
 PanelAnimator::~PanelAnimator()
 {
 	if (current_animator)
-		current_animator->SaveAsset();
+		current_animator->SaveAsset(current_animator->GetID());
 }
 
 bool PanelAnimator::FillInfo()

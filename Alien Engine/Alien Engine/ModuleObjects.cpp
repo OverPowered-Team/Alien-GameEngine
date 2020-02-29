@@ -1598,8 +1598,12 @@ void ModuleObjects::HandleEvent(EventType eventType)
 			break;
 		}
 	}
-
 	objects.clear();
+
+	if (eventType == EventType::ON_PLAY) {
+		InitScripts();
+	}
+
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
