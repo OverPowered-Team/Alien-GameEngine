@@ -5,7 +5,10 @@
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
 #include "PanelSceneSelector.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
+
 
 PanelGame::PanelGame(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -22,55 +25,38 @@ PanelGame::~PanelGame()
 
 void PanelGame::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-	if (height > ImGui::GetWindowHeight())
-	{
-		height = ImGui::GetWindowHeight();
-		width = (height * 16) / 9;
-	}
-	else if ((width > ImGui::GetWindowWidth()) || (width > ImGui::GetWindowWidth() && height > ImGui::GetWindowHeight()))
-	{
-		width = ImGui::GetWindowWidth();
-		height = (width * 9) / 16;
-	}
-	else if ((width < ImGui::GetWindowWidth() && height < ImGui::GetWindowHeight()))
-	{
-		if ((ImGui::GetWindowHeight() - lastHeight) != 0)
-		{
-			height = ImGui::GetWindowHeight();
-			width = (height * 16) / 9;
-		}
-		else
-		{
-			width = ImGui::GetWindowWidth();
-			height = (width * 9) / 16;
-		}
-	}
 
 	if (App->objects->game_cameras.empty())
 	{
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() * 0.5f) - 80);
 		ImGui::SetCursorPosY((ImGui::GetWindowHeight() * 0.5f));
 		ImGui::Text("No Cameras Available :(");
+		App->objects->game_viewport->active = false;
 	}
+	else {
+		viewport_min = ImGui::GetCursorScreenPos();
+		viewport_max = ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail();
 
-	ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
-	ImGui::SetCursorPosY((ImGui::GetWindowHeight() - height) * 0.5f);
+		current_viewport_size = ImGui::GetContentRegionAvail();
+		posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
+		posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY() - ImGui::GetCurrentWindow()->TitleBarHeight() - 10;
+		
+		ImGui::Image((ImTextureID)App->objects->game_viewport->GetTexture(), ImVec2(current_viewport_size.x, current_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+		width = current_viewport_size.x;
+		height = current_viewport_size.y;
 
-	posX = ImGui::GetWindowPos().x + ImGui::GetCursorPosX();
-	posY = ImGui::GetWindowPos().y + ImGui::GetCursorPosY() - ImGui::GetCurrentWindow()->TitleBarHeight() - 10;
+		App->objects->game_viewport->SetPos(float2(viewport_min.x, viewport_min.y));  
 
-	if (App->renderer3D->actual_game_camera != nullptr)
-	{
-		ImGui::Image((ImTextureID)App->renderer3D->game_tex->id, { width,height }, { 0,1 }, { 1,0 });
+		if (!(current_viewport_size == viewport_size)) 
+		{
+			viewport_size = current_viewport_size;
+			App->objects->game_viewport->SetSize(viewport_size.x, viewport_size.y);
+		}
+
+		App->objects->game_viewport->active = enabled; 
 	}
-
-	if (ImGui::IsWindowHovered()) {
-		float2 origin = float2((App->input->GetMousePosition().x - posX), (App->input->GetMousePosition().y - posY));
-	}
-
-	lastHeight = ImGui::GetWindowHeight();
 
 	if (ImGui::IsWindowFocused()) {
 		game_focused = true;

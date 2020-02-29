@@ -19,7 +19,10 @@ class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+class ComponentCanvas;
+enum class ComponentType;
 
+class Viewport;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -70,6 +73,7 @@ public:
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
+	void CreateBaseUI(ComponentType type);
 
 	// poly options
 	void ChangeWireframeMode();
@@ -94,7 +98,8 @@ public:
 	void DeselectObject(GameObject* obj);
 
 	/*---------Scripts Calls-----------*/
-	void InitScriptsOnPlay() const;
+	void OnPlay() const;
+	void InitScripts() const;
 	void ScriptsPreUpdate() const;
 	void ScriptsUpdate() const;
 	void ScriptsPostUpdate() const;
@@ -151,6 +156,7 @@ private:
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
 	void ReAssignScripts(JSONArraypack* to_load);
 	void DeleteReturns();
+	ComponentCanvas* GetCanvas();
 
 public:
 
@@ -161,7 +167,7 @@ public:
 	Component* component_in_copy = nullptr;
 
 	bool prefab_scene = false;
-	bool printing_scene = true;
+	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 
@@ -238,6 +244,10 @@ public:
 	ComponentScript* actual_script_loading = nullptr;
 
 	std::vector<std::string> tags;
+
+	std::vector<Viewport*> viewports;
+
+	Viewport* game_viewport = nullptr;
 
 private:
 	// root

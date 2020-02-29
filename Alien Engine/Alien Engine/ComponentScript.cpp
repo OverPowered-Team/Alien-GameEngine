@@ -8,6 +8,7 @@
 #include "FileNode.h"
 #include "ResourcePrefab.h"
 #include "Prefab.h"
+#include "mmgr/mmgr.h"
 
 ComponentScript::ComponentScript(GameObject* attach) : Component(attach)
 {
@@ -106,7 +107,7 @@ bool ComponentScript::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader(data_name.data(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(std::string(data_name + " (Script)").data(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Script");
 		if (!inspector_variables.empty()) {
@@ -634,7 +635,7 @@ void ComponentScript::LoadData(const char* name, bool is_alien)
 			Alien* alien = (Alien*)data_ptr;
 			App->objects->current_scripts.push_back(alien);
 			alien->game_object = game_object_attached;
-			alien->transform = game_object_attached->GetComponent<ComponentTransform>();
+			alien->transform = game_object_attached->transform;
 			alien->enabled = &enabled;
 			strcpy(alien->data_name, name);
 		}

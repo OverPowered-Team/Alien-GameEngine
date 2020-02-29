@@ -19,10 +19,19 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentLight;
+	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
+	friend class ComponentDeformableMesh;
+	friend class ComponentBone;
+	friend class ComponentAnimator;
 	friend class ComponentMaterial;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentRigidBody;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
@@ -54,7 +63,8 @@ class __declspec(dllexport) GameObject
 	friend class ModuleUI;
 public:
 	GameObject(GameObject* parent);
-	GameObject(); // just for loading objects, dont use it
+	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
+	GameObject(bool ignore_transform = false); // just for loading objects, dont use it
 	virtual ~GameObject();
 
 public:
@@ -76,12 +86,11 @@ public:
 		DontDestroyOnLoad();
 	*/
 
-
-
 	GameObject* GetChild(const char* child_name);
 	GameObject* GetChild(const int& index);
 	// look for child of child of child bla bla
 	GameObject* GetChildRecursive(const char* child_name);
+	std::vector<GameObject*> GetChildren();
 
 	void SetEnable(bool enable);
 	bool IsEnabled() const;
@@ -146,8 +155,8 @@ private:
 	void OnStop();
 
 	// here we call Component Mesh, Material & light
-	void DrawScene();
-	void DrawGame();
+	void DrawScene(ComponentCamera* camera);
+	void DrawGame(ComponentCamera* camera);
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
 
 	ComponentCanvas* GetCanvas();
@@ -248,6 +257,7 @@ private:
 public:
 
 	GameObject* parent = nullptr;
+	ComponentTransform* transform = nullptr;
 
 private:
 

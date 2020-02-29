@@ -1,5 +1,7 @@
 #include "PanelRender.h"
 #include "Color.h"
+#include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 PanelRender::PanelRender(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -13,6 +15,7 @@ PanelRender::~PanelRender()
 
 void PanelRender::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse);
 	if (ImGui::IsWindowHovered())
 		App->camera->is_scene_hovered = false;
@@ -67,12 +70,6 @@ void PanelRender::PanelLogic()
 		}
 		ImGui::Spacing();
 	}
-	/*if (ImGui::CollapsingHeader("Render Z-Buffer")) {
-		ImGui::Spacing();
-		if (ImGui::Checkbox("View Z-Buffer", &App->renderer3D->render_zbuffer)) {
-			App->renderer3D->ChangeDrawFrameBuffer(App->renderer3D->render_zbuffer);
-		}
-	}*/
 	if (ImGui::CollapsingHeader("Personalize Grid")) 
 	{
 		ImGui::Spacing();

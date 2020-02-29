@@ -17,6 +17,7 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleAudio.h"
+#include "ModulePhysics.h"
 
 #include <string>
 #include <vector>
@@ -51,6 +52,7 @@ public:
 	ModuleFileSystem*	file_system = nullptr;
 	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
+	ModulePhysics* 		physics = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;
@@ -66,18 +68,16 @@ private:
 	JSONfilepack* layout = nullptr;
 	
 	std::list<JSONfilepack*> json_files;
-
 	std::list<Module*> list_modules;
 	bool quit = false;
 
 	j1PerfTimer			ptimer;
-	unsigned __int64				frame_count = 0;
+	unsigned __int64	frame_count = 0;
 	Timer				startup_time;
 	Timer				frame_time;
 	Timer				last_sec_frame_time;
-	unsigned __int32				last_sec_frame_count = 0;
-	unsigned __int32				prev_last_sec_frame_count = 0;
-	
+	unsigned __int32	last_sec_frame_count = 0;
+	unsigned __int32	prev_last_sec_frame_count = 0;
 	float				dt;
 
 public:
@@ -114,6 +114,10 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
+	void PreUpdate(update_status&ret);
+	void OnUpdate(update_status& ret);
+	void PostUpdate(update_status& ret);
 
 
 	bool LoadConfig();

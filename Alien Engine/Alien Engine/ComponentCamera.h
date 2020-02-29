@@ -20,6 +20,7 @@ class __declspec(dllexport) ComponentCamera : public Component {
 	friend class ComponentCheckbox;
 	friend class ModuleObjects;
 	friend class RayCreator;
+	friend class Viewport;
 	friend class Octree;
 	friend class OctreeNode;
 public:
@@ -30,6 +31,7 @@ public:
 	void Look(const float3& position_to_look);
 
 	float* GetProjectionMatrix() const;
+	float4x4 GetProjectionMatrix4f4() const;
 
 	float* GetViewMatrix() const;
 	float4x4 GetViewMatrix4x4() const; 

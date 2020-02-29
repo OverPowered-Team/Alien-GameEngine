@@ -16,20 +16,27 @@ struct aiFileIO;
 #define LIBRARY_MODELS_FOLDER "Library/Models/"
 #define LIBRARY_MESHES_FOLDER "Library/Meshes/"
 #define LIBRARY_TEXTURES_FOLDER "Library/Textures/"
+#define LIBRARY_SHADERS_FOLDER "Library/Shaders/"
 #define LIBRARY_SCENES_FOLDER "Library/Scenes/"
 #define LIBRARY_PREFABS_FOLDER "Library/Prefabs/"
+#define LIBRARY_ANIMATIONS_FOLDER "Library/Animations/"
+#define LIBRARY_BONES_FOLDER "Library/Bones/"
+#define LIBRARY_ANIM_CONTROLLERS_FOLDER "Library/AnimControllers/"
+#define LIBRARY_MATERIALS_FOLDER "Library/Materials/"
+#define LIBRARY_SCRIPTS_FOLDER "Library/Scripts/"
 #define LIBRARY_AUDIO_FOLDER "Library/Audio/"
 #define LIBRARY_FONTS_FOLDER "Library/Fonts/"
 #define CONFIGURATION_FOLDER "Configuration/"
 #define CONFIGURATION_LAYOUTS_FOLDER "Configuration/Layouts/"
 #define MODELS_FOLDER "Assets/Models/"
 #define TEXTURES_FOLDER "Assets/Textures/"
+#define SHADERS_FOLDER "Assets/Shaders/"
 #define SCRIPTS_FOLDER "Assets/Scripts/"
 #define SCENE_FOLDER "Assets/Scenes/"
+#define ANIM_CONTROLLER_FOLDER "Assets/AnimControllers/"
 #define AUDIO_FOLDER "Assets/AudioBanks/"
 #define FONTS_FOLDER "Assets/Fonts/"
 #define ASSETS_PREFAB_FOLDER "Assets/Prefabs/"
-#define LIBRARY_SCRIPTS_FOLDER "Library/Scripts/"
 #define HEADER_SCRIPTS_FILE "AlienEngineScripts/"
 #define DEFAULT_FONT "Assets/Fonts/Arialn.ttf"
 // -------Foldres Paths--------
@@ -62,9 +69,12 @@ class FileNode;
 enum class FileDropType {
 	MODEL3D,
 	TEXTURE,
+	SHADER,
 	FOLDER,
 	SCRIPT,
 	SCENE,
+	ANIM_CONTROLLER,
+	ANIMATION,
 	PREFAB,
 	PARTICLES,
 	FONT,

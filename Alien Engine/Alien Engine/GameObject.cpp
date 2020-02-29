@@ -5,7 +5,11 @@
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentLight.h"
+#include "ComponentBone.h"
+#include "ComponentAnimator.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentCanvas.h"
 #include "ComponentText.h"
 #include "ComponentButton.h"
@@ -26,19 +30,48 @@
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
+#include "Optick/include/optick.h"
 
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
 
 	if (parent != nullptr) {
 		this->parent = parent;
 		parent->AddChild(this);
 	}
+
 }
 
-GameObject::GameObject()
+GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale)
 {
+	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, pos, rot, scale);
+	AddComponent(transform);
+
+	if (parent != nullptr) {
+		this->parent = parent;
+		parent->AddChild(this);
+	}
+
+}
+
+GameObject::GameObject(bool ignore_transform)
+{
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -459,6 +492,11 @@ GameObject* GameObject::GetChildRecursive(const char* child_name)
 	}
 }
 
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	return children;
+}
+
 void GameObject::SetEnable(bool enable)
 {
 	if (enable != enabled) {
@@ -477,12 +515,16 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
@@ -493,9 +535,9 @@ void GameObject::DrawScene()
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
-		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
 			mesh->DrawMesh();
 		if (mesh->view_vertex_normals)
@@ -503,18 +545,30 @@ void GameObject::DrawScene()
 		if (mesh->view_face_normals)
 			mesh->DrawFaceNormals();
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);
+	}
+
+
+	for (Component* component : components)
+	{
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawScene();
+		}
 	}
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if(mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -525,7 +579,7 @@ void GameObject::DrawGame()
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 
@@ -533,6 +587,8 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 {
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+		if (mesh == nullptr) //not sure if this is the best solution
+			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
@@ -572,12 +628,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
 		}
 
 		if (partSystem != nullptr)
@@ -640,6 +696,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -659,6 +716,7 @@ void GameObject::PostUpdate()
 
 void GameObject::PreUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -678,6 +736,7 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -1129,6 +1188,7 @@ void GameObject::FreeArrayMemory(void*** array_)
 
 GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position, GameObject* parent)
 {
+	OPTICK_EVENT();
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
@@ -1350,6 +1410,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{
@@ -1381,29 +1443,9 @@ AABB GameObject::GetBB() const
 		}
 		else
 		{
-			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
-			if (camera != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float4x4 matrix = float4x4::FromTRS(transform->GetGlobalPosition() - camera->frustum.front.Normalized() * 2, transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } *Quat{ 0.7071,0,0.7071,0 }), { 0.1F,0.1F,0.1F });
-				float4x4 to_save = transform->global_transformation;
-				transform->global_transformation = matrix;
-				camera->mesh_camera->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return camera->mesh_camera->GetGlobalAABB();
-			}
-			else if (light != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float3 pos = transform->GetGlobalPosition();
-				float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
-				float4x4 to_save = transform->global_transformation;
-				light->bulb->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return light->bulb->GetGlobalAABB();
-			}
-			else if (ui != nullptr) {
+			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
@@ -1415,7 +1457,7 @@ AABB GameObject::GetBB() const
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 			float3 pos = transform->GetGlobalPosition();
-			aabb_null.SetFromCenterAndSize(pos, { 2,2,2 });
+			aabb_null.SetFromCenterAndSize(pos, { 1,1,1 });
 			return aabb_null;
 		}
 	}
@@ -1511,10 +1553,10 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 18); // add new type to switch
+			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
-				ComponentTransform* transform = new ComponentTransform(this);
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
 				AddComponent(transform);
 				break; }
@@ -1537,6 +1579,21 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCamera* camera = new ComponentCamera(this);
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
+				break; }
+			case (int)ComponentType::DEFORMABLE_MESH: {
+				ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(this);
+				def_mesh->LoadComponent(components_to_load);
+				AddComponent(def_mesh);
+				break; }
+			case (int)ComponentType::ANIMATOR: {
+				ComponentAnimator* anim = new ComponentAnimator(this);
+				anim->LoadComponent(components_to_load);
+				AddComponent(anim);
+				break; }
+			case (int)ComponentType::BONE: {
+				ComponentBone* bone = new ComponentBone(this);
+				bone->LoadComponent(components_to_load);
+				AddComponent(bone);
 				break; }
 			case (int)ComponentType::A_EMITTER: {
 				ComponentAudioEmitter* emitter = new ComponentAudioEmitter(this);
@@ -1563,6 +1620,32 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
 				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
@@ -1629,6 +1712,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 GameObject* GameObject::Clone(GameObject* parent)
 {
+	OPTICK_EVENT();
 	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);
@@ -1664,9 +1748,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					ComponentTransform* transform = new ComponentTransform(clone);
-					(*item)->Clone(transform);
-					clone->AddComponent(transform);
+					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
 				case ComponentType::LIGHT: {
 					ComponentLight* light = new ComponentLight(clone);
@@ -1692,6 +1774,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentCamera* camera = new ComponentCamera(clone);
 					(*item)->Clone(camera);
 					clone->AddComponent(camera);
+					break; }
+				case ComponentType::DEFORMABLE_MESH: {
+					ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(clone);
+					(*item)->Clone(def_mesh);
+					clone->AddComponent(def_mesh);
 					break; }
 				case ComponentType::SCRIPT: {
 					ComponentScript* script = new ComponentScript(clone);
@@ -1745,7 +1832,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 5);
+	SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
@@ -1755,8 +1842,30 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		break; }
 	case ResourceType::RESOURCE_MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
-			mesh->mesh = nullptr;
+		if (!mesh)
+		{
+			ComponentDeformableMesh* d_mesh = (ComponentDeformableMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+			if (d_mesh != nullptr && d_mesh->mesh == (ResourceMesh*)to_delete) {
+				d_mesh->mesh = nullptr;
+			}
+		}
+		else
+		{
+			if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
+				mesh->mesh = nullptr;
+			}
+		}
+		break; }
+	case ResourceType::RESOURCE_BONE: {
+		ComponentBone* bone = (ComponentBone*)GetComponent(ComponentType::BONE);
+		if (bone != nullptr && bone->bone == (ResourceBone*)to_delete) {
+			bone->bone = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_ANIMATOR_CONTROLLER: {
+		ComponentAnimator* anim = (ComponentAnimator*)GetComponent(ComponentType::ANIMATOR);
+		if (anim != nullptr && anim->animator_controller == (ResourceAnimatorController*)to_delete) {
+			anim->animator_controller = nullptr;
 		}
 		break; }
 	case ResourceType::RESOURCE_FONT: {

@@ -10,7 +10,10 @@
 #include "PanelScene.h"
 #include "ComponentMesh.h"
 #include "ResourceMesh.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
+
+#include "Optick/include/optick.h"
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 {
@@ -27,7 +30,8 @@ bool ModuleCamera3D::Start()
 {
 	LOG_ENGINE("Setting up the camera");
 	bool ret = true;
-
+	scene_viewport = new Viewport(fake_camera);
+	selected_viewport = new Viewport(nullptr);
 	return ret;
 }
 
@@ -44,6 +48,7 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	OPTICK_EVENT();
 	frustum = &fake_camera->frustum;
 
 	speed = camera_speed * dt;
@@ -76,7 +81,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Movement();
 			}
 		}
-		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		if (!ImGuizmo::IsUsing() && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && is_scene_hovered)
 		{
 			Rotation(dt);
 		}
@@ -114,6 +119,7 @@ void ModuleCamera3D::Move(const float3& Movement)
 // -----------------------------------------------------------------
 void ModuleCamera3D::Movement()
 {
+	OPTICK_EVENT();
 	float3 movement(float3::zero());
 
 
@@ -236,16 +242,12 @@ void ModuleCamera3D::CreateRay()
 	if (App->objects->GetRoot(true)->children.empty())
 		return;
 
-	//App->renderer3D->SetCameraToDraw(fake_camera);
-	float2 origin = float2((App->input->GetMousePosition().x - App->ui->panel_scene->posX)/ App->ui->panel_scene->width, (App->input->GetMousePosition().y - App->ui->panel_scene->posY + 29) / App->ui->panel_scene->height);
+	float2 origin = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
 
-	origin.x = (origin.x - 0.5F) * 2;
-	origin.y = -(origin.y - 0.5F) * 2;
-
-	if (origin.x > 1 || origin.x < -1 || origin.y > 1 || origin.y < -1)
+	if (!scene_viewport->ScreenPointToViewport(origin))
 		return;
 
-	ray = fake_camera->frustum.UnProjectLineSegment(origin.x, origin.y);
+	ray = scene_viewport->GetCamera()->frustum.UnProjectLineSegment(origin.x, origin.y);
 
 	std::vector<std::pair<float, GameObject*>> hits;
 

@@ -1,11 +1,20 @@
 #include "PanelInspector.h"
 #include "ModuleObjects.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleUI.h"
+#include "PanelProject.h"
 #include "ResourceScript.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentLight.h"
+#include "ComponentAnimator.h"
+
+#include "ResourceAnimation.h"
+#include "ResourceModel.h"
+#include "ResourceBone.h"
+#include "ResourceMesh.h"
+
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
 #include "ComponentReverbZone.h"
@@ -18,11 +27,20 @@
 #include "ComponentText.h"
 #include "ComponentButton.h"
 #include "ComponentCheckbox.h"
+
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
 
 #include "mmgr/mmgr.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
+#include "Optick/include/optick.h"
 
 PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -36,10 +54,11 @@ PanelInspector::~PanelInspector()
 
 void PanelInspector::PanelLogic()
 {
-
+	OPTICK_EVENT();
 	ImGui::Begin(panel_name.data(), &enabled, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 	if (ImGui::IsWindowHovered())
 		App->camera->is_scene_hovered = false;
+	//selected gameobject/s
 	if (App->objects->GetSelectedObjects().size() == 1)
 	{
 		static bool draw_add = true;
@@ -69,7 +88,8 @@ void PanelInspector::PanelLogic()
 			draw_add = true;
 		}
 	}
-	else if (App->objects->GetSelectedObjects().size() > 1) {
+	else if (App->objects->GetSelectedObjects().size() > 1) 
+	{
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Spacing();
 			ImGui::Text("Position  ");
@@ -93,7 +113,7 @@ void PanelInspector::PanelLogic()
 					else {
 						trans = trans * (*item)->GetComponent<ComponentTransform>()->global_transformation;
 					}
-					
+
 				}
 			}
 			float3 view_pos, view_scale, view_rot;
@@ -213,6 +233,15 @@ void PanelInspector::PanelLogic()
 			}
 		}
 	}
+	else if (App->ui->panel_project->GetSelectedFile())
+	{
+		FileNode* selected_file = App->ui->panel_project->GetSelectedFile();
+		if (selected_file->type == FileDropType::MODEL3D)
+		{
+			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
+			ShowModelImportSettings(r_model);
+		}
+	}
 
 	ImGui::End();
 
@@ -320,9 +349,8 @@ void PanelInspector::ButtonAddComponent()
 	}
 
 	else {
-
-		ImGui::Combo("##choose component", &component, "Select Component\0Mesh\0Material\0Light\0Camera\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0Script\0"); // SCRIPT MUST BE THE LAST ONE
-
+		ImGui::Combo("##choose component", &component, 
+			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -386,34 +414,37 @@ void PanelInspector::ButtonAddComponent()
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 					App->renderer3D->selected_game_camera = (ComponentCamera*)comp;
 				}
-
 				else
 					LOG_ENGINE("The selected object already has this component!");
 
 				break; }
 
+			case ComponentType::ANIMATOR: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR))
+				{
+					comp = new ComponentAnimator(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+				break; }
 			case ComponentType::PARTICLES: {
-
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::PARTICLES))
 				{
 					comp = new ComponentParticleSystem(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
-
 				else
 					LOG_ENGINE("The selected object already has this component!");
-
 				break; }
-
 			case ComponentType::A_EMITTER: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_EMITTER))
 				{
 					comp = new ComponentAudioEmitter(App->objects->GetSelectedObjects().back());
-						App->objects->GetSelectedObjects().back()->AddComponent(comp);
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 				else
 					LOG_ENGINE("The selected object already has this component!");
-
 				break; }
 
 				case ComponentType::A_LISTENER: {
@@ -422,10 +453,8 @@ void PanelInspector::ButtonAddComponent()
 					comp = new ComponentAudioListener(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
-
 				else
 					LOG_ENGINE("The selected object already has this component!");
-
 				break; }
 
 			case ComponentType::A_REVERB: {
@@ -479,21 +508,6 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-			case ComponentType::UI_SLIDER: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
-				{
-					ComponentCanvas* canvas = GetCanvas();
-					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentSlider(selected);
-					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
-					selected->AddComponent(comp);
-					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-
-				}
-
-				else
-					LOG_ENGINE("The selected object already has Component UI!");
-				break; }
 			case ComponentType::UI_TEXT: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -507,7 +521,6 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
 			case ComponentType::UI_CHECKBOX: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -522,6 +535,20 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
+			case ComponentType::UI_SLIDER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentSlider(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+
+				}
+				else
+					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
 			case ComponentType::UI_BAR: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -532,9 +559,43 @@ void PanelInspector::ButtonAddComponent()
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 				}
-
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
+			case ComponentType::BOX_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::SPHERE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CAPSULE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentCapsuleCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CONVEX_HULL_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::RIGID_BODY: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::RIGID_BODY))
+				{
+					comp = new ComponentRigidBody(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
 				break; }
 			}
 
@@ -543,6 +604,63 @@ void PanelInspector::ButtonAddComponent()
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
 			}
 			component=0;
+		}
+	}
+}
+
+void PanelInspector::ShowModelImportSettings(ResourceModel* model)
+{
+	if (model->animations_attached.size() > 0)
+	{
+		static char anim_name[MAX_PATH] = "Name";
+
+		for each (ResourceAnimation * anim in model->animations_attached)
+		{
+			ImGui::PushID(anim);
+			strcpy_s(anim_name, 100, anim->name.data());
+			if (ImGui::InputText("Clip Name", anim_name, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				anim->name = anim_name;
+			}
+			int start_tick = (int)anim->start_tick;
+			int end_tick = (int)anim->end_tick;
+			if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, anim->end_tick - 1))
+				if (start_tick >= 0 && start_tick < anim->end_tick) anim->start_tick = (uint)start_tick;
+			if (ImGui::DragInt("End", &end_tick, 1.0F, anim->start_tick + 1, anim->max_tick))
+				if (end_tick > anim->start_tick&& end_tick <= anim->max_tick) anim->end_tick = (uint)end_tick;
+			ImGui::Checkbox("Loops", &anim->loops);
+			ImGui::Separator();
+			ImGui::PopID();
+		}
+		if (ImGui::Button("+"))
+		{
+			ResourceAnimation* new_anim = new ResourceAnimation();
+			new_anim->name = "New Clip";
+			new_anim->max_tick = model->animations_attached[0]->max_tick;
+			new_anim->end_tick = model->animations_attached[0]->max_tick;
+
+			model->animations_attached.push_back(new_anim);
+			App->resources->AddResource(new_anim);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("-") && model->animations_attached.size() > 1)
+		{
+			App->resources->RemoveResource(model->animations_attached[model->animations_attached.size() - 1]);
+			delete model->animations_attached[model->animations_attached.size() - 1];
+			model->animations_attached.pop_back();
+		}
+		ImGui::Separator();
+		if (ImGui::Button("Save")) {
+			//TODO: FIX THIS MESS OF CODE :|	
+			model->animations_attached[0]->LoadMemory();
+			if (model->animations_attached.size() > 1)
+			{
+				for (int i = 1; i < model->animations_attached.size(); ++i)
+				{
+					model->animations_attached[i]->Copy(model->animations_attached[0]);
+				}
+			}
+			model->UpdateAnimationInfo();
 		}
 	}
 }

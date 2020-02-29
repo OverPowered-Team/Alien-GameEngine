@@ -6,21 +6,7 @@
 class Timer;
 
 class __declspec(dllexport) Time {
-private:
-	friend class Application;
-	friend class ModuleUI;
-	friend class ReturnZ;
-	friend class ModuleObjects;
-	friend class PanelScene;
-	friend class PanelInspector;
-	friend class ResourcePrefab;
-	friend class ComponentAudioEmitter;
-	friend class ModuleAudio;
-	friend class ComponentParticleSystem;
-	friend class ComponentUI;
-	friend class ComponentCheckbox;
-	friend class ComponentSlider;
-	friend class ComponentBar;
+public:
 
 	enum class GameState {
 		NONE,
@@ -29,6 +15,25 @@ private:
 		PLAY_ONCE
 	};
 
+private:
+	friend class Application;
+	friend class ModuleUI;
+	friend class ReturnZ;
+	friend class ModuleObjects;
+	friend class PanelScene;
+	friend class PanelInspector;
+	friend class ResourcePrefab;
+	friend class ResourceAnimatorController;
+	friend class ComponentAnimator;
+	friend class PanelAnimTimeline;
+	friend class ComponentAudioEmitter;
+	friend class ModuleAudio;
+	friend class ComponentParticleSystem;
+	friend class ComponentUI;
+	friend class ComponentCheckbox;
+	friend class ComponentSlider;
+	friend class ComponentBar;
+
 	static void Start();
 	static void Update();
 
@@ -36,6 +41,7 @@ private:
 	static void Pause();
 	static void PlayOnce();
 	static bool IsPlaying();
+	static bool IsPaused();
 	static bool IsInGameState();
 	static void Stop();
 
@@ -60,12 +66,12 @@ private:
 
 public:
 
+	static GameState GetGameState();
 	static void SetScaleTime(const float& scale);
 	static float GetDT();
 	static float GetTimeSinceStart();
 	static float GetGameTime();
 	static float GetScaleTime();
-
 };
 
 #endif

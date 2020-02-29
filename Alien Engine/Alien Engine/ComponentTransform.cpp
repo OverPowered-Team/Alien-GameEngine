@@ -8,10 +8,13 @@
 #include "PanelScene.h"
 #include "ResourcePrefab.h"
 #include "PanelProject.h"
+#include "mmgr/mmgr.h"
+
+#include "Optick/include/optick.h"
 
 ComponentTransform::ComponentTransform(GameObject* attach) : Component(attach)
 {
-	type = ComponentType::TRANSFORM;
+	type = ComponentType::TRANSFORM;	
 }
 
 ComponentTransform::ComponentTransform(GameObject* attach, const float3& pos, const Quat& rot, const float3& scale) : Component(attach)
@@ -64,6 +67,63 @@ void ComponentTransform::SetLocalPosition(const float& x, const float& y, const 
 	local_position.z = z;
 
 	RecalculateTransform();
+}
+
+void ComponentTransform::SetGlobalPosition(const float3& pos)
+{
+	global_transformation.SetTranslatePart(pos);
+	GameObject* parent = game_object_attached->parent;
+
+
+	if (parent != nullptr)
+	{
+		ComponentTransform* paremt_tramsform = parent->GetComponent<ComponentTransform>();
+
+		if (paremt_tramsform != nullptr)
+		{
+			local_transformation = paremt_tramsform->global_transformation.Inverted() * global_transformation;
+		}
+		else
+		{
+			local_transformation = global_transformation;
+		}
+	}
+	else
+	{
+		local_transformation = global_transformation;
+	}
+
+	local_transformation.Decompose(local_position, local_rotation, local_scale);
+	RecalculateTransform();
+}
+
+void ComponentTransform::SetGlobalRotation(Quat rotation)
+{
+	global_transformation = float4x4::FromTRS(global_transformation.TranslatePart(), rotation, global_transformation.GetScale());
+	GameObject* parent = game_object_attached->parent;
+
+
+	if (parent != nullptr)
+	{
+		ComponentTransform* paremt_tramsform = parent->GetComponent<ComponentTransform>();
+
+		if (paremt_tramsform != nullptr)
+		{
+			local_transformation = paremt_tramsform->global_transformation.Inverted() * global_transformation;
+		}
+		else
+		{
+			local_transformation = global_transformation;
+		}
+	}
+	else
+	{
+		local_transformation = global_transformation;
+	}
+
+	local_transformation.Decompose(local_position, local_rotation, local_scale);
+	RecalculateTransform();
+
 }
 
 const float3 ComponentTransform::GetLocalPosition() const
@@ -173,13 +233,19 @@ const Quat ComponentTransform::GetGlobalRotation() const
 	return rot;
 }
 
+float4x4 ComponentTransform::GetGlobalMatrix() const
+{
+	return global_transformation;
+}
+
 void ComponentTransform::RecalculateTransform()
-{	
+{
+	OPTICK_EVENT();
 	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);
 
-	if (game_object_attached == nullptr)
+	if (game_object_attached == nullptr) 
 		return;
-
+	
 	if (game_object_attached->parent != nullptr) {
 		ComponentTransform* tr = (ComponentTransform*)game_object_attached->parent->GetComponent(ComponentType::TRANSFORM);
 		if (tr != nullptr)
@@ -190,9 +256,7 @@ void ComponentTransform::RecalculateTransform()
 	else {
 		global_transformation = local_transformation;
 	}
-	up = { 2 * (local_rotation.x * local_rotation.y - local_rotation.w * local_rotation.z),
-			1 - 2 * (local_rotation.x * local_rotation.x + local_rotation.z * local_rotation.z),
-			2 * (local_rotation.y * local_rotation.z + local_rotation.w * local_rotation.x) };
+	up = local_rotation.WorldY();
 	forward = { 2 * (local_rotation.x * local_rotation.z + local_rotation.w * local_rotation.y),
 				2 * (local_rotation.y * local_rotation.z - local_rotation.w * local_rotation.x),
 				1 - 2 * (local_rotation.x * local_rotation.x + local_rotation.y * local_rotation.y) };
@@ -209,10 +273,12 @@ void ComponentTransform::RecalculateTransform()
 	}
 
 	ComponentMesh* mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::MESH);
-	if (mesh != nullptr)
-	{
-		mesh->RecalculateAABB_OBB();
-	}
+	//if (mesh == nullptr)
+	//	mesh = (ComponentMesh*)game_object_attached->GetComponent(ComponentType::DEFORMABLE_MESH);
+	//if (mesh != nullptr)
+	//{
+	//	mesh->RecalculateAABB_OBB();
+	//}
 }
 
 
@@ -235,7 +301,7 @@ bool ComponentTransform::DrawInspector()
 
 	ImGui::SameLine();
 
-	if (ImGui::Checkbox("Static", &game_object_attached->is_static)) {		
+	if (ImGui::Checkbox("Static", &game_object_attached->is_static)) {
 		if (!game_object_attached->is_static && (game_object_attached->children.empty() || !game_object_attached->HasChildrenStatic())) {
 			App->objects->octree.Remove(game_object_attached);
 		}
@@ -330,7 +396,7 @@ bool ComponentTransform::DrawInspector()
 			ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.06f);
 			if (ImGui::Button("Set as the Original "))
 			{
-				GameObject* obj =game_object_attached->FindPrefabRoot();
+				GameObject* obj = game_object_attached->FindPrefabRoot();
 				if (obj != nullptr) {
 					std::vector<GameObject*>::iterator item = obj->parent->children.begin();
 					for (; item != obj->parent->children.end(); ++item) {
@@ -378,7 +444,7 @@ bool ComponentTransform::DrawInspector()
 		ImGui::PushID(1);
 		static float3 view_pos;
 		view_pos = local_position;
-		if (ImGui::DragFloat("X", &view_pos.x, 0.5F,0,0,"%.3f",1, game_object_attached->is_static)) {
+		if (ImGui::DragFloat("X", &view_pos.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static)) {
 			if (set_cntrl_Z)
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			set_cntrl_Z = false;
@@ -565,7 +631,7 @@ bool ComponentTransform::DrawInspector()
 				bool exists = (std::find(selected.begin(), selected.end(), item) != selected.end());
 				ImGui::Selectable(std::string("##" + (*item)).data(), exists, ImGuiSelectableFlags_AllowItemOverlap);
 				if (ImGui::IsItemClicked()) {
-					if (exists) { 
+					if (exists) {
 						selected.remove(item);
 					}
 					else {
@@ -774,7 +840,7 @@ void ComponentTransform::Reset()
 	local_scale = { 1,1,1 };
 	local_position = { 0,0,0 };
 	local_rotation = { 0,0,0,0 };
-	
+
 	euler_rotation = local_rotation.ToEulerXYZ();
 	euler_rotation.x = RadToDeg(euler_rotation.x);
 	euler_rotation.y = RadToDeg(euler_rotation.y);
@@ -871,11 +937,6 @@ void ComponentTransform::SetGlobalTransformation(const float4x4& global_transfor
 	}
 
 	RecalculateTransform();
-}
-
-void ComponentTransform::SetGlobalRotation(const Quat& rotation)
-{
-	//float3 pos
 }
 
 void ComponentTransform::AddPosition(const float3 pos)

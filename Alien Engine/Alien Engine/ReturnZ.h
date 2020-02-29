@@ -68,6 +68,7 @@ public:
 
 class ActionReparent : public Action {
 public:
+	~ActionReparent() {}
 	u64 objectID = 0;
 	u64 parentID = 0;
 };
@@ -75,19 +76,21 @@ public:
 // for creating objects
 class ActionAddObject : public Action {
 public:
+	~ActionAddObject() {}
 	u64 objectID = 0;
 };
 
 // changing components & deleting
 class ActionComponent : public Action {
 public:
-	~ActionComponent();
+	~ActionComponent() { if (comp != nullptr) delete comp; }
 	CompZ* comp = nullptr;
 };
 
 // add 
 class ActionAddComponent : public Action {
 public:
+	~ActionAddComponent() {}
 	u64 compID = 0;
 	u64 objectID = 0;
 };

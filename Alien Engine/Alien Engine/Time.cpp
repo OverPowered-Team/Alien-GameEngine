@@ -18,6 +18,7 @@ float Time::scale_time = 1.0F;
 Timer* Time::start_timer = new Timer();
 Timer* Time::game_timer = new Timer();
 
+#include "mmgr/mmgr.h"
 
 void Time::Start()
 {
@@ -51,7 +52,6 @@ void Time::Play()
 		App->ui->panel_console->game_console = true;
 #endif
 		state = GameState::PLAY;
-		App->objects->InitScriptsOnPlay();
 		App->CastEvent(EventType::ON_PLAY);
 		game_time = 0.0F;
 		game_timer->Start();
@@ -113,6 +113,11 @@ void Time::CleanUp()
 		delete game_timer;
 }
 
+Time::GameState Time::GetGameState()
+{
+	return state;
+}
+
 void Time::SetScaleTime(const float& scale)
 {
 	scale_time = scale;
@@ -157,6 +162,11 @@ bool Time::IsPlaying()
 		return true;
 	else
 		return false;
+}
+
+bool Time::IsPaused()
+{
+	return state == GameState::PAUSE;
 }
 
 bool Time::IsInGameState()

@@ -10,9 +10,6 @@
 
 #define DEAD_ZONE 1000 // 0 - 32767
 #define MAX_MOUSE_BUTTONS 5
-#define MAX_GAMPAD_BUTTONS 17
-#define CONTROLLER_BUTTON_LEFTTRIGGER 15
-#define CONTROLLER_BUTTON_RIGHTTRIGGER 16
 
 enum KEY_STATE
 {
@@ -30,7 +27,7 @@ struct GamePad {
 	int number = 0;
 	Joystick joystick_left;
 	Joystick joystick_right;
-	KEY_STATE controller_buttons[MAX_GAMPAD_BUTTONS];
+	KEY_STATE controller_buttons[SDL_CONTROLLER_BUTTON_MAX];
 	SDL_Haptic* haptic = nullptr;
 	SDL_GameController* controller = nullptr;
 };

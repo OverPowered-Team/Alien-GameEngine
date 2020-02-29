@@ -3,6 +3,8 @@
 #include "ComponentAudioEmitter.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ModuleAudio::ModuleAudio(bool start_enabled) : Module(start_enabled)
 {
 	name = "audio";
@@ -48,6 +50,7 @@ void ModuleAudio::LoadBanksInfo()
 
 update_status ModuleAudio::Update(float dt)
 {
+	OPTICK_EVENT();
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
 			UnloadAllUsedBanksFromWwise();
@@ -67,6 +70,7 @@ update_status ModuleAudio::Update(float dt)
 
 update_status ModuleAudio::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 	if (listener != nullptr)
 		WwiseT::ProcessAudio();
 	return UPDATE_CONTINUE;
@@ -74,6 +78,7 @@ update_status ModuleAudio::PostUpdate(float dt)
 
 bool ModuleAudio::CleanUp()
 {
+	OPTICK_EVENT();
 	for (auto i = emitters.begin(); i != emitters.end(); i++)
 	{
 		if((*i))
@@ -101,6 +106,7 @@ bool ModuleAudio::CleanUp()
 
 void ModuleAudio::LoadUsedBanks()
 {
+	OPTICK_EVENT();
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
 		if (!(*i)->loaded) {
@@ -113,6 +119,7 @@ void ModuleAudio::LoadUsedBanks()
 
 bool ModuleAudio::UnloadAllBanksFromWwise()
 {
+	OPTICK_EVENT();
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
 		if ((*it))
@@ -129,6 +136,7 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 
 void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
+	OPTICK_EVENT();
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
 		if ((*it))
@@ -179,6 +187,7 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 
 void ModuleAudio::Play()
 {
+	OPTICK_EVENT();
 	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)
 	{
 		(*iterator)->StartSound();
