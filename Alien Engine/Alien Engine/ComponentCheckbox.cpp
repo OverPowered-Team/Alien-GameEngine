@@ -515,16 +515,16 @@ void ComponentCheckbox::Draw(bool isGame)
 	transform->global_transformation[1][3] = transform->global_transformation[1][3];
 
 	if (clicked)
-		DrawTexture(isGame, tickTexture);
+		DrawTexture(isGame, tickTexture, false);
 	else
-		DrawTexture(isGame, crossTexture);
+		DrawTexture(isGame, crossTexture, false);
 
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
 
 
-void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex)
+void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex, bool background)
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
@@ -570,9 +570,8 @@ void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex)
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
-	if(tex == texture)
+	if(background)
 	glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
-
 	else
 		glColor4f(checkbox_current_color.r, checkbox_current_color.g, checkbox_current_color.b, checkbox_current_color.a);
 

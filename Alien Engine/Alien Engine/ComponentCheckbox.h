@@ -20,7 +20,7 @@ public:
 	bool DrawInspector();
 
 	void Draw(bool isGame) override;
-	void DrawTexture(bool isGame, ResourceTexture* tex);
+	void DrawTexture(bool isGame, ResourceTexture* tex, bool background = true);
 
 	bool OnHover();
 	bool OnClick();

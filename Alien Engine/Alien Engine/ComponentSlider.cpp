@@ -461,7 +461,7 @@ void ComponentSlider::Draw(bool isGame)
 	sliderX = transform->global_transformation[0][3];
 
 
-	DrawTexture(isGame, sliderTexture);
+	DrawTexture(isGame, sliderTexture, false);
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
@@ -496,7 +496,7 @@ void ComponentSlider::Update()
 }
 
 
-void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
+void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex, bool background)
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
@@ -547,7 +547,7 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex)
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
-	if (tex == texture)
+	if (background)
 		glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
 	else
 		glColor4f(slider_current_color.r, slider_current_color.g, slider_current_color.b, slider_current_color.a);

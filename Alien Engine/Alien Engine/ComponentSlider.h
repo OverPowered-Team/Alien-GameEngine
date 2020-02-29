@@ -19,7 +19,7 @@ public:
 
 	void Draw(bool isGame) override;
 	void Update() override;
-	void DrawTexture(bool isGame, ResourceTexture* tex);
+	void DrawTexture(bool isGame, ResourceTexture* tex, bool background = true);
 
 	void Reset();
 	void SetComponent(Component* component);
@@ -36,11 +36,6 @@ public:
 
 	void SetValue(float factor);
 	float GetValue();
-
-private:
-	void UILogicSlider();
-	bool CheckMouseInsideSlider(float3 mouse_pos);
-
 
 public:
 	ResourceTexture* sliderTexture = nullptr;
