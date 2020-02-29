@@ -25,6 +25,7 @@
 
 /*-----------------HELPERS-------------------*/
 #include "..\..\..\Alien Engine\StaticInput.h"
+#include "..\..\..\Alien Engine\StaticTween.h"
 #include "..\..\..\Alien Engine\Maths.h"
 #include "..\..\..\Alien Engine\Debug.h"
 #include "..\..\..\Alien Engine\RandomHelper.h"

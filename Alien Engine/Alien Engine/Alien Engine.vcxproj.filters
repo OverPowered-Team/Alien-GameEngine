@@ -2283,6 +2283,9 @@
     <ClInclude Include="Tween.h">
       <Filter>Tools\Tween</Filter>
     </ClInclude>
+    <ClInclude Include="StaticTween.h">
+      <Filter>ScriptHelpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -3340,6 +3343,9 @@
     </ClCompile>
     <ClCompile Include="Tween.cpp">
       <Filter>Tools\Tween</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticTween.cpp">
+      <Filter>ScriptHelpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

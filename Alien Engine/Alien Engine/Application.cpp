@@ -13,6 +13,7 @@ Application::Application()
 	ui = new ModuleUI();
 #endif
 	importer = new ModuleImporter();
+	tween = new AnimTween();
 	objects = new ModuleObjects();
 	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
@@ -35,6 +36,7 @@ Application::Application()
 	// Scenes
 	AddModule(objects);
 	AddModule(physics);
+	AddModule(tween);
 #ifndef GAME_VERSION
 	AddModule(camera);
 	AddModule(ui);

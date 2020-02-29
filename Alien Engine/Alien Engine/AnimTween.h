@@ -20,13 +20,13 @@ enum TweenType {
 	notUsed = -1, linear
 };
 
-class AnimTween: Module
+class AnimTween: public Module
 {
 public:
 	AnimTween() {};
 	~AnimTween() {};
 
-	void Update();
+	update_status Update(float dt);
 
 public:
 	Tween* CreateTween(GameObject * gameObject, const float3 & to, float time, TweenAction action, TweenType type = linear );
