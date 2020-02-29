@@ -169,6 +169,7 @@ void ParticleSystem::DrawParticles()
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
 	{
 		(*iter)->Orientate(mainCamera);
+		(*iter)->Rotate();
 		(*iter)->Draw();
 	}
 
