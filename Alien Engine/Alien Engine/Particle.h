@@ -16,6 +16,11 @@ struct ParticleInfo
 	float3 position = float3::zero();
 	Quat rotation = Quat::identity();
 	float3 velocity = float3(0.f, 5.f, 0.f); // float3::zero;
+
+	float angularVelocity = 0.f;
+	float angularAcceleration = 0.f;
+	float angle = 0.f;
+
 	float3 force = float3(0.f, 0.0f, 0.f); // float3::zero;
 	float speed = 1.0f;
 
@@ -38,12 +43,18 @@ struct ParticleMutableInfo
 		size = p.size;
 		lightColor = p.lightColor;
 		force = p.force;
+		angularVelocity = p.angularVelocity;
+		angle = p.angle;
 	}
 
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	float size = 1.f;
 	float4 lightColor;
 	float3 force = float3(0.f, -10.f, 0.f);  // float3::zero;	
+	float angularVelocity = 0.f;
+	float angle = 0.f;
+
+	
 };
 
 class Particle
@@ -60,6 +71,7 @@ public:
 
 	void Draw();
 	void Orientate(ComponentCamera* camera);
+	void Rotate();
 
 	void InterpolateValues(float dt);
 
