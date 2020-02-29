@@ -229,7 +229,7 @@ bool ComponentParticleSystem::DrawInspector()
 			{
 				ImGui::ColorPicker4("Color", (float*)&particleSystem->particleInfo.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::DragFloat("Size", (float*)&particleSystem->particleInfo.size, 0.1f, 0.0f, FLT_MAX);
-				ImGui::DragFloat("Angle Rotation", (float*)&particleSystem->particleInfo.angle, 0.1f, 0.0f, 360.0f);
+				ImGui::DragFloat("Start Rotation", (float*)&particleSystem->particleInfo.angle, 0.1f, 0.0f, 360.0f);
 				ImGui::DragFloat3("Gravity", (float*)&particleSystem->particleInfo.force);
 				ImGui::Checkbox("Change Over Time", &particleSystem->particleInfo.changeOverLifeTime);
 
@@ -268,7 +268,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 						
 						ImGui::Text("Angular Velocity: "); ImGui::SameLine(200, 15);
-						ImGui::SliderFloat("##angular vel", (float*)&particleSystem->particleInfo.angularVelocity, 0.1f, 360.0f);
+						ImGui::DragFloat("##angular vel", (float*)&particleSystem->particleInfo.angularVelocity, 0.1f, 0.0f, 360.0f);
 
 
 						if (!particleSystem->particleInfo.rotateOverTime)
