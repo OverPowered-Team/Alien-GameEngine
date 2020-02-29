@@ -108,6 +108,21 @@ void ComponentAnimator::LoadComponent(JSONArraypack* to_load)
 	}
 }
 
+void ComponentAnimator::SetBool(const char* parameter_name, bool parameter_value)
+{
+	animator_controller->SetBool(parameter_name, parameter_value);
+}
+
+void ComponentAnimator::SetFloat(const char* parameter_name, float parameter_value)
+{
+	animator_controller->SetFloat(parameter_name, parameter_value);
+}
+
+void ComponentAnimator::SetInt(const char* parameter_name, int parameter_value)
+{
+	animator_controller->SetInt(parameter_name, parameter_value);
+}
+
 bool ComponentAnimator::DrawInspector()
 {
 	static bool en;

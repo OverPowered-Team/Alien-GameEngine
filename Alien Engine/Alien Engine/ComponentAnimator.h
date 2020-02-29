@@ -25,6 +25,10 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void SetBool(const char* parameter_name, bool parameter_value);
+	void SetFloat(const char* parameter_name, float parameter_value);
+	void SetInt(const char* parameter_name, int parameter_value);
+
 private:
 	ResourceAnimatorController* animator_controller;
 
