@@ -16,7 +16,12 @@ ModuleAudio::~ModuleAudio()
 bool ModuleAudio::Start()
 {
 	// Init wwise and audio banks
-	return WwiseT::InitSoundEngine();
+	bool ret = WwiseT::InitSoundEngine();
+	
+	default_listener = CreateSoundEmitter("Listener");
+	SetListener(default_listener);
+
+	return ret;
 }
 
 void ModuleAudio::LoadBanksInfo()
@@ -75,17 +80,26 @@ bool ModuleAudio::CleanUp()
 {
 	OPTICK_EVENT();
 	for (auto i = emitters.begin(); i != emitters.end(); i++)
-		delete* i;
+	{
+		if((*i))
+			delete* i;
+	}		
 	emitters.clear();
 
 	WwiseT::StopAllEvents();
 
 	UnloadAllBanksFromWwise();
 	for (auto b = banks.begin(); b != banks.end(); b++)
-		delete* b;
+	{
+		if ((*b))
+			delete* b;
+	}	
 	banks.clear();
 
 	used_banks.clear();
+
+	delete default_listener;
+	default_listener = nullptr;
 
 	return WwiseT::CloseSoundEngine();
 }
@@ -108,12 +122,14 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 	OPTICK_EVENT();
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
 		}
 	}
-	//banks.clear();
 
 	return true;
 }
@@ -123,10 +139,13 @@ void ModuleAudio::UnloadAllUsedBanksFromWwise()
 	OPTICK_EVENT();
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
-		}
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
+		}	
 	}
 }
 
@@ -194,7 +213,10 @@ void ModuleAudio::Resume() const
 
 void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)
 {
+	if (new_listener == nullptr)
+		listener = default_listener;
+	else
 	listener = new_listener;
-	WwiseT::SetDefaultListener((listener == nullptr) ? 0u : new_listener->GetID());
-}
 
+	WwiseT::SetDefaultListener(new_listener->GetID());
+}
