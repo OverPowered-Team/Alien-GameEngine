@@ -51,6 +51,12 @@ public:
 
 	float4x4 GetGlobalMatrix() const;
 
+	void AddPosition(const float3& to_add);
+
+	void AddScale(const float3& to_add);
+
+	void AddRotation(const Quat& to_add_euler);
+
 private:
 
 	void LookScale();

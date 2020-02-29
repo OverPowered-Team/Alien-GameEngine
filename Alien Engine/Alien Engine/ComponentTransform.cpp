@@ -238,6 +238,32 @@ float4x4 ComponentTransform::GetGlobalMatrix() const
 	return global_transformation;
 }
 
+void ComponentTransform::AddPosition(const float3& to_add)
+{
+	local_position += to_add;
+
+	RecalculateTransform();
+}
+
+void ComponentTransform::AddScale(const float3& to_add)
+{
+	local_scale += to_add;
+
+	RecalculateTransform();
+}
+
+void ComponentTransform::AddRotation(const Quat& to_add_euler)
+{
+	local_rotation = local_rotation * to_add_euler;
+
+	euler_rotation = local_rotation.ToEulerXYZ();
+	euler_rotation.x = RadToDeg(euler_rotation.x);
+	euler_rotation.y = RadToDeg(euler_rotation.y);
+	euler_rotation.z = RadToDeg(euler_rotation.z);
+
+	RecalculateTransform();
+}
+
 void ComponentTransform::RecalculateTransform()
 {
 	OPTICK_EVENT();
