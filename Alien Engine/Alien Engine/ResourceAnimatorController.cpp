@@ -284,12 +284,6 @@ void ResourceAnimatorController::Update()
 		{
 			UpdateState(current_state);
 		}
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-			triggers[2] = true;
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-			triggers[0] = true;
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_UP)
-			triggers[1] = true;
 	}
 }
 
