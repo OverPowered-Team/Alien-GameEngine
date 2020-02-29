@@ -36,12 +36,9 @@ void Particle::Update(float dt)
 
 
 	//Rotate (Angular Velocity in degrees per second)
-	if (particleInfo.rotateOverTime) {
+	if (particleInfo.rotateOverTime) 
 		particleInfo.angle += particleInfo.angularVelocity * dt;
-		particleInfo.angle * DEGTORAD;
-	}
-	
-
+		
 	
 }
 
@@ -185,7 +182,7 @@ void Particle::Orientate(ComponentCamera* camera)
 
 void Particle::Rotate()
 {
-	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateZ(particleInfo.angle));
+	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateZ(particleInfo.angle* DEGTORAD));
 	
 }
 

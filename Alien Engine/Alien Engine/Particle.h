@@ -21,7 +21,6 @@ struct ParticleInfo
 	float3 velocity = float3(0.f, 5.f, 0.f); // float3::zero;
 
 	float angularVelocity = 0.f;
-	float angularAcceleration = 0.f;
 	float angle = 0.f;
 
 	float3 force = float3(0.f, 0.0f, 0.f); // float3::zero;

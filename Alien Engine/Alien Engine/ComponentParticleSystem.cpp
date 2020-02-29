@@ -243,7 +243,6 @@ bool ComponentParticleSystem::DrawInspector()
 					ImGui::ColorPicker4("Color", (float*)&particleSystem->endInfo.color,
 						ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
 					ImGui::DragFloat("Size", (float*)&particleSystem->endInfo.size, 0.1f, 0.0f, FLT_MAX);
-					ImGui::DragFloat("Angle Rotation", (float*)&particleSystem->endInfo.angle, 0.1f, 0.0f, FLT_MAX);
 					ImGui::DragFloat3("Gravity", (float*)&particleSystem->endInfo.force);
 					ImVec2 size = ImGui::GetItemRectSize();
 					if (ImGui::Button("Equalize Values", size))
