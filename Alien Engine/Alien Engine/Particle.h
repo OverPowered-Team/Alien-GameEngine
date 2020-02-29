@@ -32,6 +32,7 @@ struct ParticleInfo
 
 	bool globalTransform = true;
 	bool changeOverLifeTime = false;
+	bool rotateOverTime = false;
 };
 
 struct ParticleMutableInfo

@@ -248,6 +248,41 @@ bool ComponentParticleSystem::DrawInspector()
 					ImVec2 size = ImGui::GetItemRectSize();
 					if (ImGui::Button("Equalize Values", size))
 						particleSystem->endInfo = particleSystem->particleInfo;
+
+
+					ImGui::Spacing(); ImGui::Spacing();
+					
+					ImGui::Checkbox("##pptActiveRotation", &particleSystem->particleInfo.rotateOverTime);
+					ImGui::SameLine();
+
+					if (ImGui::TreeNodeEx("Rotation Over Time", ImGuiTreeNodeFlags_Framed))
+					{
+
+						ImGui::Spacing();
+
+						if (!particleSystem->particleInfo.rotateOverTime)
+						{
+							ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+							ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+						}
+
+						
+						ImGui::Text("Angular Velocity: "); ImGui::SameLine(200, 15);
+						ImGui::SliderFloat("##angular vel", (float*)&particleSystem->particleInfo.angularVelocity, 0.1f, 360.0f);
+
+
+						if (!particleSystem->particleInfo.rotateOverTime)
+						{
+							ImGui::PopItemFlag();
+							ImGui::PopStyleVar();
+						}
+
+						
+
+						ImGui::TreePop();
+					}
+
+
 					ImGui::TreePop();
 				}
 			}
