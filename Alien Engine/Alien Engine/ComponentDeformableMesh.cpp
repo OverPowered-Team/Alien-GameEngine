@@ -127,7 +127,7 @@ void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("DrawAABB", draw_AABB);
 	to_save->SetBoolean("DrawOBB", draw_OBB);
 	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("MeshID", mesh ? std::to_string(mesh->GetID()) : std::to_string(0));
+	to_save->SetString("MeshID", original_mesh ? std::to_string(original_mesh->GetID()) : std::to_string(0));
 	to_save->SetString("RootBoneID", root_bone_id != 0 ? std::to_string(root_bone_id) : std::to_string(0));
 	to_save->SetBoolean("Enabled", enabled);
 }
