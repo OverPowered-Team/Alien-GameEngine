@@ -1,0 +1,175 @@
+{
+    "Controller": {
+        "Name": "Player",
+        "NumStates": 3,
+        "NumTransitions": 6,
+        "States": [
+            {
+                "Name": "Idle",
+                "Speed": 1,
+                "Clip": "423250139965705260"
+            },
+            {
+                "Name": "Run",
+                "Speed": 1,
+                "Clip": "7239615162493830254"
+            },
+            {
+                "Name": "Attack",
+                "Speed": 1,
+                "Clip": "18426470276040052975"
+            }
+        ],
+        "Transitions": [
+            {
+                "Source": "Idle",
+                "Target": "Run",
+                "Blend": 0.25,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
+                        "CompValue": 0.0010000000474974513
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "Run",
+                "Target": "Attack",
+                "Blend": 0,
+                "IntConditions": [],
+                "FloatConditions": [],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "CompText": "True",
+                        "ParameterIndex": 0
+                    }
+                ]
+            },
+            {
+                "Source": "Idle",
+                "Target": "Attack",
+                "Blend": 0,
+                "IntConditions": [],
+                "FloatConditions": [],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "CompText": "True",
+                        "ParameterIndex": 0
+                    }
+                ]
+            },
+            {
+                "Source": "Run",
+                "Target": "Idle",
+                "Blend": 0.25,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Lesser",
+                        "CompValue": 0.0010000000474974513
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "Attack",
+                "Target": "Run",
+                "Blend": 0,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
+                        "CompValue": 0.0010000000474974513
+                    }
+                ],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "CompText": "False",
+                        "ParameterIndex": 0
+                    }
+                ]
+            },
+            {
+                "Source": "Attack",
+                "Target": "Idle",
+                "Blend": 0,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Lesser",
+                        "CompValue": 0.0010000000474974513
+                    }
+                ],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "CompText": "False",
+                        "ParameterIndex": 0
+                    }
+                ]
+            }
+        ],
+        "IntParameters": [],
+        "FloatParameters": [
+            {
+                "Name": "speed",
+                "Value": 0
+            },
+            {
+                "Name": "speed",
+                "Value": 0
+            },
+            {
+                "Name": "speed",
+                "Value": 0
+            },
+            {
+                "Name": "speed",
+                "Value": 0
+            }
+        ],
+        "BoolParameters": [
+            {
+                "Name": "Attcking",
+                "Value": false
+            },
+            {
+                "Name": "Attcking",
+                "Value": false
+            },
+            {
+                "Name": "Attcking",
+                "Value": true
+            },
+            {
+                "Name": "Attcking",
+                "Value": true
+            }
+        ]
+    }
+}

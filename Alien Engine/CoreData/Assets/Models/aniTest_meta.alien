@@ -4,13 +4,25 @@
         "NumMeshes": 1,
         "Name": "aniTest",
         "NumBones": 34,
-        "NumAnimations": 1,
+        "NumAnimations": 3,
         "NumMaterials": 1,
         "Animations": [
             {
-                "Name": "Take 001",
+                "Name": "idle",
                 "Loops": true,
                 "Start_Tick": 0,
+                "End_Tick": 46
+            },
+            {
+                "Name": "run",
+                "Loops": true,
+                "Start_Tick": 47,
+                "End_Tick": 71
+            },
+            {
+                "Name": "attack",
+                "Loops": false,
+                "Start_Tick": 72,
                 "End_Tick": 119
             }
         ],
@@ -18,7 +30,9 @@
             "Library\/Meshes\/7293222394883348179.alienMesh"
         ],
         "PathAnimations": [
-            "Library\/Animations\/423250139965705260.alienAnimation"
+            "Library\/Animations\/423250139965705260.alienAnimation",
+            "Library\/Animations\/7239615162493830254.alienAnimation",
+            "Library\/Animations\/18426470276040052975.alienAnimation"
         ],
         "PathBones": [
             "Library\/Bones\/582473363425412534.alienBone",
