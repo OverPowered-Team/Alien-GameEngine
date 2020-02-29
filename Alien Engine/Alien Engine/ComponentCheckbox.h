@@ -33,6 +33,13 @@ public:
 	Color pressed_color = { 0.75f,0.75f,0.75f,1.0f };
 	Color disabled_color = { 0.3f,0.3f,0.3f,1.0f };
 
+	Color checkbox_current_color = { 0.8f,0.8f,0.8f,1.0f };
+	Color checkbox_idle_color = { 0.8f,0.8f,0.8f,1.0f };
+	Color checkbox_hover_color = { 1.0f,1.0f,1.0f,1.0f };
+	Color checkbox_clicked_color = { 0.7f,0.7f,0.7f,1.0f };
+	Color checkbox_pressed_color = { 0.75f,0.75f,0.75f,1.0f };
+	Color checkbox_disabled_color = { 0.3f,0.3f,0.3f,1.0f };
+
 	void SetActive(bool active);
 
 	void AddListenerOnHover(std::function<void()> funct);

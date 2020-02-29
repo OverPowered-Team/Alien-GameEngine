@@ -21,6 +21,7 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 
 	ui_type = ComponentType::UI_TEXT;
+	tabbable = false;
 }
 
 bool ComponentText::DrawInspector()

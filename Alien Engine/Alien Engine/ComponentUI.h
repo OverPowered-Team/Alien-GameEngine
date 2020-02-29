@@ -78,15 +78,16 @@ protected:
 	uint verticesID = 0;
 	uint uvID = 0;
 
-	ComponentCanvas* canvas = nullptr;
-	ComponentTransform* canvas_trans = nullptr;
+	ComponentCanvas* canvas				= nullptr;
+	ComponentTransform* canvas_trans	= nullptr;
 
 	float2 size = { 10,10 };
 
 	//UI FOCUS
-	u64 select_on_up = 0;
-	u64 select_on_down = 0;
-	u64 select_on_left = 0;
+	bool tabbable		= false;
+	u64 select_on_up	= 0;
+	u64 select_on_down	= 0;
+	u64 select_on_left	= 0;
 	u64 select_on_right = 0;
 
 };
