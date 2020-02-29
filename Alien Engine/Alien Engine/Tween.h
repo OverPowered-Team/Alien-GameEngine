@@ -12,6 +12,7 @@ public:
 
 private:
 	void MoveInternal();
+	void ScaleInternal();
 
 	float4 LinealLerp();
 

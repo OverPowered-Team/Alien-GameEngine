@@ -34,7 +34,7 @@ Tween* AnimTween::CreateTween(GameObject * gameObject, const float4 & to, float 
 	if (action == TweenAction::MOVE_TO)
 		tween->to = to;
 	else
-		tween->to = to + tween->from;
+		tween->to = tween->from + to;
 
 	tween->trans = gameObject->transform;
 	tween->time = time;
