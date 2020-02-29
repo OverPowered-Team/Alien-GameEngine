@@ -37,6 +37,9 @@ public:
 	void SetValue(float factor);
 	float GetValue();
 
+	//UI Logic
+	void UILogicGamePad() override;
+
 public:
 	ResourceTexture* sliderTexture = nullptr;
 	float sliderScaleX = 0.2F;

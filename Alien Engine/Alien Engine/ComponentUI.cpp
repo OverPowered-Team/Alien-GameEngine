@@ -9,6 +9,7 @@
 #include "ResourceFont.h"
 #include "PanelGame.h"
 #include "PanelScene.h"
+#include "StaticInput.h"
 #include "mmgr/mmgr.h"
 
 ComponentUI::ComponentUI(GameObject* obj):Component(obj)
@@ -79,7 +80,9 @@ void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
 void ComponentUI::Update()
 {
 	if (Time::IsPlaying()) {
-		UILogic();
+		UpdateGamePadInput();
+		UILogicGamePad();
+		//UILogicMouse();
 
 		switch (state)
 		{
@@ -215,7 +218,7 @@ bool ComponentUI::CheckMouseInside(float3 mouse_pos)
 #endif
 }
 
-void ComponentUI::UILogic()
+void ComponentUI::UILogicMouse()
 {
 	float3 mouse_pos;
 
@@ -258,4 +261,82 @@ void ComponentUI::UILogic()
 void ComponentUI::SetBackgroundColor(float r, float g, float b, float a)
 {
 	current_color = { r,g,b,a };
+}
+
+void ComponentUI::UpdateGamePadInput()
+{
+	if (selected_ui != nullptr)
+	{
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
+		{
+			if (App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_up) != nullptr)
+			{
+				selected_ui->GetComponent<ComponentUI>()->state = Release;
+				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_up);
+				selected_ui->GetComponent<ComponentUI>()->state = Hover;
+			}
+		}
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+		{
+			if (App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_down) != nullptr)
+			{
+				selected_ui->GetComponent<ComponentUI>()->state = Release;
+				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_down);
+				selected_ui->GetComponent<ComponentUI>()->state = Hover;
+			}
+		}
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+		{
+			if (App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_right) != nullptr)
+			{
+				selected_ui->GetComponent<ComponentUI>()->state = Release;
+				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_right);
+				selected_ui->GetComponent<ComponentUI>()->state = Hover;
+			}
+		}
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+		{
+			if (App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_left) != nullptr)
+			{
+				selected_ui->GetComponent<ComponentUI>()->state = Release;
+				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_left);
+				selected_ui->GetComponent<ComponentUI>()->state = Hover;
+			}
+		}
+	}
+}
+
+void ComponentUI::UILogicGamePad()
+{
+	switch (state)
+	{
+	case Idle: {
+		//not necessary to do anything
+		break; }
+	case Hover: {
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		{
+			state = Click;
+		}
+		break; }
+	case Click: {
+		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_REPEAT)
+		{
+			state = Pressed;
+		}
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		{
+			state = Hover;
+		}
+		break; }
+	case Pressed: {
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		{
+			state = Hover;
+		}
+		break; }
+	case Release: {
+		state = Idle;
+		break; }
+	}
 }

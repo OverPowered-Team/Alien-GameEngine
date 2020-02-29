@@ -55,10 +55,13 @@ public:
 	void SetTexture(ResourceTexture* tex);
 
 	virtual bool CheckMouseInside(float3 mouse_pos);
-	virtual void UILogic();
+	virtual void UILogicMouse();
+	virtual void UILogicGamePad();
+	void UpdateGamePadInput();
 
 	//Script
 	void SetBackgroundColor(float r, float g, float b, float a);
+	
 
 public:
 	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
@@ -84,11 +87,12 @@ protected:
 	float2 size = { 10,10 };
 
 	//UI FOCUS
-	bool tabbable		= false;
-	u64 select_on_up	= 0;
-	u64 select_on_down	= 0;
-	u64 select_on_left	= 0;
-	u64 select_on_right = 0;
+	GameObject* selected_ui = nullptr;
+	bool tabbable			= false;
+	u64 select_on_up		= 0;
+	u64 select_on_down		= 0;
+	u64 select_on_left		= 0;
+	u64 select_on_right		= 0;
 
 };
 

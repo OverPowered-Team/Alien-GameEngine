@@ -13,6 +13,7 @@
 #include "PanelProject.h"
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+#include "StaticInput.h"
 #include "mmgr/mmgr.h"
 
 ComponentSlider::ComponentSlider(GameObject* obj) : ComponentUI(obj)
@@ -470,7 +471,8 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		UILogic();
+		//UILogicMouse();
+		UILogicGamePad();
 		GetValue();
 
 		switch (state)
@@ -772,6 +774,35 @@ float ComponentSlider::GetValue()
 	return((thumbPos - startPos) / (endPos - startPos));
 
 }
+
+void ComponentSlider::UILogicGamePad()
+{
+	switch (state)
+	{
+	case Idle: {
+		//not necessary to do anything
+		break; }
+	case Hover: {
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		{
+			state = Click;
+		}
+		break; }
+	case Click: {
+		state = Pressed;
+		break; }
+	case Pressed: {
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		{
+			state = Hover;
+		}
+		break; }
+	case Release: {
+		state = Idle;
+		break; }
+	}
+}
+
 
 
 
