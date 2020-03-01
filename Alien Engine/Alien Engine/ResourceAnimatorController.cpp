@@ -122,7 +122,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			float_parameters->GetFirstNode();
 			for (int i = 0; i < float_parameters->GetArraySize(); ++i) {
 				std::string name = float_parameters->GetString("Name");
-				int value = float_parameters->GetNumber("Value");
+				float value = float_parameters->GetNumber("Value");
 				AddFloatParameter({ name, value });
 				float_parameters->GetAnotherNode();
 			}
@@ -133,7 +133,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			bool_parameters->GetFirstNode();
 			for (int i = 0; i < bool_parameters->GetArraySize(); ++i) {
 				std::string name = bool_parameters->GetString("Name");
-				int value = bool_parameters->GetNumber("Value");
+				bool value = bool_parameters->GetNumber("Value");
 				AddBoolParameter({ name, value });
 				bool_parameters->GetAnotherNode();
 			}
@@ -565,7 +565,7 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bytes = sizeof(float);
-			int tmp_param_value;
+			float tmp_param_value;
 			memcpy(&tmp_param_value, cursor, bytes);
 			cursor += bytes;
 
@@ -591,7 +591,7 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bytes = sizeof(bool);
-			int tmp_param_value;
+			bool tmp_param_value;
 			memcpy(&tmp_param_value, cursor, bytes);
 			cursor += bytes;
 
