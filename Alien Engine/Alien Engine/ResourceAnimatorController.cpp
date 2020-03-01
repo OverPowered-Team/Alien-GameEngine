@@ -16,10 +16,6 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
 	ed_context = ax::NodeEditor::CreateEditor();
 
-	for (int i = 0; i < NUM_TRIGGERS; ++i) {
-		triggers.push_back(false);
-	}
-
 	default_state = nullptr;
 }
 
@@ -126,7 +122,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			float_parameters->GetFirstNode();
 			for (int i = 0; i < float_parameters->GetArraySize(); ++i) {
 				std::string name = float_parameters->GetString("Name");
-				int value = float_parameters->GetNumber("Value");
+				float value = float_parameters->GetNumber("Value");
 				AddFloatParameter({ name, value });
 				float_parameters->GetAnotherNode();
 			}
@@ -137,7 +133,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			bool_parameters->GetFirstNode();
 			for (int i = 0; i < bool_parameters->GetArraySize(); ++i) {
 				std::string name = bool_parameters->GetString("Name");
-				int value = bool_parameters->GetNumber("Value");
+				bool value = bool_parameters->GetNumber("Value");
 				AddBoolParameter({ name, value });
 				bool_parameters->GetAnotherNode();
 			}
@@ -226,6 +222,14 @@ void ResourceAnimatorController::RemoveBoolParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<BoolCondition*> b_conditions = (*t_it)->GetBoolConditions();
+				for (std::vector<BoolCondition*>::iterator c_it = b_conditions.begin(); c_it != b_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(bool_parameters.begin(), it)) {
+						(*t_it)->RemoveBoolCondition((*c_it));
+					}
+				}
+			}
 			bool_parameters.erase(it);
 			break;
 		}
@@ -236,6 +240,14 @@ void ResourceAnimatorController::RemoveFloatParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<FloatCondition*> f_conditions = (*t_it)->GetFloatConditions();
+				for (std::vector<FloatCondition*>::iterator c_it = f_conditions.begin(); c_it != f_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(float_parameters.begin(), it)) {
+						(*t_it)->RemoveFloatCondition((*c_it));
+					}
+				}
+			}
 			float_parameters.erase(it);
 			break;
 		}
@@ -246,6 +258,14 @@ void ResourceAnimatorController::RemoveIntParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<IntCondition*> i_conditions = (*t_it)->GetIntConditions();
+				for (std::vector<IntCondition*>::iterator c_it = i_conditions.begin(); c_it != i_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(int_parameters.begin(), it)) {
+						(*t_it)->RemoveIntCondition((*c_it));
+					}
+				}
+			}
 			int_parameters.erase(it);
 			break;
 		}
@@ -295,7 +315,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT() / references;
+		state->time += Time::GetDT() / attached_references;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -322,7 +342,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 			
-			state->fade_time += Time::GetDT() / references;
+			state->fade_time += Time::GetDT() / attached_references;
 			UpdateState(state->next_state);
 		}
 		else {
@@ -545,7 +565,7 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bytes = sizeof(float);
-			int tmp_param_value;
+			float tmp_param_value;
 			memcpy(&tmp_param_value, cursor, bytes);
 			cursor += bytes;
 
@@ -571,7 +591,7 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bytes = sizeof(bool);
-			int tmp_param_value;
+			bool tmp_param_value;
 			memcpy(&tmp_param_value, cursor, bytes);
 			cursor += bytes;
 
@@ -1288,6 +1308,8 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 {
 	State* new_state = new State(name, clip);
 	new_state->SetSpeed(speed);
+	new_state->id = id_bucket;
+	id_bucket++;
 	states.push_back(new_state);
 
 	if (!default_state)
@@ -1296,11 +1318,13 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 
 void ResourceAnimatorController::RemoveState(std::string name)
 {
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end();) {
 		if ((*it)->GetSource()->GetName() == name || (*it)->GetTarget()->GetName() == name) {
 			delete (*it);
 			it = transitions.erase(it);
-			break;
+		}
+		else {
+			++it;
 		}
 	}
 
@@ -1308,10 +1332,16 @@ void ResourceAnimatorController::RemoveState(std::string name)
 		if ((*it)->GetName() == name) {
 			if ((*it)->GetClip())
 				(*it)->GetClip()->DecreaseReferences();
+			if ((*it) == default_state) {
+					default_state = nullptr;
+			}
 			delete (*it);
 			it = states.erase(it);
 			break;
 		}
+	}
+	if (!default_state && states.size() > 0) {
+		default_state = states[0];
 	}
 }
 
