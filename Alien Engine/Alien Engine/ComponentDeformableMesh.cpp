@@ -111,25 +111,30 @@ void ComponentDeformableMesh::UpdateDeformableMesh()
 
 void ComponentDeformableMesh::SimulateShaderFuntion(ComponentCamera* camera)
 {
-	//float4x4 projection = camera->getviewmatrix4x4();
-	//float4x4 view = transform->getglobalmatrix().transposed()
-	//float4x4 model = camera->getviewmatrix4x4();
+	float4x4 projection = camera->GetViewMatrix4x4();
+	float4x4 view = game_object_attached->transform->GetGlobalMatrix().Transposed();
+	float4x4 model = camera->GetViewMatrix4x4();
 
 	for (int i=0; i< mesh->num_vertex*3; i+=3)
 	{
 		int vertex_id = i / 3;
-		float3 vertex = float3(mesh->vertex[i], mesh->vertex[i + 1], mesh->vertex[i + 2]);
-		/*float4x4 matrix = flo;*/
+		float4x4 matrix = float4x4::zero();
 		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
 		{
 			if (bones_ID[j] != -1)
 			{
-
+				matrix += bones_matrix[bones_ID[j]] * weights[j];
 			}
 			
-
 		}
+		float3 original(&mesh->vertex[i * 3]);
+		float3 vertex = matrix.TransformPos(original);
+		matrix = projection * view * model;
+		vertex = matrix.TransformPos(vertex);
 
+		deformable_mesh->vertex[i * 3] = vertex.x;
+		deformable_mesh->vertex[i * 3 + 1] = vertex.y;
+		deformable_mesh->vertex[i * 3 + 2] = vertex.z;
 	}
 
 }
@@ -153,7 +158,7 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 	UpdateBonesMatrix();
-
+	SimulateShaderFuntion(camera);
 	ComponentTransform* transform = game_object_attached->transform;
 	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
