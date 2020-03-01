@@ -222,6 +222,14 @@ void ResourceAnimatorController::RemoveBoolParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<BoolCondition*> b_conditions = (*t_it)->GetBoolConditions();
+				for (std::vector<BoolCondition*>::iterator c_it = b_conditions.begin(); c_it != b_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(bool_parameters.begin(), it)) {
+						(*t_it)->RemoveBoolCondition((*c_it));
+					}
+				}
+			}
 			bool_parameters.erase(it);
 			break;
 		}
@@ -232,6 +240,14 @@ void ResourceAnimatorController::RemoveFloatParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<FloatCondition*> f_conditions = (*t_it)->GetFloatConditions();
+				for (std::vector<FloatCondition*>::iterator c_it = f_conditions.begin(); c_it != f_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(float_parameters.begin(), it)) {
+						(*t_it)->RemoveFloatCondition((*c_it));
+					}
+				}
+			}
 			float_parameters.erase(it);
 			break;
 		}
@@ -242,6 +258,14 @@ void ResourceAnimatorController::RemoveIntParameter(std::string name)
 {
 	for (std::vector<std::pair<std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
 		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<IntCondition*> i_conditions = (*t_it)->GetIntConditions();
+				for (std::vector<IntCondition*>::iterator c_it = i_conditions.begin(); c_it != i_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(int_parameters.begin(), it)) {
+						(*t_it)->RemoveIntCondition((*c_it));
+					}
+				}
+			}
 			int_parameters.erase(it);
 			break;
 		}

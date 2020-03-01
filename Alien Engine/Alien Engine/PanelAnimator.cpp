@@ -422,11 +422,6 @@ void PanelAnimator::ShowLinkPopup()
 			current_animator->GetTransitions()[selected_link_index]->AddIntCondition();
 		}
 
-		//ImGui::SameLine();
-		//if (ImGui::Button("Remove int Condition") && current_animator->GetTransitions()[selected_link_index]->GetConditions().size() > 1)
-		//{
-
-		//}
 		ImGui::Separator();
 
 		float blend_v = (float)current_animator->GetTransitions()[selected_link_index]->GetBlend();
