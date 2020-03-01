@@ -5,6 +5,7 @@
 
 struct PlayerData {
 	float speed = 20;
+	bool attacking = false;
 	// dmg, deff, lvl bla bla
 };
 

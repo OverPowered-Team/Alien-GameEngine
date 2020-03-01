@@ -1,0 +1,65 @@
+{
+    "Controller": {
+        "Name": "NewAnimatorController",
+        "NumStates": 2,
+        "NumTransitions": 2,
+        "States": [
+            {
+                "Name": "NewState1",
+                "Speed": 1,
+                "Clip": "423250139965705260"
+            },
+            {
+                "Name": "NewState2",
+                "Speed": 1,
+                "Clip": "7239615162493830254"
+            }
+        ],
+        "Transitions": [
+            {
+                "Source": "NewState1",
+                "Target": "NewState2",
+                "Blend": 0.25,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
+                        "CompValue": 1
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "NewState2",
+                "Target": "NewState1",
+                "Blend": 0.25,
+                "IntConditions": [
+                    {
+                        "ParameterIndex": 0
+                    }
+                ],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Lesser",
+                        "CompValue": 1
+                    }
+                ],
+                "BoolConditions": []
+            }
+        ],
+        "IntParameters": [],
+        "FloatParameters": [
+            {
+                "Name": "speed",
+                "Value": 0
+            }
+        ],
+        "BoolParameters": []
+    }
+}
