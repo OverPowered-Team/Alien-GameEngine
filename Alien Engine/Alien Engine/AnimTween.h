@@ -31,7 +31,8 @@ public:
 	update_status Update(float dt);
 
 public:
-	Tween* CreateTween(GameObject * gameObject, const float4 & to, float time, TweenAction action, TweenType type = linear );
+	Tween* CreateTween(GameObject* gameObject, float time, TweenAction action, TweenType type);
+	Tween* TweenMove();
 
 private:
 	std::vector<Tween*> tweens;

@@ -19,7 +19,7 @@ update_status AnimTween::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-Tween* AnimTween::CreateTween(GameObject * gameObject, const float4 & to, float time, TweenAction action, TweenType type)
+Tween* AnimTween::CreateTween(GameObject* gameObject, float time, TweenAction action, TweenType type)
 {
 	if (tweens.size() > MAX_TWEENS)
 	{
@@ -28,18 +28,32 @@ Tween* AnimTween::CreateTween(GameObject * gameObject, const float4 & to, float 
 	}
 		
 	Tween* tween = new Tween();
-	tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
-
-	if (action == TweenAction::MOVE_TO)
-		tween->to = to;
-	else
-		tween->to = tween->from + to;
-
 	tween->trans = gameObject->transform;
 	tween->time = time;
 	tween->action = action;
 	tween->type = type;
-	tweens.push_back(tween);
 
+	tweens.push_back(tween);
 	return tween;
 }
+
+Tween* AnimTween::TweenMove(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	Tween* tween = CreateTween(gameObject, time, TweenAction::MOVE, type);
+	if (tween)
+	{
+		tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
+		tween->to = tween->from + float4(to, 0.f);
+	}
+}
+
+Tween* AnimTween::TweenMoveTo(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	Tween* tween = CreateTween(gameObject, time, TweenAction::MOVE_TO, type);
+	if (tween)
+	{
+		tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
+		tween->to = float4(to, 0.f);
+	}
+}
+
