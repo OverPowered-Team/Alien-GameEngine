@@ -20,8 +20,9 @@ struct ParticleInfo
 	Quat rotation = Quat::identity();
 	float3 velocity = float3(0.f, 5.f, 0.f); // float3::zero;
 
-	float angularVelocity = 0.f;
-	float angle = 0.f;
+	float3 angularVelocity3D = float3::zero();
+	float3 angle3D = float3::zero();
+	
 
 	float3 force = float3(0.f, 0.0f, 0.f); // float3::zero;
 	float speed = 1.0f;
@@ -34,7 +35,10 @@ struct ParticleInfo
 
 	bool globalTransform = true;
 	bool changeOverLifeTime = false;
+
 	bool rotateOverTime = false;
+	bool axisRot3D = false;
+	bool axisRot3DStart = false;
 };
 
 struct ParticleMutableInfo
@@ -46,16 +50,14 @@ struct ParticleMutableInfo
 		size = p.size;
 		lightColor = p.lightColor;
 		force = p.force;
-		angularVelocity = p.angularVelocity;
-		angle = p.angle;
+		
 	}
 
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	float size = 1.f;
 	float4 lightColor;
 	float3 force = float3(0.f, -10.f, 0.f);  // float3::zero;	
-	float angularVelocity = 0.f;
-	float angle = 0.f;
+	
 
 	
 };
