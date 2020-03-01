@@ -30,6 +30,11 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("ColorClicked", clicked_color);
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
+
+	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
+	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
+	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
+	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
 }
 
 void ComponentButton::LoadComponent(JSONArraypack* to_load)
@@ -45,6 +50,10 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	pressed_color = to_load->GetColor("ColorPressed");
 	disabled_color = to_load->GetColor("ColorDisabled");
 
+	select_on_up = std::stoull(to_load->GetString("SelectOnUp"));
+	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
+	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
+	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {

@@ -724,6 +724,11 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("CheckboxColorClicked", checkbox_clicked_color);
 	to_save->SetColor("CheckboxColorPressed", checkbox_pressed_color);
 	to_save->SetColor("CheckboxColorDisabled", checkbox_disabled_color);
+
+	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
+	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
+	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
+	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
 }
 
 void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
@@ -753,6 +758,11 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	checkbox_clicked_color = to_load->GetColor("CheckboxColorClicked");
 	checkbox_pressed_color = to_load->GetColor("CheckboxColorPressed");
 	checkbox_disabled_color = to_load->GetColor("CheckboxColorDisabled");
+
+	select_on_up = std::stoull(to_load->GetString("SelectOnUp"));
+	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
+	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
+	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {

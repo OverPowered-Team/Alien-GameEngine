@@ -633,6 +633,11 @@ void ComponentSlider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("SliderColorPressed", slider_pressed_color);
 	to_save->SetColor("SliderColorDisabled", slider_disabled_color);
 
+	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
+	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
+	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
+	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
+
 }
 
 void ComponentSlider::LoadComponent(JSONArraypack* to_load)
@@ -663,6 +668,11 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 	slider_clicked_color = to_load->GetColor("SliderColorClicked");
 	slider_pressed_color = to_load->GetColor("SliderColorPressed");
 	slider_disabled_color = to_load->GetColor("SliderColorDisabled");
+
+	select_on_up = std::stoull(to_load->GetString("SelectOnUp"));
+	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
+	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
+	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
