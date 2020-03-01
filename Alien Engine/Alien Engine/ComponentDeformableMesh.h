@@ -4,6 +4,7 @@
 
 class ResourceMesh;
 class ComponentBone;
+class math::float4x4;
 
 class ComponentDeformableMesh : public ComponentMesh
 {
@@ -20,7 +21,7 @@ public:
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateDeformableMesh();
-
+	void UpdateBonesMatrix();
 	void DrawPolygon(ComponentCamera* camera);
 	void DrawOutLine();
 	void DrawMesh();
@@ -35,5 +36,5 @@ private:
 	u64 root_bone_id = 0;
 	float* weights = nullptr;
 	int* bones_ID = nullptr;
-
+	math::float4x4* bones_matrix = nullptr;
 };

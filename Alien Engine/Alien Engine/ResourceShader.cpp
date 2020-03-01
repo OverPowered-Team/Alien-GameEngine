@@ -274,6 +274,11 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
 }
 
+void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix, uint count)
+{
+	glUniformMatrix4fv(GetUniformLocation(name), count, GL_FALSE, matrix.ptr());
+}
+
 SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 {
 	std::ifstream stream(path);

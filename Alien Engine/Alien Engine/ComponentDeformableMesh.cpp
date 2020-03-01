@@ -19,6 +19,9 @@ ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : Component
 {
 	type = ComponentType::DEFORMABLE_MESH;
 	name = "Deformable Mesh";
+
+	//Change this to resource model so is only one new 
+	bones_matrix = new float4x4[100];
 }
 
 ComponentDeformableMesh::~ComponentDeformableMesh()
@@ -43,10 +46,16 @@ void ComponentDeformableMesh::AttachSkeleton(ComponentTransform* root)
 	root_bone_id = root->game_object_attached->ID;
 
 	//Duplicate mesh
-	if (mesh)
+	if (mesh != nullptr)
 		deformable_mesh = new ResourceMesh(mesh);
 	
 	AttachBone(root);
+
+	if (mesh->id_weights == 0)
+	{
+		SendWeightsAndID();
+	}
+
 }
 
 void ComponentDeformableMesh::AttachSkeleton()
@@ -100,11 +109,22 @@ void ComponentDeformableMesh::UpdateDeformableMesh()
 	}
 }
 
+void ComponentDeformableMesh::UpdateBonesMatrix()
+{
+	uint i = 0;
+	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
+	{
+		bones_matrix[i] = (*it)->game_object_attached->transform->global_transformation;
+	}
+}
+
+
 void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
+	UpdateBonesMatrix();
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
 		/*glEnable(GL_STENCIL_TEST);
@@ -135,9 +155,10 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	// Uniforms
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
-	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
+	//material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
+	material->used_shader->SetUniformMat4f("gBones", bones_matrix[0], 100);
+	//material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 	// --------------------------------------------------------------------- 
@@ -270,14 +291,15 @@ void ComponentDeformableMesh::SendWeightsAndID()
 
 	int bone_id = 0;
 	//Genereting array of weights and bones_ID
-	if (weights != nullptr && bones_ID != nullptr)
+	if (weights == nullptr && bones_ID == nullptr)
 	{
 		weights = new float[mesh->num_vertex * 4];
 		bones_ID = new int[mesh->num_vertex * 4];
 
-		memset(weights, -1, sizeof(float) * mesh->num_vertex * 4);
+		memset(weights, 0, sizeof(float) * mesh->num_vertex * 4);
 		memset(bones_ID, -1, sizeof(int) * mesh->num_vertex * 4);
 	}
+
 	for (std::vector<ComponentBone*>::iterator component_bone = bones.begin();
 		component_bone != bones.end(); component_bone++ , bone_id++)
 	{
@@ -303,27 +325,27 @@ void ComponentDeformableMesh::SendWeightsAndID()
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(4);
 
-	if (weights)
-	{
-		delete weights;
-		weights = nullptr;
-	}
-	if (bones_ID)
-	{
-		delete bones_ID;
-		bones_ID = nullptr;
-	}
+	//if (weights)
+	//{
+	//	delete weights;
+	//	weights = nullptr;
+	//}
+	//if (bones_ID)
+	//{
+	//	delete bones_ID;
+	//	bones_ID = nullptr;
+	//}
 }
 
 void ComponentDeformableMesh::FillWeights(int bone_ID, ComponentBone* component_bone)
 {
 	ResourceBone* bone = component_bone->GetBone();
-	for (int i = 0; i < bone->num_weights; i)
+	for (int i = 0; i < bone->num_weights; i++)
 	{
 		int vertex_id = bone->vertex_ids[i];
 		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
 		{
-			if (weights[j] == -1)
+			if (bones_ID[j] == -1)
 			{
 				weights[j] = bone->weights[i];
 				bones_ID[j] = bone_ID;

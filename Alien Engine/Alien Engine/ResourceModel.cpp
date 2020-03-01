@@ -685,12 +685,6 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						Cmesh->RecalculateAABB_OBB();
 						ret->AddComponent(Cmesh);
 						skeleton_link.first = ret;
-						if (mesh->id_weights == 0)
-						{
-							Cmesh->SendWeightsAndID();
-						}
-						
-
 					}
 					else
 					{
@@ -716,7 +710,8 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						}*/
 
 						// CHANGE
-						if (material->texturesID[0] != 0) {
+						if (material->texturesID[0] != 0) 
+						{
 							Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
 						}
 						if (mesh->deformable)
