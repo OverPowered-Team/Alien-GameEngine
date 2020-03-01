@@ -471,6 +471,8 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
+		if (!App->objects->first_assigned_selected)
+			CheckFirstSelected();
 		//UILogicMouse();
 		UpdateGamePadInput();
 		GetValue();
