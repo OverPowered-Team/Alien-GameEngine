@@ -65,6 +65,7 @@ public:
 	
 private:
 	void CheckFirstSelected();
+	GameObject* SetNewSelected(std::string neightbour, GameObject* selected_neightbour);
 public:
 	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 

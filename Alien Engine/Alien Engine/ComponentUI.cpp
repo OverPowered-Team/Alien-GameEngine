@@ -277,6 +277,68 @@ void ComponentUI::CheckFirstSelected()
 	}
 }
 
+GameObject* ComponentUI::SetNewSelected(std::string neightbour, GameObject* selected_neightbour)
+{
+	if (neightbour=="up")
+	{
+		if (selected_neightbour->enabled)
+			return selected_neightbour;
+		
+		else
+		{
+			if (selected_neightbour->GetComponent<ComponentUI>()->select_on_up != 0)
+				return SetNewSelected("up", App->objects->GetGameObjectByID(selected_neightbour->GetComponent<ComponentUI>()->select_on_up));
+			else
+				return nullptr;
+		}
+	}
+	else if (neightbour == "down")
+	{
+		if (selected_neightbour->enabled)
+			return selected_neightbour;
+
+		else
+		{
+			if (selected_neightbour->GetComponent<ComponentUI>()->select_on_down != 0)
+				return SetNewSelected("down", App->objects->GetGameObjectByID(selected_neightbour->GetComponent<ComponentUI>()->select_on_down));
+			else
+				return nullptr;
+		}
+	}
+	else if (neightbour == "right")
+	{
+		if (selected_neightbour->enabled)
+			return selected_neightbour;
+
+		else
+		{
+			if (selected_neightbour->GetComponent<ComponentUI>()->select_on_right != 0)
+				return SetNewSelected("right", App->objects->GetGameObjectByID(selected_neightbour->GetComponent<ComponentUI>()->select_on_right));
+			else
+				return nullptr;
+		}
+	}
+	else if (neightbour == "left")
+	{
+		if (selected_neightbour->enabled)
+			return selected_neightbour;
+
+		else
+		{
+			if (selected_neightbour->GetComponent<ComponentUI>()->select_on_left != 0)
+				return SetNewSelected("left", App->objects->GetGameObjectByID(selected_neightbour->GetComponent<ComponentUI>()->select_on_left));
+			else
+				return nullptr;
+		}
+	}
+	else
+	{
+		LOG_ENGINE("Something went wrong");
+		return nullptr;
+	}
+	
+}
+
 void ComponentUI::UpdateGamePadInput()
 {
 	if (selected_ui != nullptr && selected_ui->GetComponent<ComponentUI>()->state != Pressed )
@@ -286,7 +348,10 @@ void ComponentUI::UpdateGamePadInput()
 			if (selected_ui->GetComponent<ComponentUI>()->select_on_up != 0)
 			{
 				selected_ui->GetComponent<ComponentUI>()->state = Release;
-				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_up);
+				GameObject* safe_selected = selected_ui;
+				selected_ui = SetNewSelected("up", App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_up));
+				if (selected_ui == nullptr)
+					selected_ui = safe_selected;
 				selected_ui->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
@@ -295,7 +360,10 @@ void ComponentUI::UpdateGamePadInput()
 			if (selected_ui->GetComponent<ComponentUI>()->select_on_down != 0)
 			{
 				selected_ui->GetComponent<ComponentUI>()->state = Release;
-				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_down);
+				GameObject* safe_selected = selected_ui;
+				selected_ui = SetNewSelected("down", App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_down));
+				if (selected_ui == nullptr)
+					selected_ui = safe_selected;
 				selected_ui->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
@@ -304,7 +372,10 @@ void ComponentUI::UpdateGamePadInput()
 			if (selected_ui->GetComponent<ComponentUI>()->select_on_right != 0)
 			{
 				selected_ui->GetComponent<ComponentUI>()->state = Release;
-				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_right);
+				GameObject* safe_selected = selected_ui;
+				selected_ui = SetNewSelected("right", App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_right));
+				if (selected_ui == nullptr)
+					selected_ui = safe_selected;
 				selected_ui->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
@@ -313,7 +384,10 @@ void ComponentUI::UpdateGamePadInput()
 			if (selected_ui->GetComponent<ComponentUI>()->select_on_left != 0)
 			{
 				selected_ui->GetComponent<ComponentUI>()->state = Release;
-				selected_ui = App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_left);
+				GameObject* safe_selected = selected_ui;
+				selected_ui = SetNewSelected("left", App->objects->GetGameObjectByID(selected_ui->GetComponent<ComponentUI>()->select_on_left));
+				if (selected_ui == nullptr)
+					selected_ui = safe_selected;
 				selected_ui->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
