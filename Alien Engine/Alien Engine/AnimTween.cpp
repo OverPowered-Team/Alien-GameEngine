@@ -2,7 +2,7 @@
 #include "Tween.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
-
+#include "ComponentMaterial.h"
 
 update_status AnimTween::Update(float dt)
 {
@@ -45,6 +45,8 @@ Tween* AnimTween::TweenMove(GameObject* gameObject, const float3& to, float time
 		tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
 		tween->to = tween->from + float4(to, 0.f);
 	}
+
+	return tween;
 }
 
 Tween* AnimTween::TweenMoveTo(GameObject* gameObject, const float3& to, float time, TweenType type)
@@ -55,5 +57,91 @@ Tween* AnimTween::TweenMoveTo(GameObject* gameObject, const float3& to, float ti
 		tween->from = float4(gameObject->transform->GetGlobalPosition(), 0.0f);
 		tween->to = float4(to, 0.f);
 	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenScale(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	Tween* tween = CreateTween(gameObject, time, TweenAction::SCALE, type);
+	if (tween)
+	{
+		tween->from = float4(gameObject->transform->GetGlobalScale(), 0.0f);
+		tween->to = float4(to, 0.f);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenRotate(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	Tween* tween = CreateTween(gameObject, time, TweenAction::ROTATE, type);
+	if (tween)
+	{
+		Quat rot = gameObject->transform->GetGlobalRotation();
+		tween->from = float4(rot.x, rot.y, rot.x, rot.w);
+
+		Quat end_rot = Quat::FromEulerXYZ(to.x, to.y, to.z);
+		tween->to = float4(end_rot.x, end_rot.y, end_rot.z, end_rot.w);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenColor(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	ComponentMaterial* material = gameObject->GetComponent<ComponentMaterial>();
+	if (!material)
+	{
+		LOG_ENGINE("There's no material in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::COLOR, type);
+	if(tween)
+	{
+		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->to = float4(to, 0.f);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenAlpha(GameObject* gameObject, const float to, float time, TweenType type)
+{
+	ComponentMaterial* material = gameObject->GetComponent<ComponentMaterial>();
+	if (!material)
+	{
+		LOG_ENGINE("There's no material in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::ALPHA, type);
+	if (tween)
+	{
+		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->to = float4(material->color.r, material->color.g, material->color.b, to);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenRGBA(GameObject* gameObject, const float4& to, float time, TweenType type)
+{
+	ComponentMaterial* material = gameObject->GetComponent<ComponentMaterial>();
+	if (!material)
+	{
+		LOG_ENGINE("There's no material in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::RGBA, type);
+	if (tween)
+	{
+		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->to = to;
+	}
+
+	return tween;
 }
 

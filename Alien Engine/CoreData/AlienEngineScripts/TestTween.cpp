@@ -15,5 +15,5 @@ void TestTween::Start()
 void TestTween::Update()
 {
 	if (Input::GetKeyDown(SDL_SCANCODE_A))
-		Tween::CreateTween(this->game_object, float4(1.0f, 0, 0, 0), 10, Tween::COLOR, Tween::linear);
+		Tween::TweenRGBA(this->game_object, float4(0, 1.0f, 0.5, 0.5), 5);
 }

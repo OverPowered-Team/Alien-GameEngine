@@ -178,7 +178,7 @@ void Tween::AlphaInternal()
 
 	ComponentMaterial* material = trans->game_object_attached->GetComponent<ComponentMaterial>();
 	if (material)
-		material->color.a = current_alpha.x;
+		material->color.a = current_alpha.w;
 }
 
 void Tween::RGBAInternal()

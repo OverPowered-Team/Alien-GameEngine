@@ -32,7 +32,13 @@ public:
 
 public:
 	Tween* CreateTween(GameObject* gameObject, float time, TweenAction action, TweenType type);
-	Tween* TweenMove();
+	Tween* TweenMove(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenMoveTo(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenScale(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenRotate(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenColor(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenAlpha(GameObject* gameObject, const float to, float time, TweenType type);
+	Tween* TweenRGBA(GameObject* gameObject, const float4& to, float time, TweenType type);
 
 private:
 	std::vector<Tween*> tweens;
