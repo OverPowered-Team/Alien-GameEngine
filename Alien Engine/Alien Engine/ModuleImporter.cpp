@@ -341,7 +341,13 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 
 	ModelNode model_node;
 	model_node.name = std::string(node->mName.C_Str());
-	model_node.parent_name = (nodeNum == 1) ? model->name : std::string(node->mParent->mName.C_Str());
+
+	const aiNode* pNode = node;
+	while (std::string(pNode->mParent->mName.C_Str()).find("_$AssimpFbx$_") != std::string::npos) {
+		pNode = pNode->mParent;
+	}
+	model_node.parent_name = (pNode->mParent == scene->mRootNode) ? model->name : std::string(pNode->mParent->mName.C_Str());
+
 	model_node.parent_num = nodeNum;
 	model_node.node_num = nodeNum + 1;
 	if (node->mNumMeshes == 1)
