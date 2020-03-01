@@ -815,6 +815,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 			SetCanvas(nullptr);
 		}
 	}
+	App->objects->first_assigned_selected = false;
 }
 
 void ComponentCheckbox::CallListeners(std::vector<std::function<void()>>* listeners)

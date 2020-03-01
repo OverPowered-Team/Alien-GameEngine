@@ -711,6 +711,7 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 			SetCanvas(nullptr);
 		}
 	}
+	App->objects->first_assigned_selected = false;
 }
 bool ComponentSlider::OnHover()
 {

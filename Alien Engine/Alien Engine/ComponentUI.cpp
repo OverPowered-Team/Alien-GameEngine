@@ -269,7 +269,7 @@ void ComponentUI::SetBackgroundColor(float r, float g, float b, float a)
 
 void ComponentUI::CheckFirstSelected()
 {
-	if (tabbable && this->game_object_attached != nullptr)
+	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
 	{
 		selected_ui = this->game_object_attached;
 		selected_ui->GetComponent<ComponentUI>()->state = Hover;

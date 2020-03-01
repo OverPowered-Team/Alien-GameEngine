@@ -20,6 +20,7 @@ enum UIState {
 
 class __declspec(dllexport) ComponentUI :public Component {
 	friend class GameObject;
+	friend class ComponentCanvas;
 	friend class ComponentImage;
 	friend class ComponentCheckbox;
 	friend class ComponentText;
