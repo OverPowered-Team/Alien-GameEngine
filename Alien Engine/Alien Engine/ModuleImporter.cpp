@@ -132,7 +132,7 @@ void ModuleImporter::InitScene(const char *path, const aiScene *scene, const cha
 				model->meshes_attached[i]->deformable = true;
 				for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
 				{
-					LoadBone(scene->mMeshes[i]->mBones[j]);
+					LoadBone(scene->mMeshes[i]->mBones[j], model->meshes_attached[i]->name);
 				}
 			}
 		}
@@ -226,12 +226,13 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 	model->animations_attached.push_back(resource_animation);
 }
 
-void ModuleImporter::LoadBone(const aiBone *bone)
+void ModuleImporter::LoadBone(const aiBone *bone, std::string mesh_name)
 {
 	OPTICK_EVENT();
 	ResourceBone* r_bone = new ResourceBone();
 
 	r_bone->name = bone->mName.C_Str();
+	r_bone->mesh_name = mesh_name;
 	r_bone->matrix = float4x4(float4(bone->mOffsetMatrix.a1, bone->mOffsetMatrix.b1, bone->mOffsetMatrix.c1, bone->mOffsetMatrix.d1),
 							  float4(bone->mOffsetMatrix.a2, bone->mOffsetMatrix.b2, bone->mOffsetMatrix.c2, bone->mOffsetMatrix.d2),
 							  float4(bone->mOffsetMatrix.a3, bone->mOffsetMatrix.b3, bone->mOffsetMatrix.c3, bone->mOffsetMatrix.d3),
@@ -373,8 +374,7 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 	{
 		if (model->bones_attached[i]->name == model_node.name)
 		{
-			model_node.bone = i;
-			break;
+			model_node.bones.push_back(i);
 		}
 	}
 	aiVector3D pos, scale;
@@ -958,7 +958,7 @@ bool ModuleImporter::ReImportModel(ResourceModel *model)
 					model->meshes_attached[i]->deformable = true;
 					for (int j = 0; j < scene->mMeshes[i]->mNumBones; ++j)
 					{
-						LoadBone(scene->mMeshes[i]->mBones[j]);
+						LoadBone(scene->mMeshes[i]->mBones[j], model->meshes_attached[i]->name);
 					}
 				}
 			}
