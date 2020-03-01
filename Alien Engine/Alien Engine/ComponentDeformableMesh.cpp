@@ -57,7 +57,7 @@ void ComponentDeformableMesh::AttachSkeleton()
 
 void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 {
-	std::vector<ComponentBone*> c_bones = (ComponentBone*)bone_transform->game_object_attached->GetComponents(ComponentType::BONE);
+	std::vector<ComponentBone*> c_bones = bone_transform->game_object_attached->GetComponents<ComponentBone>();
 
 	if (c_bones.size() > 0)
 	{

@@ -692,7 +692,7 @@ bool ResourceModel::SortByFamilyNumber(const ModelNode& node1, const ModelNode& 
 	return node1.node_num < node2.node_num;
 }
 
-GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, GameObject* root_bone)
+GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, GameObject*& root_bone)
 {
 	GameObject* ret = nullptr;
 
