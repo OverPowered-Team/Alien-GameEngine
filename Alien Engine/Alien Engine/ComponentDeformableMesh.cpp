@@ -57,12 +57,15 @@ void ComponentDeformableMesh::AttachSkeleton()
 
 void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 {
-	ComponentBone* c_bone = (ComponentBone*)bone_transform->game_object_attached->GetComponent(ComponentType::BONE);
+	std::vector<ComponentBone*> c_bones = (ComponentBone*)bone_transform->game_object_attached->GetComponents(ComponentType::BONE);
 
-	if (c_bone)
+	if (c_bones.size() > 0)
 	{
-		if(c_bone->GetMeshName() == original_mesh->name)
-			bones.push_back(c_bone);
+		for each (ComponentBone* c_bone in c_bones)
+		{
+			if (c_bone->GetMeshName() == original_mesh->name)
+				bones.push_back(c_bone);
+		}
 	}
 		
 
