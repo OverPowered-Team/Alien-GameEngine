@@ -235,7 +235,7 @@ bool ComponentParticleSystem::DrawInspector()
 				{
 					particleSystem->particleInfo.angle3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angle3D.z);
 				}
-
+				ImGui::Spacing();
 				if (particleSystem->particleInfo.axisRot3DStart)
 				{
 					ImGui::Text("Start 3D Rotation: "); ImGui::SameLine(200, 15);
@@ -284,18 +284,28 @@ bool ComponentParticleSystem::DrawInspector()
 						if(ImGui::Checkbox("Separate Axis", &particleSystem->particleInfo.axisRot3D)) 
 						{
 							particleSystem->particleInfo.angularVelocity3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angularVelocity3D.z);
+							particleSystem->particleInfo.angularAcceleration3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angularAcceleration3D.z);
 						}
-						
+
+						ImGui::Spacing();
+						ImGui::Spacing();
+
 						if (particleSystem->particleInfo.axisRot3D)
 						{
-							ImGui::Text("Angular Velocity 3D: "); ImGui::SameLine(200, 15);
+							ImGui::Text("Angular Velocity 3D: "); ImGui::SameLine(240, 15);
 							ImGui::DragFloat3("##angular vel3D", (float*)&particleSystem->particleInfo.angularVelocity3D, 0.1f, 0.0f, 360.0f);
+							ImGui::Spacing();
+							ImGui::Text("Angular Acceleration 3D: "); ImGui::SameLine(240, 15);
+							ImGui::DragFloat3("##angular accl3D", (float*)&particleSystem->particleInfo.angularAcceleration3D, 0.1f, 0.0f, 360.0f);
 						}
 
 						else 
 						{
-							ImGui::Text("Angular Velocity: "); ImGui::SameLine(200, 15);
+							ImGui::Text("Angular Velocity "); ImGui::SameLine(230, 15);
 							ImGui::DragFloat("##angular vel", (float*)&particleSystem->particleInfo.angularVelocity3D.z, 0.1f, 0.0f, 360.0f);
+							ImGui::Spacing();
+							ImGui::Text("Angular Acceleration "); ImGui::SameLine(230, 15);
+							ImGui::DragFloat("##angular acc", (float*)&particleSystem->particleInfo.angularAcceleration3D.z, 0.1f, 0.0f, 360.0f);
 						}
 
 

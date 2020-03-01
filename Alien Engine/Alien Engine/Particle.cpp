@@ -36,8 +36,19 @@ void Particle::Update(float dt)
 
 
 	//Rotate (Angular Velocity in degrees per second)
-	if (particleInfo.rotateOverTime) 
+	if (particleInfo.rotateOverTime) {
+
+		particleInfo.angularVelocity3D += particleInfo.angularAcceleration3D * dt;
+
+		if (particleInfo.angularVelocity3D.z >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.z = ANGULAR_CAP;
+		if (particleInfo.angularVelocity3D.y >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.y = ANGULAR_CAP;
+		if (particleInfo.angularVelocity3D.x >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.x = ANGULAR_CAP;
+
 		particleInfo.angle3D += particleInfo.angularVelocity3D * dt;
+	}
 	
 }
 
