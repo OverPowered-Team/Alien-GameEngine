@@ -279,7 +279,7 @@ void ComponentUI::CheckFirstSelected()
 
 void ComponentUI::UpdateGamePadInput()
 {
-	if (selected_ui != nullptr)
+	if (selected_ui != nullptr && selected_ui->GetComponent<ComponentUI>()->state != Pressed )
 	{
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
 		{

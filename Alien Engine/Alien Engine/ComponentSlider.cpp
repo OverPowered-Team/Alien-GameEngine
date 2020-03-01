@@ -472,7 +472,7 @@ void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
 		//UILogicMouse();
-		UILogicGamePad();
+		UpdateGamePadInput();
 		GetValue();
 
 		switch (state)
@@ -494,6 +494,7 @@ void ComponentSlider::Update()
 		default:
 			break;
 		}
+		UILogicGamePad();
 	}
 }
 
