@@ -295,7 +295,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT() / references;
+		state->time += Time::GetDT() / attached_references;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -322,7 +322,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 			
-			state->fade_time += Time::GetDT() / references;
+			state->fade_time += Time::GetDT() / attached_references;
 			UpdateState(state->next_state);
 		}
 		else {
@@ -1288,6 +1288,8 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 {
 	State* new_state = new State(name, clip);
 	new_state->SetSpeed(speed);
+	new_state->id = id_bucket;
+	id_bucket++;
 	states.push_back(new_state);
 
 	if (!default_state)
@@ -1296,11 +1298,13 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 
 void ResourceAnimatorController::RemoveState(std::string name)
 {
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end();) {
 		if ((*it)->GetSource()->GetName() == name || (*it)->GetTarget()->GetName() == name) {
 			delete (*it);
 			it = transitions.erase(it);
-			break;
+		}
+		else {
+			++it;
 		}
 	}
 
@@ -1308,10 +1312,16 @@ void ResourceAnimatorController::RemoveState(std::string name)
 		if ((*it)->GetName() == name) {
 			if ((*it)->GetClip())
 				(*it)->GetClip()->DecreaseReferences();
+			if ((*it) == default_state) {
+					default_state = nullptr;
+			}
 			delete (*it);
 			it = states.erase(it);
 			break;
 		}
+	}
+	if (!default_state && states.size() > 0) {
+		default_state = states[0];
 	}
 }
 

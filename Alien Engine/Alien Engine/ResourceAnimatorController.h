@@ -161,6 +161,9 @@ public:
 	ResourceAnimatorController();
 	~ResourceAnimatorController();
 
+	int attached_references = 0;
+	int id_bucket = 1;
+
 	void ReImport(const u64& force_id = 0);
 	//Parameters things
 
@@ -229,7 +232,7 @@ public:
 	std::vector<Transition*> FindTransitionsFromSourceState(State* state);
 
 	State* GetDefaultNode() const { return default_state; };
-
+	void SetDefaultNode(State* state) { default_state = state; }
 	ax::NodeEditor::EditorContext* GetEditorContext();
 	std::string GetTypeString() const;
 

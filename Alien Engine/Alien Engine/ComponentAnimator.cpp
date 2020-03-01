@@ -24,6 +24,7 @@ ComponentAnimator::~ComponentAnimator()
 	if (animator_controller)
 	{
 		animator_controller->DecreaseReferences();
+		animator_controller->attached_references--;
 	}
 
 }
@@ -82,10 +83,12 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 {
 	if (animator_controller) {
 		animator_controller->DecreaseReferences();
+		animator_controller->attached_references--;
 	}
 
 	animator_controller = controller;
 	animator_controller->IncreaseReferences();
+	animator_controller->attached_references++;
 }
 
 void ComponentAnimator::SaveComponent(JSONArraypack* to_save)
@@ -161,7 +164,7 @@ bool ComponentAnimator::DrawInspector()
 		}
 
 		if (animator_controller != nullptr) {
-			ImGui::Text("References: %i", animator_controller->references);
+			ImGui::Text("References: %i", animator_controller->attached_references);
 		}
 	}
 
