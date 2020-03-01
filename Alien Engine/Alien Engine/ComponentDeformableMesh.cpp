@@ -109,12 +109,40 @@ void ComponentDeformableMesh::UpdateDeformableMesh()
 	}
 }
 
+void ComponentDeformableMesh::SimulateShaderFuntion(ComponentCamera* camera)
+{
+	//float4x4 projection = camera->getviewmatrix4x4();
+	//float4x4 view = transform->getglobalmatrix().transposed()
+	//float4x4 model = camera->getviewmatrix4x4();
+
+	for (int i=0; i< mesh->num_vertex*3; i+=3)
+	{
+		int vertex_id = i / 3;
+		float3 vertex = float3(mesh->vertex[i], mesh->vertex[i + 1], mesh->vertex[i + 2]);
+		/*float4x4 matrix = flo;*/
+		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
+		{
+			if (bones_ID[j] != -1)
+			{
+
+			}
+			
+
+		}
+
+	}
+
+}
+
 void ComponentDeformableMesh::UpdateBonesMatrix()
 {
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{
+		ResourceBone* r_bone = (ResourceBone*)(*it)->GetBone();
 		bones_matrix[i] = (*it)->game_object_attached->transform->global_transformation;
+		bones_matrix[i] = game_object_attached->transform->global_transformation.Inverted() * bones_matrix[i];
+		bones_matrix[i] = bones_matrix[i] * r_bone->matrix;
 	}
 }
 
@@ -126,21 +154,11 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 		return;
 	UpdateBonesMatrix();
 
-	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
-		/*glEnable(GL_STENCIL_TEST);
-		glStencilFunc(GL_ALWAYS, 1, -1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
-	}
-
 	ComponentTransform* transform = game_object_attached->transform;
 	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_POLYGON_OFFSET_FILL);
-	//glPolygonOffset(1.0f, 0.1f);
 
 	// -------------------------- Actual Drawing -------------------------- 
 
@@ -152,10 +170,9 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	glBindVertexArray(mesh->vao);
 
-
 	// Uniforms
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
-	//material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
+	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniformMat4f("gBones", bones_matrix[0], 100);
 	//material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());

@@ -21,6 +21,7 @@ public:
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateDeformableMesh();
+	void SimulateShaderFuntion(ComponentCamera* camera);
 	void UpdateBonesMatrix();
 	void DrawPolygon(ComponentCamera* camera);
 	void DrawOutLine();
