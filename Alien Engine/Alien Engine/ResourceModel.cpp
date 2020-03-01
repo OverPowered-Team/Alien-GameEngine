@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "ReturnZ.h"
 #include "ResourceMaterial.h"
+#include "ResourceShader.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentBone.h"
@@ -688,7 +689,7 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						{
 							Cmesh->SendWeightsAndID();
 						}
-
+						
 
 					}
 					else
@@ -701,9 +702,11 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					}
 				}
 
-				if (node.material >= 0) {
+				if (node.material >= 0)
+				{
 					ResourceMaterial* material = materials_attached[node.material];
-					if (material != nullptr) {
+					if (material != nullptr) 
+					{
 						ComponentMaterial* Cmat = new ComponentMaterial(ret);
 						Cmat->color = material->color;
 
@@ -716,7 +719,10 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						if (material->texturesID[0] != 0) {
 							Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
 						}
-
+						if (mesh->deformable)
+						{
+							Cmat->SetShader("skinning_meta.alien");
+						}
 						ret->AddComponent(Cmat);
 					}
 				}

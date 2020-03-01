@@ -71,8 +71,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
 

@@ -14,6 +14,8 @@ class __declspec(dllexport) ComponentMaterial : public Component {
 	friend class GameObject;
 	friend class ModuleImporter;
 	friend class ResourceMesh;
+
+
 public:
 	ComponentMaterial(GameObject* attach);
 	virtual ~ComponentMaterial();
@@ -36,7 +38,7 @@ private:
 
 public:
 	void SetTexture(ResourceTexture* tex);
-
+	void SetShader(const char* path);
 
 	Color color{ 1,1,1,1 };
 	bool texture_activated = true;

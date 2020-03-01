@@ -21,7 +21,7 @@ protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateDeformableMesh();
 
-	void DrawPolygon();
+	void DrawPolygon(ComponentCamera* camera);
 	void DrawOutLine();
 	void DrawMesh();
 	

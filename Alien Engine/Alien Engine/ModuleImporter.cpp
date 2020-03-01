@@ -101,7 +101,8 @@ bool ModuleImporter::LoadModelFile(const char *path, const char *extern_path)
 			LOG_ENGINE("Error type: %s", aiGetErrorString());
 		}
 		aiReleaseImport(scene);
-		App->resources->AddNewFileNode(path, true);
+		if(ret)
+			App->resources->AddNewFileNode(path, true);
 	}
 	else
 	{

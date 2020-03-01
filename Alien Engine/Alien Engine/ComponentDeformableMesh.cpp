@@ -1,12 +1,16 @@
 #include "Application.h"
 #include "Component.h"
+#include "ComponentDeformableMesh.h"
 #include "ComponentTransform.h"
 #include "GameObject.h"
 #include "ComponentBone.h"
 #include "ComponentMaterial.h"
+
+
 #include "ResourceMesh.h"
 #include "ResourceBone.h"
-#include "ComponentDeformableMesh.h"
+#include "ResourceTexture.h"
+#include "ResourceShader.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -96,74 +100,54 @@ void ComponentDeformableMesh::UpdateDeformableMesh()
 	}
 }
 
-void ComponentDeformableMesh::DrawPolygon()
+void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
-	if(deformable_mesh)
-		UpdateDeformableMesh();
-
-	if (deformable_mesh == nullptr || deformable_mesh->id_index <= 0)
+	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
-		glEnable(GL_STENCIL_TEST);
+		/*glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_ALWAYS, 1, -1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 	}
 
 	ComponentTransform* transform = game_object_attached->transform;
+	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	//SKINNING STUFF
-	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, deformable_mesh->num_vertex * sizeof(float) * 3, deformable_mesh->vertex, GL_DYNAMIC_DRAW);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glEnable(GL_POLYGON_OFFSET_FILL);
+	//glPolygonOffset(1.0f, 0.1f);
 
-	if (deformable_mesh->normals)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_normals);
-		glBufferData(GL_ARRAY_BUFFER, deformable_mesh->num_vertex * sizeof(float) * 3, deformable_mesh->normals, GL_DYNAMIC_DRAW);
-	}
-	/////////
+	// -------------------------- Actual Drawing -------------------------- 
 
-	glPushMatrix();
-	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+	if (material->texture != nullptr)
+		glBindTexture(GL_TEXTURE_2D, material->texture->id);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
+	material->used_shader->Bind();
+	material->used_shader->UpdateUniforms();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0f, 0.1f);
+	glBindVertexArray(mesh->vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	if (mesh->uv_cords != nullptr) {
-		glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_uv);
-		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
-	}
+	// Uniforms
+	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
+	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
+	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
-	if (mesh->normals != nullptr) {
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, deformable_mesh->id_normals);
-		glNormalPointer(GL_FLOAT, 0, 0);
-	}
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, deformable_mesh->id_index);
-	glDrawElements(GL_TRIANGLES, deformable_mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+	// --------------------------------------------------------------------- 
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	material->used_shader->Unbind();
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
-
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glPopMatrix();
 }
 
 void ComponentDeformableMesh::DrawOutLine()

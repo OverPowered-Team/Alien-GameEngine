@@ -14,11 +14,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MATERIAL;
 
-	u64 id_s = App->resources->GetIDFromAlienPath(SHADERS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
-	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-	used_shader->IncreaseReferences();
-	file_to_edit = used_shader->path;
-	used_shader->uniform_data;
+	SetShader("default_meta.alien");
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -468,6 +464,16 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	if (texture != nullptr) {
 		texture->IncreaseReferences();
 	}
+}
+
+void ComponentMaterial::SetShader(const char* path)
+{
+	std::string fullpath = SHADERS_FOLDER;
+	fullpath += path;
+	u64 id_s = App->resources->GetIDFromAlienPath(fullpath.c_str()); // needs fix. meta is not created too...
+	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	used_shader->IncreaseReferences();
+	file_to_edit = used_shader->path;
 }
 
 const ResourceTexture* ComponentMaterial::GetTexture() const

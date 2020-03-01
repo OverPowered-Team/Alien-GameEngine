@@ -1,0 +1,96 @@
+{
+    "Meta": {
+        "ID": "17231441169098868834",
+        "NumMeshes": 1,
+        "Name": "cottage_fbx",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/1048397657301970916.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/15938291013653648081.alienMaterial"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                -166.02523803710938,
+                365.640869140625,
+                2.4180448055267334
+            ],
+            "scale": [
+                1426.4561767578125,
+                806.39202880859375,
+                359.22921752929688
+            ],
+            "rot": [
+                0.025212429463863373,
+                0.70665723085403442,
+                0.7066570520401001,
+                -0.02521243505179882
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Cube",
+            "parentName": "cottage_fbx",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "boneIndex": -1
+        },
+        {
+            "pos": [
+                407.62454223632813,
+                590.38623046875,
+                -100.54539489746094
+            ],
+            "scale": [
+                100.00000762939453,
+                100.00000762939453,
+                100.00000762939453
+            ],
+            "rot": [
+                0.16907574236392975,
+                0.75588035583496094,
+                -0.27217128872871399,
+                0.57094752788543701
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Lamp",
+            "parentName": "cottage_fbx",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "boneIndex": -1
+        },
+        {
+            "pos": [
+                748.1131591796875,
+                534.36651611328125,
+                650.76397705078125
+            ],
+            "scale": [
+                100,
+                100.00000762939453,
+                100
+            ],
+            "rot": [
+                -0.21255728602409363,
+                0.90479695796966553,
+                -0.084389366209506989,
+                0.3592216968536377
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Camera",
+            "parentName": "cottage_fbx",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "boneIndex": -1
+        }
+    ]
+}
