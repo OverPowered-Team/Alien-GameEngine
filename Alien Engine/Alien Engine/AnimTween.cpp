@@ -16,7 +16,6 @@ update_status AnimTween::Update(float dt)
 		else
 			it_tween++;
 	}
-
 	return UPDATE_CONTINUE;
 }
 

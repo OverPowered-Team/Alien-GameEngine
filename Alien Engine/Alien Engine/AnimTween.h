@@ -15,10 +15,11 @@ enum TweenAction {
 	SCALE,
 	ALPHA,
 	COLOR,
+	RGBA
 };
 
 enum TweenType {
-	notUsed = -1, linear
+	notUsed = -1, linear, easeIn, easeOut, easeInOut
 };
 
 class AnimTween: public Module

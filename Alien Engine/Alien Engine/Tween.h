@@ -13,8 +13,15 @@ public:
 private:
 	void MoveInternal();
 	void ScaleInternal();
+	void RotateInternal();
+	void ColorInternal();
+	void AlphaInternal();
+	void RGBAInternal();
 
 	float4 LinealLerp();
+	float4 EaseIn();
+	float4 EaseOut();
+	float4 EaseInOut();
 
 public:
 	float4 from = { 0.0f,0.0f ,0.0f ,0.0f };

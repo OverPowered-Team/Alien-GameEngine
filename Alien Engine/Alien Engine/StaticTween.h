@@ -17,12 +17,13 @@ public:
 		SCALE,
 		ALPHA,
 		COLOR,
+		RGBA
 	};
 
 	enum {
-		notUsed = -1, linear
+		notUsed = -1, linear, easeIn, easeOut, easeInOut
 	};
 public:
-	static Tween* CreateTween(GameObject* gameObject, const float3& to, float time, int action, int type = 0);
+	static Tween* CreateTween(GameObject* gameObject, const float4& to, float time, int action, int type = 0);
 
 };

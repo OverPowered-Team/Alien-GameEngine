@@ -79,7 +79,8 @@
             "Text Editor": false,
             "Build": false,
             "Animation Timeline": true,
-            "Animator": true
+            "Animator": true,
+            "Particle System": true
         }
     ]
 }
