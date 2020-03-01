@@ -6,8 +6,6 @@
 
 #include <vector>
 
-#define NUM_TRIGGERS 5
-
 class ResourceAnimation;
 
 class State
@@ -148,7 +146,6 @@ private:
 	std::vector<State*> states;
 	std::vector<Transition*> transitions;
 	State* default_state = nullptr;
-	std::vector<bool> triggers;
 
 	std::vector <std::pair <std::string, int>> int_parameters;
 	std::vector <std::pair <std::string, float>> float_parameters;

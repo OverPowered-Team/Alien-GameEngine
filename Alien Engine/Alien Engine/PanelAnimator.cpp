@@ -107,6 +107,7 @@ void PanelAnimator::ShowStatePopup(){
 		if (ImGui::Selectable("Set as entry node")) {
 			current_animator->SetDefaultNode(current_animator->FindState(context_node));
 		}
+
 		ImGui::Separator();
 
 		ImGui::Text("Clip list");
@@ -672,7 +673,7 @@ void PanelAnimator::PanelLogic()
 		ImGui::SetCursorPos({ 4, 24 });
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(0, 0, 0, 100));
 
-		ImGui::BeginChild("Parameters", { 200, 500 }, true);
+		ImGui::BeginChild("Parameters", { 200, 350 }, true);
 		ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen);
 
 		DrawParameterList();

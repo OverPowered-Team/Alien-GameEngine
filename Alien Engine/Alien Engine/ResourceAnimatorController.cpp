@@ -16,10 +16,6 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
 	ed_context = ax::NodeEditor::CreateEditor();
 
-	for (int i = 0; i < NUM_TRIGGERS; ++i) {
-		triggers.push_back(false);
-	}
-
 	default_state = nullptr;
 }
 
