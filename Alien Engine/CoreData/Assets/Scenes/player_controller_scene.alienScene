@@ -126,7 +126,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -157,7 +157,7 @@
                     {
                         "Type": 10,
                         "ID": "2441481152276431236",
-                        "ControllerID": "9987034550596441515",
+                        "ControllerID": "14666415501685745967",
                         "Enabled": true
                     },
                     {
@@ -189,7 +189,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -254,7 +254,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -291,7 +291,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -334,7 +334,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -377,7 +377,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -420,7 +420,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -463,7 +463,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -506,7 +506,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -549,7 +549,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -592,7 +592,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -635,7 +635,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -678,7 +678,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -721,7 +721,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -764,7 +764,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -807,7 +807,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -850,7 +850,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -893,7 +893,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -936,7 +936,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -972,135 +972,6 @@
                 ]
             },
             {
-                "Name": "Bip001 R Finger1",
-                "FamilyNumber": 11,
-                "ID": "14385232257256459413",
-                "ParentID": "12619828917355455151",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            1.7707755565643311,
-                            0.00036144256591796875,
-                            0.041458725929260254
-                        ],
-                        "Rotation": [
-                            0.0051076384261250496,
-                            0.19857686758041382,
-                            0.39499667286872864,
-                            0.89694970846176147
-                        ],
-                        "Scale": [
-                            1,
-                            0.99999988079071045,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "10562827741536342017"
-                    },
-                    {
-                        "Type": 23,
-                        "ID": "17101364507736327762",
-                        "BoneID": "15786472012966608896",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
-                "Name": "Bip001 R Finger11",
-                "FamilyNumber": 12,
-                "ID": "5257628764034922497",
-                "ParentID": "14385232257256459413",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0.3415369987487793,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            -2.6954577236892874e-08,
-                            -1.2713350372450805e-08,
-                            0.42658922076225281,
-                            0.90444546937942505
-                        ],
-                        "Scale": [
-                            0.99999988079071045,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "1203471689177143159"
-                    },
-                    {
-                        "Type": 23,
-                        "ID": "10780179048106759581",
-                        "BoneID": "3700710107371893624",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
-                "Name": "Bip001 R Finger12",
-                "FamilyNumber": 13,
-                "ID": "3340834656519325693",
-                "ParentID": "5257628764034922497",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0.25260305404663086,
-                            -4.76837158203125e-07,
-                            2.384185791015625e-07
-                        ],
-                        "Rotation": [
-                            -1.6042795536463927e-08,
-                            2.511588270692755e-08,
-                            0.53830677270889282,
-                            0.84274893999099731
-                        ],
-                        "Scale": [
-                            0.9999997615814209,
-                            0.99999994039535522,
-                            0.99999994039535522
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "9904458777954223348"
-                    },
-                    {
-                        "Type": 23,
-                        "ID": "4749701756047191414",
-                        "BoneID": "1687586715354070530",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
                 "Name": "Bip001 R Finger0",
                 "FamilyNumber": 11,
                 "ID": "12895127095393780642",
@@ -1108,7 +979,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1151,7 +1022,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1194,7 +1065,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1230,6 +1101,135 @@
                 ]
             },
             {
+                "Name": "Bip001 R Finger1",
+                "FamilyNumber": 11,
+                "ID": "14385232257256459413",
+                "ParentID": "12619828917355455151",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.7707755565643311,
+                            0.00036144256591796875,
+                            0.041458725929260254
+                        ],
+                        "Rotation": [
+                            0.0051076384261250496,
+                            0.19857686758041382,
+                            0.39499667286872864,
+                            0.89694970846176147
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999988079071045,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10562827741536342017"
+                    },
+                    {
+                        "Type": 23,
+                        "ID": "17101364507736327762",
+                        "BoneID": "15786472012966608896",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Bip001 R Finger11",
+                "FamilyNumber": 12,
+                "ID": "5257628764034922497",
+                "ParentID": "14385232257256459413",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.3415369987487793,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            -2.6954577236892874e-08,
+                            -1.2713350372450805e-08,
+                            0.42658922076225281,
+                            0.90444546937942505
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1203471689177143159"
+                    },
+                    {
+                        "Type": 23,
+                        "ID": "10780179048106759581",
+                        "BoneID": "3700710107371893624",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Bip001 R Finger12",
+                "FamilyNumber": 13,
+                "ID": "3340834656519325693",
+                "ParentID": "5257628764034922497",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.25260305404663086,
+                            -4.76837158203125e-07,
+                            2.384185791015625e-07
+                        ],
+                        "Rotation": [
+                            -1.6042795536463927e-08,
+                            2.511588270692755e-08,
+                            0.53830677270889282,
+                            0.84274893999099731
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            0.99999994039535522,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9904458777954223348"
+                    },
+                    {
+                        "Type": 23,
+                        "ID": "4749701756047191414",
+                        "BoneID": "1687586715354070530",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
                 "Name": "Bip001 L Clavicle",
                 "FamilyNumber": 7,
                 "ID": "11203298492059305355",
@@ -1237,7 +1237,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1280,7 +1280,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1323,7 +1323,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1366,7 +1366,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1409,7 +1409,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1452,7 +1452,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1495,7 +1495,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1538,7 +1538,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1581,7 +1581,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1624,7 +1624,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1667,7 +1667,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
@@ -1710,7 +1710,7 @@
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": false,
+                "ParentSelected": true,
                 "IsStatic": false,
                 "IsPrefab": false,
                 "PrefabLocked": false,
