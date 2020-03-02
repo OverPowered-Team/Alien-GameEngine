@@ -394,10 +394,10 @@ void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *exter
 	aiColor4D col;
 	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, col))
 	{
-		mat->color.r = col.r;
-		mat->color.g = col.g;
-		mat->color.b = col.b;
-		mat->color.a = col.a;
+		mat->color.x = col.r;
+		mat->color.y = col.g;
+		mat->color.z = col.b;
+		mat->color.w = col.a;
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
@@ -743,6 +743,31 @@ void ModuleImporter::ApplyShaderToSelectedObject(ResourceShader *shader)
 {
 	// TODO
 }
+
+void ModuleImporter::ApplyMaterialToSelectedObject(ResourceMaterial* material)
+{
+	std::list<GameObject*> selected = App->objects->GetSelectedObjects();
+	auto item = selected.begin();
+	for (; item != selected.end(); ++item)
+	{
+		if (*item != nullptr)
+		{
+			if (!(*item)->HasComponent(ComponentType::MESH))
+				return;
+
+			ComponentMaterial* materialComp = (ComponentMaterial*)(*item)->GetComponent(ComponentType::MATERIAL);
+
+			if (materialComp == nullptr)
+			{
+				materialComp = new ComponentMaterial(*item);
+				(*item)->AddComponent(materialComp);
+			}
+
+			materialComp->SetMaterial(material);
+		}
+	}
+}
+
 void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
 {
 

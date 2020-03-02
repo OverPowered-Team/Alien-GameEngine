@@ -643,12 +643,12 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		ComponentMaterial* material = (ComponentMaterial*)component;
 		CompMaterialZ* materialZ = new CompMaterialZ();
 		*compZ = materialZ;
-		if (material->GetTexture() != nullptr) {
+		/*if (material->GetTexture() != nullptr) {
 			materialZ->resourceID = material->GetTexture()->GetID();
 		}
 		materialZ->objectID = material->game_object_attached->ID;
 		materialZ->color = material->color;
-		materialZ->texture_activated = material->texture_activated;
+		materialZ->texture_activated = material->texture_activated;*/
 		break; }
 	case ComponentType::LIGHT: {
 		ComponentLight* light = (ComponentLight*)component;

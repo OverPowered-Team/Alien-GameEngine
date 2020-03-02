@@ -14,6 +14,7 @@
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
 #include "ResourceAudio.h"
+#include "ResourceMaterial.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -179,6 +180,10 @@ u64 ModuleResources::GetIDFromAlienPath(const char* path)
 Resource* ModuleResources::GetResourceWithID(const u64& ID)
 {
 	OPTICK_EVENT();
+
+	if (ID == 0)
+		return nullptr; 
+
 	std::vector<Resource*>::iterator item = resources.begin();
 	for (; item != resources.end(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -549,6 +554,21 @@ bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
 	return !to_fill.empty();
 }
 
+ResourceShader* ModuleResources::GetShader(std::string shaderName)
+{
+	ResourceShader* desiredShader = nullptr; 
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+		{
+			if ((*res)->GetName() == shaderName)
+				desiredShader = (ResourceShader*)(*res);
+		}
+	}
+
+	return desiredShader;
+}
+
 ResourceFont* ModuleResources::GetFontByName(const char* name)
 {
 	auto item = resources.begin();
@@ -597,6 +617,12 @@ void ModuleResources::ReadAllMetaData()
 	// Init Shaders
 	App->file_system->DiscoverFiles(SHADERS_FOLDER, files, directories);
 	ReadShaders(directories, files, SHADERS_FOLDER);
+	files.clear();
+	directories.clear();
+
+	// Init Shaders
+	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
+	ReadMaterials(directories, files, MATERIALS_FOLDER);
 	files.clear();
 	directories.clear();
 
@@ -662,6 +688,15 @@ void ModuleResources::ReadAllMetaData()
 	App->file_system->DiscoverFiles(LIBRARY_SHADERS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceShader* shader = new ResourceShader();
+		shader->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// materials
+	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
 		shader->ReadLibrary(files[i].data());
 	}
 	files.clear();
@@ -766,6 +801,27 @@ void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vec
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadShaders(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadMaterials(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
+		if (!material->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = material->GetID();
+			material->CreateMetaData(id);
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadMaterials(new_directories, new_files, dir);
 		}
 	}
 }
@@ -972,6 +1028,9 @@ void ModuleResources::CreateAsset(FileDropType type)
 		break;
 	case FileDropType::ANIMATION:
 		break;
+	case FileDropType::MATERIAL:
+		CreateMaterial();
+		break;
 	}
 
 	App->ui->panel_project->RefreshAllNodes();
@@ -985,6 +1044,17 @@ void ModuleResources::CreateAnimatorController()
 	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
 	new_controller->name = asset_name;
 	new_controller->SaveAsset();
+}
+
+void ModuleResources::CreateMaterial()
+{
+	ResourceMaterial* new_material = new ResourceMaterial();
+	//uint duplications = GetMaterialsNamed("New_Material");
+	static uint duplications = 0;	// TODO: Handle this better
+	new_material->SetName(std::string("New_Material" + std::to_string(duplications)).c_str());
+	new_material->CreateMaterialFile(MATERIALS_FOLDER);
+	new_material->CreateMetaData();
+	duplications++;
 }
 
 

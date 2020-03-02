@@ -322,6 +322,10 @@ void FileNode::SetIcon()
 			icon = App->resources->icons.shader_file;
 			type = FileDropType::SHADER;
 		}
+		else if (App->StringCmp(extension.data(), "material")) {
+			icon = App->resources->icons.model;
+			type = FileDropType::MATERIAL;
+		}
 		else if (App->StringCmp(extension.data(), "fbx") || App->StringCmp(extension.data(), "dae")) {
 			icon = App->resources->icons.model;
 			type = FileDropType::MODEL3D;

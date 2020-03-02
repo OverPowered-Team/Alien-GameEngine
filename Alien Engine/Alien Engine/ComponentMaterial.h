@@ -36,7 +36,7 @@ private:
 
 public:
 	void SetTexture(ResourceTexture* tex);
-
+	void SetMaterial(ResourceMaterial* mat);
 
 	Color color{ 1,1,1,1 };
 	bool texture_activated = true;
@@ -49,7 +49,7 @@ private:
 // Shaders
 public:
 	void ShowShaderTextEditor();
-	ResourceShader* used_shader = nullptr;
+	ResourceMaterial* material = nullptr; 
 
 private:
 	TextEditor shader_editor;

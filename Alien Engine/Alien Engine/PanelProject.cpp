@@ -438,6 +438,9 @@ void PanelProject::RightClickToWindow(bool pop_up_item)
 		if (ImGui::MenuItem("Create New Script")) {
 			App->ui->creating_script = true;
 		}
+		if (ImGui::MenuItem("Create New Material")) {
+			App->resources->CreateAsset(FileDropType::MATERIAL);
+		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Create New Folder")) {
 			int folder_number = 0;

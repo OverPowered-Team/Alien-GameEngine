@@ -65,6 +65,8 @@ public:
 	ResourceShader* LoadShaderFile(const char* path, bool has_been_dropped = false, bool is_custom = true); // when dropped
 	void ApplyShaderToSelectedObject(ResourceShader* shader);
 
+	void ApplyMaterialToSelectedObject(ResourceMaterial* material);
+
 private:
 	
 	// models

@@ -11,6 +11,7 @@
 #include "ReturnZ.h"
 #include "ModuleCamera3D.h"
 #include "ResourceTexture.h"
+#include "ResourceMaterial.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -45,7 +46,13 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	}
 
 	ComponentTransform* transform = game_object_attached->transform;
-	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
+	ComponentMaterial* mat = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
+
+	// Mandatory Material ??
+	if (mat == nullptr) 
+		return;
+
+	ResourceMaterial* material = mat->material;
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -56,14 +63,10 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	// -------------------------- Actual Drawing -------------------------- 
 
-	if (material->texture != nullptr)
-		glBindTexture(GL_TEXTURE_2D, material->texture->id);
 
-	material->used_shader->Bind();
-	material->used_shader->UpdateUniforms();
+	material->ApplyMaterial();
 
 	glBindVertexArray(mesh->vao);
-
 
 	// Uniforms
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
