@@ -731,7 +731,7 @@ bool ComponentSlider::OnClick()
 
 bool ComponentSlider::OnPressed()
 {
-	ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
+	/*ComponentTransform* trans = game_object_attached->GetComponent<ComponentTransform>();
 	float width = (sliderX + ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (sliderX - ((trans->global_transformation[0][0] * sliderScaleX / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	float width_bg = (x + ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F) - (x - ((trans->global_transformation[0][0] / (canvas->width * 0.5F)) * App->ui->panel_game->width) * 0.5F);
 	
@@ -752,8 +752,26 @@ bool ComponentSlider::OnPressed()
 	if (factor <= 0.0f)
 	{
 		factor = 0.0f;
+	}*/
+
+	if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	{
+		factor += (0.01f);
+	}
+	if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	{
+		factor -= (0.01f);
 	}
 
+
+	if (factor >= 1.0f)
+	{
+		factor = 1.0f;
+	}
+	if (factor <= 0.0f)
+	{
+		factor = 0.0f;
+	}
 
 	current_color = pressed_color;
 	slider_current_color = slider_pressed_color;
@@ -784,7 +802,7 @@ float ComponentSlider::GetValue()
 	float startPos = (x - (width_bg * 0.5f));
 	float endPos = (x + (width_bg * 0.5f)- width);
 	float thumbPos = sliderX - width * 0.5f;
-	LOG_ENGINE("SLIDER VALUE: %f", (thumbPos - startPos) / (endPos - startPos));
+
 	return((thumbPos - startPos) / (endPos - startPos));
 
 }
