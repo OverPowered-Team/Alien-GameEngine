@@ -28,6 +28,7 @@ class PanelTextEditor;
 class PanelAnimTimeline;
 class PanelAnimator;
 class PanelParticleSystem;
+class GameObject;
 
 struct ShortCut;
 
@@ -204,5 +205,8 @@ public:
 
 	bool creating_script = false;
 	const char* actual_name="";
+
+	//Focus
+	GameObject* selected_ui = nullptr;
 };
 

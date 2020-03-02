@@ -90,7 +90,7 @@ protected:
 	float2 size = { 10,10 };
 
 	//UI FOCUS
-	GameObject* selected_ui = nullptr;
+	
 	bool tabbable			= false;
 	u64 select_on_up		= 0;
 	u64 select_on_down		= 0;
