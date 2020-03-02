@@ -382,7 +382,7 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 		(*ret)->SetName("Cube");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		par_mesh = par_shapes_create_subdivided_sphere(5);
+		par_mesh = par_shapes_create_subdivided_sphere(1);
 		(*ret)->SetName("Sphere");
 		break; }
 	case PrimitiveType::ROCK: {
