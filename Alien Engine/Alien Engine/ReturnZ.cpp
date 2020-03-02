@@ -823,8 +823,8 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		else {
 			material->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(materialZ->resourceID));
 		}
-		material->texture_activated = materialZ->texture_activated;
-		material->color = materialZ->color;
+		/*material->texture_activated = materialZ->texture_activated;
+		material->color = materialZ->color;*/
 		break; }
 	case ComponentType::LIGHT: {
 		ComponentLight* light = (ComponentLight*)component;

@@ -144,7 +144,7 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 
 void ResourceShader::TryToSetShaderType()
 {
-	if (std::strcmp(name.c_str(), "default") == 0)
+	if (std::strcmp(name.c_str(), "default_shader") == 0)
 		shaderType = SHADER_TEMPLATE::DIFUSSE;
 	else if (std::strcmp(name.c_str(), "shader_wave") == 0)
 		shaderType = SHADER_TEMPLATE::WAVE;

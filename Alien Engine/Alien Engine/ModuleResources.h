@@ -15,6 +15,7 @@ class ResourceMesh;
 class ResourceScene;
 class ResourceTexture;
 class ResourceShader;
+class ResourceMaterial;
 class ResourceFont;
 
 struct Icons {
@@ -88,10 +89,12 @@ public:
 
 	ResourceScene* GetSceneByName(const char* name);
 	ResourceFont* GetFontByName(const char* name);
+	ResourceShader* GetShaderByName(std::string shaderName);
+	ResourceMaterial* GetMaterialByName(const char* name); 
 
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
-	ResourceShader* GetShader(std::string shaderName);
+
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
@@ -122,6 +125,9 @@ public:
 	ResourceMesh* camera_mesh = nullptr;
 	ResourceMesh* light_mesh = nullptr; 
 	ResourceFont* default_font = nullptr;
+	ResourceMaterial* default_material = nullptr;
+	ResourceShader* default_shader = nullptr;
+
 	FileNode* assets = nullptr;
 
 private:

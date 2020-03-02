@@ -85,7 +85,7 @@ bool ModuleResources::Start()
 	ReadAllMetaData();
 
 	default_font = GetFontByName("Arialn");
-
+	default_material = GetMaterialByName("Default Material");
 	return true;
 }
 
@@ -554,19 +554,40 @@ bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
 	return !to_fill.empty();
 }
 
-ResourceShader* ModuleResources::GetShader(std::string shaderName)
+ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
 {
 	ResourceShader* desiredShader = nullptr; 
 
 	for (auto res = resources.begin(); res != resources.end(); res++) {
 		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
 		{
-			if ((*res)->GetName() == shaderName)
+			if (App->StringCmp((*res)->GetName(), shaderName.c_str()))
+			{
 				desiredShader = (ResourceShader*)(*res);
+				break;
+			}
 		}
 	}
 
 	return desiredShader;
+}
+
+ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
+{
+	ResourceMaterial* desiredMaterial = nullptr;
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_MATERIAL)
+		{
+			if (App->StringCmp((*res)->GetName(), name))
+			{
+				desiredMaterial = (ResourceMaterial*)(*res);
+				break;
+			}
+		}
+	}
+
+	return desiredMaterial;
 }
 
 ResourceFont* ModuleResources::GetFontByName(const char* name)
@@ -619,8 +640,9 @@ void ModuleResources::ReadAllMetaData()
 	ReadShaders(directories, files, SHADERS_FOLDER);
 	files.clear();
 	directories.clear();
+	default_shader = GetShaderByName("default_shader");
 
-	// Init Shaders
+	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
 	ReadMaterials(directories, files, MATERIALS_FOLDER);
 	files.clear();
@@ -692,6 +714,7 @@ void ModuleResources::ReadAllMetaData()
 	}
 	files.clear();
 	directories.clear();
+	default_shader = GetShaderByName("default_shader");
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);

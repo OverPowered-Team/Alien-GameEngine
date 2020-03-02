@@ -14,36 +14,13 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MATERIAL;
 
-	material = new ResourceMaterial();
-	material->CreateMetaData();
-	material->SetName("New_Material");
-	material->CreateMaterialFile(MATERIALS_FOLDER);
-	material->CreateMetaData();
-	// TODO
-	//u64 id_s = App->resources->GetIDFromAlienPath(MATERIALS_FOLDER "default_meta.alien"); // needs fix. meta is not created too...
-	//material = (ResourceMaterial*)App->resources->GetResourceWithID(id_s);
-	//material->IncreaseReferences();
+	material = App->resources->default_material;
 }
 
 ComponentMaterial::~ComponentMaterial()
 {
-	if (texture != nullptr)
-		texture->DecreaseReferences();
 	if (material != nullptr)
 		material->DecreaseReferences();
-}
-
-void ComponentMaterial::BindTexture()
-{
-	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
-	if (texture != nullptr && texture->id > 0 && texture_activated && mesh != nullptr && mesh->mesh != nullptr) {
-		// enable textures
-		glEnable(GL_TEXTURE_2D);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-	}
-	glColor4f(color.r, color.g, color.b, color.a);
-	
 }
 
 bool ComponentMaterial::DrawInspector()
@@ -63,10 +40,6 @@ bool ComponentMaterial::DrawInspector()
 		ImGui::Text(material->GetName());
 		material->DisplayMaterialOnInspector();
 		RightClickMenu("Material");
-		if (texture != nullptr) {
-			ImGui::Spacing();
-			ImGui::Text("Texture References: %i", texture->references);
-		}
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -106,114 +79,6 @@ bool ComponentMaterial::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Text("Texture Information");
 
-		static ResourceTexture* selected_texture = nullptr;
-		if (texture != nullptr)
-		{
-			ImGui::SameLine(220, 15);
-			if (ImGui::Button("Change Texture", { 120,20 })) {
-				/*change_texture_menu = true;
-				selected_texture = texture;*/
-			}
-
-			ImGui::SameLine(140, 15);
-			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
-			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
-			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("Delete", { 60,20 })) {
-				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-				texture = nullptr;
-				ImGui::PopStyleColor();
-				ImGui::PopStyleColor();
-				ImGui::PopStyleColor();
-				return true;
-			}
-
-			ImGui::PopStyleColor();
-			ImGui::PopStyleColor();
-			ImGui::PopStyleColor();
-
-			static bool check;
-			check = texture_activated;
-			if (ImGui::Checkbox("Texture Active", &check)) {
-				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-				texture_activated = check;
-			}
-
-			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
-			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
-			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
-
-			ImGui::Image((ImTextureID)texture->id, { ImGui::GetWindowWidth() ,ImGui::GetWindowWidth() });
-			ImGui::Spacing();
-		}
-		else {
-			ImGui::SameLine(220, 15);
-			if (ImGui::Button("Add Texture", { 120,20 })) {
-				/*change_texture_menu = true;
-				selected_texture = texture;*/
-			}
-		}
-
-		if (change_texture_menu) {
-			ImGui::OpenPopup("Textures Loaded");
-			ImGui::SetNextWindowSize({ 522,570 });
-			if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
-				ImGui::Spacing();
-				ImGui::NewLine();
-				ImGui::SameLine(190);
-				ImGui::Text("Texture Selected");
-				ImGui::Text("");
-				ImGui::SameLine(170);
-				if (selected_texture != nullptr) {
-					ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
-					ImGui::Spacing();
-					ImGui::Text("");
-					ImGui::SameLine(150);
-					ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
-					ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
-					ImGui::Text("");
-					ImGui::SameLine(112);
-					ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
-				}
-				ImGui::Spacing();
-
-				if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {	
-					ImGui::Columns(3, 0, false);
-					ImGui::SetColumnWidth(0, 156);
-					ImGui::SetColumnWidth(1, 156);
-					ImGui::SetColumnWidth(2, 156);
-					
-					std::vector<Resource*>::iterator item = App->resources->resources.begin();
-					for (; item != App->resources->resources.end(); ++item) {
-						if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
-							ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
-							if (ImGui::IsItemClicked()) {
-								selected_texture = static_cast<ResourceTexture*>(*item);
-							}
-							ImGui::NextColumn();
-						}
-					}
-
-					ImGui::EndChild();
-				}
-				ImGui::Spacing();
-				ImGui::Text("");
-				ImGui::SameLine(377);
-				if (ImGui::Button("Apply", { 120,20 })) {
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-					texture = selected_texture;
-					selected_texture = nullptr;
-					change_texture_menu = false;
-				}
-				ImGui::SameLine(237);
-				if (ImGui::Button("Cancel", { 120,20 })) {
-					selected_texture = nullptr;
-					change_texture_menu = false;
-				}
-				ImGui::EndPopup();
-			}
-		}
-		
 	}
 	else
 		RightClickMenu("Material");
@@ -357,11 +222,12 @@ void ComponentMaterial::InspectorShaderProperties()
 
 void ComponentMaterial::Reset()
 {
-	color = { 1,1,1,1 };
-	if (texture != nullptr) {
-		texture->DecreaseReferences();
-	}
-	texture = nullptr;
+	if (material != nullptr)
+		material->DecreaseReferences();
+	
+	material = App->resources->default_material;
+	if(material != nullptr)
+		material->IncreaseReferences();
 }
 
 void ComponentMaterial::SetComponent(Component* component)
@@ -406,13 +272,7 @@ void ComponentMaterial::SetComponent(Component* component)
 void ComponentMaterial::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetColor("Color", color);
-	to_save->SetBoolean("TextureEnabled", texture_activated);
 	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
-	if (texture != nullptr) {
-		to_save->SetString("TextureID", std::to_string(texture->GetID()));
-	}
 	to_save->SetBoolean("HasMaterial", (material != nullptr) ? true : false);
 	if (material != nullptr) {
 		to_save->SetString("MaterialID", std::to_string(material->GetID()));
@@ -422,15 +282,8 @@ void ComponentMaterial::SaveComponent(JSONArraypack* to_save)
 
 void ComponentMaterial::LoadComponent(JSONArraypack* to_load)
 {
-	color = to_load->GetColor("Color");
-	texture_activated = to_load->GetBoolean("TextureEnabled");
 	enabled = to_load->GetBoolean("Enabled");
-	if (to_load->GetBoolean("HasTexture")) {
-		u64 ID = std::stoull(to_load->GetString("TextureID"));
-		texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-		if (texture != nullptr)
-			texture->IncreaseReferences();
-	}
+
 	if (to_load->GetBoolean("HasMaterial")) {
 		u64 ID = std::stoull(to_load->GetString("MaterialID"));
 		material = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
@@ -472,12 +325,12 @@ void ComponentMaterial::Clone(Component* clone)
 
 void ComponentMaterial::SetTexture(ResourceTexture* tex)
 {
-	if (texture != nullptr) {
-		texture->DecreaseReferences();
+	if (material->texture != nullptr) {
+		material->texture->DecreaseReferences();
 	}
-	texture = tex;
-	if (texture != nullptr) {
-		texture->IncreaseReferences();
+	material->texture = tex;
+	if (material->texture != nullptr) {
+		material->texture->IncreaseReferences();
 	}
 }
 
@@ -492,9 +345,9 @@ void ComponentMaterial::SetMaterial(ResourceMaterial* mat)
 		material->IncreaseReferences(); 
 }
 
-const ResourceTexture* ComponentMaterial::GetTexture() const
+const ResourceMaterial* ComponentMaterial::GetMaterial() const
 {
-	return texture;
+	return material;
 }
 
 void ComponentMaterial::ShowShaderTextEditor()

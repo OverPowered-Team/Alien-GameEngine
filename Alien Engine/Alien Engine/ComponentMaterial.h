@@ -19,7 +19,6 @@ public:
 	virtual ~ComponentMaterial();
 
 private:
-	void BindTexture();
 	bool DrawInspector();
 
 	void InspectorShaderProperties();
@@ -32,16 +31,11 @@ private:
 
 	void Clone(Component* clone);
 
-	const ResourceTexture* GetTexture() const;
+	const ResourceMaterial* GetMaterial() const;
 
 public:
 	void SetTexture(ResourceTexture* tex);
 	void SetMaterial(ResourceMaterial* mat);
-
-	Color color{ 1,1,1,1 };
-	bool texture_activated = true;
-public:
-	ResourceTexture* texture = nullptr;
 
 private:
 	bool change_texture_menu = false;

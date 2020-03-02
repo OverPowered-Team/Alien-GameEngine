@@ -32,6 +32,9 @@
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
 
+#include "ResourceShader.h"
+#include "ResourceMaterial.h"
+
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
 #include "ComponentCapsuleCollider.h"
@@ -525,10 +528,10 @@ void GameObject::DrawScene(ComponentCamera* camera)
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -570,10 +573,10 @@ void GameObject::DrawGame(ComponentCamera* camera)
 	if(mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -1832,12 +1835,25 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 10);
+	//SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->GetTexture() == (ResourceTexture*)to_delete) {
+		if (material != nullptr && material->material->texture == (ResourceTexture*)to_delete) {
 			material->SetTexture(nullptr);
+		}
+		break; }
+	case ResourceType::RESOURCE_MATERIAL : {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material == (ResourceMaterial*)to_delete) {
+			material->material = App->resources->default_material; // TODO: Apply default material when deleting the old one
+		}
+		break; }
+	case ResourceType::RESOURCE_SHADER: {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material->used_shader == (ResourceShader*)to_delete) {
+			material->material->used_shader = App->resources->default_shader;
+			App->resources->default_shader->IncreaseReferences();
 		}
 		break; }
 	case ResourceType::RESOURCE_MESH: {

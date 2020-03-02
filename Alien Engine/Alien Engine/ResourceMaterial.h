@@ -151,6 +151,7 @@ public:
 	void DisplayMaterialOnInspector();
 	void ShaderSelectionHeader();
 	void ShaderInputsSegment();
+	void TexturesSegment();
 
 	void ChangeShader(ResourceShader* newShader);
 
