@@ -148,7 +148,7 @@ void PanelAnimator::CreateState()
 	if (new_node_id != ax::NodeEditor::PinId::Invalid)
 	{
 		State* target_state = current_animator->GetStates().back();
-		current_animator->AddTransition(source_state, target_state, 0);
+		current_animator->AddTransition(source_state, target_state, 0.25f);
 	}
 }
 
@@ -189,9 +189,9 @@ void PanelAnimator::HandleDropLink()
 					if (ax::NodeEditor::AcceptNewItem(ImColor(0, 255, 0), 4.0f))
 					{
 						if (start_is_input)
-							current_animator->AddTransition(end_node, start_node, 0);
+							current_animator->AddTransition(end_node, start_node, 0.25f);
 						else
-							current_animator->AddTransition(start_node, end_node, 0);
+							current_animator->AddTransition(start_node, end_node, 0.25f);
 					}
 				}
 
