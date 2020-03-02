@@ -22,8 +22,8 @@ enum TweenAction {
 };
 
 enum TweenType {
-	notUsed = -1, linear, easeIn, easeOut, easeInOut, backIn, backOut, backInOut, bounceIn, bounceOut, bounceInOut,
-	elasticIn, elasticOut, elasticInOut
+	notUsed = -1, linear, easeIn, easeOut, easeInOut, easeInBack, easeOutBack, easeInOutBack, easeInBounce, easeOutBounce, easeInOutBounce,
+	easeInElastic, easeOutElastic, easeInOutElastic
 };
 
 class AnimTween: public Module

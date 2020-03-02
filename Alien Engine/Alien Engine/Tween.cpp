@@ -30,7 +30,7 @@ bool Tween::UpdateInternal()
 		//trans->SetGlobalScale(float3(current_scale.x, current_scale.y, current_scale.z));
 		break;
 	case TweenAction::ROTATE:
-		trans->SetGlobalRotation(Quat::FromEulerXYZ(current_value.x, current_value.y, current_value.z));
+		trans->SetGlobalRotation(Quat::FromEulerXYZ(current_value.x * 2, current_value.y * 2, current_value.z * 2));
 		break;
 	case TweenAction::COLOR:
 		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
@@ -64,7 +64,7 @@ bool Tween::UpdateInternal()
 		break;
 	}
 
-	if (current_time > time)
+	if (current_time >= time)
 		ret = false;
 
 	return ret;
@@ -82,13 +82,28 @@ float4 Tween::CalculateInternal()
 		current_value = LinealLerp();
 		break;
 	case easeIn:
-		current_value = EaseIn();
+		current_value = EaseInQuadratic();
 		break;
 	case easeOut:
-		current_value = EaseOut();
+		current_value = EaseOutQuadratic();
 		break;
 	case easeInOut:
-		current_value = EaseInOut();
+		current_value = EaseInOutQuadratic();
+		break;
+	case easeInElastic:
+		current_value = EaseInElastic();
+		break;
+	case easeOutElastic:
+		current_value = EaseOutElastic();
+		break;
+	case easeOutBounce:
+		current_value = EaseOutBounce();
+		break;
+	case easeInBack:
+		current_value = EaseInBack();
+		break;
+	case easeOutBack:
+		current_value = EaseOutBack();
 		break;
 	default:
 		break;
@@ -103,23 +118,73 @@ float4 Tween::LinealLerp()
 	return math::Lerp(from, to, weight);
 }
 
-float4 Tween::EaseIn()
+float4 Tween::EaseInQuadratic()
 {
 	float aux_time = current_time / time;
 	return (to - from) * aux_time * aux_time + from;
 }
 
-float4 Tween::EaseOut()
+float4 Tween::EaseOutQuadratic()
 {
 	float aux_time = current_time / time;
 	return -(to - from) * aux_time * (aux_time - 2) + from;
 }
 
-float4 Tween::EaseInOut()
+float4 Tween::EaseInOutQuadratic()
 {
 	float aux_time = current_time / (time * 0.5);
 	if (aux_time < 1) 
 		return (to - from) / 2 * aux_time * aux_time + from;
 	aux_time--;
 	return -(to - from) / 2 * (aux_time * (aux_time - 2) - 1) + from;
+}
+
+float4 Tween::EaseOutElastic()
+{
+	float aux_time = current_time / time;
+	if (aux_time == 1)
+		return from + to;
+
+	float p = time * .3f;
+	float s = p / 4;
+
+	return ((to - from) * math::Pow(2, -10 * aux_time) * math::Sin((aux_time * current_time - s) * (2 * math::pi) / p) + (to - from) + from);
+}
+
+float4 Tween::EaseInElastic()
+{
+	float aux_time = current_time / time;
+	if (aux_time == 1)
+		return from + to;
+
+	float p = time * .3f;
+	float s = p / 4;
+
+	return -((to - from) * math::Pow(2, 10 * (aux_time -= 1)) * math::Sin((aux_time * time - s) * (2 * math::pi) / p)) + from;
+}
+
+float4 Tween::EaseOutBounce()
+{
+	float aux_time = current_time / time;
+
+	if (aux_time < (1.f / 2.75f))
+		return to * (7.5625f * aux_time * aux_time) + from;
+	else if (aux_time < (2.f / 2.75f))
+		return to * (7.5625f * (aux_time -= (1.5f / 2.75f)) * aux_time + .75f) + from;
+	else if (aux_time < (2.5f / 2.75f))
+		return to * (7.5625f * (aux_time -= (2.25f / 2.75f)) * aux_time + .9375f) + from;
+	else
+		return to * (7.5625f * (aux_time -= (2.625f / 2.75f)) * aux_time + .984375f) + from;
+}
+
+float4 Tween::EaseOutBack()
+{
+	float aux_time = current_time / time - 1;
+	return (to - from) * (aux_time * aux_time * ((1.70158f + 1) * aux_time + 1.70158f) + 1) + from;
+}
+
+float4 Tween::EaseInBack()
+{
+	float aux_time = current_time / time;
+	return (to - from) * aux_time * aux_time * ((1.70158f + 1) * aux_time - 1.70158f) + from;
 }

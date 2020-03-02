@@ -9,7 +9,8 @@ class __declspec(dllexport) Tween {
 public:
 
 	enum {
-		notUsed = -1, linear, easeIn, easeOut, easeInOut
+		notUsed = -1, linear, easeIn, easeOut, easeInOut, easeInBack, easeOutBack, easeInOutBack, easeInBounce, easeOutBounce, easeInOutBounce,
+		easeInElastic, easeOutElastic, easeInOutElastic
 	};
 
 public:

@@ -14,9 +14,19 @@ private:
 	float4 CalculateInternal();
 
 	float4 LinealLerp();
-	float4 EaseIn();
-	float4 EaseOut();
-	float4 EaseInOut();
+
+	float4 EaseInQuadratic();
+	float4 EaseOutQuadratic();
+	float4 EaseInOutQuadratic();
+
+	float4 EaseOutElastic();
+	float4 EaseInElastic();
+
+	float4 EaseOutBounce();
+
+	float4 EaseOutBack();
+
+	float4 EaseInBack();
 
 public:
 	float4 from = { 0.0f,0.0f ,0.0f ,0.0f };
