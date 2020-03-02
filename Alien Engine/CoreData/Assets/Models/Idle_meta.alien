@@ -1,0 +1,1303 @@
+{
+    "Meta": {
+        "ID": "12768656868332306703",
+        "NumMeshes": 1,
+        "Name": "Idle",
+        "NumBones": 42,
+        "NumAnimations": 1,
+        "NumMaterials": 1,
+        "Animations": [
+            {
+                "Name": "idle",
+                "Loops": true,
+                "Start_Tick": 0,
+                "End_Tick": 1.9333329200744629
+            }
+        ],
+        "PathMeshes": [
+            "Library\/Meshes\/15162702403706824405.alienMesh"
+        ],
+        "PathAnimations": [
+            "Library\/Animations\/11700498611272300906.alienAnimation"
+        ],
+        "PathBones": [
+            "Library\/Bones\/3598181166950249193.alienBone",
+            "Library\/Bones\/2144259058758316745.alienBone",
+            "Library\/Bones\/17737049819584816175.alienBone",
+            "Library\/Bones\/575110659166126304.alienBone",
+            "Library\/Bones\/15946160407973597767.alienBone",
+            "Library\/Bones\/2458510380693509000.alienBone",
+            "Library\/Bones\/13596642950441392672.alienBone",
+            "Library\/Bones\/8302772883048715866.alienBone",
+            "Library\/Bones\/553860534257029379.alienBone",
+            "Library\/Bones\/6359006564554416846.alienBone",
+            "Library\/Bones\/16597681739677635571.alienBone",
+            "Library\/Bones\/13018817137712996030.alienBone",
+            "Library\/Bones\/1458417257021110661.alienBone",
+            "Library\/Bones\/15471614014430567743.alienBone",
+            "Library\/Bones\/12029611991241293602.alienBone",
+            "Library\/Bones\/13355734880077849131.alienBone",
+            "Library\/Bones\/8775905374057180743.alienBone",
+            "Library\/Bones\/18112109179558997205.alienBone",
+            "Library\/Bones\/5317358179636756141.alienBone",
+            "Library\/Bones\/5570639795261339135.alienBone",
+            "Library\/Bones\/6449716834246979543.alienBone",
+            "Library\/Bones\/1677499888624132299.alienBone",
+            "Library\/Bones\/13764234699575573526.alienBone",
+            "Library\/Bones\/655651547982691698.alienBone",
+            "Library\/Bones\/8012113312251548045.alienBone",
+            "Library\/Bones\/4268620191387355489.alienBone",
+            "Library\/Bones\/9991894810612910724.alienBone",
+            "Library\/Bones\/5531233780419758016.alienBone",
+            "Library\/Bones\/13925054280840049852.alienBone",
+            "Library\/Bones\/17878714672889405556.alienBone",
+            "Library\/Bones\/11547033862177153387.alienBone",
+            "Library\/Bones\/13566647054266873517.alienBone",
+            "Library\/Bones\/18060984438473180322.alienBone",
+            "Library\/Bones\/6327866228878139189.alienBone",
+            "Library\/Bones\/4503789532637132406.alienBone",
+            "Library\/Bones\/8353274636929706196.alienBone",
+            "Library\/Bones\/4169197220184682444.alienBone",
+            "Library\/Bones\/11234006655393313856.alienBone",
+            "Library\/Bones\/9526823517296067297.alienBone",
+            "Library\/Bones\/4239647702070479350.alienBone",
+            "Library\/Bones\/5958324255841406947.alienBone",
+            "Library\/Bones\/109001259294679478.alienBone"
+        ],
+        "PathMaterials": [
+            "Library\/Materials\/5201847260530142786.alienMaterial"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0.11200500279664993,
+                28.587558746337891,
+                -0.21484600007534027
+            ],
+            "scale": [
+                0.99999994039535522,
+                1.0000002384185791,
+                0.99999994039535522
+            ],
+            "rot": [
+                -0.035227581858634949,
+                -0.36894500255584717,
+                -0.01670815609395504,
+                0.92863309383392334
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "mixamorig_Hips",
+            "parentName": "Idle",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 1
+                }
+            ]
+        },
+        {
+            "pos": [
+                3.9558999538421631,
+                -2.1022999286651611,
+                -0.16470000147819519
+            ],
+            "scale": [
+                0.99999994039535522,
+                1.0000002384185791,
+                0.99999994039535522
+            ],
+            "rot": [
+                0.088415682315826416,
+                0.30550301074981689,
+                0.93515938520431519,
+                -0.15597312152385712
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "mixamorig_LeftUpLeg",
+            "parentName": "mixamorig_Hips",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 32
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                3.786099910736084,
+                -0.64160001277923584
+            ],
+            "scale": [
+                0.9999997615814209,
+                0.99999964237213135,
+                1.0000004768371582
+            ],
+            "rot": [
+                -0.033508721739053726,
+                0.042554758489131927,
+                -0.0014080686960369349,
+                0.9985310435295105
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "mixamorig_Spine",
+            "parentName": "mixamorig_Hips",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 2
+                }
+            ]
+        },
+        {
+            "pos": [
+                -3.9558999538421631,
+                -2.1022999286651611,
+                0.0070000002160668373
+            ],
+            "scale": [
+                1.0000002384185791,
+                1.0000003576278687,
+                1.0000003576278687
+            ],
+            "rot": [
+                -0.11610820889472961,
+                0.050090532749891281,
+                0.96975886821746826,
+                0.2087523490190506
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "mixamorig_RightUpLeg",
+            "parentName": "mixamorig_Hips",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 37
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                14.651100158691406,
+                0
+            ],
+            "scale": [
+                1.0000001192092896,
+                0.99999994039535522,
+                0.99999970197677612
+            ],
+            "rot": [
+                -0.49845981597900391,
+                0.27789333462715149,
+                -0.024603815749287605,
+                0.82079702615737915
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "mixamorig_RightLeg",
+            "parentName": "mixamorig_RightUpLeg",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 38
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                14.687199592590332,
+                0
+            ],
+            "scale": [
+                1.0000004768371582,
+                0.99999994039535522,
+                1
+            ],
+            "rot": [
+                -0.52347195148468018,
+                -0.085302695631980896,
+                -0.0048174825496971607,
+                0.84774845838546753
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "mixamorig_LeftLeg",
+            "parentName": "mixamorig_LeftUpLeg",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 33
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                4.480100154876709,
+                0
+            ],
+            "scale": [
+                1,
+                0.9999997615814209,
+                1.0000002384185791
+            ],
+            "rot": [
+                0.10063434392213821,
+                0.082978308200836182,
+                -0.004753665067255497,
+                0.99144577980041504
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "mixamorig_Spine1",
+            "parentName": "mixamorig_Spine",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 3
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                11.691499710083008,
+                0
+            ],
+            "scale": [
+                0.99999958276748657,
+                0.99999982118606567,
+                0.99999994039535522
+            ],
+            "rot": [
+                0.72723263502120972,
+                -0.063213512301445007,
+                0.31625550985336304,
+                0.6059035062789917
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "mixamorig_RightFoot",
+            "parentName": "mixamorig_RightLeg",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 39
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                11.798600196838379,
+                0
+            ],
+            "scale": [
+                0.99999982118606567,
+                1.0000001192092896,
+                0.9999995231628418
+            ],
+            "rot": [
+                0.65568810701370239,
+                0.12299629300832748,
+                -0.17160212993621826,
+                0.72491228580474854
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "mixamorig_LeftFoot",
+            "parentName": "mixamorig_LeftLeg",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 34
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                5.1201000213623047,
+                0
+            ],
+            "scale": [
+                0.99999982118606567,
+                0.9999997615814209,
+                1.0000002384185791
+            ],
+            "rot": [
+                0.10063433647155762,
+                0.082978062331676483,
+                -0.0047536641359329224,
+                0.99144583940505981
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "mixamorig_Spine2",
+            "parentName": "mixamorig_Spine1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 4
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                5.7600998878479004,
+                0
+            ],
+            "scale": [
+                0.99999988079071045,
+                0.99999946355819702,
+                1.0000001192092896
+            ],
+            "rot": [
+                0.046348787844181061,
+                -0.011242802254855633,
+                0.0012421649880707264,
+                0.99886131286621094
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "mixamorig_Neck",
+            "parentName": "mixamorig_Spine2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 5
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                7.0949997901916504,
+                0
+            ],
+            "scale": [
+                0.9999997615814209,
+                0.99999982118606567,
+                0.99999964237213135
+            ],
+            "rot": [
+                0.24917857348918915,
+                -0.081995919346809387,
+                0.018575847148895264,
+                0.9648013710975647
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "mixamorig_RightToeBase",
+            "parentName": "mixamorig_RightFoot",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 40
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                7.1744999885559082,
+                0
+            ],
+            "scale": [
+                1.0000001192092896,
+                0.99999982118606567,
+                1
+            ],
+            "rot": [
+                0.25211939215660095,
+                0.096206992864608765,
+                -0.045648399740457535,
+                0.96181923151016235
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "mixamorig_LeftToeBase",
+            "parentName": "mixamorig_LeftFoot",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 35
+                }
+            ]
+        },
+        {
+            "pos": [
+                3.6100001335144043,
+                4.5145001411437988,
+                -0.19040000438690186
+            ],
+            "scale": [
+                0.99999958276748657,
+                1,
+                1.0000004768371582
+            ],
+            "rot": [
+                -0.54526805877685547,
+                -0.4581373929977417,
+                0.54640299081802368,
+                -0.4407227635383606
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "mixamorig_LeftShoulder",
+            "parentName": "mixamorig_Spine2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 8
+                }
+            ]
+        },
+        {
+            "pos": [
+                -3.6100001335144043,
+                4.616300106048584,
+                -0.79129999876022339
+            ],
+            "scale": [
+                1.0000002384185791,
+                0.99999988079071045,
+                0.99999982118606567
+            ],
+            "rot": [
+                0.54562711715698242,
+                -0.44731408357620239,
+                0.55952256917953491,
+                0.43489715456962585
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "mixamorig_RightShoulder",
+            "parentName": "mixamorig_Spine2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 20
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                2.2864000797271729,
+                0.66629999876022339
+            ],
+            "scale": [
+                1,
+                1.0000002384185791,
+                1.0000002384185791
+            ],
+            "rot": [
+                -0.054469078779220581,
+                0.1769229918718338,
+                -0.012970793060958385,
+                0.98263072967529297
+            ],
+            "nodeNum": 7,
+            "parentNum": 6,
+            "nodeName": "mixamorig_Head",
+            "parentName": "mixamorig_Neck",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 6
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                3.1087000370025635,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 7,
+            "parentNum": 6,
+            "nodeName": "mixamorig_RightToe_End",
+            "parentName": "mixamorig_RightToeBase",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 41
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                3.0838000774383545,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 7,
+            "parentNum": 6,
+            "nodeName": "mixamorig_LeftToe_End",
+            "parentName": "mixamorig_LeftToeBase",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 36
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                8.2075004577636719,
+                0
+            ],
+            "scale": [
+                0.99999964237213135,
+                0.99999988079071045,
+                0.99999988079071045
+            ],
+            "rot": [
+                0.43009155988693237,
+                0.079771697521209717,
+                0.23183919489383698,
+                0.8688545823097229
+            ],
+            "nodeNum": 7,
+            "parentNum": 6,
+            "nodeName": "mixamorig_RightArm",
+            "parentName": "mixamorig_RightShoulder",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 21
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                8.1225996017456055,
+                0
+            ],
+            "scale": [
+                0.99999982118606567,
+                1,
+                1.0000004768371582
+            ],
+            "rot": [
+                0.5008353590965271,
+                -0.02901693619787693,
+                0.010998441837728024,
+                0.8649861216545105
+            ],
+            "nodeNum": 7,
+            "parentNum": 6,
+            "nodeName": "mixamorig_LeftArm",
+            "parentName": "mixamorig_LeftShoulder",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 9
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                11.961700439453125,
+                3.4857001304626465
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 8,
+            "parentNum": 7,
+            "nodeName": "mixamorig_HeadTop_End",
+            "parentName": "mixamorig_Head",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 7
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                10.413599967956543,
+                0
+            ],
+            "scale": [
+                0.99999982118606567,
+                1.0000005960464478,
+                0.9999995231628418
+            ],
+            "rot": [
+                0.13068516552448273,
+                0.019368836656212807,
+                -0.33791598677635193,
+                0.93185782432556152
+            ],
+            "nodeNum": 8,
+            "parentNum": 7,
+            "nodeName": "mixamorig_RightForeArm",
+            "parentName": "mixamorig_RightArm",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 22
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                10.308300018310547,
+                0
+            ],
+            "scale": [
+                1.0000003576278687,
+                0.99999982118606567,
+                0.99999994039535522
+            ],
+            "rot": [
+                -0.024743314832448959,
+                0.061568852514028549,
+                0.40441417694091797,
+                0.91216570138931274
+            ],
+            "nodeNum": 8,
+            "parentNum": 7,
+            "nodeName": "mixamorig_LeftForeArm",
+            "parentName": "mixamorig_LeftArm",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 10
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                8.7094001770019531,
+                0
+            ],
+            "scale": [
+                0.99999946355819702,
+                0.9999995231628418,
+                1.0000001192092896
+            ],
+            "rot": [
+                0.00083956995513290167,
+                0.88407814502716064,
+                0.15039820969104767,
+                -0.44247657060623169
+            ],
+            "nodeNum": 9,
+            "parentNum": 8,
+            "nodeName": "mixamorig_RightHand",
+            "parentName": "mixamorig_RightForeArm",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 23
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                8.7309999465942383,
+                0
+            ],
+            "scale": [
+                1,
+                1.0000001192092896,
+                0.99999958276748657
+            ],
+            "rot": [
+                -0.10596369951963425,
+                0.8463473916053772,
+                -0.12770755589008331,
+                0.50612121820449829
+            ],
+            "nodeNum": 9,
+            "parentNum": 8,
+            "nodeName": "mixamorig_LeftHand",
+            "parentName": "mixamorig_LeftForeArm",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 11
+                }
+            ]
+        },
+        {
+            "pos": [
+                1.1392999887466431,
+                2.4347000122070313,
+                0
+            ],
+            "scale": [
+                1.0000003576278687,
+                1,
+                0.99999994039535522
+            ],
+            "rot": [
+                -0.27012524008750916,
+                0.1077607274055481,
+                -0.29998460412025452,
+                0.90853136777877808
+            ],
+            "nodeNum": 10,
+            "parentNum": 9,
+            "nodeName": "mixamorig_RightHandThumb1",
+            "parentName": "mixamorig_RightHand",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 24
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                4.9198999404907227,
+                -0.079199999570846558
+            ],
+            "scale": [
+                0.9999997615814209,
+                0.9999995231628418,
+                0.99999988079071045
+            ],
+            "rot": [
+                -0.075189270079135895,
+                -0.00394038250669837,
+                0.021894168108701706,
+                0.9969211220741272
+            ],
+            "nodeNum": 10,
+            "parentNum": 9,
+            "nodeName": "mixamorig_LeftHandIndex1",
+            "parentName": "mixamorig_LeftHand",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 16
+                }
+            ]
+        },
+        {
+            "pos": [
+                -1.2797000408172607,
+                2.4235000610351563,
+                0
+            ],
+            "scale": [
+                0.9999995231628418,
+                1.0000003576278687,
+                0.99999994039535522
+            ],
+            "rot": [
+                -0.23021475970745087,
+                0.0078471852466464043,
+                0.36314362287521362,
+                0.90281021595001221
+            ],
+            "nodeNum": 10,
+            "parentNum": 9,
+            "nodeName": "mixamorig_LeftHandThumb1",
+            "parentName": "mixamorig_LeftHand",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 12
+                }
+            ]
+        },
+        {
+            "pos": [
+                0,
+                4.716099739074707,
+                0.035799998790025711
+            ],
+            "scale": [
+                0.99999970197677612,
+                1.0000003576278687,
+                1.0000001192092896
+            ],
+            "rot": [
+                0.0029939520172774792,
+                0.017878111451864243,
+                -0.046295251697301865,
+                0.9987633228302002
+            ],
+            "nodeNum": 10,
+            "parentNum": 9,
+            "nodeName": "mixamorig_RightHandIndex1",
+            "parentName": "mixamorig_RightHand",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 28
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.030300000682473183,
+                2.7534000873565674,
+                0
+            ],
+            "scale": [
+                1.0000002384185791,
+                0.99999970197677612,
+                0.99999958276748657
+            ],
+            "rot": [
+                -0.02863963320851326,
+                -0.00022785839973948896,
+                -0.14066489040851593,
+                0.9896429181098938
+            ],
+            "nodeNum": 11,
+            "parentNum": 10,
+            "nodeName": "mixamorig_RightHandIndex2",
+            "parentName": "mixamorig_RightHandIndex1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 29
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.60689997673034668,
+                2.062999963760376,
+                0
+            ],
+            "scale": [
+                1.0000002384185791,
+                1.0000004768371582,
+                1.0000003576278687
+            ],
+            "rot": [
+                0.18299904465675354,
+                0.0030859424732625484,
+                0.26357543468475342,
+                0.94711655378341675
+            ],
+            "nodeNum": 11,
+            "parentNum": 10,
+            "nodeName": "mixamorig_RightHandThumb2",
+            "parentName": "mixamorig_RightHandThumb1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 25
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.027499999850988388,
+                2.7160000801086426,
+                0
+            ],
+            "scale": [
+                0.99999988079071045,
+                0.99999964237213135,
+                1.0000003576278687
+            ],
+            "rot": [
+                -0.028531443327665329,
+                0.0003433800011407584,
+                0.11399917304515839,
+                0.99307101964950562
+            ],
+            "nodeNum": 11,
+            "parentNum": 10,
+            "nodeName": "mixamorig_LeftHandIndex2",
+            "parentName": "mixamorig_LeftHandIndex1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 17
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.47330000996589661,
+                2.1407999992370605,
+                0
+            ],
+            "scale": [
+                1.0000004768371582,
+                0.9999997615814209,
+                1.0000003576278687
+            ],
+            "rot": [
+                0.00041984714334830642,
+                0.00071548513369634748,
+                -0.22584109008312225,
+                0.97416383028030396
+            ],
+            "nodeNum": 11,
+            "parentNum": 10,
+            "nodeName": "mixamorig_LeftHandThumb2",
+            "parentName": "mixamorig_LeftHandThumb1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 13
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.64800000190734863,
+                2.302299976348877,
+                0
+            ],
+            "scale": [
+                0.99999994039535522,
+                0.99999958276748657,
+                0.99999970197677612
+            ],
+            "rot": [
+                -0.001162035739980638,
+                -0.0090566994622349739,
+                -0.14620167016983032,
+                0.98921269178390503
+            ],
+            "nodeNum": 12,
+            "parentNum": 11,
+            "nodeName": "mixamorig_RightHandThumb3",
+            "parentName": "mixamorig_RightHandThumb2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 26
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.10660000145435333,
+                2.5090999603271484,
+                0
+            ],
+            "scale": [
+                1,
+                1.0000004768371582,
+                0.99999958276748657
+            ],
+            "rot": [
+                1.5011984260127065e-06,
+                -0.00054242933401837945,
+                0.039770960807800293,
+                0.99920868873596191
+            ],
+            "nodeNum": 12,
+            "parentNum": 11,
+            "nodeName": "mixamorig_LeftHandIndex3",
+            "parentName": "mixamorig_LeftHandIndex2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 18
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.53329998254776001,
+                2.3484001159667969,
+                0
+            ],
+            "scale": [
+                1.0000002384185791,
+                0.99999988079071045,
+                0.99999970197677612
+            ],
+            "rot": [
+                -0.00026358879404142499,
+                0.002699641976505518,
+                0.12561008334159851,
+                0.99207597970962524
+            ],
+            "nodeNum": 12,
+            "parentNum": 11,
+            "nodeName": "mixamorig_LeftHandThumb3",
+            "parentName": "mixamorig_LeftHandThumb2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 14
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.0066999997943639755,
+                2.5710999965667725,
+                0
+            ],
+            "scale": [
+                1.0000002384185791,
+                1.0000001192092896,
+                1.0000001192092896
+            ],
+            "rot": [
+                8.7505359260831028e-06,
+                0.0010333131067454815,
+                0.011025674641132355,
+                0.99993866682052612
+            ],
+            "nodeNum": 12,
+            "parentNum": 11,
+            "nodeName": "mixamorig_RightHandIndex3",
+            "parentName": "mixamorig_RightHandIndex2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 30
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.037000000476837158,
+                1.9024999141693115,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 13,
+            "parentNum": 12,
+            "nodeName": "mixamorig_RightHandIndex4",
+            "parentName": "mixamorig_RightHandIndex3",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 31
+                }
+            ]
+        },
+        {
+            "pos": [
+                -0.041200000792741776,
+                2.1559000015258789,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 13,
+            "parentNum": 12,
+            "nodeName": "mixamorig_RightHandThumb4",
+            "parentName": "mixamorig_RightHandThumb3",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 27
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.079199999570846558,
+                2.1335999965667725,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 13,
+            "parentNum": 12,
+            "nodeName": "mixamorig_LeftHandIndex4",
+            "parentName": "mixamorig_LeftHandIndex3",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 19
+                }
+            ]
+        },
+        {
+            "pos": [
+                0.060100000351667404,
+                2.1020998954772949,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 13,
+            "parentNum": 12,
+            "nodeName": "mixamorig_LeftHandThumb4",
+            "parentName": "mixamorig_LeftHandThumb3",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 1,
+            "bonesIndex": [
+                {
+                    "0": 15
+                }
+            ]
+        }
+    ]
+}

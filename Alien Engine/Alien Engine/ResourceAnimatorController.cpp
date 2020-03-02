@@ -354,28 +354,40 @@ bool ResourceAnimatorController::CheckTriggers()
 {
 	bool ret = true;
 
+	std::vector<Transition*> current_transitions = FindTransitionsFromSourceState(current_state);
+	std::vector<Transition*> current_possible_transitions;
 
 	//Has to be modified
 
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
+		bool retu = true;
 
-		if ((*it)->GetSource() == current_state) {
 			for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
-				if (!(*it)->GetBoolConditions()[i]->Compare(this))
-					return false;
+				if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
+					retu = false;
+					break;
+				}
 			}
 			for (int i = 0; i < (*it)->GetFloatConditions().size(); ++i) {
-				if (!(*it)->GetFloatConditions()[i]->Compare(this))
-					return false;
+				if (!(*it)->GetFloatConditions()[i]->Compare(this)) {
+					retu = false;
+					break;
+				}
 			}
 			for (int i = 0; i < (*it)->GetIntConditions().size(); ++i) {
-				if (!(*it)->GetIntConditions()[i]->Compare(this))
-					return false;
+				if (!(*it)->GetIntConditions()[i]->Compare(this)) {
+					retu = false;
+					break;
+				}
 			}
 
-			current_state->next_state = (*it)->GetTarget();
-			current_state->fade_duration = (*it)->GetBlend();
-		}
+			if (retu)
+				current_possible_transitions.push_back((*it));
+	}
+
+	if (ret && current_possible_transitions.size() > 0) {
+		current_state->next_state = current_possible_transitions.front()->GetTarget();
+		current_state->fade_duration = current_possible_transitions.front()->GetBlend();
 	}
 
 	return true;
