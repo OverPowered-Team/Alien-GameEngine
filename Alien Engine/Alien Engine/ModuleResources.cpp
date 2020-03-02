@@ -1048,13 +1048,13 @@ void ModuleResources::CreateAnimatorController()
 
 void ModuleResources::CreateMaterial()
 {
+	std::string materialName = "NewMaterial";
+	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
+	
 	ResourceMaterial* new_material = new ResourceMaterial();
-	//uint duplications = GetMaterialsNamed("New_Material");
-	static uint duplications = 0;	// TODO: Handle this better
-	new_material->SetName(std::string("New_Material" + std::to_string(duplications)).c_str());
+	new_material->SetName(materialName.c_str());
 	new_material->CreateMaterialFile(MATERIALS_FOLDER);
 	new_material->CreateMetaData();
-	duplications++;
 }
 
 
