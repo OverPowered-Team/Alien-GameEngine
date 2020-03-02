@@ -130,6 +130,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 		}
 
 		CreateMetaData(ID);
+		FreeMemory();
 	}
 }
 
