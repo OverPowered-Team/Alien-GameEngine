@@ -51,6 +51,7 @@ enum class PrimitiveType
 	UNKONWN
 };
 
+// Used only at the creation of the object.
 enum class LightTypeObj
 {
 	POINT,
@@ -274,5 +275,11 @@ private:
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
 	std::list<InvokeInfo*> invokes;
+
+	// Lights knowledge
+	uint num_of_dir_lights = 0u;
+	uint num_of_point_lights = 0u;
+	uint num_of_spot_lights = 0u;
+	uint num_of_area_lights = 0u;
 };
 
