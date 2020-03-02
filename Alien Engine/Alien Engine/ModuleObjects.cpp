@@ -1330,7 +1330,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 								JSONArraypack* inspector = to_save->InitNewArray("Inspector");
 								for (uint i = 0; i < (*script)->inspector_variables.size(); ++i) {
 									inspector->SetAnotherNode();
-									if ((*script)->inspector_variables[i].ptr == nullptr) {
+									if ((*script)->inspector_variables[i].ptr == nullptr && (*script)->inspector_variables[i].obj == nullptr) {
 										inspector->SetBoolean("IsNull", true);
 										continue;
 									}
@@ -1355,7 +1355,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 									case InspectorScriptData::DataType::GAMEOBJECT: {
 										GameObject** obj = ((GameObject**)((*script)->inspector_variables[i].obj));
 										if (obj != nullptr && *obj != nullptr) {
-											inspector->SetString("gameobject", std::to_string((*obj)->prefabID));
+											inspector->SetString("gameobject", std::to_string((*obj)->ID));
 										}
 										else {
 											inspector->SetString("gameobject", "0");

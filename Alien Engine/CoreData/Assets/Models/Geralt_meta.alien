@@ -5,7 +5,6 @@
         "Name": "Geralt",
         "NumBones": 44,
         "NumAnimations": 1,
-        "NumMaterials": 1,
         "Animations": [
             {
                 "Name": "Take 001",
@@ -14,6 +13,7 @@
                 "End_Tick": 3.4000000953674316
             }
         ],
+        "NumMaterials": 1,
         "PathMeshes": [
             "Library\/Meshes\/8026678822624402418.alienMesh",
             "Library\/Meshes\/3407642868665194732.alienMesh",

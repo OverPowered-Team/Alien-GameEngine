@@ -17,6 +17,7 @@ void PlayerController::Update()
 {
 	playerData.speed = 0;
 
+
 	if (Input::GetKeyRepeat(SDL_SCANCODE_W)) {
 		playerData.speed += (100 * Time::GetDT());
 	}
