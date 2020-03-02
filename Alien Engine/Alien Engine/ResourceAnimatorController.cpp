@@ -105,6 +105,18 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			}
 		}
 
+		JSONArraypack* int_parameters = asset->GetArray("Controller.IntParameters");
+		if (int_parameters) {
+			int_parameters->GetFirstNode();
+			for (int i = 0; i < int_parameters->GetArraySize(); ++i) {
+				std::string name = int_parameters->GetString("Name");
+				int value = int_parameters->GetNumber("Value");
+
+				AddIntParameter({ name, value });
+				int_parameters->GetAnotherNode();
+			}
+		}
+
 		JSONArraypack* float_parameters = asset->GetArray("Controller.FloatParameters");
 		if (float_parameters) {
 			float_parameters->GetFirstNode();
