@@ -105,24 +105,13 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			}
 		}
 
-		JSONArraypack* int_parameters = asset->GetArray("Controller.IntParameters");
-		if (int_parameters) {
-			int_parameters->GetFirstNode();
-			for (int i = 0; i < int_parameters->GetArraySize(); ++i) {
-				std::string name = int_parameters->GetString("Name");
-				int value = int_parameters->GetNumber("Value");
-
-				AddIntParameter({name, value});
-				int_parameters->GetAnotherNode();
-			}
-		}
-
 		JSONArraypack* float_parameters = asset->GetArray("Controller.FloatParameters");
 		if (float_parameters) {
 			float_parameters->GetFirstNode();
 			for (int i = 0; i < float_parameters->GetArraySize(); ++i) {
 				std::string name = float_parameters->GetString("Name");
 				float value = float_parameters->GetNumber("Value");
+
 				AddFloatParameter({ name, value });
 				float_parameters->GetAnotherNode();
 			}
@@ -134,6 +123,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			for (int i = 0; i < bool_parameters->GetArraySize(); ++i) {
 				std::string name = bool_parameters->GetString("Name");
 				bool value = bool_parameters->GetNumber("Value");
+
 				AddBoolParameter({ name, value });
 				bool_parameters->GetAnotherNode();
 			}
@@ -364,18 +354,21 @@ bool ResourceAnimatorController::CheckTriggers()
 {
 	bool ret = true;
 
+
+	//Has to be modified
+
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
 
 		if ((*it)->GetSource() == current_state) {
-			for (int i = 0; i < (*it)->GetBoolConditions().size(); i++) {
+			for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
 				if (!(*it)->GetBoolConditions()[i]->Compare(this))
 					return false;
 			}
-			for (int i = 0; i < (*it)->GetFloatConditions().size(); i++) {
+			for (int i = 0; i < (*it)->GetFloatConditions().size(); ++i) {
 				if (!(*it)->GetFloatConditions()[i]->Compare(this))
 					return false;
 			}
-			for (int i = 0; i < (*it)->GetIntConditions().size(); i++) {
+			for (int i = 0; i < (*it)->GetIntConditions().size(); ++i) {
 				if (!(*it)->GetIntConditions()[i]->Compare(this))
 					return false;
 			}
@@ -497,6 +490,11 @@ void ResourceAnimatorController::FreeMemory()
 		delete (*it);
 	}
 	transitions.clear();
+
+	bool_parameters.clear();
+	float_parameters.clear();
+	int_parameters.clear();
+
 	default_state = nullptr;
 }
 bool ResourceAnimatorController::LoadMemory()
@@ -1600,10 +1598,16 @@ bool FloatCondition::Compare(ResourceAnimatorController* controller)
 	bool ret = false;
 
 	if (comp_text == "Greater") {
-		ret = controller->GetFloatParameters()[parameter_index].second > comp;
+		if (controller->GetFloatParameters()[parameter_index].second > comp)
+			ret = true;
+		else
+			ret = false;
 	}
 	else if (comp_text == "Lesser") {
-		ret = controller->GetFloatParameters()[parameter_index].second < comp;
+		if (controller->GetFloatParameters()[parameter_index].second < comp)
+			ret = true;
+		else
+			ret = false;
 	}
 
 	return ret;

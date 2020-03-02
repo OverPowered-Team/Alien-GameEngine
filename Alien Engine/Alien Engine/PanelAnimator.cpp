@@ -409,17 +409,20 @@ void PanelAnimator::ShowLinkPopup()
 
 		if (ImGui::Button("Add bool Condition"))
 		{
-			current_animator->GetTransitions()[selected_link_index]->AddBoolCondition();
+			if(current_animator->GetBoolParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddBoolCondition();
 		}		
 		
 		if (ImGui::Button("Add float Condition"))
 		{
-			current_animator->GetTransitions()[selected_link_index]->AddFloatCondition();
+			if (current_animator->GetFloatParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddFloatCondition();
 		}
 
 		if (ImGui::Button("Add int Condition"))
 		{
-			current_animator->GetTransitions()[selected_link_index]->AddIntCondition();
+			if (current_animator->GetIntParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddIntCondition();
 		}
 
 		ImGui::Separator();
