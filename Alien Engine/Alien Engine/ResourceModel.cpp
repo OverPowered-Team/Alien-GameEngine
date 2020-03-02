@@ -23,7 +23,7 @@ ResourceModel::~ResourceModel()
 {
 	std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
 	for (; item != meshes_attached.end(); ++item) {
-		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce mesh ja la borrat alla
+		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce resource_mesh ja la borrat alla
 			delete* item;
 			*item = nullptr;
 		}
@@ -671,24 +671,22 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 			ret->SetName(node.name.data());
 
 			if (node.mesh >= 0) {
-				ResourceMesh* mesh = meshes_attached[node.mesh];
-				if (mesh != nullptr) {
-					if (mesh->deformable)
+				ResourceMesh* resource_mesh = meshes_attached[node.mesh];
+				if (resource_mesh != nullptr) {
+					if (resource_mesh->deformable)
 					{
-						ComponentDeformableMesh* Cmesh = new ComponentDeformableMesh(ret);
-						mesh->IncreaseReferences();
-						Cmesh->mesh = mesh;
-						Cmesh->RecalculateAABB_OBB();
-						ret->AddComponent(Cmesh);
+						ComponentDeformableMesh* component_mesh = new ComponentDeformableMesh(ret);
+						resource_mesh->IncreaseReferences();
+						component_mesh->SetResourceMesh(resource_mesh);
+						ret->AddComponent(component_mesh);
 						skeleton_link.first = ret;
 					}
 					else
 					{
-						ComponentMesh* Cmesh = new ComponentMesh(ret);
-						mesh->IncreaseReferences();
-						Cmesh->mesh = mesh;
-						Cmesh->RecalculateAABB_OBB();
-						ret->AddComponent(Cmesh);
+						ComponentMesh* component_mesh = new ComponentMesh(ret);
+						resource_mesh->IncreaseReferences();
+						component_mesh->SetResourceMesh(resource_mesh);
+						ret->AddComponent(component_mesh);
 					}
 				}
 

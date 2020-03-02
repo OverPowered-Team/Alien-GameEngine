@@ -7,6 +7,7 @@ class ComponentBone;
 
 class ComponentDeformableMesh : public ComponentMesh
 {
+	friend class ResourceModel;
 	friend class GameObject;
 	friend class ReturnZ;
 public:

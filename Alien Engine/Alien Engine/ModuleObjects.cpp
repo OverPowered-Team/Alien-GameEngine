@@ -1613,37 +1613,38 @@ void ModuleObjects::HandleEvent(EventType eventType)
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 {
 	GameObject* object = new GameObject(GetRoot(false));
+	ResourceMesh* resource = nullptr;
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
 	ComponentCollider* collider = nullptr;
 
 	switch (type) {
 	case PrimitiveType::CUBE: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
+		resource = App->resources->GetPrimitive(PrimitiveType::CUBE);
 		object->SetName("Cube");
 		break; }
 	case PrimitiveType::DODECAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
 		object->SetName("Dodecahedron");
 		break; }
 	case PrimitiveType::ICOSAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
 		object->SetName("Icosahedron");
 		break; }
 	case PrimitiveType::OCTAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
 		object->SetName("Octahedron");
 		break; }
 	case PrimitiveType::ROCK: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ROCK);
+		resource = App->resources->GetPrimitive(PrimitiveType::ROCK);
 		object->SetName("Rock");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
+		resource = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
 		object->SetName("Sphere");
 		break; }
 	case PrimitiveType::TORUS: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::TORUS);
+		resource = App->resources->GetPrimitive(PrimitiveType::TORUS);
 		object->SetName("Torus");
 		break; }
 	default:
@@ -1652,7 +1653,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 
 	object->AddComponent(mesh);
 	object->AddComponent(material);
-	mesh->RecalculateAABB_OBB();
+	mesh->SetResourceMesh(resource);
 
 	// Add collider --------------------------------------------
 

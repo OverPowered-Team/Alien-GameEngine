@@ -12,7 +12,8 @@ class ComponentSphereCollider : public ComponentCollider
 {
 public:
 
-	friend ModulePhysics;
+	friend class GameObject;
+	friend class ModulePhysics;
 
 public:
 

@@ -1626,14 +1626,14 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				AddComponent(box_collider);
 				break; }
 			case (int)ComponentType::SPHERE_COLLIDER: {
-				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
-				box_collider->LoadComponent(components_to_load);
-				AddComponent(box_collider);
+				ComponentSphereCollider* sphere_collider = new ComponentSphereCollider(this);
+				sphere_collider->LoadComponent(components_to_load);
+				AddComponent(sphere_collider);
 				break; }
 			case (int)ComponentType::CAPSULE_COLLIDER: {
-				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
-				box_collider->LoadComponent(components_to_load);
-				AddComponent(box_collider);
+				ComponentCapsuleCollider* capsule_collider = new ComponentCapsuleCollider(this);
+				capsule_collider->LoadComponent(components_to_load);
+				AddComponent(capsule_collider);
 				break; }
 			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
 				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
