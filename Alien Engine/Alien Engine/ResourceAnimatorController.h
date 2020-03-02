@@ -109,7 +109,7 @@ private:
 	std::vector<IntCondition*> int_conditions;
 	std::vector<FloatCondition*> float_conditions;
 	std::vector<BoolCondition*> bool_conditions;
-	float blend = 2;
+	float blend = 0.25;
 
 public:
 	Transition();
@@ -160,6 +160,7 @@ public:
 
 	int attached_references = 0;
 	int id_bucket = 1;
+	bool transitioning = false;
 
 	void ReImport(const u64& force_id = 0);
 	//Parameters things
