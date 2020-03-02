@@ -207,6 +207,6 @@ public:
 	const char* actual_name="";
 
 	//Focus
-	GameObject* selected_ui = nullptr;
+	u64 selected_ui = 0;
 };
 
