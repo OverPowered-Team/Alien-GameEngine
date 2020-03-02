@@ -446,7 +446,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 			float_conditions_array->SetAnotherNode();
 			float_conditions_array->SetString("Type", (*it_float)->type);
 			float_conditions_array->SetString("CompText", (*it_float)->comp_text);
-			int_conditions_array->SetNumber("ParameterIndex", (*it_float)->parameter_index);
+			float_conditions_array->SetNumber("ParameterIndex", (*it_float)->parameter_index);
 			float_conditions_array->SetNumber("CompValue", (*it_float)->comp);
 		}
 
@@ -499,6 +499,20 @@ void ResourceAnimatorController::FreeMemory()
 	states.clear();
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
+		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
+		for (std::vector<IntCondition*>::iterator it_i = int_conditions.begin(); it_i != int_conditions.end(); ++it_i) {
+			delete (*it_i);
+		}
+
+		std::vector<FloatCondition*> float_conditions = (*it)->GetFloatConditions();
+		for (std::vector<FloatCondition*>::iterator it_f = float_conditions.begin(); it_f != float_conditions.end(); ++it_f) {
+			delete (*it_f);
+		}
+
+		std::vector<BoolCondition*> bool_conditions = (*it)->GetBoolConditions();
+		for (std::vector<BoolCondition*>::iterator it_b = bool_conditions.begin(); it_b != bool_conditions.end(); ++it_b) {
+			delete (*it_b);
+		}
 		delete (*it);
 	}
 	transitions.clear();
@@ -508,6 +522,7 @@ void ResourceAnimatorController::FreeMemory()
 	int_parameters.clear();
 
 	default_state = nullptr;
+	current_state = nullptr;
 }
 bool ResourceAnimatorController::LoadMemory()
 {
