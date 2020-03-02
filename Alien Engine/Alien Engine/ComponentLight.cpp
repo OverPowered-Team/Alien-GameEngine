@@ -12,6 +12,22 @@
 ComponentLight::ComponentLight(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::LIGHT;
+	light_type = LightType::UNKNOWN;
+
+	CheckLightType(this->light_type);
+
+#ifndef GAME_VERSION
+	bulb = new ComponentMesh(game_object_attached);
+	bulb->mesh = App->resources->light_mesh;
+#endif
+}
+
+ComponentLight::ComponentLight(GameObject* attach, const LightType& light_type) : Component(attach)
+{
+	this->type = ComponentType::LIGHT;
+	this->light_type = light_type;
+
+	CheckLightType(this->light_type);
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
@@ -24,20 +40,36 @@ ComponentLight::~ComponentLight()
 #ifndef GAME_VERSION
 	delete bulb;
 #endif
-	glDisable(light_id);
 }
 
 void ComponentLight::LightLogic()
 {
 	ComponentTransform* transform=(ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
-	light_id = GL_LIGHT0;
-	glEnable(light_id);
-	glLightfv(light_id, GL_POSITION, pos);
+}
 
-	// Init
-	glLightfv(light_id, GL_AMBIENT, &ambient);
-	glLightfv(light_id, GL_DIFFUSE, &diffuse);
+void ComponentLight::CheckLightType(const LightType& light_type)
+{
+	switch (light_type)
+	{
+	case LightType::POINT:
+		item_current = "Point";
+		break;
+	case LightType::SPOT:
+		item_current = "Spot";
+		break;
+	case LightType::DIRECTIONAL:
+		item_current = "Directional";
+		break;
+	case LightType::AREA:
+		item_current = "Area";
+		break;
+	case LightType::UNKNOWN:
+		item_current = "NONE";
+		break;
+	default:
+		break;
+	}
 }
 
 bool ComponentLight::DrawInspector()
@@ -59,29 +91,6 @@ bool ComponentLight::DrawInspector()
 	if (ImGui::CollapsingHeader("Light", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Light");
-		static bool cntl_Z = true;
-		ImGui::Spacing();
-		static Color col;
-		col = ambient;
-		if (ImGui::ColorEdit3("Ambient Light", &col, ImGuiColorEditFlags_Float)) {
-			if (cntl_Z)
-				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			cntl_Z = false;
-			ambient = col;
-		}
-		else if (!cntl_Z && ImGui::IsMouseReleased(0)) {
-			cntl_Z = true;
-		}
-		col = diffuse;
-		if (ImGui::ColorEdit3("Diffuse Light", &col, ImGuiColorEditFlags_Float)) {
-			if (cntl_Z)
-				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			cntl_Z = false;
-			diffuse = col;
-		}
-		else if (!cntl_Z && ImGui::IsMouseReleased(0)) {
-			cntl_Z = true;
-		}
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -90,6 +99,34 @@ bool ComponentLight::DrawInspector()
 		ImGui::PushID("printiconlight");
 		ImGui::Checkbox("Print Icon", &print_icon);
 		ImGui::PopID();
+	
+		if (ImGui::BeginCombo("Light Type", item_current))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+			{
+				bool is_selected = (item_current == items[n]);
+				if (ImGui::Selectable(items[n], is_selected))
+				{
+					item_current = items[n];
+					if (item_current == "Point")
+						light_type = LightType::POINT;
+					else if (item_current == "Spot")
+						light_type = LightType::SPOT;
+					else if (item_current == "Directional")
+						light_type = LightType::DIRECTIONAL;
+					else if (item_current == "Area")
+						light_type = LightType::AREA;
+					else if (item_current == "None")
+						light_type = LightType::UNKNOWN;
+				}
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			// TODO: SAVE LOAD
+
+			ImGui::EndCombo();
+		}
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -103,7 +140,7 @@ bool ComponentLight::DrawInspector()
 
 void ComponentLight::OnDisable()
 {
-	glDisable(light_id);
+
 }
 
 void ComponentLight::Clone(Component* clone)
@@ -111,16 +148,12 @@ void ComponentLight::Clone(Component* clone)
 	clone->enabled = enabled;
 	clone->not_destroy = not_destroy;
 	ComponentLight* light = (ComponentLight*)clone;
-	light->ambient = ambient;
-	light->diffuse = diffuse;
-	light->light_id = light_id;
+	light->renderer_id = renderer_id;
 	light->print_icon = print_icon;
 }
 
 void ComponentLight::Reset()
 {
-	ambient = { 0.5f, 0.5f, 0.5f, 1.0f };
-	diffuse = { 0.75f, 0.75f, 0.75f, 1.0f };
 	print_icon = true;
 }
 
@@ -130,18 +163,24 @@ void ComponentLight::SetComponent(Component* component)
 
 		ComponentLight* light = (ComponentLight*)component;
 
-		light_id = light->light_id;
-		diffuse = light->diffuse;
-		ambient = light->ambient;
+		renderer_id = light->renderer_id;
 		print_icon = light->print_icon;
 	}
+}
+
+void ComponentLight::SetLightType(const LightType& type)
+{
+	light_type = type;
+}
+
+LightType ComponentLight::GetLightType() const
+{
+	return light_type;
 }
 
 void ComponentLight::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetColor("DiffuseColor", diffuse);
-	to_save->SetColor("AmbienColor", ambient);
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("PrintIcon", print_icon);
@@ -149,8 +188,6 @@ void ComponentLight::SaveComponent(JSONArraypack* to_save)
 
 void ComponentLight::LoadComponent(JSONArraypack* to_load)
 {
-	diffuse = to_load->GetColor("DiffuseColor");
-	ambient = to_load->GetColor("AmbienColor");
 	enabled = to_load->GetBoolean("Enabled");
 	ID = std::stoull(to_load->GetString("ID"));
 	print_icon = to_load->GetBoolean("PrintIcon");
@@ -164,7 +201,7 @@ void ComponentLight::DrawIconLight()
 		float3 pos = transform->GetGlobalPosition();
 		float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
 		glDisable(GL_LIGHTING);
-		Gizmos::DrawPoly(bulb->mesh, matrix, ambient);
+		Gizmos::DrawPoly(bulb->mesh, matrix, Color(0.0f, 255.0f, 0.0f));
 		glEnable(GL_LIGHTING);
 	}
 }

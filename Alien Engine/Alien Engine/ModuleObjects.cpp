@@ -1749,3 +1749,45 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 
 }
 
+void ModuleObjects::CreateLight(LightTypeObj type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case LightTypeObj::POINT:
+	{
+		object->SetName("Point light");
+		comp = new ComponentLight(object, LightType::POINT);
+		object->AddComponent(comp);
+		break;
+	}
+	case LightTypeObj::SPOT:
+	{
+		object->SetName("Spot light");
+		comp = new ComponentLight(object, LightType::SPOT);
+		object->AddComponent(comp);
+		break;
+	}
+	case LightTypeObj::DIRECTIONAL:
+	{
+		object->SetName("Directional light");
+		comp = new ComponentLight(object, LightType::DIRECTIONAL);
+		object->AddComponent(comp);
+		break;
+	}
+	case LightTypeObj::AREA:
+	{
+		object->SetName("Area light");
+		comp = new ComponentLight(object, LightType::AREA);
+		object->AddComponent(comp);
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}

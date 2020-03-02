@@ -654,8 +654,6 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		ComponentLight* light = (ComponentLight*)component;
 		CompLightZ* lightZ = new CompLightZ();
 		*compZ = lightZ;
-		lightZ->diffuse = light->diffuse;
-		lightZ->ambient = light->ambient;
 		lightZ->objectID = light->game_object_attached->ID;
 		break; }
 	case ComponentType::CANVAS: {
@@ -829,8 +827,6 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 	case ComponentType::LIGHT: {
 		ComponentLight* light = (ComponentLight*)component;
 		CompLightZ* lightZ = (CompLightZ*)compZ;
-		light->ambient = lightZ->ambient;
-		light->diffuse = lightZ->diffuse;
 		break; }
 	case ComponentType::CANVAS: {
 		ComponentCanvas* canvas = (ComponentCanvas*)component;

@@ -51,6 +51,16 @@ enum class PrimitiveType
 	UNKONWN
 };
 
+enum class LightTypeObj
+{
+	POINT,
+	SPOT,
+	DIRECTIONAL,
+	AREA,
+
+	UNKNOWN = -1
+};
+
 class ModuleObjects : public Module
 {
 public:
@@ -74,6 +84,9 @@ public:
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
 	void CreateBaseUI(ComponentType type);
+
+	// lights
+	void CreateLight(LightTypeObj type);
 
 	// poly options
 	void ChangeWireframeMode();

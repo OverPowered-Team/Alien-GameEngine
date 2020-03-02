@@ -501,6 +501,27 @@ void PanelHierarchy::RightClickMenu()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Light"))
+		{
+			if (ImGui::MenuItem("Point light"))
+			{
+				App->objects->CreateLight(LightTypeObj::POINT);
+			}
+			if (ImGui::MenuItem("Spot light"))
+			{
+				App->objects->CreateLight(LightTypeObj::SPOT);
+			}
+			if (ImGui::MenuItem("Directional light"))
+			{
+				App->objects->CreateLight(LightTypeObj::DIRECTIONAL);
+			}
+			if (ImGui::MenuItem("Area light"))
+			{
+				App->objects->CreateLight(LightTypeObj::AREA);
+			}
+
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("UI"))
 		{
 			if (ImGui::MenuItem("Image"))
