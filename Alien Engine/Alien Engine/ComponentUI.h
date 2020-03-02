@@ -29,6 +29,7 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class ComponentBar;
 	friend class ComponentImage;
 	friend class Component;
+	friend class ModuleUI;
 	friend class ReturnZ;
 	friend class CompZ;
 public:
@@ -58,14 +59,13 @@ public:
 	virtual bool CheckMouseInside(float3 mouse_pos);
 	virtual void UILogicMouse();
 	virtual void UILogicGamePad();
-	void UpdateGamePadInput();
 
 	//Script
 	void SetBackgroundColor(float r, float g, float b, float a);
 	
 private:
 	void CheckFirstSelected();
-	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
+	
 public:
 	Color current_color = { 0.8f,0.8f,0.8f,1.0f };
 
@@ -92,10 +92,10 @@ protected:
 	//UI FOCUS
 	
 	bool tabbable			= false;
-	u64 select_on_up		= 0;
-	u64 select_on_down		= 0;
-	u64 select_on_left		= 0;
-	u64 select_on_right		= 0;
+	u64 select_on_up		= -1;
+	u64 select_on_down		= -1;
+	u64 select_on_left		= -1;
+	u64 select_on_right		= -1;
 
 
 

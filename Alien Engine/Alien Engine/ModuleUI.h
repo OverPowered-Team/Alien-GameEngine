@@ -56,6 +56,7 @@ public:
 
 	bool Start();
 	update_status PreUpdate(float dt);
+	update_status Update(float dt);
 	bool CleanUp();
 
 	// config
@@ -111,6 +112,12 @@ public:
 
 	// big window to dock everything
 	void BackgroundDockspace();
+
+	
+
+private:
+	void UpdateGamePadInput();
+	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
 
 private:
 	TextEditor edit;
@@ -207,6 +214,6 @@ public:
 	const char* actual_name="";
 
 	//Focus
-	u64 selected_ui = 0;
+	u64 selected_ui = -1;
 };
 
