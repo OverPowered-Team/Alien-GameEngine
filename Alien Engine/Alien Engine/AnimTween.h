@@ -15,11 +15,15 @@ enum TweenAction {
 	SCALE,
 	ALPHA,
 	COLOR,
-	RGBA
+	RGBA,
+	UI_COLOR,
+	UI_ALPHA,
+	UI_RGBA
 };
 
 enum TweenType {
-	notUsed = -1, linear, easeIn, easeOut, easeInOut
+	notUsed = -1, linear, easeIn, easeOut, easeInOut, backIn, backOut, backInOut, bounceIn, bounceOut, bounceInOut,
+	elasticIn, elasticOut, elasticInOut
 };
 
 class AnimTween: public Module
@@ -39,6 +43,10 @@ public:
 	Tween* TweenColor(GameObject* gameObject, const float3& to, float time, TweenType type);
 	Tween* TweenAlpha(GameObject* gameObject, const float to, float time, TweenType type);
 	Tween* TweenRGBA(GameObject* gameObject, const float4& to, float time, TweenType type);
+
+	Tween* TweenUIColor(GameObject* gameObject, const float3& to, float time, TweenType type);
+	Tween* TweenUIAlpha(GameObject* gameObject, const float to, float time, TweenType type);
+	Tween* TweenUIRGBA(GameObject* gameObject, const float4& to, float time, TweenType type);
 
 private:
 	std::vector<Tween*> tweens;

@@ -35,3 +35,18 @@ Tween* Tween::TweenRGBA(GameObject* gameObject, const float4& to, float time, in
 {
 	return App->tween->TweenRGBA(gameObject, to, time, (TweenType)type);
 }
+
+Tween* Tween::TweenUIColor(GameObject* gameObject, const float3& to, float time, int type)
+{
+	return App->tween->TweenUIColor(gameObject, to, time, (TweenType)type);
+}
+
+Tween* Tween::TweenUIAlpha(GameObject* gameObject, const float to, float time, int type)
+{
+	return App->tween->TweenUIAlpha(gameObject, to, time, (TweenType)type);;
+}
+
+Tween* Tween::TweenUIRGBA(GameObject* gameObject, const float4& to, float time, int type)
+{
+	return App->tween->TweenUIRGBA(gameObject, to, time, (TweenType)type);;
+}

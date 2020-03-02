@@ -11,12 +11,7 @@ public:
 	bool UpdateInternal();
 
 private:
-	void MoveInternal();
-	void ScaleInternal();
-	void RotateInternal();
-	void ColorInternal();
-	void AlphaInternal();
-	void RGBAInternal();
+	float4 CalculateInternal();
 
 	float4 LinealLerp();
 	float4 EaseIn();
@@ -26,11 +21,11 @@ private:
 public:
 	float4 from = { 0.0f,0.0f ,0.0f ,0.0f };
 	float4 to = { 0.0f,0.0f ,0.0f ,0.0f };
-	float time;
+	float time = 0.F;
 	float current_time = 0.F;
 	TweenAction action = TweenAction::NONE;
 	TweenType type = TweenType::notUsed;
 	ComponentTransform* trans = nullptr;
 
-	float delay = 0.0f;
+	float delay = 0.F;
 };

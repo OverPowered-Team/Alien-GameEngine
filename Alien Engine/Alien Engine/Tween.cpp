@@ -3,36 +3,64 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentUI.h"
 #include "Time.h"
 #include "Tween.h"
 
 bool Tween::UpdateInternal()
 {
 	bool ret = true;
+	float4 current_value = float4::zero;
+	current_value = CalculateInternal();
 
 	current_time += Time::GetDT();
+
+	ComponentMaterial* material = nullptr;
+	ComponentUI* ui = nullptr;
+
 	switch(action)
 	{
 	case TweenAction::MOVE:
-		MoveInternal();
+		trans->SetGlobalPosition(float3(current_value.x, current_value.y, current_value.z));
 		break;
 	case TweenAction::MOVE_TO:
-		MoveInternal();
+		trans->SetGlobalPosition(float3(current_value.x, current_value.y, current_value.z));
 		break;
 	case TweenAction::SCALE:
-		ScaleInternal();
+		//trans->SetGlobalScale(float3(current_scale.x, current_scale.y, current_scale.z));
 		break;
 	case TweenAction::ROTATE:
-		RotateInternal();
+		trans->SetGlobalRotation(Quat::FromEulerXYZ(current_value.x, current_value.y, current_value.z));
 		break;
 	case TweenAction::COLOR:
-		ColorInternal();
+		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
+		if (material)
+			material->color = { current_value.x, current_value.y, current_value.z, material->color.a };
 		break;
 	case TweenAction::ALPHA:
-		AlphaInternal();
+		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
+		if (material)
+			material->color.a = current_value.w;
 		break;
 	case TweenAction::RGBA:
-		RGBAInternal();
+		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
+		if (material)
+			material->color = { current_value.x, current_value.y, current_value.z, current_value.w };
+		break;
+	case TweenAction::UI_COLOR:
+		ui = trans->game_object_attached->GetComponent<ComponentUI>();
+		if (ui)
+			ui->current_color = { current_value.x, current_value.y, current_value.z, ui->current_color.a };
+		break;
+	case TweenAction::UI_ALPHA:
+		ui = trans->game_object_attached->GetComponent<ComponentUI>();
+		if (ui)
+			ui->current_color = { ui->current_color.r, ui->current_color.g, ui->current_color.b, current_value.w };
+		break;
+	case TweenAction::UI_RGBA:
+		ui = trans->game_object_attached->GetComponent<ComponentUI>();
+		if (ui)
+			ui->current_color = { current_value.x, current_value.y, current_value.z, current_value.w };
 		break;
 	}
 
@@ -42,172 +70,31 @@ bool Tween::UpdateInternal()
 	return ret;
 }
 
-void Tween::MoveInternal()
+float4 Tween::CalculateInternal()
 {
-	float4 current_pos = float4::zero;
+	float4 current_value = float4::zero;
 
 	switch (type)
 	{
 	case notUsed:
 		break;
 	case linear:
-		current_pos = LinealLerp();
+		current_value = LinealLerp();
 		break;
 	case easeIn:
-		current_pos = EaseIn();
+		current_value = EaseIn();
 		break;
 	case easeOut:
-		current_pos = EaseOut();
+		current_value = EaseOut();
 		break;
 	case easeInOut:
-		current_pos = EaseInOut();
+		current_value = EaseInOut();
 		break;
 	default:
 		break;
 	}
 
-	trans->SetGlobalPosition(float3(current_pos.x, current_pos.y, current_pos.z));
-}
-
-void Tween::ScaleInternal()
-{
-	float4 current_scale = float4::zero;
-
-	switch (type)
-	{
-	case notUsed:
-		break;
-	case linear:
-		current_scale = LinealLerp();
-		break;
-	case easeIn:
-		current_scale = EaseIn();
-		break;
-	case easeOut:
-		current_scale = EaseOut();
-		break;
-	case easeInOut:
-		current_scale = EaseInOut();
-		break;
-	default:
-		break;
-	}
-
-	//trans->SetGlobalScale(float3(current_scale.x, current_scale.y, current_scale.z));
-}
-
-void Tween::RotateInternal()
-{
-	float4 current_rotation = float4::zero;
-
-	switch (type)
-	{
-	case notUsed:
-		break;
-	case linear:
-		current_rotation = LinealLerp();
-		break;
-	case easeIn:
-		current_rotation = EaseIn();
-		break;
-	case easeOut:
-		current_rotation = EaseOut();
-		break;
-	case easeInOut:
-		current_rotation = EaseInOut();
-		break;
-	default:
-		break;
-	}
-
-	//trans->SetGlobalRotation(float3(current_scale.x, current_scale.y, current_scale.z));
-}
-
-void Tween::ColorInternal()
-{
-	float4 current_color = float4::zero;
-
-	switch (type)
-	{
-	case notUsed:
-		break;
-	case linear:
-		current_color = LinealLerp();
-		break;
-	case easeIn:
-		current_color = EaseIn();
-		break;
-	case easeOut:
-		current_color = EaseOut();
-		break;
-	case easeInOut:
-		current_color = EaseInOut();
-		break;
-	default:
-		break;
-	}
-
-	ComponentMaterial* material = trans->game_object_attached->GetComponent<ComponentMaterial>();
-	if(material)
-		material->color = {current_color.x, current_color.y, current_color.z, material->color.a};
-}
-
-void Tween::AlphaInternal()
-{
-	float4 current_alpha = float4::zero;
-
-	switch (type)
-	{
-	case notUsed:
-		break;
-	case linear:
-		current_alpha = LinealLerp();
-		break;
-	case easeIn:
-		current_alpha = EaseIn();
-		break;
-	case easeOut:
-		current_alpha = EaseOut();
-		break;
-	case easeInOut:
-		current_alpha = EaseInOut();
-		break;
-	default:
-		break;
-	}
-
-	ComponentMaterial* material = trans->game_object_attached->GetComponent<ComponentMaterial>();
-	if (material)
-		material->color.a = current_alpha.w;
-}
-
-void Tween::RGBAInternal()
-{
-	float4 current_rgba = float4::zero;
-
-	switch (type)
-	{
-	case notUsed:
-		break;
-	case linear:
-		current_rgba = LinealLerp();
-		break;
-	case easeIn:
-		current_rgba = EaseIn();
-		break;
-	case easeOut:
-		current_rgba = EaseOut();
-		break;
-	case easeInOut:
-		current_rgba = EaseInOut();
-		break;
-	default:
-		break;
-	}
-
-	ComponentMaterial* material = trans->game_object_attached->GetComponent<ComponentMaterial>();
-	if (material)
-		material->color = { current_rgba.x, current_rgba.y, current_rgba.z, current_rgba.w };
+	return current_value;
 }
 
 float4 Tween::LinealLerp()

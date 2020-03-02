@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentUI.h"
 
 update_status AnimTween::Update(float dt)
 {
@@ -139,6 +140,63 @@ Tween* AnimTween::TweenRGBA(GameObject* gameObject, const float4& to, float time
 	if (tween)
 	{
 		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->to = to;
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenUIColor(GameObject* gameObject, const float3& to, float time, TweenType type)
+{
+	ComponentUI* ui = gameObject->GetComponent<ComponentUI>();
+	if (!ui)
+	{
+		LOG_ENGINE("There's no component UI in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::UI_COLOR, type);
+	if (tween)
+	{
+		tween->from = float4(ui->current_color.r, ui->current_color.g, ui->current_color.b, ui->current_color.a);
+		tween->to = float4(to, 0.f);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenUIAlpha(GameObject* gameObject, const float to, float time, TweenType type)
+{
+	ComponentUI* ui = gameObject->GetComponent<ComponentUI>();
+	if (!ui)
+	{
+		LOG_ENGINE("There's no component UI in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::UI_ALPHA, type);
+	if (tween)
+	{
+		tween->from = float4(ui->current_color.r, ui->current_color.g, ui->current_color.b, ui->current_color.a);
+		tween->to = float4(ui->current_color.r, ui->current_color.g, ui->current_color.b, to);
+	}
+
+	return tween;
+}
+
+Tween* AnimTween::TweenUIRGBA(GameObject* gameObject, const float4& to, float time, TweenType type)
+{
+	ComponentUI* ui = gameObject->GetComponent<ComponentUI>();
+	if (!ui)
+	{
+		LOG_ENGINE("There's no component UI in the gameobject!");
+		return nullptr;
+	}
+
+	Tween* tween = CreateTween(gameObject, time, TweenAction::UI_RGBA, type);
+	if (tween)
+	{
+		tween->from = float4(ui->current_color.r, ui->current_color.g, ui->current_color.b, ui->current_color.a);
 		tween->to = to;
 	}
 
