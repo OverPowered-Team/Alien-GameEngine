@@ -536,6 +536,7 @@ void ResourceAnimatorController::FreeMemory()
 
 	default_state = nullptr;
 	current_state = nullptr;
+	id_bucket = 1;
 }
 bool ResourceAnimatorController::LoadMemory()
 {
