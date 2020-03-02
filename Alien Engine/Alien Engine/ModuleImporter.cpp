@@ -176,7 +176,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 {
 	OPTICK_EVENT();
 	ResourceAnimation* resource_animation = new ResourceAnimation();
-	resource_animation->name = "Test";
+	resource_animation->name = anim->mName.C_Str() == ""? "Take 001":anim->mName.C_Str();
 	resource_animation->ticks_per_second = anim->mTicksPerSecond;
 	resource_animation->num_channels = anim->mNumChannels;
 	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];

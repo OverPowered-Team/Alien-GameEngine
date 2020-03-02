@@ -622,12 +622,27 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 			{
 				anim->name = anim_name;
 			}
-			int start_tick = (int)anim->start_tick;
-			int end_tick = (int)anim->end_tick;
-			if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, anim->end_tick - 1))
-				if (start_tick >= 0 && start_tick < anim->end_tick) anim->start_tick = (uint)start_tick;
-			if (ImGui::DragInt("End", &end_tick, 1.0F, anim->start_tick + 1, anim->max_tick))
-				if (end_tick > anim->start_tick&& end_tick <= anim->max_tick) anim->end_tick = (uint)end_tick;
+
+			uint fps = anim->ticks_per_second;
+			uint max_tick = fps == 1 ? (uint)(anim->max_tick * 30) : (int)anim->max_tick;
+			int start_tick = fps == 1? (int)(anim->start_tick * 30) : (int)anim->start_tick;
+			int end_tick = fps == 1? (int)(anim->end_tick * 30) : (int)anim->end_tick;
+
+			if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, end_tick - 1))
+			{
+				if (start_tick >= 0 && start_tick < end_tick)
+				{
+					anim->start_tick = fps == 1 ? (float)start_tick / 30 : (uint)start_tick;
+				}
+			}
+			if (ImGui::DragInt("End", &end_tick, 1.0F, start_tick + 1, max_tick))
+			{
+				if (end_tick > start_tick && end_tick <= max_tick)
+				{
+					anim->end_tick = fps == 1 ? (float)end_tick / 30 : (uint)end_tick;
+				}
+			}
+				
 			ImGui::Checkbox("Loops", &anim->loops);
 			ImGui::Separator();
 			ImGui::PopID();
