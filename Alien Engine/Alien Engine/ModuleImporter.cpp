@@ -206,7 +206,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.position_keys[j].value.Set(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
 											   anim->mChannels[i]->mPositionKeys[j].mValue.z);
-			channel.position_keys[j].time = is_dae ? anim->mChannels[i]->mPositionKeys[j].mTime * DAE_FPS : anim->mChannels[i]->mPositionKeys[j].mTime;
+			channel.position_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mPositionKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mPositionKeys[j].mTime;
 		}
 
 		//Load scaling keys
@@ -214,7 +214,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.scale_keys[j].value.Set(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
 											anim->mChannels[i]->mScalingKeys[j].mValue.z);
-			channel.scale_keys[j].time = is_dae ? anim->mChannels[i]->mScalingKeys[j].mTime * DAE_FPS : anim->mChannels[i]->mScalingKeys[j].mTime;
+			channel.scale_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mScalingKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mScalingKeys[j].mTime;
 		}
 
 		//Load rotation keys
@@ -222,7 +222,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.rotation_keys[j].value.Set(anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
 											   anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w);
-			channel.rotation_keys[j].time = is_dae ? anim->mChannels[i]->mRotationKeys[j].mTime * DAE_FPS : anim->mChannels[i]->mRotationKeys[j].mTime;
+			channel.rotation_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mRotationKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
 	}
 

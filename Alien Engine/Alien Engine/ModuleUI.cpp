@@ -1271,6 +1271,10 @@ void ModuleUI::HandleEvent(EventType eventType)
 			break;
 		}
 	}
+
+	if (eventType == EventType::ON_UNLOAD_SCENE) {
+		App->ui->panel_animtimeline->changed = true;
+	}
 }
 
 void ModuleUI::FramerateRegister(float frames, float ms)

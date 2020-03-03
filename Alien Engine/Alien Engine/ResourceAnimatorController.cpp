@@ -146,17 +146,17 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 	}
 }
 
-const std::vector < std::pair <std::string, bool>>&  ResourceAnimatorController::GetBoolParameters() 
+const std::vector < std::pair <std::string, bool>>& ResourceAnimatorController::GetBoolParameters()
 {
 	return bool_parameters;
 }
 
-const std::vector < std::pair <std::string, float>>&  ResourceAnimatorController::GetFloatParameters()
+const std::vector < std::pair <std::string, float>>& ResourceAnimatorController::GetFloatParameters()
 {
 	return float_parameters;
 }
 
-const std::vector < std::pair <std::string, int>>&  ResourceAnimatorController::GetIntParameters()
+const std::vector < std::pair <std::string, int>>& ResourceAnimatorController::GetIntParameters()
 {
 	return int_parameters;
 }
@@ -176,34 +176,34 @@ void ResourceAnimatorController::SetIntParametersName(uint index, const std::str
 	int_parameters[index].first = std::string(name);
 }
 
-void ResourceAnimatorController::SetBoolParametersValue(uint index, const bool &value)
+void ResourceAnimatorController::SetBoolParametersValue(uint index, const bool& value)
 {
 	bool_parameters[index].second = value;
 }
 
-void ResourceAnimatorController::SetFloatParametersValue(uint index, const float &value)
+void ResourceAnimatorController::SetFloatParametersValue(uint index, const float& value)
 {
 	float_parameters[index].second = value;
 }
 
-void ResourceAnimatorController::SetIntParametersValue(uint index, const int &value)
+void ResourceAnimatorController::SetIntParametersValue(uint index, const int& value)
 {
 	int_parameters[index].second = value;
 }
 
 void ResourceAnimatorController::AddBoolParameter()
 {
-	bool_parameters.push_back({"NewBool", false });
+	bool_parameters.push_back({ "NewBool", false });
 }
 
 void ResourceAnimatorController::AddFloatParameter()
 {
-	float_parameters.push_back({"NewFloat", 0.0f });
+	float_parameters.push_back({ "NewFloat", 0.0f });
 }
 
 void ResourceAnimatorController::AddIntParameter()
 {
-	int_parameters.push_back({"NewInt", 0 });
+	int_parameters.push_back({ "NewInt", 0 });
 }
 
 void ResourceAnimatorController::AddBoolParameter(std::pair<std::string, bool> param)
@@ -314,11 +314,11 @@ void ResourceAnimatorController::UpdateState(State* state)
 {
 	ResourceAnimation* animation = state->GetClip();
 
-	CheckTriggers();
+	if (!transitioning)CheckTriggers();
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT() / attached_references;
+		state->time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -344,8 +344,8 @@ void ResourceAnimatorController::UpdateState(State* state)
 		float to_end = state->fade_duration - state->fade_time;
 
 		if (to_end >= 0) {
-			
-			state->fade_time += Time::GetDT() / attached_references;
+
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
 			UpdateState(state->next_state);
 		}
 		else {
@@ -354,6 +354,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 			state->time = 0;
 			state->fade_time = 0;
 			state->fade_duration = 0;
+			transitioning = false;
 		}
 	}
 }
@@ -375,32 +376,33 @@ bool ResourceAnimatorController::CheckTriggers()
 	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
 		bool retu = true;
 
-			for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
-				if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
-					retu = false;
-					break;
-				}
+		for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
+			if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
 			}
-			for (int i = 0; i < (*it)->GetFloatConditions().size(); ++i) {
-				if (!(*it)->GetFloatConditions()[i]->Compare(this)) {
-					retu = false;
-					break;
-				}
+		}
+		for (int i = 0; i < (*it)->GetFloatConditions().size(); ++i) {
+			if (!(*it)->GetFloatConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
 			}
-			for (int i = 0; i < (*it)->GetIntConditions().size(); ++i) {
-				if (!(*it)->GetIntConditions()[i]->Compare(this)) {
-					retu = false;
-					break;
-				}
+		}
+		for (int i = 0; i < (*it)->GetIntConditions().size(); ++i) {
+			if (!(*it)->GetIntConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
 			}
+		}
 
-			if (retu)
-				current_possible_transitions.push_back((*it));
+		if (retu)
+			current_possible_transitions.push_back((*it));
 	}
 
 	if (ret && current_possible_transitions.size() > 0) {
 		current_state->next_state = current_possible_transitions.front()->GetTarget();
 		current_state->fade_duration = current_possible_transitions.front()->GetBlend();
+		transitioning = true;
 	}
 
 	return true;
@@ -413,7 +415,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		ID = App->resources->GetRandomID();
 	else
 		ID = force_id;
-	
+
 	path = std::string(ANIM_CONTROLLER_FOLDER + name + ".animController");
 
 	JSON_Value* asset_value = json_value_init_object();
@@ -425,7 +427,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	asset->SetString("Controller.Name", name);
 	asset->SetNumber("Controller.NumStates", states.size());
 	asset->SetNumber("Controller.NumTransitions", transitions.size());
-	
+
 	JSONArraypack* states_array = asset->InitNewArray("Controller.States");
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
@@ -670,7 +672,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&speed, cursor, bytes);
 			cursor += bytes;
 
-			AddState(tmp_name, clip_id == 0? nullptr:(ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
+			AddState(tmp_name, clip_id == 0 ? nullptr : (ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
 		}
 
 		for (int i = 0; i < num_transitions; ++i)
@@ -950,7 +952,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
-		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(uint)*3;
+		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(uint) * 3;
 
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
 		for (std::vector<IntCondition*>::iterator int_it = int_conditions.begin(); int_it != int_conditions.end(); ++int_it) {
@@ -1372,7 +1374,7 @@ void ResourceAnimatorController::RemoveState(std::string name)
 			if ((*it)->GetClip())
 				(*it)->GetClip()->DecreaseReferences();
 			if ((*it) == default_state) {
-					default_state = nullptr;
+				default_state = nullptr;
 			}
 			delete (*it);
 			it = states.erase(it);
@@ -1659,7 +1661,7 @@ bool BoolCondition::Compare(ResourceAnimatorController* controller)
 	bool ret = false;
 
 	if (comp_text == "False") {
-		if(!controller->GetBoolParameters()[parameter_index].second) ret = true;
+		if (!controller->GetBoolParameters()[parameter_index].second) ret = true;
 	}
 	else if (comp_text == "True") {
 		if (controller->GetBoolParameters()[parameter_index].second) ret = true;
