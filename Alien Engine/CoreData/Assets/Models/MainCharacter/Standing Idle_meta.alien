@@ -5,15 +5,15 @@
         "Name": "Standing Idle",
         "NumBones": 42,
         "NumAnimations": 1,
+        "NumMaterials": 1,
         "Animations": [
             {
                 "Name": "idlegood",
                 "Loops": true,
                 "Start_Tick": 0,
-                "End_Tick": 1.8333330154418945
+                "End_Tick": 54
             }
         ],
-        "NumMaterials": 1,
         "PathMeshes": [
             "Library\/Meshes\/7694421035312712339.alienMesh"
         ],

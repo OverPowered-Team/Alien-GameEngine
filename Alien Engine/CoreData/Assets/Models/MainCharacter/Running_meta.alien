@@ -5,15 +5,15 @@
         "Name": "Running",
         "NumBones": 42,
         "NumAnimations": 1,
+        "NumMaterials": 1,
         "Animations": [
             {
                 "Name": "run",
                 "Loops": true,
                 "Start_Tick": 0,
-                "End_Tick": 0.63333302736282349
+                "End_Tick": 18
             }
         ],
-        "NumMaterials": 1,
         "PathMeshes": [
             "Library\/Meshes\/12471106535761575386.alienMesh"
         ],

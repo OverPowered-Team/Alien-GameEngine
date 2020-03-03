@@ -625,24 +625,24 @@ void PanelInspector::ShowModelImportSettings(ResourceModel* model)
 				anim->name = anim_name;
 			}
 
-			bool is_dae = (anim->ticks_per_second == 1);
+			//bool is_dae = (anim->ticks_per_second == 1);
 
-			uint max_tick = is_dae ? (uint)(anim->max_tick * DAE_FPS) : (int)anim->max_tick;
-			int start_tick = is_dae ? (int)(anim->start_tick * DAE_FPS) : (int)anim->start_tick;
-			int end_tick = is_dae ? (int)(anim->end_tick * DAE_FPS) : (int)anim->end_tick;
+			uint max_tick = /*is_dae ? (uint)(anim->max_tick * DAE_FPS) : */(int)anim->max_tick;
+			int start_tick = /*is_dae ? (int)(anim->start_tick * DAE_FPS) : */(int)anim->start_tick;
+			int end_tick = /*is_dae ? (int)(anim->end_tick * DAE_FPS) : */(int)anim->end_tick;
 
 			if (ImGui::DragInt("Start", &start_tick, 1.0F, 0, end_tick - 1))
 			{
 				if (start_tick >= 0 && start_tick < end_tick)
 				{
-					anim->start_tick = is_dae ? (float)start_tick / DAE_FPS : (uint)start_tick;
+					anim->start_tick = /*is_dae ? (float)start_tick / DAE_FPS :*/ (uint)start_tick;
 				}
 			}
 			if (ImGui::DragInt("End", &end_tick, 1.0F, start_tick + 1, max_tick))
 			{
 				if (end_tick > start_tick && end_tick <= max_tick)
 				{
-					anim->end_tick = is_dae ? (float)end_tick / DAE_FPS : (uint)end_tick;
+					anim->end_tick = /*is_dae ? (float)end_tick / DAE_FPS :*/ (uint)end_tick;
 				}
 			}
 				
