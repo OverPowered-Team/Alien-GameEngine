@@ -6,7 +6,6 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "PanelGame.h"
-#include "ModuleUI.h"
 #include "ModuleInput.h"
 #include "ReturnZ.h"
 #include "FileNode.h"
@@ -471,7 +470,7 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		if (!App->objects->first_assigned_selected || !App->objects->GetGameObjectByID(App->ui->selected_ui)->enabled)
+		if (!App->objects->first_assigned_selected || !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)
 			CheckFirstSelected();
 		//UILogicMouse();
 		

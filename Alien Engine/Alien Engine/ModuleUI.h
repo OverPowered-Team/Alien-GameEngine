@@ -56,7 +56,6 @@ public:
 
 	bool Start();
 	update_status PreUpdate(float dt);
-	update_status Update(float dt);
 	bool CleanUp();
 
 	// config
@@ -115,9 +114,7 @@ public:
 
 	
 
-private:
-	void UpdateGamePadInput();
-	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
+
 
 private:
 	TextEditor edit;
@@ -212,8 +209,5 @@ public:
 
 	bool creating_script = false;
 	const char* actual_name="";
-
-	//Focus
-	u64 selected_ui = -1;
 };
 

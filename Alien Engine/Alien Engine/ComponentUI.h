@@ -28,8 +28,8 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class ComponentSlider;
 	friend class ComponentBar;
 	friend class ComponentImage;
+	friend class ModuleObjects;
 	friend class Component;
-	friend class ModuleUI;
 	friend class ReturnZ;
 	friend class CompZ;
 public:

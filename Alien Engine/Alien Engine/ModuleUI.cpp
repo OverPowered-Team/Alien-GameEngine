@@ -32,7 +32,6 @@
 #include "PanelTextEditor.h"
 #include "PanelParticleSystem.h"
 #include "ModuleObjects.h"
-#include "StaticInput.h"
 #include "ComponentUI.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
@@ -472,11 +471,6 @@ update_status ModuleUI::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status ModuleUI::Update(float dt)
-{
-	UpdateGamePadInput();
-	return UPDATE_CONTINUE;
-}
 
 void ModuleUI::Draw() 
 {
@@ -1312,121 +1306,6 @@ void ModuleUI::BackgroundDockspace()
 	ImGui::End();
 }
 
-void ModuleUI::UpdateGamePadInput()
-{
-	if (App->objects->GetGameObjectByID(selected_ui) != nullptr && App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed)
-	{
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
-		{
-			if (App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
-			{
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
-				u64 safe_selected = selected_ui;
-				selected_ui = SetNewSelected("up", App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
-				if (selected_ui == -1)
-					selected_ui = safe_selected;
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
-			}
-		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
-		{
-			if (App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
-			{
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
-				u64 safe_selected = selected_ui;
-				selected_ui = SetNewSelected("down", App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
-				if (selected_ui == -1)
-					selected_ui = safe_selected;
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
-			}
-		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
-		{
-			if (App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
-			{
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
-				u64 safe_selected = selected_ui;
-				selected_ui = SetNewSelected("right", App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
-				if (selected_ui == -1)
-					selected_ui = safe_selected;
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
-			}
-		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
-		{
-			if (App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
-			{
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
-				u64 safe_selected = selected_ui;
-				selected_ui = SetNewSelected("left", App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
-				if (selected_ui == -1)
-					selected_ui = safe_selected;
-				App->objects->GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
-			}
-		}
-	}
-}
-
-u64 ModuleUI::SetNewSelected(std::string neightbour, u64 selected_neightbour)
-{
-	if (neightbour == "up")
-	{
-		if (App->objects->GetGameObjectByID(selected_neightbour)->enabled)
-			return selected_neightbour;
-
-		else
-		{
-			if (App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_up != -1)
-				return SetNewSelected("up", App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_up);
-			else
-				return -1;
-		}
-	}
-	else if (neightbour == "down")
-	{
-		if (App->objects->GetGameObjectByID(selected_neightbour)->enabled)
-			return selected_neightbour;
-
-		else
-		{
-			if (App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_down != -1)
-				return SetNewSelected("down", App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_down);
-			else
-				return -1;
-		}
-	}
-	else if (neightbour == "right")
-	{
-		if (App->objects->GetGameObjectByID(selected_neightbour)->enabled)
-			return selected_neightbour;
-
-		else
-		{
-			if (App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_right != -1)
-				return SetNewSelected("right", App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_right);
-			else
-				return -1;
-		}
-	}
-	else if (neightbour == "left")
-	{
-		if (App->objects->GetGameObjectByID(selected_neightbour)->enabled)
-			return selected_neightbour;
-
-		else
-		{
-			if (App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left != -1)
-				return SetNewSelected("left", App->objects->GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left);
-			else
-				return -1;
-		}
-	}
-	else
-	{
-		LOG_ENGINE("Something went wrong");
-		return -1;
-	}
-}
 
 Layout::Layout(const char* name)
 {
