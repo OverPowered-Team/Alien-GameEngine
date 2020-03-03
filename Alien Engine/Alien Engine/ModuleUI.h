@@ -28,6 +28,7 @@ class PanelTextEditor;
 class PanelAnimTimeline;
 class PanelAnimator;
 class PanelParticleSystem;
+class GameObject;
 
 struct ShortCut;
 
@@ -110,6 +111,10 @@ public:
 
 	// big window to dock everything
 	void BackgroundDockspace();
+
+	
+
+
 
 private:
 	TextEditor edit;
