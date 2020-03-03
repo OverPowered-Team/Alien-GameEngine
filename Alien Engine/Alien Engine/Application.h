@@ -115,6 +115,10 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 
+	void PreUpdate(update_status&ret);
+	void OnUpdate(update_status& ret);
+	void PostUpdate(update_status& ret);
+
 
 	bool LoadConfig();
 	bool SaveConfig();

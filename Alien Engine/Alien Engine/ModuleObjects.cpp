@@ -19,6 +19,7 @@
 #include "ComponentText.h"
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -37,6 +38,7 @@
 #include <experimental/filesystem>
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -61,6 +63,7 @@ bool ModuleObjects::Init()
 
 bool ModuleObjects::Start()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
 
@@ -86,12 +89,9 @@ bool ModuleObjects::Start()
 
 	light_test->AddComponent(new ComponentLight(light_test));
 
-	light_test->AddComponent(new ComponentTransform(light_test, { 0,15,2.5f }, { 0,0,0,0 }, { 1,1,1 }));
-	light_test->AddComponent(new ComponentLight(light_test));
 
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
-	camera->AddComponent(new ComponentTransform(camera, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 	camera->AddComponent(new ComponentCamera(camera));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
@@ -123,6 +123,7 @@ bool ModuleObjects::Start()
 
 update_status ModuleObjects::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 	// delete objects
 	if (need_to_delete_objects) { 
 		need_to_delete_objects = false;
@@ -167,6 +168,7 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->Update();
 	UpdateGamePadInput();
 	ScriptsUpdate();
@@ -175,6 +177,7 @@ update_status ModuleObjects::Update(float dt)
 
 update_status ModuleObjects::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
@@ -236,7 +239,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
-					(*it).second->DrawScene();
+					if (printing_scene)
+						(*it).second->DrawScene(viewport->GetCamera());
+					else
+						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
 			if (printing_scene)
@@ -279,7 +285,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame();
+				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
 			}
 		}
 
@@ -308,6 +314,7 @@ void ModuleObjects::DrawRay()
 
 bool ModuleObjects::CleanUp()
 {
+	OPTICK_EVENT();
 	Gizmos::ClearAllCurrentGizmos();
 
 	if (Time::IsInGameState()) {
@@ -886,6 +893,7 @@ void ModuleObjects::ReparentGameObject(GameObject* object, GameObject* next_pare
 
 void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_with_path)
 {
+	OPTICK_EVENT();
 	if (to_load_scene == nullptr && force_with_path == nullptr) {
 		LOG_ENGINE("Scene to load was nullptr");
 		return;
@@ -950,6 +958,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
+	OPTICK_EVENT();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
@@ -966,6 +975,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 		if (value != nullptr && object != nullptr)
 		{
+			App->CastEvent(EventType::ON_UNLOAD_SCENE);
 			octree.Clear();
 			Gizmos::ClearAllCurrentGizmos();
 			delete base_game_object;
@@ -1322,7 +1332,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 								JSONArraypack* inspector = to_save->InitNewArray("Inspector");
 								for (uint i = 0; i < (*script)->inspector_variables.size(); ++i) {
 									inspector->SetAnotherNode();
-									if ((*script)->inspector_variables[i].ptr == nullptr) {
+									if ((*script)->inspector_variables[i].ptr == nullptr && (*script)->inspector_variables[i].obj == nullptr) {
 										inspector->SetBoolean("IsNull", true);
 										continue;
 									}
@@ -1347,7 +1357,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 									case InspectorScriptData::DataType::GAMEOBJECT: {
 										GameObject** obj = ((GameObject**)((*script)->inspector_variables[i].obj));
 										if (obj != nullptr && *obj != nullptr) {
-											inspector->SetString("gameobject", std::to_string((*obj)->prefabID));
+											inspector->SetString("gameobject", std::to_string((*obj)->ID));
 										}
 										else {
 											inspector->SetString("gameobject", "0");
@@ -1707,8 +1717,13 @@ void ModuleObjects::HandleEvent(EventType eventType)
 			break;
 		}
 	}
-
 	objects.clear();
+
+	if (eventType == EventType::ON_PLAY) {
+		InitScripts();
+	}
+	
+
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
@@ -1760,6 +1775,9 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	switch (type) {
 	case PrimitiveType::CUBE: {
 		collider = new ComponentBoxCollider(object);
+		break; }
+	case PrimitiveType::SPHERE_ALIEN: {
+		collider = new ComponentSphereCollider(object);
 		break; }
 	}
 

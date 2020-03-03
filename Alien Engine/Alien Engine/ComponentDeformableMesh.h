@@ -18,17 +18,14 @@ public:
 
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
-	void UpdateDeformableMesh();
-
-	void DrawPolygon();
-	void DrawOutLine();
-	void DrawMesh();
+	void DeformMesh();
+	void DrawPolygon(ComponentCamera* camera);
 	
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
 private:
-	ResourceMesh* deformable_mesh = nullptr;
+	ResourceMesh* original_mesh = nullptr;
 	std::vector<ComponentBone*> bones;
 	u64 root_bone_id = 0;
 };

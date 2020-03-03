@@ -3,8 +3,16 @@
 #include "Globals.h"
 
 #include "SDL/include/SDL.h"
-#pragma comment( lib, "SDL/libx86/SDL2.lib" )
-#pragma comment( lib, "SDL/libx86/SDL2main.lib" )
+#pragma comment(lib, "SDL/libx86/SDL2.lib")
+#pragma comment(lib, "SDL/libx86/SDL2main.lib")
+
+#include "Optick/include/optick.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, "Optick/libx86/debugx86/OptickCore.lib")
+#else
+#pragma comment(lib, "Optick/libx86/releasex86/OptickCore.lib")
+#endif
 
 enum main_states
 {
@@ -24,6 +32,8 @@ int main(int argc, char ** argv)
 
 	while (state != MAIN_EXIT)
 	{
+		OPTICK_FRAME("MainThread");
+
 		switch (state)
 		{
 		case MAIN_CREATION:

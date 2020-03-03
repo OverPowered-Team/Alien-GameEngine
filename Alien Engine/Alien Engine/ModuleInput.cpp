@@ -4,6 +4,8 @@
 #include "imgui/examples/imgui_impl_sdl.h"
 #include "ModuleFileSystem.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
+
 #define MAX_KEYS 300
 
 ModuleInput::ModuleInput(bool start_enabled) : Module(start_enabled)
@@ -34,10 +36,11 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
-	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
-	{
-		LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
-	}
+	//if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+	//{
+	//	LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
+	//}
+
 	if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
 	{
 		LOG_ENGINE("SDL_GAMECONTROLLER HAPTIC could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -50,6 +53,7 @@ bool ModuleInput::Init()
 // Called every draw update
 update_status ModuleInput::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 	SDL_PumpEvents();
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);

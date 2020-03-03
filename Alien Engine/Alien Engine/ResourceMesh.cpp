@@ -322,32 +322,49 @@ bool ResourceMesh::DeleteMetaData()
 
 void ResourceMesh::InitBuffers()
 {
+	// VAO
+	glGenVertexArrays(1, &vao);
+
+
+	glBindVertexArray(vao);
+
+	// Vertex 
 	glGenBuffers(1, &id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) *num_vertex * 3,
-		vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, vertex, GL_STATIC_DRAW);
 
-	// index
-	glGenBuffers(1, &id_index);
-	glBindBuffer(GL_ARRAY_BUFFER, id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * num_index,
-		index, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
 
+	// UVS 
 	if (uv_cords != nullptr) {
 		// UV
 		glGenBuffers(1, &id_uv);
 		glBindBuffer(GL_ARRAY_BUFFER, id_uv);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
-			uv_cords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, uv_cords, GL_STATIC_DRAW);	// This should be size 2
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);										// This should be size 2
+		glEnableVertexAttribArray(1);
 	}
 
+	// Normals
 	if (normals != nullptr) {
 		// normals
 		glGenBuffers(1, &id_normals);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_normals);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3,
-			normals, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, normals, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(2);
 	}
+
+	// index
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * num_index, index, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ResourceMesh::Reset()

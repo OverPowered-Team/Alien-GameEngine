@@ -38,6 +38,8 @@
 #include "ComponentConvexHullCollider.h"
 #include "ComponentRigidBody.h"
 
+#include "Optick/include/optick.h"
+
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
@@ -513,8 +515,9 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -532,9 +535,9 @@ void GameObject::DrawScene()
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
-		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
 			mesh->DrawMesh();
 		if (mesh->view_vertex_normals)
@@ -542,9 +545,9 @@ void GameObject::DrawScene()
 		if (mesh->view_face_normals)
 			mesh->DrawFaceNormals();
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);
 	}
 
 
@@ -558,8 +561,9 @@ void GameObject::DrawScene()
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -575,7 +579,7 @@ void GameObject::DrawGame()
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 
@@ -624,12 +628,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
 		}
 
 		if (partSystem != nullptr)
@@ -692,6 +696,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -711,6 +716,7 @@ void GameObject::PostUpdate()
 
 void GameObject::PreUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -730,6 +736,7 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -1181,6 +1188,7 @@ void GameObject::FreeArrayMemory(void*** array_)
 
 GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position, GameObject* parent)
 {
+	OPTICK_EVENT();
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
@@ -1435,29 +1443,9 @@ AABB GameObject::GetBB() const
 		}
 		else
 		{
-			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
-			if (camera != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float4x4 matrix = float4x4::FromTRS(transform->GetGlobalPosition() - camera->frustum.front.Normalized() * 2, transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } *Quat{ 0.7071,0,0.7071,0 }), { 0.1F,0.1F,0.1F });
-				float4x4 to_save = transform->global_transformation;
-				transform->global_transformation = matrix;
-				camera->mesh_camera->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return camera->mesh_camera->GetGlobalAABB();
-			}
-			else if (light != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float3 pos = transform->GetGlobalPosition();
-				float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
-				float4x4 to_save = transform->global_transformation;
-				light->bulb->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return light->bulb->GetGlobalAABB();
-			}
-			else if (ui != nullptr) {
+			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
@@ -1469,7 +1457,7 @@ AABB GameObject::GetBB() const
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 			float3 pos = transform->GetGlobalPosition();
-			aabb_null.SetFromCenterAndSize(pos, { 2,2,2 });
+			aabb_null.SetFromCenterAndSize(pos, { 1,1,1 });
 			return aabb_null;
 		}
 	}
@@ -1724,6 +1712,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 GameObject* GameObject::Clone(GameObject* parent)
 {
+	OPTICK_EVENT();
 	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);

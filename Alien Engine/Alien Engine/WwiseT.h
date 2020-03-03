@@ -7,6 +7,7 @@
 
 #include "AK/SoundEngine/Common/AkTypes.h"
 
+typedef uint32_t u32;
 // Wwise memory hooks
 namespace AK
 {
@@ -45,17 +46,19 @@ namespace WwiseT
 		void SetStereo();
 		void SetPitch(float value);
 		void SetListener(uint listener_id);
-		void SetSourcePos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z);
+		void SetSourcePos(float x, float y, float z, float x_front, float y_front, float z_front, float x_top, float y_top, float z_top);
 		void SetListenerPos(float pos_x, float pos_y, float pos_z, float front_rot_x, float front_rot_y, float front_rot_z, float top_rot_x, float top_rot_y, float top_rot_z);
 		// Geters
 		unsigned int GetID() const;
 		const char* GetName() const;
-
 	private:
-		unsigned int id;
+		u32 id;
 		std::string name; // Event name
 		AkSoundPosition source_pos;
 		AkListenerPosition listener_pos;
+		AkVector position;
+		AkVector orient_top;
+		AkVector orient_front;
 	};
 
 	bool InitSoundEngine();
@@ -67,6 +70,7 @@ namespace WwiseT
 	void UnLoadBank(uint bankID, char* buffer);
 
 	void SetDefaultListener(uint id);
+
 	// Utils
 	AudioSource* CreateAudSource(const char* name);
 	AudioSource* CreateAudSource(uint id, const char* name);
