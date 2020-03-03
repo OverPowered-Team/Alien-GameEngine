@@ -369,6 +369,7 @@ void ResourceMesh::InitBuffers()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 void ResourceMesh::Reset()

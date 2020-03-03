@@ -14,6 +14,8 @@
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
+#include <stdio.h>
+#include <iostream>
 
 ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : ComponentMesh(attach)
 {
@@ -145,11 +147,12 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{
+		ResourceBone* r_bone = (*it)->GetBone();
+		math::float4x4 boneGlobalMatrix = (*it)->game_object_attached->transform->global_transformation;
+		math::float4x4 meshMatrix = game_object_attached->transform->global_transformation.Inverted();
+		math::float4x4 boneTransform = meshMatrix * boneGlobalMatrix * r_bone->matrix;
+		
 		bones_matrix[i] = float4x4::identity();
-		/*ResourceBone* r_bone = (ResourceBone*)(*it)->GetBone();
-		bones_matrix[i] = (*it)->game_object_attached->transform->global_transformation;
-		bones_matrix[i] = game_object_attached->transform->global_transformation.Inverted() * bones_matrix[i];
-		bones_matrix[i] = bones_matrix[i] * r_bone->matrix;*/
 	}
 }
 
@@ -161,7 +164,6 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 		return;
 
 	UpdateBonesMatrix();
-	SimulateShaderFuntion(camera);
 
 	ComponentTransform* transform = game_object_attached->transform;
 
@@ -178,17 +180,14 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	glBindVertexArray(mesh->vao);
 
-	float4x4 mvp_matrix = camera->GetViewMatrix4x4() * camera->GetProjectionMatrix4f4();
-	mvp_matrix = game_object_attached->transform->global_transformation.Transposed() * mvp_matrix;
+	float4x4 mvp_matrix = transform->global_transformation.Transposed();
+	mvp_matrix = mvp_matrix * (camera->GetProjectionMatrix4f4() * camera->GetViewMatrix4x4());
+	
 	// Uniforms
-
-	material->used_shader->SetUniformMat4f("modelViewProjection", mvp_matrix); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
-	//material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
-	//material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
+	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 	// --------------------------------------------------------------------- 
@@ -196,6 +195,14 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	material->used_shader->Unbind();
+
+	char boneName[250];
+	math::float4x4 boneTransform = float4x4::identity();
+	//for (uint i = 0; i < bones.size(); ++i)
+	//{
+	//	sprintf_s(boneName, "bones[%u]", i);
+	//	material->used_shader->SetUniformMat4f(boneName, boneTransform);
+	//}
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
@@ -327,7 +334,7 @@ void ComponentDeformableMesh::SendWeightsAndID()
 		weights = new float[mesh->num_vertex * 4];
 		bones_ID = new int[mesh->num_vertex * 4];
 
-		memset(weights, 0.0f, sizeof(float) * mesh->num_vertex * 4);
+		memset(weights, 0, sizeof(float) * mesh->num_vertex * 4);
 		memset(bones_ID, 0, sizeof(int) * mesh->num_vertex * 4);
 	}
 
@@ -337,15 +344,7 @@ void ComponentDeformableMesh::SendWeightsAndID()
 		FillWeights(bone_id, (*component_bone));
 	}
 	glBindVertexArray(mesh->vao);
-	if (mesh->id_weights == 0)
-	{
-		glGenBuffers(1, &mesh->id_weights);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_weights);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, weights, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(3);
+
 
 	if (mesh->id_bones == 0)
 	{
@@ -353,6 +352,16 @@ void ComponentDeformableMesh::SendWeightsAndID()
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_bones);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, bones_ID, GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(3);
+
+	if (mesh->id_weights == 0)
+	{
+		glGenBuffers(1, &mesh->id_weights);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_weights);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, weights, GL_STATIC_DRAW);
+
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(4);
 
