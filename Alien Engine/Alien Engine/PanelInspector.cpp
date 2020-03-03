@@ -9,6 +9,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ComponentAnimator.h"
 
 #include "ResourceAnimation.h"
@@ -353,7 +354,7 @@ void PanelInspector::ButtonAddComponent()
 
 	else {
 		ImGui::Combo("##choose component", &component, 
-			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+			"Select Component\0Mesh\0Material\0Light Directional\0Light Spot\0Light Point\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -414,6 +415,17 @@ void PanelInspector::ButtonAddComponent()
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_SPOT))
 				{
 					comp = new ComponentLightSpot(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_POINT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_POINT))
+				{
+					comp = new ComponentLightPoint(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 				else
