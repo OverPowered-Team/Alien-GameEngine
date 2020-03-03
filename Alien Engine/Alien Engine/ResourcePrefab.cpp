@@ -256,7 +256,7 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 		std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
 		for (; item != objects_to_create.end(); ++item) {
 			game_objects->GetNode(std::get<2>(*item));
-			GameObject* obj = new GameObject();
+			GameObject* obj = new GameObject(true);
 			if (std::get<0>(*item) == 1) { 
 				obj->LoadObject(game_objects, parent, !set_selected);
 			}
