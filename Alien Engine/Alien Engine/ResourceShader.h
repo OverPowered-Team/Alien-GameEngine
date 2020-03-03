@@ -97,7 +97,7 @@ public:
 	void SetUniform4f(const std::string& name, const float4& vec);
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
-	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix, uint count);
+	void SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count);
 
 	void CreateShaderDoc(const int& type, const char* name);
 

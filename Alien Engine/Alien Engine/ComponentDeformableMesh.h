@@ -31,6 +31,7 @@ protected:
 	void LoadComponent(JSONArraypack* to_load);
 	void SendWeightsAndID();
 	void FillWeights(int boneID, ComponentBone* Component_Bone);
+
 private:
 	ResourceMesh* deformable_mesh = nullptr;
 	std::vector<ComponentBone*> bones;
@@ -38,4 +39,5 @@ private:
 	float* weights = nullptr;
 	int* bones_ID = nullptr;
 	math::float4x4* bones_matrix = nullptr;
+	ComponentMaterial* material = nullptr;
 };

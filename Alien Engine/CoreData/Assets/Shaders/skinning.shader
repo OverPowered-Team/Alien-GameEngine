@@ -11,23 +11,18 @@ const int MAX_BONES = 100;
 uniform mat4 view; 
 uniform mat4 model;
 uniform mat4 projection;
+uniform mat4 modelViewProjection; 
 uniform mat4 gBones[MAX_BONES];
+uniform mat4 model;
+uniform mat4 projection;
 
 uniform float time;
 out vec2 texCoords;
 
 void main()
 {
-    mat4 BoneTransform = glm::mat4();
-    for(int i = 0; i<4; ++i)
-    {
-        if(BoneIDs[i]!=-1)
-        {
-              BoneTransform += gBones[BoneIDs[i]] * Weights[i];
-        }
-    }
-    
-    gl_Position =  view *  vec4(position, 1.0f); 
+   mat4 BoneTransform = gBones[BoneIDs[0]];
+    gl_Position = projection * view * model * vec4(position, 1.0f); 
     texCoords = vec2(uvs.x, uvs.y);
 };
 

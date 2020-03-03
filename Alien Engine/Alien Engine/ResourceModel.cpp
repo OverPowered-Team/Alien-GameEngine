@@ -716,8 +716,8 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						}
 						if (mesh->deformable)
 						{
-							 Cmat->SetShader("skinning_meta.alien");
-							// Cmat->SetShader("default_meta.alien");
+							 //Cmat->SetShader("skinning_meta.alien");
+							 Cmat->SetShader("default_meta.alien");
 						}
 						ret->AddComponent(Cmat);
 					}

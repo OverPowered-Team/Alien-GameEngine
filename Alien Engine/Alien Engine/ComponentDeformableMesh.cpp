@@ -22,6 +22,7 @@ ComponentDeformableMesh::ComponentDeformableMesh(GameObject* attach) : Component
 
 	//Change this to resource model so is only one new 
 	bones_matrix = new float4x4[100];
+	memset(bones_matrix, 0, sizeof(float) * 100 * 4 * 4);
 }
 
 ComponentDeformableMesh::~ComponentDeformableMesh()
@@ -129,8 +130,8 @@ void ComponentDeformableMesh::SimulateShaderFuntion(ComponentCamera* camera)
 		}
 		float3 original(&mesh->vertex[i * 3]);
 		float3 vertex = matrix.TransformPos(original);
-		matrix = projection * view * model;
-		vertex = matrix.TransformPos(vertex);
+		/*matrix = projection * view * model;
+		vertex = matrix.TransformPos(vertex);*/
 
 		deformable_mesh->vertex[i * 3] = vertex.x;
 		deformable_mesh->vertex[i * 3 + 1] = vertex.y;
@@ -144,10 +145,11 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{
-		ResourceBone* r_bone = (ResourceBone*)(*it)->GetBone();
+		bones_matrix[i] = float4x4::identity();
+		/*ResourceBone* r_bone = (ResourceBone*)(*it)->GetBone();
 		bones_matrix[i] = (*it)->game_object_attached->transform->global_transformation;
 		bones_matrix[i] = game_object_attached->transform->global_transformation.Inverted() * bones_matrix[i];
-		bones_matrix[i] = bones_matrix[i] * r_bone->matrix;
+		bones_matrix[i] = bones_matrix[i] * r_bone->matrix;*/
 	}
 }
 
@@ -155,12 +157,13 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
-	if (mesh == nullptr || mesh->id_index <= 0)
+	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
 		return;
+
 	UpdateBonesMatrix();
 	SimulateShaderFuntion(camera);
+
 	ComponentTransform* transform = game_object_attached->transform;
-	ComponentMaterial* material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
@@ -175,11 +178,16 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	glBindVertexArray(mesh->vao);
 
+	float4x4 mvp_matrix = camera->GetViewMatrix4x4() * camera->GetProjectionMatrix4f4();
+	mvp_matrix = game_object_attached->transform->global_transformation.Transposed() * mvp_matrix;
 	// Uniforms
+
+	material->used_shader->SetUniformMat4f("modelViewProjection", mvp_matrix); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniformMat4f("gBones", bones_matrix[0], 100);
+	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
+	//material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 	//material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
@@ -310,6 +318,7 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 //When loading resouce model
 void ComponentDeformableMesh::SendWeightsAndID()
 {
+	material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	int bone_id = 0;
 	//Genereting array of weights and bones_ID
@@ -318,8 +327,8 @@ void ComponentDeformableMesh::SendWeightsAndID()
 		weights = new float[mesh->num_vertex * 4];
 		bones_ID = new int[mesh->num_vertex * 4];
 
-		memset(weights, 0, sizeof(float) * mesh->num_vertex * 4);
-		memset(bones_ID, -1, sizeof(int) * mesh->num_vertex * 4);
+		memset(weights, 0.0f, sizeof(float) * mesh->num_vertex * 4);
+		memset(bones_ID, 0, sizeof(int) * mesh->num_vertex * 4);
 	}
 
 	for (std::vector<ComponentBone*>::iterator component_bone = bones.begin();
@@ -367,7 +376,7 @@ void ComponentDeformableMesh::FillWeights(int bone_ID, ComponentBone* component_
 		int vertex_id = bone->vertex_ids[i];
 		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
 		{
-			if (bones_ID[j] == -1)
+			if (weights[j] == 0.0f)
 			{
 				weights[j] = bone->weights[i];
 				bones_ID[j] = bone_ID;
