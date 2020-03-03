@@ -151,10 +151,13 @@ public:
 
 	bool HasTexture() const; 
 
+	// ----- ImGui ----- 
 	void DisplayMaterialOnInspector();
+	void MaterialHeader();
 	void ShaderSelectionHeader();
 	void ShaderInputsSegment();
 	void TexturesSegment();
+	// ------------------ 
 
 	void ChangeShader(ResourceShader* newShader);
 

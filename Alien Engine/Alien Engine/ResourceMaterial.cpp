@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceTexture.h"
+#include "imgui/imgui_internal.h"
 
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -198,21 +199,52 @@ bool ResourceMaterial::HasTexture() const
 
 void ResourceMaterial::DisplayMaterialOnInspector()
 {
-	ImGui::Text(GetName());
-
-	ShaderSelectionHeader();
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	ShaderInputsSegment();
 	
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
+	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::SameLine();
+		MaterialHeader();
 
-	TexturesSegment();
+		if (this == App->resources->default_material)
+		{
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+		}
+
+		ShaderSelectionHeader();
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ShaderInputsSegment();
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		TexturesSegment();
+
+		if (this == App->resources->default_material)
+		{
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+	}
+}
+
+void ResourceMaterial::MaterialHeader()
+{
+	std::string nReferences = "Material References: " + std::to_string(references);
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(nReferences.c_str());
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
 }
 
 
