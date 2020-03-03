@@ -88,6 +88,14 @@ public:
 
 	// lights
 	void CreateLight(LightTypeObj type);
+	uint GetNumOfPointLights() const;
+	uint GetNumOfDirLights() const;
+	uint GetNumOfSpotLights() const;
+	uint GetNumOfAreaLights() const;
+	void AddNumOfPointLights();
+	void AddNumOfDirLights();
+	void AddNumOfSpotLights();
+	void AddNumOfAreaLights();
 
 	// poly options
 	void ChangeWireframeMode();

@@ -1761,6 +1761,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Point light");
 		comp = new ComponentLight(object, LightType::POINT);
 		object->AddComponent(comp);
+		++num_of_point_lights;
 		break;
 	}
 	case LightTypeObj::SPOT:
@@ -1768,6 +1769,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Spot light");
 		comp = new ComponentLight(object, LightType::SPOT);
 		object->AddComponent(comp);
+		++num_of_spot_lights;
 		break;
 	}
 	case LightTypeObj::DIRECTIONAL:
@@ -1775,6 +1777,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Directional light");
 		comp = new ComponentLight(object, LightType::DIRECTIONAL);
 		object->AddComponent(comp);
+		++num_of_dir_lights;
 		break;
 	}
 	case LightTypeObj::AREA:
@@ -1782,6 +1785,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Area light");
 		comp = new ComponentLight(object, LightType::AREA);
 		object->AddComponent(comp);
+		++num_of_area_lights;
 		break;
 	}
 	default:
@@ -1790,4 +1794,44 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 
 	SetNewSelectedObject(object);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+uint ModuleObjects::GetNumOfPointLights() const
+{
+	return num_of_point_lights;
+}
+
+uint ModuleObjects::GetNumOfDirLights() const
+{
+	return num_of_dir_lights;
+}
+
+uint ModuleObjects::GetNumOfSpotLights() const
+{
+	return num_of_spot_lights;
+}
+
+uint ModuleObjects::GetNumOfAreaLights() const
+{
+	return num_of_area_lights;
+}
+
+void ModuleObjects::AddNumOfPointLights()
+{
+	++num_of_point_lights;
+}
+
+void ModuleObjects::AddNumOfDirLights()
+{
+	++num_of_dir_lights;
+}
+
+void ModuleObjects::AddNumOfSpotLights()
+{
+	++num_of_spot_lights;
+}
+
+void ModuleObjects::AddNumOfAreaLights()
+{
+	++num_of_area_lights;
 }
