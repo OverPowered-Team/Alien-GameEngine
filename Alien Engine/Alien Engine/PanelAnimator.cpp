@@ -22,7 +22,15 @@ void PanelAnimator::DrawStates()
 	for (uint i = 0, count = current_animator->GetNumStates(); i < count; ++i)
 	{
 		// Start drawing nodes.
+
+		if (current_animator->GetCurrentNode()) {
+			if (current_animator->GetStates()[i] == current_animator->GetCurrentNode()) {
+				ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, { 0, 255, 0, 255 });
+			}
+		}
+
 		ax::NodeEditor::BeginNode(current_animator->GetStates()[i]->id);
+
 
 		ImGui::Text(current_animator->GetStates()[i]->GetName().c_str());
 
@@ -30,7 +38,7 @@ void PanelAnimator::DrawStates()
 			ImGui::Text("Entry node");
 		}
 
-		if(current_animator->GetStates()[i]->GetClip())
+		if (current_animator->GetStates()[i]->GetClip())
 			ImGui::Text(current_animator->GetStates()[i]->GetClip()->name.c_str());
 		else
 			ImGui::Text("No clip selected");
@@ -45,6 +53,12 @@ void PanelAnimator::DrawStates()
 		ImGui::Text("Out ->");
 		ax::NodeEditor::EndPin();
 		ax::NodeEditor::EndNode();
+
+		if (current_animator->GetCurrentNode()) {
+			if (current_animator->GetStates()[i] == current_animator->GetCurrentNode()) {
+				ax::NodeEditor::PopStyleColor();
+			}
+		}
 	}
 }
 
@@ -52,6 +66,7 @@ void PanelAnimator::HandleContextMenu()
 {
 	OPTICK_EVENT();
 	ax::NodeEditor::Suspend();
+
 
 	context_node_id = 0;
 	ax::NodeEditor::PinId context_pin_id = 0;
@@ -72,7 +87,7 @@ void PanelAnimator::HandleContextMenu()
 		ImGui::OpenPopup("Link popup");
 	}
 
-	ax::NodeEditor::Resume();	
+	ax::NodeEditor::Resume();
 }
 
 void PanelAnimator::DrawTransitions()
@@ -85,11 +100,11 @@ void PanelAnimator::DrawTransitions()
 		State* target = current_animator->FindState(current_animator->GetTransitions()[i]->GetTarget()->GetName());
 
 		ax::NodeEditor::Link(++link_id, source->pin_out_id, target->pin_in_id);
-	}	
+	}
 	ax::NodeEditor::PopStyleVar(1);
 }
 
-void PanelAnimator::ShowStatePopup(){
+void PanelAnimator::ShowStatePopup() {
 	if (ImGui::BeginPopup("State popup")) {
 
 		ImGui::Separator();
@@ -121,6 +136,13 @@ void PanelAnimator::ShowStatePopup(){
 				current_animator->FindState(context_node)->SetClip((ResourceAnimation*)clips[i]);
 				ImGui::CloseCurrentPopup();
 			}
+		}
+
+		ImGui::Separator();
+
+		float tmp_speed = current_animator->FindState(context_node)->GetSpeed();
+		if (ImGui::InputFloat("Speed", &tmp_speed)) {
+			current_animator->FindState(context_node)->SetSpeed(tmp_speed);
 		}
 
 		ImGui::Separator();
@@ -216,7 +238,8 @@ void PanelAnimator::HandleDropLink()
 					new_node_pos = ImGui::GetMousePos();
 					ImGui::OpenPopup("States popup");
 					ax::NodeEditor::Resume();
-				}else new_node_id = ax::NodeEditor::PinId::Invalid;
+				}
+				else new_node_id = ax::NodeEditor::PinId::Invalid;
 			}
 		}
 	}
@@ -409,10 +432,10 @@ void PanelAnimator::ShowLinkPopup()
 
 		if (ImGui::Button("Add bool Condition"))
 		{
-			if(current_animator->GetBoolParameters().size() > 0)
+			if (current_animator->GetBoolParameters().size() > 0)
 				current_animator->GetTransitions()[selected_link_index]->AddBoolCondition();
-		}		
-		
+		}
+
 		if (ImGui::Button("Add float Condition"))
 		{
 			if (current_animator->GetFloatParameters().size() > 0)
@@ -428,9 +451,17 @@ void PanelAnimator::ShowLinkPopup()
 		ImGui::Separator();
 
 		float blend_v = (float)current_animator->GetTransitions()[selected_link_index]->GetBlend();
-			
+
 		if (ImGui::InputFloat("Blend value: ", &blend_v)) {
 			current_animator->GetTransitions()[selected_link_index]->SetBlend(blend_v);
+		}
+
+		ImGui::Separator();
+
+		bool end_v = current_animator->GetTransitions()[selected_link_index]->GetEnd();
+
+		if (ImGui::Checkbox("End: ", &end_v)) {
+			current_animator->GetTransitions()[selected_link_index]->SetEnd(end_v);
 		}
 
 		ImGui::Separator();
@@ -449,7 +480,7 @@ void PanelAnimator::Start()
 
 }
 
-bool PanelAnimator::IsInside(const float2 & pos) const
+bool PanelAnimator::IsInside(const float2& pos) const
 {
 	AABB2D box(float2(screen_pos.x, screen_pos.y), float2(screen_pos.x + w, screen_pos.y + h));
 	return math::Contains(box, float3(pos.x, pos.y, 0));
@@ -562,7 +593,7 @@ void PanelAnimator::OnAssetDelete()
 		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
 		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
 		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
-		if(current_animator)
+		if (current_animator)
 			current_animator->DecreaseReferences();
 		current_animator = nullptr;
 	}
@@ -578,7 +609,7 @@ void PanelAnimator::OnObjectDelete()
 	//TODO
 }
 
-void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController * animator)
+void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController* animator)
 {
 	if (current_animator)
 	{
@@ -590,7 +621,7 @@ void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorControl
 	current_animator->IncreaseReferences();
 }
 
-PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) 
+PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
 {
 	shortcut = App->shortcut_manager->AddShortCut("Animator", key1_down, std::bind(&Panel::ChangeEnable, this), key2_repeat, key3_repeat_extra);
@@ -632,7 +663,7 @@ void PanelAnimator::PanelLogic()
 
 		current_animator = nullptr;
 
-		for each (GameObject* go in App->objects->GetSelectedObjects())
+		for each (GameObject * go in App->objects->GetSelectedObjects())
 		{
 			if (go->HasComponent(ComponentType::ANIMATOR)) {
 				ComponentAnimator* c_anim = (ComponentAnimator*)go->GetComponent(ComponentType::ANIMATOR);

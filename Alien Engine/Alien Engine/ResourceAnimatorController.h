@@ -111,6 +111,7 @@ private:
 	std::vector<FloatCondition*> float_conditions;
 	std::vector<BoolCondition*> bool_conditions;
 	float blend = 2;
+	bool end = false;
 
 public:
 	Transition();
@@ -124,6 +125,8 @@ public:
 	State* GetSource();
 	State* GetTarget();
 	float GetBlend();
+	bool GetEnd() { return end; }
+	void SetEnd(bool hasend) { end = hasend; }
 
 	//Handle Conditions
 	void AddIntCondition();
@@ -224,13 +227,14 @@ public:
 	std::vector<State*> GetStates() { return states; }
 
 	//Transitions
-	void AddTransition(State* source, State* target, float blend);
+	void AddTransition(State* source, State* target, float blend, bool end = false);
 	void RemoveTransition(std::string source_name, std::string target_name);
 	std::vector<Transition*> GetTransitions() const { return transitions; }
 	uint GetNumTransitions() const { return transitions.size(); }
 	std::vector<Transition*> FindTransitionsFromSourceState(State* state);
 
 	State* GetDefaultNode() const { return default_state; };
+	State* GetCurrentNode() const { return current_state; };
 	void SetDefaultNode(State* state) { default_state = state; }
 	ax::NodeEditor::EditorContext* GetEditorContext();
 	std::string GetTypeString() const;

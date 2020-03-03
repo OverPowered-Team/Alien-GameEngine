@@ -58,8 +58,9 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			{
 				std::string source = asset_transitions->GetString("Source");
 				std::string target = asset_transitions->GetString("Target");
-				int blend = asset_transitions->GetNumber("Blend");
-				AddTransition(FindState(source), FindState(target), blend);
+				float blend = asset_transitions->GetNumber("Blend");
+				bool end = asset_transitions->GetBoolean("End");
+				AddTransition(FindState(source), FindState(target), blend, end);
 
 				JSONArraypack* transitions_int_conditions = asset_transitions->GetArray("IntConditions");
 				if (transitions_int_conditions) {
@@ -371,8 +372,6 @@ bool ResourceAnimatorController::CheckTriggers()
 	std::vector<Transition*> current_transitions = FindTransitionsFromSourceState(current_state);
 	std::vector<Transition*> current_possible_transitions;
 
-	//Has to be modified
-
 	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
 		bool retu = true;
 
@@ -395,8 +394,16 @@ bool ResourceAnimatorController::CheckTriggers()
 			}
 		}
 
-		if (retu)
+		if (current_state->time < current_state->GetClip()->GetDuration())
+		{
+			if (retu && !(*it)->GetEnd())
+			{
+				current_possible_transitions.push_back((*it));
+			}
+		}
+		else {
 			current_possible_transitions.push_back((*it));
+		}
 	}
 
 	if (ret && current_possible_transitions.size() > 0) {
@@ -444,6 +451,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		transitions_array->SetString("Source", (*it)->GetSource()->GetName());
 		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
+		transitions_array->SetNumber("End", (*it)->GetEnd());
 
 		JSONArraypack* int_conditions_array = transitions_array->InitNewArray("IntConditions");
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
@@ -702,9 +710,14 @@ bool ResourceAnimatorController::LoadMemory()
 			bytes = sizeof(float);
 			float tmp_blend;
 			memcpy(&tmp_blend, cursor, bytes);
+			cursor += bytes;			
+			
+			bytes = sizeof(bool);
+			bool tmp_end;
+			memcpy(&tmp_end, cursor, bytes);
 			cursor += bytes;
 
-			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend);
+			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_end);
 
 			bytes = sizeof(uint);
 			uint num_int_conditions;
@@ -952,7 +965,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
-		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(uint) * 3;
+		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(bool) + sizeof(uint) * 3;
 
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
 		for (std::vector<IntCondition*>::iterator int_it = int_conditions.begin(); int_it != int_conditions.end(); ++int_it) {
@@ -1102,6 +1115,12 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		memcpy(cursor, &tr_blend, bytes);
 		cursor += bytes;
 
+		//Store end
+		bytes = sizeof(bool);
+		bool tr_end = (*it)->GetEnd();
+		memcpy(cursor, &tr_end, bytes);
+		cursor += bytes;
+
 		//Save int Conditions
 		bytes = sizeof(uint);
 		uint num_int_conditions = (*it)->GetIntConditions().size();
@@ -1237,7 +1256,7 @@ void ResourceAnimatorController::Play(std::string state_name)
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
-		if ((*it)->GetName() == state_name)
+		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0)
 			current_state = (*it);
 	}
 }
@@ -1410,9 +1429,10 @@ State* ResourceAnimatorController::FindStateFromPinId(uint pin_id)
 	}
 }
 
-void ResourceAnimatorController::AddTransition(State* source, State* target, float blend)
+void ResourceAnimatorController::AddTransition(State* source, State* target, float blend, bool end)
 {
 	Transition* new_transition = new Transition(source, target, blend);
+	new_transition->SetEnd(end);
 
 	transitions.push_back(new_transition);
 }

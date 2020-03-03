@@ -23,7 +23,7 @@ void PlayerController::Update()
 	}
 
 	if (Input::GetKeyDown(SDL_SCANCODE_E)) {
-		//animator->PlayState("Attack");
+		animator->PlayState("Attack");
 	}
 
 	if (Input::GetKeyDown(SDL_SCANCODE_A)) {

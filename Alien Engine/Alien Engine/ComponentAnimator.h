@@ -15,7 +15,7 @@ public:
 	virtual ~ComponentAnimator();
 	void Update();
 
-	void PlayState(std::string name);
+	void PlayState(const char* name);
 	void UpdateAnimation(GameObject* go_to_update);
 	void OnPlay();
 
