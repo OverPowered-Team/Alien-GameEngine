@@ -12,9 +12,9 @@ struct PointLightProperties
 	float3 ambient = float3::zero();
 	float3 diffuse = float3::zero();
 	float3 specular = float3::zero();
-	float3 constant = float3::zero();
-	float3 linear = float3::zero();
-	float3 quadratic = float3::zero();
+	float constant = 0.0f;
+	float linear = 0.0f;
+	float quadratic = 0.0f;
 };
 
 class __declspec(dllexport) ComponentLightPoint : public Component {

@@ -21,11 +21,27 @@ void main()
 #shader fragment
 #version 330 core
 
+// Uniforms
 uniform sampler2D tex;
 uniform vec3 diffuse_color;
 
-out vec4 FragColor;
+// Ins
 in vec2 texCoords;
+
+// Outs
+out vec4 FragColor;
+
+// Structs
+struct DirectionalLight {
+    vec3 position;
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+// Function prototypes
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir);
 
 void main()
 {

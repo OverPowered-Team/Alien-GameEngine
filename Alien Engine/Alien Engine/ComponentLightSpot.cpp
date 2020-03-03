@@ -68,11 +68,11 @@ bool ComponentLightSpot::DrawInspector()
 		ImGui::DragFloat3("Ambient", light_props.ambient.ptr(), 0.10f);
 		ImGui::DragFloat3("Diffuse", light_props.diffuse.ptr(), 0.10f);
 		ImGui::DragFloat3("Specular", light_props.specular.ptr(), 0.10f);
-		ImGui::DragFloat3("Constant", light_props.constant.ptr(), 0.10f);
-		ImGui::DragFloat3("Linear", light_props.linear.ptr(), 0.10f);
-		ImGui::DragFloat3("Quadratic", light_props.quadratic.ptr(), 0.10f);
-		ImGui::DragFloat3("Cut Off", light_props.cut_off.ptr(), 0.10f);
-		ImGui::DragFloat3("Outer Cut Off", light_props.outer_cut_off.ptr(), 0.10f);
+		ImGui::DragFloat("Constant", &light_props.constant, 0.10f);
+		ImGui::DragFloat("Linear", &light_props.linear, 0.10f);
+		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f);
+		ImGui::DragFloat("Cut Off", &light_props.cut_off, 0.10f);
+		ImGui::DragFloat("Outer Cut Off", &light_props.outer_cut_off, 0.10f);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -126,11 +126,11 @@ void ComponentLightSpot::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
 	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
 	to_save->SetFloat3("Specular", float3(light_props.specular));
-	to_save->SetFloat3("Constant", float3(light_props.constant));
-	to_save->SetFloat3("Linear", float3(light_props.linear));
-	to_save->SetFloat3("Quadratic", float3(light_props.quadratic));
-	to_save->SetFloat3("Cut_Off", float3(light_props.cut_off));
-	to_save->SetFloat3("Outer_Cut_Off", float3(light_props.outer_cut_off));
+	to_save->SetNumber("Constant", double(light_props.constant));
+	to_save->SetNumber("Linear", double(light_props.linear));
+	to_save->SetNumber("Quadratic", double(light_props.quadratic));
+	to_save->SetNumber("Cut_Off", double(light_props.cut_off));
+	to_save->SetNumber("Outer_Cut_Off", double(light_props.outer_cut_off));
 }
 
 void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
@@ -144,11 +144,11 @@ void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
 	light_props.ambient = to_load->GetFloat3("Ambient");
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
 	light_props.specular = to_load->GetFloat3("Specular");
-	light_props.constant = to_load->GetFloat3("Constant");
-	light_props.linear = to_load->GetFloat3("Linear");
-	light_props.quadratic = to_load->GetFloat3("Quadratic");
-	light_props.cut_off = to_load->GetFloat3("Cut_Off");
-	light_props.outer_cut_off = to_load->GetFloat3("Outer_Cut_Off");
+	light_props.constant = (float)to_load->GetNumber("Constant");
+	light_props.linear = (float)to_load->GetNumber("Linear");
+	light_props.quadratic = (float)to_load->GetNumber("Quadratic");
+	light_props.cut_off = (float)to_load->GetNumber("Cut_Off");
+	light_props.outer_cut_off = (float)to_load->GetNumber("Outer_Cut_Off");
 }
 
 void ComponentLightSpot::DrawIconLight()

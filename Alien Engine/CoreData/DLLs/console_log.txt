@@ -10,15 +10,13 @@ C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Mod
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(204) : Application Start --------------
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Shaders/default.shader] to [Library/Shaders/10531987425526217564.shader]
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
-C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Scripts/Audio.alienScript] to [Library/Scripts/4833691520819028617.alienPrefab]
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(69) : Starting Module Objects
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(62) : Creating Physics environment
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(54) : Loading UI assets
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(84) : Loading Assets/Models/ApplyScale_FBX_UnitsScale.fbx
-C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(394) : WARNING: Uniform time doesn't exist...
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(165) : Destroying 3D Renderer
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(92) : Unloading UI scene

@@ -12,11 +12,11 @@ struct SpotLightProperties
 	float3 ambient = float3::zero();
 	float3 diffuse = float3::zero();
 	float3 specular = float3::zero();
-	float3 constant = float3::zero();
-	float3 linear = float3::zero();
-	float3 quadratic = float3::zero();
-	float3 cut_off = float3::zero();
-	float3 outer_cut_off = float3::zero();
+	float constant = 0.0f;
+	float linear = 0.0f;
+	float quadratic = 0.0f;
+	float cut_off = 0.0f;
+	float outer_cut_off = 0.0f;
 };
 
 class __declspec(dllexport) ComponentLightSpot : public Component {
