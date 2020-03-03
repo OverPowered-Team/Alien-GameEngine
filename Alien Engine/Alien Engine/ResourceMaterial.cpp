@@ -180,7 +180,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ApplyMaterial()
 {
-	if(texture != nullptr)
+	if(texture != nullptr && textureActivated)
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 
 	// Bind the actual shader
@@ -198,6 +198,7 @@ bool ResourceMaterial::HasTexture() const
 
 void ResourceMaterial::DisplayMaterialOnInspector()
 {
+	ImGui::Text(GetName());
 
 	ShaderSelectionHeader();
 
@@ -289,51 +290,50 @@ void ResourceMaterial::TexturesSegment()
 	if (texture != nullptr)
 	{
 		if (texture != nullptr) {
-			ImGui::Spacing();
-			ImGui::Text("Texture References: %i", texture->references);
+			
 		}
 	}
 
-	//static ResourceTexture* selected_texture = nullptr;
-	//if (texture != nullptr)
-	//{
-	//	ImGui::SameLine(220, 15);
-	//	if (ImGui::Button("Change Texture", { 120,20 })) {
-	//		/*change_texture_menu = true;
-	//		selected_texture = texture;*/
-	//	}
+	static ResourceTexture* selected_texture = nullptr;
+	if (texture != nullptr)
+	{	
+		ImGui::Text("Texture Information: ");
 
-	//	ImGui::SameLine(140, 15);
-	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
-	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
-	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-	//	if (ImGui::Button("Delete", { 60,20 })) {
-	//		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-	//		texture = nullptr;
-	//		ImGui::PopStyleColor();
-	//		ImGui::PopStyleColor();
-	//		ImGui::PopStyleColor();
-	//		return true;
-	//	}
+		//ImGui::SameLine(140, 15);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+		if (ImGui::Button("Delete", { 60,20 })) {
+			//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			texture->DecreaseReferences();
+			texture = nullptr;
 
-	//	ImGui::PopStyleColor();
-	//	ImGui::PopStyleColor();
-	//	ImGui::PopStyleColor();
+			ImGui::PopStyleColor();
+			ImGui::PopStyleColor();
+			ImGui::PopStyleColor();
+			return;
+		}
 
-	//	static bool check;
-	//	check = texture_activated;
-	//	if (ImGui::Checkbox("Texture Active", &check)) {
-	//		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-	//		texture_activated = check;
-	//	}
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
 
-	//	ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
-	//	ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
-	//	ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
+		static bool check;
+		check = textureActivated;
+		if (ImGui::Checkbox("Texture Active", &check)) {
+			//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			textureActivated = check;
+		}
+		ImGui::SameLine(220, 15);
+		ImGui::Spacing();
+		ImGui::Text("Texture References: %i", texture->references);
+		ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
+		ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
+		ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
 
-	//	ImGui::Image((ImTextureID)texture->id, { ImGui::GetWindowWidth() ,ImGui::GetWindowWidth() });
-	//	ImGui::Spacing();
-	//}
+		ImGui::Image((ImTextureID)texture->id, { ImGui::GetWindowWidth() ,ImGui::GetWindowWidth() });
+		ImGui::Spacing();
+	}
 	//else {
 	//	ImGui::SameLine(220, 15);
 	//	if (ImGui::Button("Add Texture", { 120,20 })) {
@@ -342,7 +342,7 @@ void ResourceMaterial::TexturesSegment()
 	//	}
 	//}
 
-	// Textures window preview 
+	 //Textures window preview 
 
 	/*if (change_texture_menu) {
 		ImGui::OpenPopup("Textures Loaded");

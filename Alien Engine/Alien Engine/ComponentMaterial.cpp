@@ -38,13 +38,8 @@ bool ComponentMaterial::DrawInspector()
 
 	if (ImGui::CollapsingHeader("Material", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(material->GetName());
 		material->DisplayMaterialOnInspector();
 		RightClickMenu("Material");
-
-		ImGui::Spacing();
-		ImGui::Spacing();
-
 
 		//InspectorShaderProperties();
 
@@ -72,14 +67,6 @@ bool ComponentMaterial::DrawInspector()
 		else if (!set_Z && ImGui::IsMouseReleased(0)) {
 			set_Z = true;
 		}*/
-
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
-		ImGui::Spacing();
-		ImGui::Text("Texture Information");
-
 	}
 	else
 		RightClickMenu("Material");
@@ -348,6 +335,7 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	}
 	else // Create a new material
 	{
+		//if(!(App->StringCmp(material->GetName(),tex->GetName()) && !material->HasTexture())) // TODO: Should discuss this
 		SetMaterial(App->resources->CreateMaterial(tex->GetName()));
 	}
 

@@ -162,6 +162,7 @@ public:
 	
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	ResourceTexture* texture = nullptr; // Provisional
+	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX] = { 0 };
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
