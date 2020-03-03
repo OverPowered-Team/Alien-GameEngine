@@ -1604,9 +1604,7 @@ void ModuleObjects::HandleEvent(EventType eventType)
 	if (eventType == EventType::ON_PLAY) {
 		InitScripts();
 	}
-	else if (eventType == EventType::ON_UNLOAD_SCENE) {
-		App->ui->panel_animtimeline->changed = true;
-	}
+	
 
 }
 
