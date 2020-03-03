@@ -16,6 +16,7 @@ class __declspec(dllexport) Gizmos {
 	friend class ComponentCamera;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
+	friend class ComponentLightPoint;
 	friend class ModuleObjects;
 public:
 

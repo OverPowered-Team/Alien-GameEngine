@@ -698,6 +698,7 @@
     <ClInclude Include="ComponentCheckbox.h" />
     <ClInclude Include="ComponentImage.h" />
     <ClInclude Include="ComponentLightDirectional.h" />
+    <ClInclude Include="ComponentLightPoint.h" />
     <ClInclude Include="ComponentLightSpot.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
@@ -1107,6 +1108,7 @@
     <ClCompile Include="ComponentCheckbox.cpp" />
     <ClCompile Include="ComponentImage.cpp" />
     <ClCompile Include="ComponentLightDirectional.cpp" />
+    <ClCompile Include="ComponentLightPoint.cpp" />
     <ClCompile Include="ComponentLightSpot.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />

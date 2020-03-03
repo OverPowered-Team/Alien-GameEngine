@@ -11,6 +11,7 @@
 #include "ComponentMesh.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -1754,7 +1755,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	case LightTypeObj::POINT:
 	{
 		object->SetName("Point light");
-		comp = new ComponentLightSpot(object);
+		comp = new ComponentLightPoint(object);
 		object->AddComponent(comp);
 		++num_of_point_lights;
 		break;
@@ -1773,14 +1774,6 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		comp = new ComponentLightDirectional(object);
 		object->AddComponent(comp);
 		++num_of_dir_lights;
-		break;
-	}
-	case LightTypeObj::AREA:
-	{
-		object->SetName("Area light");
-		comp = new ComponentLightSpot(object);
-		object->AddComponent(comp);
-		++num_of_area_lights;
 		break;
 	}
 	default:
@@ -1806,11 +1799,6 @@ uint ModuleObjects::GetNumOfSpotLights() const
 	return num_of_spot_lights;
 }
 
-uint ModuleObjects::GetNumOfAreaLights() const
-{
-	return num_of_area_lights;
-}
-
 void ModuleObjects::AddNumOfPointLights()
 {
 	++num_of_point_lights;
@@ -1826,11 +1814,6 @@ void ModuleObjects::AddNumOfSpotLights()
 	++num_of_spot_lights;
 }
 
-void ModuleObjects::AddNumOfAreaLights()
-{
-	++num_of_area_lights;
-}
-
 void ModuleObjects::ReduceNumOfPointLights()
 {
 	--num_of_point_lights;
@@ -1844,9 +1827,4 @@ void ModuleObjects::ReduceNumOfDirLights()
 void ModuleObjects::ReduceNumOfSpotLights()
 {
 	--num_of_spot_lights;
-}
-
-void ModuleObjects::ReduceNumOfAreaLights()
-{
-	--num_of_area_lights;
 }

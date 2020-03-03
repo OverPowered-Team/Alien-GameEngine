@@ -8,6 +8,7 @@
 #include "ComponentDeformableMesh.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ComponentBone.h"
 #include "ComponentAnimator.h"
 #include "ComponentDeformableMesh.h"
@@ -610,6 +611,11 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	if (light_spot != nullptr && light_spot->IsEnabled())
 	{
 		light_spot->LightLogic();
+	}
+	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
+	if (light_point != nullptr && light_point->IsEnabled())
+	{
+		light_point->LightLogic();
 	}
 
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1580,6 +1586,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
 				break; }
+			case (int)ComponentType::LIGHT_POINT: {
+				ComponentLightPoint* light = new ComponentLightPoint(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
 			case (int)ComponentType::MATERIAL: {
 				ComponentMaterial* material = new ComponentMaterial(this);
 				material->LoadComponent(components_to_load);
@@ -1772,6 +1783,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					break; }
 				case ComponentType::LIGHT_SPOT: {
 					ComponentLightSpot* light = new ComponentLightSpot(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_POINT: {
+					ComponentLightPoint* light = new ComponentLightPoint(clone);
 					(*item)->Clone(light);
 					clone->AddComponent(light);
 					break; }

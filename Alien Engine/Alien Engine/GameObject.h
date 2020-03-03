@@ -20,6 +20,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentCamera;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
+	friend class ComponentLightPoint;
 	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;

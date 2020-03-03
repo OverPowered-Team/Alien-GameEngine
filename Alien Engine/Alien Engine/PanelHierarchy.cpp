@@ -515,10 +515,6 @@ void PanelHierarchy::RightClickMenu()
 			{
 				App->objects->CreateLight(LightTypeObj::DIRECTIONAL);
 			}
-			if (ImGui::MenuItem("Area light"))
-			{
-				App->objects->CreateLight(LightTypeObj::AREA);
-			}
 
 			ImGui::EndMenu();
 		}

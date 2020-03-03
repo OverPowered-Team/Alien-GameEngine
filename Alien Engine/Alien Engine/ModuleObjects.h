@@ -57,7 +57,6 @@ enum class LightTypeObj
 	POINT,
 	SPOT,
 	DIRECTIONAL,
-	AREA,
 
 	UNKNOWN = -1
 };
@@ -88,18 +87,18 @@ public:
 
 	// lights
 	void CreateLight(LightTypeObj type);
+	
 	uint GetNumOfPointLights() const;
 	uint GetNumOfDirLights() const;
 	uint GetNumOfSpotLights() const;
-	uint GetNumOfAreaLights() const;
+	
 	void AddNumOfPointLights();
 	void AddNumOfDirLights();
 	void AddNumOfSpotLights();
-	void AddNumOfAreaLights();
+	
 	void ReduceNumOfPointLights();
 	void ReduceNumOfDirLights();
 	void ReduceNumOfSpotLights();
-	void ReduceNumOfAreaLights();
 
 	// poly options
 	void ChangeWireframeMode();

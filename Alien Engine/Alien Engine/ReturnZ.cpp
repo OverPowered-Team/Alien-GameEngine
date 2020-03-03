@@ -6,6 +6,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ResourceScript.h"
 #include "ResourceTexture.h"
 #include "Maths.h"
@@ -257,6 +258,10 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					break; }
 				case ComponentType::LIGHT_SPOT: {
 					ComponentLightSpot* light = (ComponentLightSpot*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(light, comp->comp);
+					break; }
+				case ComponentType::LIGHT_POINT: {
+					ComponentLightPoint* light = (ComponentLightPoint*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(light, comp->comp);
 					break; }
 				case ComponentType::PARTICLES: {
@@ -539,6 +544,12 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						CompZ::SetComponent(light, lightZ);
 						new_obj->AddComponent(light);
 						break; }
+					case ComponentType::LIGHT_POINT: {
+						ComponentLightPoint* light = new ComponentLightPoint(new_obj);
+						CompLightZ* lightZ = (CompLightZ*)(*item);
+						CompZ::SetComponent(light, lightZ);
+						new_obj->AddComponent(light);
+						break; }
 					case ComponentType::CAMERA: {
 						ComponentCamera* camera = new ComponentCamera(new_obj);
 						CompCameraZ* cameraZ = (CompCameraZ*)(*item);
@@ -674,6 +685,12 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		break; }
 	case ComponentType::LIGHT_SPOT: {
 		ComponentLightSpot* light = (ComponentLightSpot*)component;
+		CompLightZ* lightZ = new CompLightZ();
+		*compZ = lightZ;
+		lightZ->objectID = light->game_object_attached->ID;
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = (ComponentLightPoint*)component;
 		CompLightZ* lightZ = new CompLightZ();
 		*compZ = lightZ;
 		lightZ->objectID = light->game_object_attached->ID;
@@ -852,6 +869,10 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		break; }
 	case ComponentType::LIGHT_SPOT: {
 		ComponentLightSpot* light = (ComponentLightSpot*)component;
+		CompLightZ* lightZ = (CompLightZ*)compZ;
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = (ComponentLightPoint*)component;
 		CompLightZ* lightZ = (CompLightZ*)compZ;
 		break; }
 	case ComponentType::CANVAS: {
@@ -1200,6 +1221,11 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		break; }
 	case ComponentType::LIGHT_SPOT: {
 		ComponentLightSpot* light = new ComponentLightSpot(obj);
+		CompZ::SetComponent(light, compZ);
+		obj->AddComponent(light);
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = new ComponentLightPoint(obj);
 		CompZ::SetComponent(light, compZ);
 		obj->AddComponent(light);
 		break; }

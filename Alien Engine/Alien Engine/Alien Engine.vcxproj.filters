@@ -576,6 +576,9 @@
     <ClInclude Include="ComponentLightSpot.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentLightPoint.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -793,8 +796,6 @@
     </ClCompile>
     <ClCompile Include="PanelLayout.cpp">
       <Filter>Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentLight.cpp">
     </ClCompile>
     <ClInclude Include="ComponentBone.h">
       <Filter>Components</Filter>
@@ -2513,6 +2514,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ComponentLightSpot.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentLightPoint.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

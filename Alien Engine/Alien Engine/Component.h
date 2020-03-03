@@ -12,6 +12,7 @@ enum class ComponentType {
 	MATERIAL,
 	LIGHT_DIRECTIONAL,
 	LIGHT_SPOT,
+	LIGHT_POINT,
 	CAMERA,
 	BOX_COLLIDER,
 	SPHERE_COLLIDER,
@@ -41,6 +42,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentCamera;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
+	friend class ComponentLightPoint;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
