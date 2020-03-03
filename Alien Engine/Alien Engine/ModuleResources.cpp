@@ -1051,9 +1051,7 @@ void ModuleResources::CreateAsset(FileDropType type)
 		break;
 	case FileDropType::ANIMATION:
 		break;
-	case FileDropType::MATERIAL:
-		CreateMaterial();
-		break;
+
 	}
 
 	App->ui->panel_project->RefreshAllNodes();
@@ -1069,15 +1067,17 @@ void ModuleResources::CreateAnimatorController()
 	new_controller->SaveAsset();
 }
 
-void ModuleResources::CreateMaterial()
+ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
 {
-	std::string materialName = "NewMaterial";
+	std::string materialName = name;
 	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
 	
 	ResourceMaterial* new_material = new ResourceMaterial();
 	new_material->SetName(materialName.c_str());
 	new_material->CreateMaterialFile(MATERIALS_FOLDER);
 	new_material->CreateMetaData();
+	
+	return new_material;
 }
 
 

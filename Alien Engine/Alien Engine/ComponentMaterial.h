@@ -31,11 +31,14 @@ private:
 
 	void Clone(Component* clone);
 
-	const ResourceMaterial* GetMaterial() const;
 
 public:
 	void SetTexture(ResourceTexture* tex);
+	void RemoveTexture();
+	const ResourceTexture* GetTexture() const;
+
 	void SetMaterial(ResourceMaterial* mat);
+	const ResourceMaterial* GetMaterial() const;
 
 private:
 	bool change_texture_menu = false;

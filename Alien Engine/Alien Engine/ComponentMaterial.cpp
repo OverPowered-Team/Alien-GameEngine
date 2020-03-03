@@ -325,30 +325,57 @@ void ComponentMaterial::Clone(Component* clone)
 
 void ComponentMaterial::SetTexture(ResourceTexture* tex)
 {
+	if (tex == nullptr)
+		return;
+
+	// Detach current texture
 	if (material->texture != nullptr) {
 		material->texture->DecreaseReferences();
 	}
-	material->texture = tex;
-	if (material->texture != nullptr) {
-		material->texture->IncreaseReferences();
+
+	// Create new material to assign the new texture to if you are using the default material
+	if (material == App->resources->default_material)
+	{
+		SetMaterial(App->resources->CreateMaterial(tex->GetName()));
 	}
+
+	// Finally assign the texture to the desired material
+	material->texture = tex;
+	material->texture->IncreaseReferences();
+}
+
+void ComponentMaterial::RemoveTexture()
+{
+	if (material->texture == nullptr)
+		return;
+
+	material->texture->DecreaseReferences();
+	material->texture = nullptr;
+}
+
+const ResourceTexture* ComponentMaterial::GetTexture() const
+{
+	return material->texture;
 }
 
 void ComponentMaterial::SetMaterial(ResourceMaterial* mat)
 {
+	if (mat == nullptr)
+		return; 
+
 	if (material != nullptr)
 		material->DecreaseReferences();
 
 	material = mat;
-
-	if (material != nullptr)
-		material->IncreaseReferences(); 
+	material->IncreaseReferences(); 
 }
 
 const ResourceMaterial* ComponentMaterial::GetMaterial() const
 {
 	return material;
 }
+
+
 
 void ComponentMaterial::ShowShaderTextEditor()
 {
