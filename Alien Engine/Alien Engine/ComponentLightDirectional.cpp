@@ -62,6 +62,13 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Checkbox("Print Icon", &print_icon);
 		ImGui::PopID();
 
+		// Parameters ---------
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
+		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.10f);
+		ImGui::DragFloat3("Ambient", light_props.ambient.ptr(), 0.10f);
+		ImGui::DragFloat3("Diffuse", light_props.diffuse.ptr(), 0.10f);
+		ImGui::DragFloat3("Specular", light_props.specular.ptr(), 0.10f);
+		
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -108,6 +115,12 @@ void ComponentLightDirectional::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("PrintIcon", print_icon);
+
+	to_save->SetFloat3("Position", float3(light_props.position));
+	to_save->SetFloat3("Direction", float3(light_props.direction));
+	to_save->SetFloat3("Ambient", float3(light_props.ambient));
+	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
+	to_save->SetFloat3("Specular", float3(light_props.specular));
 }
 
 void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
@@ -115,6 +128,12 @@ void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
 	enabled = to_load->GetBoolean("Enabled");
 	ID = std::stoull(to_load->GetString("ID"));
 	print_icon = to_load->GetBoolean("PrintIcon");
+
+	light_props.position = to_load->GetFloat3("Position");
+	light_props.direction = to_load->GetFloat3("Direction");
+	light_props.ambient = to_load->GetFloat3("Ambient");
+	light_props.diffuse = to_load->GetFloat3("Diffuse");
+	light_props.specular = to_load->GetFloat3("Specular");
 }
 
 void ComponentLightDirectional::DrawIconLight()
