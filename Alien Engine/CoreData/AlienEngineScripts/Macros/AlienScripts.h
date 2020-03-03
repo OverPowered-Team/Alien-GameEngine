@@ -6,6 +6,7 @@
 #include "..\..\..\Alien Engine\ComponentTransform.h"
 #include "..\..\..\Alien Engine\ComponentCamera.h"
 #include "..\..\..\Alien Engine\ComponentLightDirectional.h"
+#include "..\..\..\Alien Engine\ComponentLightSpot.h"
 #include "..\..\..\Alien Engine\ComponentMaterial.h"
 #include "..\..\..\Alien Engine\ComponentMesh.h"
 #include "../../../Alien Engine/ComponentAudioEmitter.h"
