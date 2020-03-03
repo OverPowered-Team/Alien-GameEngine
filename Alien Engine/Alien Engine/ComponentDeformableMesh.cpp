@@ -152,7 +152,7 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 		math::float4x4 meshMatrix = game_object_attached->transform->global_transformation.Inverted();
 		math::float4x4 boneTransform = meshMatrix * boneGlobalMatrix * r_bone->matrix;
 		
-		bones_matrix[i] = float4x4::identity();
+		bones_matrix[i] = boneTransform;
 	}
 }
 
@@ -180,9 +180,6 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	glBindVertexArray(mesh->vao);
 
-	float4x4 mvp_matrix = transform->global_transformation.Transposed();
-	mvp_matrix = mvp_matrix * (camera->GetProjectionMatrix4f4() * camera->GetViewMatrix4x4());
-	
 	// Uniforms
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
