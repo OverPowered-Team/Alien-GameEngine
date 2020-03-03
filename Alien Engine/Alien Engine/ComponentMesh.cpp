@@ -65,16 +65,19 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glBindVertexArray(mesh->vao);
 
 
-	// Uniforms
-	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4()); // TODO: About in-game camera?
+	// Uniforms --------------
+	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
+	// Light uniforms set from here
+	material->used_shader->SetUniform1i("max_dir_ligts", App->objects->GetNumOfDirLights());
+	material->used_shader->SetUniform1i("max_point_ligts", App->objects->GetNumOfPointLights());
+	material->used_shader->SetUniform1i("max_spot_ligts", App->objects->GetNumOfSpotLights());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
-
 
 	// --------------------------------------------------------------------- 
 

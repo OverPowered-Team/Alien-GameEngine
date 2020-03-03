@@ -22,6 +22,9 @@ void main()
 #version 330 core
 
 // Uniforms
+uniform uint max_dir_ligts;
+uniform uint max_point_lights;
+uniform uint max_spot_lights;
 uniform sampler2D tex;
 uniform vec3 diffuse_color;
 
@@ -53,3 +56,5 @@ void main()
     else
         FragColor = textureColor * diffuse;    
 }
+
+
