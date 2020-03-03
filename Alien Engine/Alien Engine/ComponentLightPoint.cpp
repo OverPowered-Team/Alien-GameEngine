@@ -31,7 +31,7 @@ ComponentLightPoint::~ComponentLightPoint()
 void ComponentLightPoint::LightLogic()
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
+	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 }
 
 bool ComponentLightPoint::DrawInspector()
