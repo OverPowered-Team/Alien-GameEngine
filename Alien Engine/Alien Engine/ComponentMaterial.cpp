@@ -326,7 +326,10 @@ void ComponentMaterial::Clone(Component* clone)
 void ComponentMaterial::SetTexture(ResourceTexture* tex)
 {
 	if (tex == nullptr)
+	{
+		RemoveTexture();
 		return;
+	}
 
 	// Detach current texture
 	if (material->texture != nullptr) {
