@@ -96,6 +96,10 @@ public:
 	void AddNumOfDirLights();
 	void AddNumOfSpotLights();
 	void AddNumOfAreaLights();
+	void ReduceNumOfPointLights();
+	void ReduceNumOfDirLights();
+	void ReduceNumOfSpotLights();
+	void ReduceNumOfAreaLights();
 
 	// poly options
 	void ChangeWireframeMode();

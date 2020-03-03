@@ -14,7 +14,8 @@ enum class PrimitiveType;
 class __declspec(dllexport) Gizmos {
 	friend class Gizmos;
 	friend class ComponentCamera;
-	friend class ComponentLight;
+	friend class ComponentLightDirectional;
+	friend class ComponentLightSpot;
 	friend class ModuleObjects;
 public:
 

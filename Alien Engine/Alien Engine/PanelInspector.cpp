@@ -7,7 +7,8 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
 #include "ComponentAnimator.h"
 
 #include "ResourceAnimation.h"
@@ -397,11 +398,22 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case ComponentType::LIGHT: {
+			case ComponentType::LIGHT_DIRECTIONAL: {
 
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT))
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_DIRECTIONAL))
 				{
-					comp = new ComponentLight(App->objects->GetSelectedObjects().back());
+					comp = new ComponentLightDirectional(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_SPOT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_SPOT))
+				{
+					comp = new ComponentLightSpot(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 				else

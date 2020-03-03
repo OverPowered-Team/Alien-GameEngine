@@ -9,7 +9,8 @@
 #include "ComponentMaterial.h"
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -83,12 +84,6 @@ bool ModuleObjects::Start()
 	}
 	game_viewport = new Viewport(nullptr);
 #ifndef GAME_VERSION
-	GameObject* light_test = new GameObject(base_game_object);
-	light_test->SetName("Light");
-
-	light_test->AddComponent(new ComponentLight(light_test));
-
-
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
@@ -1759,7 +1754,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	case LightTypeObj::POINT:
 	{
 		object->SetName("Point light");
-		comp = new ComponentLight(object, LightType::POINT);
+		comp = new ComponentLightSpot(object);
 		object->AddComponent(comp);
 		++num_of_point_lights;
 		break;
@@ -1767,7 +1762,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	case LightTypeObj::SPOT:
 	{
 		object->SetName("Spot light");
-		comp = new ComponentLight(object, LightType::SPOT);
+		comp = new ComponentLightSpot(object);
 		object->AddComponent(comp);
 		++num_of_spot_lights;
 		break;
@@ -1775,7 +1770,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	case LightTypeObj::DIRECTIONAL:
 	{
 		object->SetName("Directional light");
-		comp = new ComponentLight(object, LightType::DIRECTIONAL);
+		comp = new ComponentLightDirectional(object);
 		object->AddComponent(comp);
 		++num_of_dir_lights;
 		break;
@@ -1783,7 +1778,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	case LightTypeObj::AREA:
 	{
 		object->SetName("Area light");
-		comp = new ComponentLight(object, LightType::AREA);
+		comp = new ComponentLightSpot(object);
 		object->AddComponent(comp);
 		++num_of_area_lights;
 		break;
@@ -1834,4 +1829,24 @@ void ModuleObjects::AddNumOfSpotLights()
 void ModuleObjects::AddNumOfAreaLights()
 {
 	++num_of_area_lights;
+}
+
+void ModuleObjects::ReduceNumOfPointLights()
+{
+	--num_of_point_lights;
+}
+
+void ModuleObjects::ReduceNumOfDirLights()
+{
+	--num_of_dir_lights;
+}
+
+void ModuleObjects::ReduceNumOfSpotLights()
+{
+	--num_of_spot_lights;
+}
+
+void ModuleObjects::ReduceNumOfAreaLights()
+{
+	--num_of_area_lights;
 }

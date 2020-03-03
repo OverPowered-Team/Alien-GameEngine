@@ -697,7 +697,8 @@
     <ClInclude Include="ComponentCanvas.h" />
     <ClInclude Include="ComponentCheckbox.h" />
     <ClInclude Include="ComponentImage.h" />
-    <ClInclude Include="ComponentLight.h" />
+    <ClInclude Include="ComponentLightDirectional.h" />
+    <ClInclude Include="ComponentLightSpot.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentReverbZone.h" />
@@ -1105,7 +1106,8 @@
     <ClCompile Include="ComponentCanvas.cpp" />
     <ClCompile Include="ComponentCheckbox.cpp" />
     <ClCompile Include="ComponentImage.cpp" />
-    <ClCompile Include="ComponentLight.cpp" />
+    <ClCompile Include="ComponentLightDirectional.cpp" />
+    <ClCompile Include="ComponentLightSpot.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentReverbZone.cpp" />

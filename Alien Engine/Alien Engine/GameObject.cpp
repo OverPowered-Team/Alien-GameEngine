@@ -6,7 +6,8 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentDeformableMesh.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
 #include "ComponentBone.h"
 #include "ComponentAnimator.h"
 #include "ComponentDeformableMesh.h"
@@ -599,11 +600,18 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		}
 	}
 
-	ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
-	if (light != nullptr && light->IsEnabled())
+	// Lights
+	ComponentLightDirectional* light_dir = (ComponentLightDirectional*)GetComponent(ComponentType::LIGHT_DIRECTIONAL);
+	if (light_dir != nullptr && light_dir->IsEnabled())
 	{
-		light->LightLogic();
+		light_dir->LightLogic();
 	}
+	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
+	if (light_spot != nullptr && light_spot->IsEnabled())
+	{
+		light_spot->LightLogic();
+	}
+
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
 	if (camera_ != nullptr && camera_->IsEnabled()) 
@@ -631,10 +639,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 			//camera_->DrawIconCamera();
 		}
 
+		/* TOFIX / DO. Light does not exist anymore here
 		if (light != nullptr && light->IsEnabled())
 		{
 			//light->DrawIconLight();
 		}
+		*/
 
 		if (partSystem != nullptr)
 		{
@@ -1560,8 +1570,13 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				transform->LoadComponent(components_to_load);
 				AddComponent(transform);
 				break; }
-			case (int)ComponentType::LIGHT: {
-				ComponentLight* light = new ComponentLight(this);
+			case (int)ComponentType::LIGHT_DIRECTIONAL: {
+				ComponentLightDirectional* light = new ComponentLightDirectional(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
+			case (int)ComponentType::LIGHT_SPOT: {
+				ComponentLightSpot* light = new ComponentLightSpot(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
 				break; }
@@ -1750,8 +1765,13 @@ void GameObject::CloningGameObject(GameObject* clone)
 				case ComponentType::TRANSFORM: {
 					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
-				case ComponentType::LIGHT: {
-					ComponentLight* light = new ComponentLight(clone);
+				case ComponentType::LIGHT_DIRECTIONAL: {
+					ComponentLightDirectional* light = new ComponentLightDirectional(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_SPOT: {
+					ComponentLightSpot* light = new ComponentLightSpot(clone);
 					(*item)->Clone(light);
 					clone->AddComponent(light);
 					break; }
