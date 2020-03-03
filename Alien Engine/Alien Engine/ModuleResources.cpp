@@ -19,6 +19,7 @@
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleUI.h"
 
 ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 {
@@ -103,6 +104,8 @@ bool ModuleResources::CleanUp()
 			if (*item != nullptr) {
 				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
 					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
+					static_cast<ResourceMaterial*>(*item)->UpdateMaterialFiles();
 				delete* item;
 				*item = nullptr;
 			}
@@ -720,7 +723,7 @@ void ModuleResources::ReadAllMetaData()
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceMaterial* material = new ResourceMaterial();
-		shader->ReadLibrary(files[i].data());
+		material->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -833,8 +836,8 @@ void ModuleResources::ReadMaterials(std::vector<std::string> directories, std::v
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceMaterial* material = new ResourceMaterial();
 		if (!material->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
-			u64 id = material->GetID();
-			material->CreateMetaData(id);
+			/*u64 id = material->GetID();
+			material->CreateMetaData(id);*/
 		}
 	}
 	if (!directories.empty()) {
@@ -1076,7 +1079,8 @@ ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
 	new_material->SetName(materialName.c_str());
 	new_material->CreateMaterialFile(MATERIALS_FOLDER);
 	new_material->CreateMetaData();
-	
+	App->ui->panel_project->RefreshAllNodes();
+
 	return new_material;
 }
 

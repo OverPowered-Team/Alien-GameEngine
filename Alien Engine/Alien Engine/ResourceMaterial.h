@@ -145,6 +145,7 @@ public:
 	void CreateMaterialFile(const char* directory);
 	void UpdateMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
+	void ReadMaterialValues(JSONfilepack* file);
 
 	// Functionality
 	void ApplyMaterial();
