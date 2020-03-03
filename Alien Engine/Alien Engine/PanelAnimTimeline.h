@@ -56,11 +56,6 @@ private:
 	int margin = 200;
 
 	int key = 0;
-	float time_to_lerp = 0.0f;
-	float3 position; 
-	Quat rotation;
-	float3 scale;
-	
 
 	//Events
 	void ShowNewEventPopUp();
