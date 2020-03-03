@@ -289,7 +289,7 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 			
 		int location = glGetUniformLocation(uniform_data.shader_id, cname);
 		if (location != -1)
-			glUniformMatrix4fv(location, 1, GL_FALSE, matrix[i].ptr());
+			glUniformMatrix4fv(location, 1, GL_TRUE, matrix[i].ptr());
 	}
 	
 }
