@@ -326,7 +326,9 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	uint program = glCreateProgram();
 
 	uint vertex_s = CompileShader(GL_VERTEX_SHADER, vertex_shader);
+	assert(vertex_s != 0,"Your vertex shader don't compile");
 	uint fragment_s = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
+	assert(fragment_s != 0, "Your frament shader don't compile");
 
 	glAttachShader(program, vertex_s);
 	glAttachShader(program, fragment_s);
