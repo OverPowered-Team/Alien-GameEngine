@@ -1,5 +1,6 @@
 #include "ComponentCanvas.h"
 #include "GameObject.h"
+#include "ComponentUI.h"
 #include "ComponentTransform.h"
 #include "glew/include/glew.h"
 #include "imgui/imgui.h"
@@ -42,6 +43,7 @@ void ComponentCanvas::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
+	
 }
 
 void ComponentCanvas::LoadComponent(JSONArraypack* to_load)

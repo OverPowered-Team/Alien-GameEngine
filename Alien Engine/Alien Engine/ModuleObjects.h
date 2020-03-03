@@ -181,9 +181,13 @@ private:
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
 	void ReAssignScripts(JSONArraypack* to_load);
 	void DeleteReturns();
+	void UpdateGamePadInput();
+	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
 	ComponentCanvas* GetCanvas();
 
 public:
+	//Focus
+	u64 selected_ui = -1;
 
 	ResourceScene* current_scene = nullptr;
 
@@ -273,6 +277,8 @@ public:
 	std::vector<Viewport*> viewports;
 
 	Viewport* game_viewport = nullptr;
+
+	bool first_assigned_selected = false;
 
 private:
 	// root

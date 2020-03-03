@@ -12,7 +12,7 @@
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_BUTTON;
-
+	tabbable = true;
 }
 
 void ComponentButton::SaveComponent(JSONArraypack* to_save)
@@ -24,16 +24,37 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
 	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
-	to_save->SetColor("Color", current_color);
+	to_save->SetColor("ColorCurrent", current_color);
+	to_save->SetColor("ColorIdle", idle_color);
+	to_save->SetColor("ColorHover", hover_color);
+	to_save->SetColor("ColorClicked", clicked_color);
+	to_save->SetColor("ColorPressed", pressed_color);
+	to_save->SetColor("ColorDisabled", disabled_color);
+
+	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
+	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
+	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
+	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
 }
 
 void ComponentButton::LoadComponent(JSONArraypack* to_load)
 {
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
-	//UpdateVertex();
 
 	enabled = to_load->GetBoolean("Enabled");
-	current_color = to_load->GetColor("Color");
+	
+	current_color = to_load->GetColor("ColorCurrent");
+	idle_color = to_load->GetColor("ColorIdle");
+	hover_color = to_load->GetColor("ColorHover");
+	clicked_color = to_load->GetColor("ColorClicked");
+	pressed_color = to_load->GetColor("ColorPressed");
+	disabled_color = to_load->GetColor("ColorDisabled");
+
+	select_on_up = std::stoull(to_load->GetString("SelectOnUp"));
+	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
+	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
+	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
+
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
@@ -57,6 +78,8 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 			SetCanvas(nullptr);
 		}
 	}
+
+	App->objects->first_assigned_selected = false;
 }
 
 bool ComponentButton::DrawInspector()
@@ -77,16 +100,6 @@ bool ComponentButton::DrawInspector()
 		RightClickMenu("Button");
 
 		ImGui::Spacing();
-
-		/*ImGui::PushID(this);
-		ImGui::Text("Size:		"); ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("W", &size.x, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-		ImGui::SameLine(); ImGui::SetNextItemWidth(70);
-		if (ImGui::DragFloat("H", &size.y, 0.5F, 0, 0, "%.3f", 1, game_object_attached->is_static))
-			UpdateVertex();
-
-		ImGui::PopID();*/
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Texture");
@@ -134,56 +147,221 @@ bool ComponentButton::DrawInspector()
 			ImGui::PopStyleColor(3);
 		}
 		ImGui::Spacing();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Idle Color");
-		ImGui::SameLine(120);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColorIdle", &idle_color, ImGuiColorEditFlags_Float)) {
-			current_color = idle_color;
+
+		//------------------------COLOR-------------------------------
+		if (ImGui::TreeNode("Colors"))
+		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Idle Color");
+			ImGui::SameLine(140);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+			if (ImGui::ColorEdit4("##RendererColorIdle", &idle_color, ImGuiColorEditFlags_Float)) {
+				current_color = idle_color;
+			}
+
+			ImGui::Spacing();
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Hover Color");
+			ImGui::SameLine(140);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+			if (ImGui::ColorEdit4("##RendererColorHover", &hover_color, ImGuiColorEditFlags_Float)) {
+
+			}
+
+			ImGui::Spacing();
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Click Color");
+			ImGui::SameLine(140);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+			if (ImGui::ColorEdit4("##RendererColorClick", &clicked_color, ImGuiColorEditFlags_Float)) {
+
+			}
+			ImGui::Spacing();
+
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Pressed Color");
+			ImGui::SameLine(140);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+			if (ImGui::ColorEdit4("##RendererColorPressed", &pressed_color, ImGuiColorEditFlags_Float)) {
+
+			}
+			ImGui::Spacing();
+
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Disabled Color");
+			ImGui::SameLine(140);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+			if (ImGui::ColorEdit4("##RendererColorDisabled", &disabled_color, ImGuiColorEditFlags_Float)) {
+
+			}
+
+			ImGui::TreePop();
+		}
+
+		//---------------------END COLOR-----------------------------
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::TreeNode("Navigation"))
+		{
+			//--------------------UP-----------------------------
+			ImGui::Text("Select on Up");
+			ImGui::SameLine(140);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::Button((select_on_up != -1) ? std::string((App->objects->GetGameObjectByID(select_on_up)->name)).data() : "GameObject: NULL", { ImGui::GetWindowWidth() * 0.55F , 0 });
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+					GameObject* obj = *(GameObject * *)payload->Data;
+					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
+						select_on_up = obj->ID;
+					}
+					else {
+						LOG_ENGINE("Item is null or non tabbable");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID(select_on_up);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X")) {
+				if (select_on_up != -1) {
+					select_on_up = -1;
+				}
+			}
+			ImGui::PopStyleColor(3);
+			ImGui::Spacing();
+
+			//--------------------DOWN-----------------------------
+			ImGui::Text("Select on Down");
+			ImGui::SameLine(140);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::Button((select_on_down != -1) ? std::string((App->objects->GetGameObjectByID(select_on_down)->name)).data() : "GameObject: NULL", { ImGui::GetWindowWidth() * 0.55F , 0 });
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+					GameObject* obj = *(GameObject * *)payload->Data;
+					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
+						select_on_down = obj->ID;
+					}
+					else {
+						LOG_ENGINE("Item is null or non tabbable");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID(select_on_down);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X")) {
+				if (select_on_down != -1) {
+					select_on_down = -1;
+				}
+			}
+			ImGui::PopStyleColor(3);
+
+
+
+
+			ImGui::Spacing();
+
+			//--------------------RIGHT-----------------------------
+			ImGui::Text("Select on Right");
+			ImGui::SameLine(140);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::Button((select_on_right != -1) ? std::string((App->objects->GetGameObjectByID(select_on_right)->name)).data() : "GameObject: NULL", { ImGui::GetWindowWidth() * 0.55F , 0 });
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+					GameObject* obj = *(GameObject**)payload->Data;
+					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
+						select_on_right = obj->ID;
+					}
+					else {
+						LOG_ENGINE("Item is null or non tabbable");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID(select_on_right);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X")) {
+				if (select_on_right != -1) {
+					select_on_right = -1;
+				}
+			}
+			ImGui::PopStyleColor(3);
+
+
+
+
+
+			ImGui::Spacing();
+
+			//--------------------LEFT-----------------------------
+			ImGui::Text("Select on Left");
+			ImGui::SameLine(140);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::Button((select_on_left != -1) ? std::string((App->objects->GetGameObjectByID(select_on_left)->name)).data() : "GameObject: NULL", { ImGui::GetWindowWidth() * 0.55F , 0 });
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+					GameObject* obj = *(GameObject**)payload->Data;
+					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
+						select_on_left = obj->ID;
+					}
+					else {
+						LOG_ENGINE("Item is null or non tabbable");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID(select_on_left);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X")) {
+				if (select_on_left != -1) {
+					select_on_left = -1;
+				}
+			}
+			ImGui::PopStyleColor(3);
+
+			ImGui::Spacing();
+			//----------------------------------------------------------------------
+
+			ImGui::TreePop();
 		}
 
 		ImGui::Spacing();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Hover Color");
-		ImGui::SameLine(120);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColorHover", &hover_color, ImGuiColorEditFlags_Float)) {
-
-		}
-		
-		ImGui::Spacing();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Click Color");
-		ImGui::SameLine(120);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColorClick", &clicked_color, ImGuiColorEditFlags_Float)) {
-
-		}
-		ImGui::Spacing();
-
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Pressed Color");
-		ImGui::SameLine(120);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColorPressed", &pressed_color, ImGuiColorEditFlags_Float)) {
-
-		}
-		ImGui::Spacing();
-
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Disabled Color");
-		ImGui::SameLine(120);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-		if (ImGui::ColorEdit4("##RendererColorDisabled", &disabled_color, ImGuiColorEditFlags_Float)) {
-
-		}
-		ImGui::Spacing();
 
 
-
-		ImGui::Spacing();
 		ImGui::Separator();
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 	}
 	else {
 		RightClickMenu("Button");
@@ -279,46 +457,3 @@ void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
 	listenersOnRelease.push_back(funct);
 }
 
-//void ComponentButton::RemoveListenerOnHover(std::function<void()> funct)
-//{
-//	auto item = listenersOnHover.begin();
-//	for (; item != listenersOnHover.end(); ++item) {
-//		if (funct.target() == (*item).target()) {
-//			listenersOnHover.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClick(std::function<void()> funct)
-//{
-//	auto item = listenersOnClick.begin();
-//	for (; item != listenersOnClick.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClick.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnClickRepeat(std::function<void()> funct)
-//{
-//	auto item = listenersOnClickRepeat.begin();
-//	for (; item != listenersOnClickRepeat.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnClickRepeat.erase(item);
-//			break;
-//		}
-//	}
-//}
-//
-//void ComponentButton::RemoveListenerOnRelease(std::function<void()> funct)
-//{
-//	auto item = listenersOnRelease.begin();
-//	for (; item != listenersOnRelease.end(); ++item) {
-//		if (App->StringCmp(funct.target_type().name, (*item).target_type().name)) {
-//			listenersOnRelease.erase(item);
-//			break;
-//		}
-//	}
-//}

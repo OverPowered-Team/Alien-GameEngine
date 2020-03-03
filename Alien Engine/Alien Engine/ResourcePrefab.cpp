@@ -4,6 +4,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentTransform.h"
 #include "PanelHierarchy.h"
+#include "ComponentDeformableMesh.h"
 #include "mmgr/mmgr.h"
 
 ResourcePrefab::ResourcePrefab() : Resource()
@@ -256,7 +257,7 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 		std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
 		for (; item != objects_to_create.end(); ++item) {
 			game_objects->GetNode(std::get<2>(*item));
-			GameObject* obj = new GameObject();
+			GameObject* obj = new GameObject(true);
 			if (std::get<0>(*item) == 1) { 
 				obj->LoadObject(game_objects, parent, !set_selected);
 			}
@@ -275,6 +276,12 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 		if (list_num != -1) {
 			parent->children.pop_back();
 			parent->children.insert(parent->children.begin() + list_num, obj);
+		}
+		for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+		{
+			ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
+			if (def_mesh)
+				def_mesh->AttachSkeleton();
 		}
 		obj->ResetIDs();
 		obj->SetPrefab(ID);

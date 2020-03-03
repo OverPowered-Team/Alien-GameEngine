@@ -14,6 +14,7 @@
 ComponentBar::ComponentBar(GameObject* obj):ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_BAR;
+	tabbable = false;
 }
 
 bool ComponentBar::DrawInspector()

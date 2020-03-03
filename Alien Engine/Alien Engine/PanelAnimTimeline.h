@@ -18,14 +18,13 @@ public:
 public:
 
 	bool changed = true;
-	
 
 private:
 
+	void CleanUp();
 	bool FillInfo();
 	void Play();
 	void Stop();
-	void CleanUp();
 	void MoveBones(GameObject* go);
 	ComponentAnimator* component_animator = nullptr;
 	ResourceAnimation::Channel* channel = nullptr;
@@ -36,7 +35,6 @@ private:
 
 	float button_position = 0.0f;
 
-	bool setted = false;
 	bool scrolled = false;
 
 	float recSize = 1000;
@@ -59,10 +57,10 @@ private:
 
 	int key = 0;
 
-
 	//Events
 	void ShowNewEventPopUp();
 
 	void CreateAnimationEvent();
 
+	std::vector<uint> anim_event_frames;
 };

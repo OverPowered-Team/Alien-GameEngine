@@ -30,6 +30,8 @@
 
 #include "Optick/include/optick.h"
 
+#define DAE_FPS 30
+
 ModuleImporter::ModuleImporter(bool start_enabled) : Module(start_enabled)
 {
 	name = "Importer";
@@ -175,14 +177,16 @@ void ModuleImporter::InitScene(const char *path, const aiScene *scene, const cha
 void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 {
 	OPTICK_EVENT();
+	bool is_dae = anim->mTicksPerSecond == 1;
+
 	ResourceAnimation* resource_animation = new ResourceAnimation();
 	resource_animation->name = std::string(anim->mName.C_Str()) ==  "" ? "Take 001" : anim->mName.C_Str();
-	resource_animation->ticks_per_second = anim->mTicksPerSecond;
+	resource_animation->ticks_per_second = is_dae ? DAE_FPS : anim->mTicksPerSecond;
 	resource_animation->num_channels = anim->mNumChannels;
 	resource_animation->channels = new ResourceAnimation::Channel[resource_animation->num_channels];
 	resource_animation->start_tick = 0;
-	resource_animation->end_tick = anim->mDuration;
-	resource_animation->max_tick = anim->mDuration;
+	resource_animation->end_tick = is_dae ? anim->mDuration * DAE_FPS : anim->mDuration;
+	resource_animation->max_tick = resource_animation->end_tick;
 
 	for (uint i = 0u; i < resource_animation->num_channels; ++i)
 	{
@@ -202,7 +206,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.position_keys[j].value.Set(anim->mChannels[i]->mPositionKeys[j].mValue.x, anim->mChannels[i]->mPositionKeys[j].mValue.y,
 											   anim->mChannels[i]->mPositionKeys[j].mValue.z);
-			channel.position_keys[j].time = anim->mChannels[i]->mPositionKeys[j].mTime;
+			channel.position_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mPositionKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mPositionKeys[j].mTime;
 		}
 
 		//Load scaling keys
@@ -210,7 +214,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.scale_keys[j].value.Set(anim->mChannels[i]->mScalingKeys[j].mValue.x, anim->mChannels[i]->mScalingKeys[j].mValue.y,
 											anim->mChannels[i]->mScalingKeys[j].mValue.z);
-			channel.scale_keys[j].time = anim->mChannels[i]->mScalingKeys[j].mTime;
+			channel.scale_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mScalingKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mScalingKeys[j].mTime;
 		}
 
 		//Load rotation keys
@@ -218,7 +222,7 @@ void ModuleImporter::LoadAnimation(const aiAnimation *anim)
 		{
 			channel.rotation_keys[j].value.Set(anim->mChannels[i]->mRotationKeys[j].mValue.x, anim->mChannels[i]->mRotationKeys[j].mValue.y,
 											   anim->mChannels[i]->mRotationKeys[j].mValue.z, anim->mChannels[i]->mRotationKeys[j].mValue.w);
-			channel.rotation_keys[j].time = anim->mChannels[i]->mRotationKeys[j].mTime;
+			channel.rotation_keys[j].time = is_dae ? std::round(anim->mChannels[i]->mRotationKeys[j].mTime * DAE_FPS) : anim->mChannels[i]->mRotationKeys[j].mTime;
 		}
 	}
 

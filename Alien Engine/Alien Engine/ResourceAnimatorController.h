@@ -20,6 +20,7 @@ public:
 	float time = 0;
 	float fade_duration = 0, fade_time = 0;
 	State* next_state = nullptr;
+	bool played_from_script = false;
 
 public:
 	State();
@@ -109,7 +110,7 @@ private:
 	std::vector<IntCondition*> int_conditions;
 	std::vector<FloatCondition*> float_conditions;
 	std::vector<BoolCondition*> bool_conditions;
-	float blend = 0.25;
+	float blend = 2;
 
 public:
 	Transition();
@@ -179,7 +180,7 @@ public:
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
-	void AddBoolParameter(std::pair<std::string, bool> param); 
+	void AddBoolParameter(std::pair<std::string, bool> param);
 	void AddFloatParameter(std::pair<std::string, float> param);
 	void AddIntParameter(std::pair<std::string, int> param);
 	void RemoveBoolParameter(std::string name);
@@ -191,7 +192,7 @@ public:
 	void SetInt(std::string name, int value);
 
 public:
-    void FreeMemory();
+	void FreeMemory();
 	bool LoadMemory();
 	bool ReadBaseInfo(const char* meta_file_path);
 	void ReadLibrary(const char* meta_data);

@@ -31,6 +31,8 @@
 #include "Event.h"
 #include "PanelTextEditor.h"
 #include "PanelParticleSystem.h"
+#include "ModuleObjects.h"
+#include "ComponentUI.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
@@ -472,6 +474,7 @@ update_status ModuleUI::PreUpdate(float dt)
 
 	return UPDATE_CONTINUE;
 }
+
 
 void ModuleUI::Draw() 
 {
@@ -1288,6 +1291,10 @@ void ModuleUI::HandleEvent(EventType eventType)
 			break;
 		}
 	}
+
+	if (eventType == EventType::ON_UNLOAD_SCENE) {
+		App->ui->panel_animtimeline->changed = true;
+	}
 }
 
 void ModuleUI::FramerateRegister(float frames, float ms)
@@ -1329,6 +1336,7 @@ void ModuleUI::BackgroundDockspace()
 
 	ImGui::End();
 }
+
 
 Layout::Layout(const char* name)
 {
