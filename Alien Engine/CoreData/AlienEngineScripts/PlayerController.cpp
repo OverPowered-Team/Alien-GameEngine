@@ -23,7 +23,7 @@ void PlayerController::Update()
 	}
 
 	if (Input::GetKeyDown(SDL_SCANCODE_E)) {
-		playerData.attacking = true;
+		animator->PlayState("Attack");
 	}
 
 	if (Input::GetKeyDown(SDL_SCANCODE_A)) {
@@ -32,5 +32,4 @@ void PlayerController::Update()
 
 	transform->SetLocalPosition({ transform->GetLocalPosition().x, transform->GetLocalPosition().y, transform->GetLocalPosition().z + playerData.speed });
 	animator->SetFloat("speed", playerData.speed);
-	animator->SetBool("attacking", playerData.attacking);
 }

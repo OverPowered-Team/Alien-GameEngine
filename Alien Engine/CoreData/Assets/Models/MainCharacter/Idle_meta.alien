@@ -5,7 +5,6 @@
         "Name": "Idle",
         "NumBones": 42,
         "NumAnimations": 1,
-        "NumMaterials": 1,
         "Animations": [
             {
                 "Name": "idle",
@@ -14,6 +13,7 @@
                 "End_Tick": 57
             }
         ],
+        "NumMaterials": 1,
         "PathMeshes": [
             "Library\/Meshes\/15162702403706824405.alienMesh"
         ],

@@ -20,6 +20,7 @@ public:
 	float time = 0;
 	float fade_duration = 0, fade_time = 0;
 	State* next_state = nullptr;
+	bool played_from_script = false;
 
 public:
 	State();
