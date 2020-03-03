@@ -312,6 +312,14 @@ void Application::DeleteJSONfile(JSONfilepack* json_pack)
 	}
 }
 
+void Application::UpdateLogFile(FILE* fp)
+{
+	for (auto it_log = engine_string_logs.begin(); it_log != engine_string_logs.end(); it_log++)
+	{
+		fprintf(fp, std::string((*it_log).loged.at(0).second + '\n').data());
+	}
+}
+
 // Call PreUpdate, Update and PostUpdate on all modules
 update_status Application::Update()
 {
