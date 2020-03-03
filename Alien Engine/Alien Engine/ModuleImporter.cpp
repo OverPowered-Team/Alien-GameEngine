@@ -657,25 +657,26 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 	{
 		if (*item != nullptr)
 		{
-			ComponentMaterial *material = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
+			ComponentMaterial *compMaterial = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
 
 			if ((*item)->HasComponent(ComponentType::MESH))
 			{
 				bool exists = true;
-				if (material == nullptr)
+				if (compMaterial == nullptr)
 				{
 					exists = false;
-					material = new ComponentMaterial((*item));
-					(*item)->AddComponent(material);
+					compMaterial = new ComponentMaterial((*item));
+					(*item)->AddComponent(compMaterial);
 				}
-				material->SetTexture(texture);
+				compMaterial->SetTexture(texture);
+
 				if (!exists)
 				{
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, material);
+					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, compMaterial);
 				}
 				else
 				{
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, material);
+					ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, compMaterial);
 				}
 			}
 			else

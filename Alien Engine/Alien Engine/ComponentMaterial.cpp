@@ -15,6 +15,7 @@ ComponentMaterial::ComponentMaterial(GameObject* attach) : Component(attach)
 	type = ComponentType::MATERIAL;
 
 	material = App->resources->default_material;
+	material->IncreaseReferences();
 }
 
 ComponentMaterial::~ComponentMaterial()
@@ -331,13 +332,21 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 		return;
 	}
 
+	if (tex == material->texture) // Unity does not do this, but I think it should
+		return;
+
 	// Detach current texture
 	if (material->texture != nullptr) {
 		material->texture->DecreaseReferences();
 	}
 
-	// Create new material to assign the new texture to if you are using the default material
-	if (material == App->resources->default_material)
+	// Look for an already created material (with the same name as the texture) that has the same texture
+	ResourceMaterial* foundMaterial = App->resources->GetMaterialByName(tex->GetName());
+	if (foundMaterial != nullptr && foundMaterial->texture == tex)
+	{
+		SetMaterial(foundMaterial);
+	}
+	else // Create a new material
 	{
 		SetMaterial(App->resources->CreateMaterial(tex->GetName()));
 	}
@@ -363,7 +372,7 @@ const ResourceTexture* ComponentMaterial::GetTexture() const
 
 void ComponentMaterial::SetMaterial(ResourceMaterial* mat)
 {
-	if (mat == nullptr)
+	if (mat == nullptr || mat == material)	// If it is nullptr should we assign it to default material?
 		return; 
 
 	if (material != nullptr)

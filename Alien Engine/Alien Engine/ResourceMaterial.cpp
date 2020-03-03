@@ -191,6 +191,11 @@ void ResourceMaterial::ApplyMaterial()
 	used_shader->UpdateUniforms(shaderInputs);
 }
 
+bool ResourceMaterial::HasTexture() const
+{
+	return texture != nullptr;
+}
+
 void ResourceMaterial::DisplayMaterialOnInspector()
 {
 

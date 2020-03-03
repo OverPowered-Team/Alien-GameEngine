@@ -145,8 +145,11 @@ public:
 	void CreateMaterialFile(const char* directory);
 	void UpdateMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
+
 	// Functionality
 	void ApplyMaterial();
+
+	bool HasTexture() const; 
 
 	void DisplayMaterialOnInspector();
 	void ShaderSelectionHeader();
