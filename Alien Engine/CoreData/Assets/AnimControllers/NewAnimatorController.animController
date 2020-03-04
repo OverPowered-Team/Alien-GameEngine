@@ -7,17 +7,17 @@
             {
                 "Name": "NewState1",
                 "Speed": 1,
-                "Clip": "4934111136273523416"
+                "Clip": "6609979971928192037"
             },
             {
                 "Name": "NewState2",
                 "Speed": 1,
-                "Clip": "9119295570076193863"
+                "Clip": "0"
             },
             {
                 "Name": "Attack",
                 "Speed": 3,
-                "Clip": "7897389368125511972"
+                "Clip": "0"
             }
         ],
         "Transitions": [
@@ -25,7 +25,7 @@
                 "Source": "NewState1",
                 "Target": "NewState2",
                 "Blend": 0.25,
-                "End": 0,
+                "End": 1,
                 "IntConditions": [],
                 "FloatConditions": [
                     {
@@ -41,7 +41,7 @@
                 "Source": "NewState2",
                 "Target": "NewState1",
                 "Blend": 0.25,
-                "End": 0,
+                "End": 1,
                 "IntConditions": [],
                 "FloatConditions": [
                     {
