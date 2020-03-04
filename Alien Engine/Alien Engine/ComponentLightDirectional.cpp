@@ -35,6 +35,8 @@ void ComponentLightDirectional::LightLogic()
 {
 	ComponentTransform* transform=(ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
+	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
+	Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::White(), 3.0f);
 }
 
 bool ComponentLightDirectional::DrawInspector()

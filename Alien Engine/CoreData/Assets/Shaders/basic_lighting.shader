@@ -98,7 +98,7 @@ void main()
     vec4 textureColor = vec4(texture(tex, texCoords).rgb, 1.0);
     vec4 diffuse = vec4(diffuse_color, 1.0f);
 
-    vec3 result = vec3(1.0, 0.0, 0.0);
+    vec3 result = vec3(0);
 
     // Light calculations
     for(int i = 0; i < max_dir_lights; i++)

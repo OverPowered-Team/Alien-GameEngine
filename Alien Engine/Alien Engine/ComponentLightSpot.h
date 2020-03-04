@@ -9,9 +9,9 @@ struct SpotLightProperties
 {
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
-	float3 ambient = float3::zero();
-	float3 diffuse = float3::zero();
-	float3 specular = float3::zero();
+	float3 ambient = float3::one();
+	float3 diffuse = float3::one();
+	float3 specular = float3::one();
 	float constant = 1.0f;
 	float linear = 0.1f;
 	float quadratic = 0.01f;

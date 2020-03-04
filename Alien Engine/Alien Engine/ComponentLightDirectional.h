@@ -9,9 +9,9 @@ struct DirLightProperties
 {
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
-	float3 ambient = float3::zero();
-	float3 diffuse = float3::zero();
-	float3 specular = float3::zero();
+	float3 ambient = float3::one();
+	float3 diffuse = float3::one();
+	float3 specular = float3::one();
 };
 
 class __declspec(dllexport) ComponentLightDirectional : public Component {
