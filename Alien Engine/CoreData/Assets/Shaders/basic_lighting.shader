@@ -100,7 +100,7 @@ void main()
 
     // Light calculations
     vec3 result;
-    for(int i = 0; i < max_dir_ligts; i++)
+    for(int i = 0; i < max_dir_lights; i++)
         result += CalculateDirectionalLight(dir_light[i], norm, view_dir);
     for(int i = 0; i < max_point_lights; i++)
         result += CalculatePointLight(point_light[i], norm, frag_pos, view_dir);    
@@ -113,7 +113,7 @@ void main()
     }
     else
     {
-        FragColor = textureColor * diffuse;  
+        FragColor = textureColor * diffuse;
     }
 }
 
