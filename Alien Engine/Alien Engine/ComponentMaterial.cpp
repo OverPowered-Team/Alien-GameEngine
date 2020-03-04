@@ -323,9 +323,7 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 		return;
 
 	// Detach current texture
-	if (material->texture != nullptr) {
-		material->texture->DecreaseReferences();
-	}
+	material->RemoveTexture();
 
 	// Look for an already created material (with the same name as the texture) that has the same texture
 	ResourceMaterial* foundMaterial = App->resources->GetMaterialByName(tex->GetName());
@@ -340,17 +338,12 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	}
 
 	// Finally assign the texture to the desired material
-	material->texture = tex;
-	material->texture->IncreaseReferences();
+	material->SetTexture(tex);
 }
 
 void ComponentMaterial::RemoveTexture()
 {
-	if (material->texture == nullptr)
-		return;
-
-	material->texture->DecreaseReferences();
-	material->texture = nullptr;
+	material->RemoveTexture();
 }
 
 const ResourceTexture* ComponentMaterial::GetTexture() const

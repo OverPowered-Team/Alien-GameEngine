@@ -150,6 +150,8 @@ public:
 	// Functionality
 	void ApplyMaterial();
 
+	void SetTexture(ResourceTexture* texture);
+	void RemoveTexture();
 	bool HasTexture() const; 
 
 	// ----- ImGui ----- 
@@ -163,10 +165,13 @@ public:
 	void ChangeShader(ResourceShader* newShader);
 
 public:
-	
+
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	u64 textureID = 0;
 	ResourceTexture* texture = nullptr; // Provisional
 	bool textureActivated = true;
+
 	u64 texturesID[(uint)TextureType::MAX] = { 0 };
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 

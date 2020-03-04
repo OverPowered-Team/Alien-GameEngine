@@ -194,7 +194,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 	file->SetBoolean("HasTexture", texture != nullptr ? true : false);
 
 	if(texture != nullptr)
-		file->SetString("TextureID", std::to_string(texture->GetID()));
+		file->SetString("TextureID", std::to_string(textureID));
 	
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		file->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
@@ -213,6 +213,11 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	{
 		u64 id = std::stoull(file->GetString("TextureID"));
 		texture = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(file->GetString("TextureID")));
+		if (texture != nullptr)
+		{
+			textureID = texture->GetID();
+			texture->IncreaseReferences();
+		}
 	}
 
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
@@ -233,6 +238,32 @@ void ResourceMaterial::ApplyMaterial()
 	used_shader->UpdateUniforms(shaderInputs);
 }
 
+void ResourceMaterial::SetTexture(ResourceTexture* tex)
+{
+	if (tex == nullptr)
+	{
+		RemoveTexture(); 
+		return; 
+	}
+
+	if (texture != nullptr)
+		texture->DecreaseReferences();
+
+	texture = tex;
+	textureID = tex->GetID();
+	texture->IncreaseReferences();
+}
+
+void ResourceMaterial::RemoveTexture()
+{
+	if (texture != nullptr)
+	{
+		texture->DecreaseReferences();
+		texture = nullptr;
+		textureID = 0;
+	}
+}
+
 bool ResourceMaterial::HasTexture() const
 {
 	return texture != nullptr;
@@ -240,7 +271,6 @@ bool ResourceMaterial::HasTexture() const
 
 void ResourceMaterial::DisplayMaterialOnInspector()
 {
-	
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::SameLine();
@@ -377,9 +407,7 @@ void ResourceMaterial::TexturesSegment()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
 		if (ImGui::Button("Delete", { 60,20 })) {
 			//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			texture->DecreaseReferences();
-			texture = nullptr;
-
+			RemoveTexture();
 			ImGui::PopStyleColor();
 			ImGui::PopStyleColor();
 			ImGui::PopStyleColor();
