@@ -3,6 +3,8 @@
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
 #include "ResourceAnimation.h"
+#include "Alien.h"
+#include "Globals.h"
 #include <fstream>
 #include <iomanip>
 
@@ -336,6 +338,26 @@ void ResourceAnimatorController::UpdateState(State* state)
 				state->time = 0;
 			else
 				state->time = animation->GetDuration();
+
+			if (Time::IsPlaying()) {
+				for (auto item = App->objects->current_scripts.begin(); item != App->objects->current_scripts.end(); ++item) {
+					try {
+						if ((*item)->game_object->HasComponent(ComponentType::ANIMATOR))(*item)->OnAnimationEnd(state->GetName().c_str());
+					}
+					catch (...)
+					{
+						try {
+							LOG_ENGINE("CODE ERROR IN THE ONANIMATIONEND OF THE SCRIPT: %s", (*item)->data_name);
+						}
+						catch (...) {
+							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONANIMATIONEND");
+						}
+						#ifndef GAME_VERSION
+						App->ui->SetError();
+						#endif
+					}
+				}
+			}
 		}
 
 	}
@@ -375,6 +397,11 @@ bool ResourceAnimatorController::CheckTriggers()
 	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
 		bool retu = true;
 
+		if (current_state->GetClip()) {
+			if (current_state->time < current_state->GetClip()->GetDuration() && (*it)->GetEnd())
+				continue;
+		}
+
 		for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
 			if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
 				retu = false;
@@ -394,19 +421,7 @@ bool ResourceAnimatorController::CheckTriggers()
 			}
 		}
 
-		if (current_state->GetClip()) {
-
-			if (current_state->time < current_state->GetClip()->GetDuration())
-			{
-				if (retu && !(*it)->GetEnd())
-				{
-					current_possible_transitions.push_back((*it));
-				}
-			}
-			else {
-				current_possible_transitions.push_back((*it));
-			}
-		}
+		if (retu)current_possible_transitions.push_back((*it));
 	}
 
 	if (ret && current_possible_transitions.size() > 0) {
@@ -713,8 +728,8 @@ bool ResourceAnimatorController::LoadMemory()
 			bytes = sizeof(float);
 			float tmp_blend;
 			memcpy(&tmp_blend, cursor, bytes);
-			cursor += bytes;			
-			
+			cursor += bytes;
+
 			bytes = sizeof(bool);
 			bool tmp_end;
 			memcpy(&tmp_end, cursor, bytes);
@@ -1259,8 +1274,10 @@ void ResourceAnimatorController::Play(std::string state_name)
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
-		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0)
+		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
 			current_state = (*it);
+			transitioning = false;
+		}
 	}
 }
 
