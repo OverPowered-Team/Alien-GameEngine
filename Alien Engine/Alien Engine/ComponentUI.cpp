@@ -288,20 +288,20 @@ void ComponentUI::UILogicGamePad()
 		//not necessary to do anything
 		break; }
 	case Hover: {
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
 			state = Click;
 		
 		break; }
 	case Click: {
-		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_REPEAT)
+		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_REPEAT)
 			state = Pressed;
 		
-		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
 			state = Hover;
 		
 		break; }
 	case Pressed: {
-		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_X) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
 			state = Hover;
 		
 		break; }
