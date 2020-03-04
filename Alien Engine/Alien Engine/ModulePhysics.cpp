@@ -164,7 +164,12 @@ void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 
 void ModulePhysics::DrawWorld()
 {
+	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+
+	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 	world->debugDrawWorld();
+	ModuleRenderer3D::EndDebugDraw();
+
 }
 
 void ModulePhysics::AddBody(btRigidBody* body)

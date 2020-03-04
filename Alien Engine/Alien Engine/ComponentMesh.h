@@ -76,8 +76,8 @@ protected:
 	bool view_vertex_normals = false;
 	bool view_face_normals = false;
 
-	bool draw_AABB = true;
-	bool draw_OBB = true;
+	bool draw_AABB = false;
+	bool draw_OBB = false;
 
 	AABB local_aabb;
 	OBB obb;  
