@@ -37,7 +37,7 @@ bool ComponentMaterial::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	InspectorShaderProperties();
+	//InspectorShaderProperties();
 
 	if (ImGui::CollapsingHeader("Material", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
