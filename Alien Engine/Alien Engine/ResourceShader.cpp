@@ -425,6 +425,16 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	glGetProgramiv(program, GL_LINK_STATUS, &status);
 	if (status == GL_FALSE)
 	{
+		GLint max_length = 0;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_length);
+
+		std::vector<GLchar> infoLog(max_length);
+		glGetProgramInfoLog(program, max_length, &max_length, &infoLog[0]);
+
+		std::string str(infoLog.begin(), infoLog.end());
+
+		LOG_ENGINE("%s", str.c_str());
+
 		LOG_ENGINE("Shader was not linked successfully...\n");
 	}
 
