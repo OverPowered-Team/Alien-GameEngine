@@ -46,7 +46,7 @@ void ComponentSphereCollider::UpdateShape()
 	shape = new btSphereShape(final_radius);
 	shape->setMargin(3.f);
 	aux_body->setCollisionShape(shape);
-	if (rb != nullptr)  rb->UpdateCollider();
+	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
 bool ComponentSphereCollider::WrapMesh()

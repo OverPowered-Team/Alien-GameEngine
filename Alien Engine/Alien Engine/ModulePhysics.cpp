@@ -52,6 +52,7 @@ bool ModulePhysics::Init()
 	collision_config = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collision_config);
 	broad_phase = new btDbvtBroadphase();
+	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	solver = new btSequentialImpulseConstraintSolver();
 
 	return ret;
@@ -62,6 +63,8 @@ bool ModulePhysics::Start()
 	LOG_ENGINE("Creating Physics environment");
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
+
+
 	world->setGravity(GRAVITY);
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
@@ -119,7 +122,7 @@ void ModulePhysics::RenderCollider(ComponentCollider* collider)
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
 	world->debugDrawObject(
-		((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform()
+		((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform()
 		, collider->shape, btVector3(0.f, 1.f, 0.f));
 
 	ModuleRenderer3D::EndDebugDraw();
@@ -130,7 +133,7 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	btTransform worldTransform = ((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform();
+	btTransform worldTransform = ((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform();
 	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
 
 	if (hull == nullptr) return;
@@ -168,6 +171,16 @@ void ModulePhysics::AddBody(btRigidBody* body)
 void ModulePhysics::RemoveBody(btRigidBody* body)
 {
 	world->removeRigidBody(body);
+}
+
+void ModulePhysics::AddDetector(btGhostObject* detector)
+{
+	world->addCollisionObject(detector, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::SensorTrigger);
+}
+
+void ModulePhysics::RemoveDetector(btGhostObject* detector)
+{
+	world->removeCollisionObject(detector);
 }
 
 void ModulePhysics::AddConstraint(btTypedConstraint* constraint, bool disableBodiesCollision)

@@ -26,9 +26,12 @@ enum class ForceMode : uint
 
 class ComponentCollider;
 class DebugRenderer;
+class btGhostObject;
 
 class ModulePhysics : public Module
 {
+	friend class ComponentCollider;
+
 public:
 	ModulePhysics( bool start_enabled = true);
 
@@ -57,6 +60,10 @@ public:
 	void AddBody(btRigidBody* body);
 
 	void RemoveBody(btRigidBody* body);
+
+	void AddDetector(btGhostObject* detector);
+
+	void RemoveDetector(btGhostObject* detector);
 
 	void AddConstraint(btTypedConstraint* constraint, bool bodiesCollision = true);
 
