@@ -1,32 +1,27 @@
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(48) : -------------- Application Init --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(24) : Init SDL window & surface
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(29) : Init SDL input event system
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(90) : Loading File System
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(53) : Initing Devil
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(60) : FreeType initialized!
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(47) : Creating 3D Physics simulation
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(204) : Application Start --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Shaders/default_shader.shader] to [Library/Shaders/13637628907886844338.shader]
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(651) : Texture successfully loaded: Library/Textures/4484552392535735713.dds
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(1023) : Error loading model Assets/Models/BlockoutFlatPetite.fbx
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(1024) : Error type: FBX-Tokenize (offset 0x34) block offset is out of range
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(113) : Created alienBone file Library/Bones/10839305638191197526.alienBone
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(139) : Created alienAnimation file Library/Animations/6609979971928192037.alienAnimation
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(69) : Starting Module Objects
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(62) : Creating Physics environment
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(54) : Loading UI assets
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(391) : WARNING: Uniform time doesn't exist...
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(165) : Destroying 3D Renderer
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(92) : Unloading UI scene
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(41) : Cleaning camera
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceAnimation.cpp(120) : Unloading Animation Take 001
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(313) : Quitting SDL input event subsystem
-C:\Users\sebastianlt\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(68) : Destroying SDL window and quitting all SDL systems
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(48) : -------------- Application Init --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(24) : Init SDL window & surface
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(29) : Init SDL input event system
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(90) : Loading File System
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(53) : Initing Devil
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(60) : FreeType initialized!
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(47) : Creating 3D Physics simulation
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(204) : Application Start --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(997) : Error loading model Assets/Models/BlockoutFlatPetite.fbx
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(998) : Error type: FBX-Tokenize (offset 0x34) block offset is out of range
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Scripts/Audio.alienScript] to [Library/Scripts/4833691520819028617.alienPrefab]
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(69) : Starting Module Objects
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(62) : Creating Physics environment
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(54) : Loading UI assets
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(165) : Destroying 3D Renderer
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(92) : Unloading UI scene
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(41) : Cleaning camera
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(313) : Quitting SDL input event subsystem
+C:\Users\gerardmf2\Desktop\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(68) : Destroying SDL window and quitting all SDL systems
