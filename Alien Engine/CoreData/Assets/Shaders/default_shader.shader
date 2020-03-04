@@ -10,11 +10,13 @@ uniform mat4 model;
 uniform mat4 projection;
 
 uniform float time;
+
+out vec3 frag_pos;
 out vec2 texCoords;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f); 
+    gl_Position = projection * view * model * vec4(position, 1.0f);
     texCoords = vec2(uvs.x, uvs.y);
 };
 
@@ -22,18 +24,22 @@ void main()
 #version 330 core
 
 uniform sampler2D tex;
-uniform vec3 diffuse_color;
-
-out vec4 FragColor;
+uniform vec3 diffuse;
+// Ins
 in vec2 texCoords;
+// Outs
+out vec4 FragColor;
 
 void main()
 {
-    vec4 textureColor = vec4(texture(tex, texCoords).rgb,1.0);
-    vec4 diffuse = vec4(diffuse_color,1.0f);
-
+    vec4 textureColor = vec4(texture(tex, texCoords).rgb, 1.0);
+ 
     if(textureColor == vec4(0,0,0,1))
-        FragColor = diffuse;
+    {
+        FragColor = vec4(diffuse, 1.0);
+    }
     else
-        FragColor = textureColor * diffuse;    
+    {
+        FragColor = textureColor * vec4(diffuse, 1.0);  
+    }
 }

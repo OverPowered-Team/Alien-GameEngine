@@ -28,43 +28,17 @@ enum class SHADER_TEMPLATE
 	BASIC_LIGHTING
 };
 
-struct UniformData
-{
-	struct StandardShaderProperties 
-	{
-		float3 diffuse_color = float3::one();
-	} standardShaderProperties;
-
-	struct WaveShaderProperties
-	{
-		float mult_time = 1.0f;
-		float amplitude = 0.75f;
-	} waveShaderProperties;
-
-	struct BasicLightingShaderProperties {
-		float3 object_color = float3(1.f, 1.f, 1.f);
-
-		// Lighting
-		float ambient_strength = 0.1f;
-		float specular_strength = 0.5f;
-		float3 lightPosition = float3(5.f, 5.f, 5.f);
-		float3 lightColor = float3(1.f, 1.f, 1.f);
-	} basicLightingShaderProperties;
-
-	uint shader_id = 0;
-	uint textures_id = 0;
-	SHADER_TEMPLATE type = SHADER_TEMPLATE::DIFUSSE;
-};
+struct ShaderInputs;
+struct DirLightProperties; 
+struct PointLightProperties; 
+struct SpotLightProperties; 
 
 class ResourceShader : public Resource
 {
 	friend class ComponentMaterial;
 
 public:
-	ResourceShader()
-	{
-		type = ResourceType::RESOURCE_SHADER; 
-	}
+	ResourceShader();	
 	ResourceShader(const char* path, const u64& id);
 	ResourceShader(const char* path);
 	virtual ~ResourceShader();
@@ -78,17 +52,23 @@ public:
 	bool ReadBaseInfo(const char* assets_file_path);
 	void ReadLibrary(const char* meta_data);
 
+	void TryToSetShaderType();
+
 public:
+
 	uint ParseAndCreateShader();
+
 	bool ChangeTemplate();
+	SHADER_TEMPLATE GetShaderType() const;
+
+
 	void HierarchyUniforms();
-
-
-	void UpdateUniforms();
+	void UpdateUniforms(ShaderInputs inputs);
 	void Bind() const;
 	void Unbind() const;
 	
 	void SetUniform1i(const std::string& name, const int& value);
+	void SetUniform1ui(const std::string& name, const uint& value);
 	void SetUniform1f(const std::string& name, const float& value);
 
 	void SetUniformFloat3(const std::string& name, const float3& vec3);
@@ -98,6 +78,9 @@ public:
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
 
+	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights, const uint& size);
+	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights, const uint& size);
+	void SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& dirLights, const uint& size);
 	void CreateShaderDoc(const int& type, const char* name);
 
 private:
@@ -111,7 +94,9 @@ private:
 	// TODO: Create uniform cache for optimization and faster search.
 
 private:
-	UniformData uniform_data;
+
+	uint shader_id;
+	SHADER_TEMPLATE shaderType = SHADER_TEMPLATE::DIFUSSE;
 	std::unordered_map<std::string, int> uniform_location_cache;
 };
 

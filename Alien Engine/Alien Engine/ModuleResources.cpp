@@ -14,10 +14,12 @@
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
 #include "ResourceAudio.h"
+#include "ResourceMaterial.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleUI.h"
 
 ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 {
@@ -84,7 +86,7 @@ bool ModuleResources::Start()
 	ReadAllMetaData();
 
 	default_font = GetFontByName("Arialn");
-
+	default_material = GetMaterialByName("Default Material");
 	return true;
 }
 
@@ -102,6 +104,8 @@ bool ModuleResources::CleanUp()
 			if (*item != nullptr) {
 				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
 					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
+					static_cast<ResourceMaterial*>(*item)->UpdateMaterialFiles();
 				delete* item;
 				*item = nullptr;
 			}
@@ -179,6 +183,10 @@ u64 ModuleResources::GetIDFromAlienPath(const char* path)
 Resource* ModuleResources::GetResourceWithID(const u64& ID)
 {
 	OPTICK_EVENT();
+
+	if (ID == 0)
+		return nullptr; 
+
 	std::vector<Resource*>::iterator item = resources.begin();
 	for (; item != resources.end(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -549,6 +557,42 @@ bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
 	return !to_fill.empty();
 }
 
+ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
+{
+	ResourceShader* desiredShader = nullptr; 
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+		{
+			if (App->StringCmp((*res)->GetName(), shaderName.c_str()))
+			{
+				desiredShader = (ResourceShader*)(*res);
+				break;
+			}
+		}
+	}
+
+	return desiredShader;
+}
+
+ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
+{
+	ResourceMaterial* desiredMaterial = nullptr;
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_MATERIAL)
+		{
+			if (App->StringCmp((*res)->GetName(), name))
+			{
+				desiredMaterial = (ResourceMaterial*)(*res);
+				break;
+			}
+		}
+	}
+
+	return desiredMaterial;
+}
+
 ResourceFont* ModuleResources::GetFontByName(const char* name)
 {
 	auto item = resources.begin();
@@ -597,6 +641,13 @@ void ModuleResources::ReadAllMetaData()
 	// Init Shaders
 	App->file_system->DiscoverFiles(SHADERS_FOLDER, files, directories);
 	ReadShaders(directories, files, SHADERS_FOLDER);
+	files.clear();
+	directories.clear();
+	default_shader = GetShaderByName("default_shader");
+
+	// Init Materials
+	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
+	ReadMaterials(directories, files, MATERIALS_FOLDER);
 	files.clear();
 	directories.clear();
 
@@ -660,6 +711,16 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceShader* shader = new ResourceShader();
 		shader->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+	default_shader = GetShaderByName("default_shader");
+
+	// materials
+	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
+		material->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -765,6 +826,27 @@ void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vec
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadShaders(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadMaterials(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
+		if (!material->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			/*u64 id = material->GetID();
+			material->CreateMetaData(id);*/
+		}
+	}
+	if (!directories.empty()) {
+		std::vector<std::string> new_files;
+		std::vector<std::string> new_directories;
+
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadMaterials(new_directories, new_files, dir);
 		}
 	}
 }
@@ -969,6 +1051,7 @@ void ModuleResources::CreateAsset(FileDropType type)
 		break;
 	case FileDropType::ANIMATION:
 		break;
+
 	}
 
 	App->ui->panel_project->RefreshAllNodes();
@@ -982,6 +1065,20 @@ void ModuleResources::CreateAnimatorController()
 	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
 	new_controller->name = asset_name;
 	new_controller->SaveAsset();
+}
+
+ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
+{
+	std::string materialName = name;
+	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
+	
+	ResourceMaterial* new_material = new ResourceMaterial();
+	new_material->SetName(materialName.c_str());
+	new_material->CreateMaterialFile(MATERIALS_FOLDER);
+	new_material->CreateMetaData();
+	App->ui->panel_project->RefreshAllNodes();
+
+	return new_material;
 }
 
 

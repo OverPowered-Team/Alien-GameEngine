@@ -6,7 +6,9 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentDeformableMesh.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ComponentBone.h"
 #include "ComponentAnimator.h"
 #include "ComponentDeformableMesh.h"
@@ -31,6 +33,9 @@
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
+
+#include "ResourceShader.h"
+#include "ResourceMaterial.h"
 
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
@@ -525,10 +530,10 @@ void GameObject::DrawScene(ComponentCamera* camera)
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -570,10 +575,10 @@ void GameObject::DrawGame(ComponentCamera* camera)
 	if(mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -599,11 +604,23 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		}
 	}
 
-	ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
-	if (light != nullptr && light->IsEnabled())
+	// Lights
+	ComponentLightDirectional* light_dir = (ComponentLightDirectional*)GetComponent(ComponentType::LIGHT_DIRECTIONAL);
+	if (light_dir != nullptr && light_dir->IsEnabled())
 	{
-		light->LightLogic();
+		light_dir->LightLogic();
 	}
+	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
+	if (light_spot != nullptr && light_spot->IsEnabled())
+	{
+		light_spot->LightLogic();
+	}
+	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
+	if (light_point != nullptr && light_point->IsEnabled())
+	{
+		light_point->LightLogic();
+	}
+
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
 	if (camera_ != nullptr && camera_->IsEnabled()) 
@@ -631,10 +648,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 			//camera_->DrawIconCamera();
 		}
 
+		/* TOFIX / DO. Light does not exist anymore here
 		if (light != nullptr && light->IsEnabled())
 		{
 			//light->DrawIconLight();
 		}
+		*/
 
 		if (partSystem != nullptr)
 		{
@@ -1560,8 +1579,18 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				transform->LoadComponent(components_to_load);
 				AddComponent(transform);
 				break; }
-			case (int)ComponentType::LIGHT: {
-				ComponentLight* light = new ComponentLight(this);
+			case (int)ComponentType::LIGHT_DIRECTIONAL: {
+				ComponentLightDirectional* light = new ComponentLightDirectional(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
+			case (int)ComponentType::LIGHT_SPOT: {
+				ComponentLightSpot* light = new ComponentLightSpot(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
+			case (int)ComponentType::LIGHT_POINT: {
+				ComponentLightPoint* light = new ComponentLightPoint(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
 				break; }
@@ -1750,8 +1779,18 @@ void GameObject::CloningGameObject(GameObject* clone)
 				case ComponentType::TRANSFORM: {
 					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
-				case ComponentType::LIGHT: {
-					ComponentLight* light = new ComponentLight(clone);
+				case ComponentType::LIGHT_DIRECTIONAL: {
+					ComponentLightDirectional* light = new ComponentLightDirectional(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_SPOT: {
+					ComponentLightSpot* light = new ComponentLightSpot(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_POINT: {
+					ComponentLightPoint* light = new ComponentLightPoint(clone);
 					(*item)->Clone(light);
 					clone->AddComponent(light);
 					break; }
@@ -1832,12 +1871,25 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 10);
+	//SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->GetTexture() == (ResourceTexture*)to_delete) {
+		if (material != nullptr && material->material->texture != nullptr && material->material->texture == (ResourceTexture*)to_delete) {
 			material->SetTexture(nullptr);
+		}
+		break; }
+	case ResourceType::RESOURCE_MATERIAL : {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material == (ResourceMaterial*)to_delete) {
+			material->material = App->resources->default_material; // TODO: Apply default material when deleting the old one
+		}
+		break; }
+	case ResourceType::RESOURCE_SHADER: {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material->used_shader == (ResourceShader*)to_delete) {
+			material->material->used_shader = App->resources->default_shader;
+			App->resources->default_shader->IncreaseReferences();
 		}
 		break; }
 	case ResourceType::RESOURCE_MESH: {

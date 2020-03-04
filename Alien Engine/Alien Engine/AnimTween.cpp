@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ResourceMaterial.h"
 #include "ComponentUI.h"
 #include "Event.h"
 
@@ -117,7 +118,7 @@ Tween* AnimTween::TweenColor(GameObject* gameObject, const float3& to, float tim
 	Tween* tween = CreateTween(gameObject, time, TweenAction::COLOR, type);
 	if(tween)
 	{
-		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->from = float4(material->material->color.x, material->material->color.y, material->material->color.z, material->material->color.w);
 		tween->to = float4(to, 0.f);
 	}
 
@@ -136,8 +137,8 @@ Tween* AnimTween::TweenAlpha(GameObject* gameObject, const float to, float time,
 	Tween* tween = CreateTween(gameObject, time, TweenAction::ALPHA, type);
 	if (tween)
 	{
-		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
-		tween->to = float4(material->color.r, material->color.g, material->color.b, to);
+		tween->from = float4(material->material->color.x, material->material->color.y, material->material->color.z, material->material->color.w);
+		tween->to = float4(material->material->color.x, material->material->color.y, material->material->color.z, to);
 	}
 
 	return tween;
@@ -155,7 +156,7 @@ Tween* AnimTween::TweenRGBA(GameObject* gameObject, const float4& to, float time
 	Tween* tween = CreateTween(gameObject, time, TweenAction::RGBA, type);
 	if (tween)
 	{
-		tween->from = float4(material->color.r, material->color.g, material->color.b, material->color.a);
+		tween->from = float4(material->material->color.x, material->material->color.y, material->material->color.z, material->material->color.w);
 		tween->to = to;
 	}
 

@@ -21,6 +21,9 @@ class Alien;
 class ResourceScene;
 class ComponentCanvas;
 enum class ComponentType;
+class DirLightProperties;
+class PointLightProperties;
+class SpotLightProperties;
 
 class Viewport;
 
@@ -51,6 +54,16 @@ enum class PrimitiveType
 	UNKONWN
 };
 
+// Used only at the creation of the object.
+enum class LightTypeObj
+{
+	POINT,
+	SPOT,
+	DIRECTIONAL,
+
+	UNKNOWN = -1
+};
+
 class ModuleObjects : public Module
 {
 public:
@@ -74,6 +87,21 @@ public:
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
 	void CreateBaseUI(ComponentType type);
+
+	// lights
+	void CreateLight(LightTypeObj type);
+	
+	uint GetNumOfPointLights() const;
+	uint GetNumOfDirLights() const;
+	uint GetNumOfSpotLights() const;
+	
+	void AddNumOfPointLights();
+	void AddNumOfDirLights();
+	void AddNumOfSpotLights();
+	
+	void ReduceNumOfPointLights();
+	void ReduceNumOfDirLights();
+	void ReduceNumOfSpotLights();
 
 	// poly options
 	void ChangeWireframeMode();
@@ -255,6 +283,10 @@ public:
 
 	bool first_assigned_selected = false;
 
+	std::list<DirLightProperties*> directional_light_properites;
+	std::list<PointLightProperties*> point_light_properites;
+	std::list<SpotLightProperties*> spot_light_properites;
+
 private:
 	// root
 	GameObject* base_game_object = nullptr;
@@ -267,5 +299,11 @@ private:
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
 	std::list<InvokeInfo*> invokes;
+
+	// Lights knowledge
+	uint num_of_dir_lights = 0u;
+	uint num_of_point_lights = 0u;
+	uint num_of_spot_lights = 0u;
+	uint num_of_area_lights = 0u;
 };
 

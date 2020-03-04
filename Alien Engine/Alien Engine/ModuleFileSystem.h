@@ -31,6 +31,7 @@ struct aiFileIO;
 #define MODELS_FOLDER "Assets/Models/"
 #define TEXTURES_FOLDER "Assets/Textures/"
 #define SHADERS_FOLDER "Assets/Shaders/"
+#define MATERIALS_FOLDER "Assets/Materials/"
 #define SCRIPTS_FOLDER "Assets/Scripts/"
 #define SCENE_FOLDER "Assets/Scenes/"
 #define ANIM_CONTROLLER_FOLDER "Assets/AnimControllers/"
@@ -78,6 +79,7 @@ enum class FileDropType {
 	PREFAB,
 	PARTICLES,
 	FONT,
+	MATERIAL,
 
 	UNKNOWN
 };

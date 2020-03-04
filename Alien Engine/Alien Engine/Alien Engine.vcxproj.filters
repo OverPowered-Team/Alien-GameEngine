@@ -463,9 +463,6 @@
     <ClInclude Include="PanelLayout.h">
       <Filter>Panels</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentLight.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleResources.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -576,6 +573,15 @@
     </ClInclude>
     <ClInclude Include="ResourceShader.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentLightDirectional.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentLightSpot.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentLightPoint.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -794,8 +800,6 @@
     </ClCompile>
     <ClCompile Include="PanelLayout.cpp">
       <Filter>Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentLight.cpp">
     </ClCompile>
     <ClInclude Include="ComponentBone.h">
       <Filter>Components</Filter>
@@ -2519,6 +2523,15 @@
     <ClInclude Include="Optick\include\optick.config.h">
       <Filter>Tools\Optik</Filter>
     </ClInclude>
+    <ClCompile Include="ComponentLightDirectional.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentLightSpot.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentLightPoint.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">

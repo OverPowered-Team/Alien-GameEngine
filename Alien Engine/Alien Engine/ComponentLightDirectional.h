@@ -3,13 +3,23 @@
 #include "Component.h"
 #include "Color.h"
 #include "ComponentMesh.h"
+#include "ModuleObjects.h"
 
-class __declspec(dllexport) ComponentLight : public Component {
+struct DirLightProperties
+{
+	float3 position = float3::zero();
+	float3 direction = float3::zero();
+	float3 ambient = float3::zero();
+	float3 diffuse = float3::zero();
+	float3 specular = float3::zero();
+};
+
+class __declspec(dllexport) ComponentLightDirectional : public Component {
 	friend class GameObject;
 	friend class ComponentMesh;
 public:
-	ComponentLight(GameObject* attach);
-	virtual ~ComponentLight();
+	ComponentLightDirectional(GameObject* attach);
+	virtual ~ComponentLightDirectional();
 
 private:
 	void LightLogic();
@@ -27,13 +37,11 @@ private:
 
 	void DrawIconLight();
 
-public:
-	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
-	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
-
 private:
 	ComponentMesh* bulb = nullptr;
 	bool print_icon = true;
 
-	uint light_id = 0;
+	uint renderer_id = 0;
+
+	DirLightProperties light_props;
 };

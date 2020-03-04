@@ -12,7 +12,9 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ReturnZ;
 	friend class CompZ;
 	friend class ResourceMesh;
-	friend class ComponentLight;
+	friend class ComponentLightDirectional;
+	friend class ComponentLightSpot;
+	friend class ComponentLightPoint;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentCamera;

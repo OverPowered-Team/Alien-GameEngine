@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ResourceMaterial.h"
 #include "ComponentUI.h"
 #include "Time.h"
 #include "Tween.h"
@@ -37,17 +38,17 @@ bool Tween::UpdateInternal()
 	case TweenAction::COLOR:
 		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
 		if (material)
-			material->color = { current_value.x, current_value.y, current_value.z, material->color.a };
+			material->material->color = { current_value.x, current_value.y, current_value.z, material->material->color.w };
 		break;
 	case TweenAction::ALPHA:
 		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
 		if (material)
-			material->color.a = current_value.w;
+			material->material->color.w = current_value.w;
 		break;
 	case TweenAction::RGBA:
 		material = trans->game_object_attached->GetComponent<ComponentMaterial>();
 		if (material)
-			material->color = { current_value.x, current_value.y, current_value.z, current_value.w };
+			material->material->color = { current_value.x, current_value.y, current_value.z, current_value.w };
 		break;
 	case TweenAction::UI_COLOR:
 		ui = trans->game_object_attached->GetComponent<ComponentUI>();

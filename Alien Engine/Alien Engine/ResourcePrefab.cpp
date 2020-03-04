@@ -1,7 +1,7 @@
 #include "ResourcePrefab.h"
 #include "Application.h"
 #include "ModuleObjects.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
 #include "ComponentTransform.h"
 #include "PanelHierarchy.h"
 #include "ComponentDeformableMesh.h"

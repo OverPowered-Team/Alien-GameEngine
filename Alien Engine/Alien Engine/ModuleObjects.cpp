@@ -9,7 +9,6 @@
 #include "ComponentMaterial.h"
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
-#include "ComponentLight.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -20,6 +19,9 @@
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -84,12 +86,6 @@ bool ModuleObjects::Start()
 	}
 	game_viewport = new Viewport(nullptr);
 #ifndef GAME_VERSION
-	GameObject* light_test = new GameObject(base_game_object);
-	light_test->SetName("Light");
-
-	light_test->AddComponent(new ComponentLight(light_test));
-
-
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
@@ -1865,3 +1861,86 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 
 }
 
+void ModuleObjects::CreateLight(LightTypeObj type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case LightTypeObj::POINT:
+	{
+		object->SetName("Point light");
+		comp = new ComponentLightPoint(object);
+		object->AddComponent(comp);
+		++num_of_point_lights;
+		break;
+	}
+	case LightTypeObj::SPOT:
+	{
+		object->SetName("Spot light");
+		comp = new ComponentLightSpot(object);
+		object->AddComponent(comp);
+		++num_of_spot_lights;
+		break;
+	}
+	case LightTypeObj::DIRECTIONAL:
+	{
+		object->SetName("Directional light");
+		comp = new ComponentLightDirectional(object);
+		object->AddComponent(comp);
+		++num_of_dir_lights;
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+uint ModuleObjects::GetNumOfPointLights() const
+{
+	return num_of_point_lights;
+}
+
+uint ModuleObjects::GetNumOfDirLights() const
+{
+	return num_of_dir_lights;
+}
+
+uint ModuleObjects::GetNumOfSpotLights() const
+{
+	return num_of_spot_lights;
+}
+
+void ModuleObjects::AddNumOfPointLights()
+{
+	++num_of_point_lights;
+}
+
+void ModuleObjects::AddNumOfDirLights()
+{
+	++num_of_dir_lights;
+}
+
+void ModuleObjects::AddNumOfSpotLights()
+{
+	++num_of_spot_lights;
+}
+
+void ModuleObjects::ReduceNumOfPointLights()
+{
+	--num_of_point_lights;
+}
+
+void ModuleObjects::ReduceNumOfDirLights()
+{
+	--num_of_dir_lights;
+}
+
+void ModuleObjects::ReduceNumOfSpotLights()
+{
+	--num_of_spot_lights;
+}
