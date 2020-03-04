@@ -12,19 +12,33 @@
 #include "PanelAnimator.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 #define CHECKBOX_SIZE 50
 
 void PanelAnimator::DrawStates()
 {
+	OPTICK_EVENT();
 	for (uint i = 0, count = current_animator->GetNumStates(); i < count; ++i)
 	{
 		// Start drawing nodes.
-		ax::NodeEditor::BeginNode(++unique_id);
-		current_animator->GetStates()[i]->id = unique_id;
+
+		if (current_animator->GetCurrentNode()) {
+			if (current_animator->GetStates()[i] == current_animator->GetCurrentNode()) {
+				ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, { 0, 255, 0, 255 });
+			}
+		}
+
+		ax::NodeEditor::BeginNode(current_animator->GetStates()[i]->id);
+
 
 		ImGui::Text(current_animator->GetStates()[i]->GetName().c_str());
 
-		if(current_animator->GetStates()[i]->GetClip())
+		if (current_animator->GetStates()[i] == current_animator->GetDefaultNode()) {
+			ImGui::Text("Entry node");
+		}
+
+		if (current_animator->GetStates()[i]->GetClip())
 			ImGui::Text(current_animator->GetStates()[i]->GetClip()->name.c_str());
 		else
 			ImGui::Text("No clip selected");
@@ -39,12 +53,20 @@ void PanelAnimator::DrawStates()
 		ImGui::Text("Out ->");
 		ax::NodeEditor::EndPin();
 		ax::NodeEditor::EndNode();
+
+		if (current_animator->GetCurrentNode()) {
+			if (current_animator->GetStates()[i] == current_animator->GetCurrentNode()) {
+				ax::NodeEditor::PopStyleColor();
+			}
+		}
 	}
 }
 
 void PanelAnimator::HandleContextMenu()
 {
+	OPTICK_EVENT();
 	ax::NodeEditor::Suspend();
+
 
 	context_node_id = 0;
 	ax::NodeEditor::PinId context_pin_id = 0;
@@ -55,7 +77,7 @@ void PanelAnimator::HandleContextMenu()
 	}
 
 	if (ax::NodeEditor::ShowNodeContextMenu(&context_node_id)) {
-		context_node = current_animator->GetStates()[(uint)context_node_id - 1]->GetName();
+		context_node = current_animator->FindState((uint)context_node_id)->GetName();
 		ImGui::OpenPopup("State popup");
 	}
 
@@ -65,11 +87,12 @@ void PanelAnimator::HandleContextMenu()
 		ImGui::OpenPopup("Link popup");
 	}
 
-	ax::NodeEditor::Resume();	
+	ax::NodeEditor::Resume();
 }
 
 void PanelAnimator::DrawTransitions()
 {
+	OPTICK_EVENT();
 	ax::NodeEditor::PushStyleVar(ax::NodeEditor::StyleVar_LinkStrength, 4.0f);
 	for (uint i = 0; i < current_animator->GetNumTransitions(); i++)
 	{
@@ -77,13 +100,14 @@ void PanelAnimator::DrawTransitions()
 		State* target = current_animator->FindState(current_animator->GetTransitions()[i]->GetTarget()->GetName());
 
 		ax::NodeEditor::Link(++link_id, source->pin_out_id, target->pin_in_id);
-	}	
+	}
 	ax::NodeEditor::PopStyleVar(1);
 }
 
-void PanelAnimator::ShowStatePopup(){
+void PanelAnimator::ShowStatePopup() {
 	if (ImGui::BeginPopup("State popup")) {
 
+		ImGui::Separator();
 		ImGui::Separator();
 
 		std::string temp_str = current_animator->FindState(context_node)->GetName();
@@ -91,6 +115,12 @@ void PanelAnimator::ShowStatePopup(){
 		{
 			current_animator->FindState(context_node)->SetName(temp_str);
 			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Set as entry node")) {
+			current_animator->SetDefaultNode(current_animator->FindState(context_node));
 		}
 
 		ImGui::Separator();
@@ -110,6 +140,13 @@ void PanelAnimator::ShowStatePopup(){
 
 		ImGui::Separator();
 
+		float tmp_speed = current_animator->FindState(context_node)->GetSpeed();
+		if (ImGui::InputFloat("Speed", &tmp_speed)) {
+			current_animator->FindState(context_node)->SetSpeed(tmp_speed);
+		}
+
+		ImGui::Separator();
+
 		if (ImGui::Selectable("Delete State"))
 		{
 			ax::NodeEditor::DeleteNode(ax::NodeEditor::NodeId((context_node_id)));
@@ -123,17 +160,17 @@ void PanelAnimator::ShowStatePopup(){
 
 void PanelAnimator::CreateState()
 {
-	uint aux = 0;
-	std::string name = "New state";
-	for (; aux < current_animator->GetStates().size(); aux++) {}
+	std::string name = "NewState";
 
-	name.append(std::to_string(aux));
 	current_animator->AddState(name, nullptr);
+	uint node_id = current_animator->GetStates().back()->id;
+	ax::NodeEditor::SetNodePosition(node_id, ax::NodeEditor::ScreenToCanvas(ImGui::GetMousePos()));
+	current_animator->GetStates().back()->SetName(name.append(std::to_string(current_animator->GetStates().back()->id)));
 
 	if (new_node_id != ax::NodeEditor::PinId::Invalid)
 	{
 		State* target_state = current_animator->GetStates().back();
-		current_animator->AddTransition(source_state, target_state, 0);
+		current_animator->AddTransition(source_state, target_state, 0.25f);
 	}
 }
 
@@ -159,8 +196,10 @@ void PanelAnimator::HandleDropLink()
 				else
 					end_is_input = false;
 
-				State* start_node = current_animator->FindStateFromPinId(start_pin_id.Get());
-				State* end_node = current_animator->FindStateFromPinId(end_pin_id.Get());
+				State* start_node = nullptr;
+				start_node = current_animator->FindStateFromPinId(start_pin_id.Get());
+				State* end_node = nullptr;
+				end_node = current_animator->FindStateFromPinId(end_pin_id.Get());
 
 				if (start_pin_id == end_pin_id)
 					ax::NodeEditor::RejectNewItem(ImColor(255, 0, 0), 2.0f);
@@ -172,9 +211,9 @@ void PanelAnimator::HandleDropLink()
 					if (ax::NodeEditor::AcceptNewItem(ImColor(0, 255, 0), 4.0f))
 					{
 						if (start_is_input)
-							current_animator->AddTransition(end_node, start_node, 0);
+							current_animator->AddTransition(end_node, start_node, 0.25f);
 						else
-							current_animator->AddTransition(start_node, end_node, 0);
+							current_animator->AddTransition(start_node, end_node, 0.25f);
 					}
 				}
 
@@ -199,7 +238,8 @@ void PanelAnimator::HandleDropLink()
 					new_node_pos = ImGui::GetMousePos();
 					ImGui::OpenPopup("States popup");
 					ax::NodeEditor::Resume();
-				}else new_node_id = ax::NodeEditor::PinId::Invalid;
+				}
+				else new_node_id = ax::NodeEditor::PinId::Invalid;
 			}
 		}
 	}
@@ -222,35 +262,206 @@ void PanelAnimator::ShowLinkPopup()
 {
 	if (ImGui::BeginPopup("Link popup")) {
 
-		if (current_animator->GetTransitions()[selected_link_index]->GetTrigger() > 0) {
-			std::string trigger_slot_selected = "Current Trigger slot: 0";
-			trigger_slot_selected.append(std::to_string(current_animator->GetTransitions()[selected_link_index]->GetTrigger()));
-			ImGui::Text(trigger_slot_selected.c_str());
-		}else
-			ImGui::Text("Select trigger slot");
+		//----------Bools-----------------
 
+		ImGui::Text("Bool Conditions");
 		ImGui::Separator();
-		
-		for (int i = 0; i < current_animator->GetTriggers().size(); ++i) {
-			std::string trigger_slot = "Trigger_slot 0";
-			trigger_slot.append(std::to_string(i + 1));
-			if (ImGui::Selectable(trigger_slot.c_str())) {
-				current_animator->GetTransitions()[selected_link_index]->SetTrigger(i + 1);
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetBoolConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			ImGui::PushID(current_animator->GetBoolParameters()[current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetBoolParameters()[current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->parameter_index].first.c_str())) {
+				ImGui::OpenPopup("Select bool parameter");
 			}
+
+			if (ImGui::BeginPopup("Select bool parameter")) {
+				for (int j = 0; j < current_animator->GetBoolParameters().size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetBoolParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetParameter(j);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select bool comparison");
+			}
+
+			if (ImGui::BeginPopup("Select bool comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]->comp_texts[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveBoolCondition(current_animator->GetTransitions()[selected_link_index]->GetBoolConditions()[i]);
+			}
+
+			ImGui::PopID();
+
+
+		}
+
+		//----------Floats-----------------
+
+		ImGui::Text("Float Conditions");
+		ImGui::Separator();
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetFloatConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			ImGui::PushID(current_animator->GetFloatParameters()[current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetFloatParameters()[current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->parameter_index].first.c_str())) {
+				ImGui::OpenPopup("Select float parameter");
+			}
+
+			if (ImGui::BeginPopup("Select float parameter")) {
+				for (int j = 0; j < current_animator->GetFloatParameters().size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetFloatParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetParameter(j);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select float comparison");
+			}
+
+
+			if (ImGui::BeginPopup("Select float comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp_texts[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			ImGui::InputFloat("", &current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]->comp);
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveFloatCondition(current_animator->GetTransitions()[selected_link_index]->GetFloatConditions()[i]);
+			}
+
+			ImGui::PopID();
+
+
+		}
+
+		//----------Ints-----------------
+
+		ImGui::Text("Int Conditions");
+		ImGui::Separator();
+
+		for (int i = 0; i < current_animator->GetTransitions()[selected_link_index]->GetIntConditions().size(); i++)
+		{
+			ImGui::Separator();
+
+			ImGui::PushID(current_animator->GetIntParameters()[current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->parameter_index].first.c_str());
+			if (ImGui::Button(current_animator->GetIntParameters()[current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->parameter_index].first.c_str())) {
+				ImGui::OpenPopup("Select Int parameter");
+			}
+
+			if (ImGui::BeginPopup("Select Int parameter")) {
+				for (int j = 0; j < current_animator->GetIntParameters().size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetIntParameters()[j].first.c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetParameter(j);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_text.c_str())) {
+				ImGui::OpenPopup("Select Int comparison");
+			}
+
+			if (ImGui::BeginPopup("Select Int comparison")) {
+				for (int j = 0; j < current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts.size(); j++)
+				{
+					if (ImGui::Selectable(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts[j].c_str())) {
+						current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->SetCompText(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp_texts[j]);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::SameLine();
+
+			ImGui::InputInt("", &current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]->comp);
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Remove")) {
+				current_animator->GetTransitions()[selected_link_index]->RemoveIntCondition(current_animator->GetTransitions()[selected_link_index]->GetIntConditions()[i]);
+			}
+
+			ImGui::PopID();
 		}
 
 		ImGui::Separator();
 
-		if (ImGui::Selectable("Reset trigger")) {
-			current_animator->GetTransitions()[selected_link_index]->SetTrigger(0);
+		if (ImGui::Button("Add bool Condition"))
+		{
+			if (current_animator->GetBoolParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddBoolCondition();
+		}
+
+		if (ImGui::Button("Add float Condition"))
+		{
+			if (current_animator->GetFloatParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddFloatCondition();
+		}
+
+		if (ImGui::Button("Add int Condition"))
+		{
+			if (current_animator->GetIntParameters().size() > 0)
+				current_animator->GetTransitions()[selected_link_index]->AddIntCondition();
 		}
 
 		ImGui::Separator();
 
 		float blend_v = (float)current_animator->GetTransitions()[selected_link_index]->GetBlend();
-			
+
 		if (ImGui::InputFloat("Blend value: ", &blend_v)) {
 			current_animator->GetTransitions()[selected_link_index]->SetBlend(blend_v);
+		}
+
+		ImGui::Separator();
+
+		bool end_v = current_animator->GetTransitions()[selected_link_index]->GetEnd();
+
+		if (ImGui::Checkbox("End: ", &end_v)) {
+			current_animator->GetTransitions()[selected_link_index]->SetEnd(end_v);
 		}
 
 		ImGui::Separator();
@@ -269,7 +480,7 @@ void PanelAnimator::Start()
 
 }
 
-bool PanelAnimator::IsInside(const float2 & pos) const
+bool PanelAnimator::IsInside(const float2& pos) const
 {
 	AABB2D box(float2(screen_pos.x, screen_pos.y), float2(screen_pos.x + w, screen_pos.y + h));
 	return math::Contains(box, float3(pos.x, pos.y, 0));
@@ -277,6 +488,7 @@ bool PanelAnimator::IsInside(const float2 & pos) const
 
 void PanelAnimator::DrawParameterList()
 {
+	OPTICK_EVENT();
 	if (current_animator->GetBoolParameters().size() > 0) {
 		for (int i = 0; i < current_animator->GetBoolParameters().size(); i++) {
 
@@ -294,6 +506,11 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::Checkbox("##checkbox", &temp_value)) {
 				current_animator->SetBoolParametersValue(i, temp_value);
 			}
+
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveBoolParameter(current_animator->GetBoolParameters()[i].first);
+			}
+
 			ImGui::PopID();
 			ImGui::Separator();
 		}
@@ -316,8 +533,12 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::InputFloat("##inputfloat", &temp_value)) {
 				current_animator->SetFloatParametersValue(i, temp_value);
 			}
-			ImGui::PopID();
 
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveFloatParameter(current_animator->GetFloatParameters()[i].first);
+			}
+
+			ImGui::PopID();
 			ImGui::Separator();
 		}
 	}
@@ -338,8 +559,12 @@ void PanelAnimator::DrawParameterList()
 			if (ImGui::InputInt("##inputint", &temp_value)) {
 				current_animator->SetIntParametersValue(i, temp_value);
 			}
-			ImGui::PopID();
 
+			if (ImGui::Button("Remove")) {
+				current_animator->RemoveIntParameter(current_animator->GetIntParameters()[i].first);
+			}
+
+			ImGui::PopID();
 			ImGui::Separator();
 		}
 	}
@@ -355,8 +580,6 @@ void PanelAnimator::OnAssetSelect()
 		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
 		if (current_animator != anim_ctrl)
 		{
-			if(current_animator)
-				current_animator->SaveAsset(current_animator->GetID());
 			SetCurrentResourceAnimatorController(anim_ctrl);
 		}
 	}
@@ -370,7 +593,7 @@ void PanelAnimator::OnAssetDelete()
 		std::string alien_path = App->file_system->GetPathWithoutExtension(asset_path) + "_meta.alien";
 		u64 resource_id = App->resources->GetIDFromAlienPath(alien_path.data());
 		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(resource_id);
-		if(current_animator)
+		if (current_animator)
 			current_animator->DecreaseReferences();
 		current_animator = nullptr;
 	}
@@ -386,7 +609,7 @@ void PanelAnimator::OnObjectDelete()
 	//TODO
 }
 
-void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController * animator)
+void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController* animator)
 {
 	if (current_animator)
 	{
@@ -398,7 +621,7 @@ void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorControl
 	current_animator->IncreaseReferences();
 }
 
-PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) 
+PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
 {
 	shortcut = App->shortcut_manager->AddShortCut("Animator", key1_down, std::bind(&Panel::ChangeEnable, this), key2_repeat, key3_repeat_extra);
@@ -407,7 +630,7 @@ PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& 
 PanelAnimator::~PanelAnimator()
 {
 	if (current_animator)
-		current_animator->SaveAsset();
+		current_animator->SaveAsset(current_animator->GetID());
 }
 
 bool PanelAnimator::FillInfo()
@@ -417,6 +640,7 @@ bool PanelAnimator::FillInfo()
 
 void PanelAnimator::PanelLogic()
 {
+	OPTICK_EVENT();
 	ImGuiWindowFlags aboutFlags = 0;
 	aboutFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Animator", &enabled, aboutFlags);
@@ -439,7 +663,7 @@ void PanelAnimator::PanelLogic()
 
 		current_animator = nullptr;
 
-		for each (GameObject* go in App->objects->GetSelectedObjects())
+		for each (GameObject * go in App->objects->GetSelectedObjects())
 		{
 			if (go->HasComponent(ComponentType::ANIMATOR)) {
 				ComponentAnimator* c_anim = (ComponentAnimator*)go->GetComponent(ComponentType::ANIMATOR);
@@ -478,7 +702,7 @@ void PanelAnimator::PanelLogic()
 		ImGui::SetCursorPos({ 4, 24 });
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(0, 0, 0, 100));
 
-		ImGui::BeginChild("Parameters", { 200, 500 }, true);
+		ImGui::BeginChild("Parameters", { 200, 350 }, true);
 		ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen);
 
 		DrawParameterList();

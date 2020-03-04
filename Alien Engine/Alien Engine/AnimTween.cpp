@@ -82,7 +82,7 @@ Tween* AnimTween::TweenRotate(GameObject* gameObject, const float3& to, float ti
 		Quat rot = gameObject->transform->GetGlobalRotation();
 		tween->from = float4(rot.x, rot.y, rot.x, rot.w);
 
-		Quat end_rot = Quat::FromEulerXYZ(to.x, to.y, to.z);
+		Quat end_rot = Quat::FromEulerXYZ(DegToRad(to.x), DegToRad(to.y), DegToRad(to.z));
 		tween->to = float4(end_rot.x, end_rot.y, end_rot.z, end_rot.w);
 	}
 

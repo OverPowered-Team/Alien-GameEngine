@@ -11,24 +11,28 @@ struct Bank;
 
 class __declspec(dllexport) ComponentAudioEmitter : public Component
 {
+	friend class GameObject;
 public:
 	ComponentAudioEmitter(GameObject* parent);
 	~ComponentAudioEmitter();
-public:
 
-	void Update() override;
+//script
+public:
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
 	void StartSound();
+
+private:
 	void UpdateSourcePos();
+	void Update() override;
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
-	bool DrawInspector();
-	bool AlreadyUsedBank(const Bank* bk);
 	void OnEnable() override;
 	void OnDisable() override;
+	bool DrawInspector();
+	bool AlreadyUsedBank(const Bank* bk);
 
-public:
+private:
 	WwiseT::AudioSource* source = nullptr;
 	std::string audio_name;
 	u64 current_bank = 0ull;
@@ -37,7 +41,6 @@ public:
 	bool play_on_awake = true;
 	bool loop = false;
 	bool mute = false;
-
-private:
 	bool play_mode = false;
+
 };

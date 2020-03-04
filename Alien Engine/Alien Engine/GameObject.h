@@ -157,8 +157,8 @@ private:
 	void OnStop();
 
 	// here we call Component Mesh, Material & light
-	void DrawScene();
-	void DrawGame();
+	void DrawScene(ComponentCamera* camera);
+	void DrawGame(ComponentCamera* camera);
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
 
 	ComponentCanvas* GetCanvas();

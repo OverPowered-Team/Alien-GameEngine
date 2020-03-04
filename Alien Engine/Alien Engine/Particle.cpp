@@ -9,6 +9,8 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 {
 	owner->sourceFactor = GL_SRC_ALPHA;
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
+
+	
 }
 
 Particle::~Particle()
@@ -27,21 +29,43 @@ void Particle::Update(float dt)
 {
 	// Apply forces
 	particleInfo.velocity += particleInfo.force * dt;
+	
 
 	// Move
 	particleInfo.position += particleInfo.velocity * dt;
+
+
+	//Rotate (Angular Velocity && Angular Acc in degrees per second)
+	if (particleInfo.rotateOverTime) {
+
+		particleInfo.angularVelocity3D += particleInfo.angularAcceleration3D * dt;
+
+		if (particleInfo.angularVelocity3D.z >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.z = ANGULAR_CAP;
+		if (particleInfo.angularVelocity3D.y >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.y = ANGULAR_CAP;
+		if (particleInfo.angularVelocity3D.x >= ANGULAR_CAP)
+			particleInfo.angularVelocity3D.x = ANGULAR_CAP;
+
+		particleInfo.angle3D += particleInfo.angularVelocity3D * dt;
+	}
+	
 }
 
 void Particle::PostUpdate(float dt)
 {
-	if (particleInfo.changeOverLifeTime)
+	if (particleInfo.changeOverLifeTime) {
+
 		InterpolateValues(dt);
+		
+	}
 }
 
 void Particle::Draw()
 {
 	glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
 
+	
 	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size, 1.f));
 	float4x4 particleGlobal = particleLocal;
 
@@ -166,6 +190,13 @@ void Particle::Orientate(ComponentCamera* camera)
 	}
 }
 
+void Particle::Rotate()
+{
+	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateX(math::DegToRad(particleInfo.angle3D.x)));
+	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateY(math::DegToRad(particleInfo.angle3D.y)));
+	particleInfo.rotation = particleInfo.rotation.Mul(Quat::RotateZ(math::DegToRad(particleInfo.angle3D.z)));
+}
+
 void Particle::InterpolateValues(float dt)
 {
 
@@ -175,6 +206,7 @@ void Particle::InterpolateValues(float dt)
 		t += rateToLerp * dt;
 		particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 		particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
+		//particleInfo.rotation = Slerp(particleInfo.rotation.Mul(Quat::RotateZ(startInfo.angle)), particleInfo.rotation.Mul(Quat::RotateZ(endInfo.angle)),t);
 		particleInfo.force = float3::Lerp(startInfo.force, endInfo.force, t);
 	}
 

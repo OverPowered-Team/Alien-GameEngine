@@ -35,14 +35,14 @@ public:
 
 protected:
 
-	virtual void DrawPolygon();
+	virtual void DrawPolygon(ComponentCamera* camera);
 	virtual void DrawOutLine();
 	virtual void DrawMesh();
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
-	void DrawGlobalAABB();
-	void DrawOBB();
+	void DrawGlobalAABB(ComponentCamera* camera);
+	void DrawOBB(ComponentCamera* camera);
 
 	void Reset();
 	void SetComponent(Component* component);

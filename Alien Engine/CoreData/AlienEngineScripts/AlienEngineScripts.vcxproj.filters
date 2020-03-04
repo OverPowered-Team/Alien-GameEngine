@@ -34,6 +34,10 @@
       <Filter>Scripts</Filter>
     </ClInclude>
     <ClInclude Include="TestTweenLineal.h">
+    <ClInclude Include="asifhispfs.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
       <Filter>Scripts</Filter>
     </ClInclude>
   </ItemGroup>
@@ -57,6 +61,12 @@
       <Filter>Scripts</Filter>
     </ClCompile>
     <ClCompile Include="TestTweenLineal.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="asifhispfs.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>

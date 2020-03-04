@@ -3,6 +3,8 @@
 #include "ComponentAudioEmitter.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ModuleAudio::ModuleAudio(bool start_enabled) : Module(start_enabled)
 {
 	name = "audio";
@@ -14,7 +16,12 @@ ModuleAudio::~ModuleAudio()
 bool ModuleAudio::Start()
 {
 	// Init wwise and audio banks
-	return WwiseT::InitSoundEngine();
+	bool ret = WwiseT::InitSoundEngine();
+	
+	default_listener = CreateSoundEmitter("Listener");
+	SetListener(default_listener);
+
+	return ret;
 }
 
 void ModuleAudio::LoadBanksInfo()
@@ -43,6 +50,7 @@ void ModuleAudio::LoadBanksInfo()
 
 update_status ModuleAudio::Update(float dt)
 {
+	OPTICK_EVENT();
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
 			UnloadAllUsedBanksFromWwise();
@@ -62,6 +70,7 @@ update_status ModuleAudio::Update(float dt)
 
 update_status ModuleAudio::PostUpdate(float dt)
 {
+	OPTICK_EVENT();
 	if (listener != nullptr)
 		WwiseT::ProcessAudio();
 	return UPDATE_CONTINUE;
@@ -69,24 +78,35 @@ update_status ModuleAudio::PostUpdate(float dt)
 
 bool ModuleAudio::CleanUp()
 {
+	OPTICK_EVENT();
 	for (auto i = emitters.begin(); i != emitters.end(); i++)
-		delete* i;
+	{
+		if((*i))
+			delete* i;
+	}		
 	emitters.clear();
 
 	WwiseT::StopAllEvents();
 
 	UnloadAllBanksFromWwise();
 	for (auto b = banks.begin(); b != banks.end(); b++)
-		delete* b;
+	{
+		if ((*b))
+			delete* b;
+	}	
 	banks.clear();
 
 	used_banks.clear();
+
+	delete default_listener;
+	default_listener = nullptr;
 
 	return WwiseT::CloseSoundEngine();
 }
 
 void ModuleAudio::LoadUsedBanks()
 {
+	OPTICK_EVENT();
 	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
 	{
 		if (!(*i)->loaded) {
@@ -99,26 +119,33 @@ void ModuleAudio::LoadUsedBanks()
 
 bool ModuleAudio::UnloadAllBanksFromWwise()
 {
+	OPTICK_EVENT();
 	for (auto it = banks.begin(); it != banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
 		}
 	}
-	//banks.clear();
 
 	return true;
 }
 
 void ModuleAudio::UnloadAllUsedBanksFromWwise()
 {
+	OPTICK_EVENT();
 	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
 	{
-		if ((*it)->loaded) {
-			WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-			(*it)->loaded = false;
-		}
+		if ((*it))
+		{
+			if ((*it)->loaded) {
+				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
+				(*it)->loaded = false;
+			}
+		}	
 	}
 }
 
@@ -160,6 +187,7 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 
 void ModuleAudio::Play()
 {
+	OPTICK_EVENT();
 	for (auto iterator = emitters.begin(); iterator != App->audio->emitters.end(); ++iterator)
 	{
 		(*iterator)->StartSound();
@@ -185,7 +213,10 @@ void ModuleAudio::Resume() const
 
 void ModuleAudio::SetListener(WwiseT::AudioSource* new_listener)
 {
+	if (new_listener == nullptr)
+		listener = default_listener;
+	else
 	listener = new_listener;
-	WwiseT::SetDefaultListener((listener == nullptr) ? 0u : new_listener->GetID());
-}
 
+	WwiseT::SetDefaultListener(new_listener->GetID());
+}

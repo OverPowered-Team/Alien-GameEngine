@@ -167,19 +167,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="asifhispfs.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="ControllerTest.h" />
     <ClInclude Include="ListenerButton.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="TestClass4.h" />
     <ClInclude Include="TestTween.h" />
     <ClInclude Include="TestTweenLineal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="asifhispfs.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="ControllerTest.cpp" />
     <ClCompile Include="ListenerButton.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="TestClass4.cpp" />
     <ClCompile Include="TestTween.cpp" />
     <ClCompile Include="TestTweenLineal.cpp" />
