@@ -4,6 +4,9 @@
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentUI.h"
+#include "Event.h"
+
+#include "mmgr/mmgr.h"
 
 update_status AnimTween::Update(float dt)
 {
@@ -18,6 +21,19 @@ update_status AnimTween::Update(float dt)
 			it_tween++;
 	}
 	return UPDATE_CONTINUE;
+}
+
+void AnimTween::HandleEvent(EventType eventType)
+{
+	switch (eventType)
+	{
+	case EventType::ON_UNLOAD_SCENE:
+		for (auto it_tween = tweens.begin(); it_tween != tweens.end();) {
+			delete *it_tween;
+			it_tween = tweens.erase(it_tween);
+		}
+		break;
+	}
 }
 
 Tween* AnimTween::CreateTween(GameObject* gameObject, float time, TweenAction action, TweenType type)

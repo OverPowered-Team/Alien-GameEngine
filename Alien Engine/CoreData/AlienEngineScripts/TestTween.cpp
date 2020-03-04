@@ -15,5 +15,5 @@ void TestTween::Start()
 void TestTween::Update()
 {
 	if (Input::GetKeyDown(SDL_SCANCODE_A))
-		Tween::TweenRotate(this->game_object, float3(90.f, 0.0f, 0.F), 5);
+		Tween::TweenMove(this->game_object, float3(30.f, 0.0f, 0.F), 5, Tween::easeOutElastic);
 }

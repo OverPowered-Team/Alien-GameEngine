@@ -7,6 +7,8 @@
 #include "Time.h"
 #include "Tween.h"
 
+#include "mmgr/mmgr.h"
+
 bool Tween::UpdateInternal()
 {
 	bool ret = true;

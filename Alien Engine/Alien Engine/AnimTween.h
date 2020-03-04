@@ -33,6 +33,7 @@ public:
 	~AnimTween() {};
 
 	update_status Update(float dt);
+	void HandleEvent(EventType eventType);
 
 public:
 	Tween* CreateTween(GameObject* gameObject, float time, TweenAction action, TweenType type);
