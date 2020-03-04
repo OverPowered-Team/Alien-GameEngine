@@ -97,10 +97,6 @@ void ComponentMaterial::InspectorShaderProperties()
 		ImGui::Separator();
 		ImGui::Text("Current shader: "); ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), material->used_shader->path.c_str());
-		if (ImGui::Button("Select Shader"))
-		{
-			select_shader = true;
-		}
 		ImGui::SameLine();
 		if (ImGui::Button("Edit shader"))
 		{
