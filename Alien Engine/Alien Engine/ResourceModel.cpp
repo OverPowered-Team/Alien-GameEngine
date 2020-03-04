@@ -23,7 +23,7 @@ ResourceModel::~ResourceModel()
 {
 	std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
 	for (; item != meshes_attached.end(); ++item) {
-		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce mesh ja la borrat alla
+		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce resource_mesh ja la borrat alla
 			delete* item;
 			*item = nullptr;
 		}
@@ -713,8 +713,7 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						Cmesh = new ComponentMesh(ret);
 
 					mesh->IncreaseReferences();
-					Cmesh->mesh = mesh;
-					Cmesh->RecalculateAABB_OBB();
+					Cmesh->SetResourceMesh(mesh);
 					ret->AddComponent(Cmesh);
 				}
 

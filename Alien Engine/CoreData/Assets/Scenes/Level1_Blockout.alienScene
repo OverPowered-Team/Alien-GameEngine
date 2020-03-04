@@ -39,21 +39,34 @@
                     },
                     {
                         "Type": 3,
-                        "DiffuseColor": [
-                            0.75,
-                            0.75,
-                            0.75,
-                            1
-                        ],
-                        "AmbienColor": [
-                            0.5,
-                            0.5,
-                            0.5,
-                            1
-                        ],
                         "Enabled": true,
                         "ID": "7703770992146445313",
-                        "PrintIcon": true
+                        "PrintIcon": true,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Ambient": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Specular": [
+                            0,
+                            0,
+                            0
+                        ]
                     }
                 ]
             },
@@ -64,7 +77,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -94,7 +107,7 @@
                     },
                     {
                         "Enabled": true,
-                        "Type": 4,
+                        "Type": 6,
                         "VerticalFov": 60.000003814697266,
                         "HoritzontalFov": 91.492843627929688,
                         "BackCol": [
@@ -106,9 +119,9 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "5740175884105946456",
+                        "ID": "2306347890556456668",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": false,
+                        "IsSelectedCamera": true,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -170,15 +183,9 @@
                     },
                     {
                         "Type": 2,
-                        "Color": [
-                            0.40000000596046448,
-                            0.40000000596046448,
-                            0.40000000596046448,
-                            1
-                        ],
-                        "TextureEnabled": true,
                         "ID": "8270335729522674255",
-                        "HasMaterial": false,
+                        "HasMaterial": true,
+                        "MaterialID": "13753584922284142239",
                         "Enabled": true
                     }
                 ]

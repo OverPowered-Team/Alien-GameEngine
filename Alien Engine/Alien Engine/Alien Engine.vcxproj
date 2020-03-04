@@ -844,6 +844,7 @@
     <ClInclude Include="PanelInspector.h" />
     <ClInclude Include="PanelLayout.h" />
     <ClInclude Include="PanelParticleSystem.h" />
+    <ClInclude Include="PanelPhysics.h" />
     <ClInclude Include="PanelProject.h" />
     <ClInclude Include="PanelRender.h" />
     <ClInclude Include="PanelScene.h" />
@@ -1207,6 +1208,7 @@
     <ClCompile Include="PanelInspector.cpp" />
     <ClCompile Include="PanelLayout.cpp" />
     <ClCompile Include="PanelParticleSystem.cpp" />
+    <ClCompile Include="PanelPhysics.cpp" />
     <ClCompile Include="PanelProject.cpp" />
     <ClCompile Include="PanelRender.cpp" />
     <ClCompile Include="PanelScene.cpp" />

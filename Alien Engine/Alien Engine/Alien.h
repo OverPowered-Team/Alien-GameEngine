@@ -11,6 +11,7 @@ typedef unsigned int uint;
 
 class __declspec(dllexport) Alien {
 	friend class ComponentScript;
+	friend class ComponentCollider;
 	friend class ModuleObjects;
 public:
 	Alien();
@@ -38,8 +39,10 @@ public:
 
 	virtual void CleanUp() {}
 
-	void OnCollision(ComponentCollider* collider) {}
+	//void OnCollision(ComponentCollider* collider) {}
 	void OnTrigger(ComponentCollider* collider) {}
+	void OnTriggerEnter(ComponentCollider* collider) {}
+	void OnTriggerExit(ComponentCollider* collider) {}
 
 
 	bool IsScriptEnabled() const;
