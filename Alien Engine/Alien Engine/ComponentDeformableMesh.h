@@ -5,7 +5,7 @@
 class ResourceMesh;
 class ComponentBone;
 
-class ComponentDeformableMesh : public ComponentMesh
+class __declspec(dllexport) ComponentDeformableMesh : public ComponentMesh
 {
 	friend class GameObject;
 	friend class ReturnZ;

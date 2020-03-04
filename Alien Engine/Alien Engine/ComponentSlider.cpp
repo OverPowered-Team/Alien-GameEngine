@@ -753,11 +753,11 @@ bool ComponentSlider::OnPressed()
 		factor = 0.0f;
 	}*/
 
-	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || Input::GetControllerHoritzontalLeftAxis(1) < -0.2f)
 	{
 		factor += (0.01f);
 	}
-	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || Input::GetControllerHoritzontalLeftAxis(1) > 0.2f)
 	{
 		factor -= (0.01f);
 	}
