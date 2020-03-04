@@ -23,8 +23,7 @@ ResourceMaterial::~ResourceMaterial()
 {
 	if (texture != nullptr)
 	{
-		texture->DecreaseReferences();
-		texture = nullptr;
+		RemoveTexture();
 	}
 }
 
@@ -215,7 +214,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 		texture = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(file->GetString("TextureID")));
 		if (texture != nullptr)
 		{
-			textureID = texture->GetID();
+			textureID = id;
 			texture->IncreaseReferences();
 		}
 	}
@@ -389,14 +388,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 void ResourceMaterial::TexturesSegment()
 {
-	if (texture != nullptr)
-	{
-		if (texture != nullptr) {
-			
-		}
-	}
-
-	static ResourceTexture* selected_texture = nullptr;
+	//static ResourceTexture* selected_texture = nullptr;
 	if (texture != nullptr)
 	{	
 		ImGui::Text("Texture Information: %s", std::to_string(texture->GetID()).c_str());

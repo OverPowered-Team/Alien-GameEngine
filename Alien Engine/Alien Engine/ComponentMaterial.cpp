@@ -322,9 +322,6 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	if (tex == material->texture) // Unity does not do this, but I think it should
 		return;
 
-	// Detach current texture
-	material->RemoveTexture();
-
 	// Look for an already created material (with the same name as the texture) that has the same texture
 	ResourceMaterial* foundMaterial = App->resources->GetMaterialByName(tex->GetName());
 	if (foundMaterial != nullptr && foundMaterial->texture == tex)
