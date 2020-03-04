@@ -213,31 +213,8 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("ambientStrength", inputs.basicLightingShaderProperties.ambient_strength);
 		SetUniform1f("specularStrength", inputs.basicLightingShaderProperties.specular_strength);
 
-		SetUniformFloat3("lightPos", uniform_data.basicLightingShaderProperties.lightPosition);
-		//SetUniform1f("ambientStrength", uniform_data.basicLightingShaderProperties.ambient_strength);
-		//SetUniform1f("specularStrength", uniform_data.basicLightingShaderProperties.specular_strength);
-		if (uniform_data.textures_id == 0)
-		{
-			SetUniform1i("hasTex", 0);
-			SetUniform1i("material.diffuseTex", 0);
-		}
-		else
-		{
-			SetUniform1i("hasTex", 1);
-			SetUniform1i("material.diffuseTex", uniform_data.textures_id);
-		}
 		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());
-		//material
-		SetUniformFloat3("material.ambient", float3(1.0f, 0.5f, 0.31f));
-		SetUniformFloat3("material.diffuse", float3(1.0f, 0.5f, 0.31f));
-		SetUniformFloat3("material.specular", float3(0.5f, 0.5f, 0.5f));
-		SetUniform1f("material.shininess", 32.0f);
-		//light
-		SetUniformFloat3("light.ambient", float3(0.2f, 0.2f, 0.2f));
-		SetUniformFloat3("light.diffuse", float3(0.5f, 0.5f, 0.5f)); // darken diffuse light a bit
-		SetUniformFloat3("light.specular", float3(1.0f, 1.0f, 1.0f));
-		SetUniform1i("tex", uniform_data.textures_id);
-		SetUniformFloat3("diffuse_color", uniform_data.basicLightingShaderProperties.object_color);
+
 		break; }
 
 	default:
@@ -285,11 +262,6 @@ void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
-}
-
-void ResourceShader::SetTextureID(uint id)
-{
-	uniform_data.textures_id = id;
 }
 
 SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
