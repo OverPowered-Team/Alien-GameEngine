@@ -118,6 +118,7 @@ void ComponentUI::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
@@ -188,6 +189,7 @@ void ComponentUI::Draw(bool isGame)
 
 	glPopMatrix();
 
+	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
 
