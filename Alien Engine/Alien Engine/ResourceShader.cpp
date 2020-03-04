@@ -272,32 +272,109 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
 }
 
-void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights, const uint& size)
+void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
 {
-	/*static int i = 0;
+	static int i = 0;
+	std::string tmp_name(name.c_str());
+	tmp_name.append("[%i]");
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
-		string tmp_name(name.c_str(), "[%i]");
-		
-		sprintf_s(tmp_name, "%i", i);
-
-		.properties...
+		char cname[128];
+		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
-		SetUniformFloat3(tmp_name, );
-		[]
+		std::string cposition = std::string(cname).append(".position");
+		SetUniformFloat3(cposition, (*iter)->position);
+
+		std::string cdirection = std::string(cname).append(".direction");
+		SetUniformFloat3(cdirection, (*iter)->direction);
+
+		std::string cdiffuse = std::string(cname).append(".diffuse");
+		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
+
+		std::string cspecular = std::string(cname).append(".specular");
+		SetUniformFloat3(cspecular, (*iter)->specular);
+
 		++i;
-	}*/
+	}
 }
 
-void ResourceShader::SetPointLights(const std::string& name, const std::list<PointLightProperties*>& pointLights, const uint& size)
+void ResourceShader::SetPointLights(const std::string& name, const std::list<PointLightProperties*>& pointLights)
 {
+	static int i = 0;
+	std::string tmp_name(name.c_str());
+	tmp_name.append("[%i]");
+	for (std::list<PointLightProperties*>::const_iterator iter = pointLights.begin(); iter != pointLights.end(); iter++)
+	{
+		char cname[128];
+		sprintf_s(cname, tmp_name.c_str(), i);
 
+		// All uniforms
+		std::string cposition = std::string(cname).append(".position");
+		SetUniformFloat3(cposition, (*iter)->position);
+
+		std::string cdirection = std::string(cname).append(".direction");
+		SetUniformFloat3(cdirection, (*iter)->direction);
+
+		std::string cdiffuse = std::string(cname).append(".diffuse");
+		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
+
+		std::string cspecular = std::string(cname).append(".specular");
+		SetUniformFloat3(cspecular, (*iter)->specular);
+
+		std::string cconstant = std::string(cname).append(".constant");
+		SetUniform1f(cconstant, (*iter)->constant);
+
+		std::string clinear = std::string(cname).append(".linear");
+		SetUniform1f(clinear, (*iter)->linear);
+
+		std::string cquadratic = std::string(cname).append(".quadratic");
+		SetUniform1f(cquadratic, (*iter)->quadratic);
+
+		++i;
+	}
 }
 
-void ResourceShader::SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& spotLights, const uint& size)
+void ResourceShader::SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& spotLights)
 {
+	static int i = 0;
+	std::string tmp_name(name.c_str());
+	tmp_name.append("[%i]");
+	for (std::list<SpotLightProperties*>::const_iterator iter = spotLights.begin(); iter != spotLights.end(); iter++)
+	{
+		char cname[128];
+		sprintf_s(cname, tmp_name.c_str(), i);
 
+		// All uniforms
+		std::string cposition = std::string(cname).append(".position");
+		SetUniformFloat3(cposition, (*iter)->position);
+
+		std::string cdirection = std::string(cname).append(".direction");
+		SetUniformFloat3(cdirection, (*iter)->direction);
+
+		std::string cdiffuse = std::string(cname).append(".diffuse");
+		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
+
+		std::string cspecular = std::string(cname).append(".specular");
+		SetUniformFloat3(cspecular, (*iter)->specular);
+
+		std::string cconstant = std::string(cname).append(".constant");
+		SetUniform1f(cconstant, (*iter)->constant);
+
+		std::string clinear = std::string(cname).append(".linear");
+		SetUniform1f(clinear, (*iter)->linear);
+
+		std::string cquadratic = std::string(cname).append(".quadratic");
+		SetUniform1f(cquadratic, (*iter)->quadratic);
+
+		std::string ccutoff = std::string(cname).append(".cut_off");
+		SetUniform1f(ccutoff, (*iter)->cut_off);
+
+		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
+		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
+
+		++i;
+	}
 }
 
 SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)

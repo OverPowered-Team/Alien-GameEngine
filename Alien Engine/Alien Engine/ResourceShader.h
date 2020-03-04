@@ -78,9 +78,9 @@ public:
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
 
-	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights, const uint& size);
-	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights, const uint& size);
-	void SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& dirLights, const uint& size);
+	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights);
+	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights);
+	void SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& dirLights);
 	void CreateShaderDoc(const int& type, const char* name);
 
 private:
@@ -90,8 +90,6 @@ private:
 	uint CompileShader(const uint& shader_type, const std::string& shader_source);
 
 	int GetUniformLocation(const std::string& name);
-
-	// TODO: Create uniform cache for optimization and faster search.
 
 private:
 
