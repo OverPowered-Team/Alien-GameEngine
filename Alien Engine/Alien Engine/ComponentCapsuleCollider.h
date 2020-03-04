@@ -37,9 +37,8 @@ private:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-	void CreateShape();
+	void CreateDefaultShape();
 	void UpdateShape();
-	bool WrapMesh();
 
 private:
 

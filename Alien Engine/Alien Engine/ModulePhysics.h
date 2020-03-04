@@ -30,7 +30,9 @@ class btGhostObject;
 
 class ModulePhysics : public Module
 {
+	friend class ModuleObjects;
 	friend class ComponentCollider;
+	friend class PanelPhysics;
 
 public:
 	ModulePhysics( bool start_enabled = true);
@@ -51,11 +53,13 @@ public:
 
 	bool CleanUp();
 
-	void RenderCollider(ComponentCollider* collider);
+	void DrawCollider(ComponentCollider* collider);
 
-	void RenderConvexCollider(ComponentCollider* collider);
+	void DrawConvexCollider(ComponentCollider* collider);
 
-	void RenderConstraint(btTypedConstraint* constraint);
+	void DrawConstraint(btTypedConstraint* constraint);
+
+	void DrawWorld();
 
 	void AddBody(btRigidBody* body);
 
@@ -79,6 +83,7 @@ public:
 
 private:
 
+	bool debug_physics = false;
 	DebugRenderer* debug_renderer = nullptr;
 	btDefaultCollisionConfiguration* collision_config = nullptr;
 	btCollisionDispatcher* dispatcher = nullptr;

@@ -422,7 +422,7 @@ void Application::CastEvent(EventType eventType)
 		(*item)->HandleEvent(eventType);
 }
 
-void Application::AlienEvent(AlienEvent& e)
+void Application::SendAlienEvent(AlienEvent& e)
 {}
 
 void Application::AddModule(Module* mod)

@@ -43,7 +43,8 @@ void ComponentCollider::Init()
 
 	// Create shape 
 
-	CreateShape();
+	CreateDefaultShape();
+
 	aux_body->setCollisionShape(shape);
 	App->physics->AddBody(aux_body);
 
@@ -137,11 +138,6 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 	UpdateShape();
 }
 
-void ComponentCollider::CreateShape()
-{
-	if (!WrapMesh()) UpdateShape();
-}
-
 void ComponentCollider::Update()
 {
 	static float3 last_scale = transform->GetGlobalScale();
@@ -169,9 +165,6 @@ void ComponentCollider::Update()
 	//if (test_callbacks == true)
 	if (alien_script != nullptr)
 	{
-		btVector3 origin = detector->getWorldTransform().getOrigin();
-		LOG_ENGINE("%f, %f, %f", origin.x(), origin.y(), origin.z());
-
 		int numObjectsInGhost = 0;
 		int test = 0;
 		numObjectsInGhost = detector->getNumOverlappingObjects(); //numObjectsInGhost is set to 0xcdcdcdcd
@@ -224,9 +217,9 @@ void ComponentCollider::Update()
 
 void ComponentCollider::DrawScene()
 {
-	if (game_object_attached->IsSelected()/* && App->scene->editor_mode*/)
+	if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
 	{
-		App->physics->RenderCollider(this);
+		App->physics->DrawCollider(this);
 	}
 }
 

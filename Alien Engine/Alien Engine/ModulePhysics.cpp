@@ -64,7 +64,6 @@ bool ModulePhysics::Start()
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
-
 	world->setGravity(GRAVITY);
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
@@ -116,7 +115,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-void ModulePhysics::RenderCollider(ComponentCollider* collider)
+void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
@@ -128,7 +127,7 @@ void ModulePhysics::RenderCollider(ComponentCollider* collider)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
+void ModulePhysics::DrawConvexCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
@@ -155,12 +154,17 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::RenderConstraint(btTypedConstraint* constraint)
+void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawConstraints);
 	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
 	world->debugDrawConstraint(constraint);
 	ModuleRenderer3D::EndDebugDraw();
+}
+
+void ModulePhysics::DrawWorld()
+{
+	world->debugDrawWorld();
 }
 
 void ModulePhysics::AddBody(btRigidBody* body)

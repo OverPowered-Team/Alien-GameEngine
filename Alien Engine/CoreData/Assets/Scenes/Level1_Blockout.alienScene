@@ -1,0 +1,124 @@
+{
+    "Scene": {
+        "Name": "Level1_Blockout",
+        "GameObjects": [
+            {
+                "Name": "Light",
+                "FamilyNumber": 1,
+                "ID": "5681306368297182107",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "779642701081684930"
+                    },
+                    {
+                        "Type": 3,
+                        "DiffuseColor": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "AmbienColor": [
+                            0.5,
+                            0.5,
+                            0.5,
+                            1
+                        ],
+                        "Enabled": true,
+                        "ID": "5019513413690659263",
+                        "PrintIcon": true
+                    }
+                ]
+            },
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "13974320478972207757",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13612715499753388006"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 4,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 93.701499938964844,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "5172259836847975869",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

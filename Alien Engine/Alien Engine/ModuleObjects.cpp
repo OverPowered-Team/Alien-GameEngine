@@ -204,6 +204,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 				glEnable(GL_LIGHT0);
 			}
+			
+			if (App->physics->debug_physics)
+			{
+				App->physics->DrawWorld();
+			}
 		}
 
 		if (base_game_object->HasChildren()) {

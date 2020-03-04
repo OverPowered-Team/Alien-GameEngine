@@ -58,8 +58,7 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
 
-	void CreateShape();	// Create shape
-	virtual bool WrapMesh() { return false; }
+	virtual void CreateDefaultShape() = 0;
 	virtual void UpdateShape() {} 	// Adjust shape to scale and other factors
 
 protected:

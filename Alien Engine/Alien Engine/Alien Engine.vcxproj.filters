@@ -573,6 +573,9 @@
     <ClInclude Include="ResourceShader.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="PanelPhysics.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2506,6 +2509,9 @@
     <ClInclude Include="Optick\include\optick.config.h">
       <Filter>Tools\Optik</Filter>
     </ClInclude>
+    <ClCompile Include="PanelPhysics.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">

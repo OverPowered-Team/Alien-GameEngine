@@ -105,7 +105,7 @@ public:
 
 	void OpenWebsite(const std::string& website);
 	void CastEvent(EventType eventType);
-	void AlienEvent(AlienEvent& e);
+	void SendAlienEvent(AlienEvent& e);
 
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);
