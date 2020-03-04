@@ -71,9 +71,9 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
 uniform sampler2D tex;
 uniform vec3 diffuse_color;
 
-uniform uint max_dir_ligts;
-uniform uint max_point_lights;
-uniform uint max_spot_lights;
+uniform int max_dir_ligts;
+uniform int max_point_lights;
+uniform int max_spot_lights;
 
 uniform vec3 view_pos;
 
@@ -100,11 +100,11 @@ void main()
 
     // Light calculations
     vec3 result;
-    for(uint i = 0; i < max_dir_ligts; i++)
+    for(int i = 0; i < max_dir_ligts; i++)
         result += CalculateDirectionalLight(dir_light[i], norm, view_dir);
-    for(uint i = 0; i < max_point_lights; i++)
+    for(int i = 0; i < max_point_lights; i++)
         result += CalculatePointLight(point_light[i], norm, frag_pos, view_dir);    
-    for(uint i = 0; i < max_spot_lights; i++)
+    for(int i = 0; i < max_spot_lights; i++)
         result += CalculateSpotLight(spot_light[i], norm, frag_pos, view_dir);   
 
     if(textureColor == vec4(0,0,0,1))

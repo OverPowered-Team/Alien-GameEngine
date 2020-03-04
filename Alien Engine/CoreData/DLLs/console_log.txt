@@ -19,9 +19,18 @@ C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Mod
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(84) : Loading Assets/Models/ApplyScale_FBX_UnitsScale.fbx
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(380) : ERROR: Can't compile fragment shader...
-C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(381) : 0(76) : error C7011: implicit cast from "int" to "uint"
-0(78) : error C7011: implicit cast from "int" to "uint"
-0(80) : error C7011: implicit cast from "int" to "uint"
+C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(381) : 0(103) : error C1503: undefined variable "material"
+0(106) : error C1503: undefined variable "material"
+0(107) : error C1503: undefined variable "material"
+0(108) : error C1503: undefined variable "material"
+0(121) : error C1503: undefined variable "material"
+0(128) : error C1503: undefined variable "material"
+0(129) : error C1503: undefined variable "material"
+0(130) : error C1503: undefined variable "material"
+0(148) : error C1503: undefined variable "material"
+0(160) : error C1503: undefined variable "material"
+0(161) : error C1503: undefined variable "material"
+0(162) : error C1503: undefined variable "material"
 
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(399) : WARNING: Uniform diffuse_color doesn't exist...
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------

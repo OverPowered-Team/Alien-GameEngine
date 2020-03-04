@@ -72,9 +72,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	// Light uniforms set from here
-	material->used_shader->SetUniform1ui("max_dir_ligts", App->objects->GetNumOfDirLights());
-	material->used_shader->SetUniform1ui("max_point_ligts", App->objects->GetNumOfPointLights());
-	material->used_shader->SetUniform1ui("max_spot_ligts", App->objects->GetNumOfSpotLights());
+	material->used_shader->SetUniform1i("max_dir_ligts", (int)App->objects->GetNumOfDirLights());
+	material->used_shader->SetUniform1i("max_point_ligts", (int)App->objects->GetNumOfPointLights());
+	material->used_shader->SetUniform1i("max_spot_ligts", (int)App->objects->GetNumOfSpotLights());
 
 	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
