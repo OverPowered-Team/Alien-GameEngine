@@ -351,8 +351,8 @@ void ResourceMesh::InitBuffers()
 	if (normals != nullptr) {
 		// normals
 		glGenBuffers(1, &id_normals);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_normals);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, normals, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, normals, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(2);

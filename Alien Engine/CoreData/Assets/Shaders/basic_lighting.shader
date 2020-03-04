@@ -98,8 +98,9 @@ void main()
     vec4 textureColor = vec4(texture(tex, texCoords).rgb, 1.0);
     vec4 diffuse = vec4(diffuse_color, 1.0f);
 
+    vec3 result = vec3(1.0, 0.0, 0.0);
+
     // Light calculations
-    vec3 result = vec3(1.0, 1.0, 1.0);
     for(int i = 0; i < max_dir_lights; i++)
         result += CalculateDirectionalLight(dir_light[i], norm, view_dir);
     for(int i = 0; i < max_point_lights; i++)
@@ -107,16 +108,7 @@ void main()
     for(int i = 0; i < max_spot_lights; i++)
         result += CalculateSpotLight(spot_light[i], norm, frag_pos, view_dir);   
 
-    if(textureColor == vec4(0,0,0,1))
-    {
-        //FragColor = diffuse;
-        FragColor = vec4(result, 1.0);
-    }
-    else
-    {
-        //FragColor = textureColor * diffuse;
-        FragColor = vec4(result, 1.0);
-    }
+    FragColor = vec4(result, 1.0);
 }
 
 // Function definitions
@@ -128,8 +120,8 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     float diff = max(dot(normal, lightDir), 0.0);
     
     // combine results
-    vec3 ambient = light.ambient * vec3(texture(tex, texCoords));
-    vec3 diffuse = light.diffuse * diff * vec3(texture(tex, texCoords));
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
 
     return (ambient + diffuse);
 }
@@ -146,8 +138,8 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     
     // combine results
-    vec3 ambient = light.ambient * vec3(texture(tex, texCoords));
-    vec3 diffuse = light.diffuse * diff * vec3(texture(tex, texCoords));
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
     
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -172,8 +164,8 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
     float intensity = clamp((theta - light.outer_cut_off) / epsilon, 0.0, 1.0);
     
     // combine results
-    vec3 ambient = light.ambient * vec3(texture(tex, texCoords));
-    vec3 diffuse = light.diffuse * diff * vec3(texture(tex, texCoords));
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
     
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
