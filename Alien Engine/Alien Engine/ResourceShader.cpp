@@ -295,7 +295,7 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		std::string cspecular = std::string(cname).append(".specular");
 		SetUniformFloat3(cspecular, (*iter)->specular);
 
-		++i;
+		(i >= dirLights.size() - 1) ? i = 0 : ++i;
 	}
 }
 
@@ -331,7 +331,7 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		std::string cquadratic = std::string(cname).append(".quadratic");
 		SetUniform1f(cquadratic, (*iter)->quadratic);
 
-		++i;
+		(i >= pointLights.size() - 1) ? i = 0 : ++i;
 	}
 }
 
@@ -373,7 +373,7 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
 		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
 
-		++i;
+		(i >= spotLights.size() - 1) ? i = 0 : ++i;
 	}
 }
 

@@ -99,7 +99,7 @@ void main()
     vec4 diffuse = vec4(diffuse_color, 1.0f);
 
     // Light calculations
-    vec3 result;
+    vec3 result = vec3(1.0, 1.0, 1.0);
     for(int i = 0; i < max_dir_lights; i++)
         result += CalculateDirectionalLight(dir_light[i], norm, view_dir);
     for(int i = 0; i < max_point_lights; i++)
@@ -109,11 +109,13 @@ void main()
 
     if(textureColor == vec4(0,0,0,1))
     {
-        FragColor = diffuse;
+        //FragColor = diffuse;
+        FragColor = vec4(result, 1.0);
     }
     else
     {
-        FragColor = textureColor * diffuse;
+        //FragColor = textureColor * diffuse;
+        FragColor = vec4(result, 1.0);
     }
 }
 
