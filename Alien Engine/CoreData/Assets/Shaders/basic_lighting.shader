@@ -77,7 +77,7 @@ uniform int max_spot_lights;
 
 uniform vec3 view_pos;
 
-#define MAX_LIGHTS_PER_TYPE 1000
+#define MAX_LIGHTS_PER_TYPE 10
 uniform DirectionalLight dir_light[MAX_LIGHTS_PER_TYPE];
 uniform PointLight point_light[MAX_LIGHTS_PER_TYPE];
 uniform SpotLight spot_light[MAX_LIGHTS_PER_TYPE];
