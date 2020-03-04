@@ -12,6 +12,7 @@
 ComponentLightSpot::ComponentLightSpot(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::LIGHT_SPOT;
+	App->objects->spot_light_properites.push_back(&light_props);
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
@@ -24,6 +25,8 @@ ComponentLightSpot::~ComponentLightSpot()
 #ifndef GAME_VERSION
 	delete bulb;
 #endif
+
+	App->objects->spot_light_properites.remove(&light_props);
 
 	App->objects->ReduceNumOfSpotLights();
 }

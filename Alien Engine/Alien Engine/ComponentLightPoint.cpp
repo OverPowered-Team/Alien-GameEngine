@@ -12,6 +12,7 @@
 ComponentLightPoint::ComponentLightPoint(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::LIGHT_POINT;
+	App->objects->point_light_properites.push_back(&light_props);
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
@@ -24,6 +25,8 @@ ComponentLightPoint::~ComponentLightPoint()
 #ifndef GAME_VERSION
 	delete bulb;
 #endif
+
+	App->objects->point_light_properites.remove(&light_props);
 
 	App->objects->ReduceNumOfPointLights();
 }

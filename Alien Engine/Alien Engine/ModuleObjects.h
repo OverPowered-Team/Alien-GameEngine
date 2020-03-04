@@ -21,6 +21,9 @@ class Alien;
 class ResourceScene;
 class ComponentCanvas;
 enum class ComponentType;
+class DirLightProperties;
+class PointLightProperties;
+class SpotLightProperties;
 
 class Viewport;
 
@@ -279,6 +282,10 @@ public:
 	Viewport* game_viewport = nullptr;
 
 	bool first_assigned_selected = false;
+
+	std::list<DirLightProperties*> directional_light_properites;
+	std::list<PointLightProperties*> point_light_properites;
+	std::list<SpotLightProperties*> spot_light_properites;
 
 private:
 	// root
