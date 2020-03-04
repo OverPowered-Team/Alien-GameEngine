@@ -195,7 +195,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	switch (shaderType) {
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
 		// Object Material Properties
-		SetUniformFloat3("diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniformFloat3("diffuse", inputs.standardShaderProperties.diffuse_color);
 
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
@@ -305,11 +305,13 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	uint program = glCreateProgram();
 
 	uint vertex_s = CompileShader(GL_VERTEX_SHADER, vertex_shader);
+	//assert(vertex_s == 0, "Vertex Failed To Compile");
 	uint fragment_s = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
+	//assert(fragment_s == 0, "Fragment Failed To Compile");
 
 	glAttachShader(program, vertex_s);
 	glAttachShader(program, fragment_s);
-
+		
 	glLinkProgram(program);
 	int status;
 	glGetProgramiv(program, GL_LINK_STATUS, &status);

@@ -16,9 +16,9 @@
         "PathAnimations": [],
         "PathBones": [],
         "PathMaterials": [
-            "Library\/Materials\/784901644136084898.alienMaterial",
-            "Library\/Materials\/2144359271711639462.alienMaterial",
-            "Library\/Materials\/12322034553982369639.alienMaterial"
+            "Library\/Materials\/784901644136084898.material",
+            "Library\/Materials\/2144359271711639462.material",
+            "Library\/Materials\/12322034553982369639.material"
         ]
     },
     "Nodes": [
