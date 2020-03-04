@@ -582,6 +582,9 @@
     <ClInclude Include="ComponentLightPoint.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="PanelPhysics.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2530,6 +2533,9 @@
     </ClCompile>
     <ClCompile Include="ComponentLightPoint.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelPhysics.cpp">
+      <Filter>Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

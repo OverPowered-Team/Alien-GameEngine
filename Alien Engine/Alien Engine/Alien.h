@@ -40,9 +40,9 @@ public:
 	virtual void CleanUp() {}
 
 	//void OnCollision(ComponentCollider* collider) {}
-	void OnTrigger(ComponentCollider* collider) {}
-	void OnTriggerEnter(ComponentCollider* collider) {}
-	void OnTriggerExit(ComponentCollider* collider) {}
+	virtual void OnTrigger(ComponentCollider* collider) {}
+	virtual void OnTriggerEnter(ComponentCollider* collider) {}
+	virtual void OnTriggerExit(ComponentCollider* collider) {}
 
 
 	bool IsScriptEnabled() const;

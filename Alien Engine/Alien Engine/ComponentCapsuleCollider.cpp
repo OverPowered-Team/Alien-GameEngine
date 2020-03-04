@@ -120,7 +120,7 @@ void ComponentCapsuleCollider::CreateDefaultShape()
 	}
 	else
 	{
-		center = float3::one();
+		center = float3::zero();
 		height = 1.f;
 		radius = 0.5f;
 	}

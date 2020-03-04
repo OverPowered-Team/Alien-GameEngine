@@ -295,6 +295,53 @@ update_status ModuleObjects::PostUpdate(float dt)
 	}
 
 	game_viewport->EndViewport();
+
+	//glMatrixMode(GL_PROJECTION);
+	//glPushMatrix();
+	//glLoadIdentity();
+	//glOrtho(0.0, App->window->width, 0.0, App->window->height, -1.0, 1.0);
+	//glMatrixMode(GL_MODELVIEW);
+	//glPushMatrix();
+
+
+	//glLoadIdentity();
+	//glDisable(GL_LIGHTING);
+
+
+	//glColor3f(1, 1, 1);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, game_viewport->GetTexture());
+
+
+	//// Draw a textured quad
+	//glBegin(GL_QUADS);
+	//glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
+	//glTexCoord2f(0, 1); glVertex3f(0, 100, 0);
+	//glTexCoord2f(1, 1); glVertex3f(100, 100, 0);
+	//glTexCoord2f(1, 0); glVertex3f(100, 0, 0);
+	//glEnd();
+
+
+	//glDisable(GL_TEXTURE_2D);
+	//glPopMatrix();
+
+
+	//glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
+
+	//glMatrixMode(GL_MODELVIEW);
+
+	GLuint readFboId = 0;
+	glGenFramebuffers(1, &readFboId);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, game_viewport->GetTexture(), 0);
+	glBlitFramebuffer(0, 0, App->window->width, App->window->height,
+		0, 0, App->window->width, App->window->height,
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glDeleteFramebuffers(1, &readFboId);
+
 #endif
 	return UPDATE_CONTINUE;
 }
@@ -436,6 +483,7 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
 
 	//For Animations Timeline
+	if (App->ui)
 	App->ui->panel_animtimeline->changed = true;
 }
 

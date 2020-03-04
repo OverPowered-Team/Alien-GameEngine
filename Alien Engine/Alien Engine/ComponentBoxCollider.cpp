@@ -80,6 +80,14 @@ void ComponentBoxCollider::UpdateShape()
 	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
+void ComponentBoxCollider::Clone(Component* clone)
+{
+	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
+	center = box_clone->GetCenter();
+	size = box_clone->GetSize();
+	UpdateShape();
+}
+
 void ComponentBoxCollider::Reset()
 {
 	ComponentCollider::Reset();

@@ -26,6 +26,7 @@ private:
 	float3 CheckInvalidCollider(float3 size);
 	void DrawSpecificInspector();
 
+	void Clone(Component* clone);
 	void Reset();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
