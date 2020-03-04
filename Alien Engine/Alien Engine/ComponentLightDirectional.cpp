@@ -69,8 +69,6 @@ bool ComponentLightDirectional::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
-		ImGui::Text("Uniform position: X: %.2f, Y: %.2f, Z: %.2f", light_props.position.x, light_props.position.y, light_props.position.z);
-		ImGui::DragFloat3("Direction", light_props.direction.ptr());
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());

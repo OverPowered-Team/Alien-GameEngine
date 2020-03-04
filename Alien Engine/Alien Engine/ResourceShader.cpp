@@ -208,15 +208,15 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::BASIC_LIGHTING: {
 
-		/*SetUniformFloat3("objectColor", inputs.basicLightingShaderProperties.object_color);
-		// Lighting
+		SetUniformFloat3("diffuse_color", inputs.basicLightingShaderProperties.object_color);
+		 //Lighting
 		SetUniformFloat3("lightColor", inputs.basicLightingShaderProperties.lightColor);
 
 		SetUniformFloat3("lightPos", inputs.basicLightingShaderProperties.lightPosition);
 		SetUniform1f("ambientStrength", inputs.basicLightingShaderProperties.ambient_strength);
 		SetUniform1f("specularStrength", inputs.basicLightingShaderProperties.specular_strength);
 
-		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());*/
+		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());
 
 		break; }
 
