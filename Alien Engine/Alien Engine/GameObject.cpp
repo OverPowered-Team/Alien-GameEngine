@@ -585,6 +585,11 @@ void GameObject::DrawGame(ComponentCamera* camera)
 
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera)
 {
+
+	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
+	ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
+
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 		if (mesh == nullptr) //not sure if this is the best solution
@@ -597,15 +602,20 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 				to_draw->push_back({ distance, this });
 			}
 		}
+		else
+		{
+			float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+			float distance = camera->frustum.pos.Distance(obj_pos);
+			to_draw->push_back({ distance, this });
+		}
 	}
 
-	ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
 	if (light != nullptr && light->IsEnabled())
 	{
 		light->LightLogic();
 	}
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
+
+
 	if (camera_ != nullptr && camera_->IsEnabled()) 
 	{
 		if (App->objects->printing_scene && App->objects->draw_frustum && std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {

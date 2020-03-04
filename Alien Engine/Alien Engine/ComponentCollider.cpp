@@ -48,9 +48,9 @@ void ComponentCollider::Init()
 	App->physics->AddBody(aux_body);
 
 	// Create detector  // TestCallback
-	detector = new btPairCachingGhostObject();
+	detector = new btGhostObject();
 	detector->setCollisionShape(shape);
-	detector->setCollisionFlags(btCollisionObject::CF_KINEMATIC_OBJECT);
+	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	App->physics->AddDetector(detector);
 
 	// Search Rigid Body 
@@ -153,17 +153,25 @@ void ComponentCollider::Update()
 		UpdateShape();
 	}
 
+	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation());
+
 	if (rigid_body == nullptr)
 	{
-		aux_body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()));
+		aux_body->setWorldTransform(go_bullet_transform);
 	}
-
-	detector->setWorldTransform(aux_body->getCenterOfMassTransform());
+	
+	App->physics->RemoveDetector(detector);
+	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(true);
+	App->physics->AddDetector(detector);
+
 
 	//if (test_callbacks == true)
 	if (alien_script != nullptr)
 	{
+		btVector3 origin = detector->getWorldTransform().getOrigin();
+		LOG_ENGINE("%f, %f, %f", origin.x(), origin.y(), origin.z());
+
 		int numObjectsInGhost = 0;
 		int test = 0;
 		numObjectsInGhost = detector->getNumOverlappingObjects(); //numObjectsInGhost is set to 0xcdcdcdcd
@@ -209,49 +217,7 @@ void ComponentCollider::Update()
 			}
 		}
 
-
-		LOG_ENGINE("%i", test);
-		//detector.overl
-		//btManifoldArray manifoldArray; 
-		//btBroadphasePairArray& pairArray = detector->getover(); 
-		//int numPairs = pairArray.size();
-
-		//for (int i = 0; i < numPairs; ++i) {
-		//	manifoldArray.clear();
-
-		//	const btBroadphasePair& pair = pairArray[i];
-
-		//	btBroadphasePair* collisionPair = App->physics->world->getPairCache()->findPair(
-		//		pair.m_pProxy0, pair.m_pProxy1);
-
-		//	if (!collisionPair) continue;
-
-		//	if (collisionPair->m_algorithm)
-		//		collisionPair->m_algorithm->getAllContactManifolds(manifoldArray);
-
-		//	for (int j = 0; j < manifoldArray.size(); j++) {
-		//		btPersistentManifold* manifold = manifoldArray[j];
-
-		//		bool isFirstBody = manifold->getBody0() == ghostObject;
-
-		//		btScalar direction = isFirstBody ? btScalar(-1.0) : btScalar(1.0);
-
-		//		for (int p = 0; p < manifold->getNumContacts(); ++p) {
-		//			const btManifoldPoint& pt = manifold->getContactPoint(p);
-
-		//			if (pt.getDistance() < 0.f) {
-		//				const btVector3& ptA = pt.getPositionWorldOnA(); const
-		//					btVector3& ptB = pt.getPositionWorldOnB(); const btVector3& normalOnB =
-		//					pt.m_normalWorldOnB;
-
-		//				// handle collisions here
-		//			}
-		//		}
-		//	}
-		//}
-
-
-
+		//LOG_ENGINE("%i", test);
 	}
 
 }

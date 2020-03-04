@@ -65,8 +65,10 @@ void ComponentBoxCollider::UpdateShape()
 
 	shape = new btBoxShape(ToBtVector3(final_size.Abs() * 0.5f));
 
-	if (aux_body) aux_body->setCollisionShape(shape);
-	if (detector) detector->setCollisionShape(shape); // TestCallback
+	if (aux_body) 
+		aux_body->setCollisionShape(shape);
+	if (detector) 
+		detector->setCollisionShape(shape); // TestCallback
 
 	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
