@@ -229,6 +229,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			break; }
 		case SDL_QUIT: {
 			quit = true;
+			App->QuitApp();
 			break; }
 		case SDL_DROPFILE: {
 			App->file_system->ManageNewDropFile(e.drop.file);
