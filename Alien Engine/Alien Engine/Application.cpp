@@ -422,6 +422,9 @@ void Application::CastEvent(EventType eventType)
 		(*item)->HandleEvent(eventType);
 }
 
+void Application::AlienEvent(AlienEvent& e)
+{}
+
 void Application::AddModule(Module* mod)
 {
 	list_modules.push_back(mod);
