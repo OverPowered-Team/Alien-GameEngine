@@ -335,7 +335,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 				if (newShader != nullptr)
 				{
 					ChangeShader(newShader);
-					LOG_ENGINE("Selected Shader %s", used_shader->GetName());
+					LOG_ENGINE("Selected Shader %s\n", used_shader->GetName());
 				}
 				else
 					is_selected = false;

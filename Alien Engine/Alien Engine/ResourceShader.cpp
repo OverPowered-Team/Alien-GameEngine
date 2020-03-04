@@ -425,7 +425,7 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	glGetProgramiv(program, GL_LINK_STATUS, &status);
 	if (status == GL_FALSE)
 	{
-		LOG_ENGINE("Shader was not linked successfully...");
+		LOG_ENGINE("Shader was not linked successfully...\n");
 	}
 
 	glValidateProgram(program);
@@ -496,7 +496,7 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 	int location = glGetUniformLocation(shader_id, name.c_str());
 	if (location == -1)
 	{
-		LOG_ENGINE("WARNING: Uniform %s doesn't exist...", name.c_str());
+		LOG_ENGINE("WARNING: Uniform %s doesn't exist...\n", name.c_str());
 	}
 
 	uniform_location_cache[name] = location;
