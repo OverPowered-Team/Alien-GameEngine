@@ -110,7 +110,7 @@ void PanelCreateObject::PanelLogic()
 				break; }
 			}
 			x = y = z = 0;
-			material->color = create_color;
+			//material->color = create_color;
 			object->AddComponent(transform);
 			object->AddComponent(mesh);
 			object->AddComponent(material);

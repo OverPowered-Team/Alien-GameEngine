@@ -6,7 +6,13 @@
 
 #include "Application.h"
 #include "ResourceShader.h"
+#include "ResourceMaterial.h"
 #include "Globals.h"
+
+ResourceShader::ResourceShader()
+{
+	type = ResourceType::RESOURCE_SHADER;
+}
 
 ResourceShader::ResourceShader(const char* path, const u64& id) : Resource()
 {
@@ -26,7 +32,7 @@ ResourceShader::ResourceShader(const char* path)
 
 ResourceShader::~ResourceShader()
 {
-	glDeleteProgram(uniform_data.shader_id);
+	glDeleteProgram(shader_id);
 }
 
 bool ResourceShader::LoadMemory()
@@ -38,7 +44,7 @@ bool ResourceShader::LoadMemory()
 
 void ResourceShader::FreeMemory()
 {
-	glDeleteProgram(uniform_data.shader_id);
+	glDeleteProgram(shader_id);
 }
 
 bool ResourceShader::CreateMetaData(const u64& force_id)
@@ -94,6 +100,8 @@ bool ResourceShader::ReadBaseInfo(const char* assets_path)
 
 	this->name = App->file_system->GetBaseFileName(path.c_str());
 
+	TryToSetShaderType();
+
 	JSON_Value* value = json_parse_file(alien_path.data());
 	JSON_Object* object = json_value_get_object(value);
 
@@ -134,94 +142,76 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 	App->resources->AddResource(this);
 }
 
+void ResourceShader::TryToSetShaderType()
+{
+	if (std::strcmp(name.c_str(), "default_shader") == 0)
+		shaderType = SHADER_TEMPLATE::DIFUSSE;
+	else if (std::strcmp(name.c_str(), "shader_wave") == 0)
+		shaderType = SHADER_TEMPLATE::WAVE;
+	else if (std::strcmp(name.c_str(), "basic_lighting") == 0)
+		shaderType = SHADER_TEMPLATE::BASIC_LIGHTING;
+	else 
+		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
+}
+
 uint ResourceShader::ParseAndCreateShader()
 {
 	SHADER_PROGRAM_SOURCE source = ParseShader(path);
-	uniform_data.shader_id = CreateShader(source.vertex_source, source.fragment_source);
+	shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
-	return uniform_data.shader_id;
+	return shader_id;
+}
+
+SHADER_TEMPLATE ResourceShader::GetShaderType() const
+{
+	return shaderType;
 }
 
 bool ResourceShader::ChangeTemplate()
 {
-	bool ret = false;
-	static int prev_type = (int)uniform_data.type;
-	ImGui::Combo("Select Shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
-	{
-		//change shader
-		if (prev_type != (int)uniform_data.type)
-		{
-			uniform_data.type = (SHADER_TEMPLATE)prev_type;
+	//bool ret = false;
+	//static int prev_type = (int)uniform_data.type;
+	//ImGui::Combo("Select Shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
+	//{
+	//	//change shader
+	//	if (prev_type != (int)uniform_data.type)
+	//	{
+	//		uniform_data.type = (SHADER_TEMPLATE)prev_type;
 
-			ret = true;
-		}
-	}
-	return ret;
+	//		ret = true;
+	//	}
+	//}
+	//return ret;
+	return true;
 }
 
 void ResourceShader::HierarchyUniforms()
 {
-	ImGui::Text("--Uniforms--");
-	switch (uniform_data.type) 
-	{
-		case SHADER_TEMPLATE::DIFUSSE: {//difusse
-			//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-			ImGui::ColorEdit3("Albedo", uniform_data.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
-			break; }
-		case SHADER_TEMPLATE::WAVE: {//wave
-			/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "custom_color", (unsigned int)type);
-			ImGui::ColorEdit3(" ", &used_shader->material.custom_color.r);*/
-
-			ImGui::Spacing();
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "velocity", (unsigned int)type); ImGui::SameLine();
-			ImGui::InputFloat("## ", &uniform_data.waveShaderProperties.mult_time, 0, 0, 2);
-
-			ImGui::Spacing();
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "amplitude", (unsigned int)type); ImGui::SameLine();
-			ImGui::InputFloat("##", &uniform_data.waveShaderProperties.amplitude, 0, 0, 2);
-
-			break; }
-
-		case SHADER_TEMPLATE::BASIC_LIGHTING: {
-			ImGui::ColorEdit3("Albedo", uniform_data.basicLightingShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
-
-			ImGui::ColorEdit3("Lighting Color", uniform_data.basicLightingShaderProperties.lightColor.ptr(), ImGuiColorEditFlags_Float);
-			ImGui::DragFloat3("Lighting Position", uniform_data.basicLightingShaderProperties.lightPosition.ptr());
-			ImGui::DragFloat("Ambient Light Strength", &uniform_data.basicLightingShaderProperties.ambient_strength, 0.1f, 0.0f, 1.0f);
-			ImGui::DragFloat("Specular Light Strength", &uniform_data.basicLightingShaderProperties.specular_strength, 0.1f, 0.0f, 1.0f);
-
-			break; }
-
-		default:
-			LOG_ENGINE("We currently don't support editing this type of uniform...");
-			break;
-	}
+	
 }
 
-void ResourceShader::UpdateUniforms()
+void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
-	switch (uniform_data.type) {
+	switch (shaderType) {
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
 		// Object Material Properties
-		SetUniformFloat3("diffuse_color", uniform_data.standardShaderProperties.diffuse_color);
+		SetUniformFloat3("diffuse_color", inputs.standardShaderProperties.diffuse_color);
 
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
-		SetUniform1f("mult_time", uniform_data.waveShaderProperties.mult_time);
-		SetUniform1f("amplitude", uniform_data.waveShaderProperties.amplitude);
+		SetUniform1f("mult_time", inputs.waveShaderProperties.mult_time);
+		SetUniform1f("amplitude", inputs.waveShaderProperties.amplitude);
 		break; }
 
 	case SHADER_TEMPLATE::BASIC_LIGHTING: {
 
-		SetUniformFloat3("objectColor", uniform_data.basicLightingShaderProperties.object_color);
+		SetUniformFloat3("objectColor", inputs.basicLightingShaderProperties.object_color);
 		// Lighting
-		SetUniformFloat3("lightColor", uniform_data.basicLightingShaderProperties.lightColor);
+		SetUniformFloat3("lightColor", inputs.basicLightingShaderProperties.lightColor);
 
-		SetUniformFloat3("lightPos", uniform_data.basicLightingShaderProperties.lightPosition);
-		SetUniform1f("ambientStrength", uniform_data.basicLightingShaderProperties.ambient_strength);
-		SetUniform1f("specularStrength", uniform_data.basicLightingShaderProperties.specular_strength);
+		SetUniformFloat3("lightPos", inputs.basicLightingShaderProperties.lightPosition);
+		SetUniform1f("ambientStrength", inputs.basicLightingShaderProperties.ambient_strength);
+		SetUniform1f("specularStrength", inputs.basicLightingShaderProperties.specular_strength);
 
 		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());
 
@@ -236,7 +226,7 @@ void ResourceShader::UpdateUniforms()
 
 void ResourceShader::Bind() const
 {
-	glUseProgram(uniform_data.shader_id);
+	glUseProgram(shader_id);
 }
 
 void ResourceShader::Unbind() const
@@ -393,7 +383,7 @@ int ResourceShader::GetUniformLocation(const std::string& name)
 	if (uniform_location_cache.find(name) != uniform_location_cache.end())
 		return uniform_location_cache[name];
 
-	int location = glGetUniformLocation(uniform_data.shader_id, name.c_str());
+	int location = glGetUniformLocation(shader_id, name.c_str());
 	if (location == -1)
 	{
 		LOG_ENGINE("WARNING: Uniform %s doesn't exist...", name.c_str());

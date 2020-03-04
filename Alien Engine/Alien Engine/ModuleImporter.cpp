@@ -404,10 +404,10 @@ void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *exter
 	aiColor4D col;
 	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, col))
 	{
-		mat->color.r = col.r;
-		mat->color.g = col.g;
-		mat->color.b = col.b;
-		mat->color.a = col.a;
+		mat->color.x = col.r;
+		mat->color.y = col.g;
+		mat->color.z = col.b;
+		mat->color.w = col.a;
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
@@ -667,25 +667,26 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 	{
 		if (*item != nullptr)
 		{
-			ComponentMaterial *material = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
+			ComponentMaterial *compMaterial = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
 
 			if ((*item)->HasComponent(ComponentType::MESH))
 			{
 				bool exists = true;
-				if (material == nullptr)
+				if (compMaterial == nullptr)
 				{
 					exists = false;
-					material = new ComponentMaterial((*item));
-					(*item)->AddComponent(material);
+					compMaterial = new ComponentMaterial((*item));
+					(*item)->AddComponent(compMaterial);
 				}
-				material->SetTexture(texture);
+				compMaterial->SetTexture(texture);
+
 				if (!exists)
 				{
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, material);
+					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, compMaterial);
 				}
 				else
 				{
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, material);
+					ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, compMaterial);
 				}
 			}
 			else
@@ -753,6 +754,31 @@ void ModuleImporter::ApplyShaderToSelectedObject(ResourceShader *shader)
 {
 	// TODO
 }
+
+void ModuleImporter::ApplyMaterialToSelectedObject(ResourceMaterial* material)
+{
+	std::list<GameObject*> selected = App->objects->GetSelectedObjects();
+	auto item = selected.begin();
+	for (; item != selected.end(); ++item)
+	{
+		if (*item != nullptr)
+		{
+			if (!(*item)->HasComponent(ComponentType::MESH))
+				return;
+
+			ComponentMaterial* materialComp = (ComponentMaterial*)(*item)->GetComponent(ComponentType::MATERIAL);
+
+			if (materialComp == nullptr)
+			{
+				materialComp = new ComponentMaterial(*item);
+				(*item)->AddComponent(materialComp);
+			}
+
+			materialComp->SetMaterial(material);
+		}
+	}
+}
+
 void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
 {
 
