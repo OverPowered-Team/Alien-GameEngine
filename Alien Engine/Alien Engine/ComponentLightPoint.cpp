@@ -68,9 +68,9 @@ bool ComponentLightPoint::DrawInspector()
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
 		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.10f);
-		ImGui::DragFloat3("Ambient", light_props.ambient.ptr(), 0.10f);
-		ImGui::DragFloat3("Diffuse", light_props.diffuse.ptr(), 0.10f);
-		ImGui::DragFloat3("Specular", light_props.specular.ptr(), 0.10f);
+		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
+		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
+		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
 		ImGui::DragFloat("Constant", &light_props.constant, 0.10f);
 		ImGui::DragFloat("Linear", &light_props.linear, 0.10f);
 		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f);

@@ -67,15 +67,19 @@ bool ComponentLightSpot::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
-		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.001f);
-		ImGui::DragFloat3("Ambient", light_props.ambient.ptr(), 0.10f);
-		ImGui::DragFloat3("Diffuse", light_props.diffuse.ptr(), 0.10f);
-		ImGui::DragFloat3("Specular", light_props.specular.ptr(), 0.10f);
+		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.10f);
+		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
+		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
+		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
 		ImGui::DragFloat("Constant", &light_props.constant, 0.10f);
 		ImGui::DragFloat("Linear", &light_props.linear, 0.10f);
 		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f);
-		ImGui::DragFloat("Cut Off", &light_props.cut_off, 0.10f);
-		ImGui::DragFloat("Outer Cut Off", &light_props.outer_cut_off, 0.10f);
+		float tmp_cutoff = light_props.cut_off;
+		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
+			light_props.cut_off = math::Cos(DegToRad(tmp_cutoff));
+		float tmp_outercutoff = light_props.outer_cut_off;
+		if (ImGui::DragFloat("Outer Cut Off", &tmp_outercutoff, 0.10f))
+			light_props.outer_cut_off = math::Cos(DegToRad(tmp_outercutoff));
 
 		ImGui::Spacing();
 		ImGui::Separator();
