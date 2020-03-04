@@ -19,6 +19,7 @@ public:
 	int controllerIndex = 0;
 	GameObject* obj = nullptr;
 	Prefab prefab;
+
 };
 
 ALIEN_FACTORY ControllerTest* CreateControllerTest() {
