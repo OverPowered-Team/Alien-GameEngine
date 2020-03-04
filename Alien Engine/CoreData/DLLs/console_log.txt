@@ -1,5 +1,4 @@
 C:\Users\polrs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
-C:\Users\polrs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(651) : Texture successfully loaded: Library/Textures/1281638837412217728.dds
 C:\Users\polrs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\polrs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(165) : Destroying 3D Renderer
 C:\Users\polrs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(92) : Unloading UI scene
