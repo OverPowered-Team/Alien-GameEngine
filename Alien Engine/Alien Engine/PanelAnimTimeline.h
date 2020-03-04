@@ -3,6 +3,8 @@
 #include "Panel.h"
 #include "ResourceAnimation.h"
 
+#include <vector>
+
 class ComponentAnimator;
 
 class PanelAnimTimeline : public Panel
@@ -59,8 +61,14 @@ private:
 
 	//Events
 	void ShowNewEventPopUp();
+	void ShowOptionsToCreate();
 
-	void CreateAnimationEvent();
+	void CreateAnimationEvent(uint _id);
+	void DeleteAnimationEvent();
 
-	std::vector<uint> anim_event_frames;
+	ComponentAudioEmitter* emitter;
+
+	// pair<frame, idsound>
+	std::vector<std::pair<uint, uint>> anim_event_frames;
+	bool event_created = false;
 };

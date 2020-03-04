@@ -185,6 +185,19 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 	return nullptr;
 }
 
+const char* ModuleAudio::GetEventNameByID(const u64& id) const
+{
+	for (auto i = banks.begin(); i != banks.end(); ++i)
+	{
+		for (auto j = (*i)->events.begin(); j != (*i)->events.end(); ++j)
+		{
+			if ((*j).first == id)
+				return (*j).second.c_str();
+		}
+	}
+	return "";
+}
+
 void ModuleAudio::Play()
 {
 	OPTICK_EVENT();

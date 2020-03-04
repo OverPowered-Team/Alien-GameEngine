@@ -60,6 +60,11 @@ void ComponentAudioEmitter::StartSound()
 	source->PlayEventByID(current_event);
 }
 
+void ComponentAudioEmitter::StartSound(uint _event)
+{
+	source->PlayEventByID(_event);
+}
+
 void ComponentAudioEmitter::UpdateSourcePos()
 {
 	ComponentTransform* transformation = game_object_attached->GetComponentTransform();
@@ -189,6 +194,11 @@ bool ComponentAudioEmitter::AlreadyUsedBank(const Bank* bk)
 	}
 
 	return false;
+}
+
+u64 ComponentAudioEmitter::GetCurrentBank()
+{
+	return current_bank;
 }
 
 void ComponentAudioEmitter::OnEnable()

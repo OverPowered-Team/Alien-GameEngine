@@ -5,6 +5,9 @@
 #include "Time.h"
 #include "ComponentTransform.h"
 #include "PanelAnimTimeline.h"
+#include "ResourceScript.h"
+#include "ResourceAudio.h"
+#include "ComponentAudioEmitter.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -223,7 +226,7 @@ void PanelAnimTimeline::PanelLogic()
 
 		//Animation types of Keys
 		ImGui::BeginGroup();
-		ImGui::SetCursorPosY(45);
+		ImGui::SetCursorPosY(50);
 
 		ImGui::Text("Position");
 
@@ -231,7 +234,7 @@ void PanelAnimTimeline::PanelLogic()
 
 		ImGui::Text("Rotation");
 
-		ImGui::SetCursorPosY(125);
+		ImGui::SetCursorPosY(120);
 
 		ImGui::Text("Scale");
 
@@ -250,7 +253,10 @@ void PanelAnimTimeline::PanelLogic()
 		{
 			ImGui::BeginGroup();
 
-			ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x * anim_event_frames[i] * zoom), p.y), ImVec2((p.x * anim_event_frames[i] * zoom) - 5, p.y + 5), ImVec2((p.x * anim_event_frames[i] * zoom) + 5, p.y + 5), ImColor(1.0f, 0.0f, 0.0f, 0.5f));
+			ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x + (anim_event_frames[i].first * zoom)), p.y), 
+				ImVec2((p.x + (anim_event_frames[i].first * zoom)) - 5, p.y + 5), 
+				ImVec2((p.x + (anim_event_frames[i].first * zoom)) + 5, p.y + 5), 
+				ImColor(1.0f, 0.0f, 0.0f, 0.5f));
 
 			ImGui::EndGroup();
 			ImGui::SameLine();
@@ -260,19 +266,19 @@ void PanelAnimTimeline::PanelLogic()
 		{
 			ImGui::BeginGroup();
 
-			ImGui::GetWindowDrawList()->AddLine({ p.x,p.y + 15 }, ImVec2(p.x, p.y + 135), IM_COL32(100, 100, 100, 255), 1.0f);
+			ImGui::GetWindowDrawList()->AddLine({ p.x,p.y + 20 }, ImVec2(p.x, p.y + 135), IM_COL32(100, 100, 100, 255), 1.0f);
 			char frame[8];
 			sprintf(frame, "%01d", i);
-			ImVec2 aux = { p.x - 4,p.y };
+			ImVec2 aux = { p.x - 4,p.y + 5};
 			ImGui::GetWindowDrawList()->AddText(aux, ImColor(1.0f, 1.0f, 1.0f, 1.0f), frame);
 
 			if (current_animation != nullptr && channel != nullptr)
 			{
 				if (channel->position_keys[i].time == i)
-					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 35), 6.0f, ImColor(1.0f, 0.0f, 0.0f, 0.5f));
+					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 45), 6.0f, ImColor(1.0f, 0.5f, 0.0f, 0.5f));
 
 				if (channel->rotation_keys[i].time == i)
-					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 75), 6.0f, ImColor(0.0f, 1.0f, 0.0f, 0.5f));
+					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 80), 6.0f, ImColor(0.0f, 1.0f, 0.0f, 0.5f));
 
 				if (channel->scale_keys[i].time == i)
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(p.x + 1, p.y + 115), 6.0f, ImColor(0.0f, 0.0f, 1.0f, 0.5f));
@@ -301,9 +307,23 @@ void PanelAnimTimeline::PanelLogic()
 
 			if (animation_time > current_animation->GetDuration())
 			{
-				progress = 0.0f;
-				ImGui::SetScrollX(0);
-				aux_time = Time::GetTimeSinceStart();
+				if (current_animation->loops)
+				{
+					progress = 0.0f;
+					ImGui::SetScrollX(0);
+					aux_time = Time::GetTimeSinceStart();
+				}
+				else
+					Stop();
+			}
+
+			for (std::vector<std::pair<uint, uint>>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+			{
+				if ((*it).first == key && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+				{
+					App->audio->LoadUsedBanks();
+					emitter->StartSound((*it).second);
+				}
 			}
 		}
 		else
@@ -318,7 +338,7 @@ void PanelAnimTimeline::PanelLogic()
 
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
-			ImGui::SetCursorPos({ button_position,ImGui::GetCursorPosY() });
+			ImGui::SetCursorPos({ button_position,ImGui::GetCursorPosY() + 5});
 			ImGui::PushID("scrollButton");
 			ImGui::Button("", { 20, 15 });
 			ImGui::PopID();
@@ -394,8 +414,6 @@ void PanelAnimTimeline::PanelLogic()
 	}
 
 	ImGui::End();
-
-
 }
 
 
@@ -403,14 +421,127 @@ void PanelAnimTimeline::PanelLogic()
 void PanelAnimTimeline::ShowNewEventPopUp()
 {
 	if (ImGui::BeginPopupContextItem("")) {
-		if (ImGui::Selectable("New Animation Event")) {
-			CreateAnimationEvent();
+
+		if (anim_event_frames.size() > 0) 
+		{
+			for (std::vector<std::pair<uint, uint>>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+			{
+				if ((*it).first == key)
+				{
+					event_created = true;
+					ImGui::Text(App->audio->GetEventNameByID((*it).second));
+					break;
+				}
+				else
+					event_created = false;
+			}
 		}
+		else
+			event_created = false;
+
+		if (event_created)
+		{
+			ImGui::Separator();
+
+			if (ImGui::Selectable("Delete Animation Event")) {
+
+				DeleteAnimationEvent();
+			}
+		}
+		else
+		{
+			ShowOptionsToCreate();
+		}
+
 		ImGui::EndPopup();
 	}
 }
 
-void PanelAnimTimeline::CreateAnimationEvent()
+void PanelAnimTimeline::ShowOptionsToCreate()
 {
-	anim_event_frames.push_back(key);
+	if (ImGui::BeginMenu("Create Animation Event"))
+	{
+		if (component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+		{
+			std::vector<Resource*> scripts = App->resources->GetResourcesWithType(ResourceType::RESOURCE_SCRIPT);
+
+			if (ImGui::BeginMenu("Script List"))
+			{
+				for (int i = 0; i < scripts.size(); i++) 
+				{
+					if (ImGui::BeginMenu(((ResourceScript*)scripts[i])->name.c_str()))
+					{
+						//FOR WITH METHODS on menuitems
+						if (ImGui::MenuItem("Method"))
+						{
+
+						}
+
+						ImGui::EndMenu();
+					}
+				}
+				ImGui::EndMenu();
+			}
+		}
+		else
+			ImGui::Text("No Component Script Created");
+
+		ImGui::Separator();
+
+		if (component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+		{
+			if (ImGui::BeginMenu("Audio List"))
+			{
+				//For with banks
+				emitter = (ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER);
+				auto banks = App->audio->GetBanks();
+				if (banks.size() > 0 && emitter->GetCurrentBank() > 0)
+				{
+					for (auto bk = banks.begin(); bk != banks.end(); ++bk) 
+					{
+						if (emitter->GetCurrentBank() == (*bk)->id && ImGui::BeginMenu((*bk)->name.c_str()))
+						{
+							//For with audios
+							for (auto j = (*bk)->events.begin(); j != (*bk)->events.end(); ++j)
+							{
+								if (ImGui::MenuItem((*j).second.c_str()))
+								{
+									CreateAnimationEvent((*j).first);
+								}
+							}
+							ImGui::EndMenu();
+						}
+					}
+				}
+				else
+					ImGui::Text("No Bank Selected");
+				
+				ImGui::EndMenu();
+			}
+		}
+		else
+			ImGui::Text("No Component Emitter Created");
+		
+		ImGui::EndMenu();
+	}
+}
+
+void PanelAnimTimeline::CreateAnimationEvent(uint _id)
+{
+	std::pair<uint, uint> event;
+	event.first = key;
+	event.second = _id;
+	anim_event_frames.push_back(event);
+}
+
+void PanelAnimTimeline::DeleteAnimationEvent()
+{
+	for (std::vector<std::pair<uint, uint>>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+	{
+		if ((*it).first == key) 
+		{
+			anim_event_frames.erase(it);
+			break;
+		}
+	}
 }
