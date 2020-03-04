@@ -14,6 +14,8 @@ class __declspec(dllexport) ComponentMaterial : public Component {
 	friend class GameObject;
 	friend class ModuleImporter;
 	friend class ResourceMesh;
+	friend class Tween;
+	friend class AnimTween;
 public:
 	ComponentMaterial(GameObject* attach);
 	virtual ~ComponentMaterial();

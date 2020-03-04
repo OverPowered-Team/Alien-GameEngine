@@ -1,0 +1,9 @@
+{
+    "HasData": true,
+    "DataStructure": [
+        {
+            "DataName": "TestTween",
+            "UsesAlien": true
+        }
+    ]
+}

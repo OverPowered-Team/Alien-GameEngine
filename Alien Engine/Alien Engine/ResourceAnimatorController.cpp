@@ -394,15 +394,18 @@ bool ResourceAnimatorController::CheckTriggers()
 			}
 		}
 
-		if (current_state->time < current_state->GetClip()->GetDuration())
-		{
-			if (retu && !(*it)->GetEnd())
+		if (current_state->GetClip()) {
+
+			if (current_state->time < current_state->GetClip()->GetDuration())
 			{
+				if (retu && !(*it)->GetEnd())
+				{
+					current_possible_transitions.push_back((*it));
+				}
+			}
+			else {
 				current_possible_transitions.push_back((*it));
 			}
-		}
-		else {
-			current_possible_transitions.push_back((*it));
 		}
 	}
 
