@@ -15,8 +15,8 @@ struct SpotLightProperties
 	float constant = 1.0f;
 	float linear = 0.1f;
 	float quadratic = 0.01f;
-	float cut_off = math::Cos(DegToRad(13.0f));
-	float outer_cut_off = math::Cos(DegToRad(15.0f));
+	float cut_off = 13.0f;
+	float outer_cut_off = 15.0f;
 };
 
 class __declspec(dllexport) ComponentLightSpot : public Component {

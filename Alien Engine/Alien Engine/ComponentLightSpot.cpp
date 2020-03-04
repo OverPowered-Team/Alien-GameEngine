@@ -77,10 +77,12 @@ bool ComponentLightSpot::DrawInspector()
 		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f);
 		float tmp_cutoff = light_props.cut_off;
 		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
-			light_props.cut_off = math::Cos(DegToRad(tmp_cutoff));
+			light_props.cut_off = tmp_cutoff;
+			//light_props.cut_off = math::Cos(DegToRad(tmp_cutoff));
 		float tmp_outercutoff = light_props.outer_cut_off;
 		if (ImGui::DragFloat("Outer Cut Off", &tmp_outercutoff, 0.10f))
-			light_props.outer_cut_off = math::Cos(DegToRad(tmp_outercutoff));
+			light_props.outer_cut_off = tmp_outercutoff;
+			//light_props.outer_cut_off = math::Cos(DegToRad(tmp_outercutoff));
 
 		ImGui::Spacing();
 		ImGui::Separator();
