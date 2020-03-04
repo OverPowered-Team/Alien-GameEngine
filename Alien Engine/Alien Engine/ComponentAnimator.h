@@ -16,6 +16,7 @@ public:
 	void Update();
 
 	void PlayState(const char* name);
+	bool IsPlaying(const char* name);
 	void UpdateAnimation(GameObject* go_to_update);
 	void OnPlay();
 
