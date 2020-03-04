@@ -167,7 +167,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="asifhispfs.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="ControllerTest.h" />
     <ClInclude Include="ListenerButton.h" />
@@ -178,7 +177,6 @@
     <ClInclude Include="TestTweenLineal.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="asifhispfs.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="ControllerTest.cpp" />
     <ClCompile Include="ListenerButton.cpp" />

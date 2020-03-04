@@ -39,7 +39,6 @@ void ComponentCollider::Init()
 	// Create aux body 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.F, nullptr, nullptr);
 	aux_body = new btRigidBody(rbInfo);
-	aux_body->setUserPointer(game_object_attached);
 
 	// Create shape 
 
@@ -50,6 +49,7 @@ void ComponentCollider::Init()
 
 	// Create detector  // TestCallback
 	detector = new btGhostObject();
+	detector->setUserPointer(this);
 	detector->setCollisionShape(shape);
 	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	App->physics->AddDetector(detector);
