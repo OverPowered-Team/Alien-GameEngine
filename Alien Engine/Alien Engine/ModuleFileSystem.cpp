@@ -61,7 +61,7 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 		LIBRARY_FOLDER, CONFIGURATION_FOLDER,
 		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
 		LIBRARY_SHADERS_FOLDER, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
-		LIBRARY_BONES_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, LIBRARY_ANIMATIONS_FOLDER
+		LIBRARY_BONES_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
 		LIBRARY_AUDIO_FOLDER, LIBRARY_FONTS_FOLDER
 	};
 #endif
@@ -650,7 +650,7 @@ const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_
 	
 	FileDropType ext_type = FileDropType::UNKNOWN;
 
-	if (App->StringCmp(extension.data(), "fbx"))
+	if (App->StringCmp(extension.data(), "fbx") || App->StringCmp(extension.data(), "dae"))
 		ext_type = FileDropType::MODEL3D;
 	else if (App->StringCmp(extension.data(), "dds"))
 		ext_type = FileDropType::TEXTURE;

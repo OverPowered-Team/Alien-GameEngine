@@ -40,7 +40,8 @@
             "parentName": "cottage_fbx",
             "meshIndex": 0,
             "materialIndex": 0,
-            "boneIndex": -1
+            "numBones": 0,
+            "bonesIndex": []
         },
         {
             "pos": [
@@ -65,7 +66,8 @@
             "parentName": "cottage_fbx",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "numBones": 0,
+            "bonesIndex": []
         },
         {
             "pos": [
@@ -90,7 +92,8 @@
             "parentName": "cottage_fbx",
             "meshIndex": -1,
             "materialIndex": -1,
-            "boneIndex": -1
+            "numBones": 0,
+            "bonesIndex": []
         }
     ]
 }

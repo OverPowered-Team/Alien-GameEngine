@@ -20,12 +20,8 @@ public:
 
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
-	void UpdateDeformableMesh();
-	void SimulateShaderFuntion(ComponentCamera* camera);
 	void UpdateBonesMatrix();
 	void DrawPolygon(ComponentCamera* camera);
-	void DrawOutLine();
-	void DrawMesh();
 	
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
@@ -33,7 +29,6 @@ protected:
 	void FillWeights(int boneID, ComponentBone* Component_Bone);
 
 private:
-	ResourceMesh* deformable_mesh = nullptr;
 	std::vector<ComponentBone*> bones;
 	u64 root_bone_id = 0;
 	float* weights = nullptr;

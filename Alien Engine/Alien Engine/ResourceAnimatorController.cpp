@@ -16,10 +16,6 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
 	ed_context = ax::NodeEditor::CreateEditor();
 
-	for (int i = 0; i < NUM_TRIGGERS; ++i) {
-		triggers.push_back(false);
-	}
-
 	default_state = nullptr;
 }
 
@@ -62,28 +58,106 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 			{
 				std::string source = asset_transitions->GetString("Source");
 				std::string target = asset_transitions->GetString("Target");
-				int trigger = asset_transitions->GetNumber("Trigger");
-				int blend = asset_transitions->GetNumber("Blend");
-				AddTransition(FindState(source), FindState(target), blend, trigger);
+				float blend = asset_transitions->GetNumber("Blend");
+				bool end = asset_transitions->GetBoolean("End");
+				AddTransition(FindState(source), FindState(target), blend, end);
+
+				JSONArraypack* transitions_int_conditions = asset_transitions->GetArray("IntConditions");
+				if (transitions_int_conditions) {
+					transitions_int_conditions->GetFirstNode();
+					for (uint j = 0; j < transitions_int_conditions->GetArraySize(); ++j) {
+						std::string type = transitions_int_conditions->GetString("Type");
+						std::string comp_text = transitions_int_conditions->GetString("CompText");
+						uint parameter_index = transitions_int_conditions->GetNumber("ParameterIndex");
+						int comp_value = transitions_int_conditions->GetNumber("CompValue");
+
+						transitions[i]->AddIntCondition(type, comp_text, parameter_index, comp_value);
+						transitions_int_conditions->GetAnotherNode();
+					}
+				}
+
+				JSONArraypack* transitions_float_conditions = asset_transitions->GetArray("FloatConditions");
+				if (transitions_float_conditions) {
+					transitions_float_conditions->GetFirstNode();
+					for (uint j = 0; j < transitions_float_conditions->GetArraySize(); ++j) {
+						std::string type = transitions_float_conditions->GetString("Type");
+						std::string comp_text = transitions_float_conditions->GetString("CompText");
+						uint parameter_index = transitions_float_conditions->GetNumber("ParameterIndex");
+						float comp_value = transitions_float_conditions->GetNumber("CompValue");
+
+						transitions[i]->AddFloatCondition(type, comp_text, parameter_index, comp_value);
+						transitions_float_conditions->GetAnotherNode();
+					}
+				}
+
+				JSONArraypack* transitions_bool_conditions = asset_transitions->GetArray("BoolConditions");
+				if (transitions_bool_conditions) {
+					transitions_bool_conditions->GetFirstNode();
+					for (uint j = 0; j < transitions_bool_conditions->GetArraySize(); ++j) {
+						std::string type = transitions_bool_conditions->GetString("Type");
+						std::string comp_text = transitions_bool_conditions->GetString("CompText");
+						uint parameter_index = transitions_bool_conditions->GetNumber("ParameterIndex");
+
+						transitions[i]->AddBoolCondition(type, comp_text, parameter_index);
+						transitions_bool_conditions->GetAnotherNode();
+					}
+				}
 				asset_transitions->GetAnotherNode();
 			}
 		}
 
+		JSONArraypack* int_parameters = asset->GetArray("Controller.IntParameters");
+		if (int_parameters) {
+			int_parameters->GetFirstNode();
+			for (int i = 0; i < int_parameters->GetArraySize(); ++i) {
+				std::string name = int_parameters->GetString("Name");
+				int value = int_parameters->GetNumber("Value");
+
+				AddIntParameter({ name, value });
+				int_parameters->GetAnotherNode();
+			}
+		}
+
+		JSONArraypack* float_parameters = asset->GetArray("Controller.FloatParameters");
+		if (float_parameters) {
+			float_parameters->GetFirstNode();
+			for (int i = 0; i < float_parameters->GetArraySize(); ++i) {
+				std::string name = float_parameters->GetString("Name");
+				float value = float_parameters->GetNumber("Value");
+
+				AddFloatParameter({ name, value });
+				float_parameters->GetAnotherNode();
+			}
+		}
+
+		JSONArraypack* bool_parameters = asset->GetArray("Controller.BoolParameters");
+		if (bool_parameters) {
+			bool_parameters->GetFirstNode();
+			for (int i = 0; i < bool_parameters->GetArraySize(); ++i) {
+				std::string name = bool_parameters->GetString("Name");
+				bool value = bool_parameters->GetNumber("Value");
+
+				AddBoolParameter({ name, value });
+				bool_parameters->GetAnotherNode();
+			}
+		}
+
 		CreateMetaData(ID);
+		FreeMemory();
 	}
 }
 
-const std::vector < std::pair <std::string, bool>>&  ResourceAnimatorController::GetBoolParameters() 
+const std::vector < std::pair <std::string, bool>>& ResourceAnimatorController::GetBoolParameters()
 {
 	return bool_parameters;
 }
 
-const std::vector < std::pair <std::string, float>>&  ResourceAnimatorController::GetFloatParameters()
+const std::vector < std::pair <std::string, float>>& ResourceAnimatorController::GetFloatParameters()
 {
 	return float_parameters;
 }
 
-const std::vector < std::pair <std::string, int>>&  ResourceAnimatorController::GetIntParameters()
+const std::vector < std::pair <std::string, int>>& ResourceAnimatorController::GetIntParameters()
 {
 	return int_parameters;
 }
@@ -103,34 +177,103 @@ void ResourceAnimatorController::SetIntParametersName(uint index, const std::str
 	int_parameters[index].first = std::string(name);
 }
 
-void ResourceAnimatorController::SetBoolParametersValue(uint index, const bool &value)
+void ResourceAnimatorController::SetBoolParametersValue(uint index, const bool& value)
 {
 	bool_parameters[index].second = value;
 }
 
-void ResourceAnimatorController::SetFloatParametersValue(uint index, const float &value)
+void ResourceAnimatorController::SetFloatParametersValue(uint index, const float& value)
 {
 	float_parameters[index].second = value;
 }
 
-void ResourceAnimatorController::SetIntParametersValue(uint index, const int &value)
+void ResourceAnimatorController::SetIntParametersValue(uint index, const int& value)
 {
 	int_parameters[index].second = value;
 }
 
 void ResourceAnimatorController::AddBoolParameter()
 {
-	bool_parameters.push_back({"NewBool", false });
+	bool_parameters.push_back({ "NewBool", false });
 }
 
 void ResourceAnimatorController::AddFloatParameter()
 {
-	float_parameters.push_back({"NewFloat", 0.0f });
+	float_parameters.push_back({ "NewFloat", 0.0f });
 }
 
 void ResourceAnimatorController::AddIntParameter()
 {
-	int_parameters.push_back({"NewInt", 0 });
+	int_parameters.push_back({ "NewInt", 0 });
+}
+
+void ResourceAnimatorController::AddBoolParameter(std::pair<std::string, bool> param)
+{
+	bool_parameters.push_back(param);
+}
+
+void ResourceAnimatorController::AddFloatParameter(std::pair<std::string, float> param)
+{
+	float_parameters.push_back(param);
+}
+
+void ResourceAnimatorController::AddIntParameter(std::pair<std::string, int> param)
+{
+	int_parameters.push_back(param);
+}
+
+void ResourceAnimatorController::RemoveBoolParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<BoolCondition*> b_conditions = (*t_it)->GetBoolConditions();
+				for (std::vector<BoolCondition*>::iterator c_it = b_conditions.begin(); c_it != b_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(bool_parameters.begin(), it)) {
+						(*t_it)->RemoveBoolCondition((*c_it));
+					}
+				}
+			}
+			bool_parameters.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::RemoveFloatParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<FloatCondition*> f_conditions = (*t_it)->GetFloatConditions();
+				for (std::vector<FloatCondition*>::iterator c_it = f_conditions.begin(); c_it != f_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(float_parameters.begin(), it)) {
+						(*t_it)->RemoveFloatCondition((*c_it));
+					}
+				}
+			}
+			float_parameters.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::RemoveIntParameter(std::string name)
+{
+	for (std::vector<std::pair<std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
+		if ((*it).first == name) {
+			for (std::vector<Transition*>::iterator t_it = transitions.begin(); t_it != transitions.end(); ++t_it) {
+				std::vector<IntCondition*> i_conditions = (*t_it)->GetIntConditions();
+				for (std::vector<IntCondition*>::iterator c_it = i_conditions.begin(); c_it != i_conditions.end(); ++c_it) {
+					if ((*c_it)->parameter_index == std::distance(int_parameters.begin(), it)) {
+						(*t_it)->RemoveIntCondition((*c_it));
+					}
+				}
+			}
+			int_parameters.erase(it);
+			break;
+		}
+	}
 }
 
 void ResourceAnimatorController::SetBool(std::string name, bool value)
@@ -165,12 +308,6 @@ void ResourceAnimatorController::Update()
 		{
 			UpdateState(current_state);
 		}
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-			triggers[2] = true;
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-			triggers[0] = true;
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_UP)
-			triggers[1] = true;
 	}
 }
 
@@ -178,17 +315,17 @@ void ResourceAnimatorController::UpdateState(State* state)
 {
 	ResourceAnimation* animation = state->GetClip();
 
-	CheckTriggers();
+	if (!transitioning)CheckTriggers();
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += Time::GetDT() / times_attached;
+		state->time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
 				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
-					if ((*it)->GetTrigger() == 0) {
+					if ((*it)->GetBoolConditions().size() == 0 && (*it)->GetFloatConditions().size() == 0 && (*it)->GetIntConditions().size() == 0) {
 						state->next_state = (*it)->GetTarget();
 						state->fade_duration = (*it)->GetBlend();
 						break;
@@ -208,8 +345,8 @@ void ResourceAnimatorController::UpdateState(State* state)
 		float to_end = state->fade_duration - state->fade_time;
 
 		if (to_end >= 0) {
-			
-			state->fade_time += Time::GetDT() / times_attached;
+
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
 			UpdateState(state->next_state);
 		}
 		else {
@@ -218,6 +355,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 			state->time = 0;
 			state->fade_time = 0;
 			state->fade_duration = 0;
+			transitioning = false;
 		}
 	}
 }
@@ -227,18 +365,55 @@ void ResourceAnimatorController::Stop()
 	current_state = nullptr;
 }
 
-void ResourceAnimatorController::CheckTriggers()
+bool ResourceAnimatorController::CheckTriggers()
 {
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
-		if ((*it)->GetTrigger() > 0)
-		{
-			if (triggers[(*it)->GetTrigger() - 1] == true) {
-				current_state->next_state = (*it)->GetTarget();
-				current_state->fade_duration = (*it)->GetBlend();
-				triggers[(*it)->GetTrigger() - 1] = false;
+	bool ret = true;
+
+	std::vector<Transition*> current_transitions = FindTransitionsFromSourceState(current_state);
+	std::vector<Transition*> current_possible_transitions;
+
+	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
+		bool retu = true;
+
+		for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
+			if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
 			}
 		}
+		for (int i = 0; i < (*it)->GetFloatConditions().size(); ++i) {
+			if (!(*it)->GetFloatConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
+			}
+		}
+		for (int i = 0; i < (*it)->GetIntConditions().size(); ++i) {
+			if (!(*it)->GetIntConditions()[i]->Compare(this)) {
+				retu = false;
+				break;
+			}
+		}
+
+		if (current_state->time < current_state->GetClip()->GetDuration())
+		{
+			if (retu && !(*it)->GetEnd())
+			{
+				current_possible_transitions.push_back((*it));
+			}
+		}
+		else {
+			current_possible_transitions.push_back((*it));
+		}
 	}
+
+	if (ret && current_possible_transitions.size() > 0) {
+		current_state->next_state = current_possible_transitions.front()->GetTarget();
+		current_state->fade_duration = current_possible_transitions.front()->GetBlend();
+		transitioning = true;
+	}
+
+	return true;
+
 }
 
 bool ResourceAnimatorController::SaveAsset(const u64& force_id)
@@ -247,7 +422,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		ID = App->resources->GetRandomID();
 	else
 		ID = force_id;
-	
+
 	path = std::string(ANIM_CONTROLLER_FOLDER + name + ".animController");
 
 	JSON_Value* asset_value = json_value_init_object();
@@ -259,7 +434,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	asset->SetString("Controller.Name", name);
 	asset->SetNumber("Controller.NumStates", states.size());
 	asset->SetNumber("Controller.NumTransitions", transitions.size());
-	
+
 	JSONArraypack* states_array = asset->InitNewArray("Controller.States");
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
@@ -275,8 +450,59 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		transitions_array->SetAnotherNode();
 		transitions_array->SetString("Source", (*it)->GetSource()->GetName());
 		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
-		transitions_array->SetNumber("Trigger", (*it)->GetTrigger());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
+		transitions_array->SetNumber("End", (*it)->GetEnd());
+
+		JSONArraypack* int_conditions_array = transitions_array->InitNewArray("IntConditions");
+		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
+		for (std::vector<IntCondition*>::iterator it_int = int_conditions.begin(); it_int != int_conditions.end(); ++it_int) {
+			int_conditions_array->SetAnotherNode();
+			int_conditions_array->SetString("Type", (*it_int)->type);
+			int_conditions_array->SetString("CompText", (*it_int)->comp_text);
+			int_conditions_array->SetNumber("ParameterIndex", (*it_int)->parameter_index);
+			int_conditions_array->SetNumber("CompValue", (*it_int)->comp);
+		}
+
+		JSONArraypack* float_conditions_array = transitions_array->InitNewArray("FloatConditions");
+		std::vector<FloatCondition*> float_conditions = (*it)->GetFloatConditions();
+		for (std::vector<FloatCondition*>::iterator it_float = float_conditions.begin(); it_float != float_conditions.end(); ++it_float) {
+			float_conditions_array->SetAnotherNode();
+			float_conditions_array->SetString("Type", (*it_float)->type);
+			float_conditions_array->SetString("CompText", (*it_float)->comp_text);
+			float_conditions_array->SetNumber("ParameterIndex", (*it_float)->parameter_index);
+			float_conditions_array->SetNumber("CompValue", (*it_float)->comp);
+		}
+
+		JSONArraypack* bool_conditions_array = transitions_array->InitNewArray("BoolConditions");
+		std::vector<BoolCondition*> bool_conditions = (*it)->GetBoolConditions();
+		for (std::vector<BoolCondition*>::iterator it_bool = bool_conditions.begin(); it_bool != bool_conditions.end(); ++it_bool) {
+			bool_conditions_array->SetAnotherNode();
+			bool_conditions_array->SetString("Type", (*it_bool)->type);
+			bool_conditions_array->SetString("CompText", (*it_bool)->comp_text);
+			bool_conditions_array->SetNumber("ParameterIndex", (*it_bool)->parameter_index);
+
+		}
+	}
+
+	JSONArraypack* int_parameters_array = asset->InitNewArray("Controller.IntParameters");
+	for (std::vector <std::pair <std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
+		int_parameters_array->SetAnotherNode();
+		int_parameters_array->SetString("Name", (*it).first);
+		int_parameters_array->SetNumber("Value", (*it).second);
+	}
+
+	JSONArraypack* float_parameters_array = asset->InitNewArray("Controller.FloatParameters");
+	for (std::vector <std::pair <std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
+		float_parameters_array->SetAnotherNode();
+		float_parameters_array->SetString("Name", (*it).first);
+		float_parameters_array->SetNumber("Value", (*it).second);
+	}
+
+	JSONArraypack* bool_parameters_array = asset->InitNewArray("Controller.BoolParameters");
+	for (std::vector <std::pair <std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
+		bool_parameters_array->SetAnotherNode();
+		bool_parameters_array->SetString("Name", (*it).first);
+		bool_parameters_array->SetBoolean("Value", (*it).second);
 	}
 
 	asset->FinishSave();
@@ -296,10 +522,31 @@ void ResourceAnimatorController::FreeMemory()
 	states.clear();
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
+		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
+		for (std::vector<IntCondition*>::iterator it_i = int_conditions.begin(); it_i != int_conditions.end(); ++it_i) {
+			delete (*it_i);
+		}
+
+		std::vector<FloatCondition*> float_conditions = (*it)->GetFloatConditions();
+		for (std::vector<FloatCondition*>::iterator it_f = float_conditions.begin(); it_f != float_conditions.end(); ++it_f) {
+			delete (*it_f);
+		}
+
+		std::vector<BoolCondition*> bool_conditions = (*it)->GetBoolConditions();
+		for (std::vector<BoolCondition*>::iterator it_b = bool_conditions.begin(); it_b != bool_conditions.end(); ++it_b) {
+			delete (*it_b);
+		}
 		delete (*it);
 	}
 	transitions.clear();
+
+	bool_parameters.clear();
+	float_parameters.clear();
+	int_parameters.clear();
+
 	default_state = nullptr;
+	current_state = nullptr;
+	id_bucket = 1;
 }
 bool ResourceAnimatorController::LoadMemory()
 {
@@ -321,6 +568,84 @@ bool ResourceAnimatorController::LoadMemory()
 		name.resize(bytes);
 		memcpy(&name[0], cursor, bytes);
 		cursor += bytes;
+
+		bytes = sizeof(uint);
+		uint num_int_parameters;
+		memcpy(&num_int_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_int_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(int);
+			int tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			int_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		bytes = sizeof(uint);
+		uint num_float_parameters;
+		memcpy(&num_float_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_float_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			float tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			float_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		bytes = sizeof(uint);
+		uint num_bool_parameters;
+		memcpy(&num_bool_parameters, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_bool_parameters; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_name;
+			tmp_param_name.resize(name_size);
+			memcpy(&tmp_param_name[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(bool);
+			bool tmp_param_value;
+			memcpy(&tmp_param_value, cursor, bytes);
+			cursor += bytes;
+
+			bool_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
 
 		//Load transitions and states nums
 		bytes = sizeof(uint);
@@ -355,14 +680,13 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&speed, cursor, bytes);
 			cursor += bytes;
 
-			AddState(tmp_name, clip_id == 0? nullptr:(ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
+			AddState(tmp_name, clip_id == 0 ? nullptr : (ResourceAnimation*)App->resources->GetResourceWithID(clip_id), speed);
 		}
 
 		for (int i = 0; i < num_transitions; ++i)
 		{
 			//Load name size
 			uint bytes = sizeof(uint);
-			name_size;
 			memcpy(&name_size, cursor, bytes);
 			cursor += bytes;
 			//Load name
@@ -374,7 +698,6 @@ bool ResourceAnimatorController::LoadMemory()
 
 			//Load name size
 			bytes = sizeof(uint);
-			name_size;
 			memcpy(&name_size, cursor, bytes);
 			cursor += bytes;
 			//Load name
@@ -384,18 +707,146 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_target[0], cursor, bytes);
 			cursor += bytes;
 
-			bytes = sizeof(uint);
-			uint tmp_trigger;
-			memcpy(&tmp_trigger, cursor, bytes);
-			cursor += bytes;
-
 			bytes = sizeof(float);
 			float tmp_blend;
 			memcpy(&tmp_blend, cursor, bytes);
+			cursor += bytes;			
+			
+			bytes = sizeof(bool);
+			bool tmp_end;
+			memcpy(&tmp_end, cursor, bytes);
 			cursor += bytes;
 
-			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_trigger);
+			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_end);
+
+			bytes = sizeof(uint);
+			uint num_int_conditions;
+			memcpy(&num_int_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_int_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(uint);
+				uint tmp_condition_param_index;
+				memcpy(&tmp_condition_param_index, cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(int);
+				int tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddIntCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
+			}
+
+			bytes = sizeof(uint);
+			uint num_float_conditions;
+			memcpy(&num_float_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_float_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(uint);
+				uint tmp_condition_param_index;
+				memcpy(&tmp_condition_param_index, cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(float);
+				float tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddFloatCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
+
+			}
+
+			bytes = sizeof(uint);
+			uint num_bool_conditions;
+			memcpy(&num_bool_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_bool_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(uint);
+				uint tmp_condition_param_index;
+				memcpy(&tmp_condition_param_index, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddBoolCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index);
+
+			}
+
 		}
+
 		LOG_ENGINE("Loaded Anim Controller %s", meta_data_path.data());
 
 		RELEASE_ARRAY(buffer);
@@ -494,18 +945,45 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	//SAVE LIBRARY FILE
-	uint size = sizeof(uint) + name.size() + sizeof(uint) * 2;
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 5;
+
+	for (std::vector<std::pair<std::string, int>>::iterator int_pit = int_parameters.begin(); int_pit != int_parameters.end(); ++int_pit) {
+		size += sizeof(uint) + (*int_pit).first.size() + sizeof(int);
+	}
+
+	for (std::vector<std::pair<std::string, float>>::iterator float_pit = float_parameters.begin(); float_pit != float_parameters.end(); ++float_pit) {
+		size += sizeof(uint) + (*float_pit).first.size() + sizeof(float);
+	}
+
+	for (std::vector<std::pair<std::string, bool>>::iterator bool_pit = bool_parameters.begin(); bool_pit != bool_parameters.end(); ++bool_pit) {
+		size += sizeof(uint) + (*bool_pit).first.size() + sizeof(bool);
+	}
+
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
 		size += sizeof(uint) + (*it)->GetName().size() + sizeof(u64) + sizeof(float);
 	}
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
-		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(uint) + sizeof(float);
+		size += sizeof(uint) + (*it)->GetSource()->GetName().size() + sizeof(uint) + (*it)->GetTarget()->GetName().size() + sizeof(float) + sizeof(bool) + sizeof(uint) * 3;
+
+		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
+		for (std::vector<IntCondition*>::iterator int_it = int_conditions.begin(); int_it != int_conditions.end(); ++int_it) {
+			size += sizeof(uint) + (*int_it)->type.size() + sizeof(uint) + (*int_it)->comp_text.size() + sizeof(uint) + sizeof(int);
+		}
+		std::vector<FloatCondition*> float_conditions = (*it)->GetFloatConditions();
+		for (std::vector<FloatCondition*>::iterator float_it = float_conditions.begin(); float_it != float_conditions.end(); ++float_it) {
+			size += sizeof(uint) + (*float_it)->type.size() + sizeof(uint) + (*float_it)->comp_text.size() + sizeof(uint) + sizeof(float);
+		}
+		std::vector<BoolCondition*> bool_conditions = (*it)->GetBoolConditions();
+		for (std::vector<BoolCondition*>::iterator bool_it = bool_conditions.begin(); bool_it != bool_conditions.end(); ++bool_it) {
+			size += sizeof(uint) + (*bool_it)->type.size() + sizeof(uint) + (*bool_it)->comp_text.size() + sizeof(uint);
+		}
 	}
 	// Allocate
 	char* data = new char[size];
 	char* cursor = data;
+	memset(data, 0, size);
 
 	// Store name size and name
 	uint bytes = sizeof(uint);
@@ -515,6 +993,70 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	bytes = name.size();
 	memcpy(cursor, name.c_str(), bytes);
 	cursor += bytes;
+
+	// Store Controller Parameters
+	bytes = sizeof(uint);
+	uint num_int_parameters = int_parameters.size();
+	memcpy(cursor, &num_int_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_int_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = int_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, int_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(int);
+		memcpy(cursor, &int_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_float_parameters = float_parameters.size();
+	memcpy(cursor, &num_float_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_float_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = float_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, float_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(float);
+		memcpy(cursor, &float_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_bool_parameters = bool_parameters.size();
+	memcpy(cursor, &num_bool_parameters, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_bool_parameters; ++j) {
+
+		//Save condition type and type size
+		name_size = bool_parameters[j].first.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, bool_parameters[j].first.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(bool);
+		memcpy(cursor, &bool_parameters[j].second, bytes);
+		cursor += bytes;
+	}
 
 	//Store transitions and states nums
 	bytes = sizeof(uint);
@@ -567,20 +1109,123 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		memcpy(cursor, (*it)->GetTarget()->GetName().data(), bytes);
 		cursor += bytes;
 
-		bytes = sizeof(uint);
-		uint trigger_id = (*it)->GetTrigger();
-		memcpy(cursor, &trigger_id, bytes);
-		cursor += bytes;
-
+		//Store blend
 		bytes = sizeof(float);
 		float tr_blend = (*it)->GetBlend();
 		memcpy(cursor, &tr_blend, bytes);
 		cursor += bytes;
+
+		//Store end
+		bytes = sizeof(bool);
+		bool tr_end = (*it)->GetEnd();
+		memcpy(cursor, &tr_end, bytes);
+		cursor += bytes;
+
+		//Save int Conditions
+		bytes = sizeof(uint);
+		uint num_int_conditions = (*it)->GetIntConditions().size();
+		memcpy(cursor, &num_int_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_int_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetIntConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetIntConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetIntConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(uint);
+			memcpy(cursor, &(*it)->GetIntConditions()[j]->parameter_index, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(int);
+			memcpy(cursor, &(*it)->GetIntConditions()[j]->comp, bytes);
+			cursor += bytes;
+
+		}
+
+		bytes = sizeof(uint);
+		uint num_float_conditions = (*it)->GetFloatConditions().size();
+		memcpy(cursor, &num_float_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_float_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetFloatConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetFloatConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetFloatConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			memcpy(cursor, &(*it)->GetFloatConditions()[j]->parameter_index, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(float);
+			memcpy(cursor, &(*it)->GetFloatConditions()[j]->comp, bytes);
+			cursor += bytes;
+
+		}
+
+		bytes = sizeof(uint);
+		uint num_bool_conditions = (*it)->GetBoolConditions().size();
+		memcpy(cursor, &num_bool_conditions, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_bool_conditions; ++j) {
+
+			//Save condition type and type size
+			name_size = (*it)->GetBoolConditions()[j]->type.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->type.data(), bytes);
+			cursor += bytes;
+
+			//Save condition comp text and size 
+			name_size = (*it)->GetBoolConditions()[j]->comp_text.size();
+			bytes = sizeof(uint);
+			memcpy(cursor, &name_size, bytes);
+			cursor += bytes;
+			bytes = name_size;
+			memcpy(cursor, (*it)->GetBoolConditions()[j]->comp_text.data(), bytes);
+			cursor += bytes;
+
+			bytes = sizeof(uint);
+			memcpy(cursor, &(*it)->GetBoolConditions()[j]->parameter_index, bytes);
+			cursor += bytes;
+
+		}
 	}
 
 	App->file_system->Save(meta_data_path.data(), data, size);
 	App->resources->AddResource(this);
-	FreeMemory();
 	RELEASE_ARRAY(data);
 
 	return true;
@@ -611,7 +1256,7 @@ void ResourceAnimatorController::Play(std::string state_name)
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
-		if ((*it)->GetName() == state_name)
+		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0)
 			current_state = (*it);
 	}
 }
@@ -723,6 +1368,8 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 {
 	State* new_state = new State(name, clip);
 	new_state->SetSpeed(speed);
+	new_state->id = id_bucket;
+	id_bucket++;
 	states.push_back(new_state);
 
 	if (!default_state)
@@ -731,11 +1378,13 @@ void ResourceAnimatorController::AddState(std::string name, ResourceAnimation* c
 
 void ResourceAnimatorController::RemoveState(std::string name)
 {
-	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it) {
+	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end();) {
 		if ((*it)->GetSource()->GetName() == name || (*it)->GetTarget()->GetName() == name) {
 			delete (*it);
 			it = transitions.erase(it);
-			break;
+		}
+		else {
+			++it;
 		}
 	}
 
@@ -743,10 +1392,16 @@ void ResourceAnimatorController::RemoveState(std::string name)
 		if ((*it)->GetName() == name) {
 			if ((*it)->GetClip())
 				(*it)->GetClip()->DecreaseReferences();
+			if ((*it) == default_state) {
+				default_state = nullptr;
+			}
 			delete (*it);
 			it = states.erase(it);
 			break;
 		}
+	}
+	if (!default_state && states.size() > 0) {
+		default_state = states[0];
 	}
 }
 
@@ -774,17 +1429,10 @@ State* ResourceAnimatorController::FindStateFromPinId(uint pin_id)
 	}
 }
 
-void ResourceAnimatorController::AddTransition(State* source, State* target, float blend)
+void ResourceAnimatorController::AddTransition(State* source, State* target, float blend, bool end)
 {
 	Transition* new_transition = new Transition(source, target, blend);
-
-	transitions.push_back(new_transition);
-}
-
-void ResourceAnimatorController::AddTransition(State* source, State* target, float blend, uint trigger)
-{
-	Transition* new_transition = new Transition(source, target, blend);
-	new_transition->SetTrigger(trigger);
+	new_transition->SetEnd(end);
 
 	transitions.push_back(new_transition);
 }
@@ -894,10 +1542,6 @@ void Transition::SetTarget(State* target)
 	this->target = target;
 }
 
-void Transition::SetTrigger(uint trigger)
-{
-	this->trigger = trigger;
-}
 
 void Transition::SetBlend(float blend)
 {
@@ -914,13 +1558,134 @@ State* Transition::GetTarget()
 	return target;
 }
 
-uint Transition::GetTrigger()
-{
-	return trigger;
-}
 
 float Transition::GetBlend()
 {
 	return blend;
 }
 
+void Transition::AddIntCondition()
+{
+	IntCondition* new_condition = new IntCondition("int", 0, 0);
+	int_conditions.push_back(new_condition);
+}
+
+void Transition::AddIntCondition(std::string type, std::string comp_text, uint index, int comp)
+{
+	IntCondition* new_int_condition = new IntCondition(type, index, comp);
+	new_int_condition->SetCompText(comp_text);
+	int_conditions.push_back(new_int_condition);
+}
+
+void Transition::AddFloatCondition()
+{
+	FloatCondition* new_condition = new FloatCondition("float", 0, 0.0f);
+	float_conditions.push_back(new_condition);
+}
+
+void Transition::AddFloatCondition(std::string type, std::string comp_text, uint index, float comp)
+{
+	FloatCondition* new_float_condition = new FloatCondition(type, index, comp);
+	new_float_condition->SetCompText(comp_text);
+	float_conditions.push_back(new_float_condition);
+}
+
+void Transition::AddBoolCondition()
+{
+	BoolCondition* new_condition = new BoolCondition("bool", 0);
+	bool_conditions.push_back(new_condition);
+}
+
+void Transition::AddBoolCondition(std::string type, std::string comp_text, uint index)
+{
+	BoolCondition* new_bool_condition = new BoolCondition(type, index);
+	new_bool_condition->SetCompText(comp_text);
+	bool_conditions.push_back(new_bool_condition);
+}
+
+void Transition::RemoveIntCondition(IntCondition* int_condition)
+{
+	for (std::vector<IntCondition*>::iterator it = int_conditions.begin(); it != int_conditions.end(); ++it) {
+		if ((*it) == int_condition) {
+			delete (*it);
+			it = int_conditions.erase(it);
+			break;
+		}
+	}
+}
+
+void Transition::RemoveFloatCondition(FloatCondition* float_condition)
+{
+	for (std::vector<FloatCondition*>::iterator it = float_conditions.begin(); it != float_conditions.end(); ++it) {
+		if ((*it) == float_condition) {
+			delete (*it);
+			it = float_conditions.erase(it);
+			break;
+		}
+	}
+}
+
+void Transition::RemoveBoolCondition(BoolCondition* bool_condition)
+{
+	for (std::vector<BoolCondition*>::iterator it = bool_conditions.begin(); it != bool_conditions.end(); ++it) {
+		if ((*it) == bool_condition) {
+			delete (*it);
+			it = bool_conditions.erase(it);
+			break;
+		}
+	}
+}
+
+bool IntCondition::Compare(ResourceAnimatorController* controller)
+{
+	bool ret = false;
+
+	if (comp_text == "Equal") {
+		ret = controller->GetIntParameters()[parameter_index].second == comp;
+	}
+	else if (comp_text == "NotEqual") {
+		ret = controller->GetIntParameters()[parameter_index].second != comp;
+	}
+	else if (comp_text == "Greater") {
+		ret = controller->GetIntParameters()[parameter_index].second > comp;
+	}
+	else if (comp_text == "Lesser") {
+		ret = controller->GetIntParameters()[parameter_index].second < comp;
+	}
+
+	return ret;
+}
+
+bool FloatCondition::Compare(ResourceAnimatorController* controller)
+{
+	bool ret = false;
+
+	if (comp_text == "Greater") {
+		if (controller->GetFloatParameters()[parameter_index].second > comp)
+			ret = true;
+		else
+			ret = false;
+	}
+	else if (comp_text == "Lesser") {
+		if (controller->GetFloatParameters()[parameter_index].second < comp)
+			ret = true;
+		else
+			ret = false;
+	}
+
+	return ret;
+}
+
+bool BoolCondition::Compare(ResourceAnimatorController* controller)
+{
+	bool ret = false;
+
+	if (comp_text == "False") {
+		if (!controller->GetBoolParameters()[parameter_index].second) ret = true;
+	}
+	else if (comp_text == "True") {
+		if (controller->GetBoolParameters()[parameter_index].second) ret = true;
+	}
+
+	return ret;
+}

@@ -382,7 +382,7 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 		(*ret)->SetName("Cube");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		par_mesh = par_shapes_create_subdivided_sphere(5);
+		par_mesh = par_shapes_create_subdivided_sphere(1);
 		(*ret)->SetName("Sphere");
 		break; }
 	case PrimitiveType::ROCK: {
@@ -759,10 +759,10 @@ void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vec
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadShaders(new_directories, new_files, dir);
@@ -841,10 +841,9 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
@@ -870,10 +869,9 @@ void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vecto
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadAudio(new_directories, new_files, dir);

@@ -11,14 +11,13 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 	type = ComponentType::A_EMITTER;
 	source = App->audio->CreateSoundEmitter("Emitter");
 	App->audio->emitters.push_back(this);
+
 }
 
 void ComponentAudioEmitter::Update()
 {
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
-			//source->StopEventByName(audio_name.c_str());
-			//audio_name = App->audio->a
 			play_mode = false;
 		}
 	}
@@ -29,6 +28,7 @@ void ComponentAudioEmitter::Update()
 			play_mode = true;
 		}
 	}
+	UpdateSourcePos();
 }
 
 ComponentAudioEmitter::~ComponentAudioEmitter()
@@ -57,7 +57,6 @@ void ComponentAudioEmitter::Mute(bool mute)
 
 void ComponentAudioEmitter::StartSound()
 {	
-	//source->PlayEventByName(audio_name.c_str());
 	source->PlayEventByID(current_event);
 }
 
@@ -67,11 +66,16 @@ void ComponentAudioEmitter::UpdateSourcePos()
 
 	if (transformation != nullptr)
 	{
-		//math::Quat rot = transformation->GetGlobalRotation();
+		float3 pos = transformation->GetGlobalPosition();
+		Quat rot = transformation->GetGlobalRotation();
 
-		math::float3 vector_pos = transformation->GetGlobalPosition();
+		float3 up = rot.Transform(float3(0, 1, 0));
+		float3 front = rot.Transform(float3(0, 0, 1));
 
-		source->SetSourcePos(vector_pos.x, vector_pos.y, vector_pos.z, 0, 0, 1, 0, 1, 0);
+		up.Normalize();
+		front.Normalize();
+
+		source->SetSourcePos(-pos.x, pos.y, pos.z, -front.x, front.y, front.z, -up.x, up.y, up.z);
 	}
 }
 

@@ -22,7 +22,11 @@ ComponentAnimator::ComponentAnimator(GameObject* gameobject) : Component(gameobj
 ComponentAnimator::~ComponentAnimator()
 {
 	if (animator_controller)
+	{
 		animator_controller->DecreaseReferences();
+		animator_controller->attached_references--;
+	}
+
 }
 
 void ComponentAnimator::Update()
@@ -37,7 +41,7 @@ void ComponentAnimator::Update()
 		UpdateAnimation(game_object_attached);
 }
 
-void ComponentAnimator::PlayState(std::string name)
+void ComponentAnimator::PlayState(const char* name)
 {
 	if (animator_controller)
 		animator_controller->Play(name);
@@ -79,12 +83,12 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 {
 	if (animator_controller) {
 		animator_controller->DecreaseReferences();
-		animator_controller->times_attached--;
+		animator_controller->attached_references--;
 	}
 
 	animator_controller = controller;
-	animator_controller->times_attached++;
 	animator_controller->IncreaseReferences();
+	animator_controller->attached_references++;
 }
 
 void ComponentAnimator::SaveComponent(JSONArraypack* to_save)
@@ -102,10 +106,25 @@ void ComponentAnimator::LoadComponent(JSONArraypack* to_load)
 	u64 controller_ID = std::stoull(to_load->GetString("ControllerID"));
 	if (controller_ID != 0)
 	{
-		animator_controller = (ResourceAnimatorController*)App->resources->GetResourceWithID(controller_ID);
-		if (animator_controller != nullptr)
-			animator_controller->IncreaseReferences();
+		ResourceAnimatorController* anim_ctrl = (ResourceAnimatorController*)App->resources->GetResourceWithID(controller_ID);
+		if (anim_ctrl != nullptr)
+			SetAnimatorController(anim_ctrl);
 	}
+}
+
+void ComponentAnimator::SetBool(const char* parameter_name, bool parameter_value)
+{
+	animator_controller->SetBool(parameter_name, parameter_value);
+}
+
+void ComponentAnimator::SetFloat(const char* parameter_name, float parameter_value)
+{
+	animator_controller->SetFloat(parameter_name, parameter_value);
+}
+
+void ComponentAnimator::SetInt(const char* parameter_name, int parameter_value)
+{
+	animator_controller->SetInt(parameter_name, parameter_value);
 }
 
 bool ComponentAnimator::DrawInspector()
@@ -142,6 +161,10 @@ bool ComponentAnimator::DrawInspector()
 				}
 			}
 			ImGui::EndDragDropTarget();
+		}
+
+		if (animator_controller != nullptr) {
+			ImGui::Text("References: %i", animator_controller->attached_references);
 		}
 	}
 

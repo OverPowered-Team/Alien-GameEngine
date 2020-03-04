@@ -1,14 +1,10 @@
 #pragma once
-#ifndef _ANIMATOR_CONTROLLER_H_
-#define _ANIMATOR_CONTROLLER_H_
 
 #include "Resource.h"
 #include "Globals.h"
 #include "NodeEditor/Include/imgui_node_editor.h"
 
 #include <vector>
-
-#define NUM_TRIGGERS 5
 
 class ResourceAnimation;
 
@@ -24,6 +20,7 @@ public:
 	float time = 0;
 	float fade_duration = 0, fade_time = 0;
 	State* next_state = nullptr;
+	bool played_from_script = false;
 
 public:
 	State();
@@ -38,13 +35,83 @@ public:
 	ResourceAnimation* GetClip();
 };
 
+class Condition {
+public:
+	std::string type = "";
+	uint parameter_index;
+	std::vector<std::string> comp_texts;
+	std::string comp_text = "";
+
+public:
+	Condition(std::string type, std::string comp_text = "") { this->type = type; }
+	virtual bool Compare(ResourceAnimatorController* controller) { return false; }
+
+};
+
+class IntCondition : public Condition {
+public:
+	int comp;
+
+public:
+	IntCondition(std::string type, uint index, int comp) : Condition(type) {
+		this->comp = comp;
+		this->parameter_index = index;
+		comp_texts.push_back("Equal");
+		comp_texts.push_back("Not Equal");
+		comp_texts.push_back("Greater");
+		comp_texts.push_back("Lesser");
+		comp_text = "Greater";
+	}
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
+	void SetCompValue(int comp) { this->comp = comp; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
+
+};
+
+class FloatCondition : public Condition {
+public:
+	float comp;
+
+public:
+	FloatCondition(std::string type, uint index, float comp) : Condition(type) {
+		this->comp = comp;
+		this->parameter_index = index;
+		comp_texts.push_back("Greater");
+		comp_texts.push_back("Lesser");
+		comp_text = "Greater";
+	}
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
+	void SetCompValue(float comp) { this->comp = comp; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
+};
+
+class BoolCondition : public Condition {
+
+public:
+	BoolCondition(std::string type, uint index) : Condition(type) {
+		this->parameter_index = index;
+		comp_texts.push_back("True");
+		comp_texts.push_back("False");
+		comp_text = "True";
+	}
+	bool Compare(ResourceAnimatorController* controller);
+	void SetParameter(uint index) { this->parameter_index = index; }
+	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
+};
+
+
 class Transition
 {
 private:
 	State* source;
 	State* target;
-	uint trigger = 0;
+	std::vector<IntCondition*> int_conditions;
+	std::vector<FloatCondition*> float_conditions;
+	std::vector<BoolCondition*> bool_conditions;
 	float blend = 2;
+	bool end = false;
 
 public:
 	Transition();
@@ -53,15 +120,28 @@ public:
 public:
 	void SetSource(State* source);
 	void SetTarget(State* target);
-	void SetTrigger(uint trigger);
 	void SetBlend(float blend);
 
 	State* GetSource();
 	State* GetTarget();
-	uint GetTrigger();
 	float GetBlend();
-};
+	bool GetEnd() { return end; }
+	void SetEnd(bool hasend) { end = hasend; }
 
+	//Handle Conditions
+	void AddIntCondition();
+	void AddIntCondition(std::string type, std::string comp_text, uint index, int comp);
+	void AddFloatCondition();
+	void AddFloatCondition(std::string type, std::string comp_text, uint index, float comp);
+	void AddBoolCondition();
+	void AddBoolCondition(std::string type, std::string comp_text, uint index);
+	void RemoveIntCondition(IntCondition* int_condition);
+	void RemoveFloatCondition(FloatCondition* float_condition);
+	void RemoveBoolCondition(BoolCondition* bool_condition);
+	std::vector<IntCondition*> GetIntConditions() { return int_conditions; }
+	std::vector<FloatCondition*> GetFloatConditions() { return float_conditions; }
+	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
+};
 
 class ResourceAnimatorController : public Resource
 {
@@ -70,7 +150,6 @@ private:
 	std::vector<State*> states;
 	std::vector<Transition*> transitions;
 	State* default_state = nullptr;
-	std::vector<bool> triggers;
 
 	std::vector <std::pair <std::string, int>> int_parameters;
 	std::vector <std::pair <std::string, float>> float_parameters;
@@ -82,6 +161,10 @@ private:
 public:
 	ResourceAnimatorController();
 	~ResourceAnimatorController();
+
+	int attached_references = 0;
+	int id_bucket = 1;
+	bool transitioning = false;
 
 	void ReImport(const u64& force_id = 0);
 	//Parameters things
@@ -100,12 +183,19 @@ public:
 	void AddBoolParameter();
 	void AddFloatParameter();
 	void AddIntParameter();
+	void AddBoolParameter(std::pair<std::string, bool> param);
+	void AddFloatParameter(std::pair<std::string, float> param);
+	void AddIntParameter(std::pair<std::string, int> param);
+	void RemoveBoolParameter(std::string name);
+	void RemoveFloatParameter(std::string name);
+	void RemoveIntParameter(std::string name);
+	//string to const char for scripting
 	void SetBool(std::string name, bool value);
 	void SetFloat(std::string name, float value);
 	void SetInt(std::string name, int value);
 
 public:
-    void FreeMemory();
+	void FreeMemory();
 	bool LoadMemory();
 	bool ReadBaseInfo(const char* meta_file_path);
 	void ReadLibrary(const char* meta_data);
@@ -119,9 +209,8 @@ public:
 	void Update();
 	void UpdateState(State* state);
 	void Stop();
-	std::vector<bool> GetTriggers() const { return triggers; }
-	void CheckTriggers();
-	int times_attached = 0;
+	bool CheckTriggers();
+
 
 	//Transform
 	bool GetTransform(std::string channel_name, float3& position, Quat& rotation, float3& scale);
@@ -138,15 +227,15 @@ public:
 	std::vector<State*> GetStates() { return states; }
 
 	//Transitions
-	void AddTransition(State* source, State* target, float blend);
-	void AddTransition(State* source, State* target, float blend, uint trigger);
+	void AddTransition(State* source, State* target, float blend, bool end = false);
 	void RemoveTransition(std::string source_name, std::string target_name);
 	std::vector<Transition*> GetTransitions() const { return transitions; }
 	uint GetNumTransitions() const { return transitions.size(); }
 	std::vector<Transition*> FindTransitionsFromSourceState(State* state);
 
 	State* GetDefaultNode() const { return default_state; };
-
+	State* GetCurrentNode() const { return current_state; };
+	void SetDefaultNode(State* state) { default_state = state; }
 	ax::NodeEditor::EditorContext* GetEditorContext();
 	std::string GetTypeString() const;
 
@@ -158,5 +247,3 @@ public:
 
 	friend class Time;
 };
-
-#endif // !__ANIMATOR_CONTROLLER_H_

@@ -63,6 +63,7 @@ public:
 	ImGuiTextBuffer all_game_logs;
 	HINSTANCE scripts_dll = nullptr;
 	std::string dll;
+
 private:
 	JSONfilepack* config = nullptr;
 	JSONfilepack* layout = nullptr;
@@ -108,6 +109,8 @@ public:
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);
 	void DeleteJSONfile(JSONfilepack* json_pack);
+
+	void UpdateLogFile(FILE* fp);
 
 private:
 

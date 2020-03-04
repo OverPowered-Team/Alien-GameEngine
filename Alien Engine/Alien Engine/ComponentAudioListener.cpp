@@ -8,9 +8,9 @@
 ComponentAudioListener::ComponentAudioListener(GameObject * parent) : Component(parent)
 {
 	type = ComponentType::A_LISTENER;
-	listener = App->audio->CreateSoundEmitter("listener"); //CREATING LISTENER SAME AS AN EMITTER?
+	listener = App->audio->CreateSoundEmitter("Listener");
 	App->audio->SetListener(listener);
-	UpdateListenerPos();
+	//listener->SetSpacializedListener();
 }
 
 ComponentAudioListener::~ComponentAudioListener()
@@ -21,23 +21,25 @@ ComponentAudioListener::~ComponentAudioListener()
 
 void ComponentAudioListener::Update()
 {
+	UpdateListenerPos();
 }
 
 void ComponentAudioListener::UpdateListenerPos()
 {
-	auto transform = game_object_attached->GetComponentTransform();
-	if (transform != nullptr && listener)
+	ComponentTransform* transformation = game_object_attached->GetComponentTransform();
+	if (transformation != nullptr && listener)
 	{
-		math::float3 vector_pos = transform->GetGlobalPosition();
-		math::Quat rotation = transform->GetGlobalRotation();
+		float3 pos = transformation->GetGlobalPosition();
+		Quat rot = transformation->GetGlobalRotation();
 
-		math::float3 vector_front = rotation * math::float3::unitZ();
-		math::float3 vector_up = rotation * math::float3::unitY();
+		float3 up = rot.Transform(float3(0, 1, 0));
+		float3 front = rot.Transform(float3(0, 0, 1));
 
-		listener->SetListenerPos(
-			vector_pos.x, vector_pos.y, vector_pos.z, 
-			vector_front.x, vector_front.y, vector_front.z,
-			vector_up.x, vector_up.y, vector_up.z);
+		up.Normalize();
+		front.Normalize();
+		//emitter->SetPosition(-pos.x, pos.y, pos.z, -front.x, front.y, front.z, -up.x, up.y, up.z);
+
+		listener->SetSourcePos(-pos.x, pos.y, pos.z, -front.x, front.y, front.z, -up.x, up.y, up.z);
 	}
 }
 
