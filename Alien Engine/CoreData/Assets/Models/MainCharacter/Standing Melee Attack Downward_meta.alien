@@ -5,15 +5,15 @@
         "Name": "Standing Melee Attack Downward",
         "NumBones": 42,
         "NumAnimations": 1,
+        "NumMaterials": 1,
         "Animations": [
             {
                 "Name": "attack",
                 "Loops": false,
                 "Start_Tick": 0,
-                "End_Tick": 68
+                "End_Tick": 67
             }
         ],
-        "NumMaterials": 1,
         "PathMeshes": [
             "Library\/Meshes\/17169844209173558017.alienMesh"
         ],

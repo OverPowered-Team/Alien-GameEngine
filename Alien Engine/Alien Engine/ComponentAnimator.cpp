@@ -41,7 +41,7 @@ void ComponentAnimator::Update()
 		UpdateAnimation(game_object_attached);
 }
 
-void ComponentAnimator::PlayState(std::string name)
+void ComponentAnimator::PlayState(const char* name)
 {
 	if (animator_controller)
 		animator_controller->Play(name);
