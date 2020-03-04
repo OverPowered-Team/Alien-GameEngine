@@ -85,8 +85,8 @@ bool ModuleResources::Start()
 
 	ReadAllMetaData();
 
-	default_font = GetFontByName("Arialn");
-	default_material = GetMaterialByName("Default Material");
+	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
+	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
 	return true;
 }
 
@@ -714,7 +714,7 @@ void ModuleResources::ReadAllMetaData()
 	}
 	files.clear();
 	directories.clear();
-	default_shader = GetShaderByName("default_shader");
+	default_shader = (ResourceShader*)GetResourceWithID(13637628907886844338);
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);

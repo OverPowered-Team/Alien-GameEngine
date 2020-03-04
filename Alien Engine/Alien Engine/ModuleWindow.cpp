@@ -255,7 +255,6 @@ bool ModuleWindow::CreateCoreWindow()
 	SDL_GetWindowSize(window, &width, &height);
 
 	screen_surface = SDL_GetWindowSurface(window);
-	App->renderer3D->OnResize(width, height);
 	return ret;
 }
 

@@ -93,10 +93,9 @@
     </Filter>
     <Filter Include="Tools\Tween">
       <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
-      </Filter>
+    </Filter>
     <Filter Include="Tools\Optik">
       <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
-
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2750,9 +2749,6 @@
     <ClCompile Include="PanelLayout.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentLight.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleResources.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -3592,7 +3588,7 @@
     </ClCompile>
     <ClCompile Include="StaticTween.cpp">
       <Filter>ScriptHelpers</Filter>
-</ClCompile>
+    </ClCompile>
     <ClCompile Include="ResourceShader.cpp">
       <Filter>Resources</Filter>
     </ClCompile>

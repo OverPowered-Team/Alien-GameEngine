@@ -1572,7 +1572,6 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
 				transform = new ComponentTransform(this);

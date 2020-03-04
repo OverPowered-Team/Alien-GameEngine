@@ -105,6 +105,7 @@ bool ModuleObjects::Start()
 		LoadScene(App->file_system->GetBaseFileName(meta->GetString("Build.FirstScene")).data());
 		game_viewport->SetPos({ 0,0 });
 		game_viewport->active = true;
+		App->renderer3D->OnResize(App->window->width, App->window->height);
 		Time::Play();
 
 		delete meta;

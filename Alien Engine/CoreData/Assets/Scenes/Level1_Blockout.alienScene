@@ -178,10 +178,7 @@
                         ],
                         "TextureEnabled": true,
                         "ID": "8270335729522674255",
-                        "HasTexture": true,
-                        "TextureID": "11794710009114582488",
-                        "HasShader": true,
-                        "ShaderID": "10531987425526217564",
+                        "HasMaterial": false,
                         "Enabled": true
                     }
                 ]
