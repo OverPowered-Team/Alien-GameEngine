@@ -29,6 +29,9 @@ enum class SHADER_TEMPLATE
 };
 
 struct ShaderInputs;
+struct DirLightProperties; 
+struct PointLightProperties; 
+struct SpotLightProperties; 
 
 class ResourceShader : public Resource
 {
@@ -75,6 +78,9 @@ public:
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
 
+	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights, const uint& size);
+	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights, const uint& size);
+	void SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& dirLights, const uint& size);
 	void CreateShaderDoc(const int& type, const char* name);
 
 private:

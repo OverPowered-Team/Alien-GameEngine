@@ -69,6 +69,15 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glBindVertexArray(mesh->vao);
 
 
+	material->used_shader->SetDirectionalLights("dir_light", 
+		App->objects->directional_light_properites, App->objects->directional_light_properites.size());
+
+	material->used_shader->SetPointLights("point_light",
+		App->objects->point_light_properites, App->objects->point_light_properites.size());
+
+	material->used_shader->SetSpotLights("spot_light",
+		App->objects->spot_light_properites, App->objects->spot_light_properites.size());
+
 	// Uniforms --------------
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());

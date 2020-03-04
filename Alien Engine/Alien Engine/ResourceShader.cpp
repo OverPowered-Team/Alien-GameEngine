@@ -8,6 +8,9 @@
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
 #include "Globals.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 
 ResourceShader::ResourceShader()
 {
@@ -269,6 +272,34 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
 }
 
+void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights, const uint& size)
+{
+	/*static int i = 0;
+	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
+	{
+		string tmp_name(name.c_str(), "[%i]");
+		
+		sprintf_s(tmp_name, "%i", i);
+
+		.properties...
+
+		// All uniforms
+		SetUniformFloat3(tmp_name, );
+		[]
+		++i;
+	}*/
+}
+
+void ResourceShader::SetPointLights(const std::string& name, const std::list<PointLightProperties*>& pointLights, const uint& size)
+{
+
+}
+
+void ResourceShader::SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& spotLights, const uint& size)
+{
+
+}
+
 SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 {
 	std::ifstream stream(path);
@@ -305,9 +336,9 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	uint program = glCreateProgram();
 
 	uint vertex_s = CompileShader(GL_VERTEX_SHADER, vertex_shader);
-	//assert(vertex_s == 0, "Vertex Failed To Compile");
+	assert(vertex_s == 0, "Vertex Failed To Compile");
 	uint fragment_s = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
-	//assert(fragment_s == 0, "Fragment Failed To Compile");
+	assert(fragment_s == 0, "Fragment Failed To Compile");
 
 	glAttachShader(program, vertex_s);
 	glAttachShader(program, fragment_s);
