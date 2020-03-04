@@ -303,7 +303,7 @@ void ComponentRigidBody::AddCollider(ComponentCollider* new_coll)
 	if (collider == nullptr)
 	{
 		collider = new_coll;
-		collider->rb = this;
+		collider->rigid_body = this;
 
 		App->physics->RemoveBody(collider->aux_body);
 		body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -341,7 +341,7 @@ void ComponentRigidBody::RemoveCollider()
 		App->physics->AddBody(collider->aux_body);
 		body->setCollisionShape(aux_shape);
 
-		collider->rb = nullptr;
+		collider->rigid_body = nullptr;
 		collider = nullptr;
 
 		UpdateBodyInertia();

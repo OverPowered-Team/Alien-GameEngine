@@ -33,6 +33,13 @@ ComponentMesh::~ComponentMesh()
 	}
 }
 
+void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
+{
+	mesh = resource;
+	GenerateLocalAABB();
+	RecalculateAABB_OBB();
+}
+
 void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
@@ -99,7 +106,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	material->used_shader->Unbind();	
+	material->used_shader->Unbind();
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
@@ -225,7 +232,7 @@ void ComponentMesh::DrawFaceNormals()
 		for (uint i = 0; i < mesh->num_index; i += 3)
 		{
 			glVertex3f(mesh->center_point[i], mesh->center_point[i + 1], mesh->center_point[i + 2]);
-			glVertex3f(mesh->center_point[i] + mesh->center_point_normal[i] * App->objects->face_normal_length, mesh->center_point[i + 1] + mesh->center_point_normal[i+ 1] * App->objects->face_normal_length, mesh->center_point[i + 2] + mesh->center_point_normal[i + 2] * App->objects->face_normal_length);
+			glVertex3f(mesh->center_point[i] + mesh->center_point_normal[i] * App->objects->face_normal_length, mesh->center_point[i + 1] + mesh->center_point_normal[i + 1] * App->objects->face_normal_length, mesh->center_point[i + 2] + mesh->center_point_normal[i + 2] * App->objects->face_normal_length);
 		}
 		glEnd();
 		glLineWidth(1);
@@ -267,13 +274,13 @@ bool ComponentMesh::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
-	
+
 		check = view_mesh;
 		if (ImGui::Checkbox("Active Mesh          ", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			view_mesh = check;
 		}
-		ImGui::SameLine(); 
+		ImGui::SameLine();
 		check = wireframe;
 		if (ImGui::Checkbox("Active Wireframe", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
@@ -295,13 +302,13 @@ bool ComponentMesh::DrawInspector()
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			draw_AABB = check;
 		}
-		ImGui::SameLine(); 
+		ImGui::SameLine();
 		check = draw_OBB;
 		if (ImGui::Checkbox("Draw OBB", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			draw_OBB = check;
 		}
-		
+
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -357,7 +364,7 @@ void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
 
 	glVertex3f(global_aabb.minPoint.x, global_aabb.maxPoint.y, global_aabb.maxPoint.z);
 	glVertex3f(global_aabb.maxPoint.x, global_aabb.maxPoint.y, global_aabb.maxPoint.z);
-	
+
 	glLineWidth(1);
 	glEnd();
 }
@@ -369,7 +376,7 @@ void ComponentMesh::DrawOBB(ComponentCamera* camera)
 
 	glColor3f(App->objects->global_OBB_color.r, App->objects->global_OBB_color.g, App->objects->global_OBB_color.b);
 	glLineWidth(App->objects->OBB_line_width);
-	float3* obb_points=nullptr;
+	float3* obb_points = nullptr;
 	obb.GetCornerPoints(obb_points);
 
 	glBegin(GL_LINES);
@@ -468,21 +475,19 @@ void ComponentMesh::Clone(Component* clone)
 	mesh->wireframe = wireframe;
 }
 
-AABB ComponentMesh::GenerateAABB()
+void ComponentMesh::GenerateLocalAABB()
 {
 	if (mesh != nullptr) {
 		local_aabb.SetNegativeInfinity();
 		local_aabb.Enclose((float3*)mesh->vertex, mesh->num_vertex);
 	}
-	return local_aabb;
 }
 
 void ComponentMesh::RecalculateAABB_OBB()
 {
 	ComponentTransform* transform = game_object_attached->transform;
-	obb = GenerateAABB();
+	obb = local_aabb;
 	obb.Transform(transform->global_transformation);
-
 	global_aabb.SetNegativeInfinity();
 	global_aabb.Enclose(obb);
 }
@@ -582,6 +587,6 @@ void ComponentMesh::LoadComponent(JSONArraypack* to_load)
 			}
 		}
 	}
-	GenerateAABB();
+	GenerateLocalAABB();
 	RecalculateAABB_OBB();
 }

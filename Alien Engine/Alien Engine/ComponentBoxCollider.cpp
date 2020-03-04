@@ -39,19 +39,26 @@ void ComponentBoxCollider::DrawSpecificInspector()
 	SetSize(current_size);
 }
 
-void ComponentBoxCollider::CreateShape() 
-{
-	if (!WrapMesh())
-	{
-		// Default values 
-		SetSize(float3::one());
-	}
-
-	if (shape == nullptr) UpdateShape();
-}
-
 //float3 t = { transform->global_transformation[0][0], transform->global_transformation[1][1], transform->global_transformation[2][2] };
 //float3 final_size = CheckInvalidCollider(size.Mul(t)) * 0.5f;
+
+void ComponentBoxCollider::CreateDefaultShape()
+{
+	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+
+	if (mesh != nullptr)
+	{
+		center = mesh->local_aabb.CenterPoint();
+		size = mesh->local_aabb.Size();
+	}
+	else
+	{
+		size = float3::one();
+		center = float3::zero();
+	}
+
+	UpdateShape();
+}
 
 void ComponentBoxCollider::UpdateShape()
 {
@@ -64,23 +71,13 @@ void ComponentBoxCollider::UpdateShape()
 	final_center = center.Mul(final_size);
 
 	shape = new btBoxShape(ToBtVector3(final_size.Abs() * 0.5f));
-	aux_body->setCollisionShape(shape);
 
-	if (rb != nullptr)  rb->UpdateCollider();
-}
+	if (aux_body) 
+		aux_body->setCollisionShape(shape);
+	if (detector) 
+		detector->setCollisionShape(shape);
 
-bool ComponentBoxCollider::WrapMesh()
-{
-	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
-
-	if (mesh != nullptr)
-	{
-		SetCenter(mesh->local_aabb.CenterPoint());
-		SetSize(mesh->local_aabb.Size());
-		return true;
-	}
-
-	return false;
+	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
 void ComponentBoxCollider::Reset()

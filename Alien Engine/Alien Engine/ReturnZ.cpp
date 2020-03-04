@@ -848,7 +848,7 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		if (mesh->mesh != nullptr) {
 			mesh->mesh->IncreaseReferences();
 		}
-		mesh->GenerateAABB();
+		mesh->GenerateLocalAABB();
 		mesh->RecalculateAABB_OBB();
 		break; }
 	case ComponentType::MATERIAL: {
