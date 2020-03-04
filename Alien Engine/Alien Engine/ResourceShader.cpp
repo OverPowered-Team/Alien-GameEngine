@@ -249,6 +249,11 @@ void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 	glUniform1i(GetUniformLocation(name), value);
 }
 
+void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
+{
+	glUniform1ui(GetUniformLocation(name), value);
+}
+
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 {
 	glUniform1f(GetUniformLocation(name), value);

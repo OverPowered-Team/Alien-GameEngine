@@ -89,6 +89,7 @@ public:
 	void Unbind() const;
 	
 	void SetUniform1i(const std::string& name, const int& value);
+	void SetUniform1ui(const std::string& name, const uint& value);
 	void SetUniform1f(const std::string& name, const float& value);
 
 	void SetUniformFloat3(const std::string& name, const float3& vec3);

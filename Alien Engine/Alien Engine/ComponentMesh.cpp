@@ -72,9 +72,11 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	// Light uniforms set from here
-	material->used_shader->SetUniform1i("max_dir_ligts", App->objects->GetNumOfDirLights());
-	material->used_shader->SetUniform1i("max_point_ligts", App->objects->GetNumOfPointLights());
-	material->used_shader->SetUniform1i("max_spot_ligts", App->objects->GetNumOfSpotLights());
+	material->used_shader->SetUniform1ui("max_dir_ligts", App->objects->GetNumOfDirLights());
+	material->used_shader->SetUniform1ui("max_point_ligts", App->objects->GetNumOfPointLights());
+	material->used_shader->SetUniform1ui("max_spot_ligts", App->objects->GetNumOfSpotLights());
+
+	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
@@ -88,8 +90,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
-
-
 }
 
 void ComponentMesh::DrawOutLine()
