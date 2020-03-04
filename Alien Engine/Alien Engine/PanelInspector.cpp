@@ -16,6 +16,7 @@
 #include "ResourceModel.h"
 #include "ResourceBone.h"
 #include "ResourceMesh.h"
+#include "ResourceMaterial.h"
 
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
@@ -244,6 +245,11 @@ void PanelInspector::PanelLogic()
 		{
 			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
 			ShowModelImportSettings(r_model);
+		}
+		else if (selected_file->type == FileDropType::MATERIAL)
+		{
+			ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
+			mat->DisplayMaterialOnInspector();
 		}
 	}
 

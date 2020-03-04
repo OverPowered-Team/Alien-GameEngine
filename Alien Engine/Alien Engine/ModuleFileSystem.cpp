@@ -611,6 +611,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	case FileDropType::SHADER:
 		final_path = SHADERS_FOLDER + final_path;
 		break;
+	case FileDropType::MATERIAL:
+		final_path = MATERIALS_FOLDER + final_path;
+		break;
 	case FileDropType::FONT:
 		final_path = FONTS_FOLDER + final_path;
 		break;
