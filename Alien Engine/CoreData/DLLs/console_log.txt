@@ -10,8 +10,8 @@ C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Mod
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Shaders/basic_lighting.shader] to [Library/Shaders/12928088593314578228.shader]
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(651) : Texture successfully loaded: Library/Textures/4484552392535735713.dds
-C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Models/FBXCombined_NoMat_meta.alien] to [Library/Models/8523206157755449943.alienModel]
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(113) : Created alienBone file Library/Bones/10839305638191197526.alienBone
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(139) : Created alienAnimation file Library/Animations/6609979971928192037.alienAnimation
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
@@ -20,6 +20,10 @@ C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Mod
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(54) : Loading UI assets
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
+C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(509) : WARNING: Uniform time doesn't exist...
+
+C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceMaterial.cpp(338) : Selected Shader basic_lighting
+
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(165) : Destroying 3D Renderer
 C:\Users\usuario\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(92) : Unloading UI scene

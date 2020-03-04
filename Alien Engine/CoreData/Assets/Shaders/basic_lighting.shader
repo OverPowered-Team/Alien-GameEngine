@@ -21,7 +21,7 @@ void main()
     texCoords = vec2(uvs.x, uvs.y);
     norms = mat3(transpose(inverse(model))) * normals;
 
-    gl_Position = projection * view * model * vec4(frag_pos, 1.0f); 
+    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
 };
 
 #shader fragment
