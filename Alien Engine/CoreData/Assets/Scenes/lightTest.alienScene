@@ -1,6 +1,6 @@
 {
     "Scene": {
-        "Name": "Level1_Blockout2",
+        "Name": "lightTest",
         "GameObjects": [
             {
                 "Name": "Light",
@@ -77,7 +77,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -87,9 +87,9 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -11.566522598266602,
-                            15.188772201538086,
-                            -1.5926599502563477
+                            -63.74249267578125,
+                            35.809181213378906,
+                            -142.58847045898438
                         ],
                         "Rotation": [
                             0.35204139351844788,
@@ -109,7 +109,7 @@
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 91.492843627929688,
+                        "HoritzontalFov": 90.243408203125,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -121,7 +121,7 @@
                         "isFovHori": 0,
                         "ID": "2306347890556456668",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": true,
+                        "IsSelectedCamera": false,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -2331,13 +2331,13 @@
                 ]
             },
             {
-                "Name": "Point light",
+                "Name": "Directional light",
                 "FamilyNumber": 1,
-                "ID": "16317584167695307586",
+                "ID": "16188484864893795325",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -2347,15 +2347,15 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -4.5182380676269531,
-                            6.0324440002441406,
-                            10.454874992370605
+                            0,
+                            0,
+                            0
                         ],
                         "Rotation": [
+                            0.46159070730209351,
                             0,
                             0,
-                            0,
-                            1
+                            0.88709300756454468
                         ],
                         "Scale": [
                             1,
@@ -2363,22 +2363,22 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "3461857798578747770"
+                        "ID": "6892475736766816345"
                     },
                     {
-                        "Type": 5,
+                        "Type": 3,
                         "Enabled": true,
-                        "ID": "8887929668532835349",
+                        "ID": "17787758828029747870",
                         "PrintIcon": true,
                         "Position": [
-                            -4.5182380676269531,
-                            6.0324440002441406,
-                            10.454874992370605
-                        ],
-                        "Direction": [
                             0,
                             0,
                             0
+                        ],
+                        "Direction": [
+                            0,
+                            -0.81894779205322266,
+                            0.5738680362701416
                         ],
                         "Ambient": [
                             1,
@@ -2394,10 +2394,7 @@
                             1,
                             1,
                             1
-                        ],
-                        "Constant": 1,
-                        "Linear": 0.10000000149011612,
-                        "Quadratic": 0.019999999552965164
+                        ]
                     }
                 ]
             }

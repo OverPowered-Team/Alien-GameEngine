@@ -163,7 +163,7 @@ void ComponentCollider::Update()
 
 
 	//if (test_callbacks == true)
-	if (alien_script != nullptr)
+	if (alien_script != nullptr && Time::IsPlaying())
 	{
 		int numObjectsInGhost = 0;
 		int test = 0;
@@ -251,7 +251,7 @@ bool ComponentCollider::DrawInspector()
 
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
 		ImGui::Title("Callbacks", 1);		ImGui::Checkbox("##callback", &test_callbacks);
