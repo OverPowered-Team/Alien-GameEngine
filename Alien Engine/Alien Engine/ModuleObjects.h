@@ -90,6 +90,9 @@ public:
 
 	// lights
 	void CreateLight(LightTypeObj type);
+
+	//particle system
+	void CreateEffect(ComponentType type);
 	
 	uint GetNumOfPointLights() const;
 	uint GetNumOfDirLights() const;
