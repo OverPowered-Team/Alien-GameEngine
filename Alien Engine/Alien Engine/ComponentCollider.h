@@ -86,5 +86,5 @@ protected:
 	// Collisions
 	std::map<ComponentCollider*, bool> collisions;
 
-	bool test_callbacks = false;
+	bool first_frame = false;
 };

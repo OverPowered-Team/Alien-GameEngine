@@ -158,7 +158,7 @@ void ComponentCollider::Update()
 	{
 		aux_body->setWorldTransform(go_bullet_transform);
 	}
-	
+
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(true);
 
@@ -177,52 +177,61 @@ void ComponentCollider::Update()
 
 	if (alien_script != nullptr && Time::IsPlaying())
 	{
-		int numObjectsInGhost = 0;
-		int test = 0;
-		numObjectsInGhost = detector->getNumOverlappingObjects(); //numObjectsInGhost is set to 0xcdcdcdcd
-
-		for (auto& x : collisions)
+		if (first_frame == false)
 		{
-			x.second = false;
+			first_frame = true;
+			return;
+
 		}
 
-		for (int i = 0; i < numObjectsInGhost; ++i)
+		if (first_frame == true)
 		{
-			btCollisionObject* obj = detector->getOverlappingObject(i);
-			btGhostObject* ghost = dynamic_cast<btGhostObject*>(obj);
-			if (ghost)
+			int numObjectsInGhost = 0;
+			int test = 0;
+			numObjectsInGhost = detector->getNumOverlappingObjects(); //numObjectsInGhost is set to 0xcdcdcdcd
+
+			for (auto& x : collisions)
 			{
-				ComponentCollider* coll = (ComponentCollider*)ghost->getUserPointer();
-				std::map<ComponentCollider*, bool>::iterator search = collisions.find(coll);
-				if (search != collisions.end())
-				{
-					collisions[coll] = true;
-					alien_script->OnTrigger(coll);
-				}
-				else
-				{
-					collisions[coll] = true;
-					alien_script->OnTriggerEnter(coll);
-				}
-
-				++test;
+				x.second = false;
 			}
-		}
 
-		std::map<ComponentCollider*, bool>::iterator itr = collisions.begin();
+			for (int i = 0; i < numObjectsInGhost; ++i)
+			{
+				btCollisionObject* obj = detector->getOverlappingObject(i);
+				btGhostObject* ghost = dynamic_cast<btGhostObject*>(obj);
+				if (ghost)
+				{
+					ComponentCollider* coll = (ComponentCollider*)ghost->getUserPointer();
+					std::map<ComponentCollider*, bool>::iterator search = collisions.find(coll);
+					if (search != collisions.end() && coll != nullptr)
+					{
+						collisions[coll] = true;
+						alien_script->OnTrigger(coll);
+					}
+					else
+					{
+						collisions[coll] = true;
+						alien_script->OnTriggerEnter(coll);
+					}
 
-		while (itr != collisions.end()) 
-		{
-			if (itr->second == false) {
-				alien_script->OnTriggerExit(itr->first);
-				itr = collisions.erase(itr);
+					++test;
+				}
 			}
-			else {
-				++itr;
+
+			std::map<ComponentCollider*, bool>::iterator itr = collisions.begin();
+
+			while (itr != collisions.end())
+			{
+				if (itr->second == false) {
+					alien_script->OnTriggerExit(itr->first);
+					itr = collisions.erase(itr);
+				}
+				else {
+					++itr;
+				}
 			}
 		}
 	}
-
 }
 
 void ComponentCollider::DrawScene()

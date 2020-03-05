@@ -75,10 +75,8 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
-	if (Time::GetDT() != 0.f)
-	{
-		world->stepSimulation(Time::GetDT(), 10);
-	}
+
+	world->stepSimulation(Time::GetDT(), 20);
 
 	/*int numManifolds = world->getDispatcher()->getNumManifolds();
 
