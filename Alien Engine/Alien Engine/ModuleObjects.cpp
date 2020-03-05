@@ -90,6 +90,10 @@ bool ModuleObjects::Start()
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
 
+	GameObject* light = new GameObject(base_game_object);
+	light->SetName("Directional Light");
+	light->AddComponent(new ComponentLightDirectional(camera));
+
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
 	App->camera->fake_camera->Look(float3(0, 0, 0));
 
