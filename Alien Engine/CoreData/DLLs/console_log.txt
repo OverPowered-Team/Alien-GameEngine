@@ -10,17 +10,13 @@ C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien 
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Shaders/default_shader.shader] to [Library/Shaders/2146752462670567246.shader]
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
-C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Scripts/TestTween.alienScript] to [Library/Scripts/12535079252027172858.alienPrefab]
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(69) : Starting Module Objects
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(63) : Creating Physics environment
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(55) : Loading UI assets
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(597) : File Dropped with path C:\Users\Oriorii\Desktop\texture.png
-C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(311) : File System copied file [C:\Users\Oriorii\Desktop\texture.png] to [Assets/Textures/texture.png]
-C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(634) : Start Loading Texture
-C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(522) : New file created [.Library/Textures/12109833779815497377.dds] of 4000128 bytes
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(152) : Destroying 3D Renderer
 C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(93) : Unloading UI scene

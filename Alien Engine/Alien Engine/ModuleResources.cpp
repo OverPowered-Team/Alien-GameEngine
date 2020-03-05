@@ -104,8 +104,10 @@ bool ModuleResources::CleanUp()
 			if (*item != nullptr) {
 				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
 					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+				#ifndef GAME_VERSION
 				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
 					static_cast<ResourceMaterial*>(*item)->UpdateMaterialFiles();
+				#endif
 				delete* item;
 				*item = nullptr;
 			}
