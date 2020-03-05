@@ -155,7 +155,7 @@ bool WwiseT::InitSoundEngine()
 
 	AKRESULT res = AK::StreamMgr::SetCurrentLanguage((AkOSChar*)"English");
 	if (res == AK_Fail)
-		assert(!"Invalid language!");
+		//assert(!"Invalid language!"); 
 
 	// Init RTPCs
 	AK::SoundEngine::SetRTPCValue("Pitch", 0, AK_INVALID_GAME_OBJECT);
