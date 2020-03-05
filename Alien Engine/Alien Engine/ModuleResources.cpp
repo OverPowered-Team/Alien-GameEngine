@@ -716,7 +716,7 @@ void ModuleResources::ReadAllMetaData()
 	}
 	files.clear();
 	directories.clear();
-	default_shader = (ResourceShader*)GetResourceWithID(13637628907886844338);
+	default_shader = (ResourceShader*)GetResourceWithID(2146752462670567246);
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
