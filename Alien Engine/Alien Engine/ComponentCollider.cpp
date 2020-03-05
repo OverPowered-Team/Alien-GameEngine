@@ -65,12 +65,15 @@ void ComponentCollider::Init()
 
 	// Search Valid Script // TestCallback
 
-	ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
+	//if (alien_script == nullptr)
+	//{
+	//	ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
 
-	if (new_script != nullptr && new_script->need_alien == true)
-	{
-		alien_script = (Alien*)new_script->data_ptr;
-	}
+	//	if (new_script != nullptr && new_script->need_alien == true)
+	//	{
+	//		alien_script = (Alien*)new_script->data_ptr;
+	//	}
+	//}
 
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
@@ -156,13 +159,22 @@ void ComponentCollider::Update()
 		aux_body->setWorldTransform(go_bullet_transform);
 	}
 	
-	App->physics->RemoveDetector(detector);
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(true);
-	App->physics->AddDetector(detector);
+
+	// Search Valid Script // TestCallback
+
+	if (alien_script == nullptr)
+	{
+		ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
+
+		if (new_script != nullptr && new_script->need_alien == true)
+		{
+			alien_script = (Alien*)new_script->data_ptr;
+		}
+	}
 
 
-	//if (test_callbacks == true)
 	if (alien_script != nullptr && Time::IsPlaying())
 	{
 		int numObjectsInGhost = 0;
@@ -209,8 +221,6 @@ void ComponentCollider::Update()
 				++itr;
 			}
 		}
-
-		//LOG_ENGINE("%i", test);
 	}
 
 }
@@ -254,7 +264,6 @@ bool ComponentCollider::DrawInspector()
 	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
-		ImGui::Title("Callbacks", 1);		ImGui::Checkbox("##callback", &test_callbacks);
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.1f)) { SetCenter(current_center); }
 
 		DrawSpecificInspector();

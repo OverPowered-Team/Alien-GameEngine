@@ -80,7 +80,7 @@ update_status ModulePhysics::PreUpdate(float dt)
 		world->stepSimulation(Time::GetDT(), 10);
 	}
 
-	int numManifolds = world->getDispatcher()->getNumManifolds();
+	/*int numManifolds = world->getDispatcher()->getNumManifolds();
 
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -97,10 +97,10 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 			if (go_a && go_b)
 			{
-				//GameObject* go = (GameObject*)obA->getUserPointer();
+				GameObject* go = (GameObject*)obA->getUserPointer();
 			}
 		}
-	}
+	}*/
 
 	return UPDATE_CONTINUE;
 }
