@@ -170,7 +170,7 @@ bool ComponentAudioEmitter::DrawInspector()
 		if (ImGui::Button("Stop"))
 		{
 			App->audio->Stop();
-			App->audio->UnloadAllUsedBanksFromWwise();
+			//App->audio->UnloadAllUsedBanksFromWwise(); //TODO 
 		}			
 		ImGui::NewLine();
 		ImGui::Checkbox("Mute", &mute);
