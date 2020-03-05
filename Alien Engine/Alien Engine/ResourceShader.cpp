@@ -148,11 +148,11 @@ void ResourceShader::ReadLibrary(const char* meta_data)
 void ResourceShader::TryToSetShaderType()
 {
 	if (std::strcmp(name.c_str(), "default_shader") == 0)
-		shaderType = SHADER_TEMPLATE::DIFUSSE;
+		shaderType = SHADER_TEMPLATE::DEFAULT;
 	else if (std::strcmp(name.c_str(), "shader_wave") == 0)
 		shaderType = SHADER_TEMPLATE::WAVE;
-	else if (std::strcmp(name.c_str(), "basic_lighting") == 0)
-		shaderType = SHADER_TEMPLATE::BASIC_LIGHTING;
+	else if (std::strcmp(name.c_str(), "iluminated_shader") == 0)
+		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -196,17 +196,18 @@ void ResourceShader::HierarchyUniforms()
 void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
 	switch (shaderType) {
-	case SHADER_TEMPLATE::DIFUSSE: {//difusse
-		// Object Material Properties
-		SetUniformFloat3("diffuse", inputs.standardShaderProperties.diffuse_color);
+	case SHADER_TEMPLATE::DEFAULT: { 
+		SetUniformFloat3("diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		ApplyLightsUniforms();
 		break; }
-	case SHADER_TEMPLATE::WAVE: {//wave
+
+	case SHADER_TEMPLATE::WAVE: {
 		SetUniform1f("mult_time", inputs.waveShaderProperties.mult_time);
 		SetUniform1f("amplitude", inputs.waveShaderProperties.amplitude);
 		break; }
 
-	case SHADER_TEMPLATE::BASIC_LIGHTING: {
-		SetUniformFloat3("diffuse_color", inputs.basicLightingShaderProperties.object_color);
+	case SHADER_TEMPLATE::ILUMINATED: {
+		SetUniformFloat3("diffuse_color", inputs.iluminatedShaderProperties.object_color);
 		break; }
 
 	default:
@@ -214,6 +215,22 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break;
 
 	}
+}
+
+void ResourceShader::ApplyLightsUniforms()
+{
+	// Light uniforms set from here
+	SetUniform1i("max_dir_lights", (int)App->objects->GetNumOfDirLights());
+	SetUniform1i("max_point_lights", (int)App->objects->GetNumOfPointLights());
+	SetUniform1i("max_spot_lights", (int)App->objects->GetNumOfSpotLights());
+
+
+	if (App->objects->directional_light_properites.size() > 0)
+		SetDirectionalLights("dir_light", App->objects->directional_light_properites);
+	if (App->objects->point_light_properites.size() > 0)
+		SetPointLights("point_light", App->objects->point_light_properites);
+	if (App->objects->spot_light_properites.size() > 0)
+		SetSpotLights("spot_light", App->objects->spot_light_properites);
 }
 
 void ResourceShader::Bind() const

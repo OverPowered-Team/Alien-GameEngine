@@ -23,9 +23,9 @@ enum class SHADER_TYPE
 enum class SHADER_TEMPLATE
 {
 	NO_TEMPLATE = -1,
-	DIFUSSE,
+	DEFAULT,
 	WAVE,
-	BASIC_LIGHTING
+	ILUMINATED
 };
 
 struct ShaderInputs;
@@ -64,6 +64,7 @@ public:
 
 	void HierarchyUniforms();
 	void UpdateUniforms(ShaderInputs inputs);
+	void ApplyLightsUniforms();
 	void Bind() const;
 	void Unbind() const;
 	
@@ -94,7 +95,7 @@ private:
 private:
 
 	uint shader_id;
-	SHADER_TEMPLATE shaderType = SHADER_TEMPLATE::DIFUSSE;
+	SHADER_TEMPLATE shaderType = SHADER_TEMPLATE::DEFAULT;
 	std::unordered_map<std::string, int> uniform_location_cache;
 };
 

@@ -114,15 +114,9 @@ struct ShaderInputs
 		float amplitude = 0.75f;
 	} waveShaderProperties;
 
-	struct BasicLightingShaderProperties {
+	struct IluminatedShaderProperties {
 		float3 object_color = float3(1.f, 1.f, 1.f);
-
-		// Lighting
-		float ambient_strength = 0.1f;
-		float specular_strength = 0.5f;
-		float3 lightPosition = float3(5.f, 5.f, 5.f);
-		float3 lightColor = float3(1.f, 1.f, 1.f);
-	} basicLightingShaderProperties;
+	} iluminatedShaderProperties;
 };
 
 class ResourceShader; 
