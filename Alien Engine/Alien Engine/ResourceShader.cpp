@@ -199,7 +199,6 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	case SHADER_TEMPLATE::DIFUSSE: {//difusse
 		// Object Material Properties
 		SetUniformFloat3("diffuse", inputs.standardShaderProperties.diffuse_color);
-
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
 		SetUniform1f("mult_time", inputs.waveShaderProperties.mult_time);
@@ -207,17 +206,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::BASIC_LIGHTING: {
-
 		SetUniformFloat3("diffuse_color", inputs.basicLightingShaderProperties.object_color);
-		 //Lighting
-		SetUniformFloat3("lightColor", inputs.basicLightingShaderProperties.lightColor);
-
-		SetUniformFloat3("lightPos", inputs.basicLightingShaderProperties.lightPosition);
-		SetUniform1f("ambientStrength", inputs.basicLightingShaderProperties.ambient_strength);
-		SetUniform1f("specularStrength", inputs.basicLightingShaderProperties.specular_strength);
-
-		SetUniformFloat3("viewPos", App->renderer3D->scene_fake_camera->GetCameraPosition());
-
 		break; }
 
 	default:
@@ -274,7 +263,7 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
 {
-	static int i = 0;
+	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
@@ -295,13 +284,13 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		std::string cspecular = std::string(cname).append(".specular");
 		SetUniformFloat3(cspecular, (*iter)->specular);
 
-		(i >= dirLights.size() - 1) ? i = 0 : ++i;
+		++i;
 	}
 }
 
 void ResourceShader::SetPointLights(const std::string& name, const std::list<PointLightProperties*>& pointLights)
 {
-	static int i = 0;
+	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
 	for (std::list<PointLightProperties*>::const_iterator iter = pointLights.begin(); iter != pointLights.end(); iter++)
@@ -313,8 +302,8 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
-		std::string cdirection = std::string(cname).append(".direction");
-		SetUniformFloat3(cdirection, (*iter)->direction);
+		/*std::string cdirection = std::string(cname).append(".direction");
+		SetUniformFloat3(cdirection, (*iter)->direction);*/
 
 		std::string cdiffuse = std::string(cname).append(".diffuse");
 		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
@@ -330,14 +319,14 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 		std::string cquadratic = std::string(cname).append(".quadratic");
 		SetUniform1f(cquadratic, (*iter)->quadratic);
-
-		(i >= pointLights.size() - 1) ? i = 0 : ++i;
+		
+		++i;
 	}
 }
 
 void ResourceShader::SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& spotLights)
 {
-	static int i = 0;
+	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
 	for (std::list<SpotLightProperties*>::const_iterator iter = spotLights.begin(); iter != spotLights.end(); iter++)
@@ -373,7 +362,7 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
 		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
 
-		(i >= spotLights.size() - 1) ? i = 0 : ++i;
+		++i;
 	}
 }
 

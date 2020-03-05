@@ -372,12 +372,6 @@ void ResourceMaterial::ShaderInputsSegment()
 
 	case SHADER_TEMPLATE::BASIC_LIGHTING: {
 		ImGui::ColorEdit3("Albedo", shaderInputs.basicLightingShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
-
-		ImGui::ColorEdit3("Lighting Color", shaderInputs.basicLightingShaderProperties.lightColor.ptr(), ImGuiColorEditFlags_Float);
-		ImGui::DragFloat3("Lighting Position", shaderInputs.basicLightingShaderProperties.lightPosition.ptr());
-		ImGui::DragFloat("Ambient Light Strength", &shaderInputs.basicLightingShaderProperties.ambient_strength, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("Specular Light Strength", &shaderInputs.basicLightingShaderProperties.specular_strength, 0.1f, 0.0f, 1.0f);
-
 		break; }
 
 	default:
