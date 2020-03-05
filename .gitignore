@@ -21,6 +21,7 @@ Library/
 OutPut/
 x64/
 x86/
+console_log.txt
 bld/
 [Bb]in/
 [Oo]bj/
