@@ -1,0 +1,2335 @@
+{
+    "Scene": {
+        "Name": "Level1_Blockout2",
+        "GameObjects": [
+            {
+                "Name": "Light",
+                "FamilyNumber": 1,
+                "ID": "17877200007302171641",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -2.9103830456733704e-11,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6241503297742338363"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "7703770992146445313",
+                        "PrintIcon": true,
+                        "Position": [
+                            -2.9103830456733704e-11,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Ambient": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Specular": [
+                            0,
+                            0,
+                            0
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "6708788730377912354",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -63.74249267578125,
+                            35.809181213378906,
+                            -142.58847045898438
+                        ],
+                        "Rotation": [
+                            0.35204139351844788,
+                            0,
+                            0,
+                            0.93598443269729614
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "593001365818880874"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 6,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 90.243408203125,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "2306347890556456668",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "BlockoutFlat1",
+                "FamilyNumber": 1,
+                "ID": "13067875367975236877",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14718975197594916435"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": true,
+                        "DrawOBB": true,
+                        "ID": "12304798901516012203",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "9267673673013704260",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "8270335729522674255",
+                        "HasMaterial": true,
+                        "MaterialID": "13753584922284142239",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Colliders_part_hull",
+                "FamilyNumber": 1,
+                "ID": "4137040633948341264",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15328295992465376531"
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_1_lef",
+                "FamilyNumber": 2,
+                "ID": "5467792031941675654",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "1717100545711830361",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.233314514160156,
+                            0.31182265281677246,
+                            -72.276321411132813
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            10.808923721313477
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3073959997890955997"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_2_lef",
+                "FamilyNumber": 2,
+                "ID": "3002504974946728282",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "9696800856665478317",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -45.528717041015625,
+                            0,
+                            -66.532028198242188
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            9.9302272796630859,
+                            22.749862670898438,
+                            2.4375808238983154
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14486902290491183612"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_big_rig",
+                "FamilyNumber": 2,
+                "ID": "6205387690331569657",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -52.539054870605469,
+                            0,
+                            -108.47890472412109
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            28.576663970947266,
+                            22.370006561279297,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10452067982315849122"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_inv_rig",
+                "FamilyNumber": 2,
+                "ID": "5036152703535654812",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "11830634951140576549",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -67.812263488769531,
+                            6.8344240188598633,
+                            -100.03268432617188
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            13.689120292663574,
+                            8.8473014831542969,
+                            2.8155007362365723
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1047224273993133967"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Big_Building",
+                "FamilyNumber": 2,
+                "ID": "9907637298677136732",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "3291120114944537709",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -76.708351135253906,
+                            12.476184844970703,
+                            -87.752388000488281
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            15.899959564208984,
+                            31.642032623291016,
+                            12.65095043182373
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16048031978806015288"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Door_lef",
+                "FamilyNumber": 2,
+                "ID": "8177559935151649032",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -48.180141448974609,
+                            5.1235795021057129,
+                            -81.328765869140625
+                        ],
+                        "Rotation": [
+                            0,
+                            -0.30609703063964844,
+                            0,
+                            0.95200031995773315
+                        ],
+                        "Scale": [
+                            7.3346171379089355,
+                            6.4701294898986816,
+                            0.32695591449737549
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9655882729565996627"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Door_rig",
+                "FamilyNumber": 2,
+                "ID": "11579392898799793108",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -46.688911437988281,
+                            6.877619743347168,
+                            -96.513687133789063
+                        ],
+                        "Rotation": [
+                            0,
+                            0.31202822923660278,
+                            0,
+                            0.95007282495498657
+                        ],
+                        "Scale": [
+                            11.067325592041016,
+                            3.0753588676452637,
+                            0.31542167067527771
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10151751995460156186"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Colliders_part_bridge",
+                "FamilyNumber": 2,
+                "ID": "9499964056989247139",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7185491839225010408"
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_1_lef",
+                "FamilyNumber": 2,
+                "ID": "11712983621605782255",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "1717100545711830361",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -62.055091857910156,
+                            0,
+                            -72.244377136230469
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            10.808923721313477
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13000788275688421664"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_1_lef",
+                "FamilyNumber": 2,
+                "ID": "2819050771223516232",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "1717100545711830361",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -62.103538513183594,
+                            5.8040061645669994e-08,
+                            -104.38175201416016
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            10.808923721313477
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15595490185044312731"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Big_Building",
+                "FamilyNumber": 2,
+                "ID": "12476432109321864381",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "3291120114944537709",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -77.392875671386719,
+                            0,
+                            -76.205268859863281
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            15.899959564208984,
+                            31.642032623291016,
+                            12.65095043182373
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16101874410883481614"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_2_lef",
+                "FamilyNumber": 2,
+                "ID": "18350767264924306975",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "9696800856665478317",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -61.676990509033203,
+                            0,
+                            -66.76708984375
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            9.9302272796630859,
+                            22.749862670898438,
+                            2.4375808238983154
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5676397639355904121"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_inv_rig",
+                "FamilyNumber": 2,
+                "ID": "16535290794087703350",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "11830634951140576549",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -69.492950439453125,
+                            5.3559517860412598,
+                            -76.324440002441406
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            13.689120292663574,
+                            8.8473014831542969,
+                            2.8155007362365723
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3323288308878187295"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Big_Building",
+                "FamilyNumber": 2,
+                "ID": "5658211977289320624",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "3291120114944537709",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -78.682899475097656,
+                            0,
+                            -97.548049926757813
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            15.899959564208984,
+                            31.642032623291016,
+                            12.65095043182373
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16442784333707121267"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Big_Building",
+                "FamilyNumber": 2,
+                "ID": "3216730840883480599",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "3291120114944537709",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -9.1357784271240234,
+                            0,
+                            -88.779411315917969
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            15.899959564208984,
+                            31.642032623291016,
+                            21.091005325317383
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5874180117094167498"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_0_lef",
+                "FamilyNumber": 2,
+                "ID": "14240787174501540063",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "6524810294720483901",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -48.437770843505859,
+                            0,
+                            -55.120407104492188
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            25.840538024902344
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17240730171058532596"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_0_lef",
+                "FamilyNumber": 2,
+                "ID": "10053969288196507510",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "6524810294720483901",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -58.431747436523438,
+                            7.3293294917675667e-06,
+                            -53.3914794921875
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            25.840538024902344
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16088149966401777548"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_11_lef",
+                "FamilyNumber": 2,
+                "ID": "15053317724204893530",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5188059682195239258",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -47.448287963867188,
+                            0,
+                            -39.670875549316406
+                        ],
+                        "Rotation": [
+                            0,
+                            0.17179965972900391,
+                            0,
+                            0.98513191938400269
+                        ],
+                        "Scale": [
+                            2.1307320594787598,
+                            14.150911331176758,
+                            7.3970551490783691
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3241391507171699216"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_ini_lef",
+                "FamilyNumber": 2,
+                "ID": "7575637260437193362",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -29.54876708984375,
+                            6.9888696670532227,
+                            -79.183868408203125
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            28.497489929199219,
+                            4.7443656921386719,
+                            2.4995644092559814
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4421080603617520895"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_ini_right",
+                "FamilyNumber": 2,
+                "ID": "7787391655215214605",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -29.161415100097656,
+                            6.9453840255737305,
+                            -97.703598022460938
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            27.475242614746094,
+                            4.7632431983947754,
+                            3.2087593078613281
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3403692137469165012"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_1_rig",
+                "FamilyNumber": 2,
+                "ID": "11260156978442640446",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -41.701923370361328,
+                            0,
+                            -103.70029449462891
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            3.2868149280548096,
+                            14.675719261169434,
+                            15.134284019470215
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7493069023912932476"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Part_Bridge",
+                "FamilyNumber": 1,
+                "ID": "8697279319575236859",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7076323613668514272"
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_11_lef",
+                "FamilyNumber": 2,
+                "ID": "2692875147656731991",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5188059682195239258",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -57.224979400634766,
+                            0,
+                            -37.38232421875
+                        ],
+                        "Rotation": [
+                            0,
+                            0.17179965972900391,
+                            0,
+                            0.98513191938400269
+                        ],
+                        "Scale": [
+                            2.1307318210601807,
+                            14.150911331176758,
+                            7.3970551490783691
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4060837765749816526"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_11_lef",
+                "FamilyNumber": 2,
+                "ID": "10094816761844227674",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5188059682195239258",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -40.823879241943359,
+                            -3.814697265625e-06,
+                            -27.439914703369141
+                        ],
+                        "Rotation": [
+                            0,
+                            0.25899422168731689,
+                            0,
+                            0.96587890386581421
+                        ],
+                        "Scale": [
+                            2.1307435035705566,
+                            14.150911331176758,
+                            22.147499084472656
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8223008353231797460"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_11_lef",
+                "FamilyNumber": 2,
+                "ID": "18281303880192088014",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5188059682195239258",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -50.228275299072266,
+                            0,
+                            -23.053150177001953
+                        ],
+                        "Rotation": [
+                            0,
+                            0.24390843510627747,
+                            0,
+                            0.96979826688766479
+                        ],
+                        "Scale": [
+                            2.1307318210601807,
+                            14.150911331176758,
+                            24.310127258300781
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18260371003780515216"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "8549437922414098425",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -32.781906127929688,
+                            0,
+                            -11.372779846191406
+                        ],
+                        "Rotation": [
+                            0,
+                            0.18529687821865082,
+                            0,
+                            0.98268258571624756
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            13.684050559997559
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8328936339081234771"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "15500719665299533972",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.110397338867188,
+                            0,
+                            -6.224665641784668
+                        ],
+                        "Rotation": [
+                            0,
+                            0.18529687821865082,
+                            0,
+                            0.98268258571624756
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            13.684050559997559
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12809046947066945643"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_13_lef",
+                "FamilyNumber": 2,
+                "ID": "16860653886225900079",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5066160971465186408",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -25.458408355712891,
+                            0,
+                            0.87190794944763184
+                        ],
+                        "Rotation": [
+                            0,
+                            0.36392715573310852,
+                            0,
+                            0.93142741918563843
+                        ],
+                        "Scale": [
+                            2.1308281421661377,
+                            14.150911331176758,
+                            16.651437759399414
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7467551815078630734"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_13_lef",
+                "FamilyNumber": 2,
+                "ID": "15373461227745356966",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5066160971465186408",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -34.38671875,
+                            1.1482032277854159e-05,
+                            6.6229748725891113
+                        ],
+                        "Rotation": [
+                            0,
+                            0.36392715573310852,
+                            0,
+                            0.93142741918563843
+                        ],
+                        "Scale": [
+                            2.1308281421661377,
+                            14.150911331176758,
+                            16.651437759399414
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "891236915610414121"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "15856604665473374278",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            20.323915481567383,
+                            -2.489639655323117e-06,
+                            32.329448699951172
+                        ],
+                        "Rotation": [
+                            0,
+                            0.55695915222167969,
+                            0,
+                            0.83053988218307495
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            13.684050559997559
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2555845859355959265"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "866158004530103706",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            10.968188285827637,
+                            3.9465166992158629e-06,
+                            27.103246688842773
+                        ],
+                        "Rotation": [
+                            0,
+                            0.60318011045455933,
+                            0,
+                            0.79760509729385376
+                        ],
+                        "Scale": [
+                            8.1309995651245117,
+                            14.150911331176758,
+                            12.684000015258789
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "28044245800347444"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "15121891879258623284",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.72216296195983887,
+                            0,
+                            42.057960510253906
+                        ],
+                        "Rotation": [
+                            0,
+                            0.45831602811813354,
+                            0,
+                            0.88878929615020752
+                        ],
+                        "Scale": [
+                            9.1309995651245117,
+                            14.150911331176758,
+                            9.1840000152587891
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "111624213241531896"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "14593902661447715671",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            11.628851890563965,
+                            -2.0106424472032813e-06,
+                            56.619895935058594
+                        ],
+                        "Rotation": [
+                            0,
+                            0.93288612365722656,
+                            0,
+                            0.36017146706581116
+                        ],
+                        "Scale": [
+                            10.130999565124512,
+                            13.651000022888184,
+                            3.6840000152587891
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "538213187092659586"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "13229600192409983406",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -8.5099248886108398,
+                            -3.695002305903472e-06,
+                            16.113960266113281
+                        ],
+                        "Rotation": [
+                            0,
+                            0.40431341528892517,
+                            0,
+                            0.91462051868438721
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            33.183998107910156
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1548012478544307484"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "17046772890347912337",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -15.02509593963623,
+                            0,
+                            24.917451858520508
+                        ],
+                        "Rotation": [
+                            0,
+                            0.41181173920631409,
+                            0,
+                            0.91126894950866699
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            35.683998107910156
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14582495429529215669"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "11927628791229951165",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            30.151840209960938,
+                            0,
+                            42.001087188720703
+                        ],
+                        "Rotation": [
+                            0,
+                            0.21617282927036285,
+                            0,
+                            0.97635513544082642
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            13.684049606323242
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6791729850547061652"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "15546460074984713454",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            8.5657815933227539,
+                            -4.0575745541282515e-10,
+                            43.746784210205078
+                        ],
+                        "Rotation": [
+                            0,
+                            0.51083588600158691,
+                            0,
+                            0.85967826843261719
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            9.1840000152587891
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10967309659691775306"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "10719171593907404116",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            23.774593353271484,
+                            0,
+                            53.944549560546875
+                        ],
+                        "Rotation": [
+                            -5.9843081601229642e-08,
+                            0.86179745197296143,
+                            -5.9843081601229642e-08,
+                            0.50725263357162476
+                        ],
+                        "Scale": [
+                            2.1305937767028809,
+                            14.150911331176758,
+                            23.683998107910156
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9543525189649540902"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Wall_cont_12_lef",
+                "FamilyNumber": 2,
+                "ID": "8252269048263451505",
+                "ParentID": "8697279319575236859",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4212921723704844320",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            10.366609573364258,
+                            0,
+                            49.208366394042969
+                        ],
+                        "Rotation": [
+                            0,
+                            -0.21632513403892517,
+                            0,
+                            0.97632139921188354
+                        ],
+                        "Scale": [
+                            2.13059401512146,
+                            14.150911331176758,
+                            7.7400555610656738
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16813312918407049193"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
