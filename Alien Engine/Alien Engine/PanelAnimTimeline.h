@@ -7,6 +7,19 @@
 
 class ComponentAnimator;
 
+enum class EventAnimType {
+	EVENT_AUDIO,
+	EVENT_PARTICLE,
+	EVENT_SCRIPT,
+	NONE
+};
+
+struct Event {
+	uint frame = 0;
+	u64 id = 0ULL;
+	EventAnimType type = EventAnimType::NONE;
+};
+
 class PanelAnimTimeline : public Panel
 {
 public:
@@ -63,12 +76,15 @@ private:
 	void ShowNewEventPopUp();
 	void ShowOptionsToCreate();
 
-	void CreateAnimationEvent(uint _id);
-	void DeleteAnimationEvent();
+	void CreateAnimationEvent(uint _id, EventAnimType _type);
+	void DeleteAnimationEvent(uint _key, EventAnimType _type);
 
 	ComponentAudioEmitter* emitter;
 
 	// pair<frame, idsound>
-	std::vector<std::pair<uint, uint>> anim_event_frames;
+	std::vector<Event> anim_event_frames;
 	bool event_created = false;
+	bool event_audio_created = false;
+	bool event_particle_created = false;
+	bool event_script_created = false;
 };
