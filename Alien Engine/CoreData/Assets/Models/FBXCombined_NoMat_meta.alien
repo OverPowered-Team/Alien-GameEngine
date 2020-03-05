@@ -1,0 +1,5715 @@
+{
+    "Meta": {
+        "ID": "8523206157755449943",
+        "NumMeshes": 1,
+        "Name": "FBXCombined_NoMat",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/9267673673013704260.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/15410773759764888462.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform104",
+            "parentName": "Cube",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -780.5938720703125,
+                341.60116577148438,
+                536.49176025390625
+            ],
+            "scale": [
+                0.1406099945306778,
+                1.9015755653381348,
+                3.9040951728820801
+            ],
+            "rot": [
+                0,
+                0.4568939208984375,
+                0,
+                0.88952118158340454
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform103",
+            "parentName": "Cylinder",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1834,
+                827.00006103515625,
+                575
+            ],
+            "scale": [
+                3.6710045337677002,
+                5.8129992485046387,
+                3.6750423908233643
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform102",
+            "parentName": "Cylinder__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1834,
+                827.00006103515625,
+                -230
+            ],
+            "scale": [
+                3.6710045337677002,
+                5.8129992485046387,
+                3.6750423908233643
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__1_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform101",
+            "parentName": "Cube__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -780.5938720703125,
+                341.60116577148438,
+                -205
+            ],
+            "scale": [
+                0.1406099945306778,
+                1.9015755653381348,
+                3.9040951728820801
+            ],
+            "rot": [
+                0,
+                -0.4568960964679718,
+                0,
+                0.88952004909515381
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__1_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform100",
+            "parentName": "Cube__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -209.99998474121094,
+                317.28549194335938,
+                643
+            ],
+            "scale": [
+                8.3729028701782227,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__2_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform99",
+            "parentName": "Cube__3_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -209.99998474121094,
+                317.28549194335938,
+                -305
+            ],
+            "scale": [
+                8.3729028701782227,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__3_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform98",
+            "parentName": "Cube__4_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                524,
+                316.01275634765625,
+                -305
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__4_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform97",
+            "parentName": "Cube__5_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                524,
+                316.01275634765625,
+                643
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__5_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform96",
+            "parentName": "Cylinder__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -514,
+                256,
+                662
+            ],
+            "scale": [
+                2.3730108737945557,
+                3.3841500282287598,
+                2.3756208419799805
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__2_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform95",
+            "parentName": "Cylinder__3_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -514,
+                256,
+                -319
+            ],
+            "scale": [
+                2.3730108737945557,
+                3.3841500282287598,
+                2.3756208419799805
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__3_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform94",
+            "parentName": "Cube__6_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -466,
+                207.99998474121094,
+                924
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                -0.70710676908493042,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__6_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform93",
+            "parentName": "Cube__7_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -466,
+                207.99998474121094,
+                -634
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                -0.70710676908493042,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__7_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform92",
+            "parentName": "Cube__8_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1515,
+                405.00003051757813,
+                1055
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                -0.70710676908493042,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__8_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform91",
+            "parentName": "Cube__9_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1515.0001220703125,
+                404.99993896484375,
+                -693
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                -0.70710676908493042,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__9_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform90",
+            "parentName": "Cylinder__4_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1489,
+                355,
+                -918
+            ],
+            "scale": [
+                3.079218864440918,
+                5.3236923217773438,
+                3.0826056003570557
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__4_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform89",
+            "parentName": "Cube__10_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1786.0001220703125,
+                404.99993896484375,
+                -432.00003051757813
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__10_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform88",
+            "parentName": "Cube__11_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1786.0001220703125,
+                404.99993896484375,
+                782
+            ],
+            "scale": [
+                6.4010758399963379,
+                3.4463999271392822,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__11_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform87",
+            "parentName": "Cube__12_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -942,
+                180,
+                -921
+            ],
+            "scale": [
+                11.059985160827637,
+                8.0815029144287109,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__12_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform86",
+            "parentName": "Cube__13_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -664,
+                180,
+                1308.0001220703125
+            ],
+            "scale": [
+                4.813084602355957,
+                8.0815029144287109,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__13_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform85",
+            "parentName": "Cube__14_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1471,
+                180,
+                1308
+            ],
+            "scale": [
+                4.813084602355957,
+                8.0815029144287109,
+                1.2720999717712402
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__14_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform84",
+            "parentName": "Cube__15_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -2430,
+                960.99993896484375,
+                180
+            ],
+            "scale": [
+                7.7888288497924805,
+                14.259439468383789,
+                11.564752578735352
+            ],
+            "rot": [
+                0,
+                -0.70710676908493042,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cube__15_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform83",
+            "parentName": "Cylinder__5_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -2560,
+                1003,
+                575
+            ],
+            "scale": [
+                3.6710045337677002,
+                8.5265073776245117,
+                3.6750423908233643
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__5_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform82",
+            "parentName": "Cylinder__6_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -2560.000244140625,
+                1002.9998779296875,
+                -230
+            ],
+            "scale": [
+                3.6710045337677002,
+                8.5265073776245117,
+                3.6750423908233643
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__6_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform81",
+            "parentName": "Cylinder__7_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -3020,
+                1003,
+                410
+            ],
+            "scale": [
+                5.2732362747192383,
+                9.4489278793334961,
+                5.2790360450744629
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__7_",
+            "parentName": "Obstacles",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Obstacles",
+            "parentName": "Kaer",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform80",
+            "parentName": "Plane",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                139.4366455078125,
+                252.62442016601563,
+                170.99990844726563
+            ],
+            "scale": [
+                1.5726454257965088,
+                0.59469002485275269,
+                0.89124882221221924
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform79",
+            "parentName": "Plane__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1148.999755859375,
+                242.00001525878906,
+                170.99990844726563
+            ],
+            "scale": [
+                1.0199882984161377,
+                1.0053830146789551,
+                1.1127876043319702
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__2_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform78",
+            "parentName": "Plane__3_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -976.000244140625,
+                242.00001525878906,
+                -625
+            ],
+            "scale": [
+                0.95086699724197388,
+                1.0053830146789551,
+                0.49103772640228271
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__3_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform77",
+            "parentName": "Plane__4_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -976.000244140625,
+                242.00001525878906,
+                972.0001220703125
+            ],
+            "scale": [
+                0.95086699724197388,
+                1.0053830146789551,
+                0.49103772640228271
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__4_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform76",
+            "parentName": "Plane__7_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -634.99981689453125,
+                67.000007629394531,
+                170.99990844726563
+            ],
+            "scale": [
+                0.34957167506217957,
+                0.59469002485275269,
+                0.83504998683929443
+            ],
+            "rot": [
+                0,
+                0,
+                -0.70710676908493042,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__7_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform75",
+            "parentName": "Plane__8_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                209.99984741210938,
+                93.586685180664063,
+                170.99990844726563
+            ],
+            "scale": [
+                0.1256355345249176,
+                0.59469002485275269,
+                0.83504998683929443
+            ],
+            "rot": [
+                0,
+                0,
+                -0.70710676908493042,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__8_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform74",
+            "parentName": "Plane__9_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1061.9998779296875,
+                242,
+                1916
+            ],
+            "scale": [
+                0.47614172101020813,
+                1.0053828954696655,
+                1.4127709865570068
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__9_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform73",
+            "parentName": "Plane__10_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -552.00006103515625,
+                242,
+                3633.000244140625
+            ],
+            "scale": [
+                0.47614169120788574,
+                1.0053830146789551,
+                1.2953183650970459
+            ],
+            "rot": [
+                0,
+                0.30136030912399292,
+                0,
+                0.9535103440284729
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__10_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform72",
+            "parentName": "Plane__11_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1013.9999389648438,
+                242,
+                2748.999755859375
+            ],
+            "scale": [
+                0.47614175081253052,
+                1.0053831338882446,
+                0.29442211985588074
+            ],
+            "rot": [
+                0,
+                0.16165205836296082,
+                0,
+                0.98684781789779663
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__11_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform71",
+            "parentName": "Plane__13_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -209.00001525878906,
+                242,
+                4333
+            ],
+            "scale": [
+                0.49609211087226868,
+                1.0053830146789551,
+                1.2953183650970459
+            ],
+            "rot": [
+                0,
+                0.24177069962024689,
+                0,
+                0.97033339738845825
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__13_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform70",
+            "parentName": "Plane__14_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                861.00006103515625,
+                242,
+                5597
+            ],
+            "scale": [
+                0.53190988302230835,
+                1.0053831338882446,
+                2.5589160919189453
+            ],
+            "rot": [
+                0,
+                0.40299925208091736,
+                0,
+                0.91520035266876221
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__14_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform69",
+            "parentName": "Plane__16_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1896.9998779296875,
+                242,
+                6519.99951171875
+            ],
+            "scale": [
+                -0.53190988302230835,
+                -1.0053831338882446,
+                -0.47096067667007446
+            ],
+            "rot": [
+                0.40299931168556213,
+                -0,
+                0.91520029306411743,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__16_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform68",
+            "parentName": "Plane__18_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2246,
+                242,
+                6682
+            ],
+            "scale": [
+                -0.76345020532608032,
+                -1.0053831338882446,
+                -0.53482294082641602
+            ],
+            "rot": [
+                0.40299922227859497,
+                -0,
+                0.91520029306411743,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__18_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform67",
+            "parentName": "Plane__19_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -807.61553955078125,
+                242,
+                3153
+            ],
+            "scale": [
+                0.47614166140556335,
+                1.0053830146789551,
+                0.32468870282173157
+            ],
+            "rot": [
+                0,
+                0.23107008635997772,
+                0,
+                0.97293710708618164
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__19_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform66",
+            "parentName": "Plane__20_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2802,
+                242,
+                6858.91259765625
+            ],
+            "scale": [
+                -0.76345032453536987,
+                -1.0053828954696655,
+                -0.73422753810882568
+            ],
+            "rot": [
+                0.07353249192237854,
+                -0,
+                0.99729287624359131,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__20_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform65",
+            "parentName": "Plane__21_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                3225,
+                242,
+                7105.00048828125
+            ],
+            "scale": [
+                -0.76345020532608032,
+                -1.0053830146789551,
+                -0.35977154970169067
+            ],
+            "rot": [
+                -0.60559976100921631,
+                -0,
+                0.79576939344406128,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__21_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform64",
+            "parentName": "Plane__22_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2525,
+                242,
+                7322
+            ],
+            "scale": [
+                -0.91913586854934692,
+                -1.0053831338882446,
+                -0.5264466404914856
+            ],
+            "rot": [
+                0.69757992029190063,
+                -0,
+                0.71650701761245728,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__22_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform63",
+            "parentName": "Plane__23_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2987,
+                242,
+                7447
+            ],
+            "scale": [
+                -0.76345032453536987,
+                -1.0053831338882446,
+                -0.35977157950401306
+            ],
+            "rot": [
+                0.25478857755661011,
+                -0,
+                0.96699678897857666,
+                0
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__23_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform62",
+            "parentName": "Plane__24_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1759,
+                242.00001525878906,
+                170.99990844726563
+            ],
+            "scale": [
+                0.20114566385746002,
+                1.0053830146789551,
+                0.47926649451255798
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Plane__24_",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform61",
+            "parentName": "Cylinder_1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -899.5,
+                286.29998779296875,
+                -347
+            ],
+            "scale": [
+                0.63459306955337524,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder_1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform60",
+            "parentName": "Cylinder__1__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -899.5,
+                286.29998779296875,
+                -504
+            ],
+            "scale": [
+                0.63459306955337524,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__1__1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform59",
+            "parentName": "Cylinder__2__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -968,
+                286.29998779296875,
+                -434
+            ],
+            "scale": [
+                0.63459306955337524,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__2__1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform58",
+            "parentName": "Cylinder__3__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -629,
+                286.29998779296875,
+                892
+            ],
+            "scale": [
+                0.63459306955337524,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__3__1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform57",
+            "parentName": "Cylinder__4__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -654,
+                286.29998779296875,
+                1152
+            ],
+            "scale": [
+                0.63459306955337524,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__4__1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform56",
+            "parentName": "Cylinder__5__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -675,
+                274,
+                -657
+            ],
+            "scale": [
+                0.90347015857696533,
+                0.47682887315750122,
+                0.63459306955337524
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Cylinder__5__1",
+            "parentName": "Core",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Core",
+            "parentName": "Kaer",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "Kaer",
+            "parentName": "BlockoutFlat",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform55",
+            "parentName": "Capsule__10_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -3.0002593994140625,
+                1183.952880859375,
+                33.00018310546875
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.92566722631454468,
+                -0.045040350407361984,
+                -0.36946800351142883,
+                -0.067859187722206116
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__10_",
+            "parentName": "Arch",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform54",
+            "parentName": "Capsule__11_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                113,
+                1420.3621826171875,
+                -28
+            ],
+            "scale": [
+                1.3350002765655518,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.82609504461288452,
+                -0.42006596922874451,
+                -0.36486703157424927,
+                0.089350849390029907
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__11_",
+            "parentName": "Arch",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform53",
+            "parentName": "Capsule__12_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                328,
+                1443.3621826171875,
+                -253
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977194547653198
+            ],
+            "rot": [
+                -0.53558593988418579,
+                0.75633078813552856,
+                0.28132963180541992,
+                -0.24892798066139221
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__12_",
+            "parentName": "Arch",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                233.00018310546875,
+                -647.99993896484375,
+                5367
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Arch",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform52",
+            "parentName": "Cube__16_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -836.00006103515625,
+                242,
+                1936.0001220703125
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                13.103900909423828
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__16_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform51",
+            "parentName": "Cube__17_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1283,
+                242,
+                1992
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                13.103900909423828
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__17_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform50",
+            "parentName": "Cube__18_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1223.999755859375,
+                242,
+                2785
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                3.6857345104217529
+            ],
+            "rot": [
+                0,
+                0.1322501003742218,
+                0,
+                0.99121636152267456
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__18_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform49",
+            "parentName": "Cube__19_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -777,
+                242,
+                2702
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                2.9970300197601318
+            ],
+            "rot": [
+                0,
+                0.1322501003742218,
+                0,
+                0.99121636152267456
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__19_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform48",
+            "parentName": "Cylinder__8_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -934.99981689453125,
+                242,
+                2959
+            ],
+            "scale": [
+                1.0021822452545166,
+                5.0349998474121094,
+                1.0032844543457031
+            ],
+            "rot": [
+                -0.078077368438243866,
+                0.072922632098197937,
+                -0.70333653688430786,
+                0.70278298854827881
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cylinder__8_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform47",
+            "parentName": "Cube__20_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -413,
+                298.99884033203125,
+                3372
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                10.17182731628418
+            ],
+            "rot": [
+                0,
+                0.25111857056617737,
+                0,
+                0.96795636415481567
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__20_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform46",
+            "parentName": "Cube__21_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -962.06304931640625,
+                242,
+                3491
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                10.17182731628418
+            ],
+            "rot": [
+                0,
+                0.25111857056617737,
+                0,
+                0.96795636415481567
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__21_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform45",
+            "parentName": "Capsule",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -581,
+                242,
+                4080
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.67886310815811157,
+                0.1516280472278595,
+                0.14634384214878082,
+                0.70337563753128052
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform44",
+            "parentName": "Capsule__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -438.22872924804688,
+                242,
+                4448.00048828125
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344282627105713,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.71280002593994141,
+                0.03445303812623024,
+                0.17832015454769135,
+                0.6774444580078125
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__1_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform43",
+            "parentName": "Capsule__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -236.47518920898438,
+                237.47123718261719,
+                4814.67919921875
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.53264564275741577,
+                0.071162015199661255,
+                0.39492052793502808,
+                0.74515926837921143
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__2_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform42",
+            "parentName": "Capsule__3_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -110,
+                242,
+                5105
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.53264564275741577,
+                0.071162015199661255,
+                0.39492052793502808,
+                0.74515926837921143
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__3_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform41",
+            "parentName": "Capsule__4_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                153,
+                274.86956787109375,
+                5418
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.53264564275741577,
+                0.071162015199661255,
+                0.39492052793502808,
+                0.74515926837921143
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__4_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform40",
+            "parentName": "Capsule__5_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                467.148681640625,
+                271.31964111328125,
+                5712.7724609375
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.51311135292053223,
+                0.088732868432998657,
+                0.47692015767097473,
+                0.70808923244476318
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__5_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform39",
+            "parentName": "Capsule__6_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                794.98968505859375,
+                305.5079345703125,
+                5999.12060546875
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977194547653198
+            ],
+            "rot": [
+                -0.50813543796539307,
+                0.097295939922332764,
+                0.4320940375328064,
+                0.73866540193557739
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__6_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform38",
+            "parentName": "Capsule__7_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1117,
+                306.07125854492188,
+                6265
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.53264564275741577,
+                0.071162015199661255,
+                0.39492052793502808,
+                0.74515926837921143
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__7_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform37",
+            "parentName": "Capsule__8_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1400,
+                364.84716796875,
+                6518
+            ],
+            "scale": [
+                1.3350000381469727,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                -0.55002200603485107,
+                0.14361484348773956,
+                0.47483894228935242,
+                0.67184710502624512
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Capsule__8_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform36",
+            "parentName": "Cube__22_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -56.272285461425781,
+                294.9176025390625,
+                4148.85498046875
+            ],
+            "scale": [
+                0.36340233683586121,
+                1.6847509145736694,
+                6.880836009979248
+            ],
+            "rot": [
+                0,
+                0.15448084473609924,
+                0,
+                0.98799580335617065
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__22_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform35",
+            "parentName": "Cube__23_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                341.06918334960938,
+                242,
+                4730.02197265625
+            ],
+            "scale": [
+                1.806414008140564,
+                4.9230184555053711,
+                8.2190752029418945
+            ],
+            "rot": [
+                0,
+                0.33671528100967407,
+                0,
+                0.94160652160644531
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__23_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform34",
+            "parentName": "Cube__24_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                989.29522705078125,
+                242,
+                5395.32666015625
+            ],
+            "scale": [
+                1.4147979021072388,
+                4.9230184555053711,
+                11.182467460632324
+            ],
+            "rot": [
+                0,
+                0.42553156614303589,
+                0,
+                0.90494358539581299
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__24_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform33",
+            "parentName": "Cube__25_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1705.248779296875,
+                345.0872802734375,
+                6025.38525390625
+            ],
+            "scale": [
+                1.4147979021072388,
+                2.8867595195770264,
+                8.4692535400390625
+            ],
+            "rot": [
+                0,
+                0.39772868156433105,
+                0,
+                0.91750305891036987
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__25_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform32",
+            "parentName": "Capsule__10__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -174.69784545898438,
+                1382.420654296875,
+                -162.24667358398438
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.92566722631454468,
+                -0.045040350407361984,
+                -0.36946800351142883,
+                -0.067859187722206116
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__10__1",
+            "parentName": "Arch__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform31",
+            "parentName": "Capsule__11__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -58.697578430175781,
+                1664.8843994140625,
+                -223.24685668945313
+            ],
+            "scale": [
+                1.3350002765655518,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.82609504461288452,
+                -0.42006596922874451,
+                -0.36486703157424927,
+                0.089350849390029907
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__11__1",
+            "parentName": "Arch__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform30",
+            "parentName": "Capsule__12__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                156.30241394042969,
+                1708.8843994140625,
+                -448.24685668945313
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977194547653198
+            ],
+            "rot": [
+                -0.53558593988418579,
+                0.75633078813552856,
+                0.28132963180541992,
+                -0.24892798066139221
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__12__1",
+            "parentName": "Arch__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1116,
+                -857,
+                6214
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                6.0735300122516378e-10,
+                0.1630350798368454,
+                -3.6754470578159726e-09,
+                0.98662024736404419
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Arch__1_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform29",
+            "parentName": "Capsule__10__2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -3.0002593994140625,
+                2108.31103515625,
+                33.00018310546875
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.92566722631454468,
+                -0.045040350407361984,
+                -0.36946800351142883,
+                -0.067859187722206116
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__10__2",
+            "parentName": "Arch__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform28",
+            "parentName": "Capsule__11__2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                113,
+                2325.31103515625,
+                -28
+            ],
+            "scale": [
+                1.3350002765655518,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.82609504461288452,
+                -0.42006596922874451,
+                -0.36486703157424927,
+                0.089350849390029907
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__11__2",
+            "parentName": "Arch__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform27",
+            "parentName": "Capsule__12__2",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                328,
+                2369.31103515625,
+                -253
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977194547653198
+            ],
+            "rot": [
+                -0.53558593988418579,
+                0.75633078813552856,
+                0.28132963180541992,
+                -0.24892798066139221
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__12__2",
+            "parentName": "Arch__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 6,
+            "parentNum": 5,
+            "nodeName": "transform26",
+            "parentName": "Capsule__10__3",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -3.0002593994140625,
+                1757.627197265625,
+                33.00018310546875
+            ],
+            "scale": [
+                1.3350001573562622,
+                2.1344280242919922,
+                1.6977195739746094
+            ],
+            "rot": [
+                0.92566722631454468,
+                -0.045040350407361984,
+                -0.36946800351142883,
+                -0.067859187722206116
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "Capsule__10__3",
+            "parentName": "Arch__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1637.0001220703125,
+                -971,
+                6649
+            ],
+            "scale": [
+                1,
+                0.75678998231887817,
+                0.63165998458862305
+            ],
+            "rot": [
+                1.062297694254255e-09,
+                0.28515836596488953,
+                -3.570617801429421e-09,
+                0.95848041772842407
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Arch__2_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform25",
+            "parentName": "Cube__27_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -5,
+                242,
+                4332
+            ],
+            "scale": [
+                0.13952180743217468,
+                1.8100463151931763,
+                0.011588897556066513
+            ],
+            "rot": [
+                0.027253389358520508,
+                0.52222353219985962,
+                -0.066777825355529785,
+                0.84975320100784302
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__27_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform24",
+            "parentName": "Cube__28_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2,
+                323.53195190429688,
+                4331
+            ],
+            "scale": [
+                0.9673001766204834,
+                0.58357411623001099,
+                0.011588897556066513
+            ],
+            "rot": [
+                0.027253389358520508,
+                0.52222353219985962,
+                -0.066777832806110382,
+                0.84975320100784302
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__28_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform23",
+            "parentName": "Cube__29_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2189.67236328125,
+                242,
+                6295.8837890625
+            ],
+            "scale": [
+                2.5982980728149414,
+                2.8867595195770264,
+                4.2521581649780273
+            ],
+            "rot": [
+                0,
+                0.59703904390335083,
+                0,
+                0.8022121787071228
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__29_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform22",
+            "parentName": "Cube__30_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1761.0001220703125,
+                242,
+                6872
+            ],
+            "scale": [
+                1.9071477651596069,
+                2.8867595195770264,
+                4.2521581649780273
+            ],
+            "rot": [
+                0,
+                0.44182690978050232,
+                0,
+                0.89710026979446411
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__30_",
+            "parentName": "Track",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "Track",
+            "parentName": "BlockoutFlat",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform21",
+            "parentName": "Sphere",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2082,
+                242,
+                7230.00048828125
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform20",
+            "parentName": "Sphere__1_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2025,
+                242,
+                7599
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__1_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform19",
+            "parentName": "Sphere__2_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2504,
+                242,
+                7998.00048828125
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__2_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform18",
+            "parentName": "Sphere__3_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2658,
+                242,
+                6234
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__3_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform17",
+            "parentName": "Sphere__4_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                3077,
+                242,
+                6377
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__4_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform16",
+            "parentName": "Sphere__5_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                3432,
+                242,
+                6736
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__5_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform15",
+            "parentName": "Sphere__6_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                3639,
+                242,
+                7205.00048828125
+            ],
+            "scale": [
+                4.9836997985839844,
+                4.1808505058288574,
+                4.9836997985839844
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__6_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform14",
+            "parentName": "Sphere__7_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2845,
+                242,
+                7151
+            ],
+            "scale": [
+                3.3681211471557617,
+                2.825533390045166,
+                3.3681211471557617
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__7_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform13",
+            "parentName": "Sphere__8_",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2845,
+                242,
+                7151
+            ],
+            "scale": [
+                4.5099143981933594,
+                1.1170119047164917,
+                4.5099143981933594
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__8_",
+            "parentName": "Ghouls",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "Ghouls",
+            "parentName": "BlockoutFlat",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform12",
+            "parentName": "Cylinder__6__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2460.999755859375,
+                242,
+                10993.9990234375
+            ],
+            "scale": [
+                0.90347015857696533,
+                0.47682887315750122,
+                0.63459300994873047
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cylinder__6__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform11",
+            "parentName": "Sphere_1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1480.0172119140625,
+                174.26170349121094,
+                10595.41015625
+            ],
+            "scale": [
+                24.046037673950195,
+                3.0505673885345459,
+                26.789953231811523
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere_1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform10",
+            "parentName": "Plane_1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1860,
+                242,
+                8200
+            ],
+            "scale": [
+                0.37922587990760803,
+                1,
+                1.5284508466720581
+            ],
+            "rot": [
+                0,
+                -0.34472277760505676,
+                0,
+                0.93870455026626587
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Plane_1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform9",
+            "parentName": "Plane__1__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1397,
+                242,
+                9165
+            ],
+            "scale": [
+                0.37922587990760803,
+                1,
+                0.94706743955612183
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Plane__1__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform8",
+            "parentName": "Cube_1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1730.0169677734375,
+                242,
+                10635.41015625
+            ],
+            "scale": [
+                -5.3010640144348145,
+                -4.9432458877563477,
+                -7.1985535621643066
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube_1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform7",
+            "parentName": "Cube__2__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2150,
+                242,
+                9248
+            ],
+            "scale": [
+                -11.429061889648438,
+                -2.2898597717285156,
+                -8.5533208847045898
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__2__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform6",
+            "parentName": "Cube__3__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2035,
+                242,
+                8490
+            ],
+            "scale": [
+                -3.1306493282318115,
+                -2.2898597717285156,
+                -10.296487808227539
+            ],
+            "rot": [
+                1.4312726559495559e-09,
+                -0.3296038806438446,
+                4.0997454320290672e-09,
+                0.94411927461624146
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__3__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform5",
+            "parentName": "Cube__4__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2449,
+                242,
+                8542
+            ],
+            "scale": [
+                -5.9667701721191406,
+                -2.2898597717285156,
+                -8.5533208847045898
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__4__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform4",
+            "parentName": "Cube__5__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                2147,
+                242,
+                8835
+            ],
+            "scale": [
+                -3.8350818157196045,
+                -2.2898597717285156,
+                -5.3454160690307617
+            ],
+            "rot": [
+                0.071094900369644165,
+                0,
+                0,
+                0.99746954441070557
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__5__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform3",
+            "parentName": "Sphere__1__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1480.0172119140625,
+                242,
+                10595.41015625
+            ],
+            "scale": [
+                24.046037673950195,
+                0.79097861051559448,
+                26.789953231811523
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Sphere__1__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform2",
+            "parentName": "Cube__6__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1205.2418212890625,
+                242,
+                9041.28515625
+            ],
+            "scale": [
+                0.05871909111738205,
+                1.3875634670257568,
+                6.2523717880249023
+            ],
+            "rot": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__6__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 5,
+            "parentNum": 4,
+            "nodeName": "transform1",
+            "parentName": "Cube__7__1",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                1573.2796630859375,
+                242,
+                8291.515625
+            ],
+            "scale": [
+                -0.13653387129306793,
+                -1.2253955602645874,
+                -12.040712356567383
+            ],
+            "rot": [
+                1.4359977651423605e-09,
+                -0.32960385084152222,
+                4.1132812711452971e-09,
+                0.94411933422088623
+            ],
+            "nodeNum": 4,
+            "parentNum": 3,
+            "nodeName": "Cube__7__1",
+            "parentName": "ShopProposal",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 3,
+            "parentNum": 2,
+            "nodeName": "ShopProposal",
+            "parentName": "BlockoutFlat",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -33.163688659667969,
+                0,
+                -91.557884216308594
+            ],
+            "scale": [
+                0.019157500937581062,
+                0.019157500937581062,
+                0.019157500937581062
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "BlockoutFlat",
+            "parentName": "FBXCombined_NoMat",
+            "meshIndex": -1,
+            "materialIndex": -1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "BlockoutFlat1",
+            "parentName": "FBXCombined_NoMat",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}
