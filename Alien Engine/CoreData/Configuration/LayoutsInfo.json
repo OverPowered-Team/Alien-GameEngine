@@ -21,7 +21,8 @@
             "Build": false,
             "Animation Timeline": true,
             "Animator": true,
-            "Particle System": true
+            "Particle System": true,
+            "Physics": false
         },
         {
             "Active": false,

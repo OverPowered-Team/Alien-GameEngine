@@ -643,7 +643,7 @@ void ModuleResources::ReadAllMetaData()
 	ReadShaders(directories, files, SHADERS_FOLDER);
 	files.clear();
 	directories.clear();
-	default_shader = GetShaderByName("basic_lighting");
+	default_shader = GetShaderByName("default_shader");
 
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);

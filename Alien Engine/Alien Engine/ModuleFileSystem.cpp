@@ -599,9 +599,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	std::string final_path;
 	SplitFilePath(extern_path, nullptr, &final_path); // get base file name
 
-	FileDropType type = SearchExtension(std::string(extern_path)); // get extension type
+	FileDropType ext_type = SearchExtension(std::string(extern_path));
 
-	switch (type) { // add location
+	switch (ext_type) { // add location
 	case FileDropType::MODEL3D: 
 		final_path = MODELS_FOLDER + final_path;
 		break;
@@ -625,7 +625,7 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		CopyFromOutsideFS(extern_path, final_path.c_str()); // copy file if doesnt exist
 	}
 
-	switch (type) { // call the loader
+	switch (ext_type) { // call the loader
 	case FileDropType::MODEL3D:
 		LOG_ENGINE("Start Loading Model");
 		App->importer->LoadModelFile(final_path.data(), extern_path);
@@ -645,9 +645,8 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	}
 #endif
 }
-const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_path)
+FileDropType ModuleFileSystem::SearchExtension(const std::string& extern_path)
 {
-	
 	std::string extension;
 	SplitFilePath(extern_path.data(), nullptr, nullptr, &extension);
 	

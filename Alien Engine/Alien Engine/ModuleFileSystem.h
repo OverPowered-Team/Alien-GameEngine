@@ -137,7 +137,7 @@ public:
 
 	void ManageNewDropFile(const char* extern_path);
 
-	const FileDropType& SearchExtension(const std::string& extern_path);
+	FileDropType SearchExtension(const std::string& extern_path);
 
 	std::string GetBaseFileName(const char* file_name);
 	std::string GetBaseFileNameWithExtension(const char* file_name);
