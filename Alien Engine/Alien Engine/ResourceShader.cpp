@@ -292,6 +292,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
+		std::string cdambient = std::string(cname).append(".ambient");
+		SetUniformFloat3(cdambient, (*iter)->ambient);
+
 		std::string cdirection = std::string(cname).append(".direction");
 		SetUniformFloat3(cdirection, (*iter)->direction);
 
@@ -321,6 +324,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 		/*std::string cdirection = std::string(cname).append(".direction");
 		SetUniformFloat3(cdirection, (*iter)->direction);*/
+		
+		std::string cdambient = std::string(cname).append(".ambient");
+		SetUniformFloat3(cdambient, (*iter)->ambient);
 
 		std::string cdiffuse = std::string(cname).append(".diffuse");
 		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
@@ -357,6 +363,9 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 
 		std::string cdirection = std::string(cname).append(".direction");
 		SetUniformFloat3(cdirection, (*iter)->direction);
+
+		std::string cdambient = std::string(cname).append(".ambient");
+		SetUniformFloat3(cdambient, (*iter)->ambient);
 
 		std::string cdiffuse = std::string(cname).append(".diffuse");
 		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
