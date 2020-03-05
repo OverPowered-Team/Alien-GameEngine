@@ -5,7 +5,7 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
-struct PointLightProperties
+struct __declspec(dllexport) PointLightProperties
 {
 	float3 position = float3::zero();
 	float3 direction = float3::zero();

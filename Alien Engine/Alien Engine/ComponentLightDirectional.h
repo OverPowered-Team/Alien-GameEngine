@@ -5,7 +5,7 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
-struct DirLightProperties
+struct __declspec(dllexport) DirLightProperties
 {
 	float3 position = float3::zero();
 	float3 direction = float3::zero();

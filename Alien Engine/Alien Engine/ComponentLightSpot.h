@@ -5,7 +5,7 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
-struct SpotLightProperties
+struct __declspec(dllexport) SpotLightProperties
 {
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
