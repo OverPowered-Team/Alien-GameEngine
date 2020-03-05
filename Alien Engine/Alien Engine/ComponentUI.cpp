@@ -119,6 +119,9 @@ void ComponentUI::Draw(bool isGame)
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
@@ -153,7 +156,7 @@ void ComponentUI::Draw(bool isGame)
 	}
 
 	if (texture != nullptr) {
-		glAlphaFunc(GL_GREATER, 0.0f);
+		//glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 	}
@@ -189,6 +192,8 @@ void ComponentUI::Draw(bool isGame)
 
 	glPopMatrix();
 
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }

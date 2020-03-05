@@ -134,6 +134,7 @@ void ComponentText::Draw(bool isGame)
 	glPopMatrix();
 
 	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);

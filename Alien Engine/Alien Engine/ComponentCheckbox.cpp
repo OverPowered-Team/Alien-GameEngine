@@ -531,6 +531,9 @@ void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex, bool back
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
@@ -605,6 +608,8 @@ void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex, bool back
 
 	glPopMatrix();
 
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
