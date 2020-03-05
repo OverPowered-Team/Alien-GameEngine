@@ -1,7 +1,7 @@
 {
     "Layouts": [
         {
-            "Active": false,
+            "Active": true,
             "Name": "Default",
             "Path": "Configuration\/Layouts\/Default.ini",
             "About Alien Engine": false,
@@ -19,7 +19,9 @@
             "Save": true,
             "Text Editor": false,
             "Build": false,
-            "Animation Timeline": true
+            "Animation Timeline": true,
+            "Animator": true,
+            "Particle System": true
         },
         {
             "Active": false,
@@ -63,7 +65,7 @@
             "Animation Timeline": true
         },
         {
-            "Active": true,
+            "Active": false,
             "Name": "Cere's Layout",
             "Path": "Configuration\/Layouts\/Cere's Layout.ini",
             "About Alien Engine": false,

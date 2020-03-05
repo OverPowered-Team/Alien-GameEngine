@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "Component.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
@@ -11,6 +12,7 @@ class ComponentMesh;
 class ComponentRigidBody;
 class ComponentVehicle;
 class ComponentTransform;
+class Alien;
 
 class __declspec(dllexport) ComponentCollider : public Component
 {
@@ -56,15 +58,14 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
 
-	void CreateShape();	// Create shape
-	virtual bool WrapMesh() { return false; }
+	virtual void CreateDefaultShape() = 0;
 	virtual void UpdateShape() {} 	// Adjust shape to scale and other factors
 
 protected:
 
 	std::string name = "Collider";
 	ComponentTransform* transform = nullptr;
-	ComponentRigidBody* rb = nullptr;
+	ComponentRigidBody* rigid_body = nullptr;
 
 	float3 center = float3::zero();
 	float3 final_center = float3::zero();
@@ -74,8 +75,16 @@ protected:
 	float friction = 0.f;
 	float angular_friction = 0.f;
 
+	// Alien Script 
+	Alien* alien_script = nullptr;
 	// Collider shape used in collision simulation
 	btCollisionShape* shape = nullptr;
 	// Used when GameObject has notrigid body in run time
 	btRigidBody* aux_body = nullptr;
+	// Detection body 
+	btGhostObject* detector = nullptr;
+	// Collisions
+	std::map<ComponentCollider*, bool> collisions;
+
+	bool test_callbacks = false;
 };

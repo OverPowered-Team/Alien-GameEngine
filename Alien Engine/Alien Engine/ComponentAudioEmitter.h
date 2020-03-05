@@ -21,6 +21,9 @@ public:
 	void ChangeVolume(float new_volume);
 	void Mute(bool mute);
 	void StartSound();
+	void StartSound(uint _event);
+	bool AlreadyUsedBank(const Bank* bk);
+	u64 GetCurrentBank();
 
 private:
 	void UpdateSourcePos();
@@ -30,7 +33,7 @@ private:
 	void OnEnable() override;
 	void OnDisable() override;
 	bool DrawInspector();
-	bool AlreadyUsedBank(const Bank* bk);
+	
 
 private:
 	WwiseT::AudioSource* source = nullptr;

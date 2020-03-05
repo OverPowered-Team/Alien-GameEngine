@@ -158,7 +158,7 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 			mesh->IncreaseReferences();
 	}
 
-	GenerateAABB();
+	GenerateLocalAABB();
 	RecalculateAABB_OBB();
 }
 

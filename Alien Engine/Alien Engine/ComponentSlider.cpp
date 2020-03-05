@@ -506,6 +506,7 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex, bool backgr
 	float4x4 matrix = transform->global_transformation;
 
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
@@ -585,6 +586,7 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex, bool backgr
 
 	glPopMatrix();
 
+	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
 

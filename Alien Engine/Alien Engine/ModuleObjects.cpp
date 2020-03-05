@@ -105,6 +105,7 @@ bool ModuleObjects::Start()
 		LoadScene(App->file_system->GetBaseFileName(meta->GetString("Build.FirstScene")).data());
 		game_viewport->SetPos({ 0,0 });
 		game_viewport->active = true;
+		App->renderer3D->OnResize(App->window->width, App->window->height);
 		Time::Play();
 
 		delete meta;
@@ -202,6 +203,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 				glEnable(GL_LIGHT0);
 			}
+			
+			if (App->physics->debug_physics)
+			{
+				App->physics->DrawWorld();
+			}
 		}
 
 		if (base_game_object->HasChildren()) {
@@ -289,6 +295,53 @@ update_status ModuleObjects::PostUpdate(float dt)
 	}
 
 	game_viewport->EndViewport();
+
+	//glMatrixMode(GL_PROJECTION);
+	//glPushMatrix();
+	//glLoadIdentity();
+	//glOrtho(0.0, App->window->width, 0.0, App->window->height, -1.0, 1.0);
+	//glMatrixMode(GL_MODELVIEW);
+	//glPushMatrix();
+
+
+	//glLoadIdentity();
+	//glDisable(GL_LIGHTING);
+
+
+	//glColor3f(1, 1, 1);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, game_viewport->GetTexture());
+
+
+	//// Draw a textured quad
+	//glBegin(GL_QUADS);
+	//glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
+	//glTexCoord2f(0, 1); glVertex3f(0, 100, 0);
+	//glTexCoord2f(1, 1); glVertex3f(100, 100, 0);
+	//glTexCoord2f(1, 0); glVertex3f(100, 0, 0);
+	//glEnd();
+
+
+	//glDisable(GL_TEXTURE_2D);
+	//glPopMatrix();
+
+
+	//glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
+
+	//glMatrixMode(GL_MODELVIEW);
+
+	GLuint readFboId = 0;
+	glGenFramebuffers(1, &readFboId);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, game_viewport->GetTexture(), 0);
+	glBlitFramebuffer(0, 0, App->window->width, App->window->height,
+		0, 0, App->window->width, App->window->height,
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glDeleteFramebuffers(1, &readFboId);
+
 #endif
 	return UPDATE_CONTINUE;
 }
@@ -430,6 +483,7 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
 
 	//For Animations Timeline
+	if (App->ui)
 	App->ui->panel_animtimeline->changed = true;
 }
 
@@ -1725,37 +1779,38 @@ void ModuleObjects::HandleEvent(EventType eventType)
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 {
 	GameObject* object = new GameObject(GetRoot(false));
+	ResourceMesh* resource = nullptr;
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
 	ComponentCollider* collider = nullptr;
 
 	switch (type) {
 	case PrimitiveType::CUBE: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
+		resource = App->resources->GetPrimitive(PrimitiveType::CUBE);
 		object->SetName("Cube");
 		break; }
 	case PrimitiveType::DODECAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
 		object->SetName("Dodecahedron");
 		break; }
 	case PrimitiveType::ICOSAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
 		object->SetName("Icosahedron");
 		break; }
 	case PrimitiveType::OCTAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
 		object->SetName("Octahedron");
 		break; }
 	case PrimitiveType::ROCK: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ROCK);
+		resource = App->resources->GetPrimitive(PrimitiveType::ROCK);
 		object->SetName("Rock");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
+		resource = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
 		object->SetName("Sphere");
 		break; }
 	case PrimitiveType::TORUS: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::TORUS);
+		resource = App->resources->GetPrimitive(PrimitiveType::TORUS);
 		object->SetName("Torus");
 		break; }
 	default:
@@ -1764,7 +1819,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 
 	object->AddComponent(mesh);
 	object->AddComponent(material);
-	mesh->RecalculateAABB_OBB();
+	mesh->SetResourceMesh(resource);
 
 	// Add collider --------------------------------------------
 

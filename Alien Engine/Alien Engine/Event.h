@@ -10,7 +10,14 @@ enum class EventType
 	ON_ASSET_DELETE,
 	ON_GO_DELETE,
 	ON_UNLOAD_SCENE,
+	UNKNOWN
 	//ON_UNPAUSE,
 	//ON_DESTROY_OBJECT
 	// Go nuts adding stuff
+};
+
+struct AlienEvent
+{
+	EventType type = EventType::UNKNOWN;
+	void* object = nullptr;
 };

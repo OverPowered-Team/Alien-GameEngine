@@ -49,6 +49,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_MATERIAL_INL_INC
 #define AI_MATERIAL_INL_INC
 
+#undef min
+
 // ---------------------------------------------------------------------------
 inline aiPropertyTypeInfo ai_real_to_property_type_info(float)
 {
@@ -386,5 +388,9 @@ inline aiReturn aiMaterial::AddProperty<int>(const int* pInput,
 }
 
 //! @endcond
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
 
 #endif //! AI_MATERIAL_INL_INC
