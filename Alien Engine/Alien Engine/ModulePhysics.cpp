@@ -55,18 +55,18 @@ bool ModulePhysics::Init()
 	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	solver = new btSequentialImpulseConstraintSolver();
 
+	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
+
+	world->setGravity(GRAVITY);
+	world->setDebugDrawer(debug_renderer);
+	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
+
 	return ret;
 }
 
 bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
-
-	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
-
-	world->setGravity(GRAVITY);
-	world->setDebugDrawer(debug_renderer);
-	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
 
 	return true;
 }
