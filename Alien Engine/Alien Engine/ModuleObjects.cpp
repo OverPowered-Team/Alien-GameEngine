@@ -22,6 +22,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -1910,6 +1911,28 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 	{
 		object->SetName("Directional light");
 		comp = new ComponentLightDirectional(object);
+		object->AddComponent(comp);
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+void ModuleObjects::CreateEffect(ComponentType type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case ComponentType::PARTICLES:
+	{
+		object->SetName("Particle System");
+		comp = new ComponentParticleSystem(object);
 		object->AddComponent(comp);
 		break;
 	}

@@ -518,6 +518,16 @@ void PanelHierarchy::RightClickMenu()
 
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Effect"))
+		{
+			if (ImGui::MenuItem("Particle System"))
+			{
+				App->objects->CreateEffect(ComponentType::PARTICLES);
+			}
+			
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("UI"))
 		{
 			if (ImGui::MenuItem("Image"))
