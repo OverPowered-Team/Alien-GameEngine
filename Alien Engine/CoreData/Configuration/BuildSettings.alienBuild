@@ -1,6 +1,6 @@
 {
     "Build": {
-        "FirstScene": "Assets\/Scenes\/Level1_Blockout2.alienScene",
+        "FirstScene": "Assets\/Scenes\/lightTest.alienScene",
         "GameName": "mymegagame"
     }
 }

@@ -159,7 +159,7 @@ void ResourceShader::TryToSetShaderType()
 
 uint ResourceShader::ParseAndCreateShader()
 {
-	SHADER_PROGRAM_SOURCE source = ParseShader(path);
+	SHADER_PROGRAM_SOURCE source = ParseShader(meta_data_path);
 	shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
 	return shader_id;

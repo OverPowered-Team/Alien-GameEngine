@@ -19,6 +19,7 @@ private:
 	friend class Application;
 	friend class ModuleUI;
 	friend class ReturnZ;
+	friend class ComponentCollider;
 	friend class ModuleObjects;
 	friend class PanelScene;
 	friend class PanelInspector;
