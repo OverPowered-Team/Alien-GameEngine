@@ -1590,19 +1590,16 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentLightDirectional* light = new ComponentLightDirectional(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
-				App->objects->AddNumOfDirLights();
 				break; }
 			case (int)ComponentType::LIGHT_SPOT: {
 				ComponentLightSpot* light = new ComponentLightSpot(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
-				App->objects->AddNumOfSpotLights();
 				break; }
 			case (int)ComponentType::LIGHT_POINT: {
 				ComponentLightPoint* light = new ComponentLightPoint(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
-				App->objects->AddNumOfPointLights();
 				break; }
 			case (int)ComponentType::MATERIAL: {
 				ComponentMaterial* material = new ComponentMaterial(this);

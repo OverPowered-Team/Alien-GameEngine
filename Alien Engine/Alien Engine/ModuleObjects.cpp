@@ -1928,7 +1928,6 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Point light");
 		comp = new ComponentLightPoint(object);
 		object->AddComponent(comp);
-		++num_of_point_lights;
 		break;
 	}
 	case LightTypeObj::SPOT:
@@ -1936,7 +1935,6 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Spot light");
 		comp = new ComponentLightSpot(object);
 		object->AddComponent(comp);
-		++num_of_spot_lights;
 		break;
 	}
 	case LightTypeObj::DIRECTIONAL:
@@ -1944,7 +1942,6 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		object->SetName("Directional light");
 		comp = new ComponentLightDirectional(object);
 		object->AddComponent(comp);
-		++num_of_dir_lights;
 		break;
 	}
 	default:

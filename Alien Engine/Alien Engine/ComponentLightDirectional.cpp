@@ -13,6 +13,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 {
 	type = ComponentType::LIGHT_DIRECTIONAL;
 	App->objects->directional_light_properites.push_back(&light_props);
+	App->objects->AddNumOfDirLights();
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
@@ -27,7 +28,6 @@ ComponentLightDirectional::~ComponentLightDirectional()
 #endif
 
 	App->objects->directional_light_properites.remove(&light_props);
-
 	App->objects->ReduceNumOfDirLights();
 }
 

@@ -13,6 +13,7 @@ ComponentLightPoint::ComponentLightPoint(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::LIGHT_POINT;
 	App->objects->point_light_properites.push_back(&light_props);
+	App->objects->AddNumOfPointLights();
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
