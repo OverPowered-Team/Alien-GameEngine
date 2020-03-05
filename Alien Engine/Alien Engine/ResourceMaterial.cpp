@@ -352,7 +352,7 @@ void ResourceMaterial::ShaderInputsSegment()
 {
 	switch (used_shader->GetShaderType())
 	{
-	case SHADER_TEMPLATE::DIFUSSE: {//difusse
+	case SHADER_TEMPLATE::DEFAULT: {//difusse
 		//ImGui::ColorEdit3("Albedo", shaderInputs.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
 		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
@@ -370,8 +370,8 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		break; }
 
-	case SHADER_TEMPLATE::BASIC_LIGHTING: {
-		ImGui::ColorEdit3("Albedo", shaderInputs.basicLightingShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
+	case SHADER_TEMPLATE::ILUMINATED: {
+		ImGui::ColorEdit3("Albedo", shaderInputs.iluminatedShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
 	default:

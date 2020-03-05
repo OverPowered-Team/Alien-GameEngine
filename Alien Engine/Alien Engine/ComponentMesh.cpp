@@ -79,21 +79,8 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
 	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
-
-	// Light uniforms set from here
-	material->used_shader->SetUniform1i("max_dir_lights", (int)App->objects->GetNumOfDirLights());
-	material->used_shader->SetUniform1i("max_point_lights", (int)App->objects->GetNumOfPointLights());
-	material->used_shader->SetUniform1i("max_spot_lights", (int)App->objects->GetNumOfSpotLights());
-
 	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-
-	if(App->objects->directional_light_properites.size() > 0)
-		material->used_shader->SetDirectionalLights("dir_light", App->objects->directional_light_properites);
-	if (App->objects->point_light_properites.size() > 0)
-		material->used_shader->SetPointLights("point_light", App->objects->point_light_properites);
-	if (App->objects->spot_light_properites.size() > 0)
-		material->used_shader->SetSpotLights("spot_light", App->objects->spot_light_properites);
+	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
