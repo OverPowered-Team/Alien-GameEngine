@@ -763,7 +763,7 @@ void ModuleImporter::ApplyMaterialToSelectedObject(ResourceMaterial* material)
 	{
 		if (*item != nullptr)
 		{
-			if (!(*item)->HasComponent(ComponentType::MESH))
+			if (!(*item)->HasComponent(ComponentType::MESH) && !(*item)->HasComponent(ComponentType::PARTICLES))
 				return;
 
 			ComponentMaterial* materialComp = (ComponentMaterial*)(*item)->GetComponent(ComponentType::MATERIAL);

@@ -162,7 +162,9 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	App->window->width = width;
 	App->window->height = height;
 #ifdef GAME_VERSION
-	App->objects->game_viewport->SetSize(width, height);
+	if (App->objects->game_viewport->GetCamera() != nullptr) {
+		App->objects->game_viewport->SetSize(width, height);
+	}
 #endif
 }
 

@@ -259,7 +259,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 #else
 
-	if (!game_viewport->active && !game_viewport->CanRender())
+	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
 
 	game_viewport->BeginViewport();
