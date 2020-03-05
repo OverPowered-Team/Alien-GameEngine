@@ -8,13 +8,32 @@
 #include "ReturnZ.h"
 #include "imgui/imgui_internal.h"
 #include "PanelProject.h"
-
+#include "ResourceMaterial.h"
 #include "Optick/include/optick.h"
+#include "ComponentMaterial.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::PARTICLES;
 	particleSystem = new ParticleSystem();
+
+	material = new ComponentMaterial(this->game_object_attached);
+	game_object_attached->AddComponent(material);
+
+
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	
+	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
+
+	light_id = GL_LIGHT0;
+	glEnable(light_id);
+	glLightfv(light_id, GL_POSITION, pos);
+
+	// Init
+	glLightfv(light_id, GL_AMBIENT, &ambient);
+	glLightfv(light_id, GL_DIFFUSE, &diffuse);
+
+	
 }
 
 ComponentParticleSystem::~ComponentParticleSystem()
@@ -24,6 +43,8 @@ ComponentParticleSystem::~ComponentParticleSystem()
 		delete particleSystem; 
 		particleSystem = nullptr; 
 	}
+
+	glDisable(light_id);
 }
 
 void ComponentParticleSystem::OnPlay()
@@ -81,6 +102,10 @@ void ComponentParticleSystem::OnDisable()
 
 bool ComponentParticleSystem::DrawInspector()
 {
+	
+	//texture = material->material->texture;
+	
+	
 	static bool check;
 
 	ImGui::PushID(this);
