@@ -153,7 +153,7 @@ void Gizmos::DrawWire(const ResourceMesh * mesh, const float4x4& matrix, const C
 
 	glLineWidth(1);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPopMatrix();
 }
 

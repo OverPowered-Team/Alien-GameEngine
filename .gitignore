@@ -21,6 +21,7 @@ Library/
 OutPut/
 x64/
 x86/
+console_log.txt
 bld/
 [Bb]in/
 [Oo]bj/
@@ -330,3 +331,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# Console log
+console_log.txt

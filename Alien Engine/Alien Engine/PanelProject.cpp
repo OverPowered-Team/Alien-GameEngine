@@ -3,11 +3,14 @@
 #include "ModuleFileSystem.h"
 #include "ResourceTexture.h"
 #include <filesystem>
+#include "Application.h"
 #include "imgui/imgui_internal.h"
 #include "ResourceModel.h"
 #include "ResourcePrefab.h"
 #include "ResourceScript.h"
 #include "ResourceScene.h"
+#include "PanelAnimator.h"
+#include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "mmgr/mmgr.h"
@@ -34,7 +37,6 @@ PanelProject::~PanelProject()
 
 void PanelProject::PanelLogic()
 {
-
 	if (change_folder) {
 		current_active_folder = current_active_file;
 		current_active_file = nullptr;
@@ -204,11 +206,21 @@ void PanelProject::SeeFiles()
 			ImGui::ImageButton((ImTextureID)current_active_folder->children[i]->icon->id, { 53,70 }, { 0,0 }, { 1,1 }, -1, { 0,0,0,0 }, { 1,1,1,1 });
 			ImGui::PopStyleColor();
 
+			//// set the file clicked
+			//if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1)) ||
+			//	(ImGui::IsMouseReleased(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))) 
+			//{
+			//	current_active_file = current_active_folder->children[i];
+			//	if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
+			//	{
+			//		App->objects->DeselectObjects();
+			//		App->CastEvent(EventType::ON_ASSET_SELECT);
+			//	}		
+			//}
 			// set the file clicked
-			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
+			/*if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1))) {
 				current_active_file = current_active_folder->children[i];
-			}
-
+			}*/
 			// double click script
 			if (current_active_folder->children[i]->type == FileDropType::SCRIPT && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
 				ResourceScript* script = (ResourceScript*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(current_active_folder->children[i]->path + current_active_folder->children[i]->name).data()) + "_meta.alien").data()));
@@ -233,26 +245,37 @@ void PanelProject::SeeFiles()
 					break;
 			}
 
-			if (ImGui::IsItemHovered()) {
+			if (ImGui::IsItemHovered() && !ImGui::IsMouseDragging()) {
 				ImGui::BeginTooltip();
 				ImGui::Text(current_active_folder->children[i]->name.data());
 				ImGui::EndTooltip();
 			}
 
+			if (ImGui::IsItemClicked() || (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(1)) ||
+				(ImGui::IsMouseReleased(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup)))
+			{
+				current_active_file = current_active_folder->children[i];
+				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
+				{
+					App->objects->DeselectObjects();
+					App->CastEvent(EventType::ON_ASSET_SELECT);
+				}
+			}
 			// right click in file/folder
 			RightClickInFileOrFolder(i, pop_up_item);
+
 
 			// drag
 			if (current_active_file != nullptr && current_active_file == current_active_folder->children[i] && !current_active_file->is_base_file) {
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoDisableHover)) {
 					ImGui::SetDragDropPayload(DROP_ID_PROJECT_NODE, &current_active_file, sizeof(FileNode), ImGuiCond_Once);
-					ImGui::SetCursorPosX(((ImGui::GetWindowWidth())*0.5f)-26);
+					ImGui::SetCursorPosX(((ImGui::GetWindowWidth()) * 0.5f) - 26);
 					ImGui::Image((ImTextureID)current_active_file->icon->id, { 53,70 });
 					ImGui::Text(current_active_file->name.data());
 
 					ImGui::EndDragDropSource();
 				}
-				
+
 			}
 			
 			// go into a folder
@@ -315,6 +338,7 @@ void PanelProject::DeleteSelectedAssetPopUp()
 				
 				for (; item != current_active_folder->children.end(); ++item) {
 					if (*item != nullptr && *item == current_active_file) {
+						App->CastEvent(EventType::ON_ASSET_DELETE);
 						delete* item;
 						*item = nullptr;
 						current_active_folder->children.erase(item);
@@ -339,20 +363,15 @@ void PanelProject::DeleteSelectedAssetPopUp()
 
 void PanelProject::RightClickInFileOrFolder(const uint& i, bool& pop_up_item)
 {
-	if (current_active_file != nullptr && current_active_file == current_active_folder->children[i] && ImGui::BeginPopupContextItem()) {
+	if (current_active_file != nullptr && current_active_file == current_active_folder->children[i] && !current_active_file->is_base_file && ImGui::BeginPopupContextItem()) {
 		pop_up_item = true;
 
-		if (!current_active_file->is_base_file) { // so can not be modified
 			if (ImGui::MenuItem("Delete")) {
 				to_delete_menu = true;
 			}
 			if (ImGui::MenuItem("Rename")) {
 				current_active_folder->children[i]->changing_name = true;
 			}
-		}
-		//if (ImGui::MenuItem("Copy Path")) {
-		//	// TODO: copy path
-		//}
 		ImGui::EndPopup();
 	}
 }
@@ -389,7 +408,6 @@ void PanelProject::PrintNodeNameUnderIcon(const uint& i)
 				}
 
 				current_active_folder->children[i]->name = name_before_rename;
-
 				current_active_folder->children[i]->ResetPaths();
 
 				LOG_ENGINE("New file/folder renamed correctly to %s", current_active_folder->children[i]->name.data());
@@ -429,6 +447,9 @@ void PanelProject::RightClickToWindow(bool pop_up_item)
 	if (!pop_up_item && ImGui::BeginPopupContextWindow()) {
 		if (ImGui::MenuItem("Create New Script")) {
 			App->ui->creating_script = true;
+		}
+		if (ImGui::MenuItem("Create New Material")) {
+			App->resources->CreateMaterial("New Material");
 		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Create New Folder")) {
@@ -477,7 +498,7 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 			if (inside) {
 				if (node_to_move->is_file) { // move file up
 					if (rename(std::string(node_to_move->path + node_to_move->name).data(), std::string(node->path + node_to_move->name).data()) == 0) {
-						
+
 						// move the .alien too
 						rename(std::string(App->file_system->GetPathWithoutExtension(std::string(node_to_move->path + node_to_move->name)) + "_meta.alien").data(), std::string(App->file_system->GetPathWithoutExtension(std::string(node->path + node_to_move->name)) + "_meta.alien").data());
 
@@ -610,6 +631,11 @@ bool PanelProject::SelectFile(const char* path, FileNode* node)
 	return ret;
 }
 
+FileNode* PanelProject::GetSelectedFile()
+{
+	return current_active_file;
+}
+
 void PanelProject::RefreshAllNodes()
 {
 	std::string current_folder_path = current_active_folder->path;
@@ -621,3 +647,23 @@ void PanelProject::RefreshAllNodes()
 	current_active_file = nullptr;
 }
 
+void PanelProject::GetUniqueFileName(std::string& asset_name, const std::string& asset_path)
+{
+	FileNode* asset_node = assets->FindChildrenByPath(asset_path);
+
+	if (asset_node == nullptr)
+		return;
+
+	int asset_number = 0;
+
+	std::string tmp_name = asset_name;
+	for (uint i = 0; i < asset_node->children.size(); ++i) {
+		if (App->StringCmp(App->file_system->GetBaseFileName(asset_node->children[i]->name.data()).data(), tmp_name.data())) {
+			++asset_number;
+			tmp_name = asset_name + "(" + std::to_string(asset_number) + ")";
+			i = -1;
+		}
+	}
+	if (asset_number > 0)
+		asset_name = asset_name + "(" + std::to_string(asset_number) + ")";
+}

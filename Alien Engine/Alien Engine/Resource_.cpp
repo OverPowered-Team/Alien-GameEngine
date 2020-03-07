@@ -67,7 +67,7 @@ void Resource::IncreaseReferences()
 
 void Resource::DecreaseReferences()
 {
-	if (App->objects->enable_instancies) {
+	if (App->objects->enable_instancies && references > 0) {
 		--references;
 	}
 	if (references == 0) {

@@ -5,6 +5,7 @@
 
 class ComponentCamera;
 class OctreeNode;
+class Viewport;
 
 class ModuleCamera3D : public Module
 {
@@ -41,6 +42,9 @@ public:
 	ComponentCamera* fake_camera = nullptr;
 
 	float3 reference = float3::zero();
+
+	Viewport* scene_viewport = nullptr;
+	Viewport* selected_viewport = nullptr;
 
 private:
 

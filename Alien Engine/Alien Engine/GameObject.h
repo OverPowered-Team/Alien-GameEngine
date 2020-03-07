@@ -11,18 +11,37 @@
 enum class ResourceType;
 class Resource;
 class Prefab;
+class ComponentCanvas;
 class ComponentCamera;
 
 class __declspec(dllexport) GameObject
 {
 	friend class Component;
 	friend class ComponentCamera;
-	friend class ComponentLight;
+	friend class ComponentParticleSystem;
+	friend class ComponentLightDirectional;
+	friend class ComponentLightSpot;
+	friend class ComponentLightPoint;
+	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
+	friend class ComponentDeformableMesh;
+	friend class ComponentBone;
+	friend class ComponentAnimator;
 	friend class ComponentMaterial;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentRigidBody;
 	friend class ComponentScript;
+	friend class ComponentUI;
+	friend class ComponentCanvas;
+	friend class ComponentCheckbox;
+	friend class ComponentText;
+	friend class ComponentButton;
+	friend class ComponentBar;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -42,10 +61,15 @@ class __declspec(dllexport) GameObject
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
 	friend class ModuleObjects;
+	friend class ComponentImage;
+	friend class ComponentSlider;
 	friend class ModuleUI;
+	friend class Tween;
+	friend class AnimTween;
 public:
 	GameObject(GameObject* parent);
-	GameObject(); // just for loading objects, dont use it
+	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
+	GameObject(bool ignore_transform = false); // just for loading objects, dont use it
 	virtual ~GameObject();
 
 public:
@@ -67,12 +91,11 @@ public:
 		DontDestroyOnLoad();
 	*/
 
-
-
 	GameObject* GetChild(const char* child_name);
 	GameObject* GetChild(const int& index);
 	// look for child of child of child bla bla
 	GameObject* GetChildRecursive(const char* child_name);
+	std::vector<GameObject*> GetChildren();
 
 	void SetEnable(bool enable);
 	bool IsEnabled() const;
@@ -84,6 +107,7 @@ public:
 	bool HasComponent(ComponentType component) const;
 	Component* GetComponent(const ComponentType& type);
 	const Component* GetComponent(const ComponentType& type) const;
+	ComponentTransform* GetComponentTransform() const; //sorry ori
 	void* GetComponentScript(const char* script_class_name);
 	const void* GetComponentScript(const char* script_class_name) const;
 	Component* GetComponentInParent(const ComponentType& type);
@@ -131,10 +155,16 @@ private:
 	void OnEnable();
 	void OnDisable();
 
+	void OnPlay();
+	void OnPause();
+	void OnStop();
+
 	// here we call Component Mesh, Material & light
-	void DrawScene();
-	void DrawGame();
+	void DrawScene(ComponentCamera* camera);
+	void DrawGame(ComponentCamera* camera);
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera);
+
+	ComponentCanvas* GetCanvas();
 
 	Component* GetComponentWithID(const u64& ID);
 	const Component* GetComponentWithID(const u64& ID) const;
@@ -232,6 +262,7 @@ private:
 public:
 
 	GameObject* parent = nullptr;
+	ComponentTransform* transform = nullptr;
 
 private:
 

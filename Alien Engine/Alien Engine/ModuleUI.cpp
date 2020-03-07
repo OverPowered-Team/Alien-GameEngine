@@ -6,6 +6,7 @@
 #include "imgui/examples/imgui_impl_opengl3.h"
 #include <gl/GL.h>
 #include "PanelAbout.h"
+#include "Viewport.h"
 #include "PanelConfig.h"
 #include "PanelBuild.h"
 #include "PanelConsole.h"
@@ -21,12 +22,21 @@
 #include "PanelSceneSelector.h"
 #include "PanelScene.h"
 #include "PanelGame.h"
+#include "PanelTextEditor.h"
+#include "PanelAnimTimeline.h"
+#include "PanelAnimator.h"
+#include "PanelPhysics.h"
 #include <string>
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
+#include "Event.h"
 #include "PanelTextEditor.h"
+#include "PanelParticleSystem.h"
+#include "ModuleObjects.h"
+#include "ComponentUI.h"
 #include <fstream>
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleUI::ModuleUI(bool start_enabled) : Module(start_enabled)
 {
@@ -35,11 +45,13 @@ ModuleUI::ModuleUI(bool start_enabled) : Module(start_enabled)
 
 ModuleUI::~ModuleUI()
 {
+
 }
 
 // Load assets
 bool ModuleUI::Start()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Loading UI assets");
 	bool ret = true;
 
@@ -51,6 +63,14 @@ bool ModuleUI::Start()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.IniFilename = NULL;
 	io.WantSaveIniSettings = false;
+
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.MaxColumnSeparation= 10;
+	style.TitleSeparation = 10;
+	style.SubTitleSeparation = 3;
+	style.SeparationType = ImGuiSeparationType::ImGui_WindowSeparation;
+
 
 	ChangeStyle(App->window->style);
 	ImGui_ImplOpenGL3_Init();
@@ -69,6 +89,7 @@ bool ModuleUI::Start()
 // Load assets
 bool ModuleUI::CleanUp()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Unloading UI scene");
 
 	if (!need_to_save_layouts) // just save to know which is active
@@ -118,6 +139,8 @@ void ModuleUI::LoadConfig(JSONfilepack*& config)
 		panel_scene_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelScene", i);
 		panel_scene_selector_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelSceneSelector", i);
 		panel_text_edit_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelTextEditor", i);
+		panel_animtimeline_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelAnimTimeline", i);
+		panel_animator_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.PanelAnimator", i);
 		shortcut_demo_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ImGuiDemo", i);
 		shortcut_report_bug_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ReportBug", i);
 		shortcut_view_mesh_codes[i] = (SDL_Scancode)(uint)config->GetArrayNumber("Configuration.UI.ShortCuts.ViewMesh", i);
@@ -151,6 +174,8 @@ void ModuleUI::LoadConfig(JSONfilepack*& config)
 		panel_text_editor->shortcut->SetShortcutKeys(panel_text_edit_codes[0], panel_text_edit_codes[1], panel_text_edit_codes[2]);
 		panel_game->shortcut->SetShortcutKeys(panel_game_codes[0], panel_game_codes[1], panel_game_codes[2]);
 		panel_layout->shortcut->SetShortcutKeys(panel_layout_codes[0], panel_layout_codes[1], panel_layout_codes[2]);
+		panel_animtimeline->shortcut->SetShortcutKeys(panel_animtimeline_codes[0], panel_animtimeline_codes[1], panel_animtimeline_codes[2]);
+		panel_animator->shortcut->SetShortcutKeys(panel_animator_codes[0], panel_animator_codes[1], panel_animator_codes[2]);
 		shortcut_demo->SetShortcutKeys(shortcut_demo_codes[0], shortcut_demo_codes[1], shortcut_demo_codes[2]);
 		shortcut_report_bug->SetShortcutKeys(shortcut_report_bug_codes[0], shortcut_report_bug_codes[1], shortcut_report_bug_codes[2]);
 		shortcut_view_mesh->SetShortcutKeys(shortcut_view_mesh_codes[0], shortcut_view_mesh_codes[1], shortcut_view_mesh_codes[2]);
@@ -189,6 +214,8 @@ void ModuleUI::SaveConfig(JSONfilepack*& config)
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelCreate", (uint)panel_create_object->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelScene", (uint)panel_scene->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelLayout", (uint)panel_layout->shortcut->GetScancode(i));
+		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelAnimTimeline", (uint)panel_animtimeline->shortcut->GetScancode(i));
+		config->SetArrayNumber("Configuration.UI.ShortCuts.PanelAnimator", (uint)panel_animator->shortcut->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.WireframeMode", (uint)shortcut_wireframe->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.ViewMesh", (uint)shortcut_view_mesh->GetScancode(i));
 		config->SetArrayNumber("Configuration.UI.ShortCuts.ReportBug", (uint)shortcut_report_bug->GetScancode(i));
@@ -343,6 +370,7 @@ void ModuleUI::SaveLayoutsActive()
 
 void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* name)
 {
+	OPTICK_EVENT();
 	std::string file_output = std::string(HEADER_SCRIPTS_FILE + std::string(name) + std::string(".h"));
 	switch (type) {
 	case 1: { // class
@@ -419,7 +447,7 @@ void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* nam
 
 update_status ModuleUI::PreUpdate(float dt)
 {
-
+	OPTICK_EVENT();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
@@ -448,8 +476,10 @@ update_status ModuleUI::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+
 void ModuleUI::Draw() 
 {
+	OPTICK_EVENT();
 	if (show_demo_wndow) {
 		ImGui::ShowDemoWindow(&show_demo_wndow);
 	}
@@ -478,6 +508,7 @@ void ModuleUI::Draw()
 
 void ModuleUI::MainMenuBar()
 {
+	OPTICK_EVENT();
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
@@ -514,47 +545,41 @@ void ModuleUI::MainMenuBar()
 	}
 	if (ImGui::BeginMenu("View"))
 	{
-		if (ImGui::MenuItem("Configuration", panel_config->shortcut->GetNameScancodes()))
+		for (Panel* panel : panels)
 		{
-			panel_config->ChangeEnable();
+			if (panel->shortcut != nullptr)
+			{
+				if (ImGui::MenuItem(panel->GetName().c_str(), panel->shortcut->GetNameScancodes()))
+				{
+					panel->ChangeEnable();
+				}
+			}
+			else
+			{
+				if (ImGui::MenuItem(panel->GetName().c_str()))
+				{
+					panel->ChangeEnable();
+				}
+			}
 		}
-		if (ImGui::MenuItem("Console", panel_console->shortcut->GetNameScancodes()))
+
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Assets"))
+	{
+		if (ImGui::BeginMenu("Create"))
 		{
-			panel_console->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Scene", panel_scene->shortcut->GetNameScancodes()))
-		{
-			panel_scene->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Inspector", panel_inspector->shortcut->GetNameScancodes()))
-		{
-			panel_inspector->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Hierarchy", panel_hierarchy->shortcut->GetNameScancodes()))
-		{
-			panel_hierarchy->ChangeEnable();
-		}
-		if (ImGui::MenuItem("TextEditor", panel_text_editor->shortcut->GetNameScancodes()))
-		{
-			panel_text_editor->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Panel Project", panel_project->shortcut->GetNameScancodes()))
-		{
-			panel_project->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Render Options", panel_render->shortcut->GetNameScancodes()))
-		{
-			panel_render->ChangeEnable();
-		}
-		if (ImGui::MenuItem("Game", panel_render->shortcut->GetNameScancodes()))
-		{
-			panel_game->ChangeEnable();
+			if (ImGui::MenuItem("Animator Controller"))
+			{
+				App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
+			}
+			ImGui::EndMenu();
 		}
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Create"))
 	{
-		if (ImGui::MenuItem("Crete Empty GameObject"))
+		if (ImGui::MenuItem("Create Empty GameObject"))
 		{
 			App->objects->CreateEmptyGameObject(nullptr);
 		}
@@ -587,6 +612,51 @@ void ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Icosahedron"))
 			{
 				App->objects->CreateBasePrimitive(PrimitiveType::ICOSAHEDRON);
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Light"))
+		{
+			if (ImGui::MenuItem("Point light"))
+			{
+				App->objects->CreateLight(LightTypeObj::POINT);
+			}
+			if (ImGui::MenuItem("Spot light"))
+			{
+				App->objects->CreateLight(LightTypeObj::SPOT);
+			}
+			if (ImGui::MenuItem("Directional light"))
+			{
+				App->objects->CreateLight(LightTypeObj::DIRECTIONAL);
+			}
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
+			}
+			if (ImGui::MenuItem("Button"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BUTTON);
+			}
+			if (ImGui::MenuItem("Checkbox"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_CHECKBOX);
+			}
+			if (ImGui::MenuItem("Text"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_TEXT);
+			}
+			if (ImGui::MenuItem("Slider"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
+			}
+			if (ImGui::MenuItem("Bar"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BAR);
 			}
 			ImGui::EndMenu();
 		}
@@ -653,6 +723,7 @@ void ModuleUI::MainMenuBar()
 
 void ModuleUI::SecondMenuBar()
 {
+	OPTICK_EVENT();
 	ImGui::SetNextWindowSize(ImVec2(App->window->width,52));
 	ImGui::Begin("## Tools", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
 
@@ -835,6 +906,7 @@ void ModuleUI::SecondMenuBar()
 			{
 				ImGui::SetItemDefaultFocus();
 				App->renderer3D->actual_game_camera = (*iter);
+				App->objects->game_viewport->SetCamera(*iter);
 			}
 		}
 		ImGui::EndCombo();
@@ -933,6 +1005,7 @@ void ModuleUI::SecondMenuBar()
 
 void ModuleUI::ResetImGui()
 {
+	OPTICK_EVENT();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -975,6 +1048,12 @@ void ModuleUI::ChangeStyle(const int& style_number)
 	case 3:
 		break;
 	}
+
+	ImGuiStyle& style =ImGui::GetStyle();
+	style.MaxColumnSeparation;
+	style.TitleSeparation;
+	style.SubTitleSeparation;
+
 }
 
 void ModuleUI::ChangeEnableDemo()
@@ -1065,6 +1144,7 @@ void ModuleUI::DeleteLayout(Layout* layout)
 
 void ModuleUI::InitPanels()
 {
+	OPTICK_EVENT();
 	panel_about = new PanelAbout("About Alien Engine", panel_about_codes[0], panel_about_codes[1], panel_about_codes[2]);
 	panel_project = new PanelProject("Panel Project", panel_project_codes[0], panel_project_codes[1], panel_project_codes[2]);
 	panel_config = new PanelConfig("Configuration", panel_config_codes[0], panel_config_codes[1], panel_config_codes[2]);
@@ -1079,10 +1159,16 @@ void ModuleUI::InitPanels()
 	panel_layout = new PanelLayout("Layout Editor", panel_layout_codes[0], panel_layout_codes[1], panel_layout_codes[2]);
 	panel_game = new PanelGame("Game", panel_game_codes[0], panel_game_codes[1], panel_game_codes[2]);
 	panel_build = new PanelBuild("Build", panel_build_codes[0], panel_build_codes[1], panel_build_codes[2]);
+	panel_animtimeline = new PanelAnimTimeline("Animation Timeline", panel_animtimeline_codes[0], panel_animtimeline_codes[1], panel_animtimeline_codes[2]);
+	panel_animator = new PanelAnimator("Animator", panel_animator_codes[0], panel_animator_codes[1], panel_animator_codes[2]);
+	panel_particles = new PanelParticleSystem("Particle System", panel_particles_codes[0], panel_particles_codes[1], panel_particles_codes[2]);
+	panel_physics = new PanelPhysics("Physics", panel_physics_codes[0], panel_physics_codes[1], panel_physics_codes[2]);
 
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
 	panels.push_back(panel_console);
+	panels.push_back(panel_animtimeline);
+	panels.push_back(panel_animator);
 	panels.push_back(panel_project);
 	panels.push_back(panel_render);
 	panels.push_back(panel_hierarchy);
@@ -1094,10 +1180,13 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_scene_selector);
 	panels.push_back(panel_text_editor);
 	panels.push_back(panel_build);
+	panels.push_back(panel_particles);
+	panels.push_back(panel_physics);
 }
 
 void ModuleUI::UpdatePanels()
 {
+	OPTICK_EVENT();
 	std::vector<Panel*>::iterator item = panels.begin();
 	for (; item != panels.end(); ++item) {
 		if (*item != nullptr) {
@@ -1149,6 +1238,41 @@ void ModuleUI::LoadActiveLayout()
 	}
 }
 
+void ModuleUI::HandleEvent(EventType eventType)
+{
+	for each (Panel* p in panels)
+	{
+		switch (eventType)
+		{
+		case EventType::ON_PLAY:
+			p->OnPlay();
+			break;
+		case EventType::ON_PAUSE:
+			p->OnPause();
+			break;
+		case EventType::ON_STOP:
+			p->OnStop();
+			break;
+		case EventType::ON_ASSET_SELECT:
+			p->OnAssetSelect();
+			break;
+		case EventType::ON_ASSET_DELETE:
+			p->OnAssetDelete();
+			break;
+		case EventType::ON_GO_SELECT:
+			p->OnObjectSelect();
+			break;
+		case EventType::ON_GO_DELETE:
+			p->OnObjectDelete();
+			break;
+		}
+	}
+
+	if (eventType == EventType::ON_UNLOAD_SCENE) {
+		App->ui->panel_animtimeline->changed = true;
+	}
+}
+
 void ModuleUI::FramerateRegister(float frames, float ms)
 {
 	if (panel_config->IsEnabled())
@@ -1188,6 +1312,7 @@ void ModuleUI::BackgroundDockspace()
 
 	ImGui::End();
 }
+
 
 Layout::Layout(const char* name)
 {

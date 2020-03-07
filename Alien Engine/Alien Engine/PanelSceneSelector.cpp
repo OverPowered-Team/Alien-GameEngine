@@ -112,6 +112,14 @@ void PanelSceneSelector::SaveSceneAsNew()
 		else {
 			path = filename;
 		}
+
+		std::string curr(curr_dir);
+		App->file_system->NormalizePath(curr);
+		App->file_system->NormalizePath(path);
+		for (uint i = 0; i < curr.size(); ++i) {
+			path.erase(path.begin());
+		}
+		path.erase(path.begin());
 		scene->SetAssetsPath(path.data());
 		scene->CreateMetaData();
 		App->objects->SaveScene(scene);
@@ -206,6 +214,13 @@ void PanelSceneSelector::CreateNewScene()
 		else {
 			path = filename;
 		}
+		std::string curr(curr_dir);
+		App->file_system->NormalizePath(curr);
+		App->file_system->NormalizePath(path);
+		for (uint i = 0; i < curr.size(); ++i) {
+			path.erase(path.begin());
+		}
+		path.erase(path.begin());
 		scene->SetAssetsPath(path.data());
 		scene->CreateMetaData();
 		App->objects->CreateEmptyScene(scene);

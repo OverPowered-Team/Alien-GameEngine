@@ -36,6 +36,9 @@ public:
 	void SetFloat3(const std::string& name, const float3& numbers);
 	float3 GetFloat3(const std::string& name);
 
+	void SetFloat4(const std::string& name, const float4& numbers);
+	float4 GetFloat4(const std::string& name);
+
 	void SetQuat(const std::string& name, const Quat& numbers);
 	Quat GetQuat(const std::string& name);
 	
@@ -92,6 +95,9 @@ public:
 
 	void SetFloat3(const std::string& name, const float3& numbers);
 	float3 GetFloat3(const std::string& name);
+
+	void SetFloat4(const std::string& name, const float4& numbers);
+	float4 GetFloat4(const std::string& name);
 
 	void SetQuat(const std::string& name, const Quat& numbers);
 	Quat GetQuat(const std::string& name);

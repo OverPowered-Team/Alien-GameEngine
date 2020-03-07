@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Application.h"
 #include "ModuleObjects.h"
+#include "Viewport.h"
 
 std::vector<ComponentCamera*> Camera::GetAllCameras()
 {
@@ -16,6 +17,7 @@ void Camera::SetCurrentCamera(ComponentCamera* camera)
 {
 	if (camera != nullptr) {
 		App->renderer3D->actual_game_camera = camera;
+		App->objects->game_viewport->SetCamera(camera);
 	}
 	else {
 		LOG_ENGINE("Camera was nullptr in Camera::SetCurrentCamera");

@@ -10,6 +10,7 @@
 #include "TextEdit/TextEditor.h"
 #include <utility>
 
+class GameObject;
 class Panel;
 class PanelConfig;
 class PanelAbout;
@@ -25,7 +26,10 @@ class PanelSceneSelector;
 class PanelGame;
 class PanelBuild;
 class PanelTextEditor;
-
+class PanelAnimTimeline;
+class PanelAnimator;
+class PanelParticleSystem;
+class PanelPhysics;
 struct ShortCut;
 
 struct Layout {
@@ -82,6 +86,8 @@ public:
 	void SaveLayout(Layout* layout, bool is_new = true); // save x layout
 	void LoadActiveLayout(); // charge the active layout //
 
+	void HandleEvent(EventType eventType);
+
 private:
 
 	// panels
@@ -106,6 +112,10 @@ public:
 	// big window to dock everything
 	void BackgroundDockspace();
 
+	
+
+
+
 private:
 	TextEditor edit;
 	// demo
@@ -120,6 +130,7 @@ private:
 	PanelInspector* panel_inspector = nullptr;
 	PanelBuild* panel_build = nullptr;
 	PanelLayout* panel_layout = nullptr;
+	PanelParticleSystem* panel_particles = nullptr;
 
 	// ShortCuts
 	ShortCut* shortcut_demo = nullptr;
@@ -148,12 +159,18 @@ private:
 	SDL_Scancode panel_about_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_hierarchy_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_create_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_create_materials[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_inspector_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_console_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_text_edit_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_render_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_scene_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_game_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_animtimeline_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_animator_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_particles_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_physics_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+
 	SDL_Scancode shortcut_demo_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_report_bug_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_wireframe_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
@@ -175,7 +192,6 @@ private:
 	std::pair<bool, Time::GameState> change_game_state;
 
 public:
-
 	// public panels
 	PanelConfig* panel_config = nullptr;
 	PanelConsole* panel_console = nullptr;
@@ -186,6 +202,9 @@ public:
 	PanelGame* panel_game = nullptr;
 	PanelHierarchy* panel_hierarchy = nullptr;
 	PanelTextEditor* panel_text_editor = nullptr;
+	PanelAnimTimeline* panel_animtimeline = nullptr;
+	PanelAnimator* panel_animator = nullptr;
+	PanelPhysics* panel_physics = nullptr;
 
 	// layouts
 	std::vector<Layout*> layouts;

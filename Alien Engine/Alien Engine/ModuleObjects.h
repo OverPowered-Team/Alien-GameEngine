@@ -5,18 +5,27 @@
 #include "GameObject.h"
 #include "Color.h"
 #include <vector>
+#include <list>
 #include <map>
 #include <utility>
 #include "Octree.h"
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
+#include <map>
 
 class ReturnZ;
 class ResourcePrefab;
 class ComponentScript;
 class Alien;
 class ResourceScene;
+class ComponentCanvas;
+enum class ComponentType;
+class DirLightProperties;
+class PointLightProperties;
+class SpotLightProperties;
+
+class Viewport;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -45,6 +54,16 @@ enum class PrimitiveType
 	UNKONWN
 };
 
+// Used only at the creation of the object.
+enum class LightTypeObj
+{
+	POINT,
+	SPOT,
+	DIRECTIONAL,
+
+	UNKNOWN = -1
+};
+
 class ModuleObjects : public Module
 {
 public:
@@ -63,8 +82,29 @@ public:
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
 
+	void HandleEvent(EventType eventType) override;
+
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
+	void CreateBaseUI(ComponentType type);
+
+	// lights
+	void CreateLight(LightTypeObj type);
+
+	//particle system
+	void CreateEffect(ComponentType type);
+	
+	uint GetNumOfPointLights() const;
+	uint GetNumOfDirLights() const;
+	uint GetNumOfSpotLights() const;
+	
+	void AddNumOfPointLights();
+	void AddNumOfDirLights();
+	void AddNumOfSpotLights();
+	
+	void ReduceNumOfPointLights();
+	void ReduceNumOfDirLights();
+	void ReduceNumOfSpotLights();
 
 	// poly options
 	void ChangeWireframeMode();
@@ -89,7 +129,8 @@ public:
 	void DeselectObject(GameObject* obj);
 
 	/*---------Scripts Calls-----------*/
-	void InitScriptsOnPlay() const;
+	void OnPlay() const;
+	void InitScripts() const;
 	void ScriptsPreUpdate() const;
 	void ScriptsUpdate() const;
 	void ScriptsPostUpdate() const;
@@ -146,8 +187,13 @@ private:
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
 	void ReAssignScripts(JSONArraypack* to_load);
 	void DeleteReturns();
+	void UpdateGamePadInput();
+	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
+	ComponentCanvas* GetCanvas();
 
 public:
+	//Focus
+	u64 selected_ui = -1;
 
 	ResourceScene* current_scene = nullptr;
 
@@ -156,7 +202,7 @@ public:
 	Component* component_in_copy = nullptr;
 
 	bool prefab_scene = false;
-	bool printing_scene = true;
+	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 
@@ -234,6 +280,16 @@ public:
 
 	std::vector<std::string> tags;
 
+	std::vector<Viewport*> viewports;
+
+	Viewport* game_viewport = nullptr;
+
+	bool first_assigned_selected = false;
+
+	std::list<DirLightProperties*> directional_light_properites;
+	std::list<PointLightProperties*> point_light_properites;
+	std::list<SpotLightProperties*> spot_light_properites;
+
 private:
 	// root
 	GameObject* base_game_object = nullptr;
@@ -246,5 +302,11 @@ private:
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
 	std::list<InvokeInfo*> invokes;
+
+	// Lights knowledge
+	uint num_of_dir_lights = 0u;
+	uint num_of_point_lights = 0u;
+	uint num_of_spot_lights = 0u;
+	uint num_of_area_lights = 0u;
 };
 

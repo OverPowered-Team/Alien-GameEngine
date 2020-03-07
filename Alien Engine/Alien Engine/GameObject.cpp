@@ -5,27 +5,78 @@
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
-#include "ComponentLight.h"
+#include "ComponentDeformableMesh.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
+#include "ComponentBone.h"
+#include "ComponentAnimator.h"
+#include "ComponentDeformableMesh.h"
+#include "ComponentCanvas.h"
+#include "ComponentText.h"
+#include "ComponentButton.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentParticleSystem.h"
+#include "ParticleSystem.h"
+#include "ComponentImage.h"
+#include "ComponentBar.h"
+#include "ComponentUI.h"
+#include "ComponentCheckbox.h"
+#include "ComponentSlider.h"
 #include "ComponentScript.h"
+#include "ComponentAudioListener.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentReverbZone.h"
 #include "Prefab.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
+#include "mmgr/mmgr.h"
+
+#include "ResourceShader.h"
+#include "ResourceMaterial.h"
+
+#include "ComponentBoxCollider.h"
+#include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentRigidBody.h"
+
+#include "Optick/include/optick.h"
 
 GameObject::GameObject(GameObject* parent)
 {
 	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+	AddComponent(transform);
 
 	if (parent != nullptr) {
 		this->parent = parent;
 		parent->AddChild(this);
 	}
+
 }
 
-GameObject::GameObject()
+GameObject::GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale)
 {
+	ID = App->resources->GetRandomID();
+	this->transform = new ComponentTransform(this, pos, rot, scale);
+	AddComponent(transform);
+
+	if (parent != nullptr) {
+		this->parent = parent;
+		parent->AddChild(this);
+	}
+
+}
+
+GameObject::GameObject(bool ignore_transform)
+{
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 }
 
 GameObject::~GameObject()
@@ -446,6 +497,11 @@ GameObject* GameObject::GetChildRecursive(const char* child_name)
 	}
 }
 
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	return children;
+}
+
 void GameObject::SetEnable(bool enable)
 {
 	if (enable != enabled) {
@@ -464,25 +520,29 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene()
+void GameObject::DrawScene(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon();
-		if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();
+			mesh->DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
 			mesh->DrawMesh();
 		if (mesh->view_vertex_normals)
@@ -490,36 +550,54 @@ void GameObject::DrawScene()
 		if (mesh->view_face_normals)
 			mesh->DrawFaceNormals();
 		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB();
+			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
-			mesh->DrawOBB();
+			mesh->DrawOBB(camera);
+	}
+
+
+	for (Component* component : components)
+	{
+		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
+		{
+			collider->DrawScene();
+		}
 	}
 }
 
 
-void GameObject::DrawGame()
+void GameObject::DrawGame(ComponentCamera* camera)
 {
+	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if(mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
-	}
+	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon();
+		mesh->DrawPolygon(camera);
 	}
 }
 
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, const ComponentCamera* camera)
 {
+
+	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
+
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+		if (mesh == nullptr) //not sure if this is the best solution
+			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
@@ -528,15 +606,31 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 				to_draw->push_back({ distance, this });
 			}
 		}
+		else
+		{
+			float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+			float distance = camera->frustum.pos.Distance(obj_pos);
+			to_draw->push_back({ distance, this });
+		}
 	}
 
-	ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
-	if (light != nullptr && light->IsEnabled())
+	// Lights
+	ComponentLightDirectional* light_dir = (ComponentLightDirectional*)GetComponent(ComponentType::LIGHT_DIRECTIONAL);
+	if (light_dir != nullptr && light_dir->IsEnabled())
 	{
-		light->LightLogic();
+		light_dir->LightLogic();
 	}
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
+	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
+	if (light_spot != nullptr && light_spot->IsEnabled())
+	{
+		light_spot->LightLogic();
+	}
+	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
+	if (light_point != nullptr && light_point->IsEnabled())
+	{
+		light_point->LightLogic();
+	}
+
 	if (camera_ != nullptr && camera_->IsEnabled()) 
 	{
 		if (App->objects->printing_scene && App->objects->draw_frustum && std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
@@ -547,24 +641,74 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
 	}
 
+	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
+	
+	if(partSystem != nullptr)
+	{
+		partSystem->Draw();
+	}
+
+
 	if (App->objects->printing_scene)
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
+		/* TOFIX / DO. Light does not exist anymore here
 		if (light != nullptr && light->IsEnabled())
 		{
-			light->DrawIconLight();
+			//light->DrawIconLight();
+		}
+		*/
+
+		if (partSystem != nullptr)
+		{
+			partSystem->DebugDraw();
 		}
 	}
+
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr && canvas->IsEnabled())
+	{
+		canvas->Draw();
+	}
+
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
 			(*child)->SetDrawList(to_draw, camera);
 		}
 	}
+
+	ComponentUI* ui = GetComponent<ComponentUI>();
+
+	if (ui != nullptr && ui->IsEnabled())
+	{
+		ui->Draw(!App->objects->printing_scene);
+	}
+}
+
+ComponentCanvas* GameObject::GetCanvas()
+{
+	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
+
+	if (canvas != nullptr) {
+		return canvas;
+	}
+
+	std::vector<GameObject*>::iterator item = children.begin();
+	for (; item != children.end(); ++item) {
+		if (*item != nullptr) {
+			canvas = (*item)->GetCanvas();
+			if (canvas != nullptr)
+				break;
+		}
+	}
+
+	return canvas;
 }
 
 void GameObject::AddComponent(Component* component)
@@ -579,6 +723,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::PostUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -598,6 +743,7 @@ void GameObject::PostUpdate()
 
 void GameObject::PreUpdate()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -617,6 +763,7 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
+	OPTICK_EVENT();
 	if (!components.empty()) {
 		auto item = components.begin();
 		for (; item != components.end(); ++item) {
@@ -760,10 +907,20 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item) {
-		if (*item != nullptr && (*item)->GetType() == type) {
-			return *item;
+	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE) {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == ComponentType::UI && dynamic_cast<ComponentUI*>(*item)->ui_type == type) {
+				return *item;
+			}
+		}
+	}
+	else {
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item) {
+			if (*item != nullptr && (*item)->GetType() == type) {
+				return *item;
+			}
 		}
 	}
 	return nullptr;
@@ -778,6 +935,12 @@ const Component* GameObject::GetComponent(const ComponentType& type) const
 		}
 	}
 	return nullptr;
+}
+
+ComponentTransform* GameObject::GetComponentTransform() const
+{
+	auto ret = GetComponent(ComponentType::TRANSFORM);
+	return (ret == nullptr) ? nullptr : (ComponentTransform*)ret;
 }
 
 Component* GameObject::GetComponentWithID(const u64& compID)
@@ -943,6 +1106,26 @@ void GameObject::SetNewParent(GameObject* new_parent)
 		else {
 			transform->Reparent(transform->global_transformation);
 		}
+
+		ComponentUI* ui = GetComponent<ComponentUI>();
+		if (ui != nullptr) {
+			GameObject* p = new_parent;
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent <ComponentCanvas>();
+					if (canvas != nullptr) {
+						ui->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					ui->SetCanvas(nullptr);
+				}
+			}
+		}
 	}
 	else {
 		LOG_ENGINE("NewParent was nullptr or NewParent was a child :O");
@@ -1032,6 +1215,7 @@ void GameObject::FreeArrayMemory(void*** array_)
 
 GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position, GameObject* parent)
 {
+	OPTICK_EVENT();
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
@@ -1083,6 +1267,39 @@ void GameObject::OnDisable()
 		if (*it != nullptr) {
 			(*it)->OnDisable();
 		}
+	}
+}
+
+void GameObject::OnPlay()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnPlay();
+	}
+}
+
+void GameObject::OnPause()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnPause();
+	}
+}
+
+void GameObject::OnStop()
+{
+	std::vector<Component*>::const_iterator it = components.begin();
+
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it)->IsEnabled())
+			(*it)->OnStop();
 	}
 }
 
@@ -1220,6 +1437,8 @@ bool GameObject::Exists(GameObject* object) const
 AABB GameObject::GetBB() const
 {
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr)
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
 	if (HasChildren())
 	{
@@ -1251,32 +1470,21 @@ AABB GameObject::GetBB() const
 		}
 		else
 		{
-			ComponentCamera* camera = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-			ComponentLight* light = (ComponentLight*)GetComponent(ComponentType::LIGHT);
+			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
 
-			if (camera != nullptr) {
-				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-				float4x4 matrix = float4x4::FromTRS(transform->GetGlobalPosition() - camera->frustum.front.Normalized() * 2, transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } *Quat{ 0.7071,0,0.7071,0 }), { 0.1F,0.1F,0.1F });
-				float4x4 to_save = transform->global_transformation;
-				transform->global_transformation = matrix;
-				camera->mesh_camera->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return camera->mesh_camera->GetGlobalAABB();
-			}
-			else if (light != nullptr) {
+			if (ui != nullptr) {
+				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 				float3 pos = transform->GetGlobalPosition();
-				float4x4 matrix = float4x4::FromTRS({ pos.x - 0.133f, pos.y, pos.z }, transform->GetGlobalRotation(), { 0.2f, 0.18f, 0.2f });
-				float4x4 to_save = transform->global_transformation;
-				light->bulb->RecalculateAABB_OBB();
-				transform->global_transformation = to_save;
-				return light->bulb->GetGlobalAABB();
+				float3 scale = transform->GetGlobalScale();
+				aabb_ui.SetFromCenterAndSize(pos, { scale.x * 2,scale.y * 2,2 });
+				return aabb_ui;
 			}
 
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 			float3 pos = transform->GetGlobalPosition();
-			aabb_null.SetFromCenterAndSize(pos, { 2,2,2 });
+			aabb_null.SetFromCenterAndSize(pos, { 1,1,1 });
 			return aabb_null;
 		}
 	}
@@ -1372,15 +1580,24 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 	if (components_to_load != nullptr) {
 		for (uint i = 0; i < components_to_load->GetArraySize(); ++i) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new type to switch
 			switch ((int)components_to_load->GetNumber("Type")) {
 			case (int)ComponentType::TRANSFORM: {
-				ComponentTransform* transform = new ComponentTransform(this);
+				transform = new ComponentTransform(this);
 				transform->LoadComponent(components_to_load);
 				AddComponent(transform);
 				break; }
-			case (int)ComponentType::LIGHT: {
-				ComponentLight* light = new ComponentLight(this);
+			case (int)ComponentType::LIGHT_DIRECTIONAL: {
+				ComponentLightDirectional* light = new ComponentLightDirectional(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
+			case (int)ComponentType::LIGHT_SPOT: {
+				ComponentLightSpot* light = new ComponentLightSpot(this);
+				light->LoadComponent(components_to_load);
+				AddComponent(light);
+				break; }
+			case (int)ComponentType::LIGHT_POINT: {
+				ComponentLightPoint* light = new ComponentLightPoint(this);
 				light->LoadComponent(components_to_load);
 				AddComponent(light);
 				break; }
@@ -1399,10 +1616,120 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				camera->LoadComponent(components_to_load);
 				AddComponent(camera);
 				break; }
+			case (int)ComponentType::DEFORMABLE_MESH: {
+				ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(this);
+				def_mesh->LoadComponent(components_to_load);
+				AddComponent(def_mesh);
+				break; }
+			case (int)ComponentType::ANIMATOR: {
+				ComponentAnimator* anim = new ComponentAnimator(this);
+				anim->LoadComponent(components_to_load);
+				AddComponent(anim);
+				break; }
+			case (int)ComponentType::BONE: {
+				ComponentBone* bone = new ComponentBone(this);
+				bone->LoadComponent(components_to_load);
+				AddComponent(bone);
+				break; }
+			case (int)ComponentType::A_EMITTER: {
+				ComponentAudioEmitter* emitter = new ComponentAudioEmitter(this);
+				emitter->LoadComponent(components_to_load);
+				AddComponent(emitter);
+				break; }
+			case (int)ComponentType::A_LISTENER: {
+				ComponentAudioListener* listener = new ComponentAudioListener(this);
+				listener->LoadComponent(components_to_load);
+				AddComponent(listener);
+				break; }
+			case (int)ComponentType::A_REVERB: {
+				ComponentReverbZone* reverb = new ComponentReverbZone(this);
+				reverb->LoadComponent(components_to_load);
+				AddComponent(reverb);
+				break; }
+			case (int)ComponentType::PARTICLES: {
+				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
+				particleSystem->LoadComponent(components_to_load);
+				AddComponent(particleSystem);
+				break; }
+			case (int)ComponentType::CANVAS: {
+				ComponentCanvas* canvas = new ComponentCanvas(this);
+				canvas->LoadComponent(components_to_load);
+				AddComponent(canvas);
+				break; }
+			case (int)ComponentType::BOX_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::SPHERE_COLLIDER: {
+				ComponentSphereCollider* sphere_collider = new ComponentSphereCollider(this);
+				sphere_collider->LoadComponent(components_to_load);
+				AddComponent(sphere_collider);
+				break; }
+			case (int)ComponentType::CAPSULE_COLLIDER: {
+				ComponentCapsuleCollider* capsule_collider = new ComponentCapsuleCollider(this);
+				capsule_collider->LoadComponent(components_to_load);
+				AddComponent(capsule_collider);
+				break; }
+			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
+				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
+				box_collider->LoadComponent(components_to_load);
+				AddComponent(box_collider);
+				break; }
+			case (int)ComponentType::RIGID_BODY: {
+				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
+				rigi_body->LoadComponent(components_to_load);
+				AddComponent(rigi_body);
+				break; }
+
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);
 				// dont need to addcomponent, load script does it
+				break; }
+			case (int)ComponentType::UI: {
+				ComponentType typeUI = (ComponentType)(int)components_to_load->GetNumber("UIType");
+				switch (typeUI) {
+				case ComponentType::UI_IMAGE: {
+					ComponentImage* image = new ComponentImage(this);
+					image->ui_type = typeUI;
+					image->LoadComponent(components_to_load);
+					AddComponent(image);
+					break; }
+				case ComponentType::UI_TEXT: {
+					ComponentText* text = new ComponentText(this);
+					text->ui_type = typeUI;
+					text->LoadComponent(components_to_load);
+					AddComponent(text);
+					break; }
+				case ComponentType::UI_BUTTON: {
+					ComponentButton* button = new ComponentButton(this);
+					button->ui_type = typeUI;
+					button->LoadComponent(components_to_load);
+					AddComponent(button);
+					break; }
+				case ComponentType::UI_BAR: {
+					ComponentBar* bar = new ComponentBar(this);
+					bar->ui_type = typeUI;
+					bar->LoadComponent(components_to_load);
+					AddComponent(bar);
+					break; }
+				case ComponentType::UI_CHECKBOX: {
+					ComponentCheckbox* checkbox = new ComponentCheckbox(this);
+					checkbox->ui_type = typeUI;
+					checkbox->LoadComponent(components_to_load);
+					AddComponent(checkbox);
+					break; }
+				case ComponentType::UI_SLIDER: {
+					ComponentSlider* slider = new ComponentSlider(this);
+					slider->ui_type = typeUI;
+					slider->LoadComponent(components_to_load);
+					AddComponent(slider);
+					break; }
+				default:
+					LOG_ENGINE("Unknown component UItype while loading");
+					break;
+				}
 				break; }
 			default:
 				LOG_ENGINE("Unknown component type while loading");
@@ -1421,6 +1748,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 
 GameObject* GameObject::Clone(GameObject* parent)
 {
+	OPTICK_EVENT();
 	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);
@@ -1456,12 +1784,20 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					ComponentTransform* transform = new ComponentTransform(clone);
-					(*item)->Clone(transform);
-					clone->AddComponent(transform);
+					clone->transform->SetGlobalTransformation(transform->global_transformation);
 					break; }
-				case ComponentType::LIGHT: {
-					ComponentLight* light = new ComponentLight(clone);
+				case ComponentType::LIGHT_DIRECTIONAL: {
+					ComponentLightDirectional* light = new ComponentLightDirectional(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_SPOT: {
+					ComponentLightSpot* light = new ComponentLightSpot(clone);
+					(*item)->Clone(light);
+					clone->AddComponent(light);
+					break; }
+				case ComponentType::LIGHT_POINT: {
+					ComponentLightPoint* light = new ComponentLightPoint(clone);
 					(*item)->Clone(light);
 					clone->AddComponent(light);
 					break; }
@@ -1469,6 +1805,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentMaterial* material = new ComponentMaterial(clone);
 					(*item)->Clone(material);
 					clone->AddComponent(material);
+					break; }
+				case ComponentType::CANVAS: {
+					ComponentCanvas* canvas = new ComponentCanvas(clone);
+					(*item)->Clone(canvas);
+					clone->AddComponent(canvas);
 					break; }
 				case ComponentType::MESH: {
 					ComponentMesh* mesh = new ComponentMesh(clone);
@@ -1480,11 +1821,37 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(camera);
 					clone->AddComponent(camera);
 					break; }
+				case ComponentType::DEFORMABLE_MESH: {
+					ComponentDeformableMesh* def_mesh = new ComponentDeformableMesh(clone);
+					(*item)->Clone(def_mesh);
+					clone->AddComponent(def_mesh);
+					break; }
 				case ComponentType::SCRIPT: {
 					ComponentScript* script = new ComponentScript(clone);
 					(*item)->Clone(script);
 					// dont need to addcomponent, clone script does it
 					break; }
+				case ComponentType::UI: {
+					ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
+					switch (ui->ui_type) {
+					case ComponentType::UI_IMAGE: {
+						ComponentImage* image = new ComponentImage(clone);
+						(*item)->Clone(image);
+						clone->AddComponent(image);
+						break; }
+					case ComponentType::UI_TEXT: {
+						ComponentText* text = new ComponentText(clone);
+						(*item)->Clone(text);
+						clone->AddComponent(text);
+						break; }
+					case ComponentType::UI_BUTTON: {
+						ComponentButton* button = new ComponentButton(clone);
+						(*item)->Clone(button);
+						clone->AddComponent(button);
+						break; }
+					}
+					break; }
+
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;
@@ -1511,18 +1878,59 @@ void GameObject::CloningGameObject(GameObject* clone)
 
 void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_delete)
 {
-	SDL_assert((uint)FileDropType::UNKNOWN == 5);
+	//SDL_assert((uint)FileDropType::UNKNOWN == 10);
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->GetTexture() == (ResourceTexture*)to_delete) {
+		if (material != nullptr && material->material->texture != nullptr && material->material->texture == (ResourceTexture*)to_delete) {
 			material->SetTexture(nullptr);
+		}
+		break; }
+	case ResourceType::RESOURCE_MATERIAL : {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material == (ResourceMaterial*)to_delete) {
+			material->material = App->resources->default_material; // TODO: Apply default material when deleting the old one
+		}
+		break; }
+	case ResourceType::RESOURCE_SHADER: {
+		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+		if (material != nullptr && material->material->used_shader == (ResourceShader*)to_delete) {
+			material->material->used_shader = App->resources->default_shader;
+			App->resources->default_shader->IncreaseReferences();
 		}
 		break; }
 	case ResourceType::RESOURCE_MESH: {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
-			mesh->mesh = nullptr;
+		if (!mesh)
+		{
+			ComponentDeformableMesh* d_mesh = (ComponentDeformableMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+			if (d_mesh != nullptr && d_mesh->mesh == (ResourceMesh*)to_delete) {
+				d_mesh->mesh = nullptr;
+			}
+		}
+		else
+		{
+			if (mesh != nullptr && mesh->mesh == (ResourceMesh*)to_delete) {
+				mesh->mesh = nullptr;
+			}
+		}
+		break; }
+	case ResourceType::RESOURCE_BONE: {
+		ComponentBone* bone = (ComponentBone*)GetComponent(ComponentType::BONE);
+		if (bone != nullptr && bone->bone == (ResourceBone*)to_delete) {
+			bone->bone = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_ANIMATOR_CONTROLLER: {
+		ComponentAnimator* anim = (ComponentAnimator*)GetComponent(ComponentType::ANIMATOR);
+		if (anim != nullptr && anim->animator_controller == (ResourceAnimatorController*)to_delete) {
+			anim->animator_controller = nullptr;
+		}
+		break; }
+	case ResourceType::RESOURCE_FONT: {
+		ComponentText* text = (ComponentText*)GetComponent(ComponentType::UI_TEXT);
+		if (text != nullptr && text->GetFont() == (ResourceFont*)to_delete) {
+			text->SetFont(nullptr);
 		}
 		break; }
 	}

@@ -1,9 +1,47 @@
 {
     "Meta": {
-        "ID": "5384200147613019081",
+        "ID": "15831679118308791583",
         "NumMeshes": 1,
+        "Name": "Minion",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/12801038667721441805.alienMesh"
+            "Library\/Meshes\/13382814827012053823.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/8267261315310146701.material"
         ]
-    }
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Cylinder",
+            "parentName": "Minion",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
 }

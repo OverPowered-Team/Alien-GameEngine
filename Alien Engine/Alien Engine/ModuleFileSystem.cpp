@@ -2,14 +2,16 @@
 #include "Application.h"
 #include "ModuleFileSystem.h"
 #include "PhysFS/include/physfs.h"
-#include "Assimp/include/assimp/cfileio.h"
-#include "Assimp/include/assimp/types.h"
+#include "Assimp/include/cfileio.h"
+#include "Assimp/include/types.h"
 #include "Resource_.h"
 #include "FileNode.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
 #include "mmgr/mmgr.h"
+
+#include "Optick/include/optick.h"
 
 using namespace std;
 
@@ -45,16 +47,22 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 #ifndef GAME_VERSION
 	// Make sure standard paths exist
 	const char* dirs[] = {
-		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,
-		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER,
-		ASSETS_PREFAB_FOLDER, SCRIPTS_DLL_OUTPUT, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,SHADERS_FOLDER, FONTS_FOLDER,
+		ANIM_CONTROLLER_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER, ASSETS_PREFAB_FOLDER, AUDIO_FOLDER,
+		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, LIBRARY_SHADERS_FOLDER, LIBRARY_MATERIALS_FOLDER, 
+		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
+		LIBRARY_AUDIO_FOLDER, LIBRARY_BONES_FOLDER, LIBRARY_FONTS_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, 
+		SCRIPTS_DLL_OUTPUT
+
 	};
 #else
 	// Make sure standard paths exist
 	const char* dirs[] = {
 		LIBRARY_FOLDER, CONFIGURATION_FOLDER,
-		LIBRARY_MESHES_FOLDER,LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
-		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER
+		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER,
+		LIBRARY_SHADERS_FOLDER, LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER,
+		LIBRARY_BONES_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
+		LIBRARY_AUDIO_FOLDER, LIBRARY_FONTS_FOLDER
 	};
 #endif
 	for (uint i = 0; i < sizeof(dirs) / sizeof(const char*); ++i)
@@ -106,6 +114,7 @@ bool ModuleFileSystem::Init()
 
 update_status ModuleFileSystem::PreUpdate(float dt)
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	static std::string dll_path(std::string(SCRIPTS_DLL_OUTPUT + std::string("AlienEngineScripts.dll")));
 	if (Exists(dll_path.data())) {
@@ -222,7 +231,9 @@ void ModuleFileSystem::DiscoverEverythig(FileNode* node)
 	GetPreviousNames(previous_names, node);
 	node->path = previous_names;
 
-	if (App->StringCmp(node->path.data(), MODELS_FOLDER) || App->StringCmp(node->path.data(), SCENE_FOLDER) || App->StringCmp(node->path.data(), TEXTURES_FOLDER) || App->StringCmp(node->path.data(), SCRIPTS_FOLDER) || App->StringCmp(node->path.data(), ASSETS_PREFAB_FOLDER))
+	if (App->StringCmp(node->path.data(), MODELS_FOLDER) || App->StringCmp(node->path.data(), SCENE_FOLDER) || App->StringCmp(node->path.data(), TEXTURES_FOLDER)
+		|| App->StringCmp(node->path.data(), SCRIPTS_FOLDER) || App->StringCmp(node->path.data(), ASSETS_PREFAB_FOLDER) || App->StringCmp(node->path.data(), ANIM_CONTROLLER_FOLDER)
+		|| App->StringCmp(node->path.data(), FONTS_FOLDER) || App->StringCmp(node->path.data(), AUDIO_FOLDER))
 		node->is_base_file = true;
 
 	if (!node->is_file) {
@@ -588,14 +599,23 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	std::string final_path;
 	SplitFilePath(extern_path, nullptr, &final_path); // get base file name
 
-	FileDropType type = SearchExtension(std::string(extern_path)); // get extension type
+	FileDropType ext_type = SearchExtension(std::string(extern_path));
 
-	switch (type) { // add location
+	switch (ext_type) { // add location
 	case FileDropType::MODEL3D: 
 		final_path = MODELS_FOLDER + final_path;
 		break;
 	case FileDropType::TEXTURE:
 		final_path = TEXTURES_FOLDER + final_path;
+		break;
+	case FileDropType::SHADER:
+		final_path = SHADERS_FOLDER + final_path;
+		break;
+	case FileDropType::MATERIAL:
+		final_path = MATERIALS_FOLDER + final_path;
+		break;
+	case FileDropType::FONT:
+		final_path = FONTS_FOLDER + final_path;
 		break;
 	}
 
@@ -605,27 +625,34 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		CopyFromOutsideFS(extern_path, final_path.c_str()); // copy file if doesnt exist
 	}
 
-	switch (type) { // call the loader
+	switch (ext_type) { // call the loader
 	case FileDropType::MODEL3D:
 		LOG_ENGINE("Start Loading Model");
-		App->importer->LoadModelFile(final_path.data());
+		App->importer->LoadModelFile(final_path.data(), extern_path);
 		break;
 	case FileDropType::TEXTURE:
 		LOG_ENGINE("Start Loading Texture");
 		App->importer->LoadTextureFile(final_path.data(), true);
 		break;
+	case FileDropType::SHADER:
+		LOG_ENGINE("Start Loading Shader");
+		App->importer->LoadShaderFile(final_path.data(), true);
+		break;
+	case FileDropType::FONT:
+		LOG_ENGINE("Start Loading Font");
+		App->importer->LoadFontFile(final_path.data());
+		break;
 	}
 #endif
 }
-const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_path)
+FileDropType ModuleFileSystem::SearchExtension(const std::string& extern_path)
 {
-	
 	std::string extension;
 	SplitFilePath(extern_path.data(), nullptr, nullptr, &extension);
 	
 	FileDropType ext_type = FileDropType::UNKNOWN;
 
-	if (App->StringCmp(extension.data(), "fbx"))
+	if (App->StringCmp(extension.data(), "fbx") || App->StringCmp(extension.data(), "dae"))
 		ext_type = FileDropType::MODEL3D;
 	else if (App->StringCmp(extension.data(), "dds"))
 		ext_type = FileDropType::TEXTURE;
@@ -635,6 +662,14 @@ const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_
 		ext_type = FileDropType::TEXTURE;
 	else if (App->StringCmp(extension.data(), "tga"))
 		ext_type = FileDropType::TEXTURE;
+	else if (App->StringCmp(extension.data(), "shader"))
+		ext_type = FileDropType::SHADER;
+	else if (App->StringCmp(extension.data(), "ttf"))
+		ext_type = FileDropType::FONT;
+	else if (App->StringCmp(extension.data(), "otf"))
+		ext_type = FileDropType::FONT;
+	else if (App->StringCmp(extension.data(), "animController"))
+		ext_type = FileDropType::ANIM_CONTROLLER;
 	else
 		LOG_ENGINE("Extension unknown!");
 

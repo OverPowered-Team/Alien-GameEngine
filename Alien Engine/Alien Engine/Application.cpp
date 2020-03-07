@@ -1,9 +1,12 @@
 #include "Application.h"
 #include "Parson/parson.h"
 #include "Time.h"
+#include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 Application::Application()
 {
+	OPTICK_EVENT();
 	window = new ModuleWindow();
 	input = new ModuleInput();
 	renderer3D = new ModuleRenderer3D();
@@ -12,9 +15,12 @@ Application::Application()
 	ui = new ModuleUI();
 #endif
 	importer = new ModuleImporter();
+	tween = new AnimTween();
 	objects = new ModuleObjects();
+	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
+	audio = new ModuleAudio();
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -24,16 +30,17 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-#ifndef GAME_VERSION
-	AddModule(camera);
-#endif
 	AddModule(input);
 	AddModule(file_system);
 	AddModule(resources);
 	AddModule(importer);
+	AddModule(audio);
 	// Scenes
 	AddModule(objects);
+	AddModule(physics);
+	AddModule(tween);
 #ifndef GAME_VERSION
+	AddModule(camera);
 	AddModule(ui);
 #endif
 	// Renderer last!
@@ -44,6 +51,7 @@ Application::Application()
 
 void Application::LoadDll()
 {
+	OPTICK_EVENT();
 	static char curr_dir[MAX_PATH];
 	GetCurrentDirectoryA(MAX_PATH, curr_dir);
 	dll = std::string(curr_dir + std::string("/") + DLL_WORKING_PATH);
@@ -166,6 +174,7 @@ inline bool Application::FileExists(const std::string& name) {
 
 bool Application::Init()
 {
+	OPTICK_EVENT();
 	bool ret = true;
 
 	if (FileExists("Configuration/CustomConfiguration.json")) { // look if it has custom settings
@@ -207,15 +216,21 @@ bool Application::Init()
 
 	ret = window->CreateCoreWindow();
 
+#ifdef GAME_VERSION
+	renderer3D->OnResize(window->width, window->height);
+#endif
+
 	return ret;
 }
 
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	OPTICK_EVENT();
 	frame_count++;
 	last_sec_frame_count++;
 	dt = frame_time.ReadSec();
+	Time::engine_dt = dt;
 	if (Time::IsPlaying()) {
 		Time::SetDT(dt);
 	}
@@ -229,6 +244,7 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	OPTICK_EVENT();
 	if (last_sec_frame_time.Read() > 1000)
 	{
 		prev_last_sec_frame_count = last_sec_frame_count;
@@ -298,36 +314,29 @@ void Application::DeleteJSONfile(JSONfilepack* json_pack)
 	}
 }
 
+void Application::UpdateLogFile(FILE* fp)
+{
+	for (auto it_log = engine_string_logs.begin(); it_log != engine_string_logs.end(); it_log++)
+	{
+		fprintf(fp, std::string((*it_log).loged.at(0).second + '\n').data());
+	}
+}
+
 // Call PreUpdate, Update and PostUpdate on all modules
 update_status Application::Update()
 {
+	OPTICK_EVENT();
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
-	std::list<Module*>::iterator item = list_modules.begin();
-	
-	while(item != list_modules.end() && ret == UPDATE_CONTINUE)
-	{
-		ret = (*item)->PreUpdate(dt);
-		++item;
-	}
-	item = list_modules.begin();
+	PreUpdate(ret);
+
 #ifndef GAME_VERSION
 	shortcut_manager->UpdateShortCuts();
 #endif
-	while(item != list_modules.end() && ret == UPDATE_CONTINUE)
-	{
-		ret = (*item)->Update(dt);
-		++item;
-	}
+	OnUpdate(ret);
 
-	item = list_modules.begin();
-
-	while(item != list_modules.end() && ret == UPDATE_CONTINUE)
-	{
-		ret = (*item)->PostUpdate(dt);
-		++item;
-	}
+	PostUpdate(ret);
 	if (quit)
 		ret = UPDATE_STOP;
 	FinishUpdate();
@@ -335,8 +344,45 @@ update_status Application::Update()
 	return ret;
 }
 
+void Application::PreUpdate(update_status& ret)
+{
+	OPTICK_EVENT();
+	auto item = list_modules.begin();
+	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
+	{
+		ret = (*item)->PreUpdate(dt);
+		//assert(ret == UPDATE_CONTINUE);
+		++item;
+	}
+}
+
+void Application::OnUpdate(update_status& ret)
+{
+	OPTICK_EVENT();
+	auto item = list_modules.begin();
+	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
+	{
+		ret = (*item)->Update(dt);
+		//assert(ret == UPDATE_CONTINUE);
+		++item;
+	}
+}
+
+void Application::PostUpdate(update_status& ret)
+{
+	OPTICK_EVENT();
+	auto item = list_modules.begin();
+	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
+	{
+		ret = (*item)->PostUpdate(dt);
+		//assert(ret == UPDATE_CONTINUE);
+		++item;
+	}
+}
+
 bool Application::CleanUp()
 {
+	OPTICK_EVENT();
 	bool ret = true;
 
 	std::list<Module*>::reverse_iterator item = list_modules.rbegin();
@@ -344,6 +390,8 @@ bool Application::CleanUp()
 	while(item != list_modules.rend() && ret == true)
 	{
 		ret = (*item)->CleanUp();
+		if (!ret)
+			LOG_ENGINE("Module %s failed to CleanUp", (*item)->name);
 		++item;
 	}
 	return ret;
@@ -377,6 +425,15 @@ void Application::OpenWebsite(const std::string& website)
 {
 	ShellExecuteA(NULL, "open", website.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
+
+void Application::CastEvent(EventType eventType)
+{
+	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end(); ++item)
+		(*item)->HandleEvent(eventType);
+}
+
+void Application::SendAlienEvent(AlienEvent& e)
+{}
 
 void Application::AddModule(Module* mod)
 {

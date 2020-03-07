@@ -1,0 +1,61 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Big_Building",
+                "FamilyNumber": 1,
+                "ID": "9907637298677136732",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "3291120114944537709",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -76.708351135253906,
+                            12.476184844970703,
+                            -87.752388000488281
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            15.899959564208984,
+                            31.642032623291016,
+                            12.65095043182373
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16048031978806015288"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

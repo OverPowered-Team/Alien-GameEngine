@@ -4,14 +4,22 @@
 #include "ComponentTransform.h"
 #include "Application.h"
 #include "ComponentMaterial.h"
+#include "ResourceShader.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "Color.h"
 #include "ResourceMesh.h"
 #include "ReturnZ.h"
+#include "ModuleCamera3D.h"
+#include "ResourceTexture.h"
+#include "ResourceMaterial.h"
+#include "mmgr/mmgr.h"
+
+#include "Optick/include/optick.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
+	name = "Mesh";
 }
 
 ComponentMesh::~ComponentMesh()
@@ -25,61 +33,67 @@ ComponentMesh::~ComponentMesh()
 	}
 }
 
-void ComponentMesh::DrawPolygon()
+void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 {
+	mesh = resource;
+	GenerateLocalAABB();
+	RecalculateAABB_OBB();
+}
+
+void ComponentMesh::DrawPolygon(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
 	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
-		glEnable(GL_STENCIL_TEST);
+		/*glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_ALWAYS, 1, -1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 	}
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
+	ComponentMaterial* mat = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
+
+	// Mandatory Material ??
+	if (mat == nullptr) 
+		return;
+
+	ResourceMaterial* material = mat->material;
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	glPushMatrix();
-	glMultMatrixf(transform->global_transformation.Transposed().ptr());
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glEnable(GL_POLYGON_OFFSET_FILL);
+	//glPolygonOffset(1.0f, 0.1f);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	// -------------------------- Actual Drawing -------------------------- 
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0f, 0.1f);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
+	material->ApplyMaterial();
 
-	if (mesh->uv_cords != nullptr) {
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_uv);
-		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
-	}
+	glBindVertexArray(mesh->vao);
 
-	if (mesh->normals != nullptr) {
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
-		glNormalPointer(GL_FLOAT, 0, 0);
-	}
+	// Uniforms --------------
+	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
+	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+	// --------------------------------------------------------------------- 
+
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	material->used_shader->Unbind();
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
-
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glPopMatrix();
 }
 
 void ComponentMesh::DrawOutLine()
@@ -92,12 +106,12 @@ void ComponentMesh::DrawOutLine()
 		return;
 	if (game_object_attached->IsParentSelected() && !game_object_attached->selected)
 	{
-		glColor3f(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->parent_outline_color.r, App->objects->parent_outline_color.g, App->objects->parent_outline_color.b, 1.f));
 		glLineWidth(App->objects->parent_line_width);
 	}
 	else
 	{
-		glColor3f(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b);
+		ModuleRenderer3D::BeginDebugDraw(float4(App->objects->no_child_outline_color.r, App->objects->no_child_outline_color.g, App->objects->no_child_outline_color.b, 1.f));
 		glLineWidth(App->objects->no_child_line_width);
 	}
 
@@ -108,7 +122,7 @@ void ComponentMesh::DrawOutLine()
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glPushMatrix();
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -129,10 +143,11 @@ void ComponentMesh::DrawOutLine()
 
 void ComponentMesh::DrawMesh()
 {
+	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	ComponentTransform* transform = game_object_attached->transform;
 
 	glPushMatrix();
 	glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -164,7 +179,7 @@ void ComponentMesh::DrawVertexNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -190,7 +205,7 @@ void ComponentMesh::DrawFaceNormals()
 		return;
 
 	if (mesh->normals != nullptr) {
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		ComponentTransform* transform = game_object_attached->transform;
 
 		glPushMatrix();
 		glMultMatrixf(transform->global_transformation.Transposed().ptr());
@@ -201,7 +216,7 @@ void ComponentMesh::DrawFaceNormals()
 		for (uint i = 0; i < mesh->num_index; i += 3)
 		{
 			glVertex3f(mesh->center_point[i], mesh->center_point[i + 1], mesh->center_point[i + 2]);
-			glVertex3f(mesh->center_point[i] + mesh->center_point_normal[i] * App->objects->face_normal_length, mesh->center_point[i + 1] + mesh->center_point_normal[i+ 1] * App->objects->face_normal_length, mesh->center_point[i + 2] + mesh->center_point_normal[i + 2] * App->objects->face_normal_length);
+			glVertex3f(mesh->center_point[i] + mesh->center_point_normal[i] * App->objects->face_normal_length, mesh->center_point[i + 1] + mesh->center_point_normal[i + 1] * App->objects->face_normal_length, mesh->center_point[i + 2] + mesh->center_point_normal[i + 2] * App->objects->face_normal_length);
 		}
 		glEnd();
 		glLineWidth(1);
@@ -223,7 +238,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Mesh", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
@@ -243,13 +258,13 @@ bool ComponentMesh::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
-	
+
 		check = view_mesh;
 		if (ImGui::Checkbox("Active Mesh          ", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			view_mesh = check;
 		}
-		ImGui::SameLine(); 
+		ImGui::SameLine();
 		check = wireframe;
 		if (ImGui::Checkbox("Active Wireframe", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
@@ -271,13 +286,13 @@ bool ComponentMesh::DrawInspector()
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			draw_AABB = check;
 		}
-		ImGui::SameLine(); 
+		ImGui::SameLine();
 		check = draw_OBB;
 		if (ImGui::Checkbox("Draw OBB", &check)) {
 			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			draw_OBB = check;
 		}
-		
+
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -288,7 +303,7 @@ bool ComponentMesh::DrawInspector()
 	return true;
 }
 
-void ComponentMesh::DrawGlobalAABB()
+void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
 {
 	if (mesh == nullptr)
 		return;
@@ -333,19 +348,19 @@ void ComponentMesh::DrawGlobalAABB()
 
 	glVertex3f(global_aabb.minPoint.x, global_aabb.maxPoint.y, global_aabb.maxPoint.z);
 	glVertex3f(global_aabb.maxPoint.x, global_aabb.maxPoint.y, global_aabb.maxPoint.z);
-	
+
 	glLineWidth(1);
 	glEnd();
 }
 
-void ComponentMesh::DrawOBB()
+void ComponentMesh::DrawOBB(ComponentCamera* camera)
 {
 	if (mesh == nullptr)
 		return;
 
 	glColor3f(App->objects->global_OBB_color.r, App->objects->global_OBB_color.g, App->objects->global_OBB_color.b);
 	glLineWidth(App->objects->OBB_line_width);
-	float3* obb_points=nullptr;
+	float3* obb_points = nullptr;
 	obb.GetCornerPoints(obb_points);
 
 	glBegin(GL_LINES);
@@ -444,21 +459,19 @@ void ComponentMesh::Clone(Component* clone)
 	mesh->wireframe = wireframe;
 }
 
-AABB ComponentMesh::GenerateAABB()
+void ComponentMesh::GenerateLocalAABB()
 {
 	if (mesh != nullptr) {
 		local_aabb.SetNegativeInfinity();
 		local_aabb.Enclose((float3*)mesh->vertex, mesh->num_vertex);
 	}
-	return local_aabb;
 }
 
 void ComponentMesh::RecalculateAABB_OBB()
 {
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	obb = GenerateAABB();
+	ComponentTransform* transform = game_object_attached->transform;
+	obb = local_aabb;
 	obb.Transform(transform->global_transformation);
-
 	global_aabb.SetNegativeInfinity();
 	global_aabb.Enclose(obb);
 }
@@ -558,6 +571,6 @@ void ComponentMesh::LoadComponent(JSONArraypack* to_load)
 			}
 		}
 	}
-	GenerateAABB();
+	GenerateLocalAABB();
 	RecalculateAABB_OBB();
 }

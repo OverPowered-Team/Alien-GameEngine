@@ -5,9 +5,26 @@
 #include "..\..\..\Alien Engine\ComponentScript.h"
 #include "..\..\..\Alien Engine\ComponentTransform.h"
 #include "..\..\..\Alien Engine\ComponentCamera.h"
-#include "..\..\..\Alien Engine\ComponentLight.h"
+#include "..\..\..\Alien Engine\ComponentLightDirectional.h"
+#include "..\..\..\Alien Engine\ComponentLightSpot.h"
 #include "..\..\..\Alien Engine\ComponentMaterial.h"
 #include "..\..\..\Alien Engine\ComponentMesh.h"
+#include "../../../Alien Engine/ComponentAudioEmitter.h"
+#include "..\..\..\Alien Engine\ComponentParticleSystem.h"
+#include "..\..\..\Alien Engine\ComponentAnimator.h"
+#include "..\..\..\Alien Engine\ParticleSystem.h"
+#include "..\..\..\Alien Engine\ParticleEmitter.h"
+#include "..\..\..\Alien Engine\ComponentRigidBody.h"
+#include "..\..\..\Alien Engine\ComponentCollider.h"
+#include "..\..\..\Alien Engine\ComponentBoxCollider.h"
+#include "..\..\..\Alien Engine\ComponentCapsuleCollider.h"
+#include "..\..\..\Alien Engine\ComponentSphereCollider.h"
+#include "..\..\..\Alien Engine\ComponentLightDirectional.h"
+#include "..\..\..\Alien Engine\ComponentLightPoint.h"
+#include "..\..\..\Alien Engine\ComponentLightSpot.h"
+#include "..\..\..\Alien Engine\ComponentUI.h"
+#include "..\..\..\Alien Engine\ComponentButton.h"
+#include "..\..\..\Alien Engine\ComponentImage.h"
 /*-----------------COMPONENTS-------------------*/
 
 /*-----------------MATH-------------------*/
@@ -18,6 +35,7 @@
 
 /*-----------------HELPERS-------------------*/
 #include "..\..\..\Alien Engine\StaticInput.h"
+#include "..\..\..\Alien Engine\StaticTween.h"
 #include "..\..\..\Alien Engine\Maths.h"
 #include "..\..\..\Alien Engine\Debug.h"
 #include "..\..\..\Alien Engine\RandomHelper.h"

@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
 
 ModuleWindow::ModuleWindow(bool start_enabled) : Module(start_enabled)
 {
@@ -19,6 +20,7 @@ ModuleWindow::~ModuleWindow()
 // Called before render is available
 bool ModuleWindow::Init()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Init SDL window & surface");
 	bool ret = true;
 
@@ -31,7 +33,7 @@ bool ModuleWindow::Init()
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
 
-		//Use OpenGL 2.1
+		//Use OpenGL 3.1
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -62,6 +64,7 @@ bool ModuleWindow::Init()
 // Called before quitting
 bool ModuleWindow::CleanUp()
 {
+	OPTICK_EVENT();
 	LOG_ENGINE("Destroying SDL window and quitting all SDL systems");
 
 	//Destroy window
@@ -252,7 +255,6 @@ bool ModuleWindow::CreateCoreWindow()
 	SDL_GetWindowSize(window, &width, &height);
 
 	screen_surface = SDL_GetWindowSurface(window);
-	App->renderer3D->OnResize(width, height);
 	return ret;
 }
 

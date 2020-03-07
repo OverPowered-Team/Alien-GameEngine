@@ -3,6 +3,7 @@
 #include <functional>
 
 class ComponentTransform;
+class ComponentCollider;
 class GameObject;
 enum class ComponentType;
 class Component;
@@ -10,7 +11,9 @@ typedef unsigned int uint;
 
 class __declspec(dllexport) Alien {
 	friend class ComponentScript;
+	friend class ComponentCollider;
 	friend class ModuleObjects;
+	friend class ResourceAnimatorController;
 public:
 	Alien();
 	virtual ~Alien();
@@ -36,6 +39,13 @@ public:
 	virtual void OnPostRender() {}
 
 	virtual void CleanUp() {}
+
+	//void OnCollision(ComponentCollider* collider) {}
+	virtual void OnTrigger(ComponentCollider* collider) {}
+	virtual void OnTriggerEnter(ComponentCollider* collider) {}
+	virtual void OnTriggerExit(ComponentCollider* collider) {}
+	virtual void OnAnimationEnd(const char* name) {}
+
 
 	bool IsScriptEnabled() const;
 	void SetScriptEnable(const bool& enable);
@@ -81,6 +91,8 @@ public:
 	void CancelInvoke();
 	void InvokeRepeating(std::function<void()> void_no_params_function, float seconds_to_first_invoke, float seconds_between_each_call);
 	//bool IsInvoking(std::function<void()> void_no_params_function);
+
+
 
 	// Need
 	// TODO:

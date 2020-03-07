@@ -3,16 +3,23 @@
 #include "Resource_.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "ResourceFont.h"
 #include "ModuleImporter.h"
 #include "Application.h"
 #include "ResourceTexture.h"
+#include "ResourceShader.h"
+#include "ResourceAnimatorController.h"
 #include "RandomHelper.h"
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ResourcePrefab.h"
+#include "ResourceAudio.h"
+#include "ResourceMaterial.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
+#include "Optick/include/optick.h"
+#include "ModuleUI.h"
 
 ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 {
@@ -25,12 +32,14 @@ ModuleResources::~ModuleResources()
 
 bool ModuleResources::Start()
 {
+	OPTICK_EVENT();
 #ifndef GAME_VERSION
 	// Load Icons
 	icons.jpg_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_jpg.png");
 	icons.png_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_png.png");
 	icons.dds_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_dds.png");
 	icons.tga_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_tga.png");
+	icons.shader_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_shader.png");
 	icons.folder = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_folder.png");
 	icons.script_file = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_script.png");
 	icons.prefab_icon = App->importer->LoadEngineTexture("Configuration/EngineTextures/icon_prefab.png");
@@ -60,6 +69,7 @@ bool ModuleResources::Start()
 	assets->name = "Assets";
 
 	App->file_system->DiscoverEverythig(assets);
+
 #endif
 
 	// Load Primitives as resource
@@ -75,6 +85,8 @@ bool ModuleResources::Start()
 
 	ReadAllMetaData();
 
+	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
+	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
 	return true;
 }
 
@@ -85,12 +97,17 @@ update_status ModuleResources::Update(float dt)
 
 bool ModuleResources::CleanUp()
 {
+	OPTICK_EVENT();
 	try {
 		std::vector<Resource*>::iterator item = resources.begin();
 		for (; item != resources.end(); ++item) {
 			if (*item != nullptr) {
 				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
 					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+				#ifndef GAME_VERSION
+				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
+					static_cast<ResourceMaterial*>(*item)->UpdateMaterialFiles();
+				#endif
 				delete* item;
 				*item = nullptr;
 			}
@@ -121,6 +138,15 @@ void ModuleResources::AddResource(Resource* resource)
 	}
 }
 
+void ModuleResources::RemoveResource(Resource* resource)
+{
+	if (resource != nullptr) {
+		std::vector<Resource*>::iterator it = std::find(resources.begin(), resources.end(), resource);
+		if (it != resources.end())
+			resources.erase(it);
+	}
+}
+
 bool ModuleResources::CreateNewModelInstanceOf(const char* path)
 {
 	bool ret = false;
@@ -140,7 +166,7 @@ bool ModuleResources::CreateNewModelInstanceOf(const char* path)
 u64 ModuleResources::GetIDFromAlienPath(const char* path)
 {
 	u64 ID = 0;
-	
+	OPTICK_EVENT();
 	JSON_Value* value = json_parse_file(path);
 	JSON_Object* object = json_value_get_object(value);
 
@@ -158,6 +184,11 @@ u64 ModuleResources::GetIDFromAlienPath(const char* path)
 
 Resource* ModuleResources::GetResourceWithID(const u64& ID)
 {
+	OPTICK_EVENT();
+
+	if (ID == 0)
+		return nullptr; 
+
 	std::vector<Resource*>::iterator item = resources.begin();
 	for (; item != resources.end(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -169,6 +200,7 @@ Resource* ModuleResources::GetResourceWithID(const u64& ID)
 
 const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 {
+	OPTICK_EVENT();
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
 	for (; item != resources.cend(); ++item) {
 		if (*item != nullptr && (*item)->GetID() == ID)
@@ -176,6 +208,19 @@ const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 	}
 	LOG_ENGINE("No resource found with ID %i", ID);
 	return nullptr;
+}
+
+std::vector<Resource*> ModuleResources::GetResourcesWithType(ResourceType type)
+{
+	OPTICK_EVENT();
+	std::vector<Resource*> ret;
+	for each (Resource* r in resources)
+	{
+		if (r->GetType() == type)
+			ret.push_back(r);
+	}
+
+	return ret;
 }
 
 void ModuleResources::AddNewFileNode(const std::string& path, bool is_file)
@@ -207,6 +252,7 @@ u64 ModuleResources::GetRandomID()
 
 ResourceTexture * ModuleResources::GetTextureByName(const char * name)
 {
+	OPTICK_EVENT();
 	ResourceTexture* ret = nullptr;
 
 	std::vector<Resource*>::iterator item = resources.begin();
@@ -221,6 +267,7 @@ ResourceTexture * ModuleResources::GetTextureByName(const char * name)
 
 const ResourceTexture* ModuleResources::GetTextureByName(const char* name) const
 {
+	OPTICK_EVENT();
 	ResourceTexture* ret = nullptr;
 
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
@@ -345,7 +392,7 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 		(*ret)->SetName("Cube");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		par_mesh = par_shapes_create_subdivided_sphere(5);
+		par_mesh = par_shapes_create_subdivided_sphere(1);
 		(*ret)->SetName("Sphere");
 		break; }
 	case PrimitiveType::ROCK: {
@@ -435,6 +482,7 @@ void ModuleResources::ReadHeaderFile(const char* path, std::vector<std::string>&
 
 void ModuleResources::ReloadScripts()
 {
+	OPTICK_EVENT();
 	std::vector<std::string> files;
 	std::vector<std::string> directories;
 
@@ -449,10 +497,7 @@ void ModuleResources::ReloadScripts()
 					ResourceScript* script = (ResourceScript*)*item;
 					if (App->StringCmp(script->header_path.data(), files[i].data())) {
 						if (script->NeedReload()) {
-							remove(script->GetAssetsPath());
-							remove(script->GetLibraryPath());
-							script->data_structures.clear();
-							script->CreateMetaData(script->GetID());
+							script->Reimport();
 						}
 						exists = true;
 						script->reload_completed = true;
@@ -504,6 +549,65 @@ ResourceScene* ModuleResources::GetSceneByName(const char* name)
 	return nullptr;
 }
 
+bool ModuleResources::GetShaders(std::vector<ResourceShader*>& to_fill)
+{
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+			to_fill.push_back((ResourceShader*)(*res));
+	}
+
+	return !to_fill.empty();
+}
+
+ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
+{
+	ResourceShader* desiredShader = nullptr; 
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_SHADER)
+		{
+			if (App->StringCmp((*res)->GetName(), shaderName.c_str()))
+			{
+				desiredShader = (ResourceShader*)(*res);
+				break;
+			}
+		}
+	}
+
+	return desiredShader;
+}
+
+ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
+{
+	ResourceMaterial* desiredMaterial = nullptr;
+
+	for (auto res = resources.begin(); res != resources.end(); res++) {
+		if ((*res)->GetType() == ResourceType::RESOURCE_MATERIAL)
+		{
+			if (App->StringCmp((*res)->GetName(), name))
+			{
+				desiredMaterial = (ResourceMaterial*)(*res);
+				break;
+			}
+		}
+	}
+
+	return desiredMaterial;
+}
+
+ResourceFont* ModuleResources::GetFontByName(const char* name)
+{
+	auto item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_FONT) {
+			if (App->StringCmp((*item)->GetName(), name)) {
+				return dynamic_cast<ResourceFont*>(*item);
+			}
+		}
+	}
+	return nullptr;
+}
+
 FileNode* ModuleResources::GetFileNodeByPath(const std::string& path, FileNode* node)
 {
 	FileNode* to_search = nullptr;
@@ -523,6 +627,7 @@ FileNode* ModuleResources::GetFileNodeByPath(const std::string& path, FileNode* 
 
 void ModuleResources::ReadAllMetaData()
 {
+	OPTICK_EVENT();
 	std::vector<std::string> files;
 	std::vector<std::string> directories;
 
@@ -535,6 +640,19 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Shaders
+	App->file_system->DiscoverFiles(SHADERS_FOLDER, files, directories);
+	ReadShaders(directories, files, SHADERS_FOLDER);
+	files.clear();
+	directories.clear();
+	default_shader = GetShaderByName("default_shader");
+
+	// Init Materials
+	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
+	ReadMaterials(directories, files, MATERIALS_FOLDER);
+	files.clear();
+	directories.clear();
+
 	// Init Models & Meshes
 	App->file_system->DiscoverFiles(MODELS_FOLDER, files, directories);
 
@@ -543,9 +661,20 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// Init Controllers
+	App->file_system->DiscoverFiles(ANIM_CONTROLLER_FOLDER, files, directories);
+	ReadAnimControllers(directories, files, ANIM_CONTROLLER_FOLDER);
+
 	// Init Prefabs
 	App->file_system->DiscoverFiles(ASSETS_PREFAB_FOLDER, files, directories);
 	ReadPrefabs(directories, files, ASSETS_PREFAB_FOLDER);
+
+	files.clear();
+	directories.clear();
+
+	// Init Fonts
+	App->file_system->DiscoverFiles(FONTS_FOLDER, files, directories);
+	ReadFonts(directories, files, FONTS_FOLDER);
 
 	files.clear();
 	directories.clear();
@@ -555,8 +684,16 @@ void ModuleResources::ReadAllMetaData()
 
 	// Init Scenes
 	App->file_system->DiscoverFiles(SCENE_FOLDER, files, directories);
-
 	ReadScenes(directories, files, SCENE_FOLDER);
+
+	files.clear();
+	directories.clear();
+
+	// Init Audio
+	App->file_system->DiscoverFiles(AUDIO_FOLDER, files, directories);
+
+	App->audio->LoadBanksInfo();
+	ReadAudio(directories, files, AUDIO_FOLDER);
 
 	files.clear();
 	directories.clear();
@@ -571,11 +708,39 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 
+	// shaders
+	App->file_system->DiscoverFiles(LIBRARY_SHADERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		shader->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+	default_shader = (ResourceShader*)GetResourceWithID(2146752462670567246);
+
+	// materials
+	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
+		material->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
 	// models
 	App->file_system->DiscoverFiles(LIBRARY_MODELS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceModel* model = new ResourceModel();
 		model->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// anim controllers
+	App->file_system->DiscoverFiles(LIBRARY_ANIM_CONTROLLERS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		anim_ctrl->ReadLibrary(files[i].data());
 	}
 	files.clear();
 	directories.clear();
@@ -594,6 +759,23 @@ void ModuleResources::ReadAllMetaData()
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourcePrefab* prefab = new ResourcePrefab();
 		prefab->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+
+	// audio
+	App->file_system->DiscoverFiles(LIBRARY_AUDIO_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAudio* audio = new ResourceAudio();
+		audio->ReadLibrary(files[i].data());
+	}
+	files.clear();
+	directories.clear();
+	// fonts
+	App->file_system->DiscoverFiles(LIBRARY_FONTS_FOLDER, files, directories, true);
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceFont* font = ResourceFont::LoadFile(files[i].data(), std::stoull(App->file_system->GetBaseFileName(files[i].data()).data()));
+		AddResource(font);
 	}
 	files.clear();
 	directories.clear();
@@ -619,13 +801,54 @@ void ModuleResources::ReadTextures(std::vector<std::string> directories, std::ve
 		}
 	}
 	if (!directories.empty()) {
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadTextures(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadShaders(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceShader* shader = new ResourceShader();
+		if (!shader->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = shader->GetID();
+			shader->CreateMetaData(id);
+		}
+	}
+	if (!directories.empty()) {
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadShaders(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadMaterials(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceMaterial* material = new ResourceMaterial();
+		if (!material->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			/*u64 id = material->GetID();
+			material->CreateMetaData(id);*/
+		}
+	}
+	if (!directories.empty()) {
 		std::vector<std::string> new_files;
 		std::vector<std::string> new_directories;
 
 		for (uint i = 0; i < directories.size(); ++i) {
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
-			ReadTextures(new_directories, new_files, dir);
+			ReadMaterials(new_directories, new_files, dir);
 		}
 	}
 }
@@ -639,13 +862,32 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadModels(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAnimControllers(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		ResourceAnimatorController* anim_ctrl = new ResourceAnimatorController();
+		if (!anim_ctrl->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+			u64 id = anim_ctrl->GetID();
+			anim_ctrl->ReImport(id);
+		}
+	}
+	if (!directories.empty()) {
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAnimControllers(new_directories, new_files, dir);
 		}
 	}
 }
@@ -660,10 +902,9 @@ void ModuleResources::ReadPrefabs(std::vector<std::string> directories, std::vec
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadPrefabs(new_directories, new_files, dir);
@@ -683,13 +924,59 @@ void ModuleResources::ReadScenes(std::vector<std::string> directories, std::vect
 		}
 	}
 	if (!directories.empty()) {
-		std::vector<std::string> new_files;
-		std::vector<std::string> new_directories;
-
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadScenes(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadAudio(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	auto banks = App->audio->GetBanks();
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			if (files[i].find(".bnk") != std::string::npos) {
+				ResourceAudio* audio = new ResourceAudio();
+				if (!audio->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
+					for (auto b = banks.begin(); b != banks.end(); ++b) {
+						if (files[i].compare((*b)->name + ".bnk") == 0) {
+							audio->CreateMetaData((*b)->id);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (!directories.empty()) {
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadAudio(new_directories, new_files, dir);
+		}
+	}
+}
+
+void ModuleResources::ReadFonts(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder)
+{
+	for (uint i = 0; i < files.size(); ++i) {
+		if (files[i].find("_meta.alien") == std::string::npos) {
+			std::string path = App->file_system->GetPathWithoutExtension(std::string(current_folder + files[i]).data()) + "_meta.alien";
+			ResourceFont* font = ResourceFont::ImportFile(std::string(current_folder + files[i]).data(), GetIDFromAlienPath(path.data()));
+		}
+	}
+	if (!directories.empty()) {
+		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+			std::string dir = current_folder + directories[i] + "/";
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			ReadFonts(new_directories, new_files, dir);
 		}
 	}
 }
@@ -756,6 +1043,47 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 		}
 	}
 }
+
+void ModuleResources::CreateAsset(FileDropType type)
+{
+	switch (type)
+	{
+	case FileDropType::ANIM_CONTROLLER:
+		CreateAnimatorController();
+		break;
+	case FileDropType::ANIMATION:
+		break;
+
+	}
+
+	App->ui->panel_project->RefreshAllNodes();
+}
+
+void ModuleResources::CreateAnimatorController()
+{
+	std::string asset_name = "NewAnimatorController";
+	App->ui->panel_project->GetUniqueFileName(asset_name, ANIM_CONTROLLER_FOLDER);
+
+	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
+	new_controller->name = asset_name;
+	new_controller->SaveAsset();
+}
+
+ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
+{
+	std::string materialName = name;
+	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
+	
+	ResourceMaterial* new_material = new ResourceMaterial();
+	new_material->SetName(materialName.c_str());
+	new_material->CreateMaterialFile(MATERIALS_FOLDER);
+	new_material->CreateMetaData();
+	App->ui->panel_project->RefreshAllNodes();
+
+	return new_material;
+}
+
+
 
 
 
