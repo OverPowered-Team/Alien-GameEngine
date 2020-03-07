@@ -6,8 +6,9 @@ class ResourceMesh;
 class ComponentBone;
 class math::float4x4;
 
-class ComponentDeformableMesh : public ComponentMesh
+class __declspec(dllexport) ComponentDeformableMesh : public ComponentMesh
 {
+	friend class ResourceModel;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class ResourceModel;

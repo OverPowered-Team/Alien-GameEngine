@@ -6,7 +6,7 @@
 class ResourceFont;
 struct Character;
 
-class ComponentText :public ComponentUI
+class __declspec(dllexport) ComponentText :public ComponentUI
 {
 public:
 	ComponentText(GameObject* obj);

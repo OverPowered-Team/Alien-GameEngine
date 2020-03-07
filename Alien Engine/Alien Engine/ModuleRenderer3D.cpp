@@ -130,19 +130,6 @@ bool ModuleRenderer3D::Start()
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {	
 	OPTICK_EVENT();
-#ifdef GAME_VERSION
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glClearStencil(0);
-	if (actual_game_camera != nullptr) {
-		glClearColor(actual_game_camera->camera_color_background.r, actual_game_camera->camera_color_background.g, actual_game_camera->camera_color_background.b, actual_game_camera->camera_color_background.a);
-	}
-	glLoadIdentity();
-
-	glMatrixMode(GL_MODELVIEW);
-	if (actual_game_camera != nullptr) {
-		glLoadMatrixf(actual_game_camera->GetViewMatrix());
-	}
-#endif
 	return UPDATE_CONTINUE;
 }
 
@@ -175,7 +162,9 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	App->window->width = width;
 	App->window->height = height;
 #ifdef GAME_VERSION
-	App->objects->game_viewport->SetSize(width, height);
+	if (App->objects->game_viewport->GetCamera() != nullptr) {
+		App->objects->game_viewport->SetSize(width, height);
+	}
 #endif
 }
 
@@ -258,7 +247,7 @@ void ModuleRenderer3D::BeginDebugDraw(float4& color)
 {
 	glDisable(GL_LIGHTING);
 	glColor4fv(&color[0]);
-	glLineWidth(4.f);
+	glLineWidth(2.f);
 }
 
 void ModuleRenderer3D::EndDebugDraw()

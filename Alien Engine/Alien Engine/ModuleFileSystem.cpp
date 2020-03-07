@@ -2,8 +2,8 @@
 #include "Application.h"
 #include "ModuleFileSystem.h"
 #include "PhysFS/include/physfs.h"
-#include "Assimp/include/assimp/cfileio.h"
-#include "Assimp/include/assimp/types.h"
+#include "Assimp/include/cfileio.h"
+#include "Assimp/include/types.h"
 #include "Resource_.h"
 #include "FileNode.h"
 
@@ -599,9 +599,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	std::string final_path;
 	SplitFilePath(extern_path, nullptr, &final_path); // get base file name
 
-	FileDropType type = SearchExtension(std::string(extern_path)); // get extension type
+	FileDropType ext_type = SearchExtension(std::string(extern_path));
 
-	switch (type) { // add location
+	switch (ext_type) { // add location
 	case FileDropType::MODEL3D: 
 		final_path = MODELS_FOLDER + final_path;
 		break;
@@ -610,6 +610,9 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		break;
 	case FileDropType::SHADER:
 		final_path = SHADERS_FOLDER + final_path;
+		break;
+	case FileDropType::MATERIAL:
+		final_path = MATERIALS_FOLDER + final_path;
 		break;
 	case FileDropType::FONT:
 		final_path = FONTS_FOLDER + final_path;
@@ -622,7 +625,7 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 		CopyFromOutsideFS(extern_path, final_path.c_str()); // copy file if doesnt exist
 	}
 
-	switch (type) { // call the loader
+	switch (ext_type) { // call the loader
 	case FileDropType::MODEL3D:
 		LOG_ENGINE("Start Loading Model");
 		App->importer->LoadModelFile(final_path.data(), extern_path);
@@ -642,9 +645,8 @@ void ModuleFileSystem::ManageNewDropFile(const char* extern_path)
 	}
 #endif
 }
-const FileDropType& ModuleFileSystem::SearchExtension(const std::string& extern_path)
+FileDropType ModuleFileSystem::SearchExtension(const std::string& extern_path)
 {
-	
 	std::string extension;
 	SplitFilePath(extern_path.data(), nullptr, nullptr, &extension);
 	

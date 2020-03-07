@@ -86,6 +86,7 @@ bool ComponentText::DrawCharacter(Character ch)
 void ComponentText::Draw(bool isGame)
 {
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
 
 	glColor4f(0.5, 1.0, 1.0, 1.0);
 
@@ -133,7 +134,9 @@ void ComponentText::Draw(bool isGame)
 	glPopMatrix();
 
 	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 
+	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
 

@@ -4,7 +4,9 @@
 #include "ComponentTransform.h"
 #include "ResourceMesh.h"
 #include "ComponentMaterial.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ResourceScript.h"
 #include "ResourceTexture.h"
 #include "Maths.h"
@@ -250,8 +252,16 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					ComponentScript* script = (ComponentScript*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(script, comp->comp);
 					break; }
-				case ComponentType::LIGHT: {
-					ComponentLight* light = (ComponentLight*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+				case ComponentType::LIGHT_DIRECTIONAL: {
+					ComponentLightDirectional* light = (ComponentLightDirectional*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(light, comp->comp);
+					break; }
+				case ComponentType::LIGHT_SPOT: {
+					ComponentLightSpot* light = (ComponentLightSpot*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
+					CompZ::SetComponent(light, comp->comp);
+					break; }
+				case ComponentType::LIGHT_POINT: {
+					ComponentLightPoint* light = (ComponentLightPoint*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(light, comp->comp);
 					break; }
 				case ComponentType::PARTICLES: {
@@ -393,9 +403,14 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompZ::SetCompZ((*item), (CompZ**)&materialZ);
 					comp = materialZ;
 					break; }
-				case ComponentType::LIGHT: {
+				case ComponentType::LIGHT_DIRECTIONAL: {
 					CompLightZ* lightZ = nullptr;
 					CompZ::SetCompZ((*item), (CompZ**)&lightZ);
+					comp = lightZ;
+					break; }
+				case ComponentType::LIGHT_SPOT: {
+					CompLightZ* lightZ = nullptr;
+					CompZ::SetCompZ((*item), (CompZ * *)& lightZ);
 					comp = lightZ;
 					break; }
 				case ComponentType::CAMERA: {
@@ -517,8 +532,20 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						CompZ::SetComponent(material, materialZ);
 						new_obj->AddComponent(material);
 						break; }
-					case ComponentType::LIGHT: {
-						ComponentLight* light = new ComponentLight(new_obj);
+					case ComponentType::LIGHT_DIRECTIONAL: {
+						ComponentLightDirectional* light = new ComponentLightDirectional(new_obj);
+						CompLightZ* lightZ = (CompLightZ*)(*item);
+						CompZ::SetComponent(light, lightZ);
+						new_obj->AddComponent(light);
+						break; }
+					case ComponentType::LIGHT_SPOT: {
+						ComponentLightSpot* light = new ComponentLightSpot(new_obj);
+						CompLightZ* lightZ = (CompLightZ*)(*item);
+						CompZ::SetComponent(light, lightZ);
+						new_obj->AddComponent(light);
+						break; }
+					case ComponentType::LIGHT_POINT: {
+						ComponentLightPoint* light = new ComponentLightPoint(new_obj);
 						CompLightZ* lightZ = (CompLightZ*)(*item);
 						CompZ::SetComponent(light, lightZ);
 						new_obj->AddComponent(light);
@@ -643,19 +670,29 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		ComponentMaterial* material = (ComponentMaterial*)component;
 		CompMaterialZ* materialZ = new CompMaterialZ();
 		*compZ = materialZ;
-		if (material->GetTexture() != nullptr) {
+		/*if (material->GetTexture() != nullptr) {
 			materialZ->resourceID = material->GetTexture()->GetID();
 		}
 		materialZ->objectID = material->game_object_attached->ID;
 		materialZ->color = material->color;
-		materialZ->texture_activated = material->texture_activated;
+		materialZ->texture_activated = material->texture_activated;*/
 		break; }
-	case ComponentType::LIGHT: {
-		ComponentLight* light = (ComponentLight*)component;
+	case ComponentType::LIGHT_DIRECTIONAL: {
+		ComponentLightDirectional* light = (ComponentLightDirectional*)component;
 		CompLightZ* lightZ = new CompLightZ();
 		*compZ = lightZ;
-		lightZ->diffuse = light->diffuse;
-		lightZ->ambient = light->ambient;
+		lightZ->objectID = light->game_object_attached->ID;
+		break; }
+	case ComponentType::LIGHT_SPOT: {
+		ComponentLightSpot* light = (ComponentLightSpot*)component;
+		CompLightZ* lightZ = new CompLightZ();
+		*compZ = lightZ;
+		lightZ->objectID = light->game_object_attached->ID;
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = (ComponentLightPoint*)component;
+		CompLightZ* lightZ = new CompLightZ();
+		*compZ = lightZ;
 		lightZ->objectID = light->game_object_attached->ID;
 		break; }
 	case ComponentType::CANVAS: {
@@ -811,7 +848,7 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		if (mesh->mesh != nullptr) {
 			mesh->mesh->IncreaseReferences();
 		}
-		mesh->GenerateAABB();
+		mesh->GenerateLocalAABB();
 		mesh->RecalculateAABB_OBB();
 		break; }
 	case ComponentType::MATERIAL: {
@@ -823,14 +860,20 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		else {
 			material->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(materialZ->resourceID));
 		}
-		material->texture_activated = materialZ->texture_activated;
-		material->color = materialZ->color;
+		/*material->texture_activated = materialZ->texture_activated;
+		material->color = materialZ->color;*/
 		break; }
-	case ComponentType::LIGHT: {
-		ComponentLight* light = (ComponentLight*)component;
+	case ComponentType::LIGHT_DIRECTIONAL: {
+		ComponentLightDirectional* light = (ComponentLightDirectional*)component;
 		CompLightZ* lightZ = (CompLightZ*)compZ;
-		light->ambient = lightZ->ambient;
-		light->diffuse = lightZ->diffuse;
+		break; }
+	case ComponentType::LIGHT_SPOT: {
+		ComponentLightSpot* light = (ComponentLightSpot*)component;
+		CompLightZ* lightZ = (CompLightZ*)compZ;
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = (ComponentLightPoint*)component;
+		CompLightZ* lightZ = (CompLightZ*)compZ;
 		break; }
 	case ComponentType::CANVAS: {
 		ComponentCanvas* canvas = (ComponentCanvas*)component;
@@ -1171,8 +1214,18 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		CompZ::SetComponent(material, compZ);
 		obj->AddComponent(material);
 		break; }
-	case ComponentType::LIGHT: {
-		ComponentLight* light = new ComponentLight(obj);
+	case ComponentType::LIGHT_DIRECTIONAL: {
+		ComponentLightDirectional* light = new ComponentLightDirectional(obj);
+		CompZ::SetComponent(light, compZ);
+		obj->AddComponent(light);
+		break; }
+	case ComponentType::LIGHT_SPOT: {
+		ComponentLightSpot* light = new ComponentLightSpot(obj);
+		CompZ::SetComponent(light, compZ);
+		obj->AddComponent(light);
+		break; }
+	case ComponentType::LIGHT_POINT: {
+		ComponentLightPoint* light = new ComponentLightPoint(obj);
 		CompZ::SetComponent(light, compZ);
 		obj->AddComponent(light);
 		break; }

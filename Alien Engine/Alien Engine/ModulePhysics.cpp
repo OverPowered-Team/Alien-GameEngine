@@ -52,7 +52,14 @@ bool ModulePhysics::Init()
 	collision_config = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collision_config);
 	broad_phase = new btDbvtBroadphase();
+	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	solver = new btSequentialImpulseConstraintSolver();
+
+	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
+
+	world->setGravity(GRAVITY);
+	world->setDebugDrawer(debug_renderer);
+	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
 
 	return ret;
 }
@@ -61,11 +68,6 @@ bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
 
-	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
-	world->setGravity(GRAVITY);
-	world->setDebugDrawer(debug_renderer);
-	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
-
 	return true;
 }
 
@@ -73,12 +75,10 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
-	if (Time::GetDT() != 0.f)
-	{
-		world->stepSimulation(Time::GetDT(), 10);
-	}
 
-	int numManifolds = world->getDispatcher()->getNumManifolds();
+	world->stepSimulation(Time::GetDT(), 20);
+
+	/*int numManifolds = world->getDispatcher()->getNumManifolds();
 
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -95,10 +95,10 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 			if (go_a && go_b)
 			{
-				//GameObject* go = (GameObject*)obA->getUserPointer();
+				GameObject* go = (GameObject*)obA->getUserPointer();
 			}
 		}
-	}
+	}*/
 
 	return UPDATE_CONTINUE;
 }
@@ -113,24 +113,24 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-void ModulePhysics::RenderCollider(ComponentCollider* collider)
+void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
 	world->debugDrawObject(
-		((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform()
+		((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform()
 		, collider->shape, btVector3(0.f, 1.f, 0.f));
 
 	ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
+void ModulePhysics::DrawConvexCollider(ComponentCollider* collider)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	btTransform worldTransform = ((collider->rb) ? collider->rb->body : collider->aux_body)->getWorldTransform();
+	btTransform worldTransform = ((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform();
 	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
 
 	if (hull == nullptr) return;
@@ -152,12 +152,22 @@ void ModulePhysics::RenderConvexCollider(ComponentCollider* collider)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::RenderConstraint(btTypedConstraint* constraint)
+void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawConstraints);
 	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
 	world->debugDrawConstraint(constraint);
 	ModuleRenderer3D::EndDebugDraw();
+}
+
+void ModulePhysics::DrawWorld()
+{
+	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+
+	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+	world->debugDrawWorld();
+	ModuleRenderer3D::EndDebugDraw();
+
 }
 
 void ModulePhysics::AddBody(btRigidBody* body)
@@ -168,6 +178,16 @@ void ModulePhysics::AddBody(btRigidBody* body)
 void ModulePhysics::RemoveBody(btRigidBody* body)
 {
 	world->removeRigidBody(body);
+}
+
+void ModulePhysics::AddDetector(btGhostObject* detector)
+{
+	world->addCollisionObject(detector, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::SensorTrigger);
+}
+
+void ModulePhysics::RemoveDetector(btGhostObject* detector)
+{
+	world->removeCollisionObject(detector);
 }
 
 void ModulePhysics::AddConstraint(btTypedConstraint* constraint, bool disableBodiesCollision)

@@ -501,6 +501,33 @@ void PanelHierarchy::RightClickMenu()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Light"))
+		{
+			if (ImGui::MenuItem("Point light"))
+			{
+				App->objects->CreateLight(LightTypeObj::POINT);
+			}
+			if (ImGui::MenuItem("Spot light"))
+			{
+				App->objects->CreateLight(LightTypeObj::SPOT);
+			}
+			if (ImGui::MenuItem("Directional light"))
+			{
+				App->objects->CreateLight(LightTypeObj::DIRECTIONAL);
+			}
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Effect"))
+		{
+			if (ImGui::MenuItem("Particle System"))
+			{
+				App->objects->CreateEffect(ComponentType::PARTICLES);
+			}
+			
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("UI"))
 		{
 			if (ImGui::MenuItem("Image"))

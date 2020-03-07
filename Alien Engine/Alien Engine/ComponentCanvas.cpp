@@ -53,8 +53,13 @@ void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCanvas::Draw()
 {
-	ComponentTransform* comp_trans = game_object_attached->GetComponent<ComponentTransform>();
+#ifndef GAME_VERSION
 
+#else
+
+#endif
+	ComponentTransform* comp_trans = game_object_attached->GetComponent<ComponentTransform>();
+	glDisable(GL_LIGHTING);
 	glBegin(GL_LINE_LOOP);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -71,4 +76,6 @@ void ComponentCanvas::Draw()
 	glVertex3f(v4.x, v4.y, v4.z);
 
 	glEnd();
+	glEnable(GL_LIGHTING);
+
 }

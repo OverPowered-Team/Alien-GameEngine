@@ -9,7 +9,6 @@
 #include "ComponentMaterial.h"
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
-#include "ComponentLight.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -20,6 +19,10 @@
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
+#include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -84,15 +87,13 @@ bool ModuleObjects::Start()
 	}
 	game_viewport = new Viewport(nullptr);
 #ifndef GAME_VERSION
-	GameObject* light_test = new GameObject(base_game_object);
-	light_test->SetName("Light");
-
-	light_test->AddComponent(new ComponentLight(light_test));
-
-
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
+
+	GameObject* light = new GameObject(base_game_object);
+	light->SetName("Directional Light");
+	light->AddComponent(new ComponentLightDirectional(camera));
 
 	App->camera->fake_camera->frustum.pos = { 25,25,25 };
 	App->camera->fake_camera->Look(float3(0, 0, 0));
@@ -109,6 +110,7 @@ bool ModuleObjects::Start()
 		LoadScene(App->file_system->GetBaseFileName(meta->GetString("Build.FirstScene")).data());
 		game_viewport->SetPos({ 0,0 });
 		game_viewport->active = true;
+		App->renderer3D->OnResize(App->window->width, App->window->height);
 		Time::Play();
 
 		delete meta;
@@ -206,6 +208,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 				glEnable(GL_LIGHT0);
 			}
+			
+			if (App->physics->debug_physics)
+			{
+				App->physics->DrawWorld();
+			}
 		}
 
 		if (base_game_object->HasChildren()) {
@@ -257,7 +264,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 #else
 
-	if (!game_viewport->active && !game_viewport->CanRender())
+	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
 
 	game_viewport->BeginViewport();
@@ -293,6 +300,18 @@ update_status ModuleObjects::PostUpdate(float dt)
 	}
 
 	game_viewport->EndViewport();
+
+	GLuint readFboId = 0;
+	glGenFramebuffers(1, &readFboId);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, game_viewport->GetTexture(), 0);
+	glBlitFramebuffer(0, 0, App->window->width, App->window->height,
+		0, 0, App->window->width, App->window->height,
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glDeleteFramebuffers(1, &readFboId);
+
 #endif
 	return UPDATE_CONTINUE;
 }
@@ -434,6 +453,7 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
 
 	//For Animations Timeline
+	if (App->ui)
 	App->ui->panel_animtimeline->changed = true;
 }
 
@@ -1478,7 +1498,7 @@ void ModuleObjects::UpdateGamePadInput()
 {
 	if (GetGameObjectByID(selected_ui) != nullptr &&GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed)
 	{
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) > 0.2f)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
 			{
@@ -1490,7 +1510,7 @@ void ModuleObjects::UpdateGamePadInput()
 				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) < -0.2f)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
 			{
@@ -1502,7 +1522,7 @@ void ModuleObjects::UpdateGamePadInput()
 				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) < -0.2f)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
 			{
@@ -1514,7 +1534,7 @@ void ModuleObjects::UpdateGamePadInput()
 				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) > 0.2f)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
 			{
@@ -1729,37 +1749,38 @@ void ModuleObjects::HandleEvent(EventType eventType)
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 {
 	GameObject* object = new GameObject(GetRoot(false));
+	ResourceMesh* resource = nullptr;
 	ComponentMesh* mesh = new ComponentMesh(object);
 	ComponentMaterial* material = new ComponentMaterial(object);
 	ComponentCollider* collider = nullptr;
 
 	switch (type) {
 	case PrimitiveType::CUBE: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::CUBE);
+		resource = App->resources->GetPrimitive(PrimitiveType::CUBE);
 		object->SetName("Cube");
 		break; }
 	case PrimitiveType::DODECAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
 		object->SetName("Dodecahedron");
 		break; }
 	case PrimitiveType::ICOSAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
 		object->SetName("Icosahedron");
 		break; }
 	case PrimitiveType::OCTAHEDRON: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
+		resource = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
 		object->SetName("Octahedron");
 		break; }
 	case PrimitiveType::ROCK: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::ROCK);
+		resource = App->resources->GetPrimitive(PrimitiveType::ROCK);
 		object->SetName("Rock");
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
+		resource = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
 		object->SetName("Sphere");
 		break; }
 	case PrimitiveType::TORUS: {
-		mesh->mesh = App->resources->GetPrimitive(PrimitiveType::TORUS);
+		resource = App->resources->GetPrimitive(PrimitiveType::TORUS);
 		object->SetName("Torus");
 		break; }
 	default:
@@ -1768,7 +1789,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 
 	object->AddComponent(mesh);
 	object->AddComponent(material);
-	mesh->RecalculateAABB_OBB();
+	mesh->SetResourceMesh(resource);
 
 	// Add collider --------------------------------------------
 
@@ -1865,3 +1886,105 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 
 }
 
+void ModuleObjects::CreateLight(LightTypeObj type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case LightTypeObj::POINT:
+	{
+		object->SetName("Point light");
+		comp = new ComponentLightPoint(object);
+		object->AddComponent(comp);
+		break;
+	}
+	case LightTypeObj::SPOT:
+	{
+		object->SetName("Spot light");
+		comp = new ComponentLightSpot(object);
+		object->AddComponent(comp);
+		break;
+	}
+	case LightTypeObj::DIRECTIONAL:
+	{
+		object->SetName("Directional light");
+		comp = new ComponentLightDirectional(object);
+		object->AddComponent(comp);
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+void ModuleObjects::CreateEffect(ComponentType type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case ComponentType::PARTICLES:
+	{
+		object->SetName("Particle System");
+		comp = new ComponentParticleSystem(object);
+		object->AddComponent(comp);
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+uint ModuleObjects::GetNumOfPointLights() const
+{
+	return num_of_point_lights;
+}
+
+uint ModuleObjects::GetNumOfDirLights() const
+{
+	return num_of_dir_lights;
+}
+
+uint ModuleObjects::GetNumOfSpotLights() const
+{
+	return num_of_spot_lights;
+}
+
+void ModuleObjects::AddNumOfPointLights()
+{
+	++num_of_point_lights;
+}
+
+void ModuleObjects::AddNumOfDirLights()
+{
+	++num_of_dir_lights;
+}
+
+void ModuleObjects::AddNumOfSpotLights()
+{
+	++num_of_spot_lights;
+}
+
+void ModuleObjects::ReduceNumOfPointLights()
+{
+	--num_of_point_lights;
+}
+
+void ModuleObjects::ReduceNumOfDirLights()
+{
+	--num_of_dir_lights;
+}
+
+void ModuleObjects::ReduceNumOfSpotLights()
+{
+	--num_of_spot_lights;
+}

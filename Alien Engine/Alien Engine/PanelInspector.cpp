@@ -7,13 +7,16 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
-#include "ComponentLight.h"
+#include "ComponentLightDirectional.h"
+#include "ComponentLightSpot.h"
+#include "ComponentLightPoint.h"
 #include "ComponentAnimator.h"
 
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"
 #include "ResourceBone.h"
 #include "ResourceMesh.h"
+#include "ResourceMaterial.h"
 
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
@@ -243,6 +246,11 @@ void PanelInspector::PanelLogic()
 			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
 			ShowModelImportSettings(r_model);
 		}
+		else if (selected_file->type == FileDropType::MATERIAL)
+		{
+			ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
+			mat->DisplayMaterialOnInspector();
+		}
 	}
 
 	ImGui::End();
@@ -352,7 +360,7 @@ void PanelInspector::ButtonAddComponent()
 
 	else {
 		ImGui::Combo("##choose component", &component, 
-			"Select Component\0Mesh\0Material\0Light\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+			"Select Component\0Mesh\0Material\0Light Directional\0Light Spot\0Light Point\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -397,11 +405,33 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case ComponentType::LIGHT: {
+			case ComponentType::LIGHT_DIRECTIONAL: {
 
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT))
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_DIRECTIONAL))
 				{
-					comp = new ComponentLight(App->objects->GetSelectedObjects().back());
+					comp = new ComponentLightDirectional(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_SPOT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_SPOT))
+				{
+					comp = new ComponentLightSpot(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_POINT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_POINT))
+				{
+					comp = new ComponentLightPoint(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
 				}
 				else

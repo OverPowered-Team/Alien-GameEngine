@@ -1,0 +1,61 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Wall_cont_1_lef",
+                "FamilyNumber": 1,
+                "ID": "5467792031941675654",
+                "ParentID": "4137040633948341264",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "1717100545711830361",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.233314514160156,
+                            0.31182265281677246,
+                            -72.276321411132813
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            2.1307322978973389,
+                            14.150911331176758,
+                            10.808923721313477
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3073959997890955997"
+                    },
+                    {
+                        "Type": 7,
+                        "IsTrigger": false,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

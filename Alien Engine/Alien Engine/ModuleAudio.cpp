@@ -21,6 +21,13 @@ bool ModuleAudio::Start()
 	default_listener = CreateSoundEmitter("Listener");
 	SetListener(default_listener);
 
+	for (auto i = banks.begin(); i != banks.end(); i++) {
+		if (!(*i)->loaded) {
+			WwiseT::LoadBank((std::to_string((*i)->id) + ".bnk").c_str());
+			(*i)->loaded = true;
+		}
+	}
+
 	return ret;
 }
 
@@ -53,13 +60,13 @@ update_status ModuleAudio::Update(float dt)
 	OPTICK_EVENT();
 	if (Time::state == Time::GameState::NONE) {
 		if (play_mode) {
-			UnloadAllUsedBanksFromWwise();
+			//UnloadAllUsedBanksFromWwise();
 			play_mode = false;
 		}
 	}
 	else if (Time::state == Time::GameState::PLAY) {
 		if (!play_mode) {
-			LoadUsedBanks();
+			//LoadUsedBanks();
 
 			play_mode = true;
 		}
@@ -183,6 +190,19 @@ Bank* ModuleAudio::GetBankByID(const u64& id) const
 			return *i;
 	}
 	return nullptr;
+}
+
+const char* ModuleAudio::GetEventNameByID(const u64& id) const
+{
+	for (auto i = banks.begin(); i != banks.end(); ++i)
+	{
+		for (auto j = (*i)->events.begin(); j != (*i)->events.end(); ++j)
+		{
+			if ((*j).first == id)
+				return (*j).second.c_str();
+		}
+	}
+	return "";
 }
 
 void ModuleAudio::Play()

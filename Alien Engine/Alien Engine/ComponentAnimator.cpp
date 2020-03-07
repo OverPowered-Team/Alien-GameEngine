@@ -47,6 +47,16 @@ void ComponentAnimator::PlayState(const char* name)
 		animator_controller->Play(name);
 }
 
+bool ComponentAnimator::IsPlaying(const char* name)
+{
+	bool ret = false;
+
+	if (strcmp(animator_controller->GetCurrentNode()->GetName().c_str(), name) == 0)
+		ret = true;
+
+	return ret;
+}
+
 void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 {
 	float3 position, scale;

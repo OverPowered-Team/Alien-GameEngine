@@ -36,10 +36,10 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
-	//if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
-	//{
-	//	LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
-	//}
+	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+	{
+		LOG_ENGINE("SDL_INIT_GAMECONTROLLER could not initialize! SDL_Error: %s\n", SDL_GetError());
+	}
 
 	if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
 	{
@@ -229,6 +229,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			break; }
 		case SDL_QUIT: {
 			quit = true;
+			App->QuitApp();
 			break; }
 		case SDL_DROPFILE: {
 			App->file_system->ManageNewDropFile(e.drop.file);

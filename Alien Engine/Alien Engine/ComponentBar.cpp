@@ -253,6 +253,10 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 	float4x4 matrix = transform->global_transformation;
 
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		glMatrixMode(GL_PROJECTION);
@@ -326,6 +330,9 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 
 	glPopMatrix();
 
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
 

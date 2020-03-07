@@ -24,7 +24,7 @@ ResourceModel::~ResourceModel()
 {
 	std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
 	for (; item != meshes_attached.end(); ++item) {
-		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce mesh ja la borrat alla
+		if (*item != nullptr) { // aixo passa pq es fa el delete del modul resources i aquest respurce resource_mesh ja la borrat alla
 			delete* item;
 			*item = nullptr;
 		}
@@ -342,7 +342,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 				}
 			}
 
-			for (uint i = 0; i < num_materials; ++i) {
+			/*for (uint i = 0; i < num_materials; ++i) {
 				ResourceMaterial* r_material = new ResourceMaterial();
 				if (r_material->ReadBaseInfo(materials_path[i].data())) {
 					materials_attached.push_back(r_material);
@@ -351,7 +351,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 					LOG_ENGINE("Error loading %s", materials_path[i].data());
 					delete r_material;
 				}
-			}
+			}*/
 
 			delete[] anim_path;
 			delete[] mesh_path;
@@ -715,8 +715,7 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						Cmesh = new ComponentMesh(ret);
 
 					mesh->IncreaseReferences();
-					Cmesh->mesh = mesh;
-					Cmesh->RecalculateAABB_OBB();
+					Cmesh->SetResourceMesh(mesh);
 					ret->AddComponent(Cmesh);
 				}
 
@@ -726,7 +725,7 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					if (material != nullptr) 
 					{
 						ComponentMaterial* Cmat = new ComponentMaterial(ret);
-						Cmat->color = material->color;
+						//Cmat->color = material->color;
 
 						// TODO: all texture types!!
 						/*for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
@@ -734,9 +733,8 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						}*/
 
 						// CHANGE
-						if (material->texturesID[0] != 0) 
-						{
-							Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
+						if (material->texturesID[0] != 0) {
+							//Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
 						}
 						if (mesh->deformable)
 						{

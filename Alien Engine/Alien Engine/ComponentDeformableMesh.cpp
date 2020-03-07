@@ -33,14 +33,29 @@ ComponentDeformableMesh::~ComponentDeformableMesh()
 	{
 		static_cast<ComponentMaterial*>(game_object_attached->GetComponent(ComponentType::MATERIAL))->not_destroy = false;
 	}
-	if (mesh != nullptr && mesh->is_custom) {
-		mesh->DecreaseReferences();
+	if (original_mesh != nullptr && original_mesh->is_custom) {
+		original_mesh->DecreaseReferences();
 	}
+	if (mesh)
+	{
+		delete mesh;
+		mesh = nullptr;
+	}
+	//clear deformable mesh?
 }
 
 void ComponentDeformableMesh::AttachSkeleton(ComponentTransform* root)
 {
 	root_bone_id = root->game_object_attached->ID;
+
+	//Duplicate mesh
+	if (mesh)
+	{
+		ResourceMesh* tmp_mesh = new ResourceMesh(mesh);
+		original_mesh = mesh;
+		mesh = tmp_mesh;
+	}
+		
 	AttachBone(root);
 	
 	material = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
@@ -146,7 +161,7 @@ void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("DrawAABB", draw_AABB);
 	to_save->SetBoolean("DrawOBB", draw_OBB);
 	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("MeshID", mesh ? std::to_string(mesh->GetID()) : std::to_string(0));
+	to_save->SetString("MeshID", original_mesh ? std::to_string(original_mesh->GetID()) : std::to_string(0));
 	to_save->SetString("RootBoneID", root_bone_id != 0 ? std::to_string(root_bone_id) : std::to_string(0));
 	to_save->SetBoolean("Enabled", enabled);
 }
@@ -170,7 +185,7 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 			mesh->IncreaseReferences();
 	}
 
-	GenerateAABB();
+	GenerateLocalAABB();
 	RecalculateAABB_OBB();
 }
 

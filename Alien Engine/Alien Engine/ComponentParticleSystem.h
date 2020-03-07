@@ -66,7 +66,13 @@ private:
 
 	ResourceTexture* texture = nullptr;
 	ResourceTexture* selected_texture = nullptr;
+	
+	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
+	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
+	uint light_id = 0;
 
+
+	ComponentMaterial* material = nullptr;
 	bool change_texture_menu = false;
 	bool texture_activated = true;
 

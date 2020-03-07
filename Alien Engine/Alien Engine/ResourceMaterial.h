@@ -2,6 +2,7 @@
 
 #include "Resource_.h"
 #include "Color.h"
+#include "MathGeoLib/include/Math/float4.h"
 #include <vector>
 
 /*
@@ -75,6 +76,52 @@ enum class TextureType {
 };
 
 
+struct UniformData
+{
+	struct StandardShaderProperties
+	{
+		float3 diffuse_color = float3::one();
+	} standardShaderProperties;
+
+	struct WaveShaderProperties
+	{
+		float mult_time = 1.0f;
+		float amplitude = 0.75f;
+	} waveShaderProperties;
+
+	struct BasicLightingShaderProperties {
+		float3 object_color = float3(1.f, 1.f, 1.f);
+
+		// Lighting
+		float ambient_strength = 0.1f;
+		float specular_strength = 0.5f;
+		float3 lightPosition = float3(5.f, 5.f, 5.f);
+		float3 lightColor = float3(1.f, 1.f, 1.f);
+	} basicLightingShaderProperties;
+};
+
+
+struct ShaderInputs
+{
+	struct StandardShaderProperties
+	{
+		float3 diffuse_color = float3::one();
+	} standardShaderProperties;
+
+	struct WaveShaderProperties
+	{
+		float mult_time = 1.0f;
+		float amplitude = 0.75f;
+	} waveShaderProperties;
+
+	struct IluminatedShaderProperties {
+		float3 object_color = float3(1.f, 1.f, 1.f);
+	} iluminatedShaderProperties;
+};
+
+class ResourceShader; 
+class ResourceTexture; 
+class JSONfilepack;
 
 class ResourceMaterial : public Resource {
 
@@ -89,9 +136,37 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
-public:
-	
-	Color color = Color::White();
-	u64 texturesID[(uint)TextureType::MAX] = { 0 };
+	void CreateMaterialFile(const char* directory);
+	void UpdateMaterialFiles();
+	void SaveMaterialValues(JSONfilepack* file);
+	void ReadMaterialValues(JSONfilepack* file);
 
+	// Functionality
+	void ApplyMaterial();
+
+	void SetTexture(ResourceTexture* texture);
+	void RemoveTexture();
+	bool HasTexture() const; 
+
+	// ----- ImGui ----- 
+	void DisplayMaterialOnInspector();
+	void MaterialHeader();
+	void ShaderSelectionHeader();
+	void ShaderInputsSegment();
+	void TexturesSegment();
+	// ------------------ 
+
+	void ChangeShader(ResourceShader* newShader);
+
+public:
+
+	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	u64 textureID = 0;
+	ResourceTexture* texture = nullptr; // Provisional
+	bool textureActivated = true;
+
+	u64 texturesID[(uint)TextureType::MAX] = { 0 };
+	ShaderInputs shaderInputs;
+	ResourceShader* used_shader = nullptr; 
 };

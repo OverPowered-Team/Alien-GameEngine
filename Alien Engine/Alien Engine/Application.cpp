@@ -15,6 +15,7 @@ Application::Application()
 	ui = new ModuleUI();
 #endif
 	importer = new ModuleImporter();
+	tween = new AnimTween();
 	objects = new ModuleObjects();
 	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
@@ -37,6 +38,7 @@ Application::Application()
 	// Scenes
 	AddModule(objects);
 	AddModule(physics);
+	AddModule(tween);
 #ifndef GAME_VERSION
 	AddModule(camera);
 	AddModule(ui);
@@ -429,6 +431,9 @@ void Application::CastEvent(EventType eventType)
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end(); ++item)
 		(*item)->HandleEvent(eventType);
 }
+
+void Application::SendAlienEvent(AlienEvent& e)
+{}
 
 void Application::AddModule(Module* mod)
 {

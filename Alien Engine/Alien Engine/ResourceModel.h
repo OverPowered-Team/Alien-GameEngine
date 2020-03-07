@@ -50,7 +50,6 @@ private:
 	static bool SortByFamilyNumber(const ModelNode& node1, const ModelNode& node2);
 	GameObject* CreateGameObject(const ModelNode& node, std::vector<std::pair<uint, GameObject*>>& objects_created, GameObject*& root_bone);
 
-	
 public:
 	std::vector<ModelNode> model_nodes;
 	std::vector<ResourceMesh*> meshes_attached;

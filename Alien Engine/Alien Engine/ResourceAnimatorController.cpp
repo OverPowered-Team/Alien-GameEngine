@@ -3,6 +3,8 @@
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
 #include "ResourceAnimation.h"
+#include "Alien.h"
+#include "Globals.h"
 #include <fstream>
 #include <iomanip>
 
@@ -336,6 +338,26 @@ void ResourceAnimatorController::UpdateState(State* state)
 				state->time = 0;
 			else
 				state->time = animation->GetDuration();
+
+			if (Time::IsPlaying()) {
+				for (auto item = App->objects->current_scripts.begin(); item != App->objects->current_scripts.end(); ++item) {
+					try {
+						if ((*item)->game_object->HasComponent(ComponentType::ANIMATOR))(*item)->OnAnimationEnd(state->GetName().c_str());
+					}
+					catch (...)
+					{
+						try {
+							LOG_ENGINE("CODE ERROR IN THE ONANIMATIONEND OF THE SCRIPT: %s", (*item)->data_name);
+						}
+						catch (...) {
+							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONANIMATIONEND");
+						}
+						#ifndef GAME_VERSION
+						App->ui->SetError();
+						#endif
+					}
+				}
+			}
 		}
 
 	}
@@ -375,6 +397,11 @@ bool ResourceAnimatorController::CheckTriggers()
 	for (std::vector<Transition*>::iterator it = current_transitions.begin(); it != current_transitions.end(); ++it) {
 		bool retu = true;
 
+		if (current_state->GetClip()) {
+			if (current_state->time < current_state->GetClip()->GetDuration() && (*it)->GetEnd())
+				continue;
+		}
+
 		for (int i = 0; i < (*it)->GetBoolConditions().size(); ++i) {
 			if (!(*it)->GetBoolConditions()[i]->Compare(this)) {
 				retu = false;
@@ -394,16 +421,7 @@ bool ResourceAnimatorController::CheckTriggers()
 			}
 		}
 
-		if (current_state->time < current_state->GetClip()->GetDuration())
-		{
-			if (retu && !(*it)->GetEnd())
-			{
-				current_possible_transitions.push_back((*it));
-			}
-		}
-		else {
-			current_possible_transitions.push_back((*it));
-		}
+		if (retu)current_possible_transitions.push_back((*it));
 	}
 
 	if (ret && current_possible_transitions.size() > 0) {
@@ -712,6 +730,105 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_blend, cursor, bytes);
 			cursor += bytes;			
 			
+			bytes = sizeof(bool);
+			bool tmp_end;
+			memcpy(&tmp_end, cursor, bytes);
+			cursor += bytes;
+
+			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_end);
+
+			bytes = sizeof(uint);
+			uint num_int_conditions;
+			memcpy(&num_int_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_int_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(uint);
+				uint tmp_condition_param_index;
+				memcpy(&tmp_condition_param_index, cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(int);
+				int tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddIntCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
+			}
+
+			bytes = sizeof(uint);
+			uint num_float_conditions;
+			memcpy(&num_float_conditions, cursor, bytes);
+			cursor += bytes;
+
+			for (int j = 0; j < num_float_conditions; ++j) {
+				//Load condition type size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition type
+				bytes = name_size;
+				std::string tmp_condition_type;
+				tmp_condition_type.resize(name_size);
+				memcpy(&tmp_condition_type[0], cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text size
+				bytes = sizeof(uint);
+				memcpy(&name_size, cursor, bytes);
+				cursor += bytes;
+
+				//Load condition comp text
+				bytes = name_size;
+				std::string tmp_condition_comp_text;
+				tmp_condition_comp_text.resize(name_size);
+				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(uint);
+				uint tmp_condition_param_index;
+				memcpy(&tmp_condition_param_index, cursor, bytes);
+				cursor += bytes;
+
+				bytes = sizeof(float);
+				float tmp_condition_comp_value;
+				memcpy(&tmp_condition_comp_value, cursor, bytes);
+				cursor += bytes;
+
+				transitions[i]->AddFloatCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
+
+			}
+
+			bytes = sizeof(uint);
+			uint num_bool_conditions;
+			memcpy(&num_bool_conditions, cursor, bytes);
+			cursor += bytes;
+
 			bytes = sizeof(bool);
 			bool tmp_end;
 			memcpy(&tmp_end, cursor, bytes);
@@ -1256,8 +1373,10 @@ void ResourceAnimatorController::Play(std::string state_name)
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
-		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0)
+		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
 			current_state = (*it);
+			transitioning = false;
+		}
 	}
 }
 

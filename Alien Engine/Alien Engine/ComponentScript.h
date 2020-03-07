@@ -59,6 +59,7 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class Prefab;
 	friend class ModuleObjects;
 	friend class ModulePhysics;
+	friend class ComponentCollider;
 	friend class GameObject;
 public:
 	ComponentScript(GameObject* attach);
