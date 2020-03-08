@@ -1617,7 +1617,6 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	if (canvas == nullptr) {
 		GameObject* obj = new GameObject(GetRoot(false));
 		obj->SetName("Canvas");
-		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}
