@@ -10,8 +10,8 @@ E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cp
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(601) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
-E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Shaders/default_shader.shader] to [Library/Shaders/2146752462670567246.shader]
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(652) : Texture successfully loaded: Library/Textures/12109833779815497377.dds
+E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Models/ApplyScale_FBX_UnitsScale_meta.alien] to [Library/Models/6435822880191196159.alienModel]
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(114) : Created alienBone file Library/Bones/3868038089395948660.alienBone
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(140) : Created alienAnimation file Library/Animations/4497247643614313195.alienAnimation
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
@@ -21,7 +21,6 @@ E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.c
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(55) : Loading UI assets
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(84) : Loading Assets/Models/aniTest.fbx
-E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ReturnZ.cpp(457) : A component hasn't been saved
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(152) : Destroying 3D Renderer
 E:\Documentos\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(93) : Unloading UI scene

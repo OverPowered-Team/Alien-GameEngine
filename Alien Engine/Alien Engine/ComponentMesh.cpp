@@ -28,8 +28,9 @@ ComponentMesh::~ComponentMesh()
 	{
 		static_cast<ComponentMaterial*>(game_object_attached->GetComponent(ComponentType::MATERIAL))->not_destroy = false;
 	}
-	if (mesh != nullptr && mesh->is_custom) {
+	if (mesh != nullptr) {
 		mesh->DecreaseReferences();
+		mesh = nullptr;
 	}
 }
 

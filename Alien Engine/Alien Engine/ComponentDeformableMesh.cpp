@@ -157,13 +157,13 @@ void ComponentDeformableMesh::SendWeightsAndID()
 	
 	int bone_id = 0;
 	//Genereting array of weights and bones_ID
-	if (weights == nullptr && bones_ID == nullptr)
+	if (mesh->weights == nullptr && mesh->bones_ID == nullptr)
 	{
-		weights = new float[mesh->num_vertex * 4];
-		bones_ID = new int[mesh->num_vertex * 4];
+		mesh->weights = new float[mesh->num_vertex * 4];
+		mesh->bones_ID = new int[mesh->num_vertex * 4];
 
-		memset(weights, 0, sizeof(float) * mesh->num_vertex * 4);
-		memset(bones_ID, 0, sizeof(int) * mesh->num_vertex * 4);
+		memset(mesh->weights, 0, sizeof(float) * mesh->num_vertex * 4);
+		memset(mesh->bones_ID, 0, sizeof(int) * mesh->num_vertex * 4);
 	}
 
 	for (std::vector<ComponentBone*>::iterator component_bone = bones.begin();
@@ -179,7 +179,7 @@ void ComponentDeformableMesh::SendWeightsAndID()
 		glGenBuffers(1, &mesh->id_bones);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_bones);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, bones_ID, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, mesh->bones_ID, GL_STATIC_DRAW);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(3);
 
@@ -188,21 +188,10 @@ void ComponentDeformableMesh::SendWeightsAndID()
 		glGenBuffers(1, &mesh->id_weights);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_weights);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, weights, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 4, mesh->weights, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(4);
-
-	//if (weights)
-	//{
-	//	delete weights;
-	//	weights = nullptr;
-	//}
-	//if (bones_ID)
-	//{
-	//	delete bones_ID;
-	//	bones_ID = nullptr;
-	//}
 }
 
 void ComponentDeformableMesh::FillWeights(int bone_ID, ComponentBone* component_bone)
@@ -213,10 +202,10 @@ void ComponentDeformableMesh::FillWeights(int bone_ID, ComponentBone* component_
 		int vertex_id = bone->vertex_ids[i];
 		for (int j = vertex_id * 4; j < (vertex_id * 4) + 4; j++)
 		{
-			if (weights[j] == 0.0f)
+			if (mesh->weights[j] == 0.0f)
 			{
-				weights[j] = bone->weights[i];
-				bones_ID[j] = bone_ID;
+				mesh->weights[j] = bone->weights[i];
+				mesh->bones_ID[j] = bone_ID;
 				break;
 			}
 		}

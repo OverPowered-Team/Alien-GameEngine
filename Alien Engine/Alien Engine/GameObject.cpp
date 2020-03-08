@@ -785,6 +785,9 @@ bool GameObject::HasComponent(ComponentType component) const
 {
 	bool exists = false;
 
+	if (components.size()== 0)
+		return exists;
+
 	std::vector<Component*>::const_iterator item = components.cbegin();
 	for (; item != components.cend(); ++item) {
 		if (*item != nullptr && (*item)->GetType() == component)
