@@ -736,11 +736,6 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						if (material->texturesID[0] != 0) {
 							//Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
 						}
-						if (mesh->deformable)
-						{
-							 Cmat->SetShader("skinning_meta.alien");
-							 //Cmat->SetShader("default_meta.alien");
-						}
 						ret->AddComponent(Cmat);
 					}
 				}

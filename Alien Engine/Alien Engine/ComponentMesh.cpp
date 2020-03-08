@@ -69,19 +69,13 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	//glPolygonOffset(1.0f, 0.1f);
 
 	// -------------------------- Actual Drawing -------------------------- 
-
-
 	material->ApplyMaterial();
 
 	glBindVertexArray(mesh->vao);
 
 	// Uniforms --------------
-	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
-	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
-	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
-	
+	SetUniform(material, camera);
+
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
 	// --------------------------------------------------------------------- 
@@ -171,6 +165,17 @@ void ComponentMesh::DrawMesh()
 	glPopMatrix();
 
 }
+
+void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniform1i("animate", animate);
+}
+
+
 
 void ComponentMesh::DrawVertexNormals()
 {

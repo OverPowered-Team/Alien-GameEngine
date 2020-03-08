@@ -278,20 +278,6 @@ void ComponentMaterial::RemoveTexture()
 	material->RemoveTexture();
 }
 
-void ComponentMaterial::SetShader(const char* path)
-{
-	if (used_shader != nullptr)
-	{
-		used_shader->DecreaseReferences();
-	}
-	std::string fullpath = SHADERS_FOLDER;
-	fullpath += path;
-	u64 id_s = App->resources->GetIDFromAlienPath(fullpath.c_str()); // needs fix. meta is not created too...
-	used_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-	used_shader->IncreaseReferences();
-	file_to_edit = used_shader->path;
-}
-
 const ResourceTexture* ComponentMaterial::GetTexture() const
 {
 	return material->texture;

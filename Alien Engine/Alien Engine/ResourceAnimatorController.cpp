@@ -352,9 +352,9 @@ void ResourceAnimatorController::UpdateState(State* state)
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONANIMATIONEND");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
@@ -728,105 +728,6 @@ bool ResourceAnimatorController::LoadMemory()
 			bytes = sizeof(float);
 			float tmp_blend;
 			memcpy(&tmp_blend, cursor, bytes);
-			cursor += bytes;			
-			
-			bytes = sizeof(bool);
-			bool tmp_end;
-			memcpy(&tmp_end, cursor, bytes);
-			cursor += bytes;
-
-			AddTransition(FindState(tmp_source), FindState(tmp_target), tmp_blend, tmp_end);
-
-			bytes = sizeof(uint);
-			uint num_int_conditions;
-			memcpy(&num_int_conditions, cursor, bytes);
-			cursor += bytes;
-
-			for (int j = 0; j < num_int_conditions; ++j) {
-				//Load condition type size
-				bytes = sizeof(uint);
-				memcpy(&name_size, cursor, bytes);
-				cursor += bytes;
-
-				//Load condition type
-				bytes = name_size;
-				std::string tmp_condition_type;
-				tmp_condition_type.resize(name_size);
-				memcpy(&tmp_condition_type[0], cursor, bytes);
-				cursor += bytes;
-
-				//Load condition comp text size
-				bytes = sizeof(uint);
-				memcpy(&name_size, cursor, bytes);
-				cursor += bytes;
-
-				//Load condition comp text
-				bytes = name_size;
-				std::string tmp_condition_comp_text;
-				tmp_condition_comp_text.resize(name_size);
-				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
-				cursor += bytes;
-
-				bytes = sizeof(uint);
-				uint tmp_condition_param_index;
-				memcpy(&tmp_condition_param_index, cursor, bytes);
-				cursor += bytes;
-
-				bytes = sizeof(int);
-				int tmp_condition_comp_value;
-				memcpy(&tmp_condition_comp_value, cursor, bytes);
-				cursor += bytes;
-
-				transitions[i]->AddIntCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
-			}
-
-			bytes = sizeof(uint);
-			uint num_float_conditions;
-			memcpy(&num_float_conditions, cursor, bytes);
-			cursor += bytes;
-
-			for (int j = 0; j < num_float_conditions; ++j) {
-				//Load condition type size
-				bytes = sizeof(uint);
-				memcpy(&name_size, cursor, bytes);
-				cursor += bytes;
-
-				//Load condition type
-				bytes = name_size;
-				std::string tmp_condition_type;
-				tmp_condition_type.resize(name_size);
-				memcpy(&tmp_condition_type[0], cursor, bytes);
-				cursor += bytes;
-
-				//Load condition comp text size
-				bytes = sizeof(uint);
-				memcpy(&name_size, cursor, bytes);
-				cursor += bytes;
-
-				//Load condition comp text
-				bytes = name_size;
-				std::string tmp_condition_comp_text;
-				tmp_condition_comp_text.resize(name_size);
-				memcpy(&tmp_condition_comp_text[0], cursor, bytes);
-				cursor += bytes;
-
-				bytes = sizeof(uint);
-				uint tmp_condition_param_index;
-				memcpy(&tmp_condition_param_index, cursor, bytes);
-				cursor += bytes;
-
-				bytes = sizeof(float);
-				float tmp_condition_comp_value;
-				memcpy(&tmp_condition_comp_value, cursor, bytes);
-				cursor += bytes;
-
-				transitions[i]->AddFloatCondition(tmp_condition_type, tmp_condition_comp_text, tmp_condition_param_index, tmp_condition_comp_value);
-
-			}
-
-			bytes = sizeof(uint);
-			uint num_bool_conditions;
-			memcpy(&num_bool_conditions, cursor, bytes);
 			cursor += bytes;
 
 			bytes = sizeof(bool);

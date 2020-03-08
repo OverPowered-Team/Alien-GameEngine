@@ -33,7 +33,6 @@ private:
 	void OnEnable() override;
 	void OnDisable() override;
 	bool DrawInspector();
-	bool AlreadyUsedBank(const Bank* bk);
 
 private:
 	WwiseT::AudioSource* source = nullptr;

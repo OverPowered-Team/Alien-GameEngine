@@ -36,7 +36,6 @@ private:
 
 public:
 	void SetTexture(ResourceTexture* tex);
-	void SetShader(const char* path);
 	void RemoveTexture();
 	const ResourceTexture* GetTexture() const;
 
