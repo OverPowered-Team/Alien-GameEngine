@@ -33,7 +33,6 @@ private:
 	void OnEnable() override;
 	void OnDisable() override;
 	bool DrawInspector();
-	
 
 private:
 	WwiseT::AudioSource* source = nullptr;

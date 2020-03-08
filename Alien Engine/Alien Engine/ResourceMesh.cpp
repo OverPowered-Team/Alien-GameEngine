@@ -194,6 +194,11 @@ void ResourceMesh::FreeMemory()
 		glDeleteBuffers(1, &id_normals);
 	if (id_uv != 0)
 		glDeleteBuffers(1, &id_uv);
+	if(id_weights!=0)
+		glDeleteBuffers(1, &id_weights);
+	if (id_bones != 0)
+		glDeleteBuffers(1, &id_bones);
+
 
 	if (index != nullptr) {
 		delete[] index;
@@ -218,6 +223,16 @@ void ResourceMesh::FreeMemory()
 	if (center_point != nullptr) {
 		delete[] center_point;
 		center_point = nullptr;
+	}
+	if (weights != nullptr)
+	{
+		delete[] weights;
+		weights = nullptr;
+	}
+	if (bones_ID != nullptr)
+	{
+		delete[] bones_ID;
+		bones_ID = nullptr;
 	}
 
 	id_vertex = 0;
@@ -365,6 +380,7 @@ void ResourceMesh::InitBuffers()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 void ResourceMesh::Reset()
