@@ -846,6 +846,9 @@ void ModuleResources::ReadMaterials(std::vector<std::string> directories, std::v
 		std::vector<std::string> new_directories;
 
 		for (uint i = 0; i < directories.size(); ++i) {
+			std::vector<std::string> new_files;
+			std::vector<std::string> new_directories;
+
 			std::string dir = current_folder + directories[i] + "/";
 			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
 			ReadMaterials(new_directories, new_files, dir);

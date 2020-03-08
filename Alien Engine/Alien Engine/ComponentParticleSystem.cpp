@@ -17,8 +17,7 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	type = ComponentType::PARTICLES;
 	particleSystem = new ParticleSystem();
 
-	material = new ComponentMaterial(this->game_object_attached);
-	game_object_attached->AddComponent(material);
+	
 
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
@@ -43,6 +42,16 @@ ComponentParticleSystem::~ComponentParticleSystem()
 		delete particleSystem; 
 		particleSystem = nullptr; 
 	}
+
+	if(texture != nullptr)
+	{
+		texture->DecreaseReferences();
+		texture = nullptr;
+	}
+
+	if (selected_texture != nullptr)
+		selected_texture = nullptr;
+	
 
 	glDisable(light_id);
 }

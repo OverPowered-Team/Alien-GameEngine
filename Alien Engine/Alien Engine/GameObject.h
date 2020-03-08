@@ -265,7 +265,6 @@ public:
 	ComponentTransform* transform = nullptr;
 
 private:
-
 	bool to_delete = false; 
 	u64 prefabID = 0;
 

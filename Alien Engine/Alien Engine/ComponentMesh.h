@@ -7,6 +7,7 @@
 #include "Color.h"
 
 class ResourceMesh;
+class ResourceMaterial;
 
 class __declspec(dllexport) ComponentMesh : public Component {
 
@@ -45,6 +46,8 @@ protected:
 	virtual void DrawPolygon(ComponentCamera* camera);
 	virtual void DrawOutLine();
 	virtual void DrawMesh();
+	virtual void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera);
+
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
@@ -65,8 +68,6 @@ protected:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-
-
 protected:
 	
 	ResourceMesh* mesh = nullptr;
@@ -82,4 +83,5 @@ protected:
 	AABB local_aabb;
 	OBB obb;  
 	AABB global_aabb;
+	int animate = 0;
 };
