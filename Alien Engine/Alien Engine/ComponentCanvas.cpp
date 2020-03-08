@@ -16,7 +16,7 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	width = 160;
 	height = 90;
 
-	SetShader("text_shader_meta.alien");
+	/*SetShader("text_shader_meta.alien");*/
 
 	type = ComponentType::CANVAS;
 }
@@ -65,10 +65,9 @@ void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
 void ComponentCanvas::Draw()
 {
 #ifndef GAME_VERSION
+	if (Time::IsPlaying())
+		return;
 
-#else
-
-#endif
 	ComponentTransform* comp_trans = game_object_attached->GetComponent<ComponentTransform>();
 	glDisable(GL_LIGHTING);
 	glBegin(GL_LINE_LOOP);
@@ -88,6 +87,7 @@ void ComponentCanvas::Draw()
 
 	glEnd();
 	glEnable(GL_LIGHTING);
+#endif
 
 }
 

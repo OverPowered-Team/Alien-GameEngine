@@ -20,10 +20,10 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 	uv[2] = { 1,1 };
 	uv[3] = { 1,0 };
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
+	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 
-	GenerateVAOVBO();
+	GenerateVAOVBO();*/
 
 	ui_type = ComponentType::UI_TEXT;
 	tabbable = false;
@@ -104,43 +104,46 @@ void ComponentText::Draw(bool isGame)
 {
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//Activate Shader
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(VAO);
-	canvas->text_shader->Bind();
-	canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
+	////Activate Shader
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindVertexArray(VAO);
+	//canvas->text_shader->Bind();
+	//canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
 
-	std::string::const_iterator c;
-	int i = 0;
-	for(c = text.begin(); c != text.end(); c++) {
-		Character ch = font->fontData.charactersMap[*c];
-		float xpos = x + ch.bearing.x;
-		float ypos = (ch.size.y - ch.bearing.y);
-		float w = ch.size.x;
-		float h = ch.size.y;
+	//std::string::const_iterator c;
+	//int i = 0;
+	//for(c = text.begin(); c != text.end(); c++) {
+	//	Character ch = font->fontData.charactersMap[*c];
+	//	float xpos = x + ch.bearing.x;
+	//	float ypos = (ch.size.y - ch.bearing.y);
+	//	float w = ch.size.x;
+	//	float h = ch.size.y;
 
-		vertices[0] = { xpos, ypos + h, 0 };
-		vertices[1] = { xpos, ypos, 0 };
-		vertices[2] = { xpos + w, ypos, 0 };
-		vertices[3] = { xpos + w, ypos + h, 0 };
+	//	vertices[0] = { xpos, ypos + h, 0 };
+	//	vertices[1] = { xpos, ypos, 0 };
+	//	vertices[2] = { xpos + w, ypos, 0 };
+	//	vertices[3] = { xpos + w, ypos + h, 0 };
 
-		// Render glyph texture over quad
-		glBindTexture(GL_TEXTURE_2D, ch.textureID);
-		// Update content of VBO memory
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		// Render quad
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+	//	// Render glyph texture over quad
+	//	glBindTexture(GL_TEXTURE_2D, ch.textureID);
+	//	// Update content of VBO memory
+	//	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//	// Render quad
+	//	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += (ch.advance >> 6);
-	}
-	
-	canvas->text_shader->Unbind();
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//	x += (ch.advance >> 6);
+	//}
+	//
+	//canvas->text_shader->Unbind();
+	//glBindVertexArray(0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
+	//glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
