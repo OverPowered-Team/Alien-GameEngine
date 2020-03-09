@@ -106,7 +106,7 @@ bool ModuleResources::CleanUp()
 					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
 				#ifndef GAME_VERSION
 				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
-					static_cast<ResourceMaterial*>(*item)->UpdateMaterialFiles();
+					static_cast<ResourceMaterial*>(*item)->SaveMaterialFiles();
 				#endif
 				delete* item;
 				*item = nullptr;
@@ -1079,8 +1079,7 @@ ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
 	
 	ResourceMaterial* new_material = new ResourceMaterial();
 	new_material->SetName(materialName.c_str());
-	new_material->CreateMaterialFile(MATERIALS_FOLDER);
-	new_material->CreateMetaData();
+	new_material->SaveMaterialFiles();
 	App->ui->panel_project->RefreshAllNodes();
 
 	return new_material;

@@ -1,20 +1,16 @@
 {
     "Meta": {
-        "ID": "15831679118308791583",
+        "ID": "1102984116155301800",
         "NumMeshes": 1,
         "Name": "Minion",
         "NumBones": 0,
         "NumAnimations": 0,
         "Animations": [],
-        "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/13382814827012053823.alienMesh"
+            "Library\/Meshes\/7744816340875326557.alienMesh"
         ],
         "PathAnimations": [],
-        "PathBones": [],
-        "PathMaterials": [
-            "Library\/Materials\/8267261315310146701.material"
-        ]
+        "PathBones": []
     },
     "Nodes": [
         {

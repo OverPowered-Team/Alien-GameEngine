@@ -209,9 +209,7 @@ void ComponentMaterial::LoadComponent(JSONArraypack* to_load)
 
 	if (to_load->GetBoolean("HasMaterial")) {
 		u64 ID = std::stoull(to_load->GetString("MaterialID"));
-		material = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
-		if (material != nullptr)
-			material->IncreaseReferences();
+		SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
 	}
 	ID = std::stoull(to_load->GetString("ID"));
 }

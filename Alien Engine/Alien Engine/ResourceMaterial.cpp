@@ -36,6 +36,8 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		ID = force_id;
 	}
 
+	// META FILE
+
 	std::string alien_path = std::string(App->file_system->GetPathWithoutExtension(path) + "_meta.alien").data();
 
 	JSON_Value* alien_value = json_value_init_object();
@@ -50,7 +52,10 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		delete alien;
 	}
 
+	// LIBRARY FILE 
+
 	meta_data_path = LIBRARY_MATERIALS_FOLDER + std::to_string(ID) + ".material";
+
 	std::string ext;
 	App->file_system->SplitFilePath(path.data(), nullptr, nullptr, &ext);
 	if (App->StringCmp(ext.data(), "material"))
@@ -143,6 +148,7 @@ void ResourceMaterial::ReadLibrary(const char* meta_data)
 		ReadMaterialValues(meta);
 		delete meta;
 	}
+
 	App->resources->AddResource(this);
 }
 
@@ -152,23 +158,10 @@ bool ResourceMaterial::DeleteMetaData()
 	return true;
 }
 
-void ResourceMaterial::CreateMaterialFile(const char* directory)
+void ResourceMaterial::SaveMaterialFiles()
 {
-	path = std::string(directory + name + ".material").data();
+	path = std::string(MATERIALS_FOLDER + name + ".material").data();
 
-	JSON_Value* alien_value = json_value_init_object();
-	JSON_Object* alien_object = json_value_get_object(alien_value);
-	json_serialize_to_file_pretty(alien_value, path.data());
-
-	if (alien_value != nullptr && alien_object != nullptr) {
-		JSONfilepack* alien = new JSONfilepack(path, alien_object, alien_value);
-		SaveMaterialValues(alien);
-		delete alien;
-	}
-}
-
-void ResourceMaterial::UpdateMaterialFiles()
-{
 	remove(path.c_str());
 
 	JSON_Value* alien_value = json_value_init_object();
@@ -188,6 +181,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 {
 	file->StartSave();
 
+	file->SetString("Name", name);
 	file->SetFloat4("Color", color);
 	file->SetString("ShaderID", std::to_string(used_shader->GetID()));
 	file->SetBoolean("HasTexture", texture != nullptr ? true : false);
@@ -204,19 +198,15 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 {
-	//ID = std::stoull(file->GetString("Meta.ID"));
+	this->name = file->GetString("Name");
 	color = file->GetFloat4("Color");
-	//used_shader = (ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID")));
+
+	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
 
 	if (file->GetBoolean("HasTexture"))
 	{
 		u64 id = std::stoull(file->GetString("TextureID"));
-		texture = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(file->GetString("TextureID")));
-		if (texture != nullptr)
-		{
-			textureID = id;
-			texture->IncreaseReferences();
-		}
+		SetTexture((ResourceTexture*)App->resources->GetResourceWithID(id));
 	}
 
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
@@ -334,7 +324,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 
 				if (newShader != nullptr)
 				{
-					ChangeShader(newShader);
+					SetShader(newShader);
 					LOG_ENGINE("Selected Shader %s\n", used_shader->GetName());
 				}
 				else
@@ -491,7 +481,7 @@ void ResourceMaterial::TexturesSegment()
 	}*/
 }
 
-void ResourceMaterial::ChangeShader(ResourceShader* newShader)
+void ResourceMaterial::SetShader(ResourceShader* newShader)
 {
 	if (newShader == nullptr || newShader == used_shader)
 		return;

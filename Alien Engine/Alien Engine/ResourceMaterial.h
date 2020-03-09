@@ -136,8 +136,7 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
-	void CreateMaterialFile(const char* directory);
-	void UpdateMaterialFiles();
+	void SaveMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
@@ -156,7 +155,7 @@ public:
 	void TexturesSegment();
 	// ------------------ 
 
-	void ChangeShader(ResourceShader* newShader);
+	void SetShader(ResourceShader* newShader);
 
 public:
 

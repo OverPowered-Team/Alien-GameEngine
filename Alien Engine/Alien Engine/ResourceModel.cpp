@@ -140,26 +140,26 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			LOG_ENGINE("Created alienAnimation file %s", animations_attached[i]->GetLibraryPath());
 		}
 
-		alien->SetNumber("Meta.NumMaterials", materials_attached.size());
+		//alien->SetNumber("Meta.NumMaterials", materials_attached.size());
 
-		std::string* materials_path = new std::string[materials_attached.size()];
-		for (int i = 0; i < materials_attached.size(); ++i)
-		{
-			if (meta_materials_paths != nullptr) {
-				std::string path_ = App->file_system->GetBaseFileName(meta_materials_paths[i].data()); //std::stoull().data());
-				materials_attached[i]->CreateMetaData(std::stoull(path_));
-			}
-			else {
-				materials_attached[i]->CreateMetaData();
-			}
+		//std::string* materials_path = new std::string[materials_attached.size()];
+		//for (int i = 0; i < materials_attached.size(); ++i)
+		//{
+		//	if (meta_materials_paths != nullptr) {
+		//		std::string path_ = App->file_system->GetBaseFileName(meta_materials_paths[i].data()); //std::stoull().data());
+		//		materials_attached[i]->CreateMetaData(std::stoull(path_));
+		//	}
+		//	else {
+		//		materials_attached[i]->CreateMetaData();
+		//	}
 
-			materials_path[i] = materials_attached[i]->GetLibraryPath();
-		}
+		//	materials_path[i] = materials_attached[i]->GetLibraryPath();
+		//}
 
 		alien->SetArrayString("Meta.PathMeshes", meshes_paths, meshes_attached.size());
 		alien->SetArrayString("Meta.PathAnimations", animation_paths, animations_attached.size());
 		alien->SetArrayString("Meta.PathBones", bones_paths, bones_attached.size());
-		alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
+		//alien->SetArrayString("Meta.PathMaterials", materials_path, materials_attached.size());
 
 		JSONArraypack* nodes = alien->InitNewArray("Nodes");
 		for (uint i = 0; i < model_nodes.size(); ++i) {
@@ -190,9 +190,9 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 			delete[] meta_animation_paths;
 		delete[] animation_paths;
 
-		if (meta_materials_paths != nullptr)
+		/*if (meta_materials_paths != nullptr)
 			delete[] meta_materials_paths;
-		delete[] materials_path;
+		delete[] materials_path;*/
 
 		if (meta_bones_paths != nullptr)
 			delete[] meta_bones_paths;
@@ -721,9 +721,9 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 
 				if (node.material >= 0)
 				{
-					ResourceMaterial* material = materials_attached[node.material];
-					if (material != nullptr) 
-					{
+					//ResourceMaterial* material = materials_attached[node.material];
+					/*if (material != nullptr) 
+					{*/
 						ComponentMaterial* Cmat = new ComponentMaterial(ret);
 						//Cmat->color = material->color;
 
@@ -733,11 +733,11 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						}*/
 
 						// CHANGE
-						if (material->texturesID[0] != 0) {
-							//Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
-						}
+						//if (material->texturesID[0] != 0) {
+						//	//Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
+						//}
 						ret->AddComponent(Cmat);
-					}
+					//}
 				}
 
 			}
