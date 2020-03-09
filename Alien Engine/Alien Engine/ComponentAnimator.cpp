@@ -96,7 +96,7 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 		animator_controller->attached_references--;
 	}
 
-	animator_controller = controller;
+	animator_controller = new ResourceAnimatorController(controller);
 	animator_controller->IncreaseReferences();
 	animator_controller->attached_references++;
 }

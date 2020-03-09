@@ -21,6 +21,12 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	default_state = nullptr;
 }
 
+ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorController* controller)
+{
+	current_state = nullptr;
+	default_state = nullptr;
+}
+
 ResourceAnimatorController::~ResourceAnimatorController()
 {
 	ax::NodeEditor::DestroyEditor(ed_context);

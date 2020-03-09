@@ -160,6 +160,7 @@ private:
 
 public:
 	ResourceAnimatorController();
+	ResourceAnimatorController(ResourceAnimatorController* controller);
 	~ResourceAnimatorController();
 
 	int attached_references = 0;
