@@ -607,6 +607,22 @@ void ComponentScript::InspectorGameObject(GameObject** ptr, const char* ptr_name
 	}
 }
 
+void ComponentScript::ShowVoidFunction(std::function<void()> funct, const char* name)
+{
+	std::string functName(name);
+
+	ComponentScript* script = App->objects->actual_script_loading;
+	if (script != nullptr) {
+		auto item = script->functionMap.begin();
+		for (; item != script->functionMap.end(); ++item) {
+			if (strcmp((*item).first.data(), functName.data()) == 0) {
+				return;
+			}
+		}
+		script->functionMap.emplace(functName, funct);
+	}
+}
+
 void ComponentScript::LoadData(const char* name, bool is_alien)
 {
 	need_alien = is_alien;
