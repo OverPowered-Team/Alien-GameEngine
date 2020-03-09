@@ -143,6 +143,26 @@ public:
 	std::vector<BoolCondition*> GetBoolConditions() { return bool_conditions; }
 };
 
+// EVENTS
+enum class EventAnimType {
+	EVENT_AUDIO,
+	EVENT_PARTICLE,
+	EVENT_SCRIPT,
+	NONE
+};
+
+class AnimEvent
+{
+public:
+
+	AnimEvent() {};
+
+	u64 event_id = 0ULL;
+	u64 animation_id = 0ULL;
+	uint frame = 0;
+	EventAnimType type = EventAnimType::NONE;
+};
+
 class ResourceAnimatorController : public Resource
 {
 private:
@@ -154,6 +174,10 @@ private:
 	std::vector <std::pair <std::string, int>> int_parameters;
 	std::vector <std::pair <std::string, float>> float_parameters;
 	std::vector <std::pair <std::string, bool>> bool_parameters;
+
+	// Events
+	std::vector<AnimEvent*> anim_events;
+	ComponentAudioEmitter* emitter = nullptr;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
@@ -174,6 +198,7 @@ public:
 	const std::vector <std::pair <std::string, bool>>& GetBoolParameters();
 	const std::vector <std::pair <std::string, float>>& GetFloatParameters();
 	const std::vector <std::pair <std::string, int>>& GetIntParameters();
+	
 	void SetBoolParametersName(uint index, const std::string& name);
 	void SetFloatParametersName(uint index, const std::string& name);
 	void SetIntParametersName(uint index, const std::string& name);
@@ -187,9 +212,11 @@ public:
 	void AddBoolParameter(std::pair<std::string, bool> param);
 	void AddFloatParameter(std::pair<std::string, float> param);
 	void AddIntParameter(std::pair<std::string, int> param);
+	
 	void RemoveBoolParameter(std::string name);
 	void RemoveFloatParameter(std::string name);
 	void RemoveIntParameter(std::string name);
+	
 	//string to const char for scripting
 	void SetBool(std::string name, bool value);
 	void SetFloat(std::string name, float value);
@@ -241,6 +268,15 @@ public:
 	std::string GetTypeString() const;
 
 	std::string GetName();
+
+	// Events
+	void AddAnimEvent(u64 _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	void RemoveAnimEvent(AnimEvent* _event);
+	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
+	uint GetNumAnimEvents() const { return anim_events.size(); }
+	ComponentAudioEmitter* GetEmitter() { return emitter; }
+	void SetEmitter(ComponentAudioEmitter* _emitter) { emitter = _emitter; }
+	void ActiveEvent(ResourceAnimation* _animation, uint _key);
 
 	//void UnLoad();
 	//void Load();

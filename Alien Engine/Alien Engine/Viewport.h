@@ -90,6 +90,10 @@ public:
 
 	bool CanRender();
 
+	float2 GetPos() const;
+
+	float2 GetSize() const;
+
 public:
 
 	bool active = false;

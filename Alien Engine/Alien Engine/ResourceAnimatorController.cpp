@@ -2,6 +2,7 @@
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
+#include "ComponentAudioEmitter.h"
 #include "ResourceAnimation.h"
 #include "Alien.h"
 #include "Globals.h"
@@ -147,6 +148,20 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 				AddBoolParameter({ name, value });
 				bool_parameters->GetAnotherNode();
+			}
+		}
+
+		JSONArraypack* events = asset->GetArray("Controller.Events");
+		if (events) {
+			events->GetFirstNode();
+			for (int i = 0; i < events->GetArraySize(); ++i) {
+				u64 event_id = events->GetNumber("Event_Id");
+				u64 animation_id = std::stoull(events->GetString("Animation_Id"));
+				uint frame = events->GetNumber("Frame");
+				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
+
+				AddAnimEvent(event_id, animation_id, frame, type);
+				events->GetAnotherNode();
 			}
 		}
 
@@ -529,6 +544,15 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		bool_parameters_array->SetBoolean("Value", (*it).second);
 	}
 
+	JSONArraypack* events_array = asset->InitNewArray("Controller.Events");
+	for (std::vector <AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it) {
+		events_array->SetAnotherNode();
+		events_array->SetNumber("Event_Id", (*it)->event_id);
+		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id));
+		events_array->SetNumber("Frame", (*it)->frame);
+		events_array->SetNumber("Type", (int)(*it)->type);
+	}
+
 	asset->FinishSave();
 	CreateMetaData(ID);
 
@@ -567,6 +591,9 @@ void ResourceAnimatorController::FreeMemory()
 	bool_parameters.clear();
 	float_parameters.clear();
 	int_parameters.clear();
+
+	anim_events.clear();
+	emitter = nullptr;
 
 	default_state = nullptr;
 	current_state = nullptr;
@@ -669,6 +696,40 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bool_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		// Events
+		bytes = sizeof(uint);
+		uint num_events;
+		memcpy(&num_events, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_events; ++j) {
+			bytes = sizeof(u64);
+			u64 tmp_param_event;
+			memcpy(&tmp_param_event, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(u64);
+			u64 tmp_param_anim;
+			memcpy(&tmp_param_anim, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(uint);
+			uint tmp_param_frames;
+			memcpy(&tmp_param_frames, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(EventAnimType);
+			EventAnimType tmp_param_types;
+			memcpy(&tmp_param_types, cursor, bytes);
+			cursor += bytes;
+
+			u64 event_id = tmp_param_event;
+			u64 animation_id = tmp_param_anim;
+			uint frame = tmp_param_frames;
+			EventAnimType type = tmp_param_types;
+			AddAnimEvent(event_id, animation_id, frame, type);
 		}
 
 		//Load transitions and states nums
@@ -969,7 +1030,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	//SAVE LIBRARY FILE
-	uint size = sizeof(uint) + name.size() + sizeof(uint) * 5;
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 6;
 
 	for (std::vector<std::pair<std::string, int>>::iterator int_pit = int_parameters.begin(); int_pit != int_parameters.end(); ++int_pit) {
 		size += sizeof(uint) + (*int_pit).first.size() + sizeof(int);
@@ -981,6 +1042,10 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 	for (std::vector<std::pair<std::string, bool>>::iterator bool_pit = bool_parameters.begin(); bool_pit != bool_parameters.end(); ++bool_pit) {
 		size += sizeof(uint) + (*bool_pit).first.size() + sizeof(bool);
+	}
+
+	for (std::vector<AnimEvent*>::iterator event_pit = anim_events.begin(); event_pit != anim_events.end(); ++event_pit) {
+		size += (sizeof(u64) * 2) + sizeof(uint) + sizeof(EventAnimType);
 	}
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -1079,6 +1144,31 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 		bytes = sizeof(bool);
 		memcpy(cursor, &bool_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_events = anim_events.size();
+	memcpy(cursor, &num_events, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_events; ++j) {
+
+		//Save Events
+		bytes = sizeof(u64);
+		memcpy(cursor, &anim_events[j]->event_id, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(u64);
+		memcpy(cursor, &anim_events[j]->animation_id, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(uint);
+		memcpy(cursor, &anim_events[j]->frame, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(EventAnimType);
+		memcpy(cursor, &anim_events[j]->type, bytes);
 		cursor += bytes;
 	}
 
@@ -1361,6 +1451,7 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
 					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
 					t = (float)((double)time_in_ticks / next_key_time);
+					ActiveEvent(animation, next_key_time);
 					break;
 				}
 			}
@@ -1470,6 +1561,46 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 			delete (*it);
 			it = transitions.erase(it);
 			break;
+		}
+	}
+}
+
+// Events
+
+void ResourceAnimatorController::AddAnimEvent(u64 _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
+{
+	AnimEvent* event = new AnimEvent();
+	event->event_id = _event_id;
+	event->animation_id = _anim_id;
+	event->frame = _frame;
+	event->type = _type;
+	anim_events.push_back(event);
+}
+
+void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
+{
+	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
+	{
+		if ((*it)->event_id == _event->event_id && (*it)->animation_id == _event->animation_id && (*it)->frame == _event->frame && (*it)->type == _event->type)
+		{
+			anim_events.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint _key)
+{
+	// To Play Sound
+	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
+	{
+		if ((*it)->animation_id == _animation->GetID() && (*it)->frame == _key)
+		{
+			if ((*it)->type == EventAnimType::EVENT_AUDIO && emitter != nullptr)
+			{
+				App->audio->LoadUsedBanks();
+				emitter->StartSound((*it)->event_id);
+			}
 		}
 	}
 }
