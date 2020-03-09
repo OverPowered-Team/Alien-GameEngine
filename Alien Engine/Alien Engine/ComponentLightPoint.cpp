@@ -38,8 +38,11 @@ void ComponentLightPoint::LightLogic()
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	
 #ifndef GAME_VERSION
-	App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, 10.0f);
-	App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, 10.0f);
+	if(this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER);
+		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER);
+	}
 #endif
 }
 

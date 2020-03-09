@@ -5,6 +5,8 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
+#define RADIUS_INTENSITY_MULTIPLIER 45
+
 struct __declspec(dllexport) PointLightProperties
 {
 	float intensity = 1.0f;
