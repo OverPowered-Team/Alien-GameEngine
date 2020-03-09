@@ -73,7 +73,8 @@ public:
 	void Restart();
 	void Stop();
 	void ResetSystem();
-
+	void StopEmmitter();
+	void StartEmmitter();
 
 	void SetBillboardType(BillboardType type);
 	BillboardType GetBillboardType() const;
