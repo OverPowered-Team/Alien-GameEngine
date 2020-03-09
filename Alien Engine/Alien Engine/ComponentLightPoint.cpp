@@ -68,12 +68,13 @@ bool ComponentLightPoint::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
+		ImGui::DragFloat("Intensity", &light_props.intensity, 0.10f, 0.0f, 2.0f);
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
-		ImGui::DragFloat("Constant", &light_props.constant, 0.10f, 0.0f);
-		ImGui::DragFloat("Linear", &light_props.linear, 0.10f, 0.0f);
-		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f, 0.0f);
+		ImGui::DragFloat("Constant", &light_props.constant, 0.10f, 0.0f, 1.0f);
+		ImGui::DragFloat("Linear", &light_props.linear, 0.10f, 0.0f, 1.0f);
+		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f, 0.0f, 2.0f);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -122,6 +123,7 @@ void ComponentLightPoint::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("PrintIcon", print_icon);
 
+	to_save->SetNumber("Intensity", float(light_props.intensity));
 	to_save->SetFloat3("Position", float3(light_props.position));
 	to_save->SetFloat3("Direction", float3(light_props.direction));
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
@@ -138,7 +140,7 @@ void ComponentLightPoint::LoadComponent(JSONArraypack* to_load)
 	ID = std::stoull(to_load->GetString("ID"));
 	print_icon = to_load->GetBoolean("PrintIcon");
 
-	light_props.position = to_load->GetFloat3("Position");
+	light_props.intensity = (float)to_load->GetNumber("Intensity");
 	light_props.direction = to_load->GetFloat3("Direction");
 	light_props.ambient = to_load->GetFloat3("Ambient");
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
