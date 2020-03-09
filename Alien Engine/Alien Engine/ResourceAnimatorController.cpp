@@ -149,8 +149,8 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 		if (events) {
 			events->GetFirstNode();
 			for (int i = 0; i < events->GetArraySize(); ++i) {
-				uint event_id = events->GetNumber("Event_Id");
-				uint animation_id = events->GetNumber("Animation_Id");
+				u64 event_id = events->GetNumber("Event_Id");
+				u64 animation_id = std::stoull(events->GetString("Animation_Id"));
 				uint frame = events->GetNumber("Frame");
 				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
 
@@ -542,7 +542,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	for (std::vector <AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it) {
 		events_array->SetAnotherNode();
 		events_array->SetNumber("Event_Id", (*it)->event_id);
-		events_array->SetNumber("Animation_Id", (*it)->animation_id);
+		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id));
 		events_array->SetNumber("Frame", (*it)->frame);
 		events_array->SetNumber("Type", (int)(*it)->type);
 	}
@@ -699,13 +699,13 @@ bool ResourceAnimatorController::LoadMemory()
 		cursor += bytes;
 
 		for (int j = 0; j < num_events; ++j) {
-			bytes = sizeof(uint);
-			uint tmp_param_event;
+			bytes = sizeof(u64);
+			u64 tmp_param_event;
 			memcpy(&tmp_param_event, cursor, bytes);
 			cursor += bytes;
 
-			bytes = sizeof(uint);
-			uint tmp_param_anim;
+			bytes = sizeof(u64);
+			u64 tmp_param_anim;
 			memcpy(&tmp_param_anim, cursor, bytes);
 			cursor += bytes;
 
@@ -719,12 +719,11 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_param_types, cursor, bytes);
 			cursor += bytes;
 
-			AnimEvent* event;
-			event->animation_id = tmp_param_anim;
-			event->event_id = tmp_param_event;
-			event->frame = tmp_param_frames;
-			event->type = tmp_param_types;
-			anim_events.push_back(event);
+			u64 event_id = tmp_param_event;
+			u64 animation_id = tmp_param_anim;
+			uint frame = tmp_param_frames;
+			EventAnimType type = tmp_param_types;
+			AddAnimEvent(event_id, animation_id, frame, type);
 		}
 
 		//Load transitions and states nums
@@ -1040,7 +1039,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	for (std::vector<AnimEvent*>::iterator event_pit = anim_events.begin(); event_pit != anim_events.end(); ++event_pit) {
-		size += (sizeof(uint) * 3) + sizeof(EventAnimType);
+		size += (sizeof(u64) * 2) + sizeof(uint) + sizeof(EventAnimType);
 	}
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -1150,11 +1149,11 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	for (int j = 0; j < num_events; ++j) {
 
 		//Save Events
-		bytes = sizeof(uint);
+		bytes = sizeof(u64);
 		memcpy(cursor, &anim_events[j]->event_id, bytes);
 		cursor += bytes;
 
-		bytes = sizeof(uint);
+		bytes = sizeof(u64);
 		memcpy(cursor, &anim_events[j]->animation_id, bytes);
 		cursor += bytes;
 
@@ -1398,8 +1397,6 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 
 			float time_in_ticks = animation->start_tick + (state->time * animation->ticks_per_second);
 
-			ActiveEvent(animation, time_in_ticks);
-
 			if (animation->channels[channel_index].num_position_keys > 1)
 			{
 				for (int i = 0; i < animation->channels[channel_index].num_position_keys; i++)
@@ -1448,6 +1445,7 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
 					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
 					t = (float)((double)time_in_ticks / next_key_time);
+					ActiveEvent(animation, next_key_time);
 					break;
 				}
 			}
@@ -1562,14 +1560,15 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 }
 
 // Events
-void ResourceAnimatorController::AddAnimEvent(uint _event_id, uint _anim_id, uint _frame, EventAnimType _type)
+
+void ResourceAnimatorController::AddAnimEvent(u64 _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
 {
-	AnimEvent event;
-	event.event_id = _event_id;
-	event.animation_id = _anim_id;
-	event.frame = _frame;
-	event.type = _type;
-	anim_events.push_back(&event);
+	AnimEvent* event = new AnimEvent();
+	event->event_id = _event_id;
+	event->animation_id = _anim_id;
+	event->frame = _frame;
+	event->type = _type;
+	anim_events.push_back(event);
 }
 
 void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)

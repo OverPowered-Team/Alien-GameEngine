@@ -187,6 +187,11 @@ void PanelAnimTimeline::PanelLogic()
 			ImGui::SameLine();
 		}
 
+		//Check Events 
+		if (!animator->GetEmitter() && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+			animator->SetEmitter((ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER));
+		else if (!component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+			animator->SetEmitter(nullptr);
 
 		//Animation bar Progress
 		ImGui::SetCursorPosX(165);
@@ -315,15 +320,21 @@ void PanelAnimTimeline::PanelLogic()
 					Stop();
 			}
 
-			// To Play Sound
-			if (!in_game)
+			// To Do Event
+			if (!in_game && animator->GetNumAnimEvents() > 0)
 			{
-				for (std::vector<AnimEvent*>::iterator it = animator->GetAnimEvents().begin(); it != animator->GetAnimEvents().end(); ++it)
+				auto aux = animator->GetAnimEvents();
+				for (auto it = aux.begin(); it != aux.end(); ++it)
 				{
-					if ((*it)->frame == key && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+					if ((*it)->frame == key)
 					{
-						App->audio->LoadUsedBanks();
-						animator->GetEmitter()->StartSound((*it)->event_id);
+						// Audio
+						if (animator->GetEmitter() != nullptr)
+						{
+							App->audio->LoadUsedBanks();
+							animator->GetEmitter()->StartSound((*it)->event_id);
+						}
+						
 					}
 				}
 			}
@@ -425,7 +436,8 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 
 		if (animator->GetAnimEvents().size() > 0)
 		{
-			for (std::vector<AnimEvent*>::iterator it = animator->GetAnimEvents().begin(); it != animator->GetAnimEvents().end(); ++it)
+			auto aux = animator->GetAnimEvents();
+			for (auto it = aux.begin(); it != aux.end(); ++it)
 			{
 				if ((*it)->frame == key)
 				{
@@ -452,9 +464,10 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 			{
 				if (event_audio_created && ImGui::BeginMenu("AUDIO EVENT"))
 				{
-					for (std::vector<AnimEvent*>::iterator it = animator->GetAnimEvents().begin(); it != animator->GetAnimEvents().end(); ++it)
+					auto aux = animator->GetAnimEvents();
+					for (auto it = aux.begin(); it != aux.end(); ++it)
 					{
-						if ((*it)->type == EventAnimType::EVENT_AUDIO)
+						if ((*it)->frame == key && (*it)->type == EventAnimType::EVENT_AUDIO)
 						{
 							if (ImGui::MenuItem(App->audio->GetEventNameByID((*it)->event_id)))
 							{

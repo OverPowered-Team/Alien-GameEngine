@@ -154,6 +154,9 @@ enum class EventAnimType {
 class AnimEvent
 {
 public:
+
+	AnimEvent() {};
+
 	u64 event_id = 0ULL;
 	u64 animation_id = 0ULL;
 	uint frame = 0;
@@ -266,7 +269,7 @@ public:
 	std::string GetName();
 
 	// Events
-	void AddAnimEvent(uint _event_id, uint _anim_id, uint _key, EventAnimType _type);
+	void AddAnimEvent(u64 _event_id, u64 _anim_id, uint _key, EventAnimType _type);
 	void RemoveAnimEvent(AnimEvent* _event);
 	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
 	uint GetNumAnimEvents() const { return anim_events.size(); }
