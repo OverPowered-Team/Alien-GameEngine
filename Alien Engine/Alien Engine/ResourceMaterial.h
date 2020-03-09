@@ -59,10 +59,10 @@ enum class TextureType {
 	NONE = -1,
 	DIFFUSE = 0,
 	SPECULAR,
+	NORMALS,
 	AMBIENT,
 	EMISSIVE,
 	HEIGHT,
-	NORMALS,
 	SHININESS,
 	OPACITY,
 	DISPLACEMENT,
@@ -144,18 +144,20 @@ public:
 	void ApplyMaterial();
 
 	void SetTexture(ResourceTexture* texture);
+	void SetTexture(ResourceTexture* texture, TextureType texType);
 	void RemoveTexture();
+	void RemoveTexture(TextureType texType);
 	bool HasTexture() const; 
+	void SetShader(ResourceShader* newShader);
 
 	// ----- ImGui ----- 
 	void DisplayMaterialOnInspector();
 	void MaterialHeader();
 	void ShaderSelectionHeader();
 	void ShaderInputsSegment();
+	void InputTexture(TextureType texType);
 	void TexturesSegment();
 	// ------------------ 
-
-	void SetShader(ResourceShader* newShader);
 
 public:
 

@@ -3,6 +3,7 @@
 #include "ResourceShader.h"
 #include "ResourceTexture.h"
 #include "imgui/imgui_internal.h"
+#include "FileNode.h"
 
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -243,6 +244,18 @@ void ResourceMaterial::SetTexture(ResourceTexture* tex)
 	texture->IncreaseReferences();
 }
 
+void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
+{
+	if (tex == nullptr)
+	{
+		RemoveTexture(texType);
+		return;
+	}
+
+	texturesID[(uint)texType] = tex->id;
+
+}
+
 void ResourceMaterial::RemoveTexture()
 {
 	if (texture != nullptr)
@@ -253,10 +266,31 @@ void ResourceMaterial::RemoveTexture()
 	}
 }
 
+void ResourceMaterial::RemoveTexture(TextureType texType)
+{
+	if (texturesID[(uint)texType] != 0)
+	{
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
+		tex->DecreaseReferences();
+		texturesID[(uint)texType] = 0;
+	}
+}
+
 bool ResourceMaterial::HasTexture() const
 {
 	return texture != nullptr;
 }
+
+void ResourceMaterial::SetShader(ResourceShader* newShader)
+{
+	if (newShader == nullptr || newShader == used_shader)
+		return;
+
+	used_shader->DecreaseReferences();
+	used_shader = newShader;
+	used_shader->IncreaseReferences();
+}
+
 
 void ResourceMaterial::DisplayMaterialOnInspector()
 {
@@ -340,11 +374,23 @@ void ResourceMaterial::ShaderSelectionHeader()
 
 void ResourceMaterial::ShaderInputsSegment()
 {
+	
+
 	switch (used_shader->GetShaderType())
 	{
 	case SHADER_TEMPLATE::DEFAULT: {//difusse
 		//ImGui::ColorEdit3("Albedo", shaderInputs.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
-		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float);
+		ImGui::Text("Diffuse:");
+		InputTexture(TextureType::DIFFUSE);
+		ImGui::SameLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
+		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
+
+		ImGui::Text("Specular:");
+		InputTexture(TextureType::SPECULAR);
+		ImGui::Text("Normal Map:");
+		InputTexture(TextureType::NORMALS);
+
 		break; }
 	case SHADER_TEMPLATE::WAVE: {//wave
 								
@@ -367,6 +413,39 @@ void ResourceMaterial::ShaderInputsSegment()
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
+	}
+}
+
+void ResourceMaterial::InputTexture(TextureType texType)
+{
+	//ImGui::ImageButton((ImTextureID)texturesID[(uint)texType], ImVec2(30, 30));
+	ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : (ImTextureID)0, ImVec2(30, 30));
+	if (ImGui::BeginDragDropTarget()) {
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+			FileNode* node = *(FileNode**)payload->Data;
+			if (node != nullptr && node->type == FileDropType::TEXTURE) {
+				std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+				path += "_meta.alien";
+				u64 ID = App->resources->GetIDFromAlienPath(path.data());
+				if (ID != 0) {
+					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+					if (texture != nullptr) {
+						//SetTexture(texture, texType);
+						SetTexture(texture);
+					}
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15);
+	if (ImGui::ColorButton("Remove Texture", ImVec4(1.0f, 0.f, 0.f, 1.f), 0, ImVec2(10, 10)))
+	{
+		// TODO: Open Popup, "do you want to remove the texture?"
+		RemoveTexture(texType);
 	}
 }
 
@@ -481,14 +560,5 @@ void ResourceMaterial::TexturesSegment()
 	}*/
 }
 
-void ResourceMaterial::SetShader(ResourceShader* newShader)
-{
-	if (newShader == nullptr || newShader == used_shader)
-		return;
-
-	used_shader->DecreaseReferences();
-	used_shader = newShader;
-	used_shader->IncreaseReferences();
-}
 
 
