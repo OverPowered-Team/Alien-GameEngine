@@ -36,6 +36,11 @@ void ComponentLightPoint::LightLogic()
 {
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
+	
+#ifndef GAME_VERSION
+	App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, 10.0f);
+	App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, 10.0f);
+#endif
 }
 
 bool ComponentLightPoint::DrawInspector()

@@ -31,6 +31,8 @@ public:
 
 	static void EndDebugDraw();
 
+	void RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const int& segments = 50);
+	void RenderCircleAroundX(const float& x, const float& y, const float& z, const float& radius, const int& segments = 50);
 
 	ComponentCamera* GetCurrentMainCamera();
 
