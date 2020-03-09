@@ -5,6 +5,7 @@
 #include "ComponentTransform.h"
 #include "PanelAnimTimeline.h"
 #include "ResourceScript.h"
+#include "ComponentScript.h"
 #include "ResourceAudio.h"
 #include "ComponentAudioEmitter.h"
 #include "mmgr/mmgr.h"
@@ -551,9 +552,29 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 		ImGui::Separator();
 
 		// Scripts
-		if (component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+		std::vector<ComponentScript*> scripts = component_animator->game_object_attached->GetComponents<ComponentScript>();
+		if (!scripts.empty())
 		{
-			// TODO WITH SCRIPTS
+			if (ImGui::BeginMenu("Scripts")) {
+				for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+					if (*item != nullptr && (*item)->data_ptr != nullptr) {
+						if (ImGui::BeginMenu((*item)->data_name.data())) {
+							if ((*item)->functionMap.empty()) {
+								ImGui::Text("No exported functions");
+							}
+							else {
+								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+									if (ImGui::MenuItem((*functs).first.data())) {
+
+									}
+								}
+							}
+							ImGui::EndMenu();
+						}
+					}
+				}
+				ImGui::EndMenu();
+			}
 		}
 		else
 			ImGui::Text("No Component Script Created");
