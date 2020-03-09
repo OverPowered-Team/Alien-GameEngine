@@ -54,7 +54,6 @@ public:
 
 private:
 
-	ParticleSystem* particleSystem = nullptr;
 	bool drawEmmitter = false;
 	int shapeSelected = 0;
 	int bbTypeSelected = 0;
@@ -64,15 +63,20 @@ private:
 	int funcTypeDest = 7;
 	int transformSelected = 0; // 0 Global - 1 Local
 
+
+	// Pointers
+	ParticleSystem* particleSystem = nullptr;
 	ResourceTexture* texture = nullptr;
 	ResourceTexture* selected_texture = nullptr;
 	
+
+	// Light
 	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
 	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
 	uint light_id = 0;
 
 
-	ComponentMaterial* material = nullptr;
+	// Logic
 	bool change_texture_menu = false;
 	bool texture_activated = true;
 

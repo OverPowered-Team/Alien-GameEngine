@@ -367,9 +367,9 @@ void ResourceAnimatorController::UpdateState(State* state)
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONANIMATIONEND");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}

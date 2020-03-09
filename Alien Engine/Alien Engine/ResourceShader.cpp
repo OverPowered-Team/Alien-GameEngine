@@ -245,7 +245,9 @@ void ResourceShader::Unbind() const
 
 void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 {
-	glUniform1i(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1i(location, value);
 }
 
 void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
@@ -255,7 +257,9 @@ void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 {
-	glUniform1f(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1f(location, value);
 }
 
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
@@ -275,7 +279,27 @@ void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
 {
-	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniformMatrix4fv(location, 1, GL_FALSE, matrix.ptr());
+}
+
+void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count)
+{
+
+		//glUniformMatrix4fv(location, count, GL_FALSE, matrix[0].ptr());
+	std::string aux = name.c_str();
+	aux += "[%u]";
+	for (int i = 0; i < count; ++i)
+	{
+		char cname[250];
+		sprintf_s(cname, aux.c_str(), i);
+			
+		int location = glGetUniformLocation(shader_id, cname);
+		if (location != -1)
+			glUniformMatrix4fv(location, 1, GL_TRUE, matrix[i].ptr());
+	}
+	
 }
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)

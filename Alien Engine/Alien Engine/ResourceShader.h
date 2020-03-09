@@ -78,6 +78,7 @@ public:
 	void SetUniform4f(const std::string& name, const float4& vec);
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
+	void SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count);
 
 	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights);
 	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights);

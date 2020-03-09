@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "ReturnZ.h"
 #include "ResourceMaterial.h"
+#include "ResourceShader.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentBone.h"
@@ -697,7 +698,8 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 	GameObject* ret = nullptr;
 
 	for (uint i = 0; i < objects_created.size(); ++i) {
-		if (objects_created[i].first == node.parent_num && strcmp(objects_created[i].second->name, (model_nodes.size() > 1) ? node.parent_name.data() : App->objects->GetRoot(true)->GetName()) == 0) {
+		if (objects_created[i].first == node.parent_num && strcmp(objects_created[i].second->name, (model_nodes.size() > 1) ? node.parent_name.data() : App->objects->GetRoot(true)->GetName()) == 0) 
+		{
 			ret = new GameObject(objects_created[i].second, node.pos, node.rot, node.scale);
 			ret->SetName(node.name.data());
 
@@ -717,9 +719,11 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 					ret->AddComponent(Cmesh);
 				}
 
-				if (node.material >= 0) {
+				if (node.material >= 0)
+				{
 					ResourceMaterial* material = materials_attached[node.material];
-					if (material != nullptr) {
+					if (material != nullptr) 
+					{
 						ComponentMaterial* Cmat = new ComponentMaterial(ret);
 						//Cmat->color = material->color;
 
@@ -732,7 +736,6 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 						if (material->texturesID[0] != 0) {
 							//Cmat->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[0]));
 						}
-
 						ret->AddComponent(Cmat);
 					}
 				}
@@ -761,3 +764,5 @@ GameObject* ResourceModel::CreateGameObject(const ModelNode& node, std::vector<s
 
 	return ret;
 }
+
+
