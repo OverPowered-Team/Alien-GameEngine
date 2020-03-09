@@ -245,6 +245,12 @@ void ParticleSystem::Restart()
 	Play();
 }
 
+void ParticleSystem::Stop()
+{
+	ResetSystem();
+	Pause();
+}
+
 void ParticleSystem::ResetSystem()
 {
 	// Reset Emmitter

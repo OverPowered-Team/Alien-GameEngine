@@ -71,6 +71,7 @@ public:
 	void Play();
 	void Pause();
 	void Restart();
+	void Stop();
 	void ResetSystem();
 
 
