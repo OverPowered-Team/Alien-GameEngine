@@ -565,7 +565,8 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 							else {
 								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
 									if (ImGui::MenuItem((*functs).first.data())) {
-
+										//std::function<void()> functEvent = (*functs).second; <-- to get the funct pointer
+										//functEvent(); <-- to call the function
 									}
 								}
 							}
