@@ -108,35 +108,41 @@ void ComponentText::Draw(bool isGame)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Activate Shader
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(VAO);
 	canvas->text_shader->Bind();
 	canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
-
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+	
 	std::string::const_iterator c;
-	int i = 0;
+	x = 0;
 	for(c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
+
 		float xpos = x + ch.bearing.x;
 		float ypos = (ch.size.y - ch.bearing.y);
-		float w = ch.size.x;
-		float h = ch.size.y;
+		float w = ch.size.x * 0.25;
+		float h = ch.size.y * 0.25;
 
-		vertices[0] = { xpos, ypos + h, 0 };
-		vertices[1] = { xpos, ypos, 0 };
-		vertices[2] = { xpos + w, ypos, 0 };
-		vertices[3] = { xpos + w, ypos + h, 0 };
+		float vertex[6][4] = {
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos,     ypos,       0.0, 1.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+			{ xpos + w, ypos + h,   1.0, 0.0 }
+		};
 
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), vertex);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += (ch.advance >> 6);
+		x += ch.advance;
 	}
 	
 	canvas->text_shader->Unbind();
