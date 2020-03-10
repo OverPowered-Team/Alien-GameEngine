@@ -157,7 +157,7 @@ public:
 
 	AnimEvent() {};
 
-	u64 event_id = 0ULL;
+	std::string event_id = "";
 	u64 animation_id = 0ULL;
 	uint frame = 0;
 	EventAnimType type = EventAnimType::NONE;
@@ -178,6 +178,7 @@ private:
 	// Events
 	std::vector<AnimEvent*> anim_events;
 	ComponentAudioEmitter* emitter = nullptr;
+	std::vector<ComponentScript*> scripts;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
@@ -269,12 +270,14 @@ public:
 	std::string GetName();
 
 	// Events
-	void AddAnimEvent(u64 _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	void AddAnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
 	void RemoveAnimEvent(AnimEvent* _event);
 	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
 	uint GetNumAnimEvents() const { return anim_events.size(); }
 	ComponentAudioEmitter* GetEmitter() { return emitter; }
+	std::vector<ComponentScript*> GetScripts() { return scripts; }
 	void SetEmitter(ComponentAudioEmitter* _emitter) { emitter = _emitter; }
+	void SetScripts(std::vector<ComponentScript*> _scripts) { scripts = _scripts; }
 	void ActiveEvent(ResourceAnimation* _animation, uint _key);
 
 	//void UnLoad();

@@ -189,10 +189,16 @@ void PanelAnimTimeline::PanelLogic()
 		}
 
 		//Check Events 
+		// Audio
 		if (!animator->GetEmitter() && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
 			animator->SetEmitter((ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER));
 		else if (!component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
 			animator->SetEmitter(nullptr);
+		// Scripts
+		if (animator->GetScripts().size() < 1 && component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			animator->SetScripts(component_animator->game_object_attached->GetComponents<ComponentScript>());
+		else if (!component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			animator->GetScripts().clear();
 
 		//Animation bar Progress
 		ImGui::SetCursorPosX(165);
@@ -321,7 +327,7 @@ void PanelAnimTimeline::PanelLogic()
 					Stop();
 			}
 
-			// To Do Event
+			// Execute Event
 			if (!in_game && animator->GetNumAnimEvents() > 0)
 			{
 				auto aux = animator->GetAnimEvents();
@@ -333,9 +339,27 @@ void PanelAnimTimeline::PanelLogic()
 						if (animator->GetEmitter() != nullptr)
 						{
 							App->audio->LoadUsedBanks();
-							animator->GetEmitter()->StartSound((*it)->event_id);
+							animator->GetEmitter()->StartSound(std::stoull((*it)->event_id.c_str()));
 						}
 						
+						// Script
+						if (animator->GetScripts().size() > 0)
+						{
+							auto scripts = animator->GetScripts();
+							for (auto item = scripts.begin(); item != scripts.end(); ++item)
+							{
+								if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
+								{
+									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+										if ((*j).first.data() == (*it)->event_id)
+										{
+											std::function<void()> functEvent = (*j).second;
+											functEvent();
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -443,10 +467,19 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 				if ((*it)->frame == key)
 				{
 					event_created = true;
+					// Audio
 					if ((*it)->type == EventAnimType::EVENT_AUDIO)
 					{
-						ImGui::Text(App->audio->GetEventNameByID((*it)->event_id));
+						ImGui::Text(App->audio->GetEventNameByID(std::stoull((*it)->event_id.c_str())));
 						event_audio_created = true;
+					}
+					ImGui::Separator();
+
+					// Script
+					if ((*it)->type == EventAnimType::EVENT_SCRIPT)
+					{
+						ImGui::Text((*it)->event_id.c_str());
+						event_script_created = true;
 					}
 					ImGui::Separator();
 				}
@@ -463,6 +496,7 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 
 			if (ImGui::BeginMenu("Delete Animation Event"))
 			{
+				// Audio
 				if (event_audio_created && ImGui::BeginMenu("AUDIO EVENT"))
 				{
 					auto aux = animator->GetAnimEvents();
@@ -470,7 +504,7 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 					{
 						if ((*it)->frame == key && (*it)->type == EventAnimType::EVENT_AUDIO)
 						{
-							if (ImGui::MenuItem(App->audio->GetEventNameByID((*it)->event_id)))
+							if (ImGui::MenuItem(App->audio->GetEventNameByID(std::stoull((*it)->event_id.c_str()))))
 							{
 								animator->RemoveAnimEvent((*it));
 								break;
@@ -483,12 +517,26 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 				if (event_particle_created && ImGui::MenuItem("PARTICLE EVENT"))
 				{
 				}
-				if (event_script_created && ImGui::MenuItem("SCRIPT EVENT"))
+
+				// Script
+				if (event_script_created && ImGui::BeginMenu("SCRIPT EVENT"))
 				{
+					auto aux = animator->GetAnimEvents();
+					for (auto it = aux.begin(); it != aux.end(); ++it)
+					{
+						if ((*it)->frame == key && (*it)->type == EventAnimType::EVENT_SCRIPT)
+						{
+							if (ImGui::MenuItem((*it)->event_id.c_str()))
+							{
+								animator->RemoveAnimEvent((*it));
+								break;
+							}
+						}
+					}
+					ImGui::EndMenu();
 				}
 				ImGui::EndMenu();
 			}
-				
 		}
 		
 		ShowOptionsToCreate();
@@ -522,7 +570,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 								{
 									if (ImGui::MenuItem((*j).second.c_str()))
 									{
-										animator->AddAnimEvent((*j).first, current_animation->GetID(), key, EventAnimType::EVENT_AUDIO);
+										animator->AddAnimEvent(std::to_string((*j).first), current_animation->GetID(), key, EventAnimType::EVENT_AUDIO);
 									}
 								}
 								ImGui::EndMenu();
@@ -552,35 +600,46 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 		ImGui::Separator();
 
 		// Scripts
-		std::vector<ComponentScript*> scripts = component_animator->game_object_attached->GetComponents<ComponentScript>();
-		if (!scripts.empty())
+		if (!event_script_created)
 		{
-			if (ImGui::BeginMenu("Scripts")) {
-				for (auto item = scripts.begin(); item != scripts.end(); ++item) {
-					if (*item != nullptr && (*item)->data_ptr != nullptr) {
-						if (ImGui::BeginMenu((*item)->data_name.data())) {
-							if ((*item)->functionMap.empty()) {
-								ImGui::Text("No exported functions");
-							}
-							else {
-								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
-									if (ImGui::MenuItem((*functs).first.data())) {
-										//std::function<void()> functEvent = (*functs).second; <-- to get the funct pointer
-										//functEvent(); <-- to call the function
+			if (component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			{
+				if (ImGui::BeginMenu("Scripts List"))
+				{
+					animator->SetScripts(component_animator->game_object_attached->GetComponents<ComponentScript>());
+					auto scripts = animator->GetScripts();
+					for (auto item = scripts.begin(); item != scripts.end(); ++item)
+					{
+						if (*item != nullptr && (*item)->data_ptr != nullptr)
+						{
+							if (ImGui::BeginMenu((*item)->data_name.data())) 
+							{
+								if (!(*item)->functionMap.empty()) 
+								{
+									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+										if (ImGui::MenuItem((*j).first.data()))
+										{
+											animator->AddAnimEvent((*j).first, current_animation->GetID(), key, EventAnimType::EVENT_SCRIPT);
+										}
 									}
 								}
+								else 
+									ImGui::Text("No exported functions");
+
+								ImGui::EndMenu();
 							}
-							ImGui::EndMenu();
 						}
 					}
+					ImGui::EndMenu();
 				}
-				ImGui::EndMenu();
 			}
+			else
+				ImGui::Text("No Component Script Created");
+
+			ImGui::Separator();
 		}
 		else
-			ImGui::Text("No Component Script Created");
-
-		
+			event_script_created = false;
 		
 		ImGui::EndMenu();
 	}
