@@ -21,6 +21,7 @@ public:
 ALIEN_FACTORY TestEvents* CreateTestEvents() {
 	TestEvents* events = new TestEvents();
 	// To show in inspector here
+
 	SHOW_VOID_FUNCTION(TestEvents::Event, events);
 	SHOW_VOID_FUNCTION(TestEvents::Event2, events);
 	SHOW_VOID_FUNCTION(TestEvents::Event3, events);

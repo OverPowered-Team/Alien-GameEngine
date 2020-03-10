@@ -169,11 +169,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PolScriptSushi.h" />
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
     <ClInclude Include="MoreEventsClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PolScriptSushi.cpp" />
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
     <ClCompile Include="MoreEventsClass.cpp" />

@@ -26,6 +26,12 @@
                 "Animation_Id": "18301213033854610072",
                 "Frame": 13,
                 "Type": 2
+            },
+            {
+                "Event_Id": "TestEvents::Event",
+                "Animation_Id": "18301213033854610072",
+                "Frame": 5,
+                "Type": 2
             }
         ]
     }

@@ -4,6 +4,7 @@
 #include "ComponentUI.h"
 #include "ComponentCanvas.h"
 #include "ReturnZ.h"
+#include "ComponentScript.h"
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
@@ -147,6 +148,37 @@ bool ComponentButton::DrawInspector()
 			ImGui::PopStyleColor(3);
 		}
 		ImGui::Spacing();
+
+		//------------------------SCRIPTS----------------------------
+		if (ImGui::TreeNode("Script Listeners")) {
+
+			std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
+			if (!scripts.empty()) {
+				for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+					if (*item != nullptr && (*item)->data_ptr != nullptr) {
+						if (ImGui::BeginMenu((*item)->data_name.data())) {
+							if (!(*item)->functionMap.empty()) {
+								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+									if (ImGui::MenuItem((*functs).first.data())) {
+
+										
+									}
+								}
+							}
+							else {
+								ImGui::Text("No exported functions");
+							}
+							ImGui::EndMenu();
+						}
+					}
+				}
+			}
+			else {
+				ImGui::Text("No Scripts attached");
+			}
+
+			ImGui::TreePop();
+		}
 
 		//------------------------COLOR-------------------------------
 		if (ImGui::TreeNode("Colors"))
