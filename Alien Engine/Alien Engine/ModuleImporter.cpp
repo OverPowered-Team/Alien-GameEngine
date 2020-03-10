@@ -670,7 +670,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 		{
 			ComponentMaterial *compMaterial = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
 
-			if ((*item)->HasComponent(ComponentType::MESH))
+			if ((*item)->HasComponent(ComponentType::MESH) || (*item)->HasComponent(ComponentType::DEFORMABLE_MESH))
 			{
 				bool exists = true;
 				if (compMaterial == nullptr)
@@ -764,7 +764,7 @@ void ModuleImporter::ApplyMaterialToSelectedObject(ResourceMaterial* material)
 	{
 		if (*item != nullptr)
 		{
-			if (!(*item)->HasComponent(ComponentType::MESH) && !(*item)->HasComponent(ComponentType::PARTICLES))
+			if (!(*item)->HasComponent(ComponentType::MESH) && !(*item)->HasComponent(ComponentType::DEFORMABLE_MESH) && !(*item)->HasComponent(ComponentType::PARTICLES))
 				return;
 
 			ComponentMaterial* materialComp = (ComponentMaterial*)(*item)->GetComponent(ComponentType::MATERIAL);
