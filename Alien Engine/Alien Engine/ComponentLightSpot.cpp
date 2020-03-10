@@ -74,9 +74,9 @@ bool ComponentLightSpot::DrawInspector()
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
-		ImGui::DragFloat("Constant", &light_props.constant, 0.10f, 0.0f);
-		ImGui::DragFloat("Linear", &light_props.linear, 0.10f, 0.0f);
-		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f, 0.0f);
+		ImGui::DragFloat("Constant", &light_props.constant, 0.01f, 0.0f);
+		ImGui::DragFloat("Linear", &light_props.linear, 0.01f, 0.0f);
+		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.01f, 0.0f);
 		float tmp_cutoff = light_props.cut_off;
 		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
 			light_props.cut_off = tmp_cutoff;
