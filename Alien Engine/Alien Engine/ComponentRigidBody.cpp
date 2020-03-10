@@ -10,6 +10,7 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 	// GameObject Components 
 	type = ComponentType::RIGID_BODY;
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
+	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation());
 
 	// Create aux shape 
 
@@ -20,7 +21,8 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(1.f, nullptr, aux_shape);
 	body = new btRigidBody(rbInfo);
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	body->setUserPointer(go);
+	body->setUserPointer(this);
+	body->setWorldTransform(go_bullet_transform);
 	App->physics->AddBody(body);
 	
 	// Default values 

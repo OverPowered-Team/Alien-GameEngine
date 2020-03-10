@@ -36,8 +36,8 @@ Application::Application()
 	AddModule(importer);
 	AddModule(audio);
 	// Scenes
-	AddModule(objects);
 	AddModule(physics);
+	AddModule(objects);
 	AddModule(tween);
 #ifndef GAME_VERSION
 	AddModule(camera);

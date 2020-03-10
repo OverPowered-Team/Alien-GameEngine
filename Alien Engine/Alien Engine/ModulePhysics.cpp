@@ -78,28 +78,6 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 	world->stepSimulation(Time::GetDT(), 20);
 
-	/*int numManifolds = world->getDispatcher()->getNumManifolds();
-
-	for (int i = 0; i < numManifolds; i++)
-	{
-		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
-
-		int numContacts = contactManifold->getNumContacts();
-
-		if (numContacts > 0)
-		{
-			GameObject* go_a = (GameObject*)obA->getUserPointer();
-			GameObject* go_b = (GameObject*)obB->getUserPointer();
-
-			if (go_a && go_b)
-			{
-				GameObject* go = (GameObject*)obA->getUserPointer();
-			}
-		}
-	}*/
-
 	return UPDATE_CONTINUE;
 }
 

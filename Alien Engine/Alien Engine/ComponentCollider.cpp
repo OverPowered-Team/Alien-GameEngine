@@ -36,45 +36,32 @@ ComponentCollider::~ComponentCollider()
 
 void ComponentCollider::Init()
 {
-	// Create aux body 
+	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation());
+	
+	// Create elements
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.F, nullptr, nullptr);
 	aux_body = new btRigidBody(rbInfo);
-
-	// Create shape 
-
-	CreateDefaultShape();
-
-	aux_body->setCollisionShape(shape);
-	App->physics->AddBody(aux_body);
-
-	// Create detector  // TestCallback
+	aux_body->setUserPointer(this);
+	aux_body->setWorldTransform(go_bullet_transform);
 	detector = new btGhostObject();
 	detector->setUserPointer(this);
-	detector->setCollisionShape(shape);
+	detector->setWorldTransform(go_bullet_transform);
 	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// Create shape 
+	CreateDefaultShape();
+	aux_body->setCollisionShape(shape);
+	detector->setCollisionShape(shape);
+
+	// Add to world
+	App->physics->AddBody(aux_body);
 	App->physics->AddDetector(detector);
 
 	// Search Rigid Body 
-
 	ComponentRigidBody* new_rb = game_object_attached->GetComponent<ComponentRigidBody>();
-
-	if (new_rb != nullptr)
-	{
-		new_rb->AddCollider(this);
-	}
-
-	// Search Valid Script // TestCallback
-
-	//if (alien_script == nullptr)
-	//{
-	//	ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
-
-	//	if (new_script != nullptr && new_script->need_alien == true)
-	//	{
-	//		alien_script = (Alien*)new_script->data_ptr;
-	//	}
-	//}
-
+	(new_rb != nullptr) ? new_rb->AddCollider(this) : new_rb = nullptr;
+		
+	// Default settings
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
