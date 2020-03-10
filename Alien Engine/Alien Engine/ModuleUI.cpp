@@ -573,6 +573,12 @@ void ModuleUI::MainMenuBar()
 			{
 				App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
 			}
+			if (ImGui::MenuItem("Script")) {
+				App->ui->creating_script = true;
+			}
+			if (ImGui::MenuItem("Material")) {
+				App->resources->CreateMaterial("New Material");
+			}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenu();
