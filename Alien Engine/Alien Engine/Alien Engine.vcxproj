@@ -684,6 +684,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentAnimatedImage.h" />
     <ClInclude Include="ComponentAnimator.h" />
     <ClInclude Include="ComponentBone.h" />
     <ClInclude Include="ComponentBoxCollider.h" />
@@ -1097,6 +1098,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentAnimatedImage.cpp" />
     <ClCompile Include="ComponentAnimator.cpp" />
     <ClCompile Include="ComponentBone.cpp" />
     <ClCompile Include="ComponentBoxCollider.cpp" />

@@ -30,6 +30,7 @@
 #include "ComponentText.h"
 #include "ComponentButton.h"
 #include "ComponentCheckbox.h"
+#include "ComponentAnimatedImage.h"
 
 #include "ReturnZ.h"
 #include "Alien.h"
@@ -360,7 +361,7 @@ void PanelInspector::ButtonAddComponent()
 
 	else {
 		ImGui::Combo("##choose component", &component, 
-			"Select Component\0Mesh\0Material\0Light Directional\0Light Spot\0Light Point\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+			"Select Component\0Mesh\0Material\0Light Directional\0Light Spot\0Light Point\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0AnimatedImage\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -594,6 +595,19 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
+			case ComponentType::UI_ANIMATED_IMAGE: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentAnimatedImage(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+				}
+				else
+					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
 			case ComponentType::BOX_COLLIDER: {
 				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
 				{
@@ -719,7 +733,6 @@ ComponentCanvas* PanelInspector::GetCanvas()
 	if (canvas == nullptr) {
 		GameObject* obj = new GameObject(App->objects->GetRoot(false));
 		obj->SetName("Canvas");
-		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}

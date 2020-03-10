@@ -578,6 +578,7 @@ void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex, bool back
 		origin.y = -(-origin.y - 0.5F) * 2;
 		matrix[0][3] = origin.x;
 		matrix[1][3] = origin.y;
+		matrix[2][3] = 0.0f;
 	}
 
 	if (tex != nullptr) {
@@ -863,7 +864,6 @@ ComponentCanvas* ComponentCheckbox::GetCanvas()
 	if (canvas == nullptr) {
 		GameObject* obj = new GameObject(App->objects->GetRoot(false));
 		obj->SetName("Canvas");
-		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}

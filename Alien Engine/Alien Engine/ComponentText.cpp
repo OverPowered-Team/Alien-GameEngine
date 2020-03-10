@@ -1,8 +1,11 @@
 #include "Application.h"
 #include "ModuleResources.h"
+#include "ModuleObjects.h"
 #include "ComponentTransform.h"
 #include "ComponentText.h"
 #include "ResourceFont.h"
+#include "ResourceShader.h"
+#include "Viewport.h"
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -19,6 +22,8 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+
+	GenerateVAOVBO();
 
 	ui_type = ComponentType::UI_TEXT;
 	tabbable = false;
@@ -49,6 +54,18 @@ bool ComponentText::DrawInspector()
 		ImGui::Text("Text: "); ImGui::SameLine();
 		if (ImGui::InputText("##Text", text_str, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
 			text = text_str;
+		}
+
+		static bool set_bg_Z = true;
+		static Color bg_col;
+		if (ImGui::ColorEdit4("##Color", &bg_col, ImGuiColorEditFlags_Float)) {
+			if (set_bg_Z)
+				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			set_bg_Z = false;
+			current_color = bg_col;
+		}
+		else if (!set_bg_Z && ImGui::IsMouseReleased(0)) {
+			set_bg_Z = true;
 		}
 
 		ImGui::Spacing();
@@ -87,21 +104,14 @@ void ComponentText::Draw(bool isGame)
 {
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
-
-	glColor4f(0.5, 1.0, 1.0, 1.0);
-
-	glPushMatrix();
-	glMultMatrixf(game_object_attached->GetComponent<ComponentTransform>()->global_transformation.Transposed().ptr());
-
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_TEXTURE_2D);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
+	//Activate Shader
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+	canvas->text_shader->Bind();
+	canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
 
 	std::string::const_iterator c;
 	int i = 0;
@@ -116,26 +126,24 @@ void ComponentText::Draw(bool isGame)
 		vertices[1] = { xpos, ypos, 0 };
 		vertices[2] = { xpos + w, ypos, 0 };
 		vertices[3] = { xpos + w, ypos + h, 0 };
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
 
-		DrawCharacter(ch);
-		i++;
-		x += ch.advance;
+		// Render glyph texture over quad
+		glBindTexture(GL_TEXTURE_2D, ch.textureID);
+		// Update content of VBO memory
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		x += (ch.advance >> 6);
 	}
-
-	x = 0;
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
+	
+	canvas->text_shader->Unbind();
+	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glPopMatrix();
-
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
-
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 }
@@ -153,8 +161,6 @@ void ComponentText::Clone(Component* clone)
 	else {
 		LOG_ENGINE("There's no default font!");
 	}
-
-	//TODO: UPDATE TEXT
 
 	GameObject* p = game_object_attached->parent;
 	bool changed = true;
@@ -226,6 +232,19 @@ void ComponentText::SetFont(ResourceFont* font)
 ResourceFont* ComponentText::GetFont() const
 {
 	return font;
+}
+
+void ComponentText::GenerateVAOVBO()
+{
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 

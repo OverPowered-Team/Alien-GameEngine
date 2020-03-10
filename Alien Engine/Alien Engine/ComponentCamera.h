@@ -18,6 +18,7 @@ class __declspec(dllexport) ComponentCamera : public Component {
 	friend class ComponentBar;
 	friend class ComponentSlider;
 	friend class ComponentCheckbox;
+	friend class ComponentAnimatedImage;
 	friend class ModuleObjects;
 	friend class RayCreator;
 	friend class Viewport;

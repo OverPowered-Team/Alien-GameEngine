@@ -2,6 +2,9 @@
 #include "GameObject.h"
 #include "ComponentUI.h"
 #include "ComponentTransform.h"
+#include "ResourceShader.h"
+#include "Application.h"
+#include "ModuleResources.h"
 #include "glew/include/glew.h"
 #include "imgui/imgui.h"
 #include "ReturnZ.h"
@@ -13,7 +16,15 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	width = 160;
 	height = 90;
 
+	SetShader("text_shader_meta.alien");
+
 	type = ComponentType::CANVAS;
+}
+
+ComponentCanvas::~ComponentCanvas()
+{
+	text_shader->DecreaseReferences();
+	text_shader = nullptr;
 }
 
 bool ComponentCanvas::DrawInspector()
@@ -54,10 +65,9 @@ void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
 void ComponentCanvas::Draw()
 {
 #ifndef GAME_VERSION
+	if (Time::IsPlaying())
+		return;
 
-#else
-
-#endif
 	ComponentTransform* comp_trans = game_object_attached->GetComponent<ComponentTransform>();
 	glDisable(GL_LIGHTING);
 	glBegin(GL_LINE_LOOP);
@@ -77,5 +87,19 @@ void ComponentCanvas::Draw()
 
 	glEnd();
 	glEnable(GL_LIGHTING);
+#endif
 
+}
+
+void ComponentCanvas::SetShader(const char* path)
+{
+	if (text_shader != nullptr)
+	{
+		text_shader->DecreaseReferences();
+	}
+	std::string fullpath = SHADERS_FOLDER;
+	fullpath += path;
+	u64 id_s = App->resources->GetIDFromAlienPath(fullpath.c_str()); // needs fix. meta is not created too...
+	text_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	text_shader->IncreaseReferences();
 }

@@ -1617,7 +1617,6 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	if (canvas == nullptr) {
 		GameObject* obj = new GameObject(GetRoot(false));
 		obj->SetName("Canvas");
-		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}
@@ -1822,13 +1821,12 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	{
 	case ComponentType::CANVAS: {
 		object->SetName("Canvas");
-		object->AddComponent(new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		comp = new ComponentCanvas(object);
 		object->AddComponent(comp);
 		break; }
 
 	case ComponentType::UI_IMAGE: {
-		ComponentCanvas* canvas = GetCanvas();
+ 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentImage(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Image");
