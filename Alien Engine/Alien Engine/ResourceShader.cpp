@@ -386,6 +386,9 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 

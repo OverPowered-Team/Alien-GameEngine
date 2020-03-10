@@ -7,6 +7,7 @@
 
 struct __declspec(dllexport) SpotLightProperties
 {
+	float intensity = 1.0f;
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
 	float3 ambient = float3::zero();

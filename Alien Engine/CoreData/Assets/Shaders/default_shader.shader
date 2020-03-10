@@ -67,6 +67,7 @@ struct PointLight
 
 struct SpotLight
 {
+    float intensity;
     vec3 position;
     vec3 direction;
     vec3 ambient;
@@ -191,6 +192,9 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
 
 vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_dir)
 {
+    // Intensity
+    float intensity = light.intensity;
+
     vec3 lightDir = normalize(light.position - frag_pos);
     float theta = dot(lightDir, normalize(-light.direction)); 
 
@@ -218,7 +222,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
         diffuse *= attenuation;
         specular *= attenuation;   
             
-        return (ambient + diffuse + specular);
+        return (ambient + diffuse + specular) * intensity;
     }
     else 
     {
