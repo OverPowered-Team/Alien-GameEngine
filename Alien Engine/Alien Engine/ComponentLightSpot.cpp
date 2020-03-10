@@ -36,7 +36,21 @@ void ComponentLightSpot::LightLogic()
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-	Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::White(), 3.0f);
+	
+#ifndef GAME_VERSION
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
+		App->renderer3D->EndDebugDraw();
+	}
+	else
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
+		App->renderer3D->EndDebugDraw();
+	}
+#endif
 }
 
 bool ComponentLightSpot::DrawInspector()
@@ -69,7 +83,6 @@ bool ComponentLightSpot::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
-		ImGui::Text("Uniform position: X: %.2f, Y: %.2f, Z: %.2f", light_props.position.x, light_props.position.y, light_props.position.z);
 		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.10f);
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
@@ -81,10 +94,6 @@ bool ComponentLightSpot::DrawInspector()
 		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
 			light_props.cut_off = tmp_cutoff;
 			//light_props.cut_off = math::Cos(DegToRad(tmp_cutoff));
-		float tmp_outercutoff = light_props.outer_cut_off;
-		if (ImGui::DragFloat("Outer Cut Off", &tmp_outercutoff, 0.10f))
-			light_props.outer_cut_off = tmp_outercutoff;
-			//light_props.outer_cut_off = math::Cos(DegToRad(tmp_outercutoff));
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -142,7 +151,6 @@ void ComponentLightSpot::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Linear", double(light_props.linear));
 	to_save->SetNumber("Quadratic", double(light_props.quadratic));
 	to_save->SetNumber("Cut_Off", double(light_props.cut_off));
-	to_save->SetNumber("Outer_Cut_Off", double(light_props.outer_cut_off));
 }
 
 void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
@@ -160,7 +168,6 @@ void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
 	light_props.linear = (float)to_load->GetNumber("Linear");
 	light_props.quadratic = (float)to_load->GetNumber("Quadratic");
 	light_props.cut_off = (float)to_load->GetNumber("Cut_Off");
-	light_props.outer_cut_off = (float)to_load->GetNumber("Outer_Cut_Off");
 }
 
 void ComponentLightSpot::DrawIconLight()

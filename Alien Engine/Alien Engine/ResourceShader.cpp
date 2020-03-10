@@ -411,10 +411,7 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		SetUniform1f(cquadratic, (*iter)->quadratic);
 
 		std::string ccutoff = std::string(cname).append(".cut_off");
-		SetUniform1f(ccutoff, (*iter)->cut_off);
-
-		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
-		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
+		SetUniform1f(ccutoff, cos(math::DegToRad((*iter)->cut_off)));
 
 		++i;
 	}
