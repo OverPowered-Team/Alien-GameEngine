@@ -147,21 +147,34 @@ bool ComponentButton::DrawInspector()
 			}
 			ImGui::PopStyleColor(3);
 		}
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
 		//------------------------SCRIPTS----------------------------
 		if (ImGui::TreeNode("Script Listeners")) {
+			//--------------
+			if (ImGui::TreeNode("On Click Functions")) {
+				for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+					ImGui::Text((*item).first.data());
+				}
+
+				ImGui::TreePop();
+			}
+			
+			//--------------
+
+			ImGui::Spacing(); ImGui::Spacing();
 
 			std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
 			if (!scripts.empty()) {
+				ImGui::Text("On Click Listeners");
+				ImGui::SameLine(180);
 				for (auto item = scripts.begin(); item != scripts.end(); ++item) {
 					if (*item != nullptr && (*item)->data_ptr != nullptr) {
 						if (ImGui::BeginMenu((*item)->data_name.data())) {
 							if (!(*item)->functionMap.empty()) {
 								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
 									if (ImGui::MenuItem((*functs).first.data())) {
-
-										
+										AddListenerOnClick((*functs).first, (*functs).second);
 									}
 								}
 							}
@@ -177,9 +190,10 @@ bool ComponentButton::DrawInspector()
 				ImGui::Text("No Scripts attached");
 			}
 
+
 			ImGui::TreePop();
 		}
-
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 		//------------------------COLOR-------------------------------
 		if (ImGui::TreeNode("Colors"))
 		{
@@ -450,14 +464,14 @@ bool ComponentButton::OnRelease()
 	return true;
 }
 
-void ComponentButton::CallListeners(std::vector<std::function<void()>>* listeners)
+void ComponentButton::CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners)
 {
 	if (listeners != nullptr) {
 		auto item = listeners->begin();
 		for (; item != listeners->end(); ++item) {
-			if (*item != nullptr) {
+			if ((*item).second != nullptr) {
 				try {
-					(*item)();
+					(*item).second();
 				}
 				catch (...) {
 				#ifndef GAME_VERSION
@@ -481,23 +495,23 @@ void ComponentButton::SetActive(bool active)
 	}
 }
 
-void ComponentButton::AddListenerOnHover(std::function<void()> funct)
+void ComponentButton::AddListenerOnHover(std::string name, std::function<void()> funct)
 {
-	listenersOnHover.push_back(funct);
+	listenersOnHover.push_back({ name, funct });
 }
 
-void ComponentButton::AddListenerOnClick(std::function<void()> funct)
+void ComponentButton::AddListenerOnClick(std::string name, std::function<void()> funct)
 {
-	listenersOnClick.push_back(funct);
+	listenersOnClick.push_back({ name, funct });
 }
 
-void ComponentButton::AddListenerOnClickRepeat(std::function<void()> funct)
+void ComponentButton::AddListenerOnClickRepeat(std::string name, std::function<void()> funct)
 {
-	listenersOnClickRepeat.push_back(funct);
+	listenersOnClickRepeat.push_back({ name, funct });
 }
 
-void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
+void ComponentButton::AddListenerOnRelease(std::string name, std::function<void()> funct)
 {
-	listenersOnRelease.push_back(funct);
+	listenersOnRelease.push_back({ name, funct });
 }
 
