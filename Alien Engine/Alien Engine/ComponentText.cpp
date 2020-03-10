@@ -109,7 +109,9 @@ void ComponentText::Draw(bool isGame)
 
 	//Activate Shader
 	canvas->text_shader->Bind();
-	canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
+	canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+	canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+	canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 	
