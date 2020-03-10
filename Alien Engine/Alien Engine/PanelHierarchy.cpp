@@ -518,7 +518,7 @@ void PanelHierarchy::RightClickMenu()
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Effect"))
+		if (ImGui::BeginMenu("Effects"))
 		{
 			if (ImGui::MenuItem("Particle System"))
 			{

@@ -232,6 +232,7 @@ bool ParticleSystem::isPlaying() const
 void ParticleSystem::Play()
 {
 	playing = true; 
+	emmitter.playing = true;
 }
 
 void ParticleSystem::Pause()
@@ -268,6 +269,18 @@ void ParticleSystem::ResetSystem()
 
 	// Update counter
 	totalParticles = 0u;
+}
+
+void ParticleSystem::StopEmmitter()
+{
+	emmitter.Stop();
+	
+}
+
+void ParticleSystem::StartEmmitter()
+{
+	emmitter.Play();
+	
 }
 
 bool compareParticles(Particle* a, Particle* b)
