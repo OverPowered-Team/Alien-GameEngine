@@ -16,15 +16,19 @@ public:
 	void Event();
 	void Event2();
 	void Event3();
+
+	void GoToScene(int sceneNum, const char* name);
 };
 
 ALIEN_FACTORY TestEvents* CreateTestEvents() {
 	TestEvents* events = new TestEvents();
 	// To show in inspector here
 
-	SHOW_VOID_FUNCTION(TestEvents::Event, events);
-	SHOW_VOID_FUNCTION(TestEvents::Event2, events);
-	SHOW_VOID_FUNCTION(TestEvents::Event3, events);
-
+	SHOW_LAMBDA_FUNCTION(events->GoToScene, "Go Scene 2", events, 2, "MyFuckingScene");
+	
+	//SHOW_VOID_FUNCTION(TestEvents::Event, events);
+	//SHOW_VOID_FUNCTION(TestEvents::Event2, events);
+	//SHOW_VOID_FUNCTION(TestEvents::Event3, events);
+	
 	return events;
 } 

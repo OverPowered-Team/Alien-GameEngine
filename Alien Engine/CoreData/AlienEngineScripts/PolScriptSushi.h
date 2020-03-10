@@ -20,6 +20,6 @@ public:
 ALIEN_FACTORY PolScriptSushi* CreatePolScriptSushi() {
 	PolScriptSushi* sushi = new PolScriptSushi();
 	// To show in inspector here
-	SHOW_VOID_FUNCTION(PolScriptSushi::EatSushi, sushi);
+	//SHOW_VOID_FUNCTION(PolScriptSushi::EatSushi, sushi);
 	return sushi;
 } 

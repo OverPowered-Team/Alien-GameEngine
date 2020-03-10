@@ -77,6 +77,8 @@
 #define SHOW_IN_INSPECTOR_AS_GAMEOBJECT(GAMEOBJECT_) ComponentScript::InspectorGameObject(&GAMEOBJECT_, #GAMEOBJECT_)
 /*--------------------function--------------------*/
 #define SHOW_VOID_FUNCTION(FUNCTION, CONTEXT_) ComponentScript::ShowVoidFunction(std::bind(&FUNCTION, CONTEXT_), #FUNCTION)
+// more info about LAMBDA, allow us to convert functions with arguments to void funtion pointer. https://thispointer.com/c11-lambda-how-to-capture-local-variables-inside-lambda/
+#define SHOW_LAMBDA_FUNCTION(FUNCTION, NAME, CONTEXT_, ...) ComponentScript::ShowVoidFunction([CONTEXT_]() -> void { FUNCTION(__VA_ARGS__); }, NAME)
 // ------------INSPECTOR MACROS----------------\\
 
 #define VARAIBLE_TO_STRING(VAR_) #VAR_
