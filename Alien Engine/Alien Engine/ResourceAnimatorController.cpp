@@ -26,8 +26,33 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 
 ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorController* controller)
 {
+
+	name = controller->name;
+
 	current_state = nullptr;
-	default_state = nullptr;
+
+	if (controller->default_state != nullptr)
+		default_state = new State(controller->default_state);
+	else
+		default_state = nullptr;
+
+	for (int i = 0; i < controller->states.size(); ++i) {
+		states.push_back(new State(controller->states[i]));
+	}
+
+	for (int i = 0; i < controller->transitions.size(); ++i) {
+		transitions.push_back(new Transition(controller->transitions[i]));
+	}
+
+	int_parameters = controller->int_parameters;
+	float_parameters = controller->float_parameters;
+	bool_parameters = controller->bool_parameters;
+
+	for (int i = 0; i < controller->anim_events.size(); ++i)
+		anim_events.push_back(new AnimEvent(controller->anim_events[i]));
+
+	ed_context = ax::NodeEditor::CreateEditor();
+
 }
 
 ResourceAnimatorController::~ResourceAnimatorController()
@@ -344,7 +369,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+		state->time += (Time::GetDT() * current_state->GetSpeed());
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -391,7 +416,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
 			UpdateState(state->next_state);
 		}
 		else {
@@ -1676,6 +1701,23 @@ State::State(std::string name, ResourceAnimation* clip)
 		SetClip(clip);
 }
 
+State::State(State* state)
+{
+	name = state->name;
+	speed = state->speed;
+	clip = state->clip;
+	clip->IncreaseReferences();
+	pin_in_id = state->pin_in_id;
+	pin_out_id = state->pin_out_id;
+	time = 0;
+	fade_duration = 0;
+	fade_time = 0;
+
+	if (state->next_state != nullptr)
+		next_state = new State(state->next_state);
+	else next_state = nullptr;
+}
+
 void State::SetSpeed(float speed)
 {
 	this->speed = speed;
@@ -1709,6 +1751,7 @@ ResourceAnimation* State::GetClip()
 
 Transition::Transition()
 {
+
 }
 
 Transition::Transition(State* source, State* target, float blend)
@@ -1716,6 +1759,20 @@ Transition::Transition(State* source, State* target, float blend)
 	this->source = source;
 	this->target = target;
 	this->blend = blend;
+}
+
+Transition::Transition(Transition* transition)
+{
+	source = new State(transition->source);
+	target = new State(transition->target);
+	for (int i = 0; i < transition->int_conditions.size(); ++i)
+		int_conditions.push_back(new IntCondition(transition->int_conditions[i]));
+	for (int i = 0; i < transition->float_conditions.size(); ++i)
+		float_conditions.push_back(new FloatCondition(transition->float_conditions[i]));
+	for (int i = 0; i < transition->bool_conditions.size(); ++i)
+		bool_conditions.push_back(new BoolCondition(transition->bool_conditions[i]));
+	blend = transition->blend;
+	end = transition->end;
 }
 
 void Transition::SetSource(State* source)
@@ -1822,6 +1879,15 @@ void Transition::RemoveBoolCondition(BoolCondition* bool_condition)
 	}
 }
 
+IntCondition::IntCondition(IntCondition* int_condition)
+{
+	type = int_condition->type;
+	parameter_index = int_condition->parameter_index;
+	comp_texts = int_condition->comp_texts;
+	comp_text = int_condition->comp_text;
+	comp = int_condition->comp;
+}
+
 bool IntCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1840,6 +1906,15 @@ bool IntCondition::Compare(ResourceAnimatorController* controller)
 	}
 
 	return ret;
+}
+
+FloatCondition::FloatCondition(FloatCondition* float_condition)
+{
+	type = float_condition->type;
+	parameter_index = float_condition->parameter_index;
+	comp_texts = float_condition->comp_texts;
+	comp_text = float_condition->comp_text;
+	comp = float_condition->comp;
 }
 
 bool FloatCondition::Compare(ResourceAnimatorController* controller)
@@ -1862,6 +1937,14 @@ bool FloatCondition::Compare(ResourceAnimatorController* controller)
 	return ret;
 }
 
+BoolCondition::BoolCondition(BoolCondition* bool_condition)
+{
+	type = bool_condition->type;
+	parameter_index = bool_condition->parameter_index;
+	comp_texts = bool_condition->comp_texts;
+	comp_text = bool_condition->comp_text;
+}
+
 bool BoolCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1874,4 +1957,16 @@ bool BoolCondition::Compare(ResourceAnimatorController* controller)
 	}
 
 	return ret;
+}
+
+Condition::Condition()
+{
+}
+
+AnimEvent::AnimEvent(AnimEvent* anim_event)
+{
+	event_id = anim_event->event_id;
+	animation_id = anim_event->animation_id;
+	frame = anim_event->frame;
+	type = anim_event->type;
 }

@@ -31,7 +31,8 @@ public:
 	void SetInt(const char* parameter_name, int parameter_value);
 
 private:
-	ResourceAnimatorController* animator_controller;
+	ResourceAnimatorController* animator_controller = nullptr;
+	ResourceAnimatorController* source_animator_controller = nullptr;
 
 	bool DrawInspector();
 
