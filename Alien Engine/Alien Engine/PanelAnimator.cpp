@@ -635,6 +635,9 @@ void PanelAnimator::OnObjectDelete()
 
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController* animator)
 {
+	if (animator == nullptr)
+		return;
+
 	if (current_animator)
 	{
 		current_animator->SaveAsset(current_animator->GetID());
