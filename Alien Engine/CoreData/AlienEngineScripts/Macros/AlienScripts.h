@@ -75,6 +75,8 @@
 #define SHOW_IN_INSPECTOR_AS_PREFAB(PREFAB_) ComponentScript::InspectorPrefab(&PREFAB_, #PREFAB_)
 /*--------------------gameobject--------------------*/
 #define SHOW_IN_INSPECTOR_AS_GAMEOBJECT(GAMEOBJECT_) ComponentScript::InspectorGameObject(&GAMEOBJECT_, #GAMEOBJECT_)
+/*--------------------function--------------------*/
+#define SHOW_VOID_FUNCTION(FUNCTION, CONTEXT_) ComponentScript::ShowVoidFunction(std::bind(&FUNCTION, CONTEXT_), #FUNCTION)
 // ------------INSPECTOR MACROS----------------\\
 
 #define VARAIBLE_TO_STRING(VAR_) #VAR_

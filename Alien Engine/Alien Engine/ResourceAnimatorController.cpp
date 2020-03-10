@@ -3,7 +3,9 @@
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
 #include "ComponentAudioEmitter.h"
+#include "ComponentScript.h"
 #include "ResourceAnimation.h"
+#include "ResourceScript.h"
 #include "Alien.h"
 #include "Globals.h"
 #include <fstream>
@@ -155,7 +157,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 		if (events) {
 			events->GetFirstNode();
 			for (int i = 0; i < events->GetArraySize(); ++i) {
-				u64 event_id = events->GetNumber("Event_Id");
+				std::string event_id = events->GetString("Event_Id");
 				u64 animation_id = std::stoull(events->GetString("Animation_Id"));
 				uint frame = events->GetNumber("Frame");
 				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
@@ -547,7 +549,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	JSONArraypack* events_array = asset->InitNewArray("Controller.Events");
 	for (std::vector <AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it) {
 		events_array->SetAnotherNode();
-		events_array->SetNumber("Event_Id", (*it)->event_id);
+		events_array->SetString("Event_Id", (*it)->event_id);
 		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id));
 		events_array->SetNumber("Frame", (*it)->frame);
 		events_array->SetNumber("Type", (int)(*it)->type);
@@ -593,6 +595,7 @@ void ResourceAnimatorController::FreeMemory()
 	int_parameters.clear();
 
 	anim_events.clear();
+	scripts.clear();
 	emitter = nullptr;
 
 	default_state = nullptr;
@@ -705,9 +708,16 @@ bool ResourceAnimatorController::LoadMemory()
 		cursor += bytes;
 
 		for (int j = 0; j < num_events; ++j) {
-			bytes = sizeof(u64);
-			u64 tmp_param_event;
-			memcpy(&tmp_param_event, cursor, bytes);
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_event;
+			tmp_param_event.resize(name_size);
+			memcpy(&tmp_param_event[0], cursor, bytes);
 			cursor += bytes;
 
 			bytes = sizeof(u64);
@@ -725,11 +735,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_param_types, cursor, bytes);
 			cursor += bytes;
 
-			u64 event_id = tmp_param_event;
-			u64 animation_id = tmp_param_anim;
-			uint frame = tmp_param_frames;
-			EventAnimType type = tmp_param_types;
-			AddAnimEvent(event_id, animation_id, frame, type);
+			AddAnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types);
 		}
 
 		//Load transitions and states nums
@@ -1045,7 +1051,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	for (std::vector<AnimEvent*>::iterator event_pit = anim_events.begin(); event_pit != anim_events.end(); ++event_pit) {
-		size += (sizeof(u64) * 2) + sizeof(uint) + sizeof(EventAnimType);
+		size += sizeof(uint) + (*event_pit)->event_id.size() + sizeof(u64) + sizeof(uint) + sizeof(EventAnimType);
 	}
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -1155,8 +1161,12 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	for (int j = 0; j < num_events; ++j) {
 
 		//Save Events
-		bytes = sizeof(u64);
-		memcpy(cursor, &anim_events[j]->event_id, bytes);
+		name_size = anim_events[j]->event_id.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, anim_events[j]->event_id.data(), bytes);
 		cursor += bytes;
 
 		bytes = sizeof(u64);
@@ -1567,7 +1577,7 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 
 // Events
 
-void ResourceAnimatorController::AddAnimEvent(u64 _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
+void ResourceAnimatorController::AddAnimEvent(std::string _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
 {
 	AnimEvent* event = new AnimEvent();
 	event->event_id = _event_id;
@@ -1591,15 +1601,34 @@ void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
 
 void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint _key)
 {
-	// To Play Sound
 	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
 	{
 		if ((*it)->animation_id == _animation->GetID() && (*it)->frame == _key)
 		{
+			// To Play Sound
 			if ((*it)->type == EventAnimType::EVENT_AUDIO && emitter != nullptr)
 			{
 				App->audio->LoadUsedBanks();
-				emitter->StartSound((*it)->event_id);
+				emitter->StartSound((uint)std::stoull((*it)->event_id.c_str()));
+			}
+
+			// To Execute Script Method
+			if ((*it)->type == EventAnimType::EVENT_SCRIPT && scripts.size() > 0)
+			{
+				for (auto item = scripts.begin(); item != scripts.end(); ++item)
+				{
+					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
+					{
+						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+							if ((*j).first.data() == (*it)->event_id)
+							{
+								std::function<void()> functEvent = (*j).second;
+								functEvent();
+							}
+						}
+
+					}
+				}
 			}
 		}
 	}
