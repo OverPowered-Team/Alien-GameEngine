@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleResources.h"
 #include "ModuleObjects.h"
+#include "ModuleUI.h"
+#include "PanelGame.h"
 #include "ComponentTransform.h"
 #include "ComponentText.h"
 #include "ResourceFont.h"
@@ -102,10 +104,17 @@ bool ComponentText::DrawCharacter(Character ch)
 
 void ComponentText::Draw(bool isGame)
 {
+	if (canvas == nullptr || canvas_trans == nullptr) {
+		return;
+	}
+
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	float2 scale = float2(transform->GetGlobalMatrix()[0][0], transform->GetGlobalMatrix()[1][1]);
 
 	//Activate Shader
 	canvas->text_shader->Bind();
@@ -120,10 +129,10 @@ void ComponentText::Draw(bool isGame)
 	for(c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 
-		float xpos = x + ch.bearing.x;
-		float ypos = (ch.size.y - ch.bearing.y);
-		float w = ch.size.x * 0.25;
-		float h = ch.size.y * 0.25;
+		float xpos = x + ch.bearing.x * scale.x;
+		float ypos = (ch.size.y - ch.bearing.y) * scale.y;
+		float w = ch.size.x * scale.x;
+		float h = ch.size.y * scale.y;
 
 		float vertex[6][4] = {
 			{ xpos,     ypos + h,   0.0, 0.0 },
@@ -144,7 +153,7 @@ void ComponentText::Draw(bool isGame)
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += ch.advance;
+		x += ch.advance * scale.x;
 	}
 	
 	canvas->text_shader->Unbind();
