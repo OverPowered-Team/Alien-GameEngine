@@ -13,7 +13,6 @@ public:
 	virtual ~ComponentText() {};
 
 	bool DrawInspector();
-	bool DrawCharacter(Character ch);
 
 	void Draw(bool isGame) override;
 	void Reset() {};
