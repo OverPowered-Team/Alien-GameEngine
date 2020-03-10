@@ -159,31 +159,123 @@ bool ComponentButton::DrawInspector()
 
 				ImGui::TreePop();
 			}
+			ImGui::Spacing();
+			if (ImGui::TreeNode("On Hover Functions")) {
+				for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+					ImGui::Text((*item).first.data());
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::Spacing();
+			if (ImGui::TreeNode("On Pressed Functions")) {
+				for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+					ImGui::Text((*item).first.data());
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::Spacing();
+			if (ImGui::TreeNode("On Release Functions")) {
+				for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+					ImGui::Text((*item).first.data());
+				}
+
+				ImGui::TreePop();
+			}
+
 			
 			//--------------
 
-			ImGui::Spacing(); ImGui::Spacing();
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
 			std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
 			if (!scripts.empty()) {
-				ImGui::Text("On Click Listeners");
-				ImGui::SameLine(180);
-				for (auto item = scripts.begin(); item != scripts.end(); ++item) {
-					if (*item != nullptr && (*item)->data_ptr != nullptr) {
-						if (ImGui::BeginMenu((*item)->data_name.data())) {
-							if (!(*item)->functionMap.empty()) {
-								for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
-									if (ImGui::MenuItem((*functs).first.data())) {
-										AddListenerOnClick((*functs).first, (*functs).second);
+				if (ImGui::TreeNode("On Click Listeners")) {
+					for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+						if (*item != nullptr && (*item)->data_ptr != nullptr) {
+							if (ImGui::BeginMenu((*item)->data_name.data())) {
+								if (!(*item)->functionMap.empty()) {
+									for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+										if (ImGui::MenuItem((*functs).first.data())) {
+											AddListenerOnClick((*functs).first, (*functs).second);
+										}
 									}
 								}
+								else {
+									ImGui::Text("No exported functions");
+								}
+								ImGui::EndMenu();
 							}
-							else {
-								ImGui::Text("No exported functions");
-							}
-							ImGui::EndMenu();
 						}
 					}
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				//-----------------------------
+				if (ImGui::TreeNode("On Hover Listeners")) {
+					for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+						if (*item != nullptr && (*item)->data_ptr != nullptr) {
+							if (ImGui::BeginMenu((*item)->data_name.data())) {
+								if (!(*item)->functionMap.empty()) {
+									for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+										if (ImGui::MenuItem((*functs).first.data())) {
+											AddListenerOnHover((*functs).first, (*functs).second);
+										}
+									}
+								}
+								else {
+									ImGui::Text("No exported functions");
+								}
+								ImGui::EndMenu();
+							}
+						}
+					}
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				//-----------------------------
+				if (ImGui::TreeNode("On Pressed Listeners")) {
+					for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+						if (*item != nullptr && (*item)->data_ptr != nullptr) {
+							if (ImGui::BeginMenu((*item)->data_name.data())) {
+								if (!(*item)->functionMap.empty()) {
+									for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+										if (ImGui::MenuItem((*functs).first.data())) {
+											AddListenerOnClickRepeat((*functs).first, (*functs).second);
+										}
+									}
+								}
+								else {
+									ImGui::Text("No exported functions");
+								}
+								ImGui::EndMenu();
+							}
+						}
+					}
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				//-----------------------------
+				if (ImGui::TreeNode("On Release Listeners")) {
+					for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+						if (*item != nullptr && (*item)->data_ptr != nullptr) {
+							if (ImGui::BeginMenu((*item)->data_name.data())) {
+								if (!(*item)->functionMap.empty()) {
+									for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+										if (ImGui::MenuItem((*functs).first.data())) {
+											AddListenerOnRelease((*functs).first, (*functs).second);
+										}
+									}
+								}
+								else {
+									ImGui::Text("No exported functions");
+								}
+								ImGui::EndMenu();
+							}
+						}
+					}
+					ImGui::TreePop();
 				}
 			}
 			else {
