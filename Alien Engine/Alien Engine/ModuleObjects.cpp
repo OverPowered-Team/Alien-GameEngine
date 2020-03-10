@@ -452,10 +452,11 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
+	App->CastEvent(EventType::ON_GO_SELECT);
 
 	//For Animations Timeline
 	if (App->ui)
-	App->ui->panel_animtimeline->changed = true;
+		App->ui->panel_animtimeline->changed = true;
 }
 
 const std::list<GameObject*>& ModuleObjects::GetSelectedObjects()
