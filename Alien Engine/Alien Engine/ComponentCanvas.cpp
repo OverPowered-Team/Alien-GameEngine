@@ -16,7 +16,7 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	width = 160;
 	height = 90;
 
-	/*SetShader("text_shader_meta.alien");*/
+	SetShader("text_shader_meta.alien");
 
 	type = ComponentType::CANVAS;
 }
