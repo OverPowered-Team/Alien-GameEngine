@@ -32,6 +32,7 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
 
+	//---------------------------------------------------------
 	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
 	if (!listenersOnClick.empty()) {
 		JSONArraypack* onClickArray = to_save->InitNewArray("ListenersOnClick");
@@ -42,6 +43,36 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 		}
 	}
 
+	to_save->SetBoolean("HasListenersOnHover", !listenersOnHover.empty());
+	if (!listenersOnHover.empty()) {
+		JSONArraypack* onHoverArray = to_save->InitNewArray("ListenersOnHover");
+		auto item = listenersOnHover.begin();
+		for (; item != listenersOnHover.end(); ++item) {
+			onHoverArray->SetAnotherNode();
+			onHoverArray->SetString(std::to_string(item - listenersOnHover.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnClickRepeat", !listenersOnClickRepeat.empty());
+	if (!listenersOnClickRepeat.empty()) {
+		JSONArraypack* onClickRepeatArray = to_save->InitNewArray("ListenersOnClickRepeat");
+		auto item = listenersOnClickRepeat.begin();
+		for (; item != listenersOnClickRepeat.end(); ++item) {
+			onClickRepeatArray->SetAnotherNode();
+			onClickRepeatArray->SetString(std::to_string(item - listenersOnClickRepeat.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnRelease", !listenersOnRelease.empty());
+	if (!listenersOnRelease.empty()) {
+		JSONArraypack* onReleaseArray = to_save->InitNewArray("ListenersOnRelease");
+		auto item = listenersOnRelease.begin();
+		for (; item != listenersOnRelease.end(); ++item) {
+			onReleaseArray->SetAnotherNode();
+			onReleaseArray->SetString(std::to_string(item - listenersOnRelease.begin()), (*item).first.data());
+		}
+	}
+	//---------------------------------------------------------------
 	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
 	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
 	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
@@ -66,12 +97,36 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
 
+	//-------------------------------------------------------------
 	if (to_load->GetBoolean("HasListenersOnClick")) {
 		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
 		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
-			listenersOnClick.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			listenersOnClick.push_back({ to_load->GetString(std::to_string(i)), std::function<void()>() });
 		}
 	}
+
+	if (to_load->GetBoolean("HasListenersOnHover")) {
+		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
+		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
+			listenersOnHover.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnClickRepeat")) {
+		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
+		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
+			listenersOnClickRepeat.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnRelease")) {
+		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
+		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
+			listenersOnRelease.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+		}
+	}
+	//-------------------------------------------------------------
+
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
