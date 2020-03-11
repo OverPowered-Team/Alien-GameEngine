@@ -1715,6 +1715,11 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
 }
 
+//void ModuleObjects::HandleAlienEvent(const AlienEvent& alien_event)
+//{
+//
+//}
+
 void ModuleObjects::HandleEvent(EventType eventType)
 {
 	std::vector<GameObject*> objects;

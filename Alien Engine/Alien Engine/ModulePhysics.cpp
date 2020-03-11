@@ -77,7 +77,7 @@ update_status ModulePhysics::PreUpdate(float dt)
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	if (Time::IsPlaying())
+	if (Time::IsInGameState())
 	{
 		if (first_frame_playing == false)
 		{

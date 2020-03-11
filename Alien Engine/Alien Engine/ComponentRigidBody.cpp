@@ -155,7 +155,7 @@ bool ComponentRigidBody::DrawInspector()
 
 	// RigidBody Config --------------------------------------
 
-	if (ImGui::CollapsingHeader("Rigid Body", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Rigid Body", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
 
