@@ -129,8 +129,13 @@ void ComponentText::Draw(bool isGame)
 		#else
 		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
 		#endif
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		// https://stackoverflow.com/questions/42864623/glortho-equivalent-to-vbos
+		/*GLfloat model[16];
+		glGetFloatv(GL_PROJECTION_MATRIX, model);
+		float4x4 proj_view = float4x4(model[0], model[1], model[2], model[3],
+			model[4], model[5], model[6], model[7],
+			model[8], model[9], model[10], model[11],
+			model[12], model[13], model[14], model[15]);*/
 
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
@@ -153,7 +158,10 @@ void ComponentText::Draw(bool isGame)
 		matrix[1][3] = origin.y;
 		matrix[2][3] = 0.0f;
 
-		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->actual_game_camera->GetProjectionMatrix4f4());
+		x = 0;
+		y = 0;
+
+		canvas->text_shader->SetUniformMat4f("projection", proj_view);
 		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->actual_game_camera->GetViewMatrix4x4());
 	}
 	else
@@ -169,9 +177,18 @@ void ComponentText::Draw(bool isGame)
 	float pos_x = 0;
 	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
-
-		float xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
-		float ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
+		static float xpos = 0;
+		static float ypos = 0;
+		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
+		{
+			xpos = x + pos_x + ch.bearing.x * scale.x;
+			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
+		}
+		else
+		{
+			xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+			ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
+		}
 		float w = ch.size.x * scale.x;
 		float h = ch.size.y * scale.y;
 
