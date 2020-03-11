@@ -160,6 +160,7 @@ void PanelAnimTimeline::PanelLogic()
 		if (Time::IsPlaying() && !in_game)
 		{
 			Play();
+			animator = component_animator->GetCurrentAnimatorController();
 			in_game = true;
 		}
 		else if (Time::IsPaused())
