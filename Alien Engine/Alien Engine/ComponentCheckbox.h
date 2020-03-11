@@ -46,6 +46,7 @@ public:
 	void AddListenerOnClick(std::string name, std::function<void()> funct);
 	void AddListenerOnClickRepeat(std::string name, std::function<void()> funct);
 	void AddListenerOnRelease(std::string name, std::function<void()> funct);
+	bool CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name);
 
 	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 

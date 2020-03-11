@@ -9,6 +9,7 @@
 #include "ReturnZ.h"
 #include "PanelGame.h"
 #include "ResourceTexture.h"
+#include "ComponentScript.h"
 #include "Application.h"
 #include "PanelProject.h"
 #include "ComponentTransform.h"
@@ -216,6 +217,148 @@ bool ComponentCheckbox::DrawInspector()
 		if (ImGui::DragFloat2("Tick Scale", tickScale, 0.1F)) {
 			tickScaleX = tickScale[0];
 			tickScaleY = tickScale[1];
+		}
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+		//------------------------SCRIPTS----------------------------
+		if (ImGui::TreeNode("Script Listeners")) {
+			//--------------
+			if (ImGui::TreeNode("Functions Added")) {
+				if (ImGui::TreeNode("On Click Added")) {
+					for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Hover Added")) {
+					for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Pressed Added")) {
+					for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Release Added")) {
+					for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::TreePop();
+			}
+			//--------------
+
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+			std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
+			if (ImGui::TreeNode("Functions To Add")) {
+				if (!scripts.empty()) {
+					if (ImGui::TreeNode("On Click To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnClick((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Hover To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnHover((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Pressed To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnClickRepeat((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Release To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnRelease((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
+
+				else {
+					ImGui::Text("No Scripts attached");
+				}
+				ImGui::TreePop();
+			}
+
+
+			ImGui::TreePop();
 		}
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
@@ -688,22 +831,51 @@ void ComponentCheckbox::SetActive(bool active)
 
 void ComponentCheckbox::AddListenerOnHover(std::string name, std::function<void()> funct)
 {
-	listenersOnHover.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnHover, name))
+	{
+		listenersOnHover.push_back(pair);
+	}
 }
 
 void ComponentCheckbox::AddListenerOnClick(std::string name, std::function<void()> funct)
 {
-	listenersOnClick.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClick, name))
+	{
+		listenersOnClick.push_back(pair);
+	}
 }
 
 void ComponentCheckbox::AddListenerOnClickRepeat(std::string name, std::function<void()> funct)
 {
-	listenersOnClickRepeat.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClickRepeat, name))
+	{
+		listenersOnClickRepeat.push_back(pair);
+	}
 }
 
 void ComponentCheckbox::AddListenerOnRelease(std::string name, std::function<void()> funct)
 {
-	listenersOnRelease.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnRelease, name))
+	{
+		listenersOnRelease.push_back(pair);
+	}
+}
+
+bool ComponentCheckbox::CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name)
+{
+	if (listeners != nullptr) {
+
+		for (auto item = listeners->begin(); item != listeners->end(); ++item) {
+
+			if ((*item).first == name)
+				return true;
+		}
+	}
+	return false;
 }
 
 
