@@ -108,52 +108,105 @@ void ComponentText::Draw(bool isGame)
 		return;
 	}
 
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	float4x4 matrix = transform->global_transformation;
+	float2 scale = float2(matrix[0][0], matrix[1][1]);
+
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	float2 scale = float2(transform->GetGlobalMatrix()[0][0], transform->GetGlobalMatrix()[1][1]);
-
 	//Activate Shader
 	canvas->text_shader->Bind();
 	canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
-	canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
-	canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+
+	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		#ifndef GAME_VERSION
+		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		#else
+		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		#endif
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		matrix[0][0] /= canvas->width * 0.5F;
+		matrix[1][1] /= canvas->height * 0.5F;
+		float3 canvas_pos = canvas_trans->GetGlobalPosition();
+		float3 object_pos = transform->GetGlobalPosition();
+		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
+
+		#ifndef GAME_VERSION
+		x = origin.x * App->ui->panel_game->width;
+		y = -origin.y * App->ui->panel_game->height;
+		#else
+		x = origin.x * App->window->width;
+		y = origin.y * App->window->height;
+		#endif
+
+		origin.x = (origin.x - 0.5F) * 2;
+		origin.y = -(-origin.y - 0.5F) * 2;
+		matrix[0][3] = origin.x;
+		matrix[1][3] = origin.y;
+		matrix[2][3] = 0.0f;
+
+		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->actual_game_camera->GetProjectionMatrix4f4());
+		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->actual_game_camera->GetViewMatrix4x4());
+	}
+	else
+	{
+		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+	}
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 	
 	std::string::const_iterator c;
-	x = 0;
-	for(c = text.begin(); c != text.end(); c++) {
+	float pos_x = 0;
+	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 
-		float xpos = x + ch.bearing.x * scale.x;
-		float ypos = (ch.size.y - ch.bearing.y) * scale.y;
+		float xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+		float ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
 		float w = ch.size.x * scale.x;
 		float h = ch.size.y * scale.y;
 
-		float vertex[6][4] = {
-			{ xpos,     ypos + h,   0.0, 0.0 },
-			{ xpos,     ypos,       0.0, 1.0 },
-			{ xpos + w, ypos,       1.0, 1.0 },
+		float vertex[6][3] = {
+			{ xpos,     ypos + h,	matrix[2][3]},
+			{ xpos,     ypos,		matrix[2][3]},
+			{ xpos + w, ypos,		matrix[2][3]},
 
-			{ xpos,     ypos + h,   0.0, 0.0 },
-			{ xpos + w, ypos,       1.0, 1.0 },
-			{ xpos + w, ypos + h,   1.0, 0.0 }
+			{ xpos,     ypos + h,   matrix[2][3]},
+			{ xpos + w, ypos,       matrix[2][3]},
+			{ xpos + w, ypos + h,   matrix[2][3]}
+		};
+
+		float uvs[6][2] = {
+			{0.0, 0.0 },
+			{0.0, 1.0 },
+			{1.0, 1.0 },
+
+			{0.0, 0.0 },
+			{1.0, 1.0 },
+			{1.0, 0.0 },
 		};
 
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
 		// Update content of VBO memory
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), vertex);
+		glBindBuffer(GL_ARRAY_BUFFER, uvID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += ch.advance * scale.x;
+		pos_x += ch.advance * scale.x;
 	}
 	
 	canvas->text_shader->Unbind();
@@ -254,12 +307,20 @@ ResourceFont* ComponentText::GetFont() const
 void ComponentText::GenerateVAOVBO()
 {
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &verticesID);
+	glGenBuffers(1, &uvID);
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, uvID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 2, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
