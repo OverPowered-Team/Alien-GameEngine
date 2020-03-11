@@ -686,24 +686,24 @@ void ComponentCheckbox::SetActive(bool active)
 	}
 }
 
-void ComponentCheckbox::AddListenerOnHover(std::function<void()> funct)
+void ComponentCheckbox::AddListenerOnHover(std::string name, std::function<void()> funct)
 {
-	listenersOnHover.push_back(funct);
+	listenersOnHover.push_back({ name, funct });
 }
 
-void ComponentCheckbox::AddListenerOnClick(std::function<void()> funct)
+void ComponentCheckbox::AddListenerOnClick(std::string name, std::function<void()> funct)
 {
-	listenersOnClick.push_back(funct);
+	listenersOnClick.push_back({ name, funct });
 }
 
-void ComponentCheckbox::AddListenerOnClickRepeat(std::function<void()> funct)
+void ComponentCheckbox::AddListenerOnClickRepeat(std::string name, std::function<void()> funct)
 {
-	listenersOnClickRepeat.push_back(funct);
+	listenersOnClickRepeat.push_back({ name, funct });
 }
 
-void ComponentCheckbox::AddListenerOnRelease(std::function<void()> funct)
+void ComponentCheckbox::AddListenerOnRelease(std::string name, std::function<void()> funct)
 {
-	listenersOnRelease.push_back(funct);
+	listenersOnRelease.push_back({ name, funct });
 }
 
 
@@ -838,14 +838,14 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	App->objects->first_assigned_selected = false;
 }
 
-void ComponentCheckbox::CallListeners(std::vector<std::function<void()>>* listeners)
+void ComponentCheckbox::CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners)
 {
 	if (listeners != nullptr) {
 		auto item = listeners->begin();
 		for (; item != listeners->end(); ++item) {
-			if (*item != nullptr) {
+			if ((*item).second != nullptr) {
 				try {
-					(*item)();
+					(*item).second();
 				}
 				catch (...) {
 					#ifndef GAME_VERSION

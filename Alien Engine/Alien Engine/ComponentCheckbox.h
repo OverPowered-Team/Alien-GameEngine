@@ -42,10 +42,10 @@ public:
 
 	void SetActive(bool active);
 
-	void AddListenerOnHover(std::function<void()> funct);
-	void AddListenerOnClick(std::function<void()> funct);
-	void AddListenerOnClickRepeat(std::function<void()> funct);
-	void AddListenerOnRelease(std::function<void()> funct);
+	void AddListenerOnHover(std::string name, std::function<void()> funct);
+	void AddListenerOnClick(std::string name, std::function<void()> funct);
+	void AddListenerOnClickRepeat(std::string name, std::function<void()> funct);
+	void AddListenerOnRelease(std::string name, std::function<void()> funct);
 
 	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 
@@ -64,10 +64,10 @@ private:
 	float tickScaleY = 0.5F;
 
 private:
-	std::vector<std::function<void()>> listenersOnHover;
-	std::vector<std::function<void()>> listenersOnClick;
-	std::vector<std::function<void()>> listenersOnClickRepeat;
-	std::vector<std::function<void()>> listenersOnRelease;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnHover;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClick;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClickRepeat;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnRelease;
 
 	ComponentCanvas* GetCanvas();
 
