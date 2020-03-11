@@ -161,8 +161,6 @@ bool ResourceMaterial::DeleteMetaData()
 
 void ResourceMaterial::SaveMaterialFiles()
 {
-	path = std::string(MATERIALS_FOLDER + name + ".material").data();
-
 	remove(path.c_str());
 
 	JSON_Value* alien_value = json_value_init_object();

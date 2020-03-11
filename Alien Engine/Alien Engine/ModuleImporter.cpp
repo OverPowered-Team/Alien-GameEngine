@@ -15,6 +15,7 @@
 #include "ModuleResources.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ResourceShader.h"
 #include "ResourceAnimation.h"
@@ -168,6 +169,7 @@ void ModuleImporter::InitScene(const char *path, const aiScene *scene, const cha
 	if (model->CreateMetaData())
 	{
 		App->resources->AddResource(model);
+		App->ui->panel_project->RefreshAllNodes();
 		model->ConvertToGameObjects();
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
 	}
@@ -397,11 +399,11 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 	model->model_nodes.push_back(model_node);
 }
 
-void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *extern_path)
+void ModuleImporter::LoadMaterials(aiMaterial *material, const char *extern_path)
 {
 	OPTICK_EVENT();
 	ResourceMaterial* mat = new ResourceMaterial();
-
+	mat->SetName(material->GetName().C_Str());
 	aiColor4D col;
 	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, col))
 	{
@@ -412,8 +414,6 @@ void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *exter
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
-
-	App->resources->AddResource(mat);
 	model->materials_attached.push_back(mat);
 }
 
