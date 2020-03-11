@@ -60,9 +60,9 @@ enum class TextureType {
 	DIFFUSE = 0,
 	SPECULAR,
 	NORMALS,
+	HEIGHT,
 	AMBIENT,
 	EMISSIVE,
-	HEIGHT,
 	SHININESS,
 	OPACITY,
 	DISPLACEMENT,
@@ -75,37 +75,12 @@ enum class TextureType {
 	MAX
 };
 
-
-struct UniformData
-{
-	struct StandardShaderProperties
-	{
-		float3 diffuse_color = float3::one();
-	} standardShaderProperties;
-
-	struct WaveShaderProperties
-	{
-		float mult_time = 1.0f;
-		float amplitude = 0.75f;
-	} waveShaderProperties;
-
-	struct BasicLightingShaderProperties {
-		float3 object_color = float3(1.f, 1.f, 1.f);
-
-		// Lighting
-		float ambient_strength = 0.1f;
-		float specular_strength = 0.5f;
-		float3 lightPosition = float3(5.f, 5.f, 5.f);
-		float3 lightColor = float3(1.f, 1.f, 1.f);
-	} basicLightingShaderProperties;
-};
-
-
 struct ShaderInputs
 {
 	struct StandardShaderProperties
 	{
 		float3 diffuse_color = float3::one();
+		float shininess = 0.5f;
 	} standardShaderProperties;
 
 	struct WaveShaderProperties
