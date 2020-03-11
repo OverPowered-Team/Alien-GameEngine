@@ -348,7 +348,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 {
 	std::vector<ResourceShader*> shadersList;
 	App->resources->GetShaders(shadersList);
-	static const char* selectedShader = used_shader->GetName();
+	selectedShader = used_shader->GetName();
 	if (ImGui::BeginCombo("Selected Shader", selectedShader))
 	{
 		for (std::vector<ResourceShader*>::iterator iter = shadersList.begin(); iter != shadersList.end(); iter++)

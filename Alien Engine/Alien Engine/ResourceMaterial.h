@@ -141,8 +141,8 @@ public:
 	u64 textureID = 0;
 	ResourceTexture* texture = nullptr; // Provisional
 	bool textureActivated = true;
-
 	u64 texturesID[(uint)TextureType::MAX] = { 0 };
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
+	const char* selectedShader = nullptr;
 };

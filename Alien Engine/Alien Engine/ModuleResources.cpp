@@ -86,7 +86,9 @@ bool ModuleResources::Start()
 	ReadAllMetaData();
 
 	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
-	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
+	default_material = new ResourceMaterial();
+	default_material->SetName("Default Material");
+
 	return true;
 }
 
@@ -123,6 +125,8 @@ bool ModuleResources::CleanUp()
 	delete dodecahedron;
 	delete icosahedron;
 	delete octahedron;
+
+	delete default_material;
 
 	delete light_mesh;
 	delete camera_mesh;
