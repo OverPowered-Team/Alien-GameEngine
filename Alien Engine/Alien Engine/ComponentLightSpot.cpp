@@ -90,9 +90,8 @@ bool ComponentLightSpot::DrawInspector()
 		ImGui::DragFloat("Constant", &light_props.constant, 0.01f, 0.0f);
 		ImGui::DragFloat("Linear", &light_props.linear, 0.01f, 0.0f);
 		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.01f, 0.0f);
-		float tmp_cutoff = light_props.cut_off;
-		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
-			light_props.cut_off = tmp_cutoff;
+		ImGui::DragFloat("Cut Off", &light_props.cut_off, 0.10f);
+		ImGui::DragFloat("Outer Cut Off", &light_props.outer_cut_off, 0.10f);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -151,6 +150,7 @@ void ComponentLightSpot::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Linear", double(light_props.linear));
 	to_save->SetNumber("Quadratic", double(light_props.quadratic));
 	to_save->SetNumber("Cut_Off", double(light_props.cut_off));
+	to_save->SetNumber("Outer_Cut_Off", double(light_props.outer_cut_off));
 }
 
 void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
@@ -169,6 +169,7 @@ void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
 	light_props.linear = (float)to_load->GetNumber("Linear");
 	light_props.quadratic = (float)to_load->GetNumber("Quadratic");
 	light_props.cut_off = (float)to_load->GetNumber("Cut_Off");
+	light_props.outer_cut_off = (float)to_load->GetNumber("Outer_Cut_Off");
 }
 
 void ComponentLightSpot::DrawIconLight()

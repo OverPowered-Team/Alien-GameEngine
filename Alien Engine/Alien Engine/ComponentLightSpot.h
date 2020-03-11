@@ -16,7 +16,8 @@ struct __declspec(dllexport) SpotLightProperties
 	float constant = 1.0f;
 	float linear = 0.1f;
 	float quadratic = 0.01f;
-	float cut_off = 13.0f;
+	float cut_off = 1.75f;
+	float outer_cut_off = 15.0f;
 };
 
 class __declspec(dllexport) ComponentLightSpot : public Component {

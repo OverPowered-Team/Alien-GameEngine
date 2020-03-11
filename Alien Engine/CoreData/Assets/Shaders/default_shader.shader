@@ -77,6 +77,7 @@ struct SpotLight
     float linear;
     float quadratic;
     float cut_off;
+    float outer_cut_off;
 };
 
 // Function declarations
@@ -195,37 +196,34 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
     // Intensity
     float intensity = light.intensity;
 
+    // ambient
+    vec3 ambient = light.ambient;
+    
+    // diffuse 
+    vec3 norm = normalize(normal);
     vec3 lightDir = normalize(light.position - frag_pos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff;  
+    
+    // specular
+    vec3 viewDir = normalize(view_pos - frag_pos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    vec3 specular = light.specular * spec;  
+    
+    // soft edges
     float theta = dot(lightDir, normalize(-light.direction)); 
-
-    if(theta > light.cut_off)
-    {    
-        // ambient
-        vec3 ambient = light.ambient;
+    float epsilon = (light.cut_off - light.outer_cut_off);
+    float edge_intensity = clamp((theta - light.outer_cut_off) / epsilon, 0.0, 1.0);
+    diffuse  *= edge_intensity;
+    specular *= edge_intensity;
+    
+    // attenuation
+    float distance = length(light.position - frag_pos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    ambient  *= attenuation; 
+    diffuse   *= attenuation;
+    specular *= attenuation;   
         
-        // diffuse
-        vec3 norm = normalize(normal);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = light.diffuse * diff;
-        
-        // specular
-        vec3 viewDir = normalize(view_pos - frag_pos);
-        vec3 reflectDir = reflect(-lightDir, norm);  
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-        vec3 specular = light.specular * spec;  
-        
-        // attenuation
-        float distance = length(light.position - frag_pos);
-        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
-
-        // ambient  *= attenuation;
-        diffuse *= attenuation;
-        specular *= attenuation;   
-            
-        return (ambient + diffuse + specular) * intensity;
-    }
-    else 
-    {
-        return light.ambient;
-    }
+    return (ambient + diffuse + specular) * intensity;
 }
