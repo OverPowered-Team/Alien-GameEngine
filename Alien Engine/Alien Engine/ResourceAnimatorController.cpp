@@ -1706,7 +1706,8 @@ State::State(State* state)
 	name = state->name;
 	speed = state->speed;
 	clip = state->clip;
-	clip->IncreaseReferences();
+	if(clip)
+		clip->IncreaseReferences();
 	pin_in_id = state->pin_in_id;
 	pin_out_id = state->pin_out_id;
 	time = 0;
