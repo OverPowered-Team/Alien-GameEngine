@@ -32,6 +32,16 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
 
+	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
+	if (!listenersOnClick.empty()) {
+		JSONArraypack* onClickArray = to_save->InitNewArray("ListenersOnClick");
+		auto item = listenersOnClick.begin();
+		for (; item != listenersOnClick.end(); ++item) {
+			onClickArray->SetAnotherNode();
+			onClickArray->SetString(std::to_string(item - listenersOnClick.begin()), (*item).first.data());
+		}
+	}
+
 	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
 	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
 	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
@@ -55,6 +65,13 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
+
+	if (to_load->GetBoolean("HasListenersOnClick")) {
+		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
+		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
+			listenersOnClick.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+		}
+	}
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
