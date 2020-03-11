@@ -101,28 +101,32 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasListenersOnClick")) {
 		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
 		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
-			listenersOnClick.push_back({ to_load->GetString(std::to_string(i)), std::function<void()>() });
+			std::pair<std::string, std::function<void()>> pair = { std::to_string(i), std::function<void()>() };
+			listenersOnClick.push_back(pair);
 		}
 	}
 
 	if (to_load->GetBoolean("HasListenersOnHover")) {
 		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
 		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
-			listenersOnHover.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			std::pair<std::string, std::function<void()>> pair = { std::to_string(i), std::function<void()>() };
+			listenersOnHover.push_back(pair);
 		}
 	}
 
 	if (to_load->GetBoolean("HasListenersOnClickRepeat")) {
 		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
 		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
-			listenersOnClickRepeat.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			std::pair<std::string, std::function<void()>> pair = { std::to_string(i), std::function<void()>() };
+			listenersOnClickRepeat.push_back(pair);
 		}
 	}
 
 	if (to_load->GetBoolean("HasListenersOnRelease")) {
 		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
 		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
-			listenersOnRelease.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			std::pair<std::string, std::function<void()>> pair = { std::to_string(i), std::function<void()>() };
+			listenersOnRelease.push_back(pair);
 		}
 	}
 	//-------------------------------------------------------------
