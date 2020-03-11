@@ -17,8 +17,8 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	type = ComponentType::PARTICLES;
 	particleSystem = new ParticleSystem();
 
-	//material = nullptr;
-	component_material = nullptr;
+	material = nullptr;
+	//component_material = nullptr;
 	
 
 
@@ -54,8 +54,8 @@ ComponentParticleSystem::~ComponentParticleSystem()
 	if (selected_texture != nullptr)
 		selected_texture = nullptr;
 	
-	if (component_material != nullptr)
-		delete component_material; component_material = nullptr;
+	if (material != nullptr)
+		material = nullptr;
 
 
 	glDisable(light_id);
@@ -403,8 +403,8 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Text("Particle Material");
 			ImGui::SameLine(200, 15);
 
-			if (component_material != nullptr)
-				ImGui::Button(component_material->material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
+			if (material != nullptr)
+				ImGui::Button(material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
 			else
 				ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
 
@@ -431,13 +431,13 @@ bool ComponentParticleSystem::DrawInspector()
 			
 			if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
 			{
-				//component_material->material->DecreaseReferences();
-				//component_material->material = nullptr;
-				if (component_material != nullptr) {
-					delete component_material;
-					component_material = nullptr;
+			
+				if (material != nullptr) {
+					material->DecreaseReferences();
+					material = nullptr;
 				}
 			}
+			
 
 
 
@@ -617,8 +617,8 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		if (component_material != nullptr) {
-			component_material->material->DisplayMaterialOnInspector();
+		if (material != nullptr) {
+			material->DisplayMaterialOnInspector();
 		}
 	}
 
@@ -722,21 +722,17 @@ void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
 
 void ComponentParticleSystem::SetMaterial(ResourceMaterial* mat)
 {
-
-	if (component_material == nullptr) 
-		component_material = new ComponentMaterial(game_object_attached);
-		
+	if (mat == nullptr)
+		return;
 	
-	component_material->SetMaterial(mat);
-
-	/*if (comp_mat->material != nullptr)
+	if (material != nullptr)
 	{
-		comp_mat->material->DecreaseReferences();
-		comp_mat->material = nullptr;
-	}*/
+		material->DecreaseReferences();
+		//material = nullptr;
+	}
 
-	//comp_mat->material = mat;
-	
+	material = mat;
+	material->IncreaseReferences();
 }
 
 void ComponentParticleSystem::Play()
