@@ -102,6 +102,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
 		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
 			listenersOnClick.push_back({ to_load->GetString(std::to_string(i)), std::function<void()>() });
+			onClickListeners->GetAnotherNode();
 		}
 	}
 
@@ -109,6 +110,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
 		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
 			listenersOnHover.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			onHoverListeners->GetAnotherNode();
 		}
 	}
 
@@ -116,6 +118,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
 		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
 			listenersOnClickRepeat.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			onClickRepeatListeners->GetAnotherNode();
 		}
 	}
 
@@ -123,6 +126,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
 		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
 			listenersOnRelease.push_back({ to_load->GetString(std::to_string(i)), nullptr });
+			onReleaseListeners->GetAnotherNode();
 		}
 	}
 	//-------------------------------------------------------------
