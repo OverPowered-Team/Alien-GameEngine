@@ -996,14 +996,6 @@ bool ModuleImporter::ReImportModel(ResourceModel *model)
 		}
 		ReImportAnimations(model, scene);
 
-		if (scene->HasMaterials())
-		{
-			for (uint i = 0; i < scene->mNumMaterials; ++i)
-			{
-				LoadMaterials(scene->mMaterials[i], nullptr);
-			}
-		}
-
 		// start recursive function to all nodes
 		for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i)
 		{

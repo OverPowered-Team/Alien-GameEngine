@@ -239,6 +239,13 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		std::string* bones_paths = meta->GetArrayString("Meta.PathBones");
 		std::string* materials_path = meta->GetArrayString("Meta.PathMaterials");
 
+		for (uint i = 0; i < num_materials; ++i) {
+			u64 matID = std::stoull(App->file_system->GetBaseFileName(materials_path[i].data()));
+			ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(matID);
+			if (mat != nullptr) {
+				materials_attached.push_back(mat);
+			}
+		}
 		for (uint i = 0; i < num_meshes; ++i) {
 			if (!App->file_system->Exists(mesh_paths[i].data())) {
 				delete[] mesh_paths;
@@ -256,13 +263,6 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 		for (uint i = 0; i < num_bones; ++i) {
 			if (!App->file_system->Exists(bones_paths[i].data())) {
 				delete[] bones_paths;
-				delete meta;
-				return false;
-			}
-		}
-		for (uint i = 0; i < num_materials; ++i) {
-			if (!App->file_system->Exists(materials_path[i].data())) {
-				delete[] materials_path;
 				delete meta;
 				return false;
 			}
@@ -342,14 +342,6 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 				else {
 					LOG_ENGINE("Error loading %s", bones_path[i].data());
 					delete r_bone;
-				}
-			}
-
-			for (uint i = 0; i < num_materials; ++i) {
-				u64 matID = std::stoull(App->file_system->GetBaseFileName(materials_path[i].data()));
-				ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(matID);
-				if (mat != nullptr) {
-					materials_attached.push_back(mat);
 				}
 			}
 
