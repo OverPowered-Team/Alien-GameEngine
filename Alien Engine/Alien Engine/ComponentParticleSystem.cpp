@@ -17,6 +17,8 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	type = ComponentType::PARTICLES;
 	particleSystem = new ParticleSystem();
 
+	//material = nullptr;
+	component_material = nullptr;
 	
 
 
@@ -52,6 +54,9 @@ ComponentParticleSystem::~ComponentParticleSystem()
 	if (selected_texture != nullptr)
 		selected_texture = nullptr;
 	
+	if (component_material != nullptr)
+		delete component_material; component_material = nullptr;
+
 
 	glDisable(light_id);
 }
@@ -395,6 +400,50 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 
+			ImGui::Text("Particle Material");
+			ImGui::SameLine(200, 15);
+
+			if (component_material != nullptr)
+				ImGui::Button(component_material->material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
+			else
+				ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
+
+
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+					FileNode* node = *(FileNode**)payload->Data;
+					if (node != nullptr && node->type == FileDropType::MATERIAL) {
+						std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+						path += "_meta.alien";
+						u64 ID = App->resources->GetIDFromAlienPath(path.data());
+						if (ID != 0) {
+							ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
+							if (mat != nullptr) {
+								SetMaterial(mat);
+							}
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::SameLine();
+			
+			if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
+			{
+				//component_material->material->DecreaseReferences();
+				//component_material->material = nullptr;
+				if (component_material != nullptr) {
+					delete component_material;
+					component_material = nullptr;
+				}
+			}
+
+
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+
 			ImGui::Text("Particle Texture ");
 
 			//static ResourceTexture* selected_texture = nullptr;
@@ -567,6 +616,10 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
+
+		if (component_material != nullptr) {
+			component_material->material->DisplayMaterialOnInspector();
+		}
 	}
 
 	return true;
@@ -665,6 +718,25 @@ void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
 	texture = tex;
 	particleSystem->texture = texture;
 
+}
+
+void ComponentParticleSystem::SetMaterial(ResourceMaterial* mat)
+{
+
+	if (component_material == nullptr) 
+		component_material = new ComponentMaterial(game_object_attached);
+		
+	
+	component_material->SetMaterial(mat);
+
+	/*if (comp_mat->material != nullptr)
+	{
+		comp_mat->material->DecreaseReferences();
+		comp_mat->material = nullptr;
+	}*/
+
+	//comp_mat->material = mat;
+	
 }
 
 void ComponentParticleSystem::Play()

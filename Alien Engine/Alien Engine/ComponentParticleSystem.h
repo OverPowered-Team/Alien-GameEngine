@@ -47,6 +47,7 @@ public:
 
 	ParticleSystem* GetSystem();
 	void SetTexture(ResourceTexture* tex);
+	void SetMaterial(ResourceMaterial* mat);
 
 	void Play();
 	void Pause();
@@ -68,8 +69,8 @@ private:
 	ParticleSystem* particleSystem = nullptr;
 	ResourceTexture* texture = nullptr;
 	ResourceTexture* selected_texture = nullptr;
-	
-
+	//ResourceMaterial* material = nullptr;
+	ComponentMaterial* component_material = nullptr;
 	// Light
 	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
 	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
