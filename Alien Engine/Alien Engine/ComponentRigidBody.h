@@ -45,6 +45,12 @@ public:
 	float3 GetAngularVelocity();
 	void SetAngularVelocity(const float3 velocity);
 
+	//bool GetFreezePostion(int coordinate);
+	//void SetFreezePosition(int coordinate, bool value);	
+	//bool GetFreezeRotation(int coordinate);
+	//void SetFreezeRotation(int coordinate, bool value);
+
+
 private:
 
 	void Update();

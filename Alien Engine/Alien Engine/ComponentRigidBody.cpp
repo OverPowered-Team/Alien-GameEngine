@@ -94,6 +94,20 @@ void ComponentRigidBody::Update()
 			transform->GetGlobalRotation());
 	}
 
+	btVector3 freeze_p((float)!freeze_position[0], (float)!freeze_position[1], (float)!freeze_position[2]);
+	btVector3 freeze_r((float)!freeze_rotation[0], (float)!freeze_rotation[1], (float)!freeze_rotation[2]);
+
+	if (body->getLinearFactor() != freeze_p)
+	{
+		body->activate(true);
+		body->setLinearFactor(freeze_p);
+	}
+	if (body->getAngularFactor() != freeze_r)
+	{
+		body->activate(true);
+		body->setAngularFactor(freeze_r);
+	}
+
 	//	// Apply Forces ----------------------
 
 	for (uint i = 0; i < (uint)ForceMode::MAX; ++i)
@@ -166,21 +180,6 @@ bool ComponentRigidBody::DrawInspector()
 		ImGui::Spacing();
 	}
 
-	// Colliders Config -------------------------------------
-
-	btVector3 freeze_p((float)!freeze_position[0], (float)!freeze_position[1], (float)!freeze_position[2]);
-	btVector3 freeze_r((float)!freeze_rotation[0], (float)!freeze_rotation[1], (float)!freeze_rotation[2]);
-
-	if (body->getLinearFactor() != freeze_p)
-	{
-		body->activate(true);
-		body->setLinearFactor(freeze_p);
-	}
-	if (body->getAngularFactor() != freeze_r)
-	{
-		body->activate(true);
-		body->setAngularFactor(freeze_r);
-	}
 	return true;
 }
 
