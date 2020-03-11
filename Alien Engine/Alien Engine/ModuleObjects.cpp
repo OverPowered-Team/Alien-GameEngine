@@ -1051,6 +1051,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					if (def_mesh)
 						def_mesh->AttachSkeleton();
 				}
+				ReAttachUIScriptEvents();
 				delete scene;
 
 				if (change_scene) {
@@ -1316,6 +1317,41 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+void ModuleObjects::ReAttachUIScriptEvents()
+{
+	std::stack<GameObject*> objects;
+	objects.push(base_game_object);
+
+	while (!objects.empty()) {
+		GameObject* obj = objects.top();
+		objects.pop();
+
+		std::vector<ComponentScript*> scriptsVec = obj->GetComponents<ComponentScript>();
+		if (!scriptsVec.empty()) {
+			ComponentButton* button = obj->GetComponent<ComponentButton>();
+			if (button != nullptr) {
+				CompareName(&button->listenersOnClick, scriptsVec);
+				CompareName(&button->listenersOnClickRepeat, scriptsVec);
+				CompareName(&button->listenersOnHover, scriptsVec);
+				CompareName(&button->listenersOnRelease, scriptsVec);
+			}
+			else {
+				ComponentCheckbox* checkbox = obj->GetComponent<ComponentCheckbox>();
+				if (checkbox != nullptr) {
+					CompareName(&checkbox->listenersOnClick, scriptsVec);
+					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
+					CompareName(&checkbox->listenersOnHover, scriptsVec);
+					CompareName(&checkbox->listenersOnRelease, scriptsVec);
+				}
+			}
+		}
+
+		for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+			objects.push(*item);
+		}
+	}
+}
+
 
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
@@ -1472,6 +1508,7 @@ void ModuleObjects::ReAssignScripts(JSONArraypack* to_load)
 		}
 		to_load->GetAnotherNode();
 	}
+	ReAttachUIScriptEvents();
 }
 
 void ModuleObjects::DeleteReturns()
@@ -1620,6 +1657,36 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 		obj->AddComponent(canvas);
 	}
 	return canvas;
+}
+
+void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec)
+{
+	auto item = listeners->begin();
+	bool skip = false;
+	for (; item != listeners->end(); ++item) {
+		for (auto scripts = scriptsVec.begin(); scripts != scriptsVec.end(); ++scripts) {
+			for (auto funct = (*scripts)->functionMap.begin(); funct != (*scripts)->functionMap.end(); ++funct) {
+				if ((*funct).first == (*item).first) {
+					(*item).second = (*funct).second;
+					skip = true;
+					break;
+				}
+			}
+			if (skip) {
+				skip = false;
+				break;
+			}
+		}
+	}
+	item = listeners->begin();
+	while (item != listeners->end()) {
+		if ((*item).second == nullptr) {
+			item = listeners->erase(item);
+		}
+		else {
+			++item;
+		}
+	}
 }
 
 bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)

@@ -12,6 +12,7 @@ class __declspec(dllexport) ComponentCheckbox :public ComponentUI
 {
 	friend class ReturnZ;
 	friend class CompZ;
+	friend class ModuleObjects;
 public:
 
 	ComponentCheckbox(GameObject* obj);

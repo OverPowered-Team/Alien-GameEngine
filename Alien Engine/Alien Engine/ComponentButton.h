@@ -9,6 +9,7 @@ class ResourceTexture;
 
 class __declspec(dllexport) ComponentButton :public ComponentUI
 {
+	friend class ModuleObjects;
 public:
 	ComponentButton(GameObject* obj);
 	~ComponentButton() {};

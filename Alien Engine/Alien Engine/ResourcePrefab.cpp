@@ -283,6 +283,7 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 			if (def_mesh)
 				def_mesh->AttachSkeleton();
 		}
+		App->objects->ReAttachUIScriptEvents();
 		obj->ResetIDs();
 		obj->SetPrefab(ID);
 		ComponentTransform* transform = (ComponentTransform*)(obj)->GetComponent(ComponentType::TRANSFORM);
