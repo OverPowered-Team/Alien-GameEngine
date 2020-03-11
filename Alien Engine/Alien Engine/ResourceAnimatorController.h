@@ -120,7 +120,7 @@ private:
 public:
 	Transition();
 	Transition(State* source, State* target, float blend);
-	Transition(Transition* transition);
+	Transition(Transition* transition, ResourceAnimatorController* controller);
 
 public:
 	void SetSource(State* source);

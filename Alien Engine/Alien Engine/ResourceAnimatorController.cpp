@@ -38,7 +38,7 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 	}
 
 	for (int i = 0; i < controller->transitions.size(); ++i) {
-		transitions.push_back(new Transition(controller->transitions[i]));
+		transitions.push_back(new Transition(controller->transitions[i], this));
 	}
 
 	int_parameters = controller->int_parameters;
@@ -1769,10 +1769,10 @@ Transition::Transition(State* source, State* target, float blend)
 	this->blend = blend;
 }
 
-Transition::Transition(Transition* transition)
+Transition::Transition(Transition* transition, ResourceAnimatorController* controller)
 {
-	source = new State(transition->source);
-	target = new State(transition->target);
+	source = controller->FindState(transition->source->GetName());
+	target = controller->FindState(transition->target->GetName());
 	for (int i = 0; i < transition->int_conditions.size(); ++i)
 		int_conditions.push_back(new IntCondition(transition->int_conditions[i]));
 	for (int i = 0; i < transition->float_conditions.size(); ++i)
