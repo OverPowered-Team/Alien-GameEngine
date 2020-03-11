@@ -20,11 +20,11 @@ public:
 	float time = 0;
 	float fade_duration = 0, fade_time = 0;
 	State* next_state = nullptr;
-	bool played_from_script = false;
 
 public:
 	State();
 	State(std::string name, ResourceAnimation* clip);
+	State(State* state);
 
 	void SetName(std::string name);
 	void SetClip(ResourceAnimation* clip);
@@ -44,13 +44,14 @@ public:
 
 public:
 	Condition(std::string type, std::string comp_text = "") { this->type = type; }
+	Condition();
 	virtual bool Compare(ResourceAnimatorController* controller) { return false; }
 
 };
 
 class IntCondition : public Condition {
 public:
-	int comp;
+	int comp = 0;
 
 public:
 	IntCondition(std::string type, uint index, int comp) : Condition(type) {
@@ -62,6 +63,7 @@ public:
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
+	IntCondition(IntCondition* int_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(int comp) { this->comp = comp; }
@@ -71,7 +73,7 @@ public:
 
 class FloatCondition : public Condition {
 public:
-	float comp;
+	float comp = 0;
 
 public:
 	FloatCondition(std::string type, uint index, float comp) : Condition(type) {
@@ -81,6 +83,7 @@ public:
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
+	FloatCondition(FloatCondition* float_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(float comp) { this->comp = comp; }
@@ -96,6 +99,7 @@ public:
 		comp_texts.push_back("False");
 		comp_text = "True";
 	}
+	BoolCondition(BoolCondition* bool_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
@@ -116,6 +120,7 @@ private:
 public:
 	Transition();
 	Transition(State* source, State* target, float blend);
+	Transition(Transition* transition);
 
 public:
 	void SetSource(State* source);
@@ -156,8 +161,9 @@ class AnimEvent
 public:
 
 	AnimEvent() {};
+	AnimEvent(AnimEvent* anim_event);
 
-	u64 event_id = 0ULL;
+	std::string event_id = "";
 	u64 animation_id = 0ULL;
 	uint frame = 0;
 	EventAnimType type = EventAnimType::NONE;
@@ -178,15 +184,16 @@ private:
 	// Events
 	std::vector<AnimEvent*> anim_events;
 	ComponentAudioEmitter* emitter = nullptr;
+	std::vector<ComponentScript*> scripts;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
 
 public:
 	ResourceAnimatorController();
+	ResourceAnimatorController(ResourceAnimatorController* controller);
 	~ResourceAnimatorController();
 
-	int attached_references = 0;
 	int id_bucket = 1;
 	bool transitioning = false;
 
@@ -269,12 +276,14 @@ public:
 	std::string GetName();
 
 	// Events
-	void AddAnimEvent(u64 _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	void AddAnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
 	void RemoveAnimEvent(AnimEvent* _event);
 	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
 	uint GetNumAnimEvents() const { return anim_events.size(); }
 	ComponentAudioEmitter* GetEmitter() { return emitter; }
+	std::vector<ComponentScript*> GetScripts() { return scripts; }
 	void SetEmitter(ComponentAudioEmitter* _emitter) { emitter = _emitter; }
+	void SetScripts(std::vector<ComponentScript*> _scripts) { scripts = _scripts; }
 	void ActiveEvent(ResourceAnimation* _animation, uint _key);
 
 	//void UnLoad();

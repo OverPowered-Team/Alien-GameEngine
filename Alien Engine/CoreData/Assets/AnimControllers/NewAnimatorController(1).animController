@@ -1,0 +1,34 @@
+{
+    "Controller": {
+        "Name": "NewAnimatorController(1)",
+        "NumStates": 4,
+        "NumTransitions": 0,
+        "States": [
+            {
+                "Name": "NewState1",
+                "Speed": 1,
+                "Clip": "0"
+            },
+            {
+                "Name": "NewState2",
+                "Speed": 1,
+                "Clip": "0"
+            },
+            {
+                "Name": "NewState3",
+                "Speed": 1,
+                "Clip": "0"
+            },
+            {
+                "Name": "NewState4",
+                "Speed": 1,
+                "Clip": "0"
+            }
+        ],
+        "Transitions": [],
+        "IntParameters": [],
+        "FloatParameters": [],
+        "BoolParameters": [],
+        "Events": []
+    }
+}

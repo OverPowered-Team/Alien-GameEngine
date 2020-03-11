@@ -601,7 +601,31 @@ void PanelAnimator::OnAssetDelete()
 
 void PanelAnimator::OnObjectSelect()
 {
-	//TODO: Look for Animator Component on Go and select it if needed.
+	if (App->objects->GetSelectedObjects().size() == 1)
+	{
+		if (App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR)) {
+			ComponentAnimator* c_anim = (ComponentAnimator*)App->objects->GetSelectedObjects().back()->GetComponent(ComponentType::ANIMATOR);
+			ResourceAnimatorController* anim_ctrl = c_anim->GetResourceAnimatorController();
+			if (current_animator != anim_ctrl)
+			{
+				SetCurrentResourceAnimatorController(anim_ctrl);
+			}
+		}
+	}
+	else if (App->objects->GetSelectedObjects().size() > 1) {
+		for each (GameObject * go in App->objects->GetSelectedObjects())
+		{
+			if (go->HasComponent(ComponentType::ANIMATOR)) {
+				ComponentAnimator* c_anim = (ComponentAnimator*)go->GetComponent(ComponentType::ANIMATOR);
+				ResourceAnimatorController* anim_ctrl = c_anim->GetResourceAnimatorController();
+				if (current_animator != anim_ctrl)
+				{
+					SetCurrentResourceAnimatorController(anim_ctrl);
+				}
+				break;
+			}
+		}
+	}
 }
 
 void PanelAnimator::OnObjectDelete()
@@ -611,6 +635,9 @@ void PanelAnimator::OnObjectDelete()
 
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController* animator)
 {
+	if (animator == nullptr)
+		return;
+
 	if (current_animator)
 	{
 		current_animator->SaveAsset(current_animator->GetID());
@@ -648,29 +675,6 @@ void PanelAnimator::PanelLogic()
 	if (FillInfo())
 	{
 
-	}
-
-	if (App->objects->GetSelectedObjects().size() == 1)
-	{
-		if (App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR)) {
-			ComponentAnimator* c_anim = (ComponentAnimator*)App->objects->GetSelectedObjects().back()->GetComponent(ComponentType::ANIMATOR);
-			current_animator = c_anim->GetResourceAnimatorController();
-		}
-		else
-			current_animator = nullptr;
-	}
-	else if (App->objects->GetSelectedObjects().size() > 1) {
-
-		current_animator = nullptr;
-
-		for each (GameObject * go in App->objects->GetSelectedObjects())
-		{
-			if (go->HasComponent(ComponentType::ANIMATOR)) {
-				ComponentAnimator* c_anim = (ComponentAnimator*)go->GetComponent(ComponentType::ANIMATOR);
-				current_animator = c_anim->GetResourceAnimatorController();
-				break;;
-			}
-		}
 	}
 
 	if (current_animator) {

@@ -451,6 +451,9 @@ void PanelProject::RightClickToWindow(bool pop_up_item)
 		if (ImGui::MenuItem("Create New Material")) {
 			App->resources->CreateMaterial("New Material");
 		}
+		if (ImGui::MenuItem("Create New Animator Controller")) {
+			App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
+		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Create New Folder")) {
 			int folder_number = 0;
