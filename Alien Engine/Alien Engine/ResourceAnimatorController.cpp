@@ -31,13 +31,10 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 
 	current_state = nullptr;
 
-	if (controller->default_state != nullptr)
-		default_state = new State(controller->default_state);
-	else
-		default_state = nullptr;
-
 	for (int i = 0; i < controller->states.size(); ++i) {
 		states.push_back(new State(controller->states[i]));
+		if (controller->states[i] == controller->default_state)
+			default_state = states[i];
 	}
 
 	for (int i = 0; i < controller->transitions.size(); ++i) {

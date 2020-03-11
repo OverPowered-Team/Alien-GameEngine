@@ -21,6 +21,7 @@ public:
 	void OnPlay();
 
 	ResourceAnimatorController* GetResourceAnimatorController();
+	ResourceAnimatorController* GetCurrentAnimatorController();
 	void SetAnimatorController(ResourceAnimatorController* controller);
 
 	void SaveComponent(JSONArraypack* to_save);

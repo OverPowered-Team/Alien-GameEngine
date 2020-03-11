@@ -93,6 +93,11 @@ ResourceAnimatorController* ComponentAnimator::GetResourceAnimatorController()
 	return source_animator_controller;
 }
 
+ResourceAnimatorController* ComponentAnimator::GetCurrentAnimatorController()
+{
+	return animator_controller;
+}
+
 void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* controller)
 {
 	if (source_animator_controller) {
