@@ -74,9 +74,22 @@ bool ModulePhysics::Start()
 // ---------------------------------------------------------
 update_status ModulePhysics::PreUpdate(float dt)
 {
+	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	world->stepSimulation(Time::GetDT(), 20);
+	if (Time::IsPlaying())
+	{
+		if (first_frame_playing == false)
+		{
+			world->stepSimulation(Time::GetDT(), 20);
+		}
+		
+		first_frame_playing = false;
+	}
+	else
+	{
+		first_frame_playing = true;
+	}
 
 	return UPDATE_CONTINUE;
 }
