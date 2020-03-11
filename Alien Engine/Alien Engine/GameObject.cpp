@@ -30,6 +30,7 @@
 #include "ComponentAudioEmitter.h"
 #include "ComponentReverbZone.h"
 #include "Prefab.h"
+#include "Event.h"
 #include "ResourcePrefab.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
@@ -1139,6 +1140,7 @@ void GameObject::ToDelete()
 {
 	to_delete = true;
 	App->objects->need_to_delete_objects = true;
+	App->CastEvent(EventType::ON_GO_DELETE);
 #ifndef GAME_VERSION
 	if (!App->objects->in_cntrl_Z) {
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::DELETE_OBJECT, this);

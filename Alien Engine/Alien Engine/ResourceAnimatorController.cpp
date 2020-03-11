@@ -187,7 +187,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 				uint frame = events->GetNumber("Frame");
 				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
 
-				AddAnimEvent(event_id, animation_id, frame, type);
+				anim_events.push_back(new AnimEvent(event_id, animation_id, frame, type));
 				events->GetAnotherNode();
 			}
 		}
@@ -760,7 +760,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_param_types, cursor, bytes);
 			cursor += bytes;
 
-			AddAnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types);
+			anim_events.push_back(new AnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types));
 		}
 
 		//Load transitions and states nums
@@ -1601,15 +1601,25 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 }
 
 // Events
-
-void ResourceAnimatorController::AddAnimEvent(std::string _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
+AnimEvent::AnimEvent(std::string _event_id, u64 _animation_id, uint _frame, EventAnimType _type)
 {
-	AnimEvent* event = new AnimEvent();
-	event->event_id = _event_id;
-	event->animation_id = _anim_id;
-	event->frame = _frame;
-	event->type = _type;
-	anim_events.push_back(event);
+	event_id = _event_id;
+	animation_id = _animation_id;
+	frame = _frame;
+	type = _type;
+}
+
+AnimEvent::AnimEvent(AnimEvent* anim_event)
+{
+	event_id = anim_event->event_id;
+	animation_id = anim_event->animation_id;
+	frame = anim_event->frame;
+	type = anim_event->type;
+}
+
+void ResourceAnimatorController::AddAnimEvent(AnimEvent* _event)
+{
+	anim_events.push_back(_event);
 }
 
 void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
@@ -1964,10 +1974,4 @@ Condition::Condition()
 {
 }
 
-AnimEvent::AnimEvent(AnimEvent* anim_event)
-{
-	event_id = anim_event->event_id;
-	animation_id = anim_event->animation_id;
-	frame = anim_event->frame;
-	type = anim_event->type;
-}
+
