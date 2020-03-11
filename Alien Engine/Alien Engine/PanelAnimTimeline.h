@@ -17,6 +17,8 @@ public:
 
 	
 	void PanelLogic();
+	void OnObjectSelect();
+	void OnObjectDelete();
 
 public:
 

@@ -154,7 +154,9 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 //When loading resouce model
 void ComponentDeformableMesh::SendWeightsAndID()
 {
-	
+	if (mesh->weights != nullptr && mesh->bones_ID != nullptr)
+		return;
+
 	int bone_id = 0;
 	//Genereting array of weights and bones_ID
 	if (mesh->weights == nullptr && mesh->bones_ID == nullptr)
