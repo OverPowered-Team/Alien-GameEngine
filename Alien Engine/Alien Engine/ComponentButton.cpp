@@ -594,21 +594,50 @@ void ComponentButton::SetActive(bool active)
 
 void ComponentButton::AddListenerOnHover(std::string name, std::function<void()> funct)
 {
-	listenersOnHover.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnHover, name))
+	{
+		listenersOnHover.push_back(pair);
+	}
 }
 
 void ComponentButton::AddListenerOnClick(std::string name, std::function<void()> funct)
 {
-	listenersOnClick.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClick, name))
+	{
+		listenersOnClick.push_back(pair);
+	}
 }
 
 void ComponentButton::AddListenerOnClickRepeat(std::string name, std::function<void()> funct)
 {
-	listenersOnClickRepeat.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClickRepeat, name))
+	{
+		listenersOnClickRepeat.push_back(pair);
+	}
 }
 
 void ComponentButton::AddListenerOnRelease(std::string name, std::function<void()> funct)
 {
-	listenersOnRelease.push_back({ name, funct });
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnRelease, name))
+	{
+		listenersOnRelease.push_back(pair);
+	}
+}
+
+bool ComponentButton::CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name)
+{
+	if (listeners != nullptr) {
+
+		for (auto item = listeners->begin(); item != listeners->end(); ++item){
+		
+			if ((*item).first == name)
+				return true;
+		}
+	}
+	return false;
 }
 

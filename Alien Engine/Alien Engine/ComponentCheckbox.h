@@ -53,7 +53,7 @@ public:
 	void LoadComponent(JSONArraypack* to_load);
 
 private:
-	void CallListeners(std::vector<std::function<void()>>* listeners);
+	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
 
 private:
 	bool active = true;
