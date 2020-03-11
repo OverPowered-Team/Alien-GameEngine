@@ -656,7 +656,31 @@ void PanelAnimator::OnPlay()
 
 void PanelAnimator::OnStop()
 {
-	OnObjectSelect();
+	if (App->objects->GetSelectedObjects().size() == 1)
+	{
+		if (App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR)) {
+			ComponentAnimator* c_anim = (ComponentAnimator*)App->objects->GetSelectedObjects().back()->GetComponent(ComponentType::ANIMATOR);
+			ResourceAnimatorController* anim_ctrl = nullptr;
+
+			current_animator = c_anim->GetResourceAnimatorController();
+		}
+		else
+			current_animator = nullptr;
+	}
+	else if (App->objects->GetSelectedObjects().size() > 1) {
+		for each (GameObject * go in App->objects->GetSelectedObjects())
+		{
+			if (go->HasComponent(ComponentType::ANIMATOR)) {
+				ComponentAnimator* c_anim = (ComponentAnimator*)go->GetComponent(ComponentType::ANIMATOR);
+				ResourceAnimatorController* anim_ctrl = nullptr;
+
+				current_animator = c_anim->GetResourceAnimatorController();
+				break;
+			}
+			else
+				current_animator = nullptr;
+		}
+	}
 }
 
 void PanelAnimator::SetCurrentResourceAnimatorController(ResourceAnimatorController* animator)
