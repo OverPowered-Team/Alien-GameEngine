@@ -29,3 +29,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**Person who found the issue**
+ 
+Add the person who found the issue in order to know who to talk to if the coder in charge   of solving the issue has any doubt.
+
