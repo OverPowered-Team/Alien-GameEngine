@@ -27,9 +27,7 @@ ComponentAnimator::~ComponentAnimator()
 		delete animator_controller;
 		animator_controller = nullptr;
 		source_animator_controller->DecreaseReferences();
-		source_animator_controller = nullptr;
 	}
-
 }
 
 void ComponentAnimator::Update()
