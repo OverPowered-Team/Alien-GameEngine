@@ -361,6 +361,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+		//------------------------COLOR-------------------------------
 
 		//------------------------COLOR BACKGROUND-------------------------------
 		if (ImGui::TreeNode("Background Colors"))
@@ -921,6 +922,48 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
 	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
 	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
+
+	//---------------------------------------------------------
+	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
+	if (!listenersOnClick.empty()) {
+		JSONArraypack* onClickArray = to_save->InitNewArray("ListenersOnClick");
+		auto item = listenersOnClick.begin();
+		for (; item != listenersOnClick.end(); ++item) {
+			onClickArray->SetAnotherNode();
+			onClickArray->SetString(std::to_string(item - listenersOnClick.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnHover", !listenersOnHover.empty());
+	if (!listenersOnHover.empty()) {
+		JSONArraypack* onHoverArray = to_save->InitNewArray("ListenersOnHover");
+		auto item = listenersOnHover.begin();
+		for (; item != listenersOnHover.end(); ++item) {
+			onHoverArray->SetAnotherNode();
+			onHoverArray->SetString(std::to_string(item - listenersOnHover.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnClickRepeat", !listenersOnClickRepeat.empty());
+	if (!listenersOnClickRepeat.empty()) {
+		JSONArraypack* onClickRepeatArray = to_save->InitNewArray("ListenersOnClickRepeat");
+		auto item = listenersOnClickRepeat.begin();
+		for (; item != listenersOnClickRepeat.end(); ++item) {
+			onClickRepeatArray->SetAnotherNode();
+			onClickRepeatArray->SetString(std::to_string(item - listenersOnClickRepeat.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnRelease", !listenersOnRelease.empty());
+	if (!listenersOnRelease.empty()) {
+		JSONArraypack* onReleaseArray = to_save->InitNewArray("ListenersOnRelease");
+		auto item = listenersOnRelease.begin();
+		for (; item != listenersOnRelease.end(); ++item) {
+			onReleaseArray->SetAnotherNode();
+			onReleaseArray->SetString(std::to_string(item - listenersOnRelease.begin()), (*item).first.data());
+		}
+	}
+	//---------------------------------------------------------------
 }
 
 void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
@@ -955,6 +998,44 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
+
+	//-------------------------------------------------------------
+	if (to_load->GetBoolean("HasListenersOnClick")) {
+		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
+		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onClickListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnClick.push_back(pair);
+			onClickListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnHover")) {
+		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
+		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onHoverListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnHover.push_back(pair);
+			onHoverListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnClickRepeat")) {
+		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
+		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onClickRepeatListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnClickRepeat.push_back(pair);
+			onClickRepeatListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnRelease")) {
+		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
+		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onReleaseListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnRelease.push_back(pair);
+			onReleaseListeners->GetAnotherNode();
+		}
+	}
+	//-------------------------------------------------------------
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
