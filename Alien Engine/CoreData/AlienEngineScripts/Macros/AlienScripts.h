@@ -83,3 +83,31 @@
 
 #define LOG(format, ...) Debug::Log(__FILE__, __LINE__, format, __VA_ARGS__);
 
+//static char** ArgsToChar(const char* args_)
+//{
+//	std::string args(args_);
+//	std::vector<std::string> vec;
+//
+//	auto item = args.begin();
+//	std::string aux;
+//	for (; item != args.end(); ++item) {
+//		if ((*item) != ',') {
+//			aux.push_back(*item);
+//		}
+//		else {
+//			vec.push_back(aux);			
+//			aux.clear();
+//		}
+//	}
+//	vec.push_back(aux);
+//	char** data = new char*[vec.size()];
+//	for (uint i = 0; i < vec.size(); ++i) {
+//		memcpy(data[i], vec[i].data(), vec[i].size());
+//	}
+//	return data;
+//}
+
+#define enum(ENUM, ...) enum ENUM {\
+	__VA_ARGS__\
+	};\
+	static const char* ENUM##EnumNames = #__VA_ARGS__;
