@@ -388,6 +388,11 @@ const char * WwiseT::AudioSource::GetName() const
 	return name.c_str();
 }
 
+AkUInt32 WwiseT::AudioSource::GetWwiseIDFromString(const char* Wwise_name)
+{
+	return AK::SoundEngine::GetIDFromString(Wwise_name);
+}
+
 void WwiseT::AudioSource::SetSourcePos(float x, float y, float z, float x_front, float y_front, float z_front, float x_top, float y_top, float z_top)
 {
 	position.X = x;
@@ -473,6 +478,11 @@ void WwiseT::AudioSource::SetListenerPos(float pos_x, float pos_y, float pos_z, 
 	listener_pos.Set(ak_pos, ak_rot_front, ak_rot_top);
 	AK::SoundEngine::SetPosition(id, listener_pos);
 	
+}
+
+void WwiseT::AudioSource::SetSwitch(AkGameObjectID game_object_id, AkSwitchGroupID switch_group_id, AkSwitchStateID switch_state_id)
+{
+	AK::SoundEngine::SetSwitch(switch_group_id, switch_state_id, game_object_id);
 }
 
 void WwiseT::AudioSource::ApplyEnvReverb(AkReal32 desired_level, const char * target)

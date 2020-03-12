@@ -172,11 +172,13 @@
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
     <ClInclude Include="MoreEventsClass.h" />
+    <ClInclude Include="TestSwitches.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
     <ClCompile Include="MoreEventsClass.cpp" />
+    <ClCompile Include="TestSwitches.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

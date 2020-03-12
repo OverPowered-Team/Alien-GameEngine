@@ -10,6 +10,9 @@
     <ClCompile Include="TestEvents.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="TestSwitches.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -19,6 +22,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="TestEvents.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TestSwitches.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

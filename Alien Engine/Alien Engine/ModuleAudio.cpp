@@ -27,7 +27,6 @@ bool ModuleAudio::Start()
 			(*i)->loaded = true;
 		}
 	}
-
 	return ret;
 }
 

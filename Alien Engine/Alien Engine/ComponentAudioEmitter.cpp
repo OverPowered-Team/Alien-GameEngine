@@ -11,7 +11,6 @@ ComponentAudioEmitter::ComponentAudioEmitter(GameObject * parent) : Component(pa
 	type = ComponentType::A_EMITTER;
 	source = App->audio->CreateSoundEmitter("Emitter");
 	App->audio->emitters.push_back(this);
-
 }
 
 void ComponentAudioEmitter::Update()
@@ -205,6 +204,21 @@ bool ComponentAudioEmitter::AlreadyUsedBank(const Bank* bk)
 u64 ComponentAudioEmitter::GetCurrentBank()
 {
 	return current_bank;
+}
+
+u32 ComponentAudioEmitter::GetWwiseIDFromString(const char* Wwise_name) const
+{
+	return source->GetWwiseIDFromString(Wwise_name);
+}
+
+void ComponentAudioEmitter::SetSwitchState(u32 switch_group_id, u32 switch_state_id)
+{
+	source->SetSwitch(source->GetID(), switch_group_id, switch_state_id);
+}
+
+WwiseT::AudioSource* ComponentAudioEmitter::GetSource() const
+{
+	return source;
 }
 
 void ComponentAudioEmitter::OnEnable()
