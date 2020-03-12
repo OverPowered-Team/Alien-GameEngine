@@ -1475,20 +1475,24 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				rotation = animation->channels[channel_index].rotation_keys[0].value;
 
 
-
-			for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+			if (animation->channels[channel_index].num_scale_keys > 1)
 			{
-				if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
-					scale = animation->channels[channel_index].scale_keys[i].value;
-					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
-					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
-					t = (float)((double)time_in_ticks / next_key_time);
-					ActiveEvent(animation, next_key_time);
-					break;
-				}
-			}
 
-			scale = float3::Lerp(scale, next_scale, t);
+				for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+				{
+					if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
+						scale = animation->channels[channel_index].scale_keys[i].value;
+						next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
+						next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
+						t = (float)((double)time_in_ticks / next_key_time);
+						ActiveEvent(animation, next_key_time);
+						break;
+					}
+				}
+
+				scale = float3::Lerp(scale, next_scale, t);
+			}else
+				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
 			if (state->next_state) {

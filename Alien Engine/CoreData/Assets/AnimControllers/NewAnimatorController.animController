@@ -2,7 +2,7 @@
     "Controller": {
         "Name": "NewAnimatorController",
         "NumStates": 2,
-        "NumTransitions": 1,
+        "NumTransitions": 2,
         "States": [
             {
                 "Name": "NewState1",
@@ -27,6 +27,21 @@
                     {
                         "Type": "bool",
                         "CompText": "True",
+                        "ParameterIndex": 0
+                    }
+                ]
+            },
+            {
+                "Source": "NewState2",
+                "Target": "NewState1",
+                "Blend": 0.25,
+                "End": 0,
+                "IntConditions": [],
+                "FloatConditions": [],
+                "BoolConditions": [
+                    {
+                        "Type": "bool",
+                        "CompText": "False",
                         "ParameterIndex": 0
                     }
                 ]
