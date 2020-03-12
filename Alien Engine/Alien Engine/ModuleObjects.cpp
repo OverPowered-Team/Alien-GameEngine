@@ -121,18 +121,6 @@ bool ModuleObjects::Start()
 	}
 #endif
 
-	// Set sky box
-	sky_box.SetBuffers();
-
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/posx.jpg");
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/negx.jpg");
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/posy.jpg");
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/posz.jpg");
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/negy.jpg");
-	sky_box.AddFaceTexture("Assets/Textures/Skybox/negz.jpg");
-
-	sky_box.LoadCubeMap(sky_box.GetFaces());
-
 	return ret;
 }
 
@@ -352,8 +340,6 @@ bool ModuleObjects::CleanUp()
 	if (Time::IsInGameState()) {
 		CleanUpScriptsOnStop();
 	}
-
-	sky_box.DeleteFaceTextures();
 
 	delete base_game_object;
 	base_game_object = nullptr;

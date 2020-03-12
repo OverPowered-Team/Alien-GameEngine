@@ -15,8 +15,6 @@
 #include <functional>
 #include <map>
 
-#include "SkyBox.h"
-
 class ReturnZ;
 class ResourcePrefab;
 class ComponentScript;
@@ -195,8 +193,6 @@ private:
 	ComponentCanvas* GetCanvas();
 
 public:
-	SkyBox sky_box;
-
 	//Focus
 	u64 selected_ui = -1;
 

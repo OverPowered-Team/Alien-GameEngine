@@ -881,10 +881,8 @@
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="ShortCutManager.h" />
-    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="StaticInput.h" />
     <ClInclude Include="StaticTween.h" />
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
@@ -1242,7 +1240,6 @@
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="ShortCutManager.cpp" />
-    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="StaticInput.cpp" />
     <ClCompile Include="StaticTween.cpp" />
     <ClCompile Include="TextEdit\TextEditor.cpp" />
