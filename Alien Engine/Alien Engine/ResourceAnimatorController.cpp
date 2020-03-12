@@ -1644,7 +1644,6 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 			// To Play Sound
 			if ((*it)->type == EventAnimType::EVENT_AUDIO && emitter != nullptr)
 			{
-				App->audio->LoadUsedBanks();
 				emitter->StartSound((uint)std::stoull((*it)->event_id.c_str()));
 			}
 

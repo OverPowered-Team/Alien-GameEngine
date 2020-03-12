@@ -22,7 +22,6 @@ public:
 	void Mute(bool mute);
 	void StartSound();
 	void StartSound(uint _event);
-	bool AlreadyUsedBank(const Bank* bk);
 	u64 GetCurrentBank();
 	u32 GetWwiseIDFromString(const char* Wwise_name) const;
 	void SetSwitchState(u32 switch_group_id, u32 switch_state_id);

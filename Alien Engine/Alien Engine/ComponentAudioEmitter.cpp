@@ -108,8 +108,6 @@ void ComponentAudioEmitter::LoadComponent(JSONArraypack* to_load)
 		audio_name = App->audio->GetBankByID(current_bank)->events.at(current_event);*/
 
 	auto bank = App->audio->GetBankByID(current_bank);
-	if (!AlreadyUsedBank(bank))
-		App->audio->used_banks.push_back(bank);
 }
 bool ComponentAudioEmitter::DrawInspector()
 {
@@ -135,9 +133,6 @@ bool ComponentAudioEmitter::DrawInspector()
 				if (ImGui::Selectable((*i)->name.c_str(), is_selected))
 				{
 					current_bank = (*i)->id;
-
-					if(!AlreadyUsedBank((*i)))
-						App->audio->used_banks.push_back((*i));
 				}
 					
 			}
@@ -163,19 +158,12 @@ bool ComponentAudioEmitter::DrawInspector()
 			}
 		if(ImGui::Button("Play"))
 		{
-			App->audio->LoadUsedBanks();
 			StartSound();
 		}
 		if (ImGui::Button("Stop"))
 		{
 			App->audio->Stop();
 			//App->audio->UnloadAllUsedBanksFromWwise(); //TODO 
-		}
-		if (ImGui::Button("Reverb")) {
-			source->ApplyEnvReverb(1.0f, "reverb");
-		}
-		if (ImGui::Button("Normal")) {
-			source->ApplyEnvReverb(1.0f, "normal");
 		}
 		ImGui::NewLine();
 		ImGui::Checkbox("Mute", &mute);
@@ -188,17 +176,6 @@ bool ComponentAudioEmitter::DrawInspector()
 	ImGui::Separator();
 	ImGui::PopID();
 	return true;
-}
-
-bool ComponentAudioEmitter::AlreadyUsedBank(const Bank* bk)
-{
-	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); ++i)
-	{
-		if (current_bank == (*i)->id)
-			return true;
-	}
-
-	return false;
 }
 
 u64 ComponentAudioEmitter::GetCurrentBank()

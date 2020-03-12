@@ -348,7 +348,6 @@ void PanelAnimTimeline::PanelLogic()
 						// Audio
 						if ((*it)->type == EventAnimType::EVENT_AUDIO && animator->GetEmitter() != nullptr)
 						{
-							App->audio->LoadUsedBanks();
 							animator->GetEmitter()->StartSound(std::stoull((*it)->event_id.c_str()));
 						}
 						

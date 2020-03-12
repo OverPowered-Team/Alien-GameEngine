@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleAudio.h"
 #include "ComponentAudioEmitter.h"
+#include "Event.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -89,26 +90,11 @@ bool ModuleAudio::CleanUp()
 	}	
 	banks.clear();
 
-	used_banks.clear();
-
 	delete default_listener;
 	default_listener = nullptr;
 
 	return WwiseT::CloseSoundEngine();
 }
-
-void ModuleAudio::LoadUsedBanks()
-{
-	OPTICK_EVENT();
-	for (auto i = App->audio->used_banks.begin(); i != App->audio->used_banks.end(); i++)
-	{
-		if (!(*i)->loaded) {
-			WwiseT::LoadBank((std::to_string((*i)->id) + ".bnk").c_str());
-			(*i)->loaded = true;
-		}
-	}
-}
-
 
 bool ModuleAudio::UnloadAllBanksFromWwise()
 {
@@ -125,21 +111,6 @@ bool ModuleAudio::UnloadAllBanksFromWwise()
 	}
 
 	return true;
-}
-
-void ModuleAudio::UnloadAllUsedBanksFromWwise()
-{
-	OPTICK_EVENT();
-	for (auto it = used_banks.begin(); it != used_banks.end(); it++)
-	{
-		if ((*it))
-		{
-			if ((*it)->loaded) {
-				WwiseT::UnLoadBank(std::to_string((*it)->id).c_str());
-				(*it)->loaded = false;
-			}
-		}	
-	}
 }
 
 void ModuleAudio::AddBank(Bank* bk)
@@ -189,6 +160,19 @@ const char* ModuleAudio::GetEventNameByID(const u64& id) const
 		}
 	}
 	return "";
+}
+
+void ModuleAudio::HandleEvent(EventType eventType)
+{
+	switch (eventType)
+	{
+	case EventType::ON_PAUSE:
+		//Pause();
+		break;
+	case EventType::ON_STOP:
+		Stop();
+		break;
+	}
 }
 
 void ModuleAudio::Play()
