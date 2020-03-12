@@ -5,6 +5,8 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
+#define RADIUS_INTENSITY_MULTIPLIER_SPOT 3.5f
+
 struct __declspec(dllexport) SpotLightProperties
 {
 	float intensity = 1.0f;

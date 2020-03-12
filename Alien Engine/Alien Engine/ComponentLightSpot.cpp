@@ -41,13 +41,13 @@ void ComponentLightSpot::LightLogic()
 	if (this->game_object_attached->IsSelected())
 	{
 		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
 		App->renderer3D->EndDebugDraw();
 	}
 	else
 	{
 		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
 		App->renderer3D->EndDebugDraw();
 	}
 #endif

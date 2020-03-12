@@ -5,7 +5,7 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
-#define RADIUS_INTENSITY_MULTIPLIER 45
+#define RADIUS_INTENSITY_MULTIPLIE_POINT 45
 
 struct __declspec(dllexport) PointLightProperties
 {
