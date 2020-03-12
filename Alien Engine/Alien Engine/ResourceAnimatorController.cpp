@@ -1656,7 +1656,7 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
 					{
 						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
-							if ((*j).first.data() == (*it)->event_id)
+							if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
 							{
 								std::function<void()> functEvent = (*j).second;
 								functEvent();
