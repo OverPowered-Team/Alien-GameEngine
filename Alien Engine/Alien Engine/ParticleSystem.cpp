@@ -2,13 +2,16 @@
 #include "Application.h"
 #include "ComponentCamera.h"
 #include "Camera.h"
-
+#include "ResourceShader.h"
 #include "GL/gl.h"
 
 ParticleSystem::ParticleSystem()
 {
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
+
+	material = App->resources->default_material;
+	material->IncreaseReferences();
 
 	float planeVertex[] =
 	{
@@ -55,6 +58,11 @@ ParticleSystem::ParticleSystem()
 	glGenBuffers(1, &planeUVsBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, planeUVsBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, planeUVCoords, GL_STATIC_DRAW);
+
+	
+
+
+
 	
 }
 
@@ -67,7 +75,11 @@ ParticleSystem::~ParticleSystem()
 		(*iter) = nullptr;
 	}
 
+
 	particles.clear();
+
+	if (material != nullptr)
+		material = nullptr;
 }
 
 bool ParticleSystem::PreUpdate(float dt)
@@ -169,6 +181,7 @@ void ParticleSystem::DrawParticles()
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 
+	
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
 	{
 		(*iter)->Orientate(mainCamera);
@@ -325,6 +338,28 @@ void ParticleSystem::SetParticleFinalColor(const float4& initialColor)
 void ParticleSystem::SetParticleFinalForce(const float3& initialForce)
 {
 	endInfo.force = initialForce;
+}
+
+void ParticleSystem::SetMaterial(ResourceMaterial* mat)
+{
+
+	if (mat == nullptr)
+		return;
+
+	if (material != nullptr)
+	{
+		material->DecreaseReferences();
+		//material = nullptr;
+	}
+
+	material = mat;
+	material->IncreaseReferences();
+}
+
+void ParticleSystem::RemoveMaterial()
+{
+	material->DecreaseReferences();
+	material = nullptr;
 }
 
 // ------------------------------ PARTICLE INFO ------------------------------
