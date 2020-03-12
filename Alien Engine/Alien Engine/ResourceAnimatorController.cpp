@@ -1721,6 +1721,7 @@ State::State(State* state)
 		clip->IncreaseReferences();
 	pin_in_id = state->pin_in_id;
 	pin_out_id = state->pin_out_id;
+	id = state->id;
 	time = 0;
 	fade_duration = 0;
 	fade_time = 0;
