@@ -31,14 +31,37 @@
       "Id": "3677180323",
       "Name": "health",
       "ObjectPath": "\\Events\\Default Work Unit\\health"
+     },
+     {
+      "Id": "2453392179",
+      "Name": "Player_Footstep",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_Footstep"
      }
     ],
     "IncludedMemoryFiles": [
+     {
+      "Id": "150350583",
+      "Language": "SFX",
+      "ShortName": "dirt_2.wav",
+      "Path": "SFX\\dirt_2_1C9C67B2.wem"
+     },
      {
       "Id": "423178946",
       "Language": "SFX",
       "ShortName": "111-pokemon-recovery.wav",
       "Path": "SFX\\111-pokemon-recovery_1C9C67B2.wem"
+     },
+     {
+      "Id": "877278889",
+      "Language": "SFX",
+      "ShortName": "dirt_3.wav",
+      "Path": "SFX\\dirt_3_1C9C67B2.wem"
+     },
+     {
+      "Id": "941702747",
+      "Language": "SFX",
+      "ShortName": "dirt_1.wav",
+      "Path": "SFX\\dirt_1_1C9C67B2.wem"
      },
      {
       "Id": "1038143432",
