@@ -15,7 +15,7 @@
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::PARTICLES;
-	particleSystem = new ParticleSystem();
+	particleSystem = new ParticleSystem(this);
 
 	//material = nullptr;
 	//component_material = nullptr;

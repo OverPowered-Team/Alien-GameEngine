@@ -47,6 +47,7 @@ public:
 
 	ParticleSystem* GetSystem();
 	void SetTexture(ResourceTexture* tex);
+	
 	//void SetMaterial(ResourceMaterial* mat);
 
 	void Play();
@@ -84,4 +85,5 @@ private:
 	bool texture_activated = true;
 
 	bool enable_render = false;
+	
 };

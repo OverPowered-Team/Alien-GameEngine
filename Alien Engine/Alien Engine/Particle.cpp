@@ -4,6 +4,8 @@
 #include "Application.h"
 #include "Camera.h"
 #include "GL/gl.h"
+#include "ComponentCamera.h"
+#include "Viewport.h"
 
 Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo endInfo) : owner(owner), particleInfo(info), startInfo(info), endInfo(endInfo)
 {
@@ -140,11 +142,16 @@ void Particle::Draw()
 		//glBindTexture(GL_TEXTURE_2D, owner->texture->id);
 		owner->material->ApplyMaterial();
 
+		ComponentCamera* mainCamera = App->camera->scene_viewport->GetCamera();
+		owner->SetUniform(owner->material, mainCamera);
+
 		glBindBuffer(GL_ARRAY_BUFFER, owner->planeUVsBuffer);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 	else
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -154,6 +161,10 @@ void Particle::Draw()
 
 	// Index Buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->planeIndexBuffer);
+
+
+
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	
@@ -161,6 +172,10 @@ void Particle::Draw()
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	owner->material->used_shader->Unbind();
 
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -228,3 +243,5 @@ float Particle::Lerp(float v0, float v1, float t)
 {
 	return (1 - t) * v0 + t * v1;
 }
+
+

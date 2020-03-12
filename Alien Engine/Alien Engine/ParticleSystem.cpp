@@ -3,6 +3,8 @@
 #include "ComponentCamera.h"
 #include "Camera.h"
 #include "ResourceShader.h"
+#include "GameObject.h"
+#include "ComponentTransform.h"
 #include "GL/gl.h"
 
 ParticleSystem::ParticleSystem()
@@ -64,6 +66,68 @@ ParticleSystem::ParticleSystem()
 
 
 	
+}
+
+ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
+{
+	callback = comp_particle;
+	particles.reserve(MAX_PARTICLES);
+	emmitter.particleSystem = this;
+
+	material = App->resources->default_material;
+	material->IncreaseReferences();
+
+	float planeVertex[] =
+	{
+		// 0
+		-0.5f, 0.5f, 0.f,
+		// 1 
+		0.5f, 0.5f, 0.f,
+		// 2 
+		-0.5f, -0.5f, 0.f,
+		// 3 
+		0.5f, -0.5f, 0.f,
+	};
+
+	float planeUVCoords[] =
+	{
+		// 0
+		0.0f, 0.0f,
+		// 1
+		1.0f, 0.0f,
+		// 2
+		0.0f, 1.0f,
+		// 3
+		1.0f, 1.0f,
+	};
+
+	uint planeIndex[] =
+	{
+		// First tri
+		2, 1, 0,
+		// Second tri
+		2, 3, 1
+	};
+
+	glGenBuffers(1, &planeVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, planeVertex, GL_STATIC_DRAW);
+
+	// index
+	glGenBuffers(1, &planeIndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, planeIndex, GL_STATIC_DRAW);
+
+	// UV
+	glGenBuffers(1, &planeUVsBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, planeUVsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, planeUVCoords, GL_STATIC_DRAW);
+
+
+
+
+
+
 }
 
 ParticleSystem::~ParticleSystem()
@@ -363,3 +427,12 @@ void ParticleSystem::RemoveMaterial()
 }
 
 // ------------------------------ PARTICLE INFO ------------------------------
+
+void ParticleSystem::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("model", callback->game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniform1i("animate", animate);
+}

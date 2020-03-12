@@ -6,6 +6,8 @@
 #include "ResourceTexture.h"
 #include "ParticleEmitter.h"
 #include "ResourceMaterial.h"
+#include "ResourceShader.h"
+#include "ComponentParticleSystem.h"
 #include <map>
 
 #include "Particle.h"
@@ -48,6 +50,7 @@ class __declspec(dllexport) ParticleSystem
 public:
 
 	ParticleSystem();
+	ParticleSystem(ComponentParticleSystem* particles);
 	~ParticleSystem();
 
 private: 
@@ -102,6 +105,7 @@ public:
 	// ---------------------------------------------------------------------------
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
+	void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera);
 
 public: 
 
@@ -117,6 +121,7 @@ private:
 	//std::map<float, Particle*> sortedParticles;
 	std::vector<Particle*> particles;
 	uint totalParticles = 0u;
+	ComponentParticleSystem* callback = nullptr;
 
 public:
 	ResourceTexture* texture = nullptr;
@@ -132,5 +137,5 @@ public:
 	uint planeVertexBuffer = 0;
 	uint planeIndexBuffer = 0;
 	uint planeUVsBuffer = 0;
-	
+	int animate = 0;
 };

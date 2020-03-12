@@ -77,71 +77,71 @@ bool ComponentMaterial::DrawInspector()
 	return true;
 }
 
-void ComponentMaterial::InspectorShaderProperties()
-{
-	/* Shaders */
-	if (material->used_shader != nullptr)
-	{
-		/* Set shader unifroms from Inspector */
-		if (material->used_shader->ChangeTemplate())
-		{
-			if (material->used_shader != nullptr) {
-				material->used_shader->DecreaseReferences();
-			}
-
-			file_to_edit = material->used_shader->path;
-		}
-
-		material->used_shader->HierarchyUniforms();
-
-		ImGui::Separator();
-		ImGui::Text("Current shader: "); ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), material->used_shader->path.c_str());
-		ImGui::SameLine();
-		if (ImGui::Button("Edit shader"))
-		{
-			{
-				std::ifstream t(file_to_edit.c_str());
-				if (t.good())
-				{
-					std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-					shader_editor.SetText(str);
-				}
-			}
-
-			show_shader_text_editor = true;
-		}
-		ImGui::SameLine();
-
-		static const char* text_compilation_shader = "";
-		static bool compiled_shader_success = false;
-		if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
-		{
-			if (material->used_shader->ParseAndCreateShader() == 0)
-			{
-				compiled_shader_success = false;
-				text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
-				LOG_ENGINE("Shader compiled unsuccessfully...");
-			}
-			else
-			{
-				compiled_shader_success = true;
-				text_compilation_shader = "Shader compilation successful.";
-				LOG_ENGINE("Shader compiled successfully.");
-			}
-		}
-
-		compiled_shader_success ? ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), text_compilation_shader)
-			: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), text_compilation_shader);
-
-		// Can select desired shader in the shaders folder
-
-		if (show_shader_text_editor)
-		{
-			ShowShaderTextEditor();
-		}
-	}
-}
+//void ComponentMaterial::InspectorShaderProperties()
+//{
+//	/* Shaders */
+//	if (material->used_shader != nullptr)
+//	{
+//		/* Set shader unifroms from Inspector */
+//		if (material->used_shader->ChangeTemplate())
+//		{
+//			if (material->used_shader != nullptr) {
+//				material->used_shader->DecreaseReferences();
+//			}
+//
+//			file_to_edit = material->used_shader->path;
+//		}
+//
+//		material->used_shader->HierarchyUniforms();
+//
+//		ImGui::Separator();
+//		ImGui::Text("Current shader: "); ImGui::SameLine();
+//		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), material->used_shader->path.c_str());
+//		ImGui::SameLine();
+//		if (ImGui::Button("Edit shader"))
+//		{
+//			{
+//				std::ifstream t(file_to_edit.c_str());
+//				if (t.good())
+//				{
+//					std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+//					shader_editor.SetText(str);
+//				}
+//			}
+//
+//			show_shader_text_editor = true;
+//		}
+//		ImGui::SameLine();
+//
+//		static const char* text_compilation_shader = "";
+//		static bool compiled_shader_success = false;
+//		if (ImGui::Button("Compile shader")) // TODO: Compile automatically when we save and show error
+//		{
+//			if (material->used_shader->ParseAndCreateShader() == 0)
+//			{
+//				compiled_shader_success = false;
+//				text_compilation_shader = "Shader compilation unsuccessful. Please fix your code.";
+//				LOG_ENGINE("Shader compiled unsuccessfully...");
+//			}
+//			else
+//			{
+//				compiled_shader_success = true;
+//				text_compilation_shader = "Shader compilation successful.";
+//				LOG_ENGINE("Shader compiled successfully.");
+//			}
+//		}
+//
+//		compiled_shader_success ? ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), text_compilation_shader)
+//			: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), text_compilation_shader);
+//
+//		// Can select desired shader in the shaders folder
+//
+//		if (show_shader_text_editor)
+//		{
+//			ShowShaderTextEditor();
+//		}
+//	}
+//}
 
 void ComponentMaterial::Reset()
 {
