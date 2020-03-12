@@ -29,8 +29,6 @@ void PanelAnimTimeline::CleanUp()
 	component_animator = nullptr;
 	animator = nullptr;
 	channel = nullptr;
-
-	
 }
 
 bool PanelAnimTimeline::FillInfo()
@@ -112,8 +110,6 @@ void PanelAnimTimeline::MoveBones(GameObject* go)
 	if (go)
 	{
 		uint channel_index = current_animation->GetChannelIndex(go->GetName());
-		key = (int)progress / zoom;
-
 		if (channel_index < current_animation->num_channels)
 		{
 			// Position
@@ -272,15 +268,18 @@ void PanelAnimTimeline::PanelLogic()
 
 		for (int i = 0; i < animator->GetNumAnimEvents(); i++)
 		{
-			ImGui::BeginGroup();
+			if (animator->GetAnimEvents()[i]->animation_id == current_animation->GetID())
+			{
+				ImGui::BeginGroup();
 
-			ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)), p.y),
-				ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) - 5, p.y + 5),
-				ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) + 5, p.y + 5),
-				ImColor(1.0f, 0.0f, 0.0f, 0.5f));
+				ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)), p.y),
+					ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) - 5, p.y + 5),
+					ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) + 5, p.y + 5),
+					ImColor(1.0f, 0.0f, 0.0f, 0.5f));
 
-			ImGui::EndGroup();
-			ImGui::SameLine();
+				ImGui::EndGroup();
+				ImGui::SameLine();
+			}
 		}
 
 		for (int i = 0; i <= num_frames; i++)
@@ -313,7 +312,7 @@ void PanelAnimTimeline::PanelLogic()
 		}
 
 		//RedLine 
-		if (play)
+		if (play && !in_game)
 		{
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
@@ -339,22 +338,22 @@ void PanelAnimTimeline::PanelLogic()
 			}
 
 			// Execute Event
-			if (!in_game && animator->GetNumAnimEvents() > 0)
+			if (animator->GetNumAnimEvents() > 0)
 			{
 				auto aux = animator->GetAnimEvents();
 				for (auto it = aux.begin(); it != aux.end(); ++it)
 				{
-					if ((*it)->frame == key)
+					if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID())
 					{
 						// Audio
-						if (animator->GetEmitter() != nullptr)
+						if ((*it)->type == EventAnimType::EVENT_AUDIO && animator->GetEmitter() != nullptr)
 						{
 							App->audio->LoadUsedBanks();
 							animator->GetEmitter()->StartSound(std::stoull((*it)->event_id.c_str()));
 						}
 						
 						// Script
-						if (animator->GetScripts().size() > 0)
+						if ((*it)->type == EventAnimType::EVENT_SCRIPT && animator->GetScripts().size() > 0)
 						{
 							auto scripts = animator->GetScripts();
 							for (auto item = scripts.begin(); item != scripts.end(); ++item)
@@ -362,7 +361,7 @@ void PanelAnimTimeline::PanelLogic()
 								if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
 								{
 									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
-										if ((*j).first.data() == (*it)->event_id)
+										if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
 										{
 											std::function<void()> functEvent = (*j).second;
 											functEvent();
@@ -377,7 +376,6 @@ void PanelAnimTimeline::PanelLogic()
 		}
 		else
 		{
-
 			if (stop)
 			{
 				progress = 0.0f;
@@ -457,7 +455,16 @@ void PanelAnimTimeline::PanelLogic()
 		// Move Bones
 		if (!in_game && progress > 0)
 		{
+			key = (int)progress / zoom;
 			MoveBones(component_animator->game_object_attached);
+
+			if (key != previous_key)
+			{
+				previous_key = key;
+				
+			}
+			else if(play)
+				key = 0;
 		}
 	}
 
@@ -475,7 +482,7 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 			auto aux = animator->GetAnimEvents();
 			for (auto it = aux.begin(); it != aux.end(); ++it)
 			{
-				if ((*it)->frame == key)
+				if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID())
 				{
 					event_created = true;
 					// Audio
@@ -513,7 +520,7 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 					auto aux = animator->GetAnimEvents();
 					for (auto it = aux.begin(); it != aux.end(); ++it)
 					{
-						if ((*it)->frame == key && (*it)->type == EventAnimType::EVENT_AUDIO)
+						if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID() && (*it)->type == EventAnimType::EVENT_AUDIO)
 						{
 							if (ImGui::MenuItem(App->audio->GetEventNameByID(std::stoull((*it)->event_id.c_str()))))
 							{
@@ -535,7 +542,7 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 					auto aux = animator->GetAnimEvents();
 					for (auto it = aux.begin(); it != aux.end(); ++it)
 					{
-						if ((*it)->frame == key && (*it)->type == EventAnimType::EVENT_SCRIPT)
+						if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID() && (*it)->type == EventAnimType::EVENT_SCRIPT)
 						{
 							if (ImGui::MenuItem((*it)->event_id.c_str()))
 							{
@@ -596,9 +603,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 
 			ImGui::Separator();
 		}
-		else
-			event_audio_created = false;
-		
+
 
 		// Particles
 		if (component_animator->game_object_attached->GetComponent(ComponentType::PARTICLES))
@@ -609,6 +614,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 			ImGui::Text("No Component Particle Created");
 
 		ImGui::Separator();
+
 
 		// Scripts
 		if (!event_script_created)
@@ -649,9 +655,9 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 
 			ImGui::Separator();
 		}
-		else
-			event_script_created = false;
-		
 		ImGui::EndMenu();
 	}
+
+	event_audio_created = false;
+	event_script_created = false;
 }
