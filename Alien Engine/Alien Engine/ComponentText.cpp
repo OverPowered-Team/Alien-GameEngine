@@ -11,19 +11,16 @@
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "MathGeoLib/include/Math/Matrix.inl"
 
 ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 {
 	text = "Hola";
 	font = App->resources->default_font;
-
-	uv[0] = { 0,0 };
-	uv[1] = { 0,1 };
-	uv[2] = { 1,1 };
-	uv[3] = { 1,0 };
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 
 	GenerateVAOVBO();
 
@@ -115,23 +112,28 @@ void ComponentText::Draw(bool isGame)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 
 	//Activate Shader
-	canvas->text_shader->Bind();
-	canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+	if (isGame && App->renderer3D->actual_game_camera != nullptr)
+	{
+		canvas->text_ortho->Bind();
+	}
+	else
+	{
+		canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+		canvas->text_shader->Bind();
+	}
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		// Matrix formulas http://www.songho.ca/opengl/gl_projectionmatrix.html
-		float4x4 proj_mat = float4x4(-4 / App->ui->panel_game->width, 0, 0, 0,
-			0, 4 / App->ui->panel_game->height, 0, 0,
-			0, 0, 1, 1,
-			0, 0, 0, 1);
 
-		float4x4 view_mat = float4x4(App->renderer3D->actual_game_camera->frustum.nearPlaneDistance / App->ui->panel_game->width, 0, 0, 0,
-			0, App->renderer3D->actual_game_camera->frustum.nearPlaneDistance / App->ui->panel_game->height, 0, 0,
-			0, 0, 0, 0,
-			0, 0, -1, 0);
+		glm::mat4 projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
+
+		float4x4 proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
+			projection[1][0], projection[1][1], projection[1][2], projection[1][3],
+			projection[2][0], projection[2][1], projection[2][2], projection[2][3],
+			projection[3][0], projection[3][1], projection[3][2], projection[3][3]);
 
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
@@ -142,7 +144,7 @@ void ComponentText::Draw(bool isGame)
 
 		#ifndef GAME_VERSION
 		x = origin.x * App->ui->panel_game->width;
-		y = -origin.y * App->ui->panel_game->height;
+		y = origin.y * App->ui->panel_game->height;
 		#else
 		x = origin.x * App->window->width;
 		y = origin.y * App->window->height;
@@ -154,8 +156,7 @@ void ComponentText::Draw(bool isGame)
 		matrix[1][3] = origin.y;
 		matrix[2][3] = 0.0f;
 
-		canvas->text_shader->SetUniformMat4f("projection", proj_mat);
-		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->actual_game_camera->GetViewMatrix4x4());
+		canvas->text_ortho->SetUniformMat4f("projection", proj_mat);
 	}
 	else
 	{
@@ -174,7 +175,7 @@ void ComponentText::Draw(bool isGame)
 		static float ypos = 0;
 		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
 		{
-			xpos = x + pos_x + ch.bearing.x * scale.x;
+			xpos = x + pos_x + (ch.bearing.x * scale.x);
 			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
 		}
 		else

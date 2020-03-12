@@ -16,7 +16,8 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	width = 160;
 	height = 90;
 
-	SetShader("text_shader_meta.alien");
+	text_shader = SetShader("text_shader_meta.alien");
+	text_ortho = SetShader("text_ortho_meta.alien");
 
 	type = ComponentType::CANVAS;
 }
@@ -25,6 +26,8 @@ ComponentCanvas::~ComponentCanvas()
 {
 	text_shader->DecreaseReferences();
 	text_shader = nullptr;
+	text_ortho->DecreaseReferences();
+	text_ortho = nullptr;
 }
 
 bool ComponentCanvas::DrawInspector()
@@ -91,15 +94,18 @@ void ComponentCanvas::Draw()
 
 }
 
-void ComponentCanvas::SetShader(const char* path)
+ResourceShader* ComponentCanvas::SetShader(const char* path)
 {
-	if (text_shader != nullptr)
+	ResourceShader* shader = nullptr;
+	if (shader != nullptr)
 	{
-		text_shader->DecreaseReferences();
+		shader->DecreaseReferences();
 	}
 	std::string fullpath = SHADERS_FOLDER;
 	fullpath += path;
 	u64 id_s = App->resources->GetIDFromAlienPath(fullpath.c_str()); // needs fix. meta is not created too...
-	text_shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
-	text_shader->IncreaseReferences();
+	shader = (ResourceShader*)App->resources->GetResourceWithID(id_s);
+	shader->IncreaseReferences();
+
+	return shader;
 }
