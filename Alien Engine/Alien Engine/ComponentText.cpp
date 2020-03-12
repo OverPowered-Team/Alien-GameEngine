@@ -123,8 +123,8 @@ void ComponentText::Draw(bool isGame)
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 		// Matrix formulas http://www.songho.ca/opengl/gl_projectionmatrix.html
-		float4x4 proj_mat = float4x4(1 / App->ui->panel_game->width, 0, 0, 0,
-			0, 1 / App->ui->panel_game->height, 0, 0,
+		float4x4 proj_mat = float4x4(-4 / App->ui->panel_game->width, 0, 0, 0,
+			0, 4 / App->ui->panel_game->height, 0, 0,
 			0, 0, 1, 1,
 			0, 0, 0, 1);
 
