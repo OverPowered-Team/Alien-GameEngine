@@ -491,7 +491,6 @@ void WwiseT::AudioSource::ApplyEnvReverb(AkReal32 desired_level, const char * ta
 	environment.listenerID = App->audio->listener->id;
 	environment.fControlValue = desired_level;
 	environment.auxBusID = AK::SoundEngine::GetIDFromString(target);
-	LOG_ENGINE("%u", environment.auxBusID);
 	AKRESULT res = AK::SoundEngine::SetGameObjectAuxSendValues(id, &environment, 1);
 	if (res != AKRESULT::AK_Success) {
 		LOG_ENGINE("Failed to apply reverb %i", res);

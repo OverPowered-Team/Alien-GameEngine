@@ -216,6 +216,11 @@ void ComponentAudioEmitter::SetSwitchState(u32 switch_group_id, u32 switch_state
 	source->SetSwitch(source->GetID(), switch_group_id, switch_state_id);
 }
 
+void ComponentAudioEmitter::SetReverb(const float& strength, const char* name) 
+{
+	source->ApplyEnvReverb(strength, name);
+}
+
 WwiseT::AudioSource* ComponentAudioEmitter::GetSource() const
 {
 	return source;

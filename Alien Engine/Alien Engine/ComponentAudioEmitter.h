@@ -26,6 +26,7 @@ public:
 	u64 GetCurrentBank();
 	u32 GetWwiseIDFromString(const char* Wwise_name) const;
 	void SetSwitchState(u32 switch_group_id, u32 switch_state_id);
+	void SetReverb(const float& strength, const char* name);
 	WwiseT::AudioSource* GetSource() const;
 private:
 	void UpdateSourcePos();

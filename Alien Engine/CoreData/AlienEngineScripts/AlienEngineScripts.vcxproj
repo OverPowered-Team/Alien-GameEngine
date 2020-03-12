@@ -169,6 +169,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PlayerTest.h" />
+    <ClInclude Include="ReverbZone.h" />
     <ClInclude Include="Testanimator.h" />
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
@@ -176,6 +178,8 @@
     <ClInclude Include="TestSwitches.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PlayerTest.cpp" />
+    <ClCompile Include="ReverbZone.cpp" />
     <ClCompile Include="Testanimator.cpp" />
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
