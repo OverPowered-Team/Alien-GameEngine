@@ -13,6 +13,9 @@
     <ClCompile Include="Testanimator.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -25,6 +28,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Testanimator.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

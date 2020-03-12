@@ -169,12 +169,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Testanimator.h" />
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
     <ClInclude Include="MoreEventsClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Testanimator.cpp" />
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
