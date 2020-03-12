@@ -33,6 +33,7 @@
 #include <vector>
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "RandomHelper.h"
+#include "Application.h"
 #include "mmgr/mmgr.h"
 
 
@@ -477,10 +478,14 @@ void WwiseT::AudioSource::SetListenerPos(float pos_x, float pos_y, float pos_z, 
 void WwiseT::AudioSource::ApplyEnvReverb(AkReal32 desired_level, const char * target)
 {
 	AkAuxSendValue environment;
-	environment.listenerID = id;
+	environment.listenerID = App->audio->listener->id;
 	environment.fControlValue = desired_level;
 	environment.auxBusID = AK::SoundEngine::GetIDFromString(target);
-	AKRESULT res = AK::SoundEngine::SetGameObjectAuxSendValues(id, &environment, 2);
+	LOG_ENGINE("%u", environment.auxBusID);
+	AKRESULT res = AK::SoundEngine::SetGameObjectAuxSendValues(id, &environment, 1);
+	if (res != AKRESULT::AK_Success) {
+		LOG_ENGINE("Failed to apply reverb %i", res);
+	}
 }
 
 void WwiseT::AudioSource::ChangeState(const char * group_name, const char * new_state)

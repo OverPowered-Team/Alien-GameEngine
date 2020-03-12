@@ -171,7 +171,13 @@ bool ComponentAudioEmitter::DrawInspector()
 		{
 			App->audio->Stop();
 			//App->audio->UnloadAllUsedBanksFromWwise(); //TODO 
-		}			
+		}
+		if (ImGui::Button("Reverb")) {
+			source->ApplyEnvReverb(1.0f, "reverb");
+		}
+		if (ImGui::Button("Normal")) {
+			source->ApplyEnvReverb(1.0f, "normal");
+		}
 		ImGui::NewLine();
 		ImGui::Checkbox("Mute", &mute);
 		ImGui::Checkbox("PlayOnAwake", &play_on_awake);

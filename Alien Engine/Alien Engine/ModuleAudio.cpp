@@ -58,19 +58,6 @@ void ModuleAudio::LoadBanksInfo()
 update_status ModuleAudio::Update(float dt)
 {
 	OPTICK_EVENT();
-	if (Time::state == Time::GameState::NONE) {
-		if (play_mode) {
-			//UnloadAllUsedBanksFromWwise();
-			play_mode = false;
-		}
-	}
-	else if (Time::state == Time::GameState::PLAY) {
-		if (!play_mode) {
-			//LoadUsedBanks();
-
-			play_mode = true;
-		}
-	}
 
 	return UPDATE_CONTINUE;
 }
