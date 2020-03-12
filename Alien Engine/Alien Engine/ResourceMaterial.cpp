@@ -215,6 +215,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ApplyMaterial()
 {
+
 	if(texture != nullptr && textureActivated)
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 
@@ -224,6 +225,7 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	used_shader->UpdateUniforms(shaderInputs);
+
 }
 
 void ResourceMaterial::SetTexture(ResourceTexture* tex)

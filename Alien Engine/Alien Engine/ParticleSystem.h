@@ -5,6 +5,7 @@
 #include "Billboard.h"
 #include "ResourceTexture.h"
 #include "ParticleEmitter.h"
+#include "ResourceMaterial.h"
 #include <map>
 
 #include "Particle.h"
@@ -99,6 +100,8 @@ public:
 	void SetParticleFinalForce(const float3& initialForce);
 
 	// ---------------------------------------------------------------------------
+	void SetMaterial(ResourceMaterial* mat);
+	void RemoveMaterial();
 
 public: 
 
@@ -117,6 +120,7 @@ private:
 
 public:
 	ResourceTexture* texture = nullptr;
+	ResourceMaterial* material = nullptr;
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;
 	FunctionBlendType funcBlendDest = FunctionBlendType::ONE_MINUS_SRC_ALPHA;
@@ -128,4 +132,5 @@ public:
 	uint planeVertexBuffer = 0;
 	uint planeIndexBuffer = 0;
 	uint planeUVsBuffer = 0;
+	
 };

@@ -63,9 +63,12 @@ void Particle::PostUpdate(float dt)
 
 void Particle::Draw()
 {
-	glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
+	//glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
+	if (owner->material != nullptr)
+		glColor4f(owner->material->color.x, owner->material->color.y, owner->material->color.z, owner->material->color.w);
+	else
+		glColor4f(1.f, 1.f, 1.f, 1.f);
 
-	
 	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size, 1.f));
 	float4x4 particleGlobal = particleLocal;
 
@@ -76,43 +79,43 @@ void Particle::Draw()
 	}
 
 	glPushMatrix();
-	glMultMatrixf((GLfloat*)&(particleGlobal.Transposed()));
+	glMultMatrixf((GLfloat*) & (particleGlobal.Transposed()));
 
 	// -------------------------------------------- Blending Options --------------------------------------------
 	glEnable(GL_BLEND);
 	switch (owner->funcBlendSource)
 	{
-		case FunctionBlendType::ZERO: owner->sourceFactor = GL_ZERO; break;
-		case FunctionBlendType::ONE: owner->sourceFactor = GL_ONE; break;
-		case FunctionBlendType::SRC_COLOR: owner->sourceFactor = GL_SRC_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_SRC_COLOR: owner->sourceFactor = GL_ONE_MINUS_SRC_COLOR; break;
-		case FunctionBlendType::SRC_ALPHA: owner->sourceFactor = GL_SRC_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_SRC_ALPHA: owner->sourceFactor = GL_ONE_MINUS_SRC_ALPHA; break;
-		case FunctionBlendType::DST_ALPHA: owner->sourceFactor = GL_DST_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_DST_ALPHA: owner->sourceFactor = GL_ONE_MINUS_DST_ALPHA; break;
-		case FunctionBlendType::DST_COLOR: owner->sourceFactor = GL_DST_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_DST_COLOR: owner->sourceFactor = GL_ONE_MINUS_DST_COLOR; break;
-		case FunctionBlendType::CONSTANT_COLOR: owner->sourceFactor = GL_CONSTANT_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_CONSTANT_COLOR: owner->sourceFactor = GL_ONE_MINUS_CONSTANT_COLOR; break;
-		case FunctionBlendType::CONSTANT_ALPHA: owner->sourceFactor = GL_CONSTANT_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_CONSTANT_ALPHA: owner->sourceFactor = GL_ONE_MINUS_CONSTANT_ALPHA; break;
+	case FunctionBlendType::ZERO: owner->sourceFactor = GL_ZERO; break;
+	case FunctionBlendType::ONE: owner->sourceFactor = GL_ONE; break;
+	case FunctionBlendType::SRC_COLOR: owner->sourceFactor = GL_SRC_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_SRC_COLOR: owner->sourceFactor = GL_ONE_MINUS_SRC_COLOR; break;
+	case FunctionBlendType::SRC_ALPHA: owner->sourceFactor = GL_SRC_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_SRC_ALPHA: owner->sourceFactor = GL_ONE_MINUS_SRC_ALPHA; break;
+	case FunctionBlendType::DST_ALPHA: owner->sourceFactor = GL_DST_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_DST_ALPHA: owner->sourceFactor = GL_ONE_MINUS_DST_ALPHA; break;
+	case FunctionBlendType::DST_COLOR: owner->sourceFactor = GL_DST_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_DST_COLOR: owner->sourceFactor = GL_ONE_MINUS_DST_COLOR; break;
+	case FunctionBlendType::CONSTANT_COLOR: owner->sourceFactor = GL_CONSTANT_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_CONSTANT_COLOR: owner->sourceFactor = GL_ONE_MINUS_CONSTANT_COLOR; break;
+	case FunctionBlendType::CONSTANT_ALPHA: owner->sourceFactor = GL_CONSTANT_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_CONSTANT_ALPHA: owner->sourceFactor = GL_ONE_MINUS_CONSTANT_ALPHA; break;
 	}
 	switch (owner->funcBlendDest)
 	{
-		case FunctionBlendType::ZERO: owner->destinationFactor = GL_ZERO; break;
-		case FunctionBlendType::ONE: owner->destinationFactor = GL_ONE; break;
-		case FunctionBlendType::SRC_COLOR: owner->destinationFactor = GL_SRC_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_SRC_COLOR: owner->destinationFactor = GL_ONE_MINUS_SRC_COLOR; break;
-		case FunctionBlendType::SRC_ALPHA: owner->destinationFactor = GL_SRC_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_SRC_ALPHA: owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA; break;
-		case FunctionBlendType::DST_ALPHA: owner->destinationFactor = GL_DST_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_DST_ALPHA: owner->destinationFactor = GL_ONE_MINUS_DST_ALPHA; break;
-		case FunctionBlendType::DST_COLOR: owner->destinationFactor = GL_DST_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_DST_COLOR: owner->destinationFactor = GL_ONE_MINUS_DST_COLOR; break;
-		case FunctionBlendType::CONSTANT_COLOR: owner->destinationFactor = GL_CONSTANT_COLOR; break;
-		case FunctionBlendType::ONE_MINUS_CONSTANT_COLOR: owner->destinationFactor = GL_ONE_MINUS_CONSTANT_COLOR; break;
-		case FunctionBlendType::CONSTANT_ALPHA: owner->destinationFactor = GL_CONSTANT_ALPHA; break;
-		case FunctionBlendType::ONE_MINUS_CONSTANT_ALPHA: owner->destinationFactor = GL_ONE_MINUS_CONSTANT_ALPHA; break;
+	case FunctionBlendType::ZERO: owner->destinationFactor = GL_ZERO; break;
+	case FunctionBlendType::ONE: owner->destinationFactor = GL_ONE; break;
+	case FunctionBlendType::SRC_COLOR: owner->destinationFactor = GL_SRC_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_SRC_COLOR: owner->destinationFactor = GL_ONE_MINUS_SRC_COLOR; break;
+	case FunctionBlendType::SRC_ALPHA: owner->destinationFactor = GL_SRC_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_SRC_ALPHA: owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA; break;
+	case FunctionBlendType::DST_ALPHA: owner->destinationFactor = GL_DST_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_DST_ALPHA: owner->destinationFactor = GL_ONE_MINUS_DST_ALPHA; break;
+	case FunctionBlendType::DST_COLOR: owner->destinationFactor = GL_DST_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_DST_COLOR: owner->destinationFactor = GL_ONE_MINUS_DST_COLOR; break;
+	case FunctionBlendType::CONSTANT_COLOR: owner->destinationFactor = GL_CONSTANT_COLOR; break;
+	case FunctionBlendType::ONE_MINUS_CONSTANT_COLOR: owner->destinationFactor = GL_ONE_MINUS_CONSTANT_COLOR; break;
+	case FunctionBlendType::CONSTANT_ALPHA: owner->destinationFactor = GL_CONSTANT_ALPHA; break;
+	case FunctionBlendType::ONE_MINUS_CONSTANT_ALPHA: owner->destinationFactor = GL_ONE_MINUS_CONSTANT_ALPHA; break;
 	}
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -120,21 +123,22 @@ void Particle::Draw()
 
 	switch (owner->eqBlend)
 	{
-		case EquationBlendType::FUNC_ADD: glBlendEquation(GL_FUNC_ADD); break;
-		case EquationBlendType::FUNC_SUBTRACT: glBlendEquation(GL_FUNC_SUBTRACT); break;
-		case EquationBlendType::FUNC_REVERSE_SUBTRACT: glBlendEquation(GL_FUNC_REVERSE_SUBTRACT); break;
+	case EquationBlendType::FUNC_ADD: glBlendEquation(GL_FUNC_ADD); break;
+	case EquationBlendType::FUNC_SUBTRACT: glBlendEquation(GL_FUNC_SUBTRACT); break;
+	case EquationBlendType::FUNC_REVERSE_SUBTRACT: glBlendEquation(GL_FUNC_REVERSE_SUBTRACT); break;
 	}
 
-	
+
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, owner->alpha_test);
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	if (owner->texture != nullptr)
+	if (owner->material != nullptr)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, owner->texture->id);
+		//glBindTexture(GL_TEXTURE_2D, owner->texture->id);
+		owner->material->ApplyMaterial();
 
 		glBindBuffer(GL_ARRAY_BUFFER, owner->planeUVsBuffer);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
@@ -151,6 +155,8 @@ void Particle::Draw()
 	// Index Buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->planeIndexBuffer);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+	
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

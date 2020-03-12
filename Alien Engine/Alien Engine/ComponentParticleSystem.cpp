@@ -17,7 +17,7 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	type = ComponentType::PARTICLES;
 	particleSystem = new ParticleSystem();
 
-	material = nullptr;
+	//material = nullptr;
 	//component_material = nullptr;
 	
 
@@ -26,13 +26,13 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	
 	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
 
-	light_id = GL_LIGHT0;
-	glEnable(light_id);
-	glLightfv(light_id, GL_POSITION, pos);
+	//light_id = GL_LIGHT0;
+	//glEnable(light_id);
+	//glLightfv(light_id, GL_POSITION, pos);
 
-	// Init
-	glLightfv(light_id, GL_AMBIENT, &ambient);
-	glLightfv(light_id, GL_DIFFUSE, &diffuse);
+	//// Init
+	//glLightfv(light_id, GL_AMBIENT, &ambient);
+	//glLightfv(light_id, GL_DIFFUSE, &diffuse);
 
 	
 }
@@ -54,8 +54,8 @@ ComponentParticleSystem::~ComponentParticleSystem()
 	if (selected_texture != nullptr)
 		selected_texture = nullptr;
 	
-	if (material != nullptr)
-		material = nullptr;
+	/*if (material != nullptr)
+		material = nullptr;*/
 
 
 	glDisable(light_id);
@@ -403,8 +403,8 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Text("Particle Material");
 			ImGui::SameLine(200, 15);
 
-			if (material != nullptr)
-				ImGui::Button(material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
+			if (particleSystem->material != nullptr)
+				ImGui::Button(particleSystem->material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
 			else
 				ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
 
@@ -420,7 +420,7 @@ bool ComponentParticleSystem::DrawInspector()
 						if (ID != 0) {
 							ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
 							if (mat != nullptr) {
-								SetMaterial(mat);
+								particleSystem->SetMaterial(mat);
 							}
 						}
 					}
@@ -432,9 +432,8 @@ bool ComponentParticleSystem::DrawInspector()
 			if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
 			{
 			
-				if (material != nullptr) {
-					material->DecreaseReferences();
-					material = nullptr;
+				if (particleSystem->material != nullptr) {
+					particleSystem->RemoveMaterial();
 				}
 			}
 			
@@ -617,8 +616,8 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		if (material != nullptr) {
-			material->DisplayMaterialOnInspector();
+		if (particleSystem->material != nullptr) {
+			particleSystem->material->DisplayMaterialOnInspector();
 		}
 	}
 
@@ -719,21 +718,21 @@ void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
 	particleSystem->texture = texture;
 
 }
-
-void ComponentParticleSystem::SetMaterial(ResourceMaterial* mat)
-{
-	if (mat == nullptr)
-		return;
-	
-	if (material != nullptr)
-	{
-		material->DecreaseReferences();
-		//material = nullptr;
-	}
-
-	material = mat;
-	material->IncreaseReferences();
-}
+//
+//void ComponentParticleSystem::SetMaterial(ResourceMaterial* mat)
+//{
+//	if (mat == nullptr)
+//		return;
+//	
+//	if (material != nullptr)
+//	{
+//		material->DecreaseReferences();
+//		//material = nullptr;
+//	}
+//
+//	material = mat;
+//	material->IncreaseReferences();
+//}
 
 void ComponentParticleSystem::Play()
 {
