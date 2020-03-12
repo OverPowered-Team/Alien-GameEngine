@@ -122,20 +122,16 @@ void ComponentText::Draw(bool isGame)
 	canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		#ifndef GAME_VERSION
-		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
-		#else
-		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
-		#endif
-		// https://stackoverflow.com/questions/42864623/glortho-equivalent-to-vbos
-		/*GLfloat model[16];
-		glGetFloatv(GL_PROJECTION_MATRIX, model);
-		float4x4 proj_view = float4x4(model[0], model[1], model[2], model[3],
-			model[4], model[5], model[6], model[7],
-			model[8], model[9], model[10], model[11],
-			model[12], model[13], model[14], model[15]);*/
+		// Matrix formulas http://www.songho.ca/opengl/gl_projectionmatrix.html
+		float4x4 proj_mat = float4x4(1 / App->ui->panel_game->width, 0, 0, 0,
+			0, 1 / App->ui->panel_game->height, 0, 0,
+			0, 0, 1, 1,
+			0, 0, 0, 1);
+
+		float4x4 view_mat = float4x4(App->renderer3D->actual_game_camera->frustum.nearPlaneDistance / App->ui->panel_game->width, 0, 0, 0,
+			0, App->renderer3D->actual_game_camera->frustum.nearPlaneDistance / App->ui->panel_game->height, 0, 0,
+			0, 0, 0, 0,
+			0, 0, -1, 0);
 
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
@@ -158,10 +154,7 @@ void ComponentText::Draw(bool isGame)
 		matrix[1][3] = origin.y;
 		matrix[2][3] = 0.0f;
 
-		x = 0;
-		y = 0;
-
-		canvas->text_shader->SetUniformMat4f("projection", proj_view);
+		canvas->text_shader->SetUniformMat4f("projection", proj_mat);
 		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->actual_game_camera->GetViewMatrix4x4());
 	}
 	else

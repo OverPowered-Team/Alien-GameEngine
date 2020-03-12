@@ -124,6 +124,7 @@ void ComponentUI::Draw(bool isGame)
 	glAlphaFunc(GL_GREATER, 0.0f);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		#ifndef GAME_VERSION
