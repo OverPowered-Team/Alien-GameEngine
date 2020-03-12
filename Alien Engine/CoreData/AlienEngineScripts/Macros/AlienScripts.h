@@ -90,4 +90,4 @@ static std::map<std::string, std::string> enumStringValues;
 #define enum(ENUM, ...) enum class ENUM {\
 	__VA_ARGS__\
 	};\
-	static const char* ENUM##EnumNames = #__VA_ARGS__;
+	inline static const char* ENUM##EnumNames = #__VA_ARGS__;
