@@ -61,6 +61,7 @@ private:
 	int margin = 200;
 
 	int key = 0;
+	int previous_key = 0;
 
 	//Events
 	void ShowNewEventPopUp();

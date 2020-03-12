@@ -5,8 +5,11 @@
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
 
+#define RADIUS_INTENSITY_MULTIPLIE_POINT 45
+
 struct __declspec(dllexport) PointLightProperties
 {
+	float intensity = 1.0f;
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
 	float3 ambient = float3::zero();
