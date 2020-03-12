@@ -96,6 +96,16 @@ void PanelAnimTimeline::Stop()
 	button_position = 0.0f;
 }
 
+void PanelAnimTimeline::OnObjectSelect()
+{
+	changed = true;
+}
+
+void PanelAnimTimeline::OnObjectDelete()
+{
+	changed = true;
+}
+
 void PanelAnimTimeline::MoveBones(GameObject* go)
 {
 	OPTICK_EVENT();
@@ -150,6 +160,7 @@ void PanelAnimTimeline::PanelLogic()
 		if (Time::IsPlaying() && !in_game)
 		{
 			Play();
+			animator = component_animator->GetCurrentAnimatorController();
 			in_game = true;
 		}
 		else if (Time::IsPaused())
@@ -570,7 +581,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 								{
 									if (ImGui::MenuItem((*j).second.c_str()))
 									{
-										animator->AddAnimEvent(std::to_string((*j).first), current_animation->GetID(), key, EventAnimType::EVENT_AUDIO);
+										animator->AddAnimEvent(new AnimEvent(std::to_string((*j).first), current_animation->GetID(), key, EventAnimType::EVENT_AUDIO));
 									}
 								}
 								ImGui::EndMenu();
@@ -619,7 +630,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
 										if (ImGui::MenuItem((*j).first.data()))
 										{
-											animator->AddAnimEvent((*j).first, current_animation->GetID(), key, EventAnimType::EVENT_SCRIPT);
+											animator->AddAnimEvent(new AnimEvent((*j).first, current_animation->GetID(), key, EventAnimType::EVENT_SCRIPT));
 										}
 									}
 								}

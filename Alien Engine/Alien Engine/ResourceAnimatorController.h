@@ -120,7 +120,7 @@ private:
 public:
 	Transition();
 	Transition(State* source, State* target, float blend);
-	Transition(Transition* transition);
+	Transition(Transition* transition, ResourceAnimatorController* controller);
 
 public:
 	void SetSource(State* source);
@@ -160,7 +160,7 @@ class AnimEvent
 {
 public:
 
-	AnimEvent() {};
+	AnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
 	AnimEvent(AnimEvent* anim_event);
 
 	std::string event_id = "";
@@ -276,7 +276,7 @@ public:
 	std::string GetName();
 
 	// Events
-	void AddAnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	void AddAnimEvent(AnimEvent* _event);
 	void RemoveAnimEvent(AnimEvent* _event);
 	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
 	uint GetNumAnimEvents() const { return anim_events.size(); }

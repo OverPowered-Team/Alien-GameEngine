@@ -31,17 +31,14 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 
 	current_state = nullptr;
 
-	if (controller->default_state != nullptr)
-		default_state = new State(controller->default_state);
-	else
-		default_state = nullptr;
-
 	for (int i = 0; i < controller->states.size(); ++i) {
 		states.push_back(new State(controller->states[i]));
+		if (controller->states[i] == controller->default_state)
+			default_state = states[i];
 	}
 
 	for (int i = 0; i < controller->transitions.size(); ++i) {
-		transitions.push_back(new Transition(controller->transitions[i]));
+		transitions.push_back(new Transition(controller->transitions[i], this));
 	}
 
 	int_parameters = controller->int_parameters;
@@ -187,7 +184,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 				uint frame = events->GetNumber("Frame");
 				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
 
-				AddAnimEvent(event_id, animation_id, frame, type);
+				anim_events.push_back(new AnimEvent(event_id, animation_id, frame, type));
 				events->GetAnotherNode();
 			}
 		}
@@ -760,7 +757,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_param_types, cursor, bytes);
 			cursor += bytes;
 
-			AddAnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types);
+			anim_events.push_back(new AnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types));
 		}
 
 		//Load transitions and states nums
@@ -1478,20 +1475,24 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				rotation = animation->channels[channel_index].rotation_keys[0].value;
 
 
-
-			for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+			if (animation->channels[channel_index].num_scale_keys > 1)
 			{
-				if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
-					scale = animation->channels[channel_index].scale_keys[i].value;
-					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
-					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
-					t = (float)((double)time_in_ticks / next_key_time);
-					ActiveEvent(animation, next_key_time);
-					break;
-				}
-			}
 
-			scale = float3::Lerp(scale, next_scale, t);
+				for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+				{
+					if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
+						scale = animation->channels[channel_index].scale_keys[i].value;
+						next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
+						next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
+						t = (float)((double)time_in_ticks / next_key_time);
+						ActiveEvent(animation, next_key_time);
+						break;
+					}
+				}
+
+				scale = float3::Lerp(scale, next_scale, t);
+			}else
+				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
 			if (state->next_state) {
@@ -1601,15 +1602,25 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 }
 
 // Events
-
-void ResourceAnimatorController::AddAnimEvent(std::string _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
+AnimEvent::AnimEvent(std::string _event_id, u64 _animation_id, uint _frame, EventAnimType _type)
 {
-	AnimEvent* event = new AnimEvent();
-	event->event_id = _event_id;
-	event->animation_id = _anim_id;
-	event->frame = _frame;
-	event->type = _type;
-	anim_events.push_back(event);
+	event_id = _event_id;
+	animation_id = _animation_id;
+	frame = _frame;
+	type = _type;
+}
+
+AnimEvent::AnimEvent(AnimEvent* anim_event)
+{
+	event_id = anim_event->event_id;
+	animation_id = anim_event->animation_id;
+	frame = anim_event->frame;
+	type = anim_event->type;
+}
+
+void ResourceAnimatorController::AddAnimEvent(AnimEvent* _event)
+{
+	anim_events.push_back(_event);
 }
 
 void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
@@ -1710,6 +1721,7 @@ State::State(State* state)
 		clip->IncreaseReferences();
 	pin_in_id = state->pin_in_id;
 	pin_out_id = state->pin_out_id;
+	id = state->id;
 	time = 0;
 	fade_duration = 0;
 	fade_time = 0;
@@ -1762,10 +1774,10 @@ Transition::Transition(State* source, State* target, float blend)
 	this->blend = blend;
 }
 
-Transition::Transition(Transition* transition)
+Transition::Transition(Transition* transition, ResourceAnimatorController* controller)
 {
-	source = new State(transition->source);
-	target = new State(transition->target);
+	source = controller->FindState(transition->source->GetName());
+	target = controller->FindState(transition->target->GetName());
 	for (int i = 0; i < transition->int_conditions.size(); ++i)
 		int_conditions.push_back(new IntCondition(transition->int_conditions[i]));
 	for (int i = 0; i < transition->float_conditions.size(); ++i)
@@ -1964,10 +1976,4 @@ Condition::Condition()
 {
 }
 
-AnimEvent::AnimEvent(AnimEvent* anim_event)
-{
-	event_id = anim_event->event_id;
-	animation_id = anim_event->animation_id;
-	frame = anim_event->frame;
-	type = anim_event->type;
-}
+

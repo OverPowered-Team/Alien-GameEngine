@@ -28,7 +28,6 @@ ComponentAnimator::~ComponentAnimator()
 		animator_controller = nullptr;
 		source_animator_controller->DecreaseReferences();
 	}
-
 }
 
 void ComponentAnimator::Update()
@@ -91,6 +90,11 @@ void ComponentAnimator::OnPlay()
 ResourceAnimatorController* ComponentAnimator::GetResourceAnimatorController()
 {
 	return source_animator_controller;
+}
+
+ResourceAnimatorController* ComponentAnimator::GetCurrentAnimatorController()
+{
+	return animator_controller;
 }
 
 void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* controller)
