@@ -68,7 +68,7 @@ void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
 void ComponentCanvas::Draw()
 {
 #ifndef GAME_VERSION
-	if (Time::IsPlaying())
+	if (!App->objects->printing_scene)
 		return;
 
 	ComponentTransform* comp_trans = game_object_attached->GetComponent<ComponentTransform>();
