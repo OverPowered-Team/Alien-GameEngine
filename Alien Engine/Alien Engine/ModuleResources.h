@@ -127,7 +127,7 @@ public:
 	ResourceFont* default_font = nullptr;
 	ResourceMaterial* default_material = nullptr;
 	ResourceShader* default_shader = nullptr;
-
+	ResourceShader* default_particle_shader = nullptr;
 	FileNode* assets = nullptr;
 
 private:

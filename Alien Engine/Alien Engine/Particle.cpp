@@ -176,7 +176,9 @@ void Particle::Draw()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	owner->material->used_shader->Unbind();
+	if (owner->material != nullptr)
+		owner->material->used_shader->Unbind();
+
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glPopMatrix();

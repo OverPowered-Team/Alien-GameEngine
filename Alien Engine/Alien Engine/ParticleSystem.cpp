@@ -12,8 +12,8 @@ ParticleSystem::ParticleSystem()
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
 
-	material = App->resources->default_material;
-	material->IncreaseReferences();
+	/*material = App->resources->default_material;
+	material->IncreaseReferences();*/
 
 	float vertex[] =
 	{
@@ -91,6 +91,7 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
 
 	material = App->resources->default_material;
 	material->IncreaseReferences();
+	material->SetShader(App->resources->default_particle_shader);
 
 	float vertex[] =
 	{

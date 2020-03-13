@@ -454,9 +454,29 @@ void ResourceMaterial::ShaderInputsSegment()
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		ImGui::Text("Texture:");
-		InputTexture(TextureType::DIFFUSE);
-		ImGui::SameLine();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
+		ImGui::Spacing();
+
+		ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : 0, ImVec2(30, 30));
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetTexture(texture);
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		ImGui::SameLine(60,15);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
 		ImGui::ColorEdit3("Albedo", shaderInputs.iluminatedShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
