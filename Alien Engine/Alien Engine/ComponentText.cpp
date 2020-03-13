@@ -128,7 +128,7 @@ void ComponentText::Draw(bool isGame)
 
 		float3 canvas_pos = canvas_trans->GetGlobalPosition();
 		float3 object_pos = transform->GetGlobalPosition();
-		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float3 canvasPivot = { canvas_pos.x - font->fontData.charactersMap[text[0]].bearing.x * scale.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
 		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (canvasPivot.y + object_pos.y) / (canvas->height));
 
 		#ifndef GAME_VERSION
@@ -154,22 +154,28 @@ void ComponentText::Draw(bool isGame)
 	
 	std::string::const_iterator c;
 	float pos_x = 0;
+	float asla = App->ui->panel_game->width / canvas->width;
 	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 		static float xpos = 0;
 		static float ypos = 0;
+		static float w = 0;
+		static float h = 0;
 		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
 		{
 			xpos = x + pos_x;
 			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
+			w = ch.size.x * scale.x * asla;
+			h = ch.size.y * scale.y * asla;
 		}
 		else
 		{
 			xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
 			ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
+			w = ch.size.x * scale.x;
+			h = ch.size.y * scale.y;
 		}
-		float w = ch.size.x * scale.x;
-		float h = ch.size.y * scale.y;
+		
 
 		float vertex[6][3] = {
 			{ xpos,     ypos + h,	matrix[2][3]},
@@ -202,7 +208,10 @@ void ComponentText::Draw(bool isGame)
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		pos_x += ch.advance * scale.x;
+		if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			pos_x += ch.advance * scale.x * asla;
+		else
+			pos_x += ch.advance * scale.x;
 	}
 	
 	canvas->text_shader->Unbind();
