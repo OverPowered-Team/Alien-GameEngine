@@ -135,14 +135,14 @@ void Particle::Draw()
 	glAlphaFunc(GL_GREATER, owner->alpha_test);
 
 	// -----------------------------------------------------------------------------------------------------------------
+	glBindVertexArray(owner->vao);
 
 	if (owner->material != nullptr)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 		owner->material->ApplyMaterial();
-		glBindVertexArray(owner->vao);
-		
+
 		ComponentCamera* mainCamera = App->camera->scene_viewport->GetCamera();
 		SetUniform(owner->material, mainCamera, particleGlobal);
 		
@@ -153,6 +153,7 @@ void Particle::Draw()
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 
+		
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
