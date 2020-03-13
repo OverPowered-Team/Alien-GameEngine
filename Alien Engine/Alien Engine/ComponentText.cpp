@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleResources.h"
 #include "ModuleObjects.h"
+#include "ModuleUI.h"
+#include "PanelGame.h"
 #include "ComponentTransform.h"
 #include "ComponentText.h"
 #include "ResourceFont.h"
@@ -9,19 +11,16 @@
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "MathGeoLib/include/Math/Matrix.inl"
 
 ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 {
 	text = "Hola";
 	font = App->resources->default_font;
-
-	uv[0] = { 0,0 };
-	uv[1] = { 0,1 };
-	uv[2] = { 1,1 };
-	uv[3] = { 1,0 };
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 
 	GenerateVAOVBO();
 
@@ -102,41 +101,123 @@ bool ComponentText::DrawCharacter(Character ch)
 
 void ComponentText::Draw(bool isGame)
 {
+	if (canvas == nullptr || canvas_trans == nullptr) {
+		return;
+	}
+
+	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	float4x4 matrix = transform->global_transformation;
+	float2 scale = float2(matrix[0][0], matrix[1][1]);
+
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 
 	//Activate Shader
+	if (isGame && App->renderer3D->actual_game_camera != nullptr)
+	{
+		canvas->text_ortho->Bind();
+	}
+	else
+	{
+		canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+		canvas->text_shader->Bind();
+	}
+
+	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+
+		glm::mat4 projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
+
+		float4x4 proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
+			projection[1][0], projection[1][1], projection[1][2], projection[1][3],
+			projection[2][0], projection[2][1], projection[2][2], projection[2][3],
+			projection[3][0], projection[3][1], projection[3][2], projection[3][3]);
+
+		matrix[0][0] /= canvas->width * 0.5F;
+		matrix[1][1] /= canvas->height * 0.5F;
+		float3 canvas_pos = canvas_trans->GetGlobalPosition();
+		float3 object_pos = transform->GetGlobalPosition();
+		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
+
+		#ifndef GAME_VERSION
+		x = origin.x * App->ui->panel_game->width;
+		y = origin.y * App->ui->panel_game->height;
+		#else
+		x = origin.x * App->window->width;
+		y = origin.y * App->window->height;
+		#endif
+
+		origin.x = (origin.x - 0.5F) * 2;
+		origin.y = -(-origin.y - 0.5F) * 2;
+		matrix[0][3] = origin.x;
+		matrix[1][3] = origin.y;
+		matrix[2][3] = 0.0f;
+
+		canvas->text_ortho->SetUniformMat4f("projection", proj_mat);
+	}
+	else
+	{
+		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+	}
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
-	canvas->text_shader->Bind();
-	canvas->text_shader->SetUniform4f("textColor", current_color.r, current_color.g, current_color.b, current_color.a);
-
+	
 	std::string::const_iterator c;
-	int i = 0;
-	for(c = text.begin(); c != text.end(); c++) {
+	float pos_x = 0;
+	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
-		float xpos = x + ch.bearing.x;
-		float ypos = (ch.size.y - ch.bearing.y);
-		float w = ch.size.x;
-		float h = ch.size.y;
+		static float xpos = 0;
+		static float ypos = 0;
+		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
+		{
+			xpos = x + pos_x + (ch.bearing.x * scale.x);
+			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
+		}
+		else
+		{
+			xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+			ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
+		}
+		float w = ch.size.x * scale.x;
+		float h = ch.size.y * scale.y;
 
-		vertices[0] = { xpos, ypos + h, 0 };
-		vertices[1] = { xpos, ypos, 0 };
-		vertices[2] = { xpos + w, ypos, 0 };
-		vertices[3] = { xpos + w, ypos + h, 0 };
+		float vertex[6][3] = {
+			{ xpos,     ypos + h,	matrix[2][3]},
+			{ xpos,     ypos,		matrix[2][3]},
+			{ xpos + w, ypos,		matrix[2][3]},
+
+			{ xpos,     ypos + h,   matrix[2][3]},
+			{ xpos + w, ypos,       matrix[2][3]},
+			{ xpos + w, ypos + h,   matrix[2][3]}
+		};
+
+		float uvs[6][2] = {
+			{0.0, 0.0 },
+			{0.0, 1.0 },
+			{1.0, 1.0 },
+
+			{0.0, 0.0 },
+			{1.0, 1.0 },
+			{1.0, 0.0 },
+		};
 
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
 		// Update content of VBO memory
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), vertex);
+		glBindBuffer(GL_ARRAY_BUFFER, uvID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += (ch.advance >> 6);
+		pos_x += ch.advance * scale.x;
 	}
 	
 	canvas->text_shader->Unbind();
@@ -237,12 +318,20 @@ ResourceFont* ComponentText::GetFont() const
 void ComponentText::GenerateVAOVBO()
 {
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &verticesID);
+	glGenBuffers(1, &uvID);
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, uvID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 2, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
