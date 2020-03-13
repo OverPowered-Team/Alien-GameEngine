@@ -60,8 +60,6 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
-static std::map<std::string, std::string> enumStringValues;
-
 // ------------INSPECTOR MACROS----------------\\
 /*--------------------int--------------------*/
 #define SHOW_IN_INSPECTOR_AS_INPUT_INT(INT_) ComponentScript::InspectorInputInt(&INT_, #INT_)

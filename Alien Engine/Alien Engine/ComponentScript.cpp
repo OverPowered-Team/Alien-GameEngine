@@ -313,6 +313,10 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 				int value = *(int*)inspector_variables[i].ptr;
 				inspector->SetNumber("int", value);
 				break; }
+			case InspectorScriptData::DataType::ENUM: {
+				int value = *(int*)inspector_variables[i].ptr;
+				inspector->SetNumber("enumInt", value);
+				break; }
 			case InspectorScriptData::DataType::FLOAT: {
 				float value = *(float*)inspector_variables[i].ptr;
 				inspector->SetNumber("float", value);
@@ -365,6 +369,10 @@ void ComponentScript::LoadComponent(JSONArraypack* to_load)
 						case InspectorScriptData::DataType::INT: {
 							int* value = (int*)inspector_variables[i].ptr;
 							*value = inspector->GetNumber("int");
+							break; }
+						case InspectorScriptData::DataType::ENUM: {
+							int* value = (int*)inspector_variables[i].ptr;
+							*value = inspector->GetNumber("enumInt");
 							break; }
 						case InspectorScriptData::DataType::FLOAT: {
 							float* value = (float*)inspector_variables[i].ptr;
@@ -443,6 +451,12 @@ void ComponentScript::Clone(Component* clone)
 				case InspectorScriptData::DataType::GAMEOBJECT: {
 					GameObject* obj = *inspector_variables[i].obj;
 					*script->inspector_variables[i].obj = obj;
+					break; }
+				case InspectorScriptData::DataType::ENUM : {
+					int variable = *(int*)inspector_variables[i].ptr;
+					int* script_var = (int*)script->inspector_variables[i].ptr;
+					*script_var = variable;
+					script->inspector_variables[i].enumNames = inspector_variables[i].enumNames;
 					break; }
 				}
 			}
