@@ -104,4 +104,7 @@ void PlayerController::HandleMovement()
 void PlayerController::OnAnimationEnd(const char* name) {
 	if (strcmp(name, "Attack") == 0)
 		state = PlayerState::IDLE;
+
+	if (strcmp(name, "Roll") == 0)
+		state = PlayerState::IDLE;
 }
