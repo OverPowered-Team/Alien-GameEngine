@@ -31,25 +31,9 @@ void PlayerController::Update()
 			state = PlayerState::BASIC_ATTACK;
 		}
 
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_B)) {
-			animator->PlayState("Spell");
-			state = PlayerState::SPELL;
-
-		}
-
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
-			animator->PlayState("Jump");
-			state = PlayerState::JUMPING;
-		}
-
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
-		}
-
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_DPAD_DOWN)) {
-			animator->PlayState("Dance");
-			state = PlayerState::DANCING;
 		}
 
 	} break;
@@ -60,24 +44,9 @@ void PlayerController::Update()
 			state = PlayerState::BASIC_ATTACK;
 		}
 
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_B)) {
-			animator->PlayState("Spell");
-			state = PlayerState::SPELL;
-		}
-
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
-			animator->PlayState("Jump");
-			state = PlayerState::JUMPING;
-		}
-
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
-		}
-
-		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_DPAD_DOWN)) {
-			animator->PlayState("Dance");
-			state = PlayerState::DANCING;
 		}
 
 	} break;
@@ -116,10 +85,9 @@ void PlayerController::HandleMovement()
 	float angle = atan2f(vector.z, vector.x);
 	Quat rot = Quat::RotateAxisAngle(float3::unitY(), -(angle * Maths::Rad2Deg() - 90) * Maths::Deg2Rad());
 
-	transform->SetLocalRotation(rot);
-
 	if (abs(axisX) >= stick_threshold || abs(axisY) >= stick_threshold) {
 		playerData.currentSpeed = (playerData.movementSpeed * speed * Time::GetDT());
+		transform->SetLocalRotation(rot);
 	}
 
 	if (abs(playerData.currentSpeed) > 0) {
@@ -134,5 +102,6 @@ void PlayerController::HandleMovement()
 }
 
 void PlayerController::OnAnimationEnd(const char* name) {
-
+	if (strcmp(name, "Attack") == 0)
+		state = PlayerState::IDLE;
 }

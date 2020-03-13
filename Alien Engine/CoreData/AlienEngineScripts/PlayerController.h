@@ -7,7 +7,7 @@ class ALIEN_ENGINE_API PlayerController : public Alien {
 
 public:
 
-	enum class PlayerState {
+	enum (PlayerState,
 		IDLE,
 		RUNNING,
 		BASIC_ATTACK,
@@ -15,7 +15,7 @@ public:
 		DASHING,
 
 		MAX
-	};
+	);
 
 	struct PlayerData {
 		float movementSpeed = 200.0F;
@@ -54,5 +54,6 @@ ALIEN_FACTORY PlayerController* CreatePlayerController() {
 	SHOW_IN_INSPECTOR_AS_SLIDER_INT(player->controllerIndex, 1, 2);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.movementSpeed);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.rotationSpeed);
+	SHOW_IN_INSPECTOR_AS_ENUM(PlayerController::PlayerState, player->state);
 	return player;
 }

@@ -1,18 +1,23 @@
 {
     "Controller": {
         "Name": "PlayerController",
-        "NumStates": 2,
-        "NumTransitions": 2,
+        "NumStates": 3,
+        "NumTransitions": 4,
         "States": [
             {
                 "Name": "Idle",
                 "Speed": 1,
-                "Clip": "18301213033854610072"
+                "Clip": "14616852132734576951"
             },
             {
                 "Name": "Run",
                 "Speed": 1,
-                "Clip": "17813893630139372386"
+                "Clip": "12468072880108357545"
+            },
+            {
+                "Name": "Attack",
+                "Speed": 1,
+                "Clip": "1381992307201819049"
             }
         ],
         "Transitions": [
@@ -42,6 +47,38 @@
                     {
                         "Type": "float",
                         "CompText": "Lesser",
+                        "ParameterIndex": 0,
+                        "CompValue": 0.20000000298023224
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "Attack",
+                "Target": "Idle",
+                "Blend": 0.25,
+                "End": 1,
+                "IntConditions": [],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Lesser",
+                        "ParameterIndex": 0,
+                        "CompValue": 0.20000000298023224
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "Attack",
+                "Target": "Run",
+                "Blend": 0.25,
+                "End": 1,
+                "IntConditions": [],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
                         "ParameterIndex": 0,
                         "CompValue": 0.20000000298023224
                     }
