@@ -25,7 +25,8 @@ enum class SHADER_TEMPLATE
 	NO_TEMPLATE = -1,
 	DEFAULT,
 	WAVE,
-	ILUMINATED
+	ILUMINATED,
+	PARTICLE
 };
 
 struct ShaderInputs;

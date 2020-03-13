@@ -11,7 +11,6 @@ C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Modul
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(601) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(201) : No resource found with ID -572662307
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(652) : Texture successfully loaded: Library/Textures/13932252301375101692.dds
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Scripts/Audio.alienScript] to [Library/Scripts/4722486278913115166.alienPrefab]
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(70) : Starting Module Objects
@@ -19,6 +18,10 @@ C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Modul
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(55) : Loading UI assets
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
+C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceMaterial.cpp(365) : Selected Shader shader_wave
+
+C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(652) : Texture successfully loaded: Library/Textures/4254245584632856441.dds
+C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceMaterial.cpp(487) : Setting texture in spot: 0 | ID: 129
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(152) : Destroying 3D Renderer
 C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(93) : Unloading UI scene

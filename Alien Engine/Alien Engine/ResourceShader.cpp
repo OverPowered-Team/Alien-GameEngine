@@ -153,6 +153,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::WAVE;
 	else if (std::strcmp(name.c_str(), "iluminated_shader") == 0)
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
+	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
+		shaderType = SHADER_TEMPLATE::PARTICLE;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -207,6 +209,10 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::ILUMINATED: {
+		SetUniformFloat3("diffuse_color", inputs.iluminatedShaderProperties.object_color);
+		break; }
+
+	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniformFloat3("diffuse_color", inputs.iluminatedShaderProperties.object_color);
 		break; }
 

@@ -15,7 +15,7 @@ ParticleSystem::ParticleSystem()
 	material = App->resources->default_material;
 	material->IncreaseReferences();
 
-	float planeVertex[] =
+	float vertex[] =
 	{
 		// 0
 		-0.5f, 0.5f, 0.f, 
@@ -27,7 +27,7 @@ ParticleSystem::ParticleSystem()
 		0.5f, -0.5f, 0.f,
 	};
 
-	float planeUVCoords[] =
+	float uv[] =
 	{
 		// 0
 		0.0f, 0.0f, 
@@ -39,7 +39,7 @@ ParticleSystem::ParticleSystem()
 		1.0f, 1.0f,
 	};
 
-	uint planeIndex[] =
+	uint index[] =
 	{
 		// First tri
 		2, 1, 0,
@@ -47,19 +47,34 @@ ParticleSystem::ParticleSystem()
 		2, 3, 1
 	};
 
-	glGenBuffers(1, &planeVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, planeVertex, GL_STATIC_DRAW);
 
-	// index
-	glGenBuffers(1, &planeIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, planeIndex, GL_STATIC_DRAW);
+	// VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	// UV
-	glGenBuffers(1, &planeUVsBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, planeUVsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, planeUVCoords, GL_STATIC_DRAW);
+	// VERTEX BUFFER
+	glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertex, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
+
+	// UV BUFFER
+	glGenBuffers(1, &id_uv);
+	glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);	
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);										
+	glEnableVertexAttribArray(1);
+
+	// INDEX BUFFER
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	
 
@@ -77,7 +92,7 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
 	material = App->resources->default_material;
 	material->IncreaseReferences();
 
-	float planeVertex[] =
+	float vertex[] =
 	{
 		// 0
 		-0.5f, 0.5f, 0.f,
@@ -89,7 +104,7 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
 		0.5f, -0.5f, 0.f,
 	};
 
-	float planeUVCoords[] =
+	float uv[] =
 	{
 		// 0
 		0.0f, 0.0f,
@@ -101,7 +116,7 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
 		1.0f, 1.0f,
 	};
 
-	uint planeIndex[] =
+	uint index[] =
 	{
 		// First tri
 		2, 1, 0,
@@ -109,20 +124,34 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
 		2, 3, 1
 	};
 
-	glGenBuffers(1, &planeVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, planeVertex, GL_STATIC_DRAW);
 
-	// index
-	glGenBuffers(1, &planeIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, planeIndex, GL_STATIC_DRAW);
+	// VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	// UV
-	glGenBuffers(1, &planeUVsBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, planeUVsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, planeUVCoords, GL_STATIC_DRAW);
+	// VERTEX BUFFER
+	glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertex, GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
+
+	// UV BUFFER
+	glGenBuffers(1, &id_uv);
+	glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+
+	// INDEX BUFFER
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
 
@@ -433,6 +462,6 @@ void ParticleSystem::SetUniform(ResourceMaterial* resource_material, ComponentCa
 	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->used_shader->SetUniformMat4f("model", callback->game_object_attached->transform->GetGlobalMatrix().Transposed());
 	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	resource_material->used_shader->SetUniform1i("animate", animate);
+	/*resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniform1i("animate", animate);*/
 }

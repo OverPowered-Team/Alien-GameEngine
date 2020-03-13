@@ -452,6 +452,14 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::ColorEdit3("Albedo", shaderInputs.iluminatedShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
+	case SHADER_TEMPLATE::PARTICLE: {
+		ImGui::Text("Texture:");
+		InputTexture(TextureType::DIFFUSE);
+		ImGui::SameLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
+		ImGui::ColorEdit3("Albedo", shaderInputs.iluminatedShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
+		break; }
+
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;

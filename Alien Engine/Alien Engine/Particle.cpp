@@ -139,13 +139,14 @@ void Particle::Draw()
 	if (owner->material != nullptr)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		//glBindTexture(GL_TEXTURE_2D, owner->texture->id);
+		
 		owner->material->ApplyMaterial();
-
+		glBindVertexArray(owner->vao);
+		
 		ComponentCamera* mainCamera = App->camera->scene_viewport->GetCamera();
-		owner->SetUniform(owner->material, mainCamera);
-
-		glBindBuffer(GL_ARRAY_BUFFER, owner->planeUVsBuffer);
+		SetUniform(owner->material, mainCamera, particleGlobal);
+		
+		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 	else
@@ -156,26 +157,27 @@ void Particle::Draw()
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	// Vertex Buffer
-	glBindBuffer(GL_ARRAY_BUFFER, owner->planeVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, owner->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	// Index Buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->planeIndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->id_index);
 
-
-
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+	// Draw Quad
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	owner->material->used_shader->Unbind();
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -244,4 +246,11 @@ float Particle::Lerp(float v0, float v1, float t)
 	return (1 - t) * v0 + t * v1;
 }
 
-
+void Particle::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, float4x4 globalMatrix)
+{
+	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("model", globalMatrix.Transposed());
+	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	/*resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniform1i("animate", animate);*/
+}

@@ -134,8 +134,16 @@ public:
 	int destinationFactor;
 	float alpha_test = 0.1f;
 
-	uint planeVertexBuffer = 0;
-	uint planeIndexBuffer = 0;
-	uint planeUVsBuffer = 0;
-	int animate = 0;
+
+
+	uint vertex = 0;
+	uint index = 0;
+	uint uv = 0;
+	
+	// Vertex Array Object
+	uint vao = 0u;
+	// buffers id
+	uint id_index = 0;
+	uint id_vertex = 0;
+	uint id_uv = 0;
 };

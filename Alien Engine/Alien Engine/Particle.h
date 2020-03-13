@@ -7,6 +7,7 @@
 #include "MathGeoLib/include/Math/float4x4.h"
 
 #include "ResourceTexture.h"
+#include "ResourceMaterial.h"
 
 class ParticleSystem;
 class ComponentCamera;
@@ -84,6 +85,7 @@ public:
 	float3 GetPosition() const;
 
 	float Lerp(float v0, float v1, float t);
+	void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, float4x4 globalMatrix);
 
 public:
 
