@@ -26,7 +26,8 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	
 	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
 
-	//light_id = GL_LIGHT0;
+	light_id = GL_LIGHT0;
+	
 	//glEnable(light_id);
 	//glLightfv(light_id, GL_POSITION, pos);
 
@@ -58,7 +59,7 @@ ComponentParticleSystem::~ComponentParticleSystem()
 		material = nullptr;*/
 
 
-	glDisable(light_id);
+	//glDisable(light_id);
 }
 
 void ComponentParticleSystem::OnPlay()
@@ -619,6 +620,7 @@ bool ComponentParticleSystem::DrawInspector()
 		if (particleSystem->material != nullptr) {
 			particleSystem->material->DisplayMaterialOnInspector();
 		}
+		
 	}
 
 	return true;

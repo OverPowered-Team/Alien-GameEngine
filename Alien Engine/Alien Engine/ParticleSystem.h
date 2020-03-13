@@ -49,8 +49,8 @@ class __declspec(dllexport) ParticleSystem
 
 public:
 
-	ParticleSystem();
 	ParticleSystem(ComponentParticleSystem* particles);
+	
 	~ParticleSystem();
 
 private: 
@@ -76,7 +76,8 @@ public:
 	void Pause();
 	void Restart();
 	void ResetSystem();
-
+	void ActivateLight();
+	void DeactivateLight();
 
 	void SetBillboardType(BillboardType type);
 	BillboardType GetBillboardType() const;
@@ -105,7 +106,7 @@ public:
 	// ---------------------------------------------------------------------------
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
-	void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera);
+	
 
 public: 
 
@@ -121,7 +122,7 @@ private:
 	//std::map<float, Particle*> sortedParticles;
 	std::vector<Particle*> particles;
 	uint totalParticles = 0u;
-	ComponentParticleSystem* callback = nullptr;
+	
 
 public:
 	ResourceTexture* texture = nullptr;
@@ -134,16 +135,15 @@ public:
 	int destinationFactor;
 	float alpha_test = 0.1f;
 
-
-
-	uint vertex = 0;
-	uint index = 0;
-	uint uv = 0;
-	
 	// Vertex Array Object
 	uint vao = 0u;
 	// buffers id
 	uint id_index = 0;
 	uint id_vertex = 0;
 	uint id_uv = 0;
+
+	ComponentParticleSystem* callback = nullptr;
+	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
+	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
+	uint light_id = 0;
 };

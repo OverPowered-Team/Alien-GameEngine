@@ -92,6 +92,10 @@ struct ShaderInputs
 	struct IluminatedShaderProperties {
 		float3 object_color = float3(1.f, 1.f, 1.f);
 	} iluminatedShaderProperties;
+
+	struct ParticleShaderProperties {
+		float3 object_color = float3(1.f, 0.f, 0.8f);
+	} particleShaderProperties;
 };
 
 class ResourceShader; 

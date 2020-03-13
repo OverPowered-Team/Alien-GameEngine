@@ -7,13 +7,15 @@
 #include "ComponentTransform.h"
 #include "GL/gl.h"
 
-ParticleSystem::ParticleSystem()
+ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particles)
 {
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
 
-	/*material = App->resources->default_material;
-	material->IncreaseReferences();*/
+	callback = comp_particles;
+	material = App->resources->default_material;
+	material->IncreaseReferences();
+	material->SetShader(App->resources->default_particle_shader);
 
 	float vertex[] =
 	{
@@ -77,88 +79,11 @@ ParticleSystem::ParticleSystem()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	
-
-
-
-	
-}
-
-ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particle)
-{
-	callback = comp_particle;
-	particles.reserve(MAX_PARTICLES);
-	emmitter.particleSystem = this;
-
-	material = App->resources->default_material;
-	material->IncreaseReferences();
-	material->SetShader(App->resources->default_particle_shader);
-
-	float vertex[] =
-	{
-		// 0
-		-0.5f, 0.5f, 0.f,
-		// 1 
-		0.5f, 0.5f, 0.f,
-		// 2 
-		-0.5f, -0.5f, 0.f,
-		// 3 
-		0.5f, -0.5f, 0.f,
-	};
-
-	float uv[] =
-	{
-		// 0
-		0.0f, 0.0f,
-		// 1
-		1.0f, 0.0f,
-		// 2
-		0.0f, 1.0f,
-		// 3
-		1.0f, 1.0f,
-	};
-
-	uint index[] =
-	{
-		// First tri
-		2, 1, 0,
-		// Second tri
-		2, 3, 1
-	};
-
-
-	// VAO
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	// VERTEX BUFFER
-	glGenBuffers(1, &id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertex, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-	glEnableVertexAttribArray(0);
-
-	// UV BUFFER
-	glGenBuffers(1, &id_uv);
-	glBindBuffer(GL_ARRAY_BUFFER, id_uv);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(1);
-
-	// INDEX BUFFER
-	glGenBuffers(1, &id_index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-
-
+	// LIGHTS
+	light_id = GL_LIGHT0;
 
 }
+
 
 ParticleSystem::~ParticleSystem()
 {
@@ -371,6 +296,24 @@ void ParticleSystem::ResetSystem()
 	totalParticles = 0u;
 }
 
+void ParticleSystem::ActivateLight()
+{
+	ComponentTransform* transform = (ComponentTransform*)callback->game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
+
+	glEnable(light_id);
+	glLightfv(light_id, GL_POSITION, pos);
+
+	// Init
+	glLightfv(light_id, GL_AMBIENT, &ambient);
+	glLightfv(light_id, GL_DIFFUSE, &diffuse);
+}
+
+void ParticleSystem::DeactivateLight()
+{
+	glDisable(light_id);
+}
+
 bool compareParticles(Particle* a, Particle* b)
 {
 	return a->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition()) < b->GetPosition().DistanceSq(App->renderer3D->GetCurrentMainCamera()->GetCameraPosition());
@@ -458,11 +401,3 @@ void ParticleSystem::RemoveMaterial()
 
 // ------------------------------ PARTICLE INFO ------------------------------
 
-void ParticleSystem::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
-{
-	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
-	resource_material->used_shader->SetUniformMat4f("model", callback->game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	/*resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	resource_material->used_shader->SetUniform1i("animate", animate);*/
-}

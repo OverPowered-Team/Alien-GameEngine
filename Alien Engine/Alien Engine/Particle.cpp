@@ -135,10 +135,12 @@ void Particle::Draw()
 	glAlphaFunc(GL_GREATER, owner->alpha_test);
 
 	// -----------------------------------------------------------------------------------------------------------------
+	
 	glBindVertexArray(owner->vao);
 
 	if (owner->material != nullptr)
 	{
+		owner->DeactivateLight();
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 		owner->material->ApplyMaterial();
@@ -149,8 +151,11 @@ void Particle::Draw()
 		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
-	else
+	else {
+		owner->ActivateLight();
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
 
 
 		
@@ -181,7 +186,7 @@ void Particle::Draw()
 		owner->material->used_shader->Unbind();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+	owner->DeactivateLight();
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
