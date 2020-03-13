@@ -300,7 +300,7 @@ void ParticleSystem::ActivateLight()
 {
 	ComponentTransform* transform = (ComponentTransform*)callback->game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
-
+	
 	glEnable(light_id);
 	glLightfv(light_id, GL_POSITION, pos);
 

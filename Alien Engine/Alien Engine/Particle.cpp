@@ -145,7 +145,14 @@ void Particle::Draw()
 		
 		owner->material->ApplyMaterial();
 
-		ComponentCamera* mainCamera = App->camera->scene_viewport->GetCamera();
+	
+		ComponentCamera* mainCamera = nullptr;
+		if (App->objects->printing_scene)
+			 mainCamera = App->camera->scene_viewport->GetCamera();
+		else
+			 mainCamera = App->renderer3D->GetCurrentMainCamera();
+
+
 		SetUniform(owner->material, mainCamera, particleGlobal);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
@@ -186,7 +193,7 @@ void Particle::Draw()
 		owner->material->used_shader->Unbind();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	owner->DeactivateLight();
+
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
