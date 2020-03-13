@@ -8,6 +8,7 @@
     <ClCompile Include="TestSwitches.cpp" />
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ReverbZone.cpp" />
+    <ClCompile Include="TerrainSwitch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Testanimator.h" />
@@ -17,5 +18,6 @@
     <ClInclude Include="TestSwitches.h" />
     <ClInclude Include="PlayerTest.h" />
     <ClInclude Include="ReverbZone.h" />
+    <ClInclude Include="TerrainSwitch.h" />
   </ItemGroup>
 </Project>

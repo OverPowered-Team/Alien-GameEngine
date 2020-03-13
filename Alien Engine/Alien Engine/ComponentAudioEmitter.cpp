@@ -188,7 +188,7 @@ u32 ComponentAudioEmitter::GetWwiseIDFromString(const char* Wwise_name) const
 	return source->GetWwiseIDFromString(Wwise_name);
 }
 
-void ComponentAudioEmitter::SetSwitchState(u32 switch_group_id, u32 switch_state_id)
+void ComponentAudioEmitter::SetSwitchState(const char* switch_group_id, const char* switch_state_id)
 {
 	source->SetSwitch(source->GetID(), switch_group_id, switch_state_id);
 }
@@ -196,6 +196,11 @@ void ComponentAudioEmitter::SetSwitchState(u32 switch_group_id, u32 switch_state
 void ComponentAudioEmitter::SetReverb(const float& strength, const char* name) 
 {
 	source->ApplyEnvReverb(strength, name);
+}
+
+void ComponentAudioEmitter::SetState(const char* state_group, const char* new_state)
+{
+	source->ChangeState(state_group, new_state);
 }
 
 WwiseT::AudioSource* ComponentAudioEmitter::GetSource() const

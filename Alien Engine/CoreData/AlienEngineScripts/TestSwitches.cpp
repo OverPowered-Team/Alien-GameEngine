@@ -21,14 +21,10 @@ void TestSwitches::Update()
 	}
 	if (Input::GetKeyDown(SDL_SCANCODE_T))
 	{
-		int group_id = emmitter->GetWwiseIDFromString("Material");
-		int state_id = emmitter->GetWwiseIDFromString("Dirt");
-		emmitter->SetSwitchState(group_id, state_id);
+		emmitter->SetSwitchState("Material", "Dirt");
 	}
 	if (Input::GetKeyDown(SDL_SCANCODE_Y))
 	{
-		int group_id = emmitter->GetWwiseIDFromString("Material");
-		int state_id = emmitter->GetWwiseIDFromString("Sand");
-		emmitter->SetSwitchState(group_id, state_id);
+		emmitter->SetSwitchState("Material", "Sand");
 	}
 }

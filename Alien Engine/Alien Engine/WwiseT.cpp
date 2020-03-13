@@ -480,7 +480,7 @@ void WwiseT::AudioSource::SetListenerPos(float pos_x, float pos_y, float pos_z, 
 	
 }
 
-void WwiseT::AudioSource::SetSwitch(AkGameObjectID game_object_id, AkSwitchGroupID switch_group_id, AkSwitchStateID switch_state_id)
+void WwiseT::AudioSource::SetSwitch(AkGameObjectID game_object_id, const char* switch_group_id, const char* switch_state_id)
 {
 	AK::SoundEngine::SetSwitch(switch_group_id, switch_state_id, game_object_id);
 }

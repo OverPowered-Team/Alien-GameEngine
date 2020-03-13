@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="PlayerTest.h" />
     <ClInclude Include="ReverbZone.h" />
+    <ClInclude Include="TerrainSwitch.h" />
     <ClInclude Include="Testanimator.h" />
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
@@ -180,6 +181,7 @@
   <ItemGroup>
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ReverbZone.cpp" />
+    <ClCompile Include="TerrainSwitch.cpp" />
     <ClCompile Include="Testanimator.cpp" />
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
