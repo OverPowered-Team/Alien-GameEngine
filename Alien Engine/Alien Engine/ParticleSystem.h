@@ -49,8 +49,7 @@ class __declspec(dllexport) ParticleSystem
 
 public:
 
-	ParticleSystem(ComponentParticleSystem* particles);
-	
+	ParticleSystem();
 	~ParticleSystem();
 
 private: 
@@ -76,6 +75,8 @@ public:
 	void Pause();
 	void Restart();
 	void ResetSystem();
+	void InitLight();
+	void RenderLight();
 	void ActivateLight();
 	void DeactivateLight();
 
@@ -137,13 +138,14 @@ public:
 
 	// Vertex Array Object
 	uint vao = 0u;
-	// buffers id
+
+	// Buffers id
 	uint id_index = 0;
 	uint id_vertex = 0;
 	uint id_uv = 0;
 
-	ComponentParticleSystem* callback = nullptr;
-	Color ambient{ 0.5f, 0.5f, 0.5f, 1.0f };
-	Color diffuse{ 0.75f, 0.75f, 0.75f, 1.0f };
+	// Light
+	Color ambient{ 1.f, 1.f, 1.f, 1.0f };
+	Color diffuse{ 1.f, 1.f, 1.f, 1.0f };
 	uint light_id = 0;
 };

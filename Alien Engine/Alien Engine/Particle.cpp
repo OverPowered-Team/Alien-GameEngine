@@ -140,7 +140,7 @@ void Particle::Draw()
 
 	if (owner->material != nullptr)
 	{
-		owner->DeactivateLight();
+		
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 		owner->material->ApplyMaterial();
@@ -159,7 +159,7 @@ void Particle::Draw()
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 	else {
-		owner->ActivateLight();
+		
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
@@ -193,7 +193,7 @@ void Particle::Draw()
 		owner->material->used_shader->Unbind();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+	
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 

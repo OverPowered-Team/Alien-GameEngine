@@ -7,16 +7,17 @@
 #include "ComponentTransform.h"
 #include "GL/gl.h"
 
-ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particles)
+ParticleSystem::ParticleSystem()
 {
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
 
-	callback = comp_particles;
+	
 	material = App->resources->default_material;
 	material->IncreaseReferences();
 	material->SetShader(App->resources->default_particle_shader);
 
+	
 	float vertex[] =
 	{
 		// 0
@@ -78,10 +79,9 @@ ParticleSystem::ParticleSystem(ComponentParticleSystem* comp_particles)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	
 	// LIGHTS
 	light_id = GL_LIGHT0;
-
+	InitLight();
 }
 
 
@@ -94,11 +94,12 @@ ParticleSystem::~ParticleSystem()
 		(*iter) = nullptr;
 	}
 
-
 	particles.clear();
 
 	if (material != nullptr)
 		material = nullptr;
+
+	DeactivateLight();
 }
 
 bool ParticleSystem::PreUpdate(float dt)
@@ -198,9 +199,13 @@ void ParticleSystem::DrawParticles()
 	//DrawPointsForParticles();
 
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
-	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 
+	if (material != nullptr)
+		DeactivateLight();
+	else
+		ActivateLight();
 	
+	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
 	{
 		(*iter)->Orientate(mainCamera);
@@ -208,6 +213,9 @@ void ParticleSystem::DrawParticles()
 		(*iter)->Draw();
 	}
 
+
+	RenderLight();
+	DeactivateLight();
 }
 
 void ParticleSystem::DrawPointsForParticles()
@@ -296,23 +304,7 @@ void ParticleSystem::ResetSystem()
 	totalParticles = 0u;
 }
 
-void ParticleSystem::ActivateLight()
-{
-	ComponentTransform* transform = (ComponentTransform*)callback->game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
-	
-	glEnable(light_id);
-	glLightfv(light_id, GL_POSITION, pos);
 
-	// Init
-	glLightfv(light_id, GL_AMBIENT, &ambient);
-	glLightfv(light_id, GL_DIFFUSE, &diffuse);
-}
-
-void ParticleSystem::DeactivateLight()
-{
-	glDisable(light_id);
-}
 
 bool compareParticles(Particle* a, Particle* b)
 {
@@ -399,5 +391,26 @@ void ParticleSystem::RemoveMaterial()
 	material = nullptr;
 }
 
-// ------------------------------ PARTICLE INFO ------------------------------
+// ------------------------------ PARTICLE LIGHT ------------------------------
 
+void ParticleSystem::InitLight()
+{
+	glLightfv(light_id, GL_AMBIENT, &ambient);
+	glLightfv(light_id, GL_DIFFUSE, &diffuse);
+}
+
+void ParticleSystem::RenderLight()
+{
+	float pos[] = { emmitter.GetPosition().x, emmitter.GetPosition().x, emmitter.GetPosition().x, 1.F };
+	glLightfv(light_id, GL_POSITION, pos);
+}
+
+void ParticleSystem::ActivateLight()
+{
+	glEnable(light_id);
+}
+
+void ParticleSystem::DeactivateLight()
+{
+	glDisable(light_id);
+}
