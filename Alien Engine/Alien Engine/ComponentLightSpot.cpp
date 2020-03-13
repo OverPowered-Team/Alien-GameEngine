@@ -36,7 +36,21 @@ void ComponentLightSpot::LightLogic()
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-	Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::White(), 3.0f);
+	
+#ifndef GAME_VERSION
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
+		App->renderer3D->EndDebugDraw();
+	}
+	else
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
+		App->renderer3D->EndDebugDraw();
+	}
+#endif
 }
 
 bool ComponentLightSpot::DrawInspector()
@@ -69,22 +83,15 @@ bool ComponentLightSpot::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
-		ImGui::Text("Uniform position: X: %.2f, Y: %.2f, Z: %.2f", light_props.position.x, light_props.position.y, light_props.position.z);
-		ImGui::DragFloat3("Direction", light_props.direction.ptr(), 0.10f);
+		ImGui::DragFloat("Intensity", &light_props.intensity, 0.01f, 0.0f, 2.0f);
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
-		ImGui::DragFloat("Constant", &light_props.constant, 0.10f, 0.0f);
-		ImGui::DragFloat("Linear", &light_props.linear, 0.10f, 0.0f);
-		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.10f, 0.0f);
-		float tmp_cutoff = light_props.cut_off;
-		if (ImGui::DragFloat("Cut Off", &tmp_cutoff, 0.10f))
-			light_props.cut_off = tmp_cutoff;
-			//light_props.cut_off = math::Cos(DegToRad(tmp_cutoff));
-		float tmp_outercutoff = light_props.outer_cut_off;
-		if (ImGui::DragFloat("Outer Cut Off", &tmp_outercutoff, 0.10f))
-			light_props.outer_cut_off = tmp_outercutoff;
-			//light_props.outer_cut_off = math::Cos(DegToRad(tmp_outercutoff));
+		ImGui::DragFloat("Constant", &light_props.constant, 0.01f, 0.0f);
+		ImGui::DragFloat("Linear", &light_props.linear, 0.01f, 0.0f);
+		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.01f, 0.0f);
+		ImGui::DragFloat("Cut Off", &light_props.cut_off, 0.10f);
+		ImGui::DragFloat("Outer Cut Off", &light_props.outer_cut_off, 0.10f);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -133,6 +140,7 @@ void ComponentLightSpot::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("PrintIcon", print_icon);
 
+	to_save->SetNumber("Intensity", float(light_props.intensity));
 	to_save->SetFloat3("Position", float3(light_props.position));
 	to_save->SetFloat3("Direction", float3(light_props.direction));
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
@@ -151,6 +159,7 @@ void ComponentLightSpot::LoadComponent(JSONArraypack* to_load)
 	ID = std::stoull(to_load->GetString("ID"));
 	print_icon = to_load->GetBoolean("PrintIcon");
 
+	light_props.intensity = (float)to_load->GetNumber("Intensity");
 	light_props.position = to_load->GetFloat3("Position");
 	light_props.direction = to_load->GetFloat3("Direction");
 	light_props.ambient = to_load->GetFloat3("Ambient");

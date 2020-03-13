@@ -97,6 +97,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>..\..\Alien Engine\Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +173,7 @@
     <ClInclude Include="PlayerTest.h" />
     <ClInclude Include="ReverbZone.h" />
     <ClInclude Include="TerrainSwitch.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Testanimator.h" />
     <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
@@ -182,6 +184,7 @@
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ReverbZone.cpp" />
     <ClCompile Include="TerrainSwitch.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Testanimator.cpp" />
     <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />

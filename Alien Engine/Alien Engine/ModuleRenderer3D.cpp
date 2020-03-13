@@ -258,3 +258,31 @@ void ModuleRenderer3D::EndDebugDraw()
 	glLineWidth(1.f);
 
 }
+
+void ModuleRenderer3D::RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const float& line_width, const int& segments)
+{
+	BeginDebugDraw(float4(0.0f, 1.0f, 0.0f, 1.0f));
+	glLineWidth(line_width);
+	glBegin(GL_LINE_LOOP);
+	for (int a = 0; a < 360; a += 360 / segments)
+	{
+		double heading = a * (double)math::pi / 180;
+		glVertex3d(cos(heading) * radius + x, sin(heading) * radius + y, z);
+	}
+	glEnd();
+	EndDebugDraw();
+}
+
+void ModuleRenderer3D::RenderCircleAroundX(const float& x, const float& y, const float& z, const float& radius, const float& line_width, const int& segments)
+{
+	BeginDebugDraw(float4(0.0f, 1.0f, 0.0f, 1.0f));
+	glLineWidth(line_width);
+	glBegin(GL_LINE_LOOP);
+	for (int a = 0; a < 360; a += 360 / segments)
+	{
+		double heading = a * (double)math::pi / 180;
+		glVertex3d(x, sin(heading) * radius + y, cos(heading) * radius + z);
+	}
+	glEnd();
+	EndDebugDraw();
+}

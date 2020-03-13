@@ -72,6 +72,8 @@
 #define SHOW_IN_INSPECTOR_AS_SLIDER_FLOAT(FLOAT_, MIN_, MAX_) ComponentScript::InspectorSliderFloat(&FLOAT_, #FLOAT_, MIN_, MAX_)
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
+/*--------------------enum--------------------*/
+#define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/
 #define SHOW_IN_INSPECTOR_AS_PREFAB(PREFAB_) ComponentScript::InspectorPrefab(&PREFAB_, #PREFAB_)
 /*--------------------gameobject--------------------*/
@@ -84,3 +86,7 @@
 
 #define LOG(format, ...) Debug::Log(__FILE__, __LINE__, format, __VA_ARGS__);
 
+#define enum(ENUM, ...) enum class ENUM {\
+	__VA_ARGS__\
+	};\
+	inline static const char* ENUM##EnumNames = #__VA_ARGS__;
