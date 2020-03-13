@@ -14,6 +14,7 @@
 #include <stack>
 #include <functional>
 #include <map>
+#include <string>
 
 class ReturnZ;
 class ResourcePrefab;
