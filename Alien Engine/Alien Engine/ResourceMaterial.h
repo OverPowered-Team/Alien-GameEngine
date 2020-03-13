@@ -136,6 +136,8 @@ public:
 	void ShaderInputsSegment();
 	void InputTexture(TextureType texType);
 	void TexturesSegment();
+
+	void TextureBrowser();
 	// ------------------ 
 
 public:
@@ -149,4 +151,6 @@ public:
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
 	const char* selectedShader = nullptr;
+	ResourceTexture* selected_texture = nullptr;
+	bool change_texture_menu = false;
 };
