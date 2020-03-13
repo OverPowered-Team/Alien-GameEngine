@@ -13,8 +13,6 @@ public:
 		BASIC_ATTACK,
 		JUMPING,
 		DASHING,
-		SPELL,
-		DANCING,
 
 		MAX
 	};
@@ -27,7 +25,6 @@ public:
 	};
 
 public:
-
 	PlayerController();
 	virtual ~PlayerController();
 
