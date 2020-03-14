@@ -19,6 +19,7 @@ enum class ComponentType {
 	CAPSULE_COLLIDER,
 	CONVEX_HULL_COLLIDER,
 	RIGID_BODY,
+	CHARACTER_CONTROLLER,
 	ANIMATOR,
 	PARTICLES,
 	A_EMITTER,
@@ -50,6 +51,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentCanvas;
 	friend class ComponentUI;
+	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class ComponentCollider;
 	friend class ComponentScript;

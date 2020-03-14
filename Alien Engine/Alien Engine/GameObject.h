@@ -36,6 +36,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
 	friend class ComponentRigidBody;
+	friend class ComponentCharacterController;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;

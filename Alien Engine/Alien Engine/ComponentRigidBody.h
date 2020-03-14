@@ -34,6 +34,8 @@ public:
 
 	// Rigid Body Values 
 
+	void SetIsKinematic(const bool value);
+
 	void SetMass(const float mass);
 	float GetMass() { return mass; }
 	void SetDrag(const float drag);

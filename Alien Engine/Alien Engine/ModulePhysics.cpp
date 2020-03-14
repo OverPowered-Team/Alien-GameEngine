@@ -4,6 +4,7 @@
 #include "Bullet/include/BulletCollision/CollisionShapes/btShapeHull.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
+#include "ComponentCharacterController.h"
 #include "ComponentScript.h"
 #include "Alien.h"
 #include "Optick/include/optick.h"
@@ -151,6 +152,14 @@ void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
+void ModulePhysics::DrawCharacterController(ComponentCharacterController* controller)
+{
+	debug_renderer->setDebugMode(btIDebugDraw::DBG_FastWireframe);
+	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
+	world->debugDrawObject(controller->body->getWorldTransform(), controller->shape, btVector3(0.f, 1.f, 0.f));
+	ModuleRenderer3D::EndDebugDraw();
+}
+
 void ModulePhysics::DrawWorld()
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
@@ -179,6 +188,16 @@ void ModulePhysics::AddDetector(btGhostObject* detector)
 void ModulePhysics::RemoveDetector(btGhostObject* detector)
 {
 	world->removeCollisionObject(detector);
+}
+
+void ModulePhysics::AddAction(btActionInterface* action)
+{
+	world->addAction(action);
+}
+
+void ModulePhysics::RemoveAction(btActionInterface* action)
+{
+	world->removeAction(action);
 }
 
 void ModulePhysics::AddConstraint(btTypedConstraint* constraint, bool disableBodiesCollision)

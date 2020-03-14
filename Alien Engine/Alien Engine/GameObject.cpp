@@ -42,6 +42,7 @@
 #include "ComponentCapsuleCollider.h"
 #include "ComponentConvexHullCollider.h"
 #include "ComponentRigidBody.h"
+#include "ComponentCharacterController.h"
 
 #include "Optick/include/optick.h"
 
@@ -558,10 +559,7 @@ void GameObject::DrawScene(ComponentCamera* camera)
 
 	for (Component* component : components)
 	{
-		if (ComponentCollider* collider = dynamic_cast<ComponentCollider*>(component)) 
-		{
-			collider->DrawScene();
-		}
+		component->DrawScene();
 	}
 }
 
@@ -1684,7 +1682,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				rigi_body->LoadComponent(components_to_load);
 				AddComponent(rigi_body);
 				break; }
-
+			case (int)ComponentType::CHARACTER_CONTROLLER: {
+				ComponentCharacterController* character_controller = new ComponentCharacterController(this);
+				character_controller->LoadComponent(components_to_load);
+				AddComponent(character_controller);
+				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
 				script->LoadComponent(components_to_load);

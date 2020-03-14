@@ -17,10 +17,12 @@ class Alien;
 class __declspec(dllexport) ComponentCollider : public Component
 {
 	friend class GameObject;
-	friend class ModuleObjects;
-	friend class ModulePhysics;
 	friend class ReturnZ;
 	friend class CompZ;
+
+	friend class ModuleObjects;
+	friend class ModulePhysics;
+	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 
 public:
