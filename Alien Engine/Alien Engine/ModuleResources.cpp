@@ -646,7 +646,7 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = GetShaderByName("default_shader");
-
+	skybox_shader = GetShaderByName("skybox_shader");
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
 	ReadMaterials(directories, files, MATERIALS_FOLDER);

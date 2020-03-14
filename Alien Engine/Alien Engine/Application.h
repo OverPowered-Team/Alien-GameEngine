@@ -26,6 +26,7 @@
 enum class EventType; 
 struct AlienEvent;
 class Skybox;
+class ResourceShader;
 
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
@@ -59,6 +60,8 @@ public:
 	AnimTween*			tween = nullptr;
 
 	Skybox* skybox = nullptr;
+	ResourceShader* skybox_shader = nullptr;
+	uint skybox_texture_id = 0u;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;

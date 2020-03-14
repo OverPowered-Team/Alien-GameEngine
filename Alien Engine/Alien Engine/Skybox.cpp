@@ -10,14 +10,15 @@ Skybox::Skybox()
 
 Skybox::~Skybox()
 {
-
+	glDeleteBuffers(1, &vbo);
+	glDeleteVertexArrays(1, &vao);
 }
 
 uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 {
 	GLuint texture_id;
 	glGenTextures(1, &texture_id);
-	//glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
 	
 	int width, height, channels;
@@ -43,4 +44,18 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 	}
 
 	return texture_id;
+}
+
+void Skybox::SetBuffers()
+{
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+	
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }

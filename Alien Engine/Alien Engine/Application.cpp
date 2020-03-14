@@ -2,6 +2,7 @@
 #include "Parson/parson.h"
 #include "Time.h"
 #include "Skybox.h"
+#include "ResourceShader.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 
@@ -234,8 +235,15 @@ bool Application::Init()
 	};
 
 	skybox = new Skybox();
-	skybox->LoadCubeMap(skybox_faces);
+	skybox_texture_id = skybox->LoadCubeMap(skybox_faces);
 	// todo, own texture vector, cleanup clear()
+
+	skybox_shader = App->resources->skybox_shader;
+	if (skybox_shader != nullptr)
+		skybox_shader->IncreaseReferences();
+
+	skybox_shader->Bind();
+	skybox_shader->SetUniform1i("skybox", 0);
 
 	return ret;
 }
@@ -395,6 +403,30 @@ void Application::PostUpdate(update_status& ret)
 		//assert(ret == UPDATE_CONTINUE);
 		++item;
 	}
+
+	// Draw skybox [LAST]
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	skybox_shader->Bind();
+#ifndef GAME_VERSION
+	float4x4 view_m = App->camera->fake_camera->GetViewMatrix4x4();
+	view_m[0][3] = 0;
+	view_m[1][3] = 0;
+	view_m[2][3] = 0;
+	skybox_shader->SetUniformMat4f("view", view_m);
+	float4x4 projection = App->camera->fake_camera->GetProjectionMatrix4f4();
+	skybox_shader->SetUniformMat4f("projection", projection);
+#else
+
+#endif
+	glBindVertexArray(skybox->vao);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture_id);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS);
+	glBindVertexArray(0);
+	skybox_shader->Unbind();
 }
 
 bool Application::CleanUp()
