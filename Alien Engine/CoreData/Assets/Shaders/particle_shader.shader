@@ -23,7 +23,7 @@ void main()
 #version 330 core
 
 uniform sampler2D tex;
-uniform vec3 diffuse_color;
+uniform vec4 diffuse_color;
 // Ins
 in vec2 texCoords;
 // Outs
@@ -35,10 +35,10 @@ void main()
  
     if(textureColor == vec4(0,0,0,1))
     {
-        FragColor = vec4(diffuse_color, 1.0);
+        FragColor = diffuse_color;
     }
     else
     {
-        FragColor = textureColor * vec4(diffuse_color, 1.0);  
+        FragColor = textureColor * diffuse_color;  
     }
 }
