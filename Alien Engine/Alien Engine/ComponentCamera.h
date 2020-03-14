@@ -6,6 +6,9 @@
 #include "MathGeoLib/include/MathBuildConfig.h"
 #include "ComponentMesh.h"
 
+class Skybox;
+class ResourceShader;
+
 class __declspec(dllexport) ComponentCamera : public Component {
 	friend class GameObject;
 	friend class ModuleCamera3D;
@@ -49,6 +52,8 @@ public:
 	void SetCameraPosition(const float3& position);
 	float3 GetCameraPosition() const;
 
+	void DrawSkybox();
+
 private:
 	void AspectRatio(int width_ratio, int height_ratio, bool fov_type = 0);
 
@@ -89,4 +94,8 @@ private:
 
 public:
 	Color camera_color_background{ 0.05f, 0.05f, 0.05f, 1.0f };
+
+	Skybox* skybox = nullptr;
+	ResourceShader* skybox_shader = nullptr;
+	uint skybox_texture_id = 0u;
 };

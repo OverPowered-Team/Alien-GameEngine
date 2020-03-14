@@ -717,6 +717,7 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = (ResourceShader*)GetResourceWithID(2146752462670567246);
+	skybox_shader = (ResourceShader*)GetResourceWithID(0); // TODO
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
