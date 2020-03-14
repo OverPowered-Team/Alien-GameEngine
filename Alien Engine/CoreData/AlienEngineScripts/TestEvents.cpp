@@ -10,6 +10,7 @@ TestEvents::~TestEvents()
 
 void TestEvents::Start()
 {
+	LOG("%s", myString.data());
 }
 
 void TestEvents::Update()

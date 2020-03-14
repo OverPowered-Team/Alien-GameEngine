@@ -3,6 +3,8 @@
 #include "..\..\Alien Engine\Alien.h"
 #include "Macros/AlienScripts.h"
 
+#include <string>
+
 enum (MYENUM2,
 	fdfsdf = 2,
 	tsfdswo = -34,
@@ -29,6 +31,7 @@ public:
 	void Event2();
 	void Event3();
 
+	std::string myString = "Holaaa";
 
 public:
 	MYENUM myEnumTest = MYENUM::two;
@@ -44,6 +47,8 @@ ALIEN_FACTORY TestEvents* CreateTestEvents() {
 	SHOW_VOID_FUNCTION(TestEvents::Event3, events);
 	SHOW_IN_INSPECTOR_AS_ENUM(TestEvents::MYENUM, events->myEnumTest);
 	SHOW_IN_INSPECTOR_AS_ENUM(MYENUM2, events->myEnumTest2);
-	
+
+	SHOW_IN_INSPECTOR_AS_STRING(events->myString.data());
+
 	return events;
 } 

@@ -61,6 +61,7 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
+static char* helper = nullptr;
 // ------------INSPECTOR MACROS----------------\\
 /*--------------------int--------------------*/
 #define SHOW_IN_INSPECTOR_AS_INPUT_INT(INT_) ComponentScript::InspectorInputInt(&INT_, #INT_)
@@ -72,6 +73,8 @@
 #define SHOW_IN_INSPECTOR_AS_SLIDER_FLOAT(FLOAT_, MIN_, MAX_) ComponentScript::InspectorSliderFloat(&FLOAT_, #FLOAT_, MIN_, MAX_)
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
+/*--------------------string--------------------*/
+#define SHOW_IN_INSPECTOR_AS_STRING(CONST_CHAR_POINTER) helper = strdup(CONST_CHAR_POINTER); ComponentScript::InspectorString(&helper, #CONST_CHAR_POINTER)
 /*--------------------enum--------------------*/
 #define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/

@@ -175,6 +175,21 @@ bool ComponentScript::DrawInspector()
 						break;
 					}
 					break; }
+				case InspectorScriptData::DataType::STRING: {
+					ImGui::PushID(inspector_variables[i].ptr);
+
+					char** ptr = (char**)inspector_variables[i].ptr;
+					static char name[MAX_PATH];
+					memcpy(name, *ptr, MAX_PATH);
+
+					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.5F);
+
+					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
+						strcpy(*ptr, name);
+					}
+
+					ImGui::PopID();
+					break; }
 				case InspectorScriptData::DataType::ENUM: {
 					ImGui::PushID(inspector_variables[i].ptr);
 					int* ptr = (int*)inspector_variables[i].ptr;
@@ -609,6 +624,16 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 	ComponentScript* script = App->objects->actual_script_loading;
 	if (script != nullptr) {
 		script->inspector_variables.push_back(InspectorScriptData(variable_name, InspectorScriptData::DataType::BOOL, ptr, InspectorScriptData::CHECKBOX));
+	}
+}
+
+void ComponentScript::InspectorString(char** ptr, const char* ptr_name)
+{
+	std::string variable_name = GetVariableName(ptr_name);
+
+	ComponentScript* script = App->objects->actual_script_loading;
+	if (script != nullptr) {
+		script->inspector_variables.push_back(InspectorScriptData(variable_name, InspectorScriptData::DataType::STRING, ptr, InspectorScriptData::NONE));
 	}
 }
 
