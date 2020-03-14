@@ -92,6 +92,9 @@ public:
 	ResourceShader* GetShaderByName(std::string shaderName);
 	ResourceMaterial* GetMaterialByName(const char* name); 
 
+	const uint GetTextureidByID(const u64& ID) const;
+	ResourceTexture* GetTextureByID(const u64& ID);
+
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
 	ResourceMaterial* CreateMaterial(const char* name);

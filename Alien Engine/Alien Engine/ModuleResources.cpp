@@ -599,6 +599,33 @@ ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
 	return desiredMaterial;
 }
 
+const uint ModuleResources::GetTextureidByID(const u64& ID) const // This needs to be redifined
+{
+	OPTICK_EVENT();
+
+	std::vector<Resource*>::const_iterator item = resources.cbegin();
+	for (; item != resources.cend(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && (*item)->GetID() == ID) {
+			return static_cast<ResourceTexture*>(*item)->id;
+		}
+	}
+
+	return -1;
+}
+
+ResourceTexture* ModuleResources::GetTextureByID(const u64& ID)
+{
+	OPTICK_EVENT();
+	std::vector<Resource*>::const_iterator item = resources.cbegin();
+	for (; item != resources.cend(); ++item) {
+		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && (*item)->GetID() == ID) {
+			return (ResourceTexture*)(*item);
+		}
+	}
+
+	return nullptr;
+}
+
 ResourceFont* ModuleResources::GetFontByName(const char* name)
 {
 	auto item = resources.begin();

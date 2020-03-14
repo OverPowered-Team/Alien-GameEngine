@@ -119,6 +119,9 @@ public:
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
+	bool LoadMemory() override;
+	void FreeMemory() override;
+
 	// Functionality
 	void ApplyMaterial();
 
@@ -145,7 +148,7 @@ public:
 	u64 textureID = 0;
 	ResourceTexture* texture = nullptr; // Provisional
 	bool textureActivated = true;
-	u64 texturesID[(uint)TextureType::MAX] = { 0 };
+	u64 texturesID[(uint)TextureType::MAX];
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
 	const char* selectedShader = nullptr;

@@ -12,6 +12,11 @@ ResourceMaterial::ResourceMaterial() : Resource()
 {
 	type = ResourceType::RESOURCE_MATERIAL;
 
+	for (uint i = 0; i < (uint)TextureType::MAX; ++i)
+	{
+		texturesID[i] = LLONG_MAX;
+	}
+
 	used_shader = App->resources->default_shader;
 
 	if (used_shader != nullptr)
@@ -213,11 +218,29 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	}
 }
 
+bool ResourceMaterial::LoadMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != LLONG_MAX)
+			App->resources->GetTextureByID(texturesID[iter])->IncreaseReferences();
+	}
+
+	return true;
+}
+
+void ResourceMaterial::FreeMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != LLONG_MAX)
+			App->resources->GetTextureByID(texturesID[iter])->DecreaseReferences();
+	}
+}
+
 void ResourceMaterial::ApplyMaterial()
 {
 
-	if(texture != nullptr && textureActivated)
-		glBindTexture(GL_TEXTURE_2D, texture->id);
+	if(texturesID[(uint)TextureType::DIFFUSE] != 0 && textureActivated)
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
 
 	// Bind the actual shader
 	used_shader->Bind();
@@ -252,8 +275,7 @@ void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 		return;
 
 	tex->IncreaseReferences();
-	texturesID[(uint)texType] = tex->id;
-	//texturesID[(uint)texType] = tex->GetID();
+	texturesID[(uint)texType] = tex->GetID();
 }
 
 void ResourceMaterial::RemoveTexture()
@@ -299,6 +321,7 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 {
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		IncreaseReferences(); // meanwhile
 		ImGui::SameLine();
 		MaterialHeader();
 
@@ -327,6 +350,7 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
+		DecreaseReferences(); // meanwhile
 	}
 }
 
@@ -386,37 +410,6 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		// Diffuse 
 		ImGui::Text("Diffuse:");
-		//InputTexture(TextureType::DIFFUSE);
-
-		ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : 0, ImVec2(30, 30));
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
-			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
-				FileNode* node = *(FileNode**)payload->Data;
-				if (node != nullptr && node->type == FileDropType::TEXTURE) {
-					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
-					path += "_meta.alien";
-					u64 ID = App->resources->GetIDFromAlienPath(path.data());
-					if (ID != 0) {
-						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-						if (texture != nullptr) {
-							//SetTexture(texture, texType);
-							SetTexture(texture);
-						}
-					}
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::SameLine();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15);
-		if (ImGui::ColorButton("Remove Texture", ImVec4(1.0f, 0.f, 0.f, 1.f), 0, ImVec2(10, 10)))
-		{
-			// TODO: Open Popup, "do you want to remove the texture?"
-			RemoveTexture();
-		}
-
 		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
@@ -488,9 +481,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 void ResourceMaterial::InputTexture(TextureType texType)
 {
-	//ImGui::ImageButton((ImTextureID)App->resources->GetTextureIDWithResourceID(texturesID[(uint)texType]), ImVec2(30, 30));
-	//ImGui::ImageButton((ImTextureID)dynamic_cast<ResourceTexture*>(App->resources->GetResourceWithID(texturesID[(uint)texType]))->id, ImVec2(30, 30));
-	ImGui::ImageButton((ImTextureID)texturesID[(uint)texType], ImVec2(30, 30));
+	ImGui::ImageButton((ImTextureID)App->resources->GetTextureidByID(texturesID[(uint)texType]), ImVec2(30, 30));
 	if (ImGui::BeginDragDropTarget()) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
@@ -503,8 +494,6 @@ void ResourceMaterial::InputTexture(TextureType texType)
 					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 					if (texture != nullptr) {
 						SetTexture(texture, texType);
-						//SetTexture(texture);
-						LOG_ENGINE("Setting texture in spot: %i | ID: %d", (int)texType, texture->id);
 					}
 				}
 			}
@@ -514,11 +503,13 @@ void ResourceMaterial::InputTexture(TextureType texType)
 
 	ImGui::SameLine();
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15);
+	ImGui::PushID((int)texType);
 	if (ImGui::ColorButton("Remove Texture", ImVec4(1.0f, 0.f, 0.f, 1.f), 0, ImVec2(10, 10)))
 	{
 		// TODO: Open Popup, "do you want to remove the texture?"
 		RemoveTexture(texType);
 	}
+	ImGui::PopID();
 }
 
 void ResourceMaterial::TexturesSegment()
