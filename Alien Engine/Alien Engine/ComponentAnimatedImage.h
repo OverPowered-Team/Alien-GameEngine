@@ -19,8 +19,11 @@ public:
 	void SetComponent(Component* component) {};
 	void Clone(Component* clone) {};
 
-	void SaveComponent(JSONArraypack* to_save) {};
-	void LoadComponent(JSONArraypack* to_load) {};
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
+
+	ResourceTexture* ClearTextureArray(ResourceTexture* item);
+	ResourceTexture* SetTextureArray(ResourceTexture* tex, ResourceTexture* item);
 
 private:
 	std::vector<ResourceTexture*> images;

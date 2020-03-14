@@ -16,6 +16,7 @@
 #include "ComponentCheckbox.h"
 #include "ComponentSlider.h"
 #include "ComponentText.h"
+#include "ComponentAnimatedImage.h"
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
@@ -1941,6 +1942,14 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		comp = new ComponentBar(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Bar");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+	case ComponentType::UI_ANIMATED_IMAGE: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentAnimatedImage(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Animated Image");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }

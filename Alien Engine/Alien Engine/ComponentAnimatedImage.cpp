@@ -1,13 +1,11 @@
 #include "Application.h"
-#include "ModuleRenderer3D.h"
 #include "ModuleUI.h"
-#include "PanelGame.h"
-#include "MathGeoLib/include/Geometry/Frustum.h"
-#include "GameObject.h"
+#include "PanelProject.h"
 #include "ComponentTransform.h"
 #include "ComponentAnimatedImage.h"
 #include "ResourceTexture.h"
-#include "glew/include/glew.h"
+#include "PanelGame.h"
+
 
 ComponentAnimatedImage::ComponentAnimatedImage(GameObject* obj): ComponentUI(obj)
 {
@@ -17,7 +15,115 @@ ComponentAnimatedImage::ComponentAnimatedImage(GameObject* obj): ComponentUI(obj
 
 bool ComponentAnimatedImage::DrawInspector()
 {
-	return false;
+	static bool check;
+
+	ImGui::PushID(this);
+	check = enabled;
+	if (ImGui::Checkbox("##CmpActive", &check)) {
+		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+		enabled = check;
+	}
+	ImGui::PopID();
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Image", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		RightClickMenu("Image");
+
+		ImGui::Spacing();
+		ImGui::Text("Add Image");
+		ImGui::SameLine(85);
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.0F,0.65F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.0F,0.8F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.0F,0.95F,0.0F,1.0F });
+		if (ImGui::Button("+"))
+		{
+			images.reserve(images.size() + 1);
+			images.push_back(nullptr);
+		}
+		ImGui::PopStyleColor(3);
+
+		ImGui::Spacing();
+		for (auto item = images.begin(); item != images.end(); ++item)
+		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Texture");
+
+			ImGui::SameLine(85);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+			ImGui::Button(((*item) == nullptr) ? "NULL" : std::string((*item)->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+
+			if (ImGui::IsItemClicked() && (*item) != nullptr) {
+				App->ui->panel_project->SelectFile((*item)->GetAssetsPath(), App->resources->assets);
+			}
+
+			ImGui::PopStyleColor(3);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+					FileNode* node = *(FileNode**)payload->Data;
+					if (node != nullptr && node->type == FileDropType::TEXTURE) {
+						std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+						path += "_meta.alien";
+						u64 ID = App->resources->GetIDFromAlienPath(path.data());
+						if (ID != 0) {
+							ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+							if (texture != nullptr) {
+								//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+								(*item) = SetTextureArray(texture, (*item));
+							}
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			if ((*item) != nullptr) {
+				ImGui::SameLine();
+				ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+				if (ImGui::Button("X") && (*item) != nullptr) {
+					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+					(*item) = ClearTextureArray((*item));
+				}
+				ImGui::PopStyleColor(3);
+			}
+		}
+		ImGui::Spacing();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Color");
+		ImGui::SameLine(85);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		static bool set_Z = true;
+		static Color col;
+		col = current_color;
+		if (ImGui::ColorEdit4("##RendererColor", &col, ImGuiColorEditFlags_Float)) {
+			if (set_Z)
+				//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			set_Z = false;
+			current_color = col;
+		}
+		else if (!set_Z && ImGui::IsMouseReleased(0)) {
+			set_Z = true;
+		}
+		ImGui::Spacing();
+
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
+	else {
+		RightClickMenu("Image");
+	}
+
+	return true;
 }
 
 void ComponentAnimatedImage::Draw(bool isGame)
@@ -108,4 +214,34 @@ void ComponentAnimatedImage::Draw(bool isGame)
 	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
+}
+
+void ComponentAnimatedImage::SaveComponent(JSONArraypack* to_save)
+{
+}
+
+void ComponentAnimatedImage::LoadComponent(JSONArraypack* to_load)
+{
+}
+
+ResourceTexture* ComponentAnimatedImage::ClearTextureArray(ResourceTexture* item)
+{
+	if (item != nullptr) {
+		item->DecreaseReferences();
+		item = nullptr;
+		return nullptr;
+	}
+	return nullptr;
+}
+
+ResourceTexture* ComponentAnimatedImage::SetTextureArray(ResourceTexture* tex, ResourceTexture* item)
+{
+	if (tex != nullptr && tex != item) {
+		tex->IncreaseReferences();
+		if (item != nullptr) {
+			item->DecreaseReferences();
+		}
+		return tex;
+	}
+	return nullptr;
 }
