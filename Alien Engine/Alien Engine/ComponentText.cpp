@@ -162,11 +162,16 @@ void ComponentText::Draw(bool isGame)
 	float pos_y = 0;
 	float line = 0;
 	// Divides the current panel width by the canvas width in order to set a relation between the elements in the canvas and the ones in the panel
-	// TODO1: Que cuando supere la altura del canvas se vaya para abajo. Se tendria que poder definir una area en la cual se quiere que acue el texto y se pase se cambie de linea
 	// TODO2: Que cuando se este escribiendo no afecte al Gizmos
 	// TODO3: Mirar ResourceFont load Bug
 	// TODO4: Modo game la UI
-	float factor = App->ui->panel_game->width / canvas->width;
+	float factor = 0;
+	#ifndef GAME_VERSION
+	factor = App->ui->panel_game->width / canvas->width;
+	#else
+	factor = App->window->width / canvas->width;
+	#endif
+
 	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 		static float xpos = 0;
@@ -300,12 +305,16 @@ void ComponentText::SaveComponent(JSONArraypack* to_save)
 	}
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetColor("Color", current_color);
+	to_save->SetNumber("Width", width);
+	to_save->SetNumber("Interlineal", interlineal);
 }
 
 void ComponentText::LoadComponent(JSONArraypack* to_load)
 {
 	enabled = to_load->GetBoolean("Enabled");
 	text = to_load->GetString("Text");
+	interlineal = to_load->GetNumber("Interlineal");
+	width = to_load->GetNumber("Width");
 
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
