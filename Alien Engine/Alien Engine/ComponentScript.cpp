@@ -178,14 +178,14 @@ bool ComponentScript::DrawInspector()
 				case InspectorScriptData::DataType::STRING: {
 					ImGui::PushID(inspector_variables[i].ptr);
 
-					char** ptr = (char**)inspector_variables[i].ptr;
+					std::string* ptr = (std::string*)inspector_variables[i].ptr;
 					static char name[MAX_PATH];
-					memcpy(name, *ptr, MAX_PATH);
+					memcpy(name, ptr->data(), MAX_PATH);
 
 					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.5F);
 
 					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
-						strcpy(*ptr, name);
+						ptr->assign(name);
 					}
 
 					ImGui::PopID();
@@ -627,7 +627,7 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 	}
 }
 
-void ComponentScript::InspectorString(char** ptr, const char* ptr_name)
+void ComponentScript::InspectorString(std::string* ptr, const char* ptr_name)
 {
 	std::string variable_name = GetVariableName(ptr_name);
 
@@ -663,10 +663,11 @@ void ComponentScript::InspectorEnum(int* ptr, const char* ptr_name, const char* 
 				aux.clear();
 			}
 		}
-		if (aux.front() == ' ') {
-			aux.erase(aux.begin());
+		if (!aux.empty()) {
+			if (aux.front() == ' ')
+				aux.erase(aux.begin());
+			SetEnumValues(aux, script);
 		}
-		SetEnumValues(aux, script);
 
 		//script->inspector_variables.back().previewEnumName = GetCurrentEnumName(*ptr, script->inspector_variables.back().enumNames);
 	}
