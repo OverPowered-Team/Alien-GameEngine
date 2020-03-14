@@ -67,6 +67,11 @@ bool ComponentText::DrawInspector()
 			set_bg_Z = true;
 		}
 
+		ImGui::Spacing(); ImGui::Separator(); ImGui::SetNextItemWidth(150);
+
+		ImGui::DragInt("Width", &width, 5.f); ImGui::SameLine(); ImGui::SetNextItemWidth(150);
+		ImGui::DragFloat("Interlineal", &interlineal, 0.25f);
+
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -154,7 +159,14 @@ void ComponentText::Draw(bool isGame)
 	
 	std::string::const_iterator c;
 	float pos_x = 0;
-	float asla = App->ui->panel_game->width / canvas->width;
+	float pos_y = 0;
+	float line = 0;
+	// Divides the current panel width by the canvas width in order to set a relation between the elements in the canvas and the ones in the panel
+	// TODO1: Que cuando supere la altura del canvas se vaya para abajo. Se tendria que poder definir una area en la cual se quiere que acue el texto y se pase se cambie de linea
+	// TODO2: Que cuando se este escribiendo no afecte al Gizmos
+	// TODO3: Mirar ResourceFont load Bug
+	// TODO4: Modo game la UI
+	float factor = App->ui->panel_game->width / canvas->width;
 	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 		static float xpos = 0;
@@ -163,15 +175,15 @@ void ComponentText::Draw(bool isGame)
 		static float h = 0;
 		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
 		{
-			xpos = x + pos_x + ch.bearing.x * scale.x * asla;
-			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
-			w = ch.size.x * scale.x * asla;
-			h = ch.size.y * scale.y * asla;
+			xpos = x + pos_x + ch.bearing.x * scale.x * factor;
+			ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor;
+			w = ch.size.x * scale.x * factor;
+			h = ch.size.y * scale.y * factor;
 		}
 		else
 		{
 			xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
-			ypos = matrix[1][3] + (ch.size.y - ch.bearing.y) * scale.y;
+			ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
 			w = ch.size.x * scale.x;
 			h = ch.size.y * scale.y;
 		}
@@ -209,9 +221,31 @@ void ComponentText::Draw(bool isGame)
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		if (isGame && App->renderer3D->actual_game_camera != nullptr)
-			pos_x += ch.advance * scale.x * asla;
+		{
+			line = pos_x += ch.advance * scale.x * factor;
+			if (line > width* factor)
+			{
+				if (isGame && App->renderer3D->actual_game_camera != nullptr)
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor * interlineal;
+				else
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
+
+				pos_x = 0;
+			}
+		}
 		else
-			pos_x += ch.advance * scale.x;
+		{
+			line = pos_x += ch.advance * scale.x;
+			if (line > width)
+			{
+				if (isGame && App->renderer3D->actual_game_camera != nullptr)
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor * interlineal;
+				else
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
+
+				pos_x = 0;
+			}
+		}
 	}
 	
 	canvas->text_shader->Unbind();

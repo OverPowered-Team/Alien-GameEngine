@@ -33,7 +33,9 @@ public:
 
 private:
 	ResourceFont*	font = nullptr;
-	uint VAO, VBO;
+	uint VAO;
+	int width = 200;
+	float interlineal = 1.5;
 };
 
 #endif // !_COMPONENT_TEXT_H_
