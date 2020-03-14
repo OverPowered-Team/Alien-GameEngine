@@ -5,7 +5,7 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "17806938620724568932",
+                "ID": "4192549478070606296",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "2542977349849691772"
+                        "ID": "7181829529865597104"
                     },
                     {
                         "Enabled": true,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "13647120055260744635",
+                        "ID": "11776685031948091408",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -67,7 +67,7 @@
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "6496321470150273777",
+                "ID": "66041188214372706",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -97,12 +97,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "7743581646147207914"
+                        "ID": "14496011020647179875"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "15967737563668325690",
+                        "ID": "4966151794263473310",
                         "PrintIcon": true,
                         "Position": [
                             0,
@@ -135,7 +135,7 @@
             {
                 "Name": "Canvas",
                 "FamilyNumber": 1,
-                "ID": "7438476297778028461",
+                "ID": "3544029967490744998",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -165,7 +165,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "13698099619854933035"
+                        "ID": "11497224553503064440"
                     },
                     {
                         "Enabled": true,
@@ -176,11 +176,11 @@
             {
                 "Name": "Text",
                 "FamilyNumber": 2,
-                "ID": "10385355183582489478",
-                "ParentID": "7438476297778028461",
+                "ID": "13592511230355500569",
+                "ParentID": "3544029967490744998",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -190,9 +190,9 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -80,
-                            0,
-                            0
+                            -77.411376953125,
+                            26.207050323486328,
+                            -7.624287718499545e-06
                         ],
                         "Rotation": [
                             0,
@@ -206,12 +206,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "13533577445159775377"
+                        "ID": "2445471966040915952"
                     },
                     {
                         "Type": 28,
-                        "ID": "1656423349324562803",
-                        "Text": "vergotaaaaaaaaaaaaaaa",
+                        "ID": "6052385042435703961",
+                        "Text": "VIVA ESPANYITA",
                         "UIType": 20,
                         "FontID": "6090935666492539845",
                         "Enabled": true,

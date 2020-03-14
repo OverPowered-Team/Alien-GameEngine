@@ -163,7 +163,7 @@ void ComponentText::Draw(bool isGame)
 		static float h = 0;
 		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
 		{
-			xpos = x + pos_x;
+			xpos = x + pos_x + ch.bearing.x * scale.x * asla;
 			ypos = y + (ch.size.y - ch.bearing.y) * scale.y;
 			w = ch.size.x * scale.x * asla;
 			h = ch.size.y * scale.y * asla;
