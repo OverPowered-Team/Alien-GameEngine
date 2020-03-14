@@ -370,7 +370,7 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 			ModelNode nodeMesh;
 			nodeMesh.name = std::string(node->mName.C_Str() + std::to_string(i));
 			nodeMesh.mesh = node->mMeshes[i];
-			model_node.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
+			nodeMesh.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
 			nodeMesh.parent_name = model_node.name;
 			nodeMesh.node_num = nodeNum + 2;
 			nodeMesh.parent_num = nodeNum + 1;

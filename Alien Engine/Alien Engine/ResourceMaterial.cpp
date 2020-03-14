@@ -305,10 +305,10 @@ void ResourceMaterial::RemoveTexture(TextureType texType)
 {
 	if (texturesID[(uint)texType] != NO_TEXTURE_ID)
 	{
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
+		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
 
 		if(tex != nullptr)
-			tex->DecreaseReferences();
+			tex->DecreaseReferences();*/
 
 		texturesID[(uint)texType] = NO_TEXTURE_ID;
 	}
