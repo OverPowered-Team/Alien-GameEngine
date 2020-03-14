@@ -319,6 +319,8 @@ RECENT REVISION HISTORY:
 //     want the zlib decoder to be available, #define STBI_SUPPORT_ZLIB
 //
 
+#define STB_IMAGE_IMPLEMENTATION
+
 
 #ifndef STBI_NO_STDIO
 #include <stdio.h>
@@ -494,8 +496,6 @@ extern "C" {
 //
 ////   end header file   /////////////////////////////////////////////////////
 #endif // STBI_INCLUDE_STB_IMAGE_H
-
-#define STB_IMAGE_IMPLEMENTATION
 
 #ifdef STB_IMAGE_IMPLEMENTATION
 

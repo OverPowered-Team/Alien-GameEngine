@@ -25,6 +25,7 @@
 
 enum class EventType; 
 struct AlienEvent;
+class Skybox;
 
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
@@ -56,6 +57,8 @@ public:
 	ModuleAudio*		audio = nullptr;
 	ModulePhysics* 		physics = nullptr;
 	AnimTween*			tween = nullptr;
+
+	Skybox* skybox = nullptr;
 
 	bool fps_cap = true;
 	uint16_t framerate_cap;

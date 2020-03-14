@@ -97,6 +97,12 @@
     <Filter Include="Tools\Optik">
       <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{ea1781ef-52f3-4b39-923c-9863d1844099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Stb">
+      <UniqueIdentifier>{f47e6cdd-1441-4790-9eda-58f25045718e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -584,6 +590,12 @@
     </ClInclude>
     <ClInclude Include="PanelPhysics.h">
       <Filter>Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Tools\Stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2536,6 +2548,9 @@
     </ClCompile>
     <ClCompile Include="PanelPhysics.cpp">
       <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

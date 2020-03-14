@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Parson/parson.h"
 #include "Time.h"
+#include "Skybox.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 
@@ -69,6 +70,8 @@ void Application::LoadDll()
 
 Application::~Application()
 {
+	RELEASE(skybox);
+
 	std::list<Module*>::reverse_iterator item = list_modules.rbegin();
 
 	while(item != list_modules.rend())
@@ -219,6 +222,20 @@ bool Application::Init()
 #ifdef GAME_VERSION
 	renderer3D->OnResize(window->width, window->height);
 #endif
+
+	// Create skybox
+	std::vector<std::string> skybox_faces = {
+		TEXTURES_FOLDER"Skybox/negx.jpg",
+		TEXTURES_FOLDER"Skybox/negy.jpg",
+		TEXTURES_FOLDER"Skybox/negz.jpg",
+		TEXTURES_FOLDER"Skybox/posx.jpg",
+		TEXTURES_FOLDER"Skybox/posy.jpg",
+		TEXTURES_FOLDER"Skybox/posz.jpg"
+	};
+
+	skybox = new Skybox();
+	skybox->LoadCubeMap(skybox_faces);
+	// todo, own texture vector, cleanup clear()
 
 	return ret;
 }
