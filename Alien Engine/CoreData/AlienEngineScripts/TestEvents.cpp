@@ -16,6 +16,7 @@ void TestEvents::Start()
 
 void TestEvents::Update()
 {
+
 }
 
 void TestEvents::Event()
