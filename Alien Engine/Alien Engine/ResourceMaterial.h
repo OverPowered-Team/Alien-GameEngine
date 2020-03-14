@@ -5,6 +5,7 @@
 #include "MathGeoLib/include/Math/float4.h"
 #include <vector>
 
+#define NO_TEXTURE_ID 0
 /*
 
 enum aiTextureType
@@ -109,6 +110,9 @@ public:
 	ResourceMaterial();
 	virtual ~ResourceMaterial();
 
+	bool LoadMemory() override;
+	void FreeMemory() override;
+
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
 	bool ReadBaseInfo(const char* assets_file_path);
@@ -119,8 +123,7 @@ public:
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
-	bool LoadMemory() override;
-	void FreeMemory() override;
+
 
 	// Functionality
 	void ApplyMaterial();

@@ -603,6 +603,9 @@ const uint ModuleResources::GetTextureidByID(const u64& ID) const // This needs 
 {
 	OPTICK_EVENT();
 
+	if (ID == 0)
+		return -1;
+
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
 	for (; item != resources.cend(); ++item) {
 		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && (*item)->GetID() == ID) {
@@ -616,6 +619,10 @@ const uint ModuleResources::GetTextureidByID(const u64& ID) const // This needs 
 ResourceTexture* ModuleResources::GetTextureByID(const u64& ID)
 {
 	OPTICK_EVENT();
+
+	if (ID == 0)
+		return nullptr;
+
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
 	for (; item != resources.cend(); ++item) {
 		if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && (*item)->GetID() == ID) {

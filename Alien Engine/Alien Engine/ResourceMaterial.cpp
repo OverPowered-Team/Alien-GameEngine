@@ -14,7 +14,7 @@ ResourceMaterial::ResourceMaterial() : Resource()
 
 	for (uint i = 0; i < (uint)TextureType::MAX; ++i)
 	{
-		texturesID[i] = LLONG_MAX;
+		texturesID[i] = NO_TEXTURE_ID;
 	}
 
 	used_shader = App->resources->default_shader;
@@ -27,9 +27,40 @@ ResourceMaterial::ResourceMaterial() : Resource()
 
 ResourceMaterial::~ResourceMaterial()
 {
+	for (uint texType = 0; texType < (uint)TextureType::MAX; ++texType)
+	{
+		RemoveTexture((TextureType)texType);
+	}
+
 	if (texture != nullptr)
 	{
 		RemoveTexture();
+	}
+}
+
+bool ResourceMaterial::LoadMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != NO_TEXTURE_ID)
+		{
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->IncreaseReferences();
+		}
+	}
+
+	return true;
+}
+
+void ResourceMaterial::FreeMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != NO_TEXTURE_ID)
+		{
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->DecreaseReferences();
+		}
 	}
 }
 
@@ -218,24 +249,6 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	}
 }
 
-bool ResourceMaterial::LoadMemory()
-{
-	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (texturesID[iter] != LLONG_MAX)
-			App->resources->GetTextureByID(texturesID[iter])->IncreaseReferences();
-	}
-
-	return true;
-}
-
-void ResourceMaterial::FreeMemory()
-{
-	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (texturesID[iter] != LLONG_MAX)
-			App->resources->GetTextureByID(texturesID[iter])->DecreaseReferences();
-	}
-}
-
 void ResourceMaterial::ApplyMaterial()
 {
 
@@ -274,7 +287,7 @@ void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 	if (tex == nullptr)
 		return;
 
-	tex->IncreaseReferences();
+	//tex->IncreaseReferences();
 	texturesID[(uint)texType] = tex->GetID();
 }
 
@@ -282,7 +295,7 @@ void ResourceMaterial::RemoveTexture()
 {
 	if (texture != nullptr)
 	{
-		texture->DecreaseReferences();
+		//texture->DecreaseReferences();
 		texture = nullptr;
 		textureID = 0;
 	}
@@ -290,14 +303,14 @@ void ResourceMaterial::RemoveTexture()
 
 void ResourceMaterial::RemoveTexture(TextureType texType)
 {
-	if (texturesID[(uint)texType] != 0)
+	if (texturesID[(uint)texType] != NO_TEXTURE_ID)
 	{
 		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
 
 		if(tex != nullptr)
 			tex->DecreaseReferences();
 
-		texturesID[(uint)texType] = 0;
+		texturesID[(uint)texType] = NO_TEXTURE_ID;
 	}
 }
 
@@ -361,7 +374,7 @@ void ResourceMaterial::MaterialHeader()
 	{
 		ImGui::BeginTooltip();
 		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references)).c_str());
+		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references - 1)).c_str());
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
@@ -482,7 +495,7 @@ void ResourceMaterial::ShaderInputsSegment()
 void ResourceMaterial::InputTexture(TextureType texType)
 {
 	ImGui::ImageButton((ImTextureID)App->resources->GetTextureidByID(texturesID[(uint)texType]), ImVec2(30, 30));
-	if (ImGui::BeginDragDropTarget()) {
+	if (ImGui::BeginDragDropTarget() && this != App->resources->default_material) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
 			FileNode* node = *(FileNode**)payload->Data;
