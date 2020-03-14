@@ -15,6 +15,7 @@ public:
 	void Start();
 	void Update();
 
+
 	ComponentAnimator* anim = nullptr;
 
 	TestEvents::MYENUM myEnumTest = TestEvents::MYENUM::two;

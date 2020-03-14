@@ -332,6 +332,10 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 				int value = *(int*)inspector_variables[i].ptr;
 				inspector->SetNumber("enumInt", value);
 				break; }
+			case InspectorScriptData::DataType::STRING: {
+				std::string* value = (std::string*)inspector_variables[i].ptr;
+				inspector->SetString("string", value->data());
+				break; }
 			case InspectorScriptData::DataType::FLOAT: {
 				float value = *(float*)inspector_variables[i].ptr;
 				inspector->SetNumber("float", value);
@@ -388,6 +392,10 @@ void ComponentScript::LoadComponent(JSONArraypack* to_load)
 						case InspectorScriptData::DataType::ENUM: {
 							int* value = (int*)inspector_variables[i].ptr;
 							*value = inspector->GetNumber("enumInt");
+							break; }
+						case InspectorScriptData::DataType::STRING: {
+							std::string* value = (std::string*)inspector_variables[i].ptr;
+							value->assign(inspector->GetString("string"));
 							break; }
 						case InspectorScriptData::DataType::FLOAT: {
 							float* value = (float*)inspector_variables[i].ptr;
@@ -451,6 +459,11 @@ void ComponentScript::Clone(Component* clone)
 					int variable = *(int*)inspector_variables[i].ptr;
 					int* script_var = (int*)script->inspector_variables[i].ptr;
 					*script_var = variable;
+					break; }
+				case InspectorScriptData::DataType::STRING: {
+					std::string variable = *(std::string*)inspector_variables[i].ptr;
+					std::string* script_var = (std::string*)script->inspector_variables[i].ptr;
+					script_var->assign(variable.data());
 					break; }
 				case InspectorScriptData::DataType::FLOAT: {
 					float variable = *(float*)inspector_variables[i].ptr;
@@ -630,6 +643,7 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 void ComponentScript::InspectorString(std::string* ptr, const char* ptr_name)
 {
 	std::string variable_name = GetVariableName(ptr_name);
+	ptr->assign(ptr_name);
 
 	ComponentScript* script = App->objects->actual_script_loading;
 	if (script != nullptr) {
@@ -668,8 +682,6 @@ void ComponentScript::InspectorEnum(int* ptr, const char* ptr_name, const char* 
 				aux.erase(aux.begin());
 			SetEnumValues(aux, script);
 		}
-
-		//script->inspector_variables.back().previewEnumName = GetCurrentEnumName(*ptr, script->inspector_variables.back().enumNames);
 	}
 }
 

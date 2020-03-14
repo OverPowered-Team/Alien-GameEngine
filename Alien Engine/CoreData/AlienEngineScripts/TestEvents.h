@@ -30,8 +30,8 @@ public:
 	void Event();
 	void Event2();
 	void Event3();
+	std::string myString = "a";
 
-	std::string myString = "Holaaa";
 
 public:
 	MYENUM myEnumTest = MYENUM::two;
