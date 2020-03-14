@@ -31,7 +31,7 @@ public:
 	void Event2();
 	void Event3();
 	std::string myString = "a";
-
+	const char* testChar = "AAAAAAAAAAAAAAaa";
 
 public:
 	MYENUM myEnumTest = MYENUM::two;

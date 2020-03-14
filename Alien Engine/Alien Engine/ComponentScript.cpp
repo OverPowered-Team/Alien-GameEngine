@@ -178,14 +178,14 @@ bool ComponentScript::DrawInspector()
 				case InspectorScriptData::DataType::STRING: {
 					ImGui::PushID(inspector_variables[i].ptr);
 
-					std::string* ptr = (std::string*)inspector_variables[i].ptr;
+					char* ptr = (char*)inspector_variables[i].ptr;
 					static char name[MAX_PATH];
-					memcpy(name, ptr->data(), MAX_PATH);
+					memcpy(name, ptr, MAX_PATH);
 
 					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.5F);
 
 					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
-						ptr->assign(name);
+						memcpy(ptr, name, MAX_PATH);
 					}
 
 					ImGui::PopID();
@@ -333,8 +333,8 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 				inspector->SetNumber("enumInt", value);
 				break; }
 			case InspectorScriptData::DataType::STRING: {
-				std::string* value = (std::string*)inspector_variables[i].ptr;
-				inspector->SetString("string", value->data());
+				char* value = (char*)inspector_variables[i].ptr;
+				inspector->SetString("string", value);
 				break; }
 			case InspectorScriptData::DataType::FLOAT: {
 				float value = *(float*)inspector_variables[i].ptr;
@@ -394,8 +394,8 @@ void ComponentScript::LoadComponent(JSONArraypack* to_load)
 							*value = inspector->GetNumber("enumInt");
 							break; }
 						case InspectorScriptData::DataType::STRING: {
-							std::string* value = (std::string*)inspector_variables[i].ptr;
-							value->assign(inspector->GetString("string"));
+							char* value = (char*)inspector_variables[i].ptr;
+							strcpy(value, inspector->GetString("string"));
 							break; }
 						case InspectorScriptData::DataType::FLOAT: {
 							float* value = (float*)inspector_variables[i].ptr;
@@ -461,9 +461,9 @@ void ComponentScript::Clone(Component* clone)
 					*script_var = variable;
 					break; }
 				case InspectorScriptData::DataType::STRING: {
-					std::string variable = *(std::string*)inspector_variables[i].ptr;
-					std::string* script_var = (std::string*)script->inspector_variables[i].ptr;
-					script_var->assign(variable.data());
+					char* variable = (char*)inspector_variables[i].ptr;
+					char* script_var = (char*)script->inspector_variables[i].ptr;
+					strcpy(script_var, variable);
 					break; }
 				case InspectorScriptData::DataType::FLOAT: {
 					float variable = *(float*)inspector_variables[i].ptr;
@@ -640,14 +640,13 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 	}
 }
 
-void ComponentScript::InspectorString(std::string* ptr, const char* ptr_name)
+void ComponentScript::InspectorString(const char* ptr, const char* ptr_name)
 {
 	std::string variable_name = GetVariableName(ptr_name);
-	ptr->assign(ptr_name);
 
 	ComponentScript* script = App->objects->actual_script_loading;
 	if (script != nullptr) {
-		script->inspector_variables.push_back(InspectorScriptData(variable_name, InspectorScriptData::DataType::STRING, ptr, InspectorScriptData::NONE));
+		script->inspector_variables.push_back(InspectorScriptData(variable_name, InspectorScriptData::DataType::STRING, (void*)ptr, InspectorScriptData::NONE));
 	}
 }
 

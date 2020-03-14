@@ -1357,7 +1357,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 										inspector->SetNumber("enumInt", (*(int*)((*script)->inspector_variables[i].ptr)));
 										break; }
 									case InspectorScriptData::DataType::STRING: {
-										inspector->SetString("string", (*(std::string*)((*script)->inspector_variables[i].ptr)));
+										inspector->SetString("string", ((char*)((*script)->inspector_variables[i].ptr)));
 										break; }
 									case InspectorScriptData::DataType::FLOAT: {
 										inspector->SetNumber("float", (*(float*)((*script)->inspector_variables[i].ptr)));
@@ -1437,8 +1437,8 @@ void ModuleObjects::ReAssignScripts(JSONArraypack* to_load)
 										*(float*)(*item).ptr = inspector->GetNumber("float");
 										break; }
 									case InspectorScriptData::DataType::STRING: {
-										std::string* data = (std::string*)(*item).ptr;
-										data->assign(inspector->GetString("string"));
+										char* data = (char*)(*item).ptr;
+										strcpy(data, inspector->GetString("string"));
 										break; }
 									case InspectorScriptData::DataType::BOOL: {
 										*(bool*)(*item).ptr = inspector->GetNumber("bool");

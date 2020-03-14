@@ -11,6 +11,7 @@ TestEvents::~TestEvents()
 void TestEvents::Start()
 {
 	LOG("%s", myString.data());
+	LOG("%s", testChar);
 }
 
 void TestEvents::Update()

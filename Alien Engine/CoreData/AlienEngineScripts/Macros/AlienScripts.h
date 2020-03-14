@@ -74,7 +74,7 @@ static char* helper = nullptr;
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
 /*--------------------string--------------------*/
-#define SHOW_IN_INSPECTOR_AS_STRING(CONST_CHAR_POINTER) ComponentScript::InspectorString(&CONST_CHAR_POINTER, #CONST_CHAR_POINTER)
+#define SHOW_IN_INSPECTOR_AS_STRING(STD_STRING) ComponentScript::InspectorString(STD_STRING.data(), #STD_STRING)
 /*--------------------enum--------------------*/
 #define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/
