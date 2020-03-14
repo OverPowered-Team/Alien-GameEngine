@@ -9,6 +9,9 @@
 #include "ResourceFont.h"
 #include "PanelGame.h"
 #include "PanelScene.h"
+#include "ModuleInput.h"
+#include "ModuleObjects.h"
+#include "ModuleRenderer3D.h"
 #include "StaticInput.h"
 #include "mmgr/mmgr.h"
 

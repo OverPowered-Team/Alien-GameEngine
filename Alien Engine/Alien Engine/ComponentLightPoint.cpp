@@ -6,6 +6,8 @@
 #include "Application.h"
 #include "ReturnZ.h"
 #include "ComponentMesh.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "Gizmos.h"
 #include "mmgr/mmgr.h"
 

@@ -19,7 +19,7 @@
 #pragma comment(lib, "Freetype/libx86/freetype.lib")
 
 #include <vector>
-#include "glew/include/glew.h"
+//#include "glew/include/glew.h"
 #include "GameObject.h"
 #include "ComponentMesh.h"
 #include "Shapes.h"

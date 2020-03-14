@@ -3,6 +3,7 @@
 #include "ComponentTransform.h"
 #include "ComponentCollider.h"
 #include "GameObject.h"
+#include "Time.h"
 #include "ModuleInput.h"
 
 ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)

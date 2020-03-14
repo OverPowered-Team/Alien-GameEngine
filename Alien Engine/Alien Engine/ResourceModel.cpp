@@ -10,6 +10,8 @@
 #include "ReturnZ.h"
 #include "ResourceMaterial.h"
 #include "ResourceShader.h"
+#include "ModuleResources.h"
+#include "ModuleCamera3D.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentBone.h"

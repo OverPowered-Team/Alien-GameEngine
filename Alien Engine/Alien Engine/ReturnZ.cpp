@@ -12,6 +12,8 @@
 #include "Maths.h"
 #include "Octree.h"
 #include "PanelTextEditor.h"
+#include "ModuleUI.h"
+#include "ModuleResources.h"
 #include "ComponentImage.h"
 #include "ComponentUI.h"
 #include "ComponentBar.h"

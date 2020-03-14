@@ -3,6 +3,8 @@
 #include "ComponentUI.h"
 #include "ReturnZ.h"
 #include "ResourceTexture.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "Application.h"
 #include "PanelProject.h"
 #include "mmgr/mmgr.h"

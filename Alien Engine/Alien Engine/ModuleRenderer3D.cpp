@@ -4,6 +4,7 @@
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include "ModuleWindow.h"
 #include "ModuleUI.h"
 #include "ResourceTexture.h"
 #include "ComponentCamera.h"

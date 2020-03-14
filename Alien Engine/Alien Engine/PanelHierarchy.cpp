@@ -8,6 +8,11 @@
 #include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ShortCutManager.h"
+#include "ModuleCamera3D.h"
+#include "ModuleInput.h"
+#include "ModuleUI.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 

@@ -5,6 +5,8 @@
 #include "imgui/imgui.h"
 #include "ComponentMesh.h"
 #include "Application.h"
+#include "ModuleResources.h"
+#include "ModuleFileSystem.h"
 #include "ResourceTexture.h"
 #include "ResourceMaterial.h"
 #include "ResourceShader.h"

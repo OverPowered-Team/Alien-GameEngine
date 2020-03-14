@@ -11,6 +11,9 @@
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
+#include "ModuleRenderer3D.h"
 #include "ComponentTransform.h"
 #include "mmgr/mmgr.h"
 

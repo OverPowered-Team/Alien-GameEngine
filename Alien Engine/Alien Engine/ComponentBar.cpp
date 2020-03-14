@@ -7,6 +7,8 @@
 #include "ComponentTransform.h"
 #include "ComponentBar.h"
 #include "ResourceTexture.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "ReturnZ.h"
 #include "imgui/imgui.h"
 #include "mmgr/mmgr.h"

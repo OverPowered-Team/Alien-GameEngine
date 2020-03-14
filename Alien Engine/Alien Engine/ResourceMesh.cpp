@@ -4,6 +4,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentTransform.h"
 #include "ComponentBone.h"
+#include "ModuleResources.h"
 #include "ComponentDeformableMesh.h"
 #include "ResourceTexture.h"
 #include "ResourceBone.h"

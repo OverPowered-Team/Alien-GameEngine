@@ -28,7 +28,6 @@
 #include "ComponentScript.h"
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
-#include "ComponentReverbZone.h"
 #include "Prefab.h"
 #include "Event.h"
 #include "ResourcePrefab.h"

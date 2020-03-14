@@ -2,7 +2,7 @@
 #ifndef _RESOURCE_ANIMATION_H_
 #define _RESOURCE_ANIMATION_H_
 
-#include "Resource.h"
+#include "Resource_.h"
 #include <map>
 template<typename TYPE>
 struct KeyAnimation

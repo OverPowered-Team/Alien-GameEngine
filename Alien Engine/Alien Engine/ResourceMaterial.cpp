@@ -1,8 +1,11 @@
 #include "ResourceMaterial.h"
 #include "Application.h"
+#include "ModuleResources.h"
+#include "ModuleFileSystem.h"
 #include "ResourceShader.h"
 #include "ResourceTexture.h"
 #include "imgui/imgui_internal.h"
+#include "JSONfilepack.h"
 
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"

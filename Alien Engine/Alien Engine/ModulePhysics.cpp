@@ -5,6 +5,8 @@
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
 #include "ComponentScript.h"
+#include "ModuleRenderer3D.h"
+#include "Time.h"
 #include "Alien.h"
 #include "Optick/include/optick.h"
 

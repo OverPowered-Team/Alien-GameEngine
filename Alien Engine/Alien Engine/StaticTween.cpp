@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Tween.h"
 #include "StaticTween.h"
 
 Tween* Tween::TweenMove(GameObject* gameObject, const float3& to, float time, int type)

@@ -1,13 +1,16 @@
 #include "Application.h"
+#include "Globals.h"
+#include "Time.h"
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
+#include "ModuleUI.h"
 #include "ComponentAudioEmitter.h"
 #include "ComponentScript.h"
+#include "ModuleFileSystem.h"
 #include "ResourceAnimation.h"
-#include "ResourceScript.h"
 #include "Alien.h"
-#include "Globals.h"
+#include "ResourceScript.h"
 #include <fstream>
 #include <iomanip>
 

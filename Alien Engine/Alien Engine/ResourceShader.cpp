@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
+#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 #include "Globals.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"

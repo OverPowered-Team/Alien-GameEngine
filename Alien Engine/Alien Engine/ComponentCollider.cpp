@@ -6,6 +6,7 @@
 #include "ComponentRigidBody.h"
 #include "ComponentScript.h"
 #include "ComponentMesh.h"
+#include "Time.h"
 #include "GameObject.h"
 #include "ReturnZ.h"
 #include "Alien.h"

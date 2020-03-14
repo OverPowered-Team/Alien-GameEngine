@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Resource.h"
+#include "Resource_.h"
 #include "Globals.h"
 #include "NodeEditor/Include/imgui_node_editor.h"
 
 #include <vector>
 
 class ResourceAnimation;
+class ComponentAudioEmitter;
+class ResourceAnimatorController;
 
 class State
 {

@@ -20,7 +20,6 @@
 
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
-#include "ComponentReverbZone.h"
 #include "ComponentParticleSystem.h"
 #include "ComponentSlider.h"
 #include "ComponentCanvas.h"
@@ -34,6 +33,8 @@
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
+#include "ShortCutManager.h"
+#include "ModuleCamera3D.h"
 
 #include "mmgr/mmgr.h"
 
@@ -492,8 +493,9 @@ void PanelInspector::ButtonAddComponent()
 			case ComponentType::A_REVERB: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_REVERB))
 				{
-					comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+					/*comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);*/
+					LOG_ENGINE("Sorry Oriol, we had to remove that component but it will unbalance all ComponentType ID"); //TODO: remove ComponentReverb
 				}
 
 				else

@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "glew/include/glew.h"
+#include "SDL/include/SDL_video.h"
 #include "ModuleImporter.h"
 #include "ComponentCamera.h"
 

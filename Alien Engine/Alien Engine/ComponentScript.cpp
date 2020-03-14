@@ -7,6 +7,8 @@
 #include "Alien.h"
 #include "FileNode.h"
 #include "ResourcePrefab.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "Prefab.h"
 #include "mmgr/mmgr.h"
 

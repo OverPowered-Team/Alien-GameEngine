@@ -7,8 +7,10 @@
 #include "imgui/imgui_internal.h"
 #include "ResourceModel.h"
 #include "ResourcePrefab.h"
+#include "ShortCutManager.h"
 #include "ResourceScript.h"
 #include "ResourceScene.h"
+#include "ModuleUI.h"
 #include "PanelAnimator.h"
 #include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING

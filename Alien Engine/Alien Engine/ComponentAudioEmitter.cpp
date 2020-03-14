@@ -3,6 +3,7 @@
 #include "ModuleAudio.h"
 #include "ComponentTransform.h"
 #include "ReturnZ.h"
+#include "Time.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "mmgr/mmgr.h"
 
