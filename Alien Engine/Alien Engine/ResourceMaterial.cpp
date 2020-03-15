@@ -235,8 +235,20 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 void ResourceMaterial::ApplyMaterial()
 {
 
-	if(texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
+		if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+			used_shader->SetUniform1i("tex", 0);
+		}
+
+	/*if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
+		used_shader->SetUniform1i("normalMap", 1);
+	}*/
 
 	// Bind the actual shader
 	used_shader->Bind();
@@ -333,7 +345,7 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 		//DecreaseReferences(); // meanwhile
 
 		if (change_texture_menu)
-			TextureBrowser();
+			TextureBrowser(selectedType);
 	}
 }
 
@@ -395,14 +407,12 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Diffuse:");
 		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
 		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
 
 		// Specular 
 		ImGui::Text("Specular:");
 		InputTexture(TextureType::SPECULAR);
 		ImGui::SameLine();
- 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3);
 		ImGui::DragFloat("Shininess", &shaderInputs.standardShaderProperties.shininess, 0.05f, 0.f, 32.f);
 
 		// Normal Map
@@ -432,37 +442,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Texture:");
 		ImGui::Spacing();
 
-		ImGui::ImageButton((GetTexture(TextureType::DIFFUSE) != nullptr) ? (ImTextureID)GetTexture(TextureType::DIFFUSE)->id : 0, ImVec2(30, 30));
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
-			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
-				FileNode* node = *(FileNode**)payload->Data;
-				if (node != nullptr && node->type == FileDropType::TEXTURE) {
-					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
-					path += "_meta.alien";
-					u64 ID = App->resources->GetIDFromAlienPath(path.data());
-					if (ID != 0) {
-						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-						if (texture != nullptr) {
-							SetTexture(texture);
-						}
-					}
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
-		ImGui::SameLine();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
-
-		std::string ID = "Texture Browser";
-		ImGui::PushID(ID.c_str());
-		if (ImGui::RadioButton("", false))
-		{
-			change_texture_menu = true;
-
-		}
-		ImGui::PopID();
-		
+		InputTexture(TextureType::DIFFUSE);		
 
 		ImGui::SameLine(120,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
@@ -498,12 +478,12 @@ void ResourceMaterial::InputTexture(TextureType texType)
 	}
 
 	ImGui::SameLine();
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
 	ImGui::PushID((int)texType);
-	if (ImGui::ColorButton("Remove Texture", ImVec4(1.0f, 0.f, 0.f, 1.f), 0, ImVec2(10, 10)))
+	if (ImGui::RadioButton("", false))
 	{
-		// TODO: Open Popup, "do you want to remove the texture?"
-		RemoveTexture(texType);
+		change_texture_menu = true;
+		selectedType = texType;
 	}
 	ImGui::PopID();
 }
@@ -619,13 +599,13 @@ void ResourceMaterial::TexturesSegment()
 	}*/
 }
 
-void ResourceMaterial::TextureBrowser()
+void ResourceMaterial::TextureBrowser(TextureType selectedType)
 {
 
 	ImGui::OpenPopup("Textures Loaded");
 	ImGui::SetNextWindowSize({ 522,585 });
 
-	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+	if (ImGui::BeginPopupModal("Textures Loaded", &change_texture_menu, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
 		ImGui::Spacing();
 		ImGui::NewLine();
 		ImGui::SameLine(190);
@@ -678,7 +658,7 @@ void ResourceMaterial::TextureBrowser()
 		ImGui::SameLine(377);
 		if (ImGui::Button("Apply", { 120,20 })) {
 			
-			SetTexture(selected_texture);
+			SetTexture(selected_texture, selectedType);
 
 			selected_texture = nullptr;
 			change_texture_menu = false;
@@ -687,7 +667,7 @@ void ResourceMaterial::TextureBrowser()
 			for (; item != App->resources->resources.end(); ++item) {
 				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
 
-					if (*item != GetTexture(TextureType::DIFFUSE))
+					if (*item != GetTexture(selectedType))
 						(*item)->DecreaseReferences();
 				}
 			}
@@ -702,6 +682,22 @@ void ResourceMaterial::TextureBrowser()
 			for (; item != App->resources->resources.end(); ++item) {
 				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
 					(*item)->DecreaseReferences();
+				}
+			}
+		}
+		ImGui::SameLine(100);
+		if (ImGui::Button("None", { 120,20 })) {
+
+			RemoveTexture(selectedType);
+			selected_texture = nullptr;
+			change_texture_menu = false;
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+
+					if (*item != GetTexture(selectedType))
+						(*item)->DecreaseReferences();
 				}
 			}
 		}

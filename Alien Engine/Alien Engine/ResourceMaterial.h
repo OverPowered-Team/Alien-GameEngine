@@ -144,7 +144,7 @@ public:
 	void InputTexture(TextureType texType);
 	void TexturesSegment();
 
-	void TextureBrowser();
+	void TextureBrowser(TextureType texType);
 	// ------------------ 
 
 public:
@@ -153,6 +153,7 @@ public:
 
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];
+	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
 	const char* selectedShader = nullptr;
