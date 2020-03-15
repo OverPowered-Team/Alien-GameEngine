@@ -326,6 +326,9 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 			ImGui::PopStyleVar();
 		}
 		//DecreaseReferences(); // meanwhile
+
+		if (change_texture_menu)
+			TextureBrowser();
 	}
 }
 
@@ -423,10 +426,42 @@ void ResourceMaterial::ShaderInputsSegment()
 	case SHADER_TEMPLATE::PARTICLE: {
 		ImGui::Text("Texture:");
 		ImGui::Spacing();
-		InputTexture(TextureType::DIFFUSE);
-		ImGui::SameLine(60,15);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
-		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
+
+		ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : 0, ImVec2(30, 30));
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetTexture(texture);
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		ImGui::SameLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+
+		std::string ID = "Texture Browser";
+		ImGui::PushID(ID.c_str());
+		if (ImGui::RadioButton("", false))
+		{
+			change_texture_menu = true;
+
+		}
+		ImGui::PopID();
+		
+
+		ImGui::SameLine(120,15);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.start_color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
 	default:
@@ -577,6 +612,110 @@ void ResourceMaterial::TexturesSegment()
 			ImGui::EndPopup();
 		}
 	}*/
+}
+
+void ResourceMaterial::TextureBrowser()
+{
+
+	ImGui::OpenPopup("Textures Loaded");
+	ImGui::SetNextWindowSize({ 522,585 });
+
+	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		ImGui::Spacing();
+		ImGui::NewLine();
+		ImGui::SameLine(190);
+		ImGui::Text("Texture Selected");
+		ImGui::Text("");
+		ImGui::SameLine(170);
+
+		if (selected_texture != nullptr) {
+			ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
+			ImGui::Spacing();
+			ImGui::Text("");
+			ImGui::SameLine(150);
+
+			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
+			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
+			ImGui::Text("");
+			ImGui::SameLine(150);
+			ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->references);
+			ImGui::Text("");
+			ImGui::SameLine(112);
+			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
+		}
+		ImGui::Spacing();
+
+		if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+			ImGui::Columns(3, 0, false);
+			ImGui::SetColumnWidth(0, 156);
+			ImGui::SetColumnWidth(1, 156);
+			ImGui::SetColumnWidth(2, 156);
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+
+					if ((*item)->NeedToLoad())
+						(*item)->IncreaseReferences();
+
+					ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
+					if (ImGui::IsItemClicked()) {
+						selected_texture = static_cast<ResourceTexture*>(*item);
+					}
+					ImGui::NextColumn();
+				}
+			}
+
+			ImGui::EndChild();
+		}
+		ImGui::Spacing();
+		ImGui::Text("");
+		ImGui::SameLine(377);
+		if (ImGui::Button("Apply", { 120,20 })) {
+			
+			SetTexture(selected_texture);
+
+			selected_texture = nullptr;
+			change_texture_menu = false;
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+
+					if (*item != texture)
+						(*item)->DecreaseReferences();
+				}
+			}
+		}
+		ImGui::SameLine(237);
+		if (ImGui::Button("Cancel", { 120,20 })) {
+
+			selected_texture = nullptr;
+			change_texture_menu = false;
+
+			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+			for (; item != App->resources->resources.end(); ++item) {
+				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+					(*item)->DecreaseReferences();
+				}
+			}
+		}
+		ImGui::EndPopup();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

@@ -95,7 +95,9 @@ struct ShaderInputs
 	} iluminatedShaderProperties;
 
 	struct ParticleShaderProperties {
-		float3 object_color = float3(1.f, 0.f, 0.8f);
+		float4 color = float4(1.f, 0.f, 0.8f, 1.f);
+		float4 start_color = float4(1.f, 0.f, 0.8f, 1.f);
+		float4 end_color = float4(1.f, 1.f, 1.f, 1.f);
 	} particleShaderProperties;
 };
 
@@ -140,6 +142,8 @@ public:
 	void ShaderInputsSegment();
 	void InputTexture(TextureType texType);
 	void TexturesSegment();
+
+	void TextureBrowser();
 	// ------------------ 
 
 public:
@@ -151,4 +155,6 @@ public:
 	ShaderInputs shaderInputs;
 	ResourceShader* used_shader = nullptr; 
 	const char* selectedShader = nullptr;
+	ResourceTexture* selected_texture = nullptr;
+	bool change_texture_menu = false;
 };

@@ -15,26 +15,9 @@
 ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::PARTICLES;
-	particleSystem = new ParticleSystem(this);
-
-	//material = nullptr;
-	//component_material = nullptr;
-	
-
+	particleSystem = new ParticleSystem();
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-	
-	float pos[] = { transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z, 1.F };
-
-	light_id = GL_LIGHT0;
-	
-	//glEnable(light_id);
-	//glLightfv(light_id, GL_POSITION, pos);
-
-	//// Init
-	//glLightfv(light_id, GL_AMBIENT, &ambient);
-	//glLightfv(light_id, GL_DIFFUSE, &diffuse);
-
 	
 }
 
@@ -57,9 +40,6 @@ ComponentParticleSystem::~ComponentParticleSystem()
 	
 	/*if (material != nullptr)
 		material = nullptr;*/
-
-
-	//glDisable(light_id);
 }
 
 void ComponentParticleSystem::OnPlay()
@@ -271,7 +251,11 @@ bool ComponentParticleSystem::DrawInspector()
 			// Initial State || Final State
 			if (ImGui::TreeNodeEx("Start State", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::ColorPicker4("Color", (float*)&particleSystem->particleInfo.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+				if(particleSystem->material != nullptr)
+					ImGui::ColorPicker4("Color", (float*)&particleSystem->material->shaderInputs.particleShaderProperties.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+				else
+					ImGui::ColorPicker4("Color", (float*)&particleSystem->particleInfo.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+
 				ImGui::DragFloat("Size", (float*)&particleSystem->particleInfo.size, 0.1f, 0.0f, FLT_MAX);
 
 
@@ -300,8 +284,13 @@ bool ComponentParticleSystem::DrawInspector()
 			{
 				if (ImGui::TreeNodeEx("Final State", ImGuiTreeNodeFlags_DefaultOpen))
 				{
-					ImGui::ColorPicker4("Color", (float*)&particleSystem->endInfo.color,
-						ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+					if (particleSystem->material != nullptr)
+						ImGui::ColorPicker4("Color", (float*)&particleSystem->material->shaderInputs.particleShaderProperties.end_color,
+							ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+					else
+						ImGui::ColorPicker4("Color", (float*)&particleSystem->endInfo.color,
+							ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+
 					ImGui::DragFloat("Size", (float*)&particleSystem->endInfo.size, 0.1f, 0.0f, FLT_MAX);
 					ImGui::DragFloat3("Gravity", (float*)&particleSystem->endInfo.force);
 					ImVec2 size = ImGui::GetItemRectSize();
@@ -310,7 +299,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 
 					ImGui::Spacing(); ImGui::Spacing();
-					
+
 					ImGui::Checkbox("##pptActiveRotation", &particleSystem->particleInfo.rotateOverTime);
 					ImGui::SameLine();
 
@@ -325,7 +314,7 @@ bool ComponentParticleSystem::DrawInspector()
 							ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 						}
 
-						if(ImGui::Checkbox("Separate Axis", &particleSystem->particleInfo.axisRot3D)) 
+						if (ImGui::Checkbox("Separate Axis", &particleSystem->particleInfo.axisRot3D))
 						{
 							particleSystem->particleInfo.angularVelocity3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angularVelocity3D.z);
 							particleSystem->particleInfo.angularAcceleration3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angularAcceleration3D.z);
@@ -343,7 +332,7 @@ bool ComponentParticleSystem::DrawInspector()
 							ImGui::DragFloat3("##angular accl3D", (float*)&particleSystem->particleInfo.angularAcceleration3D, 0.1f, 0.0f, 360.0f);
 						}
 
-						else 
+						else
 						{
 							ImGui::Text("Angular Velocity "); ImGui::SameLine(230, 15);
 							ImGui::DragFloat("##angular vel", (float*)&particleSystem->particleInfo.angularVelocity3D.z, 0.1f, 0.0f, 360.0f);
@@ -360,7 +349,7 @@ bool ComponentParticleSystem::DrawInspector()
 							ImGui::PopStyleVar();
 						}
 
-						
+
 
 						ImGui::TreePop();
 					}
@@ -369,6 +358,8 @@ bool ComponentParticleSystem::DrawInspector()
 					ImGui::TreePop();
 				}
 			}
+			/*else
+				particleSystem->material->shaderInputs.particleShaderProperties.color = particleSystem->material->shaderInputs.particleShaderProperties.start_color;*/
 
 			ImGui::TreePop();
 		}
