@@ -43,9 +43,12 @@ bool ComponentAnimatedImage::DrawInspector()
 			images.push_back(nullptr);
 			last_frame++;
 		}
-
+		ImGui::PopStyleColor(3);
 		ImGui::SameLine(105);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0.0F,0.0F,1.0F });
 		if (ImGui::Button("-"))
 		{
 			if (!images.empty())
@@ -53,7 +56,6 @@ bool ComponentAnimatedImage::DrawInspector()
 				auto item = images.begin() + last_frame - 1;
 				ClearTextureArray((*item));
 				images.erase(item);
-				last_frame--;
 			}
 		}
 		ImGui::PopStyleColor(3);
