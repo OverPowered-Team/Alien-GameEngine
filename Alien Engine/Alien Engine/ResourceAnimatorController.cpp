@@ -1435,7 +1435,7 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 
 			float3 next_position, next_scale;
 			Quat next_rotation;
-			float next_key_time, t = 0;
+			float next_key_time = 0, t = 0;
 
 			float time_in_ticks = animation->start_tick + (state->time * animation->ticks_per_second);
 
