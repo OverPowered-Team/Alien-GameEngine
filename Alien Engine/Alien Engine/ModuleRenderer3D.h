@@ -1,10 +1,8 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "SDL/include/SDL_video.h"
-#include "glew/include/glew.h"
-#include "SDL/include/SDL.h"
 #include "ModuleImporter.h"
+#include "SDL/include/SDL_video.h"
 #include "ComponentCamera.h"
 
 #define MAX_LIGHTS 8

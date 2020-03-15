@@ -1,6 +1,6 @@
-#include "Application.h"
-#include "Tween.h"
 #include "StaticTween.h"
+#include "Application.h"
+#include "ModuleTween.h"
 
 ModuleTween* ModuleTween::TweenMove(GameObject* gameObject, const float3& to, float time, int type)
 {

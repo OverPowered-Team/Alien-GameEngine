@@ -9,6 +9,7 @@
 #include "ComponentTransform.h"
 #include "ModuleObjects.h"
 #include "Gizmos.h"
+#include "ModuleFileSystem.h"
 #include "Application.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>

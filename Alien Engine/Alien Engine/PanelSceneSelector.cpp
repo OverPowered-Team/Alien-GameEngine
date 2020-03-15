@@ -7,6 +7,7 @@
 #include "ResourceScene.h"
 #include "PanelProject.h"
 #include "ShortCutManager.h"
+#include "ModuleResources.h"
 #include "ModuleObjects.h"
 #include "ModuleUI.h"
 #include "mmgr/mmgr.h"
