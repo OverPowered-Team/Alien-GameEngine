@@ -33,6 +33,32 @@ ResourceMaterial::~ResourceMaterial()
 	}
 }
 
+bool ResourceMaterial::LoadMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != NO_TEXTURE_ID)
+		{
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->IncreaseReferences();
+		}
+	}
+
+	return true;
+}
+
+void ResourceMaterial::FreeMemory()
+{
+	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+		if (texturesID[iter] != NO_TEXTURE_ID)
+		{
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->DecreaseReferences();
+		}
+	}
+}
+
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
 	if (force_id == 0) {
@@ -201,8 +227,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	color = file->GetFloat4("Color");
 	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		SetTexture(App->resources->GetTextureByID(std::stoull(file->GetString(std::to_string(iter)))), (TextureType)iter);
-		//texturesID[iter] = std::stoull(file->GetString(std::to_string(iter)));
+		texturesID[iter] = std::stoull(file->GetString(std::to_string(iter)));
 	}
 }
 
@@ -288,7 +313,6 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 {
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		//IncreaseReferences(); // meanwhile
 		ImGui::SameLine();
 		MaterialHeader();
 
@@ -317,7 +341,6 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		//DecreaseReferences(); // meanwhile
 
 		if (change_texture_menu)
 			TextureBrowser(selectedType);
