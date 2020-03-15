@@ -127,6 +127,7 @@ public:
 	ResourceFont* default_font = nullptr;
 	ResourceMaterial* default_material = nullptr;
 	ResourceShader* default_shader = nullptr;
+	ResourceShader* skybox_shader = nullptr;
 
 	FileNode* assets = nullptr;
 

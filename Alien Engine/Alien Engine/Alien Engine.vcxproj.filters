@@ -96,6 +96,12 @@
     </Filter>
     <Filter Include="Modules\Tween">
       <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
+      </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{ea1781ef-52f3-4b39-923c-9863d1844099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Stb">
+      <UniqueIdentifier>{f47e6cdd-1441-4790-9eda-58f25045718e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -590,6 +596,12 @@
     </ClInclude>
     <ClInclude Include="ModuleTween.h">
       <Filter>Modules\Tween</Filter>
+      </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Tools\Stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2545,6 +2557,9 @@
     </ClCompile>
     <ClCompile Include="ModuleTween.cpp">
       <Filter>Modules\Tween</Filter>
+      </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
