@@ -43,6 +43,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentText;
 	friend class ComponentButton;
 	friend class ComponentBar;
+	friend class ComponentAnimatedImage;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;

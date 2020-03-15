@@ -15,7 +15,6 @@ public:
 
 	void Draw(bool isGame);
 
-	void Reset() {};
 	void SetComponent(Component* component) {};
 	void Clone(Component* clone) {};
 
@@ -26,7 +25,20 @@ public:
 	ResourceTexture* SetTextureArray(ResourceTexture* tex, ResourceTexture* item);
 
 private:
+	ResourceTexture* GetCurrentFrame(float dt);
+	bool Finished() const;
+	void Reset();
+	int SeeCurrentFrame();
+
+private:
 	std::vector<ResourceTexture*> images;
+
+	bool loop = true;
+	float speed = 1.0f;
+
+	float current_frame = 0.0f;
+	int last_frame = 0;
+	int loops = 0;
 };
 
 #endif // !_COMPONENT_ANIMATED_IMAGE_H_

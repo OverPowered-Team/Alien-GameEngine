@@ -39,8 +39,24 @@ bool ComponentAnimatedImage::DrawInspector()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.0F,0.95F,0.0F,1.0F });
 		if (ImGui::Button("+"))
 		{
-			images.reserve(images.size() + 1);
+			//images.reserve(images.size() + 1);
 			images.push_back(nullptr);
+			last_frame++;
+		}
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(105);
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0.0F,0.0F,1.0F });
+		if (ImGui::Button("-"))
+		{
+			if (!images.empty())
+			{
+				auto item = images.begin() + last_frame - 1;
+				ClearTextureArray((*item));
+				images.erase(item);
+			}
 		}
 		ImGui::PopStyleColor(3);
 
@@ -96,6 +112,11 @@ bool ComponentAnimatedImage::DrawInspector()
 			}
 		}
 		ImGui::Spacing();
+		ImGui::Checkbox("Loop", &loop);
+		ImGui::Spacing();
+		ImGui::DragFloat("Speed", &speed, 0.5F, 0.1f, 100.0f, "%.1f");
+		ImGui::Spacing();
+
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Color");
 		ImGui::SameLine(85);
@@ -173,10 +194,14 @@ void ComponentAnimatedImage::Draw(bool isGame)
 		matrix[1][3] = origin.y;
 	}
 
-	if (texture != nullptr) {
+	if (!images.empty()) {
 		//glAlphaFunc(GL_GREATER, 0.0f);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
+		ResourceTexture* tex = GetCurrentFrame(Time::GetDT());
+		if (tex != nullptr)
+		{
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindTexture(GL_TEXTURE_2D, tex->id);
+		}
 	}
 
 	glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
@@ -218,10 +243,75 @@ void ComponentAnimatedImage::Draw(bool isGame)
 
 void ComponentAnimatedImage::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetNumber("Width", size.x);
+	to_save->SetNumber("Height", size.y);
+	to_save->SetNumber("Speed", speed);
+	to_save->SetBoolean("Loop", loop);
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("UIType", (int)ui_type);
+	to_save->SetColor("ColorCurrent", current_color);
+
+	to_save->SetBoolean("HasAnimatedImages", !images.empty());
+	if (!images.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedImages");
+		auto item = images.begin();
+		for (; item != images.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - images.begin()), ((*item) != nullptr) ? std::to_string((*item)->GetID()) : "0");
+		}
+	}
+	
 }
 
 void ComponentAnimatedImage::LoadComponent(JSONArraypack* to_load)
 {
+	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	enabled = to_load->GetBoolean("Enabled");
+	loop = to_load->GetBoolean("Loop");
+	speed = (float)to_load->GetNumber("Speed");
+	current_color = to_load->GetColor("ColorCurrent");
+	current_frame = 0.0f;
+	last_frame = 0;
+
+	if (to_load->GetBoolean("HasAnimatedImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(to_load->GetString(std::to_string(i)));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					images.push_back(tex);
+					images.at(i) = SetTextureArray(tex, images.at(i));
+					last_frame++;
+				}
+			}
+			else
+			{
+				images.push_back(nullptr);
+				last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
 }
 
 ResourceTexture* ComponentAnimatedImage::ClearTextureArray(ResourceTexture* item)
@@ -244,4 +334,31 @@ ResourceTexture* ComponentAnimatedImage::SetTextureArray(ResourceTexture* tex, R
 		return tex;
 	}
 	return nullptr;
+}
+
+ResourceTexture* ComponentAnimatedImage::GetCurrentFrame(float dt)
+{
+	current_frame += speed * dt;
+	if (current_frame >= last_frame)
+	{
+		current_frame = (loop) ? 0.0f : last_frame - 1;
+		loops++;
+	}
+	return images.at((int)current_frame);
+}
+
+bool ComponentAnimatedImage::Finished() const
+{
+	return loops > 0;
+}
+
+void ComponentAnimatedImage::Reset()
+{
+	loops = 0;
+	current_frame = 0.0f;
+}
+
+int ComponentAnimatedImage::SeeCurrentFrame()
+{
+	return (int)current_frame;
 }
