@@ -17,7 +17,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	{
 		p_material = new ResourceMaterial();
 		p_material->SetShader(owner->material->used_shader);
-		p_material->SetTexture(owner->material->texture);
+		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 
 		p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;

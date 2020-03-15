@@ -130,6 +130,7 @@ public:
 
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
 	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
+	ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE);
 	void RemoveTexture(TextureType texType = TextureType::DIFFUSE);
 	
 	bool HasTexture(TextureType texType = TextureType::DIFFUSE) const;

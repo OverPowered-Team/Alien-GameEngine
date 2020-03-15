@@ -263,6 +263,11 @@ const ResourceTexture* ResourceMaterial::GetTexture(TextureType texType) const
 	return App->resources->GetTextureByID(texturesID[(int)texType]);
 }
 
+ResourceTexture* ResourceMaterial::GetTexture(TextureType texType)
+{
+	return App->resources->GetTextureByID(texturesID[(int)texType]);
+}
+
 void ResourceMaterial::RemoveTexture(TextureType texType)
 {
 	if (texturesID[(uint)texType] != NO_TEXTURE_ID)
@@ -427,7 +432,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Texture:");
 		ImGui::Spacing();
 
-		ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : 0, ImVec2(30, 30));
+		ImGui::ImageButton((GetTexture(TextureType::DIFFUSE) != nullptr) ? (ImTextureID)GetTexture(TextureType::DIFFUSE)->id : 0, ImVec2(30, 30));
 		if (ImGui::BeginDragDropTarget()) {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
 			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
@@ -682,7 +687,7 @@ void ResourceMaterial::TextureBrowser()
 			for (; item != App->resources->resources.end(); ++item) {
 				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
 
-					if (*item != texture)
+					if (*item != GetTexture(TextureType::DIFFUSE))
 						(*item)->DecreaseReferences();
 				}
 			}
