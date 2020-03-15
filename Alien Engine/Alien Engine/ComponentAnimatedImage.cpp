@@ -26,9 +26,9 @@ bool ComponentAnimatedImage::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Image", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Animated Image", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		RightClickMenu("Image");
+		RightClickMenu("Animated Image");
 
 		ImGui::Spacing();
 		ImGui::Text("Add Image");
@@ -56,6 +56,7 @@ bool ComponentAnimatedImage::DrawInspector()
 				auto item = images.begin() + last_frame - 1;
 				ClearTextureArray((*item));
 				images.erase(item);
+				last_frame--;
 			}
 		}
 		ImGui::PopStyleColor(3);
@@ -141,7 +142,7 @@ bool ComponentAnimatedImage::DrawInspector()
 		ImGui::Spacing();
 	}
 	else {
-		RightClickMenu("Image");
+		RightClickMenu("Animated Image");
 	}
 
 	return true;
@@ -277,11 +278,11 @@ void ComponentAnimatedImage::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasAnimatedImages")) {
 		JSONArraypack* imagesVector = to_load->GetArray("AnimatedImages");
 		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
-			u64 textureID = std::stoull(to_load->GetString(std::to_string(i)));
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i)));
 			if (textureID != 0) {
 				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
 				if (tex != nullptr) {
-					images.push_back(tex);
+					images.push_back(nullptr);
 					images.at(i) = SetTextureArray(tex, images.at(i));
 					last_frame++;
 				}
