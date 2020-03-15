@@ -133,7 +133,10 @@ void ComponentText::Draw(bool isGame)
 
 		float3 canvas_pos = canvas_trans->GetGlobalPosition();
 		float3 object_pos = transform->GetGlobalPosition();
-		float3 canvasPivot = { canvas_pos.x - font->fontData.charactersMap[text[0]].bearing.x * scale.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
+		float3 canvasPivot = {	canvas_pos.x - font->fontData.charactersMap[text[0]].bearing.x * scale.x - canvas->width * 0.5F, 
+								canvas_pos.y + canvas->height * 0.5F,
+								0 };
+
 		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (canvasPivot.y + object_pos.y) / (canvas->height));
 
 		#ifndef GAME_VERSION
@@ -165,11 +168,14 @@ void ComponentText::Draw(bool isGame)
 	// TODO2: Que cuando se este escribiendo no afecte al Gizmos
 	// TODO3: Mirar ResourceFont load Bug
 	// TODO4: Modo game la UI
-	float factor = 0;
+	float factor_x = 0;
+	float factor_y = 0;
 	#ifndef GAME_VERSION
-	factor = App->ui->panel_game->width / canvas->width;
+	factor_x = App->ui->panel_game->width / canvas->width;
+	factor_y = App->ui->panel_game->height / canvas->height;
 	#else
-	factor = App->window->width / canvas->width;
+	factor_x = App->window->width / canvas->width;
+	factor_y = App->window->height / canvas->height;
 	#endif
 
 	for (c = text.begin(); c != text.end(); c++) {
@@ -180,10 +186,10 @@ void ComponentText::Draw(bool isGame)
 		static float h = 0;
 		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
 		{
-			xpos = x + pos_x + ch.bearing.x * scale.x * factor;
-			ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor;
-			w = ch.size.x * scale.x * factor;
-			h = ch.size.y * scale.y * factor;
+			xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
+			ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+			w = ch.size.x * scale.x * factor_x;
+			h = ch.size.y * scale.y * factor_y;
 		}
 		else
 		{
@@ -227,11 +233,11 @@ void ComponentText::Draw(bool isGame)
 
 		if (isGame && App->renderer3D->actual_game_camera != nullptr)
 		{
-			line = pos_x += ch.advance * scale.x * factor;
-			if (line > width* factor)
+			line = pos_x += ch.advance * scale.x * factor_x;
+			if (line > width* factor_x)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor * interlineal;
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
 				else
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
@@ -244,7 +250,7 @@ void ComponentText::Draw(bool isGame)
 			if (line > width)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor * interlineal;
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
 				else
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
