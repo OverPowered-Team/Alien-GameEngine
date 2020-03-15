@@ -10,10 +10,13 @@ TestEvents::~TestEvents()
 
 void TestEvents::Start()
 {
+	LOG("%s", myString.data());
+	LOG("%s", testChar);
 }
 
 void TestEvents::Update()
 {
+
 }
 
 void TestEvents::Event()
@@ -29,4 +32,9 @@ void TestEvents::Event2()
 void TestEvents::Event3()
 {
 	LOG("FUNCTION EVENT3 CALLED");
+}
+
+void TestEvents::GoToScene(int sceneNum, const char* name)
+{
+	int num = sceneNum;
 }

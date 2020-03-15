@@ -1434,7 +1434,7 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 
 			float3 next_position, next_scale;
 			Quat next_rotation;
-			float previous_key_time, next_key_time, t = 0;
+			float next_key_time, t = 0;
 
 			float time_in_ticks = animation->start_tick + (state->time * animation->ticks_per_second);
 
@@ -1488,7 +1488,6 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 						next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
 						next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
 						t = (float)((double)time_in_ticks / next_key_time);
-						ActiveEvent(animation, next_key_time);
 						break;
 					}
 				}
@@ -1509,6 +1508,13 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 					rotation = Quat::Slerp(rotation, next_state_rotation, fade_t);
 					scale = float3::Lerp(scale, next_state_scale, fade_t);
 				}
+			}
+
+			if (next_key_time != previous_key_time)
+			{
+				previous_key_time = next_key_time;
+				ActiveEvent(animation, next_key_time);
+				//LOG_ENGINE("THIS FRAME IS %s", std::to_string(next_key_time).c_str())
 			}
 
 			return true;
@@ -1632,7 +1638,8 @@ void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
 	{
 		if ((*it)->event_id == _event->event_id && (*it)->animation_id == _event->animation_id && (*it)->frame == _event->frame && (*it)->type == _event->type)
 		{
-			anim_events.erase(it);
+			delete (*it);
+			it = anim_events.erase(it);
 			break;
 		}
 	}

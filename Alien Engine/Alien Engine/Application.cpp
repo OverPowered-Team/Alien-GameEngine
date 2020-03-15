@@ -12,6 +12,9 @@
 #include "ModuleAudio.h"
 #include "ShortCutManager.h"
 #include "Parson/parson.h"
+#include "Time.h"
+#include "Skybox.h"
+#include "ResourceShader.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 

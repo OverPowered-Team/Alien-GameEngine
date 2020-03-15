@@ -10,12 +10,19 @@
     <ClCompile Include="TestEvents.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="PolScriptSushi.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Testanimator.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="PlayerController.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerTest.cpp" />
+    <ClCompile Include="ReverbZone.cpp" />
+    <ClCompile Include="TerrainSwitch.cpp" />
+    <ClCompile Include="TestSwitches.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -27,12 +34,19 @@
     <ClInclude Include="TestEvents.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="PolScriptSushi.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Testanimator.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerTest.h" />
+    <ClInclude Include="ReverbZone.h" />
+    <ClInclude Include="TerrainSwitch.h" />
+    <ClInclude Include="TestSwitches.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

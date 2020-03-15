@@ -25,6 +25,7 @@
 #include "ComponentUI.h"
 #include "ComponentCheckbox.h"
 #include "ComponentSlider.h"
+#include "ComponentAnimatedImage.h"
 #include "ComponentScript.h"
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
@@ -1730,6 +1731,12 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 					slider->LoadComponent(components_to_load);
 					AddComponent(slider);
 					break; }
+				case ComponentType::UI_ANIMATED_IMAGE: {
+					ComponentAnimatedImage* aImage = new ComponentAnimatedImage(this);
+					aImage->ui_type = typeUI;
+					aImage->LoadComponent(components_to_load);
+					AddComponent(aImage);
+					break; }
 				default:
 					LOG_ENGINE("Unknown component UItype while loading");
 					break;
@@ -1852,6 +1859,26 @@ void GameObject::CloningGameObject(GameObject* clone)
 						ComponentButton* button = new ComponentButton(clone);
 						(*item)->Clone(button);
 						clone->AddComponent(button);
+						break; }
+					case ComponentType::UI_CHECKBOX: {
+						ComponentCheckbox* check = new ComponentCheckbox(clone);
+						(*item)->Clone(check);
+						clone->AddComponent(check);
+						break; }
+					case ComponentType::UI_SLIDER: {
+						ComponentSlider* slider = new ComponentSlider(clone);
+						(*item)->Clone(slider);
+						clone->AddComponent(slider);
+						break; }
+					case ComponentType::UI_BAR: {
+						ComponentBar* bar = new ComponentBar(clone);
+						(*item)->Clone(bar);
+						clone->AddComponent(bar);
+						break; }
+					case ComponentType::UI_ANIMATED_IMAGE: {
+						ComponentAnimatedImage* aImage = new ComponentAnimatedImage(clone);
+						(*item)->Clone(aImage);
+						clone->AddComponent(aImage);
 						break; }
 					}
 					break; }

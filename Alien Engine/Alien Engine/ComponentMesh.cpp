@@ -38,6 +38,8 @@ ComponentMesh::~ComponentMesh()
 
 void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 {
+	if (resource == nullptr)
+		return;
 	mesh = resource;
 	GenerateLocalAABB();
 	RecalculateAABB_OBB();
@@ -66,10 +68,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_POLYGON_OFFSET_FILL);
-	//glPolygonOffset(1.0f, 0.1f);
 
 	// -------------------------- Actual Drawing -------------------------- 
 	material->ApplyMaterial();

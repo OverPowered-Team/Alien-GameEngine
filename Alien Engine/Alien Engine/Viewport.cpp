@@ -256,6 +256,8 @@ void Viewport::BeginViewport()
 
 void Viewport::EndViewport()
 {
+	camera->DrawSkybox();
+
 	// Disables --------------------------------------------
 	glDisable(GL_LIGHTING);
 	glDisable(GL_POLYGON_SMOOTH);

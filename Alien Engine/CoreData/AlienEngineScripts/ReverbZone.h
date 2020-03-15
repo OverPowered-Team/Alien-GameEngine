@@ -17,15 +17,14 @@ public:
 	virtual void OnTriggerEnter(ComponentCollider* collider);
 	virtual void OnTriggerExit(ComponentCollider* collider);
 
-	std::string zone_name;
-	int zone_id; // temporary
+	std::string zone_name = "normal";
 	float strength = 1.f;
 };
 
 ALIEN_FACTORY ReverbZone* CreateReverbZone() {
 	ReverbZone* alien = new ReverbZone();
 	// To show in inspector here
-	SHOW_IN_INSPECTOR_AS_INPUT_INT(alien->zone_id);
+	SHOW_IN_INSPECTOR_AS_STRING(alien->zone_name);
 	SHOW_IN_INSPECTOR_AS_SLIDER_FLOAT(alien->strength, 0.f, 1.f);
 
 	return alien;
