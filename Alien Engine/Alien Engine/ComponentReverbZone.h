@@ -2,7 +2,6 @@
 
 #include "Component.h"
 #include "Globals.h"
-#include "MathGeoLib\include\MathGeoLib.h"
 
 class GameObject;
 
@@ -13,16 +12,12 @@ public:
 	~ComponentReverbZone();
 
 	void Update();
-	void SetRadius(float rad);
-	void DebugDrawSphere();
 
-	void SaveReverbZone(JSON_Array* componentsObj) const;
+	void SaveReverbZone(JSON_Array* componentsObj) const; //TODO set save and load
 	void LoadReverbZone(JSON_Object* obj, GameObject* go);
 
 public:
-	float radius = 10.0f;
-
-private:
-	math::Sphere sphere;
-
+	bool default = false;
+	bool exclude_others = false;
+	std::string aux_bus;
 };

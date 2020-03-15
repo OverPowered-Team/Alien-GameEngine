@@ -24,6 +24,34 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	default_state = nullptr;
 }
 
+ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorController* controller)
+{
+
+	name = controller->name;
+
+	current_state = nullptr;
+
+	for (int i = 0; i < controller->states.size(); ++i) {
+		states.push_back(new State(controller->states[i]));
+		if (controller->states[i] == controller->default_state)
+			default_state = states[i];
+	}
+
+	for (int i = 0; i < controller->transitions.size(); ++i) {
+		transitions.push_back(new Transition(controller->transitions[i], this));
+	}
+
+	int_parameters = controller->int_parameters;
+	float_parameters = controller->float_parameters;
+	bool_parameters = controller->bool_parameters;
+
+	for (int i = 0; i < controller->anim_events.size(); ++i)
+		anim_events.push_back(new AnimEvent(controller->anim_events[i]));
+
+	ed_context = ax::NodeEditor::CreateEditor();
+
+}
+
 ResourceAnimatorController::~ResourceAnimatorController()
 {
 	ax::NodeEditor::DestroyEditor(ed_context);
@@ -156,7 +184,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 				uint frame = events->GetNumber("Frame");
 				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
 
-				AddAnimEvent(event_id, animation_id, frame, type);
+				anim_events.push_back(new AnimEvent(event_id, animation_id, frame, type));
 				events->GetAnotherNode();
 			}
 		}
@@ -338,7 +366,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+		state->time += (Time::GetDT() * current_state->GetSpeed());
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -385,7 +413,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
 			UpdateState(state->next_state);
 		}
 		else {
@@ -729,7 +757,7 @@ bool ResourceAnimatorController::LoadMemory()
 			memcpy(&tmp_param_types, cursor, bytes);
 			cursor += bytes;
 
-			AddAnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types);
+			anim_events.push_back(new AnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types));
 		}
 
 		//Load transitions and states nums
@@ -1447,20 +1475,24 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				rotation = animation->channels[channel_index].rotation_keys[0].value;
 
 
-
-			for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+			if (animation->channels[channel_index].num_scale_keys > 1)
 			{
-				if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
-					scale = animation->channels[channel_index].scale_keys[i].value;
-					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
-					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
-					t = (float)((double)time_in_ticks / next_key_time);
-					ActiveEvent(animation, next_key_time);
-					break;
-				}
-			}
 
-			scale = float3::Lerp(scale, next_scale, t);
+				for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+				{
+					if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
+						scale = animation->channels[channel_index].scale_keys[i].value;
+						next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
+						next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
+						t = (float)((double)time_in_ticks / next_key_time);
+						ActiveEvent(animation, next_key_time);
+						break;
+					}
+				}
+
+				scale = float3::Lerp(scale, next_scale, t);
+			}else
+				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
 			if (state->next_state) {
@@ -1570,15 +1602,25 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 }
 
 // Events
-
-void ResourceAnimatorController::AddAnimEvent(std::string _event_id, u64 _anim_id, uint _frame, EventAnimType _type)
+AnimEvent::AnimEvent(std::string _event_id, u64 _animation_id, uint _frame, EventAnimType _type)
 {
-	AnimEvent* event = new AnimEvent();
-	event->event_id = _event_id;
-	event->animation_id = _anim_id;
-	event->frame = _frame;
-	event->type = _type;
-	anim_events.push_back(event);
+	event_id = _event_id;
+	animation_id = _animation_id;
+	frame = _frame;
+	type = _type;
+}
+
+AnimEvent::AnimEvent(AnimEvent* anim_event)
+{
+	event_id = anim_event->event_id;
+	animation_id = anim_event->animation_id;
+	frame = anim_event->frame;
+	type = anim_event->type;
+}
+
+void ResourceAnimatorController::AddAnimEvent(AnimEvent* _event)
+{
+	anim_events.push_back(_event);
 }
 
 void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
@@ -1602,7 +1644,6 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 			// To Play Sound
 			if ((*it)->type == EventAnimType::EVENT_AUDIO && emitter != nullptr)
 			{
-				App->audio->LoadUsedBanks();
 				emitter->StartSound((uint)std::stoull((*it)->event_id.c_str()));
 			}
 
@@ -1614,7 +1655,7 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
 					{
 						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
-							if ((*j).first.data() == (*it)->event_id)
+							if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
 							{
 								std::function<void()> functEvent = (*j).second;
 								functEvent();
@@ -1670,6 +1711,25 @@ State::State(std::string name, ResourceAnimation* clip)
 		SetClip(clip);
 }
 
+State::State(State* state)
+{
+	name = state->name;
+	speed = state->speed;
+	clip = state->clip;
+	if(clip)
+		clip->IncreaseReferences();
+	pin_in_id = state->pin_in_id;
+	pin_out_id = state->pin_out_id;
+	id = state->id;
+	time = 0;
+	fade_duration = 0;
+	fade_time = 0;
+
+	if (state->next_state != nullptr)
+		next_state = new State(state->next_state);
+	else next_state = nullptr;
+}
+
 void State::SetSpeed(float speed)
 {
 	this->speed = speed;
@@ -1703,6 +1763,7 @@ ResourceAnimation* State::GetClip()
 
 Transition::Transition()
 {
+
 }
 
 Transition::Transition(State* source, State* target, float blend)
@@ -1710,6 +1771,20 @@ Transition::Transition(State* source, State* target, float blend)
 	this->source = source;
 	this->target = target;
 	this->blend = blend;
+}
+
+Transition::Transition(Transition* transition, ResourceAnimatorController* controller)
+{
+	source = controller->FindState(transition->source->GetName());
+	target = controller->FindState(transition->target->GetName());
+	for (int i = 0; i < transition->int_conditions.size(); ++i)
+		int_conditions.push_back(new IntCondition(transition->int_conditions[i]));
+	for (int i = 0; i < transition->float_conditions.size(); ++i)
+		float_conditions.push_back(new FloatCondition(transition->float_conditions[i]));
+	for (int i = 0; i < transition->bool_conditions.size(); ++i)
+		bool_conditions.push_back(new BoolCondition(transition->bool_conditions[i]));
+	blend = transition->blend;
+	end = transition->end;
 }
 
 void Transition::SetSource(State* source)
@@ -1816,6 +1891,15 @@ void Transition::RemoveBoolCondition(BoolCondition* bool_condition)
 	}
 }
 
+IntCondition::IntCondition(IntCondition* int_condition)
+{
+	type = int_condition->type;
+	parameter_index = int_condition->parameter_index;
+	comp_texts = int_condition->comp_texts;
+	comp_text = int_condition->comp_text;
+	comp = int_condition->comp;
+}
+
 bool IntCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1834,6 +1918,15 @@ bool IntCondition::Compare(ResourceAnimatorController* controller)
 	}
 
 	return ret;
+}
+
+FloatCondition::FloatCondition(FloatCondition* float_condition)
+{
+	type = float_condition->type;
+	parameter_index = float_condition->parameter_index;
+	comp_texts = float_condition->comp_texts;
+	comp_text = float_condition->comp_text;
+	comp = float_condition->comp;
 }
 
 bool FloatCondition::Compare(ResourceAnimatorController* controller)
@@ -1856,6 +1949,14 @@ bool FloatCondition::Compare(ResourceAnimatorController* controller)
 	return ret;
 }
 
+BoolCondition::BoolCondition(BoolCondition* bool_condition)
+{
+	type = bool_condition->type;
+	parameter_index = bool_condition->parameter_index;
+	comp_texts = bool_condition->comp_texts;
+	comp_text = bool_condition->comp_text;
+}
+
 bool BoolCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1869,3 +1970,9 @@ bool BoolCondition::Compare(ResourceAnimatorController* controller)
 
 	return ret;
 }
+
+Condition::Condition()
+{
+}
+
+

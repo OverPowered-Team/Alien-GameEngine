@@ -42,37 +42,6 @@ void ComponentReverbZone::Update()
 	}*/
 }
 
-void ComponentReverbZone::SetRadius(float rad) 
-{
-	/*radius = rad;
-	sphere.r = rad;*/
-}
-
-void ComponentReverbZone::DebugDrawSphere()
-{
-	glLineWidth(3.0f);
-	glColor3f(2.0f, 2.0f, 2.0f);
-
-	float radius = sphere.r;
-	float3 pos = sphere.pos;
-	float degInRad = 360.0f / 12;
-	degInRad = DegToRad(degInRad);
-	glBegin(GL_LINE_LOOP);
-	for (unsigned int i = 0; i < 12; i++)
-		glVertex3f(cos(degInRad * i) * radius + pos.x, pos.y, sin(degInRad * i) * radius + pos.z);
-	glEnd();
-	glBegin(GL_LINE_LOOP);
-	for (unsigned int i = 0; i < 12; i++)
-		glVertex3f(cos(degInRad * i) * radius + pos.x, sin(degInRad * i) * radius + pos.y, pos.z);
-	glEnd();
-	glBegin(GL_LINE_LOOP);
-	for (unsigned int i = 0; i < 12; i++)
-		glVertex3f(pos.x, sin(degInRad * i) * radius + pos.y, cos(degInRad * i) * radius + pos.z);
-	glEnd();
-
-	glLineWidth(1.0f);
-}
-
 void ComponentReverbZone::SaveReverbZone(JSON_Array * componentsObj) const
 {
 	/*JSON_Value* component = json_value_init_object();

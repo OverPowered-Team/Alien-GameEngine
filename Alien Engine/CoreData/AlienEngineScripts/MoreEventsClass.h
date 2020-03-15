@@ -13,6 +13,7 @@ public:
 	void Start();
 	void Update();
 
+
 };
 
 ALIEN_FACTORY MoreEventsClass* CreateMoreEventsClass() {

@@ -20,11 +20,11 @@ public:
 	float time = 0;
 	float fade_duration = 0, fade_time = 0;
 	State* next_state = nullptr;
-	bool played_from_script = false;
 
 public:
 	State();
 	State(std::string name, ResourceAnimation* clip);
+	State(State* state);
 
 	void SetName(std::string name);
 	void SetClip(ResourceAnimation* clip);
@@ -44,13 +44,14 @@ public:
 
 public:
 	Condition(std::string type, std::string comp_text = "") { this->type = type; }
+	Condition();
 	virtual bool Compare(ResourceAnimatorController* controller) { return false; }
 
 };
 
 class IntCondition : public Condition {
 public:
-	int comp;
+	int comp = 0;
 
 public:
 	IntCondition(std::string type, uint index, int comp) : Condition(type) {
@@ -62,6 +63,7 @@ public:
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
+	IntCondition(IntCondition* int_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(int comp) { this->comp = comp; }
@@ -71,7 +73,7 @@ public:
 
 class FloatCondition : public Condition {
 public:
-	float comp;
+	float comp = 0;
 
 public:
 	FloatCondition(std::string type, uint index, float comp) : Condition(type) {
@@ -81,6 +83,7 @@ public:
 		comp_texts.push_back("Lesser");
 		comp_text = "Greater";
 	}
+	FloatCondition(FloatCondition* float_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompValue(float comp) { this->comp = comp; }
@@ -96,6 +99,7 @@ public:
 		comp_texts.push_back("False");
 		comp_text = "True";
 	}
+	BoolCondition(BoolCondition* bool_condition);
 	bool Compare(ResourceAnimatorController* controller);
 	void SetParameter(uint index) { this->parameter_index = index; }
 	void SetCompText(std::string comp_text) { this->comp_text = comp_text; }
@@ -116,6 +120,7 @@ private:
 public:
 	Transition();
 	Transition(State* source, State* target, float blend);
+	Transition(Transition* transition, ResourceAnimatorController* controller);
 
 public:
 	void SetSource(State* source);
@@ -155,7 +160,8 @@ class AnimEvent
 {
 public:
 
-	AnimEvent() {};
+	AnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	AnimEvent(AnimEvent* anim_event);
 
 	std::string event_id = "";
 	u64 animation_id = 0ULL;
@@ -185,9 +191,9 @@ private:
 
 public:
 	ResourceAnimatorController();
+	ResourceAnimatorController(ResourceAnimatorController* controller);
 	~ResourceAnimatorController();
 
-	int attached_references = 0;
 	int id_bucket = 1;
 	bool transitioning = false;
 
@@ -270,7 +276,7 @@ public:
 	std::string GetName();
 
 	// Events
-	void AddAnimEvent(std::string _event_id, u64 _anim_id, uint _key, EventAnimType _type);
+	void AddAnimEvent(AnimEvent* _event);
 	void RemoveAnimEvent(AnimEvent* _event);
 	std::vector<AnimEvent*> GetAnimEvents() const { return anim_events; }
 	uint GetNumAnimEvents() const { return anim_events.size(); }

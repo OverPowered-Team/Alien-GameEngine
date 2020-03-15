@@ -49,6 +49,7 @@
 #include "..\..\..\Alien Engine\RayCreator.h"
 #include "..\..\..\Alien Engine\Screen.h"
 #include "..\\..\..\\Alien Engine\JSONfilepack.h"
+#include "../../../Alien Engine/WwiseT.h"
 /*-----------------HELPERS-------------------*/
 
 #ifdef ALIENENGINESCRIPTS_EXPORTS
@@ -60,6 +61,7 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
+static char* helper = nullptr;
 // ------------INSPECTOR MACROS----------------\\
 /*--------------------int--------------------*/
 #define SHOW_IN_INSPECTOR_AS_INPUT_INT(INT_) ComponentScript::InspectorInputInt(&INT_, #INT_)
@@ -71,6 +73,10 @@
 #define SHOW_IN_INSPECTOR_AS_SLIDER_FLOAT(FLOAT_, MIN_, MAX_) ComponentScript::InspectorSliderFloat(&FLOAT_, #FLOAT_, MIN_, MAX_)
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
+/*--------------------string--------------------*/
+#define SHOW_IN_INSPECTOR_AS_STRING(STD_STRING) ComponentScript::InspectorString(STD_STRING.data(), #STD_STRING)
+/*--------------------enum--------------------*/
+#define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/
 #define SHOW_IN_INSPECTOR_AS_PREFAB(PREFAB_) ComponentScript::InspectorPrefab(&PREFAB_, #PREFAB_)
 /*--------------------gameobject--------------------*/
@@ -85,3 +91,7 @@
 
 #define LOG(format, ...) Debug::Log(__FILE__, __LINE__, format, __VA_ARGS__);
 
+#define enum(ENUM, ...) enum class ENUM {\
+	__VA_ARGS__\
+	};\
+	inline static const char* ENUM##EnumNames = #__VA_ARGS__;
