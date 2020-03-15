@@ -460,7 +460,6 @@ void PanelAnimTimeline::PanelLogic()
 			if (key != previous_key)
 			{
 				previous_key = key;
-				
 			}
 			else if(play)
 				key = 0;

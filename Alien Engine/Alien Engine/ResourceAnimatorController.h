@@ -185,6 +185,7 @@ private:
 	std::vector<AnimEvent*> anim_events;
 	ComponentAudioEmitter* emitter = nullptr;
 	std::vector<ComponentScript*> scripts;
+	uint previous_key_time = 0;
 
 private:
 	ax::NodeEditor::EditorContext* ed_context = nullptr;
