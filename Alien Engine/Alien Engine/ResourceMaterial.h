@@ -110,8 +110,8 @@ public:
 	ResourceMaterial();
 	virtual ~ResourceMaterial();
 
-	bool LoadMemory() override;
-	void FreeMemory() override;
+	/*bool LoadMemory() override;
+	void FreeMemory() override;*/
 
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
@@ -123,18 +123,16 @@ public:
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
-
-
 	// Functionality
 	void ApplyMaterial();
 
-	void SetTexture(ResourceTexture* texture);
-	void SetTexture(ResourceTexture* texture, TextureType texType);
-	void RemoveTexture();
-	void RemoveTexture(TextureType texType);
-	bool HasTexture() const; 
-	void SetShader(ResourceShader* newShader);
+	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
+	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
+	void RemoveTexture(TextureType texType = TextureType::DIFFUSE);
+	
+	bool HasTexture(TextureType texType = TextureType::DIFFUSE) const;
 
+	void SetShader(ResourceShader* newShader);
 	// ----- ImGui ----- 
 	void DisplayMaterialOnInspector();
 	void MaterialHeader();
@@ -148,8 +146,6 @@ public:
 
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	u64 textureID = 0;
-	ResourceTexture* texture = nullptr; // Provisional
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];
 	ShaderInputs shaderInputs;

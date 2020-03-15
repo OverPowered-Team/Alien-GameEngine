@@ -244,20 +244,20 @@ void ComponentMaterial::Clone(Component* clone)
 	mat->texture_activated = texture_activated;*/
 }
 
-void ComponentMaterial::SetTexture(ResourceTexture* tex)
+void ComponentMaterial::SetTexture(ResourceTexture* tex, TextureType texType = TextureType::DIFFUSE)
 {
 	if (tex == nullptr)
 	{
-		RemoveTexture();
+		RemoveTexture(texType);
 		return;
 	}
 
-	if (tex == material->texture) // Unity does not do this, but I think it should
+	if (tex == material->GetTexture(texType)) // Unity does not do this, but I think it should
 		return;
 
 	// Look for an already created material (with the same name as the texture) that has the same texture
 	ResourceMaterial* foundMaterial = App->resources->GetMaterialByName(tex->GetName());
-	if (foundMaterial != nullptr && foundMaterial->texture == tex)
+	if (foundMaterial != nullptr && foundMaterial->GetTexture(texType) == tex)
 	{
 		SetMaterial(foundMaterial);
 	}
@@ -268,17 +268,17 @@ void ComponentMaterial::SetTexture(ResourceTexture* tex)
 	}
 
 	// Finally assign the texture to the desired material
-	material->SetTexture(tex);
+	material->SetTexture(tex, texType);
 }
 
-void ComponentMaterial::RemoveTexture()
+void ComponentMaterial::RemoveTexture(TextureType texType = TextureType::DIFFUSE)
 {
-	material->RemoveTexture();
+	material->RemoveTexture(texType);
 }
 
-const ResourceTexture* ComponentMaterial::GetTexture() const
+const ResourceTexture* ComponentMaterial::GetTexture(TextureType texType = TextureType::DIFFUSE) const
 {
-	return material->texture;
+	return material->GetTexture(texType);
 }
 
 void ComponentMaterial::SetMaterial(ResourceMaterial* mat)

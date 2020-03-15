@@ -852,14 +852,14 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		mesh->RecalculateAABB_OBB();
 		break; }
 	case ComponentType::MATERIAL: {
-		ComponentMaterial* material = (ComponentMaterial*)component;
+		/*ComponentMaterial* material = (ComponentMaterial*)component;
 		CompMaterialZ* materialZ = (CompMaterialZ*)compZ;
 		if (materialZ->resourceID == 0) {
 			material->SetTexture(nullptr);
 		}
 		else {
 			material->SetTexture((ResourceTexture*)App->resources->GetResourceWithID(materialZ->resourceID));
-		}
+		}*/
 		/*material->texture_activated = materialZ->texture_activated;
 		material->color = materialZ->color;*/
 		break; }

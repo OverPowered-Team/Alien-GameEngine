@@ -31,38 +31,33 @@ ResourceMaterial::~ResourceMaterial()
 	{
 		RemoveTexture((TextureType)texType);
 	}
-
-	if (texture != nullptr)
-	{
-		RemoveTexture();
-	}
 }
 
-bool ResourceMaterial::LoadMemory()
-{
-	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (texturesID[iter] != NO_TEXTURE_ID)
-		{
-			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
-			if (texture != nullptr)
-				texture->IncreaseReferences();
-		}
-	}
-
-	return true;
-}
-
-void ResourceMaterial::FreeMemory()
-{
-	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (texturesID[iter] != NO_TEXTURE_ID)
-		{
-			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
-			if (texture != nullptr)
-				texture->DecreaseReferences();
-		}
-	}
-}
+//bool ResourceMaterial::LoadMemory()
+//{
+//	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+//		if (texturesID[iter] != NO_TEXTURE_ID)
+//		{
+//			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+//			if (texture != nullptr)
+//				texture->IncreaseReferences();
+//		}
+//	}
+//
+//	return true;
+//}
+//
+//void ResourceMaterial::FreeMemory()
+//{
+//	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
+//		if (texturesID[iter] != NO_TEXTURE_ID)
+//		{
+//			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+//			if (texture != nullptr)
+//				texture->DecreaseReferences();
+//		}
+//	}
+//}
 
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
@@ -219,11 +214,6 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 	file->SetString("Name", name);
 	file->SetFloat4("Color", color);
 	file->SetString("ShaderID", std::to_string(used_shader->GetID()));
-	file->SetBoolean("HasTexture", texture != nullptr ? true : false);
-
-	if(texture != nullptr)
-		file->SetString("TextureID", std::to_string(textureID));
-	
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		file->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
 	}
@@ -235,24 +225,17 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 {
 	this->name = file->GetString("Name");
 	color = file->GetFloat4("Color");
-
 	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
-
-	if (file->GetBoolean("HasTexture"))
-	{
-		u64 id = std::stoull(file->GetString("TextureID"));
-		SetTexture((ResourceTexture*)App->resources->GetResourceWithID(id));
-	}
-
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		texturesID[iter] = std::stoull(file->GetString(std::to_string(iter)));
+		SetTexture(App->resources->GetTextureByID(std::stoull(file->GetString(std::to_string(iter)))), (TextureType)iter);
+		//texturesID[iter] = std::stoull(file->GetString(std::to_string(iter)));
 	}
 }
 
 void ResourceMaterial::ApplyMaterial()
 {
 
-	if(texturesID[(uint)TextureType::DIFFUSE] != 0 && textureActivated)
+	if(texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
 
 	// Bind the actual shader
@@ -264,22 +247,6 @@ void ResourceMaterial::ApplyMaterial()
 
 }
 
-void ResourceMaterial::SetTexture(ResourceTexture* tex)
-{
-	if (tex == nullptr)
-	{
-		RemoveTexture(); 
-		return; 
-	}
-
-	if (texture != nullptr)
-		texture->DecreaseReferences();
-
-	texture = tex;
-	textureID = tex->GetID();
-	texture->IncreaseReferences();
-}
-
 void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 {
 	RemoveTexture(texType);
@@ -287,36 +254,31 @@ void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 	if (tex == nullptr)
 		return;
 
-	//tex->IncreaseReferences();
+	tex->IncreaseReferences();
 	texturesID[(uint)texType] = tex->GetID();
 }
 
-void ResourceMaterial::RemoveTexture()
+const ResourceTexture* ResourceMaterial::GetTexture(TextureType texType) const
 {
-	if (texture != nullptr)
-	{
-		//texture->DecreaseReferences();
-		texture = nullptr;
-		textureID = 0;
-	}
+	return App->resources->GetTextureByID(texturesID[(int)texType]);
 }
 
 void ResourceMaterial::RemoveTexture(TextureType texType)
 {
 	if (texturesID[(uint)texType] != NO_TEXTURE_ID)
 	{
-		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
 
 		if(tex != nullptr)
-			tex->DecreaseReferences();*/
+			tex->DecreaseReferences();
 
 		texturesID[(uint)texType] = NO_TEXTURE_ID;
 	}
 }
 
-bool ResourceMaterial::HasTexture() const
+bool ResourceMaterial::HasTexture(TextureType texType) const
 {
-	return texture != nullptr;
+	return texturesID[(int)texType] != NO_TEXTURE_ID;
 }
 
 void ResourceMaterial::SetShader(ResourceShader* newShader)
@@ -334,7 +296,7 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 {
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		IncreaseReferences(); // meanwhile
+		//IncreaseReferences(); // meanwhile
 		ImGui::SameLine();
 		MaterialHeader();
 
@@ -363,7 +325,7 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		DecreaseReferences(); // meanwhile
+		//DecreaseReferences(); // meanwhile
 	}
 }
 
@@ -461,26 +423,7 @@ void ResourceMaterial::ShaderInputsSegment()
 	case SHADER_TEMPLATE::PARTICLE: {
 		ImGui::Text("Texture:");
 		ImGui::Spacing();
-
-		ImGui::ImageButton((texture != nullptr) ? (ImTextureID)texture->id : 0, ImVec2(30, 30));
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
-			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
-				FileNode* node = *(FileNode**)payload->Data;
-				if (node != nullptr && node->type == FileDropType::TEXTURE) {
-					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
-					path += "_meta.alien";
-					u64 ID = App->resources->GetIDFromAlienPath(path.data());
-					if (ID != 0) {
-						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-						if (texture != nullptr) {
-							SetTexture(texture);
-						}
-					}
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
+		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine(60,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
 		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
@@ -528,43 +471,43 @@ void ResourceMaterial::InputTexture(TextureType texType)
 void ResourceMaterial::TexturesSegment()
 {
 	//static ResourceTexture* selected_texture = nullptr;
-	if (texture != nullptr)
-	{	
-		ImGui::Text("Texture Information: %s", std::to_string(texture->GetID()).c_str());
+	//if (texture != nullptr)
+	//{	
+	//	ImGui::Text("Texture Information: %s", std::to_string(texture->GetID()).c_str());
 
-		//ImGui::SameLine(140, 15);
-		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
-		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
-		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-		if (ImGui::Button("Delete", { 60,20 })) {
-			//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			RemoveTexture();
-			ImGui::PopStyleColor();
-			ImGui::PopStyleColor();
-			ImGui::PopStyleColor();
-			return;
-		}
+	//	//ImGui::SameLine(140, 15);
+	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+	//	if (ImGui::Button("Delete", { 60,20 })) {
+	//		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+	//		RemoveTexture();
+	//		ImGui::PopStyleColor();
+	//		ImGui::PopStyleColor();
+	//		ImGui::PopStyleColor();
+	//		return;
+	//	}
 
-		ImGui::PopStyleColor();
-		ImGui::PopStyleColor();
-		ImGui::PopStyleColor();
+	//	ImGui::PopStyleColor();
+	//	ImGui::PopStyleColor();
+	//	ImGui::PopStyleColor();
 
-		static bool check;
-		check = textureActivated;
-		if (ImGui::Checkbox("Texture Active", &check)) {
-			//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			textureActivated = check;
-		}
-		ImGui::SameLine(220, 15);
-		ImGui::Spacing();
-		ImGui::Text("Texture References: %i", texture->references);
-		ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
-		ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
-		ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
+	//	static bool check;
+	//	check = textureActivated;
+	//	if (ImGui::Checkbox("Texture Active", &check)) {
+	//		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+	//		textureActivated = check;
+	//	}
+	//	ImGui::SameLine(220, 15);
+	//	ImGui::Spacing();
+	//	ImGui::Text("Texture References: %i", texture->references);
+	//	ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
+	//	ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
+	//	ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
 
-		ImGui::Image((ImTextureID)texture->id, { ImGui::GetWindowWidth() ,ImGui::GetWindowWidth() });
-		ImGui::Spacing();
-	}
+	//	ImGui::Image((ImTextureID)texture->id, { ImGui::GetWindowWidth() ,ImGui::GetWindowWidth() });
+	//	ImGui::Spacing();
+	//}
 	//else {
 	//	ImGui::SameLine(220, 15);
 	//	if (ImGui::Button("Add Texture", { 120,20 })) {

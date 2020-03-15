@@ -1885,8 +1885,13 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 	switch (type) {
 	case ResourceType::RESOURCE_TEXTURE: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->material->texture != nullptr && material->material->texture == (ResourceTexture*)to_delete) {
-			material->SetTexture(nullptr);
+		if (material != nullptr ) {
+			for (uint texType = 0; texType < (uint)TextureType::MAX; ++texType)
+			{
+				const ResourceTexture* texture = material->GetTexture((TextureType)texType);
+				if(texture != nullptr && texture == (ResourceTexture*)to_delete)
+					material->RemoveTexture((TextureType)texType);
+			}
 		}
 		break; }
 	case ResourceType::RESOURCE_MATERIAL : {

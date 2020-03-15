@@ -679,7 +679,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 					compMaterial = new ComponentMaterial((*item));
 					(*item)->AddComponent(compMaterial);
 				}
-				compMaterial->SetTexture(texture);
+				compMaterial->SetTexture(texture, TextureType::DIFFUSE);
 
 				if (!exists)
 				{

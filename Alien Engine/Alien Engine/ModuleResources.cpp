@@ -577,7 +577,7 @@ ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
 			}
 		}
 	}
-
+	LOG_ENGINE("No shader found with name %s", name);
 	return desiredShader;
 }
 
@@ -595,7 +595,7 @@ ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
 			}
 		}
 	}
-
+	LOG_ENGINE("No material found with name %s", name);
 	return desiredMaterial;
 }
 
@@ -613,6 +613,7 @@ const uint ModuleResources::GetTextureidByID(const u64& ID) const // This needs 
 		}
 	}
 
+	LOG_ENGINE("No texture found with ID %i", ID);
 	return -1;
 }
 
@@ -630,6 +631,7 @@ ResourceTexture* ModuleResources::GetTextureByID(const u64& ID)
 		}
 	}
 
+	LOG_ENGINE("No texture found with ID %i", ID);
 	return nullptr;
 }
 
