@@ -693,7 +693,8 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 			else
 				LOG_ENGINE("Selected GameObject has no mesh");
 
-			if ((*item)->HasComponent(ComponentType::PARTICLES))
+
+			/*if ((*item)->HasComponent(ComponentType::PARTICLES))
 			{
 
 				ComponentParticleSystem *particleSystem = (ComponentParticleSystem *)(*item)->GetComponent(ComponentType::PARTICLES);
@@ -704,7 +705,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 				particleSystem->SetTexture(texture);
 			}
 			else
-				LOG_ENGINE("Selected GameObject has no particle system");
+				LOG_ENGINE("Selected GameObject has no particle system");*/
 		}
 	}
 }

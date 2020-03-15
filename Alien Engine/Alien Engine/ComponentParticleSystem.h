@@ -20,6 +20,10 @@ public:
 private:
 
 	void OnPlay() override; 
+	void OnPause() override;
+	void OnStop() override;
+	void OnEmitterPlay();
+	void OnEmitterStop();
 
 	void PreUpdate() override; 
 	void Update() override;
@@ -31,9 +35,10 @@ private:
 	void OnEnable() override;
 	void OnDisable() override;
 
+
 	bool DrawInspector () override;
 
-	void TextureBrowser();
+	//void TextureBrowser();
 
 	// Serialization Component
 	void SaveComponent(JSONArraypack* to_save) override;
@@ -46,7 +51,7 @@ private:
 public: 
 
 	ParticleSystem* GetSystem();
-	void SetTexture(ResourceTexture* tex);
+	//void SetTexture(ResourceTexture* tex);
 	
 	//void SetMaterial(ResourceMaterial* mat);
 
@@ -68,13 +73,13 @@ private:
 
 	// Pointers
 	ParticleSystem* particleSystem = nullptr;
-	ResourceTexture* texture = nullptr;
-	ResourceTexture* selected_texture = nullptr;
+	//ResourceTexture* texture = nullptr;
+	//ResourceTexture* selected_texture = nullptr;
 
 
 	// Logic
-	bool change_texture_menu = false;
-	bool texture_activated = true;
+	//bool change_texture_menu = false;
+	//bool texture_activated = true;
 
 	bool enable_render = false;
 	

@@ -29,14 +29,14 @@ ComponentParticleSystem::~ComponentParticleSystem()
 		particleSystem = nullptr; 
 	}
 
-	if(texture != nullptr)
+	/*if(texture != nullptr)
 	{
 		texture->DecreaseReferences();
 		texture = nullptr;
 	}
 
 	if (selected_texture != nullptr)
-		selected_texture = nullptr;
+		selected_texture = nullptr;*/
 	
 	/*if (material != nullptr)
 		material = nullptr;*/
@@ -45,6 +45,26 @@ ComponentParticleSystem::~ComponentParticleSystem()
 void ComponentParticleSystem::OnPlay()
 {
 	particleSystem->Restart();
+}
+
+void ComponentParticleSystem::OnPause()
+{
+	particleSystem->Pause();
+}
+
+void ComponentParticleSystem::OnStop()
+{
+	particleSystem->Stop();
+}
+
+void ComponentParticleSystem::OnEmitterPlay()
+{
+	particleSystem->emmitter.Play();
+}
+
+void ComponentParticleSystem::OnEmitterStop()
+{
+	particleSystem->emmitter.Stop();
 }
 
 void ComponentParticleSystem::PreUpdate()
@@ -435,73 +455,73 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 
-			ImGui::Text("Particle Texture ");
+			//ImGui::Text("Particle Texture ");
 
 			//static ResourceTexture* selected_texture = nullptr;
 
-			if (texture != nullptr)
-			{
-				ImGui::Spacing();
-				ImGui::Spacing();
+			//if (texture != nullptr)
+			//{
+			//	ImGui::Spacing();
+			//	ImGui::Spacing();
 
-				static bool check;
-				check = texture_activated;
-				if (ImGui::Checkbox("Texture Active", &check)) {
-					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-					texture_activated = check;
-				}
+			//	static bool check;
+			//	check = texture_activated;
+			//	if (ImGui::Checkbox("Texture Active", &check)) {
+			//		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			//		texture_activated = check;
+			//	}
 
-				ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
-				ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
-				ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
-				ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->references);
-				ImGui::Image((ImTextureID)texture->id, {140 ,140 });
+			//	ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->width);
+			//	ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->height);
+			//	ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", texture->GetAssetsPath());
+			//	ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", texture->references);
+			//	ImGui::Image((ImTextureID)texture->id, {140 ,140 });
 
-				ImGui::Spacing();
+			//	ImGui::Spacing();
 
-				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-				if (ImGui::Button("Delete", { 60,20 })) {
-					//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-					texture->DecreaseReferences();
-					texture = nullptr;
-					particleSystem->texture = texture;
-					selected_texture = nullptr;	
+			//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			//	if (ImGui::Button("Delete", { 60,20 })) {
+			//		//ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			//		texture->DecreaseReferences();
+			//		texture = nullptr;
+			//		particleSystem->texture = texture;
+			//		selected_texture = nullptr;	
 
-					
-				}
+			//		
+			//	}
 
-				ImGui::PopStyleColor();
-				ImGui::PopStyleColor();
-				ImGui::PopStyleColor();
+			//	ImGui::PopStyleColor();
+			//	ImGui::PopStyleColor();
+			//	ImGui::PopStyleColor();
 
-				ImGui::SameLine(80, 15);
-				if (ImGui::Button("Change Texture", { 120,20 })) {
-					change_texture_menu = true;
-					selected_texture = texture;
-				}
-				ImGui::Spacing();
-			}
+			//	ImGui::SameLine(80, 15);
+			//	if (ImGui::Button("Change Texture", { 120,20 })) {
+			//		change_texture_menu = true;
+			//		selected_texture = texture;
+			//	}
+			//	ImGui::Spacing();
+			//}
 
-			else {
-				
+			//else {
+			//	
 
-				ImGui::SameLine(200, 15);
-				if (ImGui::Button("Add Texture", { 120,20 })) {
-					change_texture_menu = true;
-					selected_texture = texture;
-				}
-				ImGui::SameLine();
-				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture assigned");
-				ImGui::Spacing();
-			}
+			//	ImGui::SameLine(200, 15);
+			//	if (ImGui::Button("Add Texture", { 120,20 })) {
+			//		change_texture_menu = true;
+			//		selected_texture = texture;
+			//	}
+			//	ImGui::SameLine();
+			//	ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture assigned");
+			//	ImGui::Spacing();
+			//}
 
 
-			if (change_texture_menu) 
+			/*if (change_texture_menu) 
 			{
 				TextureBrowser();
-			}
+			}*/
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -617,100 +637,100 @@ bool ComponentParticleSystem::DrawInspector()
 	return true;
 }
 
-void ComponentParticleSystem::TextureBrowser()
-{
-	ImGui::OpenPopup("Textures Loaded");
-	ImGui::SetNextWindowSize({ 522,585 });
+//void ComponentParticleSystem::TextureBrowser()
+//{
+//	ImGui::OpenPopup("Textures Loaded");
+//	ImGui::SetNextWindowSize({ 522,585 });
+//
+//	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+//		ImGui::Spacing();
+//		ImGui::NewLine();
+//		ImGui::SameLine(190);
+//		ImGui::Text("Texture Selected");
+//		ImGui::Text("");
+//		ImGui::SameLine(170);
+//
+//		if (selected_texture != nullptr) {
+//			ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
+//			ImGui::Spacing();
+//			ImGui::Text("");
+//			ImGui::SameLine(150);
+//
+//			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
+//			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
+//			ImGui::Text("");
+//			ImGui::SameLine(150);
+//			ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->references);
+//			ImGui::Text("");
+//			ImGui::SameLine(112);
+//			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
+//		}
+//		ImGui::Spacing();
+//
+//		if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+//			ImGui::Columns(3, 0, false);
+//			ImGui::SetColumnWidth(0, 156);
+//			ImGui::SetColumnWidth(1, 156);
+//			ImGui::SetColumnWidth(2, 156);
+//
+//			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+//			for (; item != App->resources->resources.end(); ++item) {
+//				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+//
+//					if ((*item)->NeedToLoad())
+//						(*item)->IncreaseReferences();
+//
+//					ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
+//					if (ImGui::IsItemClicked()) {
+//						selected_texture = static_cast<ResourceTexture*>(*item);
+//					}
+//					ImGui::NextColumn();
+//				}
+//			}
+//
+//			ImGui::EndChild();
+//		}
+//		ImGui::Spacing();
+//		ImGui::Text("");
+//		ImGui::SameLine(377);
+//		if (ImGui::Button("Apply", { 120,20 })) {
+//			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+//			texture = selected_texture;
+//			particleSystem->texture = texture;
+//			selected_texture = nullptr;
+//			change_texture_menu = false;
+//
+//			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+//			for (; item != App->resources->resources.end(); ++item) {
+//				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+//
+//					if (*item != texture)
+//						(*item)->DecreaseReferences();
+//				}
+//			}
+//		}
+//		ImGui::SameLine(237);
+//		if (ImGui::Button("Cancel", { 120,20 })) {
+//			selected_texture = nullptr;
+//			change_texture_menu = false;
+//
+//			std::vector<Resource*>::iterator item = App->resources->resources.begin();
+//			for (; item != App->resources->resources.end(); ++item) {
+//				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
+//						(*item)->DecreaseReferences();
+//				}
+//			}
+//		}
+//		ImGui::EndPopup();
+//	}
+//}
 
-	if (ImGui::BeginPopupModal("Textures Loaded", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
-		ImGui::Spacing();
-		ImGui::NewLine();
-		ImGui::SameLine(190);
-		ImGui::Text("Texture Selected");
-		ImGui::Text("");
-		ImGui::SameLine(170);
-
-		if (selected_texture != nullptr) {
-			ImGui::Image((ImTextureID)selected_texture->id, { 150,150 });
-			ImGui::Spacing();
-			ImGui::Text("");
-			ImGui::SameLine(150);
-
-			ImGui::Text("Texture Size:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->width);
-			ImGui::SameLine(); ImGui::Text("x"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->height);
-			ImGui::Text("");
-			ImGui::SameLine(150);
-			ImGui::Text("References:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%i", selected_texture->references);
-			ImGui::Text("");
-			ImGui::SameLine(112);
-			ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored({ 255, 216, 0, 100 }, "%s", selected_texture->GetAssetsPath());
-		}
-		ImGui::Spacing();
-
-		if (ImGui::BeginChild("##TexturesSelectorChild", { 492,285 }, true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
-			ImGui::Columns(3, 0, false);
-			ImGui::SetColumnWidth(0, 156);
-			ImGui::SetColumnWidth(1, 156);
-			ImGui::SetColumnWidth(2, 156);
-
-			std::vector<Resource*>::iterator item = App->resources->resources.begin();
-			for (; item != App->resources->resources.end(); ++item) {
-				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
-
-					if ((*item)->NeedToLoad())
-						(*item)->IncreaseReferences();
-
-					ImGui::ImageButton((ImTextureID)static_cast<ResourceTexture*>(*item)->id, { 140,140 });
-					if (ImGui::IsItemClicked()) {
-						selected_texture = static_cast<ResourceTexture*>(*item);
-					}
-					ImGui::NextColumn();
-				}
-			}
-
-			ImGui::EndChild();
-		}
-		ImGui::Spacing();
-		ImGui::Text("");
-		ImGui::SameLine(377);
-		if (ImGui::Button("Apply", { 120,20 })) {
-			ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-			texture = selected_texture;
-			particleSystem->texture = texture;
-			selected_texture = nullptr;
-			change_texture_menu = false;
-
-			std::vector<Resource*>::iterator item = App->resources->resources.begin();
-			for (; item != App->resources->resources.end(); ++item) {
-				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
-
-					if (*item != texture)
-						(*item)->DecreaseReferences();
-				}
-			}
-		}
-		ImGui::SameLine(237);
-		if (ImGui::Button("Cancel", { 120,20 })) {
-			selected_texture = nullptr;
-			change_texture_menu = false;
-
-			std::vector<Resource*>::iterator item = App->resources->resources.begin();
-			for (; item != App->resources->resources.end(); ++item) {
-				if (*item != nullptr && (*item)->GetType() == ResourceType::RESOURCE_TEXTURE && static_cast<ResourceTexture*>(*item)->is_custom) {
-						(*item)->DecreaseReferences();
-				}
-			}
-		}
-		ImGui::EndPopup();
-	}
-}
-
-void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
-{
-	texture = tex;
-	particleSystem->texture = texture;
-
-}
+//void ComponentParticleSystem::SetTexture(ResourceTexture* tex)
+//{
+//	texture = tex;
+//	particleSystem->texture = texture;
+//
+//}
 //
 //void ComponentParticleSystem::SetMaterial(ResourceMaterial* mat)
 //{
@@ -866,13 +886,13 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 
 
 	// --------------- Deprecated -------------------- //
-	to_save->SetBoolean("TextureEnabled", texture_activated);
+	/*to_save->SetBoolean("TextureEnabled", texture_activated);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
 	
 	if (texture != nullptr) {
 		to_save->SetString("TextureID", std::to_string(texture->GetID()));
-	}
+	}*/
 	
 }
 
@@ -1004,7 +1024,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	
 
 	// ---------------------- Deprecated -------------------------- //
-	texture_activated = to_load->GetBoolean("TextureEnabled");
+	/*texture_activated = to_load->GetBoolean("TextureEnabled");
 
 	if (to_load->GetBoolean("HasTexture")) {
 		u64 ID = std::stoull(to_load->GetString("TextureID"));
@@ -1015,7 +1035,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 			particleSystem->texture = texture;
 		}
 	}
-	ID = std::stoull(to_load->GetString("ID"));
+	ID = std::stoull(to_load->GetString("ID"));*/
 
 
 }
