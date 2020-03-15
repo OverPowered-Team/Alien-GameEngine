@@ -124,7 +124,12 @@ void ComponentText::Draw(bool isGame)
 		canvas->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 		canvas->text_ortho->Bind();
 
-		glm::mat4 projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
+		glm::mat4 projection;
+		#ifndef GAME_VERSION
+		projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
+		#else
+		projection = glm::ortho(0.0f, (float)App->window->width, 0.0f, (float)App->window->height);
+		#endif
 
 		float4x4 proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
 			projection[1][0], projection[1][1], projection[1][2], projection[1][3],
