@@ -39,8 +39,24 @@ bool ComponentAnimatedImage::DrawInspector()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.0F,0.95F,0.0F,1.0F });
 		if (ImGui::Button("+"))
 		{
-			images.reserve(images.size() + 1);
+			//images.reserve(images.size() + 1);
 			images.push_back(nullptr);
+			last_frame++;
+		}
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(105);
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0.0F,0.0F,1.0F });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0.0F,0.0F,1.0F });
+		if (ImGui::Button("-"))
+		{
+			if (!images.empty())
+			{
+				ClearTextureArray((*images.end()));
+				images.erase(images.end());
+				last_frame--;
+			}
 		}
 		ImGui::PopStyleColor(3);
 
@@ -173,10 +189,14 @@ void ComponentAnimatedImage::Draw(bool isGame)
 		matrix[1][3] = origin.y;
 	}
 
-	if (texture != nullptr) {
+	if (!images.empty()) {
 		//glAlphaFunc(GL_GREATER, 0.0f);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
+		ResourceTexture* tex = GetCurrentFrame(Time::GetDT());
+		if (tex != nullptr)
+		{
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindTexture(GL_TEXTURE_2D, tex->id);
+		}
 	}
 
 	glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
@@ -244,4 +264,31 @@ ResourceTexture* ComponentAnimatedImage::SetTextureArray(ResourceTexture* tex, R
 		return tex;
 	}
 	return nullptr;
+}
+
+ResourceTexture* ComponentAnimatedImage::GetCurrentFrame(float dt)
+{
+	current_frame += speed * dt;
+	if (current_frame >= last_frame)
+	{
+		current_frame = (loop) ? 0.0f : last_frame - 1;
+		loops++;
+	}
+	return images.at((int)current_frame);
+}
+
+bool ComponentAnimatedImage::Finished() const
+{
+	return loops > 0;
+}
+
+void ComponentAnimatedImage::Reset()
+{
+	loops = 0;
+	current_frame = 0.0f;
+}
+
+int ComponentAnimatedImage::SeeCurrentFrame()
+{
+	return (int)current_frame;
 }
