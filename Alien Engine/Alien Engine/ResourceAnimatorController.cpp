@@ -1404,6 +1404,10 @@ void ResourceAnimatorController::Play(std::string state_name)
 	{
 		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
 			current_state = (*it);
+			FindState(state_name)->next_state = nullptr;
+			FindState(state_name)->time = 0;
+			FindState(state_name)->fade_time = 0;
+			FindState(state_name)->fade_duration = 0;
 			transitioning = false;
 		}
 	}
