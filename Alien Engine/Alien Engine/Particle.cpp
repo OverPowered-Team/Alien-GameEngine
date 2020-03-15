@@ -12,11 +12,24 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	owner->sourceFactor = GL_SRC_ALPHA;
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
 
-	
+
+	if (owner->material != nullptr) 
+	{
+		p_material = new ResourceMaterial();
+		p_material->SetShader(owner->material->used_shader);
+		p_material->SetTexture(owner->material->texture);
+
+		p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
+		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
+		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;
+	}
+
 }
 
 Particle::~Particle()
 {
+	if (owner->material != nullptr)
+		delete p_material;
 }
 
 void Particle::PreUpdate(float dt)
@@ -136,17 +149,20 @@ void Particle::Draw()
 
 	
 	// --------- COLOR --------- //
-	if (owner->material == nullptr)
+	if (p_material == nullptr)
 		glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
 
 	
 	// ------ VAO BUFFER ------ //
 	glBindVertexArray(owner->vao);
 
-	if (owner->material != nullptr)
+	if (owner->material != nullptr && p_material != nullptr)
 	{
+
+		owner->DeactivateLight();
+
 		// --------- MATERIAL -------- //
-		owner->material->ApplyMaterial();
+		p_material->ApplyMaterial();
 		
 
 
@@ -166,6 +182,7 @@ void Particle::Draw()
 		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
+	owner->ActivateLight();
 	
 
 	// --- VERTEX BUFFER ---- //
@@ -190,12 +207,12 @@ void Particle::Draw()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	if (owner->material != nullptr)
-		owner->material->used_shader->Unbind();
+	if (owner->material != nullptr && p_material != nullptr)
+		p_material->used_shader->Unbind();
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-	
+	owner->DeactivateLight();
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
@@ -244,7 +261,12 @@ void Particle::InterpolateValues(float dt)
 	if (t <= 1)
 	{
 		t += rateToLerp * dt;
-		particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
+
+		if(owner->material != nullptr && p_material != nullptr)
+			p_material->shaderInputs.particleShaderProperties.color = float4::Lerp(p_material->shaderInputs.particleShaderProperties.start_color, p_material->shaderInputs.particleShaderProperties.end_color, t);
+		else
+			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
+
 		particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
 		//particleInfo.rotation = Slerp(particleInfo.rotation.Mul(Quat::RotateZ(startInfo.angle)), particleInfo.rotation.Mul(Quat::RotateZ(endInfo.angle)),t);
 		particleInfo.force = float3::Lerp(startInfo.force, endInfo.force, t);
@@ -256,6 +278,11 @@ void Particle::InterpolateValues(float dt)
 float3 Particle::GetPosition() const
 {
 	return particleInfo.position;
+}
+
+ResourceMaterial* Particle::GetMaterial() const
+{
+	return p_material;
 }
 
 float Particle::Lerp(float v0, float v1, float t)

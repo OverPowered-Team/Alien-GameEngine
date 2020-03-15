@@ -94,7 +94,9 @@ struct ShaderInputs
 	} iluminatedShaderProperties;
 
 	struct ParticleShaderProperties {
-		float4 object_color = float4(1.f, 0.f, 0.8f, 1.0f);
+		float4 color = float4(1.f, 0.f, 0.8f, 1.f);
+		float4 start_color = float4(1.f, 0.f, 0.8f, 1.f);
+		float4 end_color = float4(1.f, 1.f, 1.f, 1.f);
 	} particleShaderProperties;
 };
 

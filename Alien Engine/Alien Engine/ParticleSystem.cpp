@@ -198,24 +198,21 @@ void ParticleSystem::DrawParticles()
 	// Debugging drawing points in particles Position
 	//DrawPointsForParticles();
 
+	RenderLight();
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
-	if (material != nullptr)
-		DeactivateLight();
-	else
-		ActivateLight();
-	
+
 	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
 	{
 		(*iter)->Orientate(mainCamera);
 		(*iter)->Rotate();
 		(*iter)->Draw();
+
+
 	}
+	
 
-
-	RenderLight();
-	DeactivateLight();
 }
 
 void ParticleSystem::DrawPointsForParticles()

@@ -493,7 +493,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		ImGui::SameLine(120,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.object_color.ptr(), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.start_color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
 	default:
