@@ -243,10 +243,75 @@ void ComponentAnimatedImage::Draw(bool isGame)
 
 void ComponentAnimatedImage::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetNumber("Width", size.x);
+	to_save->SetNumber("Height", size.y);
+	to_save->SetNumber("Speed", speed);
+	to_save->SetBoolean("Loop", loop);
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("UIType", (int)ui_type);
+	to_save->SetColor("ColorCurrent", current_color);
+
+	to_save->SetBoolean("HasAnimatedImages", !images.empty());
+	if (!images.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedImages");
+		auto item = images.begin();
+		for (; item != images.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - images.begin()), ((*item) != nullptr) ? std::to_string((*item)->GetID()) : "0");
+		}
+	}
+	
 }
 
 void ComponentAnimatedImage::LoadComponent(JSONArraypack* to_load)
 {
+	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	enabled = to_load->GetBoolean("Enabled");
+	loop = to_load->GetBoolean("Loop");
+	speed = (float)to_load->GetNumber("Speed");
+	current_color = to_load->GetColor("ColorCurrent");
+	current_frame = 0.0f;
+	last_frame = 0;
+
+	if (to_load->GetBoolean("HasAnimatedImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(to_load->GetString(std::to_string(i)));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					images.push_back(tex);
+					images.at(i) = SetTextureArray(tex, images.at(i));
+					last_frame++;
+				}
+			}
+			else
+			{
+				images.push_back(nullptr);
+				last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+
+	GameObject* p = game_object_attached->parent;
+	bool changed = true;
+	while (changed) {
+		if (p != nullptr) {
+			ComponentCanvas* canvas = p->GetComponent<ComponentCanvas>();
+			if (canvas != nullptr) {
+				SetCanvas(canvas);
+				changed = false;
+			}
+			p = p->parent;
+		}
+		else {
+			changed = false;
+			SetCanvas(nullptr);
+		}
+	}
 }
 
 ResourceTexture* ComponentAnimatedImage::ClearTextureArray(ResourceTexture* item)
