@@ -10,9 +10,8 @@ C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Modul
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(601) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
-C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(580) : No shader found with name ðÙ"
-C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(201) : No resource found with ID -572662307
-C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(652) : Texture successfully loaded: Library/Textures/6319419391552405814.dds
+C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(580) : No shader found with name Resources
+C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(201) : No resource found with ID 1182796791
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Scripts/Audio.alienScript] to [Library/Scripts/4722486278913115166.alienPrefab]
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(70) : Starting Module Objects
@@ -20,7 +19,8 @@ C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Modul
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(55) : Loading UI assets
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(85) : Loading Assets/Models/Street environment_V01.FBX
+C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceShader.cpp(554) : WARNING: Uniform view_pos doesn't exist...
+
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(152) : Destroying 3D Renderer
 C:\Users\sebi8\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(93) : Unloading UI scene

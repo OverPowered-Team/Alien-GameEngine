@@ -33,32 +33,6 @@ ResourceMaterial::~ResourceMaterial()
 	}
 }
 
-//bool ResourceMaterial::LoadMemory()
-//{
-//	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-//		if (texturesID[iter] != NO_TEXTURE_ID)
-//		{
-//			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
-//			if (texture != nullptr)
-//				texture->IncreaseReferences();
-//		}
-//	}
-//
-//	return true;
-//}
-//
-//void ResourceMaterial::FreeMemory()
-//{
-//	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-//		if (texturesID[iter] != NO_TEXTURE_ID)
-//		{
-//			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
-//			if (texture != nullptr)
-//				texture->DecreaseReferences();
-//		}
-//	}
-//}
-
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
 	if (force_id == 0) {
@@ -213,7 +187,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 
 	file->SetString("Name", name);
 	file->SetFloat4("Color", color);
-	file->SetString("ShaderID", std::to_string(used_shader->GetID()));
+	file->SetString("ShaderID", std::to_string(used_shader_ID));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		file->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
 	}
@@ -305,6 +279,7 @@ void ResourceMaterial::SetShader(ResourceShader* newShader)
 
 	used_shader->DecreaseReferences();
 	used_shader = newShader;
+	used_shader_ID = used_shader->GetID();
 	used_shader->IncreaseReferences();
 }
 

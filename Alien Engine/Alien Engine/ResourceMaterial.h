@@ -6,55 +6,6 @@
 #include <vector>
 
 #define NO_TEXTURE_ID 0
-/*
-
-enum aiTextureType
-{
-	
-	aiTextureType_NONE = 0,
-
-
-	aiTextureType_DIFFUSE = 1,
-
-
-	aiTextureType_SPECULAR = 2,
-
-
-	aiTextureType_AMBIENT = 3,
-
-
-	aiTextureType_EMISSIVE = 4,
-
-
-	aiTextureType_HEIGHT = 5,
-
-
-	aiTextureType_NORMALS = 6,
-
-
-	aiTextureType_SHININESS = 7,
-
-
-	aiTextureType_OPACITY = 8,
-
-
-	aiTextureType_DISPLACEMENT = 9,
-
-
-	aiTextureType_LIGHTMAP = 10,
-
-	aiTextureType_REFLECTION = 11,
-
-
-	aiTextureType_BASE_COLOR = 12,
-	aiTextureType_NORMAL_CAMERA = 13,
-	aiTextureType_EMISSION_COLOR = 14,
-	aiTextureType_METALNESS = 15,
-	aiTextureType_DIFFUSE_ROUGHNESS = 16,
-	aiTextureType_AMBIENT_OCCLUSION = 17,
-
-};
-*/
 
 enum class TextureType {
 	NONE = -1,
@@ -112,9 +63,6 @@ public:
 	ResourceMaterial();
 	virtual ~ResourceMaterial();
 
-	/*bool LoadMemory() override;
-	void FreeMemory() override;*/
-
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
 	bool ReadBaseInfo(const char* assets_file_path);
@@ -155,6 +103,7 @@ public:
 	u64 texturesID[(uint)TextureType::MAX];
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
+	u64 used_shader_ID = 0;
 	ResourceShader* used_shader = nullptr; 
 	const char* selectedShader = nullptr;
 	ResourceTexture* selected_texture = nullptr;

@@ -577,7 +577,7 @@ ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
 			}
 		}
 	}
-	LOG_ENGINE("No shader found with name %s", name);
+	LOG_ENGINE("No shader found with name %s", name.c_str());
 	return desiredShader;
 }
 
