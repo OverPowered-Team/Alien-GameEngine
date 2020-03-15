@@ -5,7 +5,7 @@
 
 enum TweenType;
 
-class __declspec(dllexport) ModuleTween {
+class __declspec(dllexport) Tween {
 public:
 
 	enum {
@@ -14,22 +14,22 @@ public:
 	};
 
 public:
-	static ModuleTween* TweenMove(GameObject* gameObject, const float3& to, float time, int type = 0);
-	static ModuleTween* TweenMoveTo(GameObject* gameObject, const float3& to, float time, int type = 0);
-	static ModuleTween* TweenScale(GameObject* gameObject, const float3& to, float time, int type = 0);
-	static ModuleTween* TweenRotate(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenMove(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenMoveTo(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenScale(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenRotate(GameObject* gameObject, const float3& to, float time, int type = 0);
 	// Color values has to go from 0 to 1 
-	static ModuleTween* TweenColor(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenColor(GameObject* gameObject, const float3& to, float time, int type = 0);
 	// Alpha values has to go from 0 to 1 
-	static ModuleTween* TweenAlpha(GameObject* gameObject, const float to, float time, int type = 0);
+	static void TweenAlpha(GameObject* gameObject, const float to, float time, int type = 0);
 	// Color and alpha values has to go from 0 to 1 
-	static ModuleTween* TweenRGBA(GameObject* gameObject, const float4& to, float time, int type = 0);
+	static void TweenRGBA(GameObject* gameObject, const float4& to, float time, int type = 0);
 
 	// Color values has to go from 0 to 1 
-	static ModuleTween* TweenUIColor(GameObject* gameObject, const float3& to, float time, int type = 0);
+	static void TweenUIColor(GameObject* gameObject, const float3& to, float time, int type = 0);
 	// Alpha values has to go from 0 to 1 
-	static ModuleTween* TweenUIAlpha(GameObject* gameObject, const float to, float time, int type = 0);
+	static void TweenUIAlpha(GameObject* gameObject, const float to, float time, int type = 0);
 	// Color and alpha values has to go from 0 to 1 
-	static ModuleTween* TweenUIRGBA(GameObject* gameObject, const float4& to, float time, int type = 0);
+	static void TweenUIRGBA(GameObject* gameObject, const float4& to, float time, int type = 0);
 
 };
