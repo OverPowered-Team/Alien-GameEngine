@@ -482,8 +482,10 @@ void ResourceMaterial::InputTexture(TextureType texType)
 	ImGui::PushID((int)texType);
 	if (ImGui::RadioButton("", false))
 	{
-		change_texture_menu = true;
-		selectedType = texType;
+		RemoveTexture(texType);
+		// On hold to revise references
+		/*change_texture_menu = true;
+		selectedType = texType;*/
 	}
 	ImGui::PopID();
 }
