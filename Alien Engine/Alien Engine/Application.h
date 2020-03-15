@@ -24,7 +24,7 @@
 #include <vector>
 
 enum class EventType; 
-struct AlienEvent;
+enum class AlienEventType;
 
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
@@ -108,7 +108,7 @@ public:
 
 	void OpenWebsite(const std::string& website);
 	void CastEvent(EventType eventType);
-	void SendAlienEvent(AlienEvent& e);
+	void SendAlienEvent(void * object, AlienEventType type);
 
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);
@@ -126,11 +126,8 @@ private:
 	void OnUpdate(update_status& ret);
 	void PostUpdate(update_status& ret);
 
-
 	bool LoadConfig();
 	bool SaveConfig();
 };
 
 extern Application* App;
-
-

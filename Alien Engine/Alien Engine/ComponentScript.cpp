@@ -9,6 +9,7 @@
 #include "ResourcePrefab.h"
 #include "Prefab.h"
 #include "mmgr/mmgr.h"
+#include "Event.h"
 
 ComponentScript::ComponentScript(GameObject* attach) : Component(attach)
 {
@@ -38,6 +39,8 @@ ComponentScript::~ComponentScript()
 			void (*Deleter)(void*) = (void (*)(void*))GetProcAddress(App->scripts_dll, std::string("Destroy" + std::string(data_name)).data());
 			Deleter(data_ptr);
 		}
+
+		App->SendAlienEvent(this, AlienEventType::SCRIPT_DELETED);
 	}
 }
 
@@ -792,6 +795,8 @@ void ComponentScript::LoadData(const char* name, bool is_alien)
 			alien->enabled = &enabled;
 			strcpy(alien->data_name, name);
 		}
+
+		App->SendAlienEvent(this, AlienEventType::SCRIPT_ADDED);
 	}
 }
 

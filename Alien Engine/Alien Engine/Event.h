@@ -16,8 +16,21 @@ enum class EventType
 	// Go nuts adding stuff
 };
 
+enum class AlienEventType
+{
+	RIGIDBODY_DELETED,
+	RIGIDBODY_ADDED,	
+	SCRIPT_DELETED,
+	SCRIPT_ADDED,
+	COLLIDER_DELETED,
+	COLLIDER_ADDED,
+	RESOURSE_ADDED,
+	RESOURCE_DELETED,
+	UNKNOWN
+};
+
 struct AlienEvent
 {
-	EventType type = EventType::UNKNOWN;
+	AlienEventType type = AlienEventType::UNKNOWN;
 	void* object = nullptr;
 };

@@ -15,12 +15,24 @@ ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 	// GameObject Components 
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
 
+	std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
+
+	for (ComponentScript* script : scripts)
+	{
+		if (script->need_alien == true)
+		{
+			alien_scripts.push_back(script);
+		}
+	}
+
 	// Default values 
 	SetCenter(float3::zero());
 }
 
 ComponentCollider::~ComponentCollider()
 {
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
+
 	if (rigid_body)
 	{
 		rigid_body->RemoveCollider();
@@ -36,45 +48,32 @@ ComponentCollider::~ComponentCollider()
 
 void ComponentCollider::Init()
 {
-	// Create aux body 
+	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation());
+
+	// Create elements
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.F, nullptr, nullptr);
 	aux_body = new btRigidBody(rbInfo);
-
-	// Create shape 
-
-	CreateDefaultShape();
-
-	aux_body->setCollisionShape(shape);
-	App->physics->AddBody(aux_body);
-
-	// Create detector  // TestCallback
+	aux_body->setUserPointer(this);
+	aux_body->setWorldTransform(go_bullet_transform);
 	detector = new btGhostObject();
 	detector->setUserPointer(this);
-	detector->setCollisionShape(shape);
+	detector->setWorldTransform(go_bullet_transform);
 	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// Create shape 
+	CreateDefaultShape();
+	aux_body->setCollisionShape(shape);
+	detector->setCollisionShape(shape);
+
+	// Add to world
+	App->physics->AddBody(aux_body);
 	App->physics->AddDetector(detector);
 
 	// Search Rigid Body 
-
 	ComponentRigidBody* new_rb = game_object_attached->GetComponent<ComponentRigidBody>();
+	(new_rb != nullptr) ? new_rb->AddCollider(this) : new_rb = nullptr;
 
-	if (new_rb != nullptr)
-	{
-		new_rb->AddCollider(this);
-	}
-
-	// Search Valid Script // TestCallback
-
-	//if (alien_script == nullptr)
-	//{
-	//	ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
-
-	//	if (new_script != nullptr && new_script->need_alien == true)
-	//	{
-	//		alien_script = (Alien*)new_script->data_ptr;
-	//	}
-	//}
-
+	// Default settings
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
@@ -162,26 +161,12 @@ void ComponentCollider::Update()
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(true);
 
-	// Search Valid Script // TestCallback
-
-	if (alien_script == nullptr)
-	{
-		ComponentScript* new_script = game_object_attached->GetComponent<ComponentScript>();
-
-		if (new_script != nullptr && new_script->need_alien == true)
-		{
-			alien_script = (Alien*)new_script->data_ptr;
-		}
-	}
-
-
-	if (alien_script != nullptr && Time::IsPlaying())
+	if (!alien_scripts.empty() && Time::IsPlaying())
 	{
 		if (first_frame == false)
 		{
 			first_frame = true;
 			return;
-
 		}
 
 		if (first_frame == true)
@@ -206,12 +191,22 @@ void ComponentCollider::Update()
 					if (search != collisions.end() && coll != nullptr)
 					{
 						collisions[coll] = true;
-						alien_script->OnTrigger(coll);
+
+						for (ComponentScript* script : alien_scripts)
+						{
+							Alien* alien = (Alien*)script->data_ptr;
+							alien->OnTrigger(coll);
+						}
 					}
 					else
 					{
 						collisions[coll] = true;
-						alien_script->OnTriggerEnter(coll);
+
+						for (ComponentScript* script : alien_scripts)
+						{
+							Alien* alien = (Alien*)script->data_ptr;
+							alien->OnTriggerEnter(coll);
+						}
 					}
 
 					++test;
@@ -223,7 +218,13 @@ void ComponentCollider::Update()
 			while (itr != collisions.end())
 			{
 				if (itr->second == false) {
-					alien_script->OnTriggerExit(itr->first);
+
+					for (ComponentScript* script : alien_scripts)
+					{
+						Alien* alien = (Alien*)script->data_ptr;
+						alien->OnTriggerExit(itr->first);
+					}
+
 					itr = collisions.erase(itr);
 				}
 				else {
@@ -291,6 +292,49 @@ bool ComponentCollider::DrawInspector()
 	}
 
 	return true;
+}
+
+void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
+{
+	switch (e.type)
+	{
+	case AlienEventType::SCRIPT_ADDED:
+	{
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached && script->need_alien == true)
+			alien_scripts.push_back(script);
+		break;
+	}
+	case AlienEventType::SCRIPT_DELETED:
+	{
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached)
+			alien_scripts.remove(script);
+		break;
+	}
+	case AlienEventType::COLLIDER_DELETED:
+	{
+		ComponentCollider* collider = (ComponentCollider*)e.object;
+
+		if (!alien_scripts.empty() && Time::IsPlaying())
+		{
+			if (!collisions.empty() && collisions.find(collider) != collisions.end())
+			{
+				for (ComponentScript* script : alien_scripts)
+				{
+					Alien* alien = (Alien*)script->data_ptr;
+					alien->OnTriggerExit(collider);
+				}
+
+				collisions.erase(collider);
+			}
+		}
+
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 float3 ComponentCollider::GetWorldCenter()

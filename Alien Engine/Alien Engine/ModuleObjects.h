@@ -29,6 +29,7 @@ class SpotLightProperties;
 class ComponentUI;
 
 class Viewport;
+struct AlienEvent;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -85,7 +86,10 @@ public:
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
 
+	void HandleAlienEvent(const AlienEvent& alien_event);
 	void HandleEvent(EventType eventType) override;
+
+
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);

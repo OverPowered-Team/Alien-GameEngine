@@ -30,6 +30,7 @@ class btGhostObject;
 
 class ModulePhysics : public Module
 {
+	friend class ComponentCharacterController;
 	friend class ModuleObjects;
 	friend class ComponentCollider;
 	friend class PanelPhysics;
@@ -59,6 +60,8 @@ public:
 
 	void DrawConstraint(btTypedConstraint* constraint);
 
+	void DrawCharacterController(ComponentCharacterController* controller);
+
 	void DrawWorld();
 
 	void AddBody(btRigidBody* body);
@@ -68,6 +71,10 @@ public:
 	void AddDetector(btGhostObject* detector);
 
 	void RemoveDetector(btGhostObject* detector);
+
+	void AddAction(btActionInterface* action);
+
+	void RemoveAction(btActionInterface* action);
 
 	void AddConstraint(btTypedConstraint* constraint, bool bodiesCollision = true);
 
