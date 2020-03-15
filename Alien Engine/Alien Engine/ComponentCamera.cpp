@@ -53,26 +53,25 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	// Create skybox
 	std::vector<std::string> skybox_faces = {
-		TEXTURES_FOLDER"Skybox/negx.jpg",
-		TEXTURES_FOLDER"Skybox/negy.jpg",
-		TEXTURES_FOLDER"Skybox/negz.jpg",
 		TEXTURES_FOLDER"Skybox/posx.jpg",
+		TEXTURES_FOLDER"Skybox/negx.jpg",
 		TEXTURES_FOLDER"Skybox/posy.jpg",
-		TEXTURES_FOLDER"Skybox/posz.jpg"
+		TEXTURES_FOLDER"Skybox/posz.jpg",
+		TEXTURES_FOLDER"Skybox/negy.jpg",
+		TEXTURES_FOLDER"Skybox/negz.jpg"
 	};
 
 	skybox = new Skybox();
 	skybox_texture_id = skybox->LoadCubeMap(skybox_faces);
 	skybox->SetBuffers();
-	// todo, own texture vector, cleanup clear()
+	skybox_faces.clear();
 
 	skybox_shader = App->resources->skybox_shader;
 	if (skybox_shader != nullptr)
 		skybox_shader->IncreaseReferences();
 
 	skybox_shader->Bind();
-	//skybox_shader->SetUniform1i("skybox", 0);
-	skybox_shader->SetUniform1i("skybox", skybox_texture_id);
+	skybox_shader->SetUniform1i("skybox", 0);
 	skybox_shader->Unbind();
 }
 
@@ -392,7 +391,6 @@ float3 ComponentCamera::GetCameraPosition() const
 
 void ComponentCamera::DrawSkybox()
 {
-	// Draw skybox [LAST]
 	glDepthFunc(GL_LEQUAL);
 	skybox_shader->Bind();
 
@@ -403,6 +401,7 @@ void ComponentCamera::DrawSkybox()
 	skybox_shader->SetUniformMat4f("view", view_m);
 	float4x4 projection = this->GetProjectionMatrix4f4();
 	skybox_shader->SetUniformMat4f("projection", projection);
+	
 
 	glBindVertexArray(skybox->vao);
 	glActiveTexture(GL_TEXTURE0);
