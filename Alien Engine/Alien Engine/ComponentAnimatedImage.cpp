@@ -110,6 +110,11 @@ bool ComponentAnimatedImage::DrawInspector()
 			}
 		}
 		ImGui::Spacing();
+		ImGui::Checkbox("Loop", &loop);
+		ImGui::Spacing();
+		ImGui::DragFloat("Speed", &speed, 0.5F, 0.1f, 100.0f, "%.1f");
+		ImGui::Spacing();
+
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Color");
 		ImGui::SameLine(85);
