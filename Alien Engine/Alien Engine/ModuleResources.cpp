@@ -90,7 +90,7 @@ bool ModuleResources::Start()
 	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
 	default_material = new ResourceMaterial();
 	default_material->SetName("Default Material");
-	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
+	//default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
 
 #ifndef GAME_VERSION
 	App->camera->fake_camera = new ComponentCamera(nullptr);

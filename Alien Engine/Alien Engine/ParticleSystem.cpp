@@ -94,9 +94,11 @@ ParticleSystem::~ParticleSystem()
 		(*iter) = nullptr;
 	}
 
-	glDeleteBuffers(1, &planeVertexBuffer);
-	glDeleteBuffers(1, &planeIndexBuffer);
-	glDeleteBuffers(1, &planeUVsBuffer);
+	glDeleteVertexArrays(1, &vao);
+
+	glDeleteBuffers(1, &id_vertex);
+	glDeleteBuffers(1, &id_vertex);
+	glDeleteBuffers(1, &id_uv);
 
 	particles.clear();
 
