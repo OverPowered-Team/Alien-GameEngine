@@ -1,4 +1,5 @@
 #include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "SDL/include/SDL_assert.h"
 #include "Resource_.h"
 #include "ResourceMesh.h"
@@ -15,6 +16,7 @@
 #include "ResourcePrefab.h"
 #include "ResourceAudio.h"
 #include "ResourceMaterial.h"
+#include "ComponentCamera.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -87,6 +89,13 @@ bool ModuleResources::Start()
 
 	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
 	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
+
+#ifndef GAME_VERSION
+	App->camera->fake_camera = new ComponentCamera(nullptr);
+	App->camera->fake_camera->frustum.farPlaneDistance = 1000.0F;
+	App->renderer3D->scene_fake_camera = App->camera->fake_camera;
+#endif
+
 	return true;
 }
 
@@ -646,7 +655,7 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = GetShaderByName("default_shader");
-
+	skybox_shader = GetShaderByName("skybox_shader");
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
 	ReadMaterials(directories, files, MATERIALS_FOLDER);
@@ -717,6 +726,7 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = (ResourceShader*)GetResourceWithID(2146752462670567246);
+	skybox_shader = (ResourceShader*)GetResourceWithID(0); // TODO
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);

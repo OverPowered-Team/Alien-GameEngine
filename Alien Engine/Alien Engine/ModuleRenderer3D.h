@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glew/include/glew.h"
+#include "SDL/include/SDL.h"
 #include "ModuleImporter.h"
 #include "ComponentCamera.h"
 
