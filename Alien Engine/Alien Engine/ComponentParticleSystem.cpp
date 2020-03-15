@@ -773,6 +773,9 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Start.Speed", (float)particleSystem->particleInfo.speed);
 	// Color
 	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.color);
+
+	
+	
 	// Size
 	to_save->SetNumber("Start.Size", (float)particleSystem->particleInfo.size);
 	// LightColor
@@ -853,8 +856,16 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Blending.Equation", (int)particleSystem->eqBlend);
 
 	// --------------- Material Resource Info -------------------- //
-
 	
+	to_save->SetBoolean("HasMaterial", (particleSystem->material != nullptr) ? true : false);
+	if (particleSystem->material != nullptr) {
+		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()));
+		to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.start_color);
+		to_save->SetFloat4("End.Color", particleSystem->material->shaderInputs.particleShaderProperties.end_color);
+	}
+
+
+	// --------------- Deprecated -------------------- //
 	to_save->SetBoolean("TextureEnabled", texture_activated);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
@@ -979,9 +990,20 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->eqBlend = (EquationBlendType)(int)to_load->GetNumber("Blending.Equation");
 
 
+
 	// ---------------------- Resource Info -------------------------- //
 
+	if (to_load->GetBoolean("HasMaterial")) {
+		u64 ID = std::stoull(to_load->GetString("MaterialID"));
+		particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
+		particleSystem->material->shaderInputs.particleShaderProperties.start_color = to_load->GetFloat4("Start.Color");
+		particleSystem->material->shaderInputs.particleShaderProperties.end_color = to_load->GetFloat4("End.Color");
+	}
+	ID = std::stoull(to_load->GetString("ID"));
 	
+	
+
+	// ---------------------- Deprecated -------------------------- //
 	texture_activated = to_load->GetBoolean("TextureEnabled");
 
 	if (to_load->GetBoolean("HasTexture")) {
@@ -994,6 +1016,8 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 		}
 	}
 	ID = std::stoull(to_load->GetString("ID"));
+
+
 }
 
 
