@@ -1,4 +1,5 @@
 #include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "SDL/include/SDL_assert.h"
 #include "Resource_.h"
 #include "ResourceMesh.h"
@@ -15,6 +16,7 @@
 #include "ResourcePrefab.h"
 #include "ResourceAudio.h"
 #include "ResourceMaterial.h"
+#include "ComponentCamera.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
@@ -87,6 +89,13 @@ bool ModuleResources::Start()
 
 	default_font = (ResourceFont*)GetResourceWithID(6090935666492539845);
 	default_material = (ResourceMaterial*)GetResourceWithID(13753584922284142239);
+
+#ifndef GAME_VERSION
+	App->camera->fake_camera = new ComponentCamera(nullptr);
+	App->camera->fake_camera->frustum.farPlaneDistance = 1000.0F;
+	App->renderer3D->scene_fake_camera = App->camera->fake_camera;
+#endif
+
 	return true;
 }
 

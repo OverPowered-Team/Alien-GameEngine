@@ -116,12 +116,6 @@ bool ModuleRenderer3D::Init()
 
 bool ModuleRenderer3D::Start()
 {
-#ifndef GAME_VERSION
-	App->camera->fake_camera = new ComponentCamera(nullptr);
-	App->camera->fake_camera->frustum.farPlaneDistance = 1000.0F;
-	scene_fake_camera = App->camera->fake_camera;
-#endif
-
 	return true;
 }
 

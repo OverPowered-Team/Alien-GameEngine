@@ -71,8 +71,6 @@ private:
 	void SetComponent(Component* component);
 
 private:
-	Frustum frustum;
-
 	float vertical_fov = 60.0f;
 	float horizontal_fov = 91.0f;
 
@@ -93,6 +91,8 @@ private:
 	float4x4 ViewMatrixInverse = float4x4::identity();
 
 public:
+	Frustum frustum;
+
 	Color camera_color_background{ 0.05f, 0.05f, 0.05f, 1.0f };
 
 	Skybox* skybox = nullptr;
