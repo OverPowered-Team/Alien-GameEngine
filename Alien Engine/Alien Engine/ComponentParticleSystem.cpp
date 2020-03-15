@@ -798,12 +798,19 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	
 	// Size
 	to_save->SetNumber("Start.Size", (float)particleSystem->particleInfo.size);
+	
 	// LightColor
 	to_save->SetFloat4("Start.LightColor", particleSystem->particleInfo.lightColor);
 	// MaxLifeTime
 	to_save->SetNumber("Start.MaxLifeTime", (float)particleSystem->particleInfo.maxLifeTime);
+	// AxisRot
+	to_save->SetBoolean("Start.AxisRotationStart", particleSystem->particleInfo.axisRot3DStart);
+	// Angle Rotation
+	to_save->SetFloat3("Start.Angle3D", particleSystem->particleInfo.angle3D);
 	// changeOverLifeTime
 	to_save->SetBoolean("Start.ChangeOverLifeTime", particleSystem->particleInfo.changeOverLifeTime);
+	// rotateOverLifeTime
+	to_save->SetBoolean("Start.RotateOverLifeTime", particleSystem->particleInfo.rotateOverTime);
 	
 	// ----------------- Particle System End Info -------------------- //
 
@@ -815,6 +822,13 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat4("End.LightColor", particleSystem->endInfo.lightColor);
 	// Force
 	to_save->SetFloat3("End.Force", particleSystem->endInfo.force);
+	// AxisRot
+	to_save->SetBoolean("End.AxisRotation", particleSystem->particleInfo.axisRot3D);
+	// Angular Velocity
+	to_save->SetFloat3("End.AngularVelocity", particleSystem->particleInfo.angularVelocity3D);
+	// Angular Acceleration
+	to_save->SetFloat3("End.AngularAcceleration", particleSystem->particleInfo.angularAcceleration3D);
+
 
 	// ---------------------- Emitter Info --------------------------- //
 
@@ -930,8 +944,14 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->particleInfo.lightColor = to_load->GetFloat4("Start.LightColor");
 	// MaxLifeTime
 	particleSystem->particleInfo.maxLifeTime = to_load->GetNumber("Start.MaxLifeTime");
+	// AxisRot
+	particleSystem->particleInfo.axisRot3DStart = to_load->GetBoolean("Start.AxisRotationStart");
+	// Angle Rotation
+	particleSystem->particleInfo.angle3D =  to_load->GetFloat3("Start.Angle3D");
 	// changeOverLifeTime
 	particleSystem->particleInfo.changeOverLifeTime = to_load->GetBoolean("Start.ChangeOverLifeTime");
+	// rotateOverLifeTime
+	particleSystem->particleInfo.rotateOverTime = to_load->GetBoolean("Start.rotateOverLifeTime");
 
 	// ----------------- Particle System End Info -------------------- //
 
@@ -943,7 +963,12 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->endInfo.lightColor = to_load->GetFloat4("End.LightColor");
 	// Force
 	particleSystem->endInfo.force = to_load->GetFloat3("End.Force");
-
+	// AxisRot
+	particleSystem->particleInfo.axisRot3D = to_load->GetBoolean("End.AxisRotation");
+	// Angular Velocity
+	particleSystem->particleInfo.angularVelocity3D = to_load->GetFloat3("End.AngularVelocity");
+	// Angular Acceleration
+	particleSystem->particleInfo.angularAcceleration3D = to_load->GetFloat3("End.AngularAcceleration");
 	// ---------------------- Emitter Info --------------------------- //
 
 	particleSystem->ResetSystem();
