@@ -74,11 +74,14 @@ public:
 	void Play();
 	void Pause();
 	void Restart();
+	void Stop();
 	void ResetSystem();
 	void InitLight();
 	void RenderLight();
 	void ActivateLight();
 	void DeactivateLight();
+	void StopEmmitter();
+	void StartEmmitter();
 
 	void SetBillboardType(BillboardType type);
 	BillboardType GetBillboardType() const;

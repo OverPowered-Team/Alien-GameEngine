@@ -94,6 +94,10 @@ ParticleSystem::~ParticleSystem()
 		(*iter) = nullptr;
 	}
 
+	glDeleteBuffers(1, &planeVertexBuffer);
+	glDeleteBuffers(1, &planeIndexBuffer);
+	glDeleteBuffers(1, &planeUVsBuffer);
+
 	particles.clear();
 
 	if (material != nullptr)
@@ -269,6 +273,7 @@ bool ParticleSystem::isPlaying() const
 void ParticleSystem::Play()
 {
 	playing = true; 
+	emmitter.playing = true;
 }
 
 void ParticleSystem::Pause()
@@ -280,6 +285,12 @@ void ParticleSystem::Restart()
 {
 	ResetSystem();
 	Play();
+}
+
+void ParticleSystem::Stop()
+{
+	ResetSystem();
+	Pause();
 }
 
 void ParticleSystem::ResetSystem()
@@ -301,7 +312,17 @@ void ParticleSystem::ResetSystem()
 	totalParticles = 0u;
 }
 
+void ParticleSystem::StopEmmitter()
+{
+	emmitter.Stop();
+	
+}
 
+void ParticleSystem::StartEmmitter()
+{
+	emmitter.Play();
+	
+}
 
 bool compareParticles(Particle* a, Particle* b)
 {

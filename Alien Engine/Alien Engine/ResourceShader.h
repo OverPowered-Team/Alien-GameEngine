@@ -37,6 +37,7 @@ struct SpotLightProperties;
 class ResourceShader : public Resource
 {
 	friend class ComponentMaterial;
+	friend class ComponentText;
 
 public:
 	ResourceShader();	

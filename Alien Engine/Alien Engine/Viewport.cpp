@@ -255,6 +255,8 @@ void Viewport::BeginViewport()
 
 void Viewport::EndViewport()
 {
+	camera->DrawSkybox();
+
 	// Disables --------------------------------------------
 	glDisable(GL_LIGHTING);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -300,6 +302,17 @@ uint Viewport::GetTexture()
 bool Viewport::CanRender()
 {
 	return camera != nullptr;
+}
+
+float2 Viewport::GetPos() const
+{
+	return position;
+}
+
+float2 Viewport::GetSize() const
+{
+	float2 size = float2(width, height);
+	return size;
 }
 
 // Return if screen point is inside viewport

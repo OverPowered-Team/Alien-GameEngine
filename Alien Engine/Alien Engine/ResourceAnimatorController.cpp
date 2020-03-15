@@ -2,7 +2,10 @@
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "ModuleInput.h"
+#include "ComponentAudioEmitter.h"
+#include "ComponentScript.h"
 #include "ResourceAnimation.h"
+#include "ResourceScript.h"
 #include "Alien.h"
 #include "Globals.h"
 #include <fstream>
@@ -19,6 +22,34 @@ ResourceAnimatorController::ResourceAnimatorController() : Resource()
 	ed_context = ax::NodeEditor::CreateEditor();
 
 	default_state = nullptr;
+}
+
+ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorController* controller)
+{
+
+	name = controller->name;
+
+	current_state = nullptr;
+
+	for (int i = 0; i < controller->states.size(); ++i) {
+		states.push_back(new State(controller->states[i]));
+		if (controller->states[i] == controller->default_state)
+			default_state = states[i];
+	}
+
+	for (int i = 0; i < controller->transitions.size(); ++i) {
+		transitions.push_back(new Transition(controller->transitions[i], this));
+	}
+
+	int_parameters = controller->int_parameters;
+	float_parameters = controller->float_parameters;
+	bool_parameters = controller->bool_parameters;
+
+	for (int i = 0; i < controller->anim_events.size(); ++i)
+		anim_events.push_back(new AnimEvent(controller->anim_events[i]));
+
+	ed_context = ax::NodeEditor::CreateEditor();
+
 }
 
 ResourceAnimatorController::~ResourceAnimatorController()
@@ -141,6 +172,20 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 				AddBoolParameter({ name, value });
 				bool_parameters->GetAnotherNode();
+			}
+		}
+
+		JSONArraypack* events = asset->GetArray("Controller.Events");
+		if (events) {
+			events->GetFirstNode();
+			for (int i = 0; i < events->GetArraySize(); ++i) {
+				std::string event_id = events->GetString("Event_Id");
+				u64 animation_id = std::stoull(events->GetString("Animation_Id"));
+				uint frame = events->GetNumber("Frame");
+				EventAnimType type = (EventAnimType)(uint)events->GetNumber("Type");
+
+				anim_events.push_back(new AnimEvent(event_id, animation_id, frame, type));
+				events->GetAnotherNode();
 			}
 		}
 
@@ -321,7 +366,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (animation && animation->GetDuration() > 0) {
 
-		state->time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+		state->time += (Time::GetDT() * current_state->GetSpeed());
 
 		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
@@ -368,7 +413,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed()) / attached_references;
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
 			UpdateState(state->next_state);
 		}
 		else {
@@ -523,6 +568,15 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		bool_parameters_array->SetBoolean("Value", (*it).second);
 	}
 
+	JSONArraypack* events_array = asset->InitNewArray("Controller.Events");
+	for (std::vector <AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it) {
+		events_array->SetAnotherNode();
+		events_array->SetString("Event_Id", (*it)->event_id);
+		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id));
+		events_array->SetNumber("Frame", (*it)->frame);
+		events_array->SetNumber("Type", (int)(*it)->type);
+	}
+
 	asset->FinishSave();
 	CreateMetaData(ID);
 
@@ -561,6 +615,10 @@ void ResourceAnimatorController::FreeMemory()
 	bool_parameters.clear();
 	float_parameters.clear();
 	int_parameters.clear();
+
+	anim_events.clear();
+	scripts.clear();
+	emitter = nullptr;
 
 	default_state = nullptr;
 	current_state = nullptr;
@@ -663,6 +721,43 @@ bool ResourceAnimatorController::LoadMemory()
 			cursor += bytes;
 
 			bool_parameters.push_back({ tmp_param_name, tmp_param_value });
+		}
+
+		// Events
+		bytes = sizeof(uint);
+		uint num_events;
+		memcpy(&num_events, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_events; ++j) {
+			//Load parameter name size
+			bytes = sizeof(uint);
+			memcpy(&name_size, cursor, bytes);
+			cursor += bytes;
+
+			//Load parameter name
+			bytes = name_size;
+			std::string tmp_param_event;
+			tmp_param_event.resize(name_size);
+			memcpy(&tmp_param_event[0], cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(u64);
+			u64 tmp_param_anim;
+			memcpy(&tmp_param_anim, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(uint);
+			uint tmp_param_frames;
+			memcpy(&tmp_param_frames, cursor, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(EventAnimType);
+			EventAnimType tmp_param_types;
+			memcpy(&tmp_param_types, cursor, bytes);
+			cursor += bytes;
+
+			anim_events.push_back(new AnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types));
 		}
 
 		//Load transitions and states nums
@@ -963,7 +1058,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	}
 
 	//SAVE LIBRARY FILE
-	uint size = sizeof(uint) + name.size() + sizeof(uint) * 5;
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 6;
 
 	for (std::vector<std::pair<std::string, int>>::iterator int_pit = int_parameters.begin(); int_pit != int_parameters.end(); ++int_pit) {
 		size += sizeof(uint) + (*int_pit).first.size() + sizeof(int);
@@ -975,6 +1070,10 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 	for (std::vector<std::pair<std::string, bool>>::iterator bool_pit = bool_parameters.begin(); bool_pit != bool_parameters.end(); ++bool_pit) {
 		size += sizeof(uint) + (*bool_pit).first.size() + sizeof(bool);
+	}
+
+	for (std::vector<AnimEvent*>::iterator event_pit = anim_events.begin(); event_pit != anim_events.end(); ++event_pit) {
+		size += sizeof(uint) + (*event_pit)->event_id.size() + sizeof(u64) + sizeof(uint) + sizeof(EventAnimType);
 	}
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -1073,6 +1172,35 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 		bytes = sizeof(bool);
 		memcpy(cursor, &bool_parameters[j].second, bytes);
+		cursor += bytes;
+	}
+
+	bytes = sizeof(uint);
+	uint num_events = anim_events.size();
+	memcpy(cursor, &num_events, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_events; ++j) {
+
+		//Save Events
+		name_size = anim_events[j]->event_id.size();
+		bytes = sizeof(uint);
+		memcpy(cursor, &name_size, bytes);
+		cursor += bytes;
+		bytes = name_size;
+		memcpy(cursor, anim_events[j]->event_id.data(), bytes);
+		cursor += bytes;
+
+		bytes = sizeof(u64);
+		memcpy(cursor, &anim_events[j]->animation_id, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(uint);
+		memcpy(cursor, &anim_events[j]->frame, bytes);
+		cursor += bytes;
+
+		bytes = sizeof(EventAnimType);
+		memcpy(cursor, &anim_events[j]->type, bytes);
 		cursor += bytes;
 	}
 
@@ -1276,6 +1404,10 @@ void ResourceAnimatorController::Play(std::string state_name)
 	{
 		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
 			current_state = (*it);
+			FindState(state_name)->next_state = nullptr;
+			FindState(state_name)->time = 0;
+			FindState(state_name)->fade_time = 0;
+			FindState(state_name)->fade_duration = 0;
 			transitioning = false;
 		}
 	}
@@ -1303,7 +1435,7 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 
 			float3 next_position, next_scale;
 			Quat next_rotation;
-			float previous_key_time, next_key_time, t = 0;
+			float next_key_time, t = 0;
 
 			float time_in_ticks = animation->start_tick + (state->time * animation->ticks_per_second);
 
@@ -1347,19 +1479,23 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				rotation = animation->channels[channel_index].rotation_keys[0].value;
 
 
-
-			for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+			if (animation->channels[channel_index].num_scale_keys > 1)
 			{
-				if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
-					scale = animation->channels[channel_index].scale_keys[i].value;
-					next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
-					next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
-					t = (float)((double)time_in_ticks / next_key_time);
-					break;
-				}
-			}
 
-			scale = float3::Lerp(scale, next_scale, t);
+				for (int i = 0; i < animation->channels[channel_index].num_scale_keys; i++)
+				{
+					if (time_in_ticks < animation->channels[channel_index].scale_keys[i + 1].time) {
+						scale = animation->channels[channel_index].scale_keys[i].value;
+						next_scale = animation->channels[channel_index].scale_keys[i + 1].value;
+						next_key_time = animation->channels[channel_index].scale_keys[i + 1].time;
+						t = (float)((double)time_in_ticks / next_key_time);
+						break;
+					}
+				}
+
+				scale = float3::Lerp(scale, next_scale, t);
+			}else
+				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
 			if (state->next_state) {
@@ -1373,6 +1509,13 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 					rotation = Quat::Slerp(rotation, next_state_rotation, fade_t);
 					scale = float3::Lerp(scale, next_state_scale, fade_t);
 				}
+			}
+
+			if (next_key_time != previous_key_time)
+			{
+				previous_key_time = next_key_time;
+				ActiveEvent(animation, next_key_time);
+				//LOG_ENGINE("THIS FRAME IS %s", std::to_string(next_key_time).c_str())
 			}
 
 			return true;
@@ -1468,6 +1611,75 @@ void ResourceAnimatorController::RemoveTransition(std::string source_name, std::
 	}
 }
 
+// Events
+AnimEvent::AnimEvent(std::string _event_id, u64 _animation_id, uint _frame, EventAnimType _type)
+{
+	event_id = _event_id;
+	animation_id = _animation_id;
+	frame = _frame;
+	type = _type;
+}
+
+AnimEvent::AnimEvent(AnimEvent* anim_event)
+{
+	event_id = anim_event->event_id;
+	animation_id = anim_event->animation_id;
+	frame = anim_event->frame;
+	type = anim_event->type;
+}
+
+void ResourceAnimatorController::AddAnimEvent(AnimEvent* _event)
+{
+	anim_events.push_back(_event);
+}
+
+void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
+{
+	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
+	{
+		if ((*it)->event_id == _event->event_id && (*it)->animation_id == _event->animation_id && (*it)->frame == _event->frame && (*it)->type == _event->type)
+		{
+			delete (*it);
+			it = anim_events.erase(it);
+			break;
+		}
+	}
+}
+
+void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint _key)
+{
+	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
+	{
+		if ((*it)->animation_id == _animation->GetID() && (*it)->frame == _key)
+		{
+			// To Play Sound
+			if ((*it)->type == EventAnimType::EVENT_AUDIO && emitter != nullptr)
+			{
+				emitter->StartSound((uint)std::stoull((*it)->event_id.c_str()));
+			}
+
+			// To Execute Script Method
+			if ((*it)->type == EventAnimType::EVENT_SCRIPT && scripts.size() > 0)
+			{
+				for (auto item = scripts.begin(); item != scripts.end(); ++item)
+				{
+					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
+					{
+						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+							if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
+							{
+								std::function<void()> functEvent = (*j).second;
+								functEvent();
+							}
+						}
+
+					}
+				}
+			}
+		}
+	}
+}
+
 std::vector<Transition*> ResourceAnimatorController::FindTransitionsFromSourceState(State* state)
 {
 	std::vector<Transition*> ret;
@@ -1510,6 +1722,25 @@ State::State(std::string name, ResourceAnimation* clip)
 		SetClip(clip);
 }
 
+State::State(State* state)
+{
+	name = state->name;
+	speed = state->speed;
+	clip = state->clip;
+	if(clip)
+		clip->IncreaseReferences();
+	pin_in_id = state->pin_in_id;
+	pin_out_id = state->pin_out_id;
+	id = state->id;
+	time = 0;
+	fade_duration = 0;
+	fade_time = 0;
+
+	if (state->next_state != nullptr)
+		next_state = new State(state->next_state);
+	else next_state = nullptr;
+}
+
 void State::SetSpeed(float speed)
 {
 	this->speed = speed;
@@ -1543,6 +1774,7 @@ ResourceAnimation* State::GetClip()
 
 Transition::Transition()
 {
+
 }
 
 Transition::Transition(State* source, State* target, float blend)
@@ -1550,6 +1782,20 @@ Transition::Transition(State* source, State* target, float blend)
 	this->source = source;
 	this->target = target;
 	this->blend = blend;
+}
+
+Transition::Transition(Transition* transition, ResourceAnimatorController* controller)
+{
+	source = controller->FindState(transition->source->GetName());
+	target = controller->FindState(transition->target->GetName());
+	for (int i = 0; i < transition->int_conditions.size(); ++i)
+		int_conditions.push_back(new IntCondition(transition->int_conditions[i]));
+	for (int i = 0; i < transition->float_conditions.size(); ++i)
+		float_conditions.push_back(new FloatCondition(transition->float_conditions[i]));
+	for (int i = 0; i < transition->bool_conditions.size(); ++i)
+		bool_conditions.push_back(new BoolCondition(transition->bool_conditions[i]));
+	blend = transition->blend;
+	end = transition->end;
 }
 
 void Transition::SetSource(State* source)
@@ -1656,6 +1902,15 @@ void Transition::RemoveBoolCondition(BoolCondition* bool_condition)
 	}
 }
 
+IntCondition::IntCondition(IntCondition* int_condition)
+{
+	type = int_condition->type;
+	parameter_index = int_condition->parameter_index;
+	comp_texts = int_condition->comp_texts;
+	comp_text = int_condition->comp_text;
+	comp = int_condition->comp;
+}
+
 bool IntCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1674,6 +1929,15 @@ bool IntCondition::Compare(ResourceAnimatorController* controller)
 	}
 
 	return ret;
+}
+
+FloatCondition::FloatCondition(FloatCondition* float_condition)
+{
+	type = float_condition->type;
+	parameter_index = float_condition->parameter_index;
+	comp_texts = float_condition->comp_texts;
+	comp_text = float_condition->comp_text;
+	comp = float_condition->comp;
 }
 
 bool FloatCondition::Compare(ResourceAnimatorController* controller)
@@ -1696,6 +1960,14 @@ bool FloatCondition::Compare(ResourceAnimatorController* controller)
 	return ret;
 }
 
+BoolCondition::BoolCondition(BoolCondition* bool_condition)
+{
+	type = bool_condition->type;
+	parameter_index = bool_condition->parameter_index;
+	comp_texts = bool_condition->comp_texts;
+	comp_text = bool_condition->comp_text;
+}
+
 bool BoolCondition::Compare(ResourceAnimatorController* controller)
 {
 	bool ret = false;
@@ -1709,3 +1981,9 @@ bool BoolCondition::Compare(ResourceAnimatorController* controller)
 
 	return ret;
 }
+
+Condition::Condition()
+{
+}
+
+

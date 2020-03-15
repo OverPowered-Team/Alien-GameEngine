@@ -35,6 +35,7 @@ private:
 	friend class ComponentCheckbox;
 	friend class ComponentSlider;
 	friend class ComponentBar;
+	friend class ComponentCanvas;
 
 	static void Start();
 	static void Update();

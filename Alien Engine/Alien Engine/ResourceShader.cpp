@@ -292,8 +292,7 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count)
 {
-
-		//glUniformMatrix4fv(location, count, GL_FALSE, matrix[0].ptr());
+	//glUniformMatrix4fv(location, count, GL_FALSE, matrix[0].ptr());
 	std::string aux = name.c_str();
 	aux += "[%u]";
 	for (int i = 0; i < count; ++i)
@@ -305,7 +304,6 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 		if (location != -1)
 			glUniformMatrix4fv(location, 1, GL_TRUE, matrix[i].ptr());
 	}
-	
 }
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
@@ -319,6 +317,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -349,6 +350,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -388,6 +392,9 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -413,10 +420,10 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		SetUniform1f(cquadratic, (*iter)->quadratic);
 
 		std::string ccutoff = std::string(cname).append(".cut_off");
-		SetUniform1f(ccutoff, (*iter)->cut_off);
+		SetUniform1f(ccutoff, cos(math::DegToRad((*iter)->cut_off)));
 
 		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
-		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
+		SetUniform1f(coutercutoff, cos(math::DegToRad((*iter)->outer_cut_off)));
 
 		++i;
 	}

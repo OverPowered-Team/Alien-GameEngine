@@ -573,6 +573,12 @@ void ModuleUI::MainMenuBar()
 			{
 				App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
 			}
+			if (ImGui::MenuItem("Script")) {
+				App->ui->creating_script = true;
+			}
+			if (ImGui::MenuItem("Material")) {
+				App->resources->CreateMaterial("New Material");
+			}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenu();
@@ -657,6 +663,10 @@ void ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Bar"))
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			if (ImGui::MenuItem("Animated Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_ANIMATED_IMAGE);
 			}
 			ImGui::EndMenu();
 		}

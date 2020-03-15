@@ -16,6 +16,7 @@
 #include "ComponentCheckbox.h"
 #include "ComponentSlider.h"
 #include "ComponentText.h"
+#include "ComponentAnimatedImage.h"
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
@@ -201,7 +202,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			if (render_octree)
 				octree.Draw();
-
 			if (prefab_scene) {
 				static float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				static float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -452,10 +452,8 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
+	App->CastEvent(EventType::ON_GO_SELECT);
 
-	//For Animations Timeline
-	if (App->ui)
-	App->ui->panel_animtimeline->changed = true;
 }
 
 const std::list<GameObject*>& ModuleObjects::GetSelectedObjects()
@@ -1015,36 +1013,26 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 			JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
 
 			if (game_objects != nullptr) {
-			// first is family number, second parentID, third is array index in the json file
 				std::vector<std::tuple<uint, u64, uint>> objects_to_create;
-
-				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
-					uint family_number = game_objects->GetNumber("FamilyNumber");
-					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
-					objects_to_create.push_back({ family_number,parentID, i });
-					game_objects->GetAnotherNode();
-				}
-				std::sort(objects_to_create.begin(), objects_to_create.end(), ModuleObjects::SortByFamilyNumber);
-				game_objects->GetFirstNode();
 				std::vector<GameObject*> objects_created;
 
-				std::vector<std::tuple<uint, u64, uint>>::iterator item = objects_to_create.begin();
-				for (; item != objects_to_create.end(); ++item) {
-					game_objects->GetNode(std::get<2>(*item));
+				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 					GameObject* obj = new GameObject(true);
-					if (std::get<0>(*item) == 1) { // family number == 1 so parent is the base game object
-						obj->LoadObject(game_objects, base_game_object);
-					}
-					else { // search parent
+					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
+					if (parentID != 0) {
 						std::vector<GameObject*>::iterator objects = objects_created.begin();
 						for (; objects != objects_created.end(); ++objects) {
-							if ((*objects)->ID == std::get<1>(*item)) {
+							if ((*objects)->ID == parentID) {
 								obj->LoadObject(game_objects, *objects);
 								break;
 							}
 						}
 					}
+					else {
+						obj->LoadObject(game_objects, base_game_object);
+					}
 					objects_created.push_back(obj);
+					game_objects->GetAnotherNode();
 				}
 				for each (GameObject* obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
 				{
@@ -1052,6 +1040,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					if (def_mesh)
 						def_mesh->AttachSkeleton();
 				}
+				ReAttachUIScriptEvents();
 				delete scene;
 
 				if (change_scene) {
@@ -1317,6 +1306,41 @@ void ModuleObjects::CancelInvokes(Alien* alien)
 	}
 }
 
+void ModuleObjects::ReAttachUIScriptEvents()
+{
+	std::stack<GameObject*> objects;
+	objects.push(base_game_object);
+
+	while (!objects.empty()) {
+		GameObject* obj = objects.top();
+		objects.pop();
+
+		std::vector<ComponentScript*> scriptsVec = obj->GetComponents<ComponentScript>();
+		if (!scriptsVec.empty()) {
+			ComponentButton* button = obj->GetComponent<ComponentButton>();
+			if (button != nullptr) {
+				CompareName(&button->listenersOnClick, scriptsVec);
+				CompareName(&button->listenersOnClickRepeat, scriptsVec);
+				CompareName(&button->listenersOnHover, scriptsVec);
+				CompareName(&button->listenersOnRelease, scriptsVec);
+			}
+			else {
+				ComponentCheckbox* checkbox = obj->GetComponent<ComponentCheckbox>();
+				if (checkbox != nullptr) {
+					CompareName(&checkbox->listenersOnClick, scriptsVec);
+					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
+					CompareName(&checkbox->listenersOnHover, scriptsVec);
+					CompareName(&checkbox->listenersOnRelease, scriptsVec);
+				}
+			}
+		}
+
+		for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+			objects.push(*item);
+		}
+	}
+}
+
 
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
@@ -1364,6 +1388,12 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 									{
 									case InspectorScriptData::DataType::INT: {
 										inspector->SetNumber("int", (*(int*)((*script)->inspector_variables[i].ptr)));
+										break; }
+									case InspectorScriptData::DataType::ENUM: {
+										inspector->SetNumber("enumInt", (*(int*)((*script)->inspector_variables[i].ptr)));
+										break; }
+									case InspectorScriptData::DataType::STRING: {
+										inspector->SetString("string", ((char*)((*script)->inspector_variables[i].ptr)));
 										break; }
 									case InspectorScriptData::DataType::FLOAT: {
 										inspector->SetNumber("float", (*(float*)((*script)->inspector_variables[i].ptr)));
@@ -1436,8 +1466,15 @@ void ModuleObjects::ReAssignScripts(JSONArraypack* to_load)
 									case InspectorScriptData::DataType::INT: {
 										*(int*)(*item).ptr = inspector->GetNumber("int");
 										break; }
+									case InspectorScriptData::DataType::ENUM: {
+										*(int*)(*item).ptr = inspector->GetNumber("enumInt");
+										break; }
 									case InspectorScriptData::DataType::FLOAT: {
 										*(float*)(*item).ptr = inspector->GetNumber("float");
+										break; }
+									case InspectorScriptData::DataType::STRING: {
+										char* data = (char*)(*item).ptr;
+										strcpy(data, inspector->GetString("string"));
 										break; }
 									case InspectorScriptData::DataType::BOOL: {
 										*(bool*)(*item).ptr = inspector->GetNumber("bool");
@@ -1473,6 +1510,7 @@ void ModuleObjects::ReAssignScripts(JSONArraypack* to_load)
 		}
 		to_load->GetAnotherNode();
 	}
+	ReAttachUIScriptEvents();
 }
 
 void ModuleObjects::DeleteReturns()
@@ -1617,11 +1655,40 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	if (canvas == nullptr) {
 		GameObject* obj = new GameObject(GetRoot(false));
 		obj->SetName("Canvas");
-		obj->AddComponent(new ComponentTransform(obj, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		canvas = new ComponentCanvas(obj);
 		obj->AddComponent(canvas);
 	}
 	return canvas;
+}
+
+void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec)
+{
+	auto item = listeners->begin();
+	bool skip = false;
+	for (; item != listeners->end(); ++item) {
+		for (auto scripts = scriptsVec.begin(); scripts != scriptsVec.end(); ++scripts) {
+			for (auto funct = (*scripts)->functionMap.begin(); funct != (*scripts)->functionMap.end(); ++funct) {
+				if ((*funct).first == (*item).first) {
+					(*item).second = (*funct).second;
+					skip = true;
+					break;
+				}
+			}
+			if (skip) {
+				skip = false;
+				break;
+			}
+		}
+	}
+	item = listeners->begin();
+	while (item != listeners->end()) {
+		if ((*item).second == nullptr) {
+			item = listeners->erase(item);
+		}
+		else {
+			++item;
+		}
+	}
 }
 
 bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
@@ -1822,13 +1889,12 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	{
 	case ComponentType::CANVAS: {
 		object->SetName("Canvas");
-		object->AddComponent(new ComponentTransform(object, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 }));
 		comp = new ComponentCanvas(object);
 		object->AddComponent(comp);
 		break; }
 
 	case ComponentType::UI_IMAGE: {
-		ComponentCanvas* canvas = GetCanvas();
+ 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentImage(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Image");
@@ -1877,6 +1943,14 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		comp = new ComponentBar(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Bar");
+		object->AddComponent(comp);
+		ReparentGameObject(object, canvas->game_object_attached, false);
+		break; }
+	case ComponentType::UI_ANIMATED_IMAGE: {
+		ComponentCanvas* canvas = GetCanvas();
+		comp = new ComponentAnimatedImage(object);
+		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		object->SetName("Animated Image");
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }

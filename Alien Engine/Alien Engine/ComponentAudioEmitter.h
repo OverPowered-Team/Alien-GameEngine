@@ -22,9 +22,12 @@ public:
 	void Mute(bool mute);
 	void StartSound();
 	void StartSound(uint _event);
-	bool AlreadyUsedBank(const Bank* bk);
 	u64 GetCurrentBank();
-
+	u32 GetWwiseIDFromString(const char* Wwise_name) const;
+	void SetSwitchState(const char* switch_group_id, const char* switch_state_id);
+	void SetReverb(const float& strength, const char* name);
+	void SetState(const char* state_group, const char* new_state);
+	WwiseT::AudioSource* GetSource() const;
 private:
 	void UpdateSourcePos();
 	void Update() override;

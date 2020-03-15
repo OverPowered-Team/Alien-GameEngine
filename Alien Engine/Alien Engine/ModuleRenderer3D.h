@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glew/include/glew.h"
+#include "SDL/include/SDL.h"
 #include "ModuleImporter.h"
 #include "ComponentCamera.h"
 
@@ -31,6 +32,8 @@ public:
 
 	static void EndDebugDraw();
 
+	void RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
+	void RenderCircleAroundX(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
 
 	ComponentCamera* GetCurrentMainCamera();
 

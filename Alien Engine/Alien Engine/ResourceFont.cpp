@@ -177,10 +177,12 @@ ResourceFont* ResourceFont::LoadFile(const char* file, u64 forced_id)
 			cursor += bytes;
 		}
 
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 		fontData.fontBuffer.resize(charactersSize);
 		for (uint i = 0; i < charactersSize; ++i)
 		{
-			uint width = fontData.charactersMap[i + 32].size.x;
+ 			uint width = fontData.charactersMap[i + 32].size.x;
 			uint height = fontData.charactersMap[i + 32].size.y;
 
 			bytes = sizeof(uint8_t) * width * height;
@@ -197,7 +199,7 @@ ResourceFont* ResourceFont::LoadFile(const char* file, u64 forced_id)
 		res->ID = forced_id;
 		res->meta_data_path = LIBRARY_FONTS_FOLDER + std::to_string(res->GetID()) + ".fnt";
 
-		delete[] buffer;
+		RELEASE_ARRAY(buffer);
 	
 	}
 

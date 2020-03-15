@@ -2,23 +2,11 @@
 
 #include "Panel.h"
 #include "ResourceAnimation.h"
+#include "ResourceAnimatorController.h"
 
 #include <vector>
 
 class ComponentAnimator;
-
-enum class EventAnimType {
-	EVENT_AUDIO,
-	EVENT_PARTICLE,
-	EVENT_SCRIPT,
-	NONE
-};
-
-struct Event {
-	uint frame = 0;
-	u64 id = 0ULL;
-	EventAnimType type = EventAnimType::NONE;
-};
 
 class PanelAnimTimeline : public Panel
 {
@@ -29,6 +17,8 @@ public:
 
 	
 	void PanelLogic();
+	void OnObjectSelect();
+	void OnObjectDelete();
 
 public:
 
@@ -71,18 +61,12 @@ private:
 	int margin = 200;
 
 	int key = 0;
+	int previous_key = 0;
 
 	//Events
 	void ShowNewEventPopUp();
 	void ShowOptionsToCreate();
-
-	void CreateAnimationEvent(uint _id, EventAnimType _type);
-	void DeleteAnimationEvent(uint _key, EventAnimType _type);
-
-	ComponentAudioEmitter* emitter;
-
-	// pair<frame, idsound>
-	std::vector<Event> anim_event_frames;
+	
 	bool event_created = false;
 	bool event_audio_created = false;
 	bool event_particle_created = false;

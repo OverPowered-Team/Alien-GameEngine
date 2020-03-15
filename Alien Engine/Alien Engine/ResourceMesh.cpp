@@ -199,6 +199,18 @@ void ResourceMesh::FreeMemory()
 	if (id_bones != 0)
 		glDeleteBuffers(1, &id_bones);
 
+	id_vertex = 0;
+	id_index = 0;
+	id_normals = 0;
+	id_uv = 0;
+	id_weights = 0;
+	id_bones = 0;
+	references = 0;
+
+	num_vertex = 0;
+	num_index = 0;
+	num_faces = 0;
+
 
 	if (index != nullptr) {
 		delete[] index;
@@ -235,16 +247,7 @@ void ResourceMesh::FreeMemory()
 		bones_ID = nullptr;
 	}
 
-	id_vertex = 0;
-	id_index = 0;
-	id_normals = 0;
-	id_uv = 0;
 
-	references = 0;
-
-	num_vertex = 0;
-	num_index = 0;
-	num_faces = 0;
 }
 
 bool ResourceMesh::LoadMemory()
