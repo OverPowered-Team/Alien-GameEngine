@@ -1,7 +1,6 @@
 #pragma once
 
 #include "imgui/imgui.h"
-#include "Globals.h"
 #include "j1PerfTimer.h"
 #include "Timer.h"
 
