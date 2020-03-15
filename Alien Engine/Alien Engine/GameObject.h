@@ -43,6 +43,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentText;
 	friend class ComponentButton;
 	friend class ComponentBar;
+	friend class ComponentAnimatedImage;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -65,7 +66,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentImage;
 	friend class ComponentSlider;
 	friend class ModuleUI;
-	friend class Tween;
+	friend class ModuleTween;
 	friend class AnimTween;
 public:
 	GameObject(GameObject* parent);

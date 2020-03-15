@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PolScriptSushi.h" />
     <ClInclude Include="PlayerTest.h" />
     <ClInclude Include="ReverbZone.h" />
     <ClInclude Include="TerrainSwitch.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="TestSwitches.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PolScriptSushi.cpp" />
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ReverbZone.cpp" />
     <ClCompile Include="TerrainSwitch.cpp" />

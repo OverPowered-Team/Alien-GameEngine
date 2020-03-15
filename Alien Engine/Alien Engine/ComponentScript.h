@@ -64,6 +64,8 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class Prefab;
 	friend class PanelAnimTimeline;
 	friend class ResourceAnimatorController;
+	friend class ComponentButton;
+	friend class ComponentCheckbox;
 	friend class ModuleObjects;
 	friend class ModulePhysics;
 	friend class ComponentCollider;

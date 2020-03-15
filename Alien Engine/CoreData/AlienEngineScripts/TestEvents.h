@@ -41,6 +41,9 @@ public:
 ALIEN_FACTORY TestEvents* CreateTestEvents() {
 	TestEvents* events = new TestEvents();
 	// To show in inspector here
+
+	SHOW_LAMBDA_FUNCTION(events->GoToScene, "Go Scene 2", events, 2, "MyFuckingScene");
+	
 	SHOW_VOID_FUNCTION(TestEvents::Event, events);
 	SHOW_VOID_FUNCTION(TestEvents::Event2, events);
 

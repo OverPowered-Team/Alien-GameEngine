@@ -33,3 +33,8 @@ void TestEvents::Event3()
 {
 	LOG("FUNCTION EVENT3 CALLED");
 }
+
+void TestEvents::GoToScene(int sceneNum, const char* name)
+{
+	int num = sceneNum;
+}

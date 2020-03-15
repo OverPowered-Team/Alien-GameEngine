@@ -664,6 +664,10 @@ void ModuleUI::MainMenuBar()
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_BAR);
 			}
+			if (ImGui::MenuItem("Animated Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_ANIMATED_IMAGE);
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::MenuItem("Create...", panel_create_object->shortcut->GetNameScancodes()))
