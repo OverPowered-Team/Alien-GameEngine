@@ -881,6 +881,7 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	if (particleSystem->material != nullptr) {
 		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()));
 		to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.start_color);
+		to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.color);
 		to_save->SetFloat4("End.Color", particleSystem->material->shaderInputs.particleShaderProperties.end_color);
 	}
 
@@ -1017,6 +1018,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 		u64 ID = std::stoull(to_load->GetString("MaterialID"));
 		particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
 		particleSystem->material->shaderInputs.particleShaderProperties.start_color = to_load->GetFloat4("Start.Color");
+		particleSystem->material->shaderInputs.particleShaderProperties.color = to_load->GetFloat4("Start.Color");
 		particleSystem->material->shaderInputs.particleShaderProperties.end_color = to_load->GetFloat4("End.Color");
 	}
 	ID = std::stoull(to_load->GetString("ID"));
