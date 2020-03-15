@@ -1,6 +1,7 @@
 #pragma once
 
 class GameObject;
+struct AlienEvent;
 
 typedef unsigned int uint;
 class JSONArraypack;
@@ -19,6 +20,7 @@ enum class ComponentType {
 	CAPSULE_COLLIDER,
 	CONVEX_HULL_COLLIDER,
 	RIGID_BODY,
+	POINT_CONSTRAINT,
 	CHARACTER_CONTROLLER,
 	ANIMATOR,
 	PARTICLES,
@@ -98,6 +100,7 @@ protected:
 
 	virtual void OnEnable() {}
 	virtual void OnDisable() {}
+	virtual void HandleAlienEvent(const AlienEvent& alien_event) {};
 
 	virtual bool DrawInspector() { return true; }
 

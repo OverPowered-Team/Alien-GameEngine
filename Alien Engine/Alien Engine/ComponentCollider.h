@@ -1,10 +1,12 @@
 #pragma once
 
 #include <map>
+#include <list>
 #include "Component.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
+#include "Event.h"
 
 class GameObject;
 class ModulePhysics;
@@ -51,6 +53,7 @@ protected:
 	void Update();
 	void DrawScene();
 	bool DrawInspector();
+	void HandleAlienEvent(const AlienEvent& e);
 
 	virtual void DrawSpecificInspector() {}
 
@@ -77,14 +80,15 @@ protected:
 	float friction = 0.f;
 	float angular_friction = 0.f;
 
-	// Alien Script 
-	Alien* alien_script = nullptr;
 	// Collider shape used in collision simulation
 	btCollisionShape* shape = nullptr;
 	// Used when GameObject has notrigid body in run time
 	btRigidBody* aux_body = nullptr;
 	// Detection body 
 	btGhostObject* detector = nullptr;
+
+	// Alien Script 
+	std::list<ComponentScript*> alien_scripts;
 	// Collisions
 	std::map<ComponentCollider*, bool> collisions;
 

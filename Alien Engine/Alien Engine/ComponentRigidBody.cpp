@@ -4,13 +4,15 @@
 #include "ComponentCollider.h"
 #include "GameObject.h"
 #include "ModuleInput.h"
+#include "Event.h"
 
 ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 {
+	App->SendAlienEvent(this, AlienEventType::RIGIDBODY_ADDED);
+
 	// GameObject Components 
 	type = ComponentType::RIGID_BODY;
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
-
 
 	// Create aux shape 
 
@@ -54,6 +56,8 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 
 ComponentRigidBody::~ComponentRigidBody()
 {
+	App->SendAlienEvent(this, AlienEventType::RIGIDBODY_DELETED);
+
 	if (collider)
 	{
 		RemoveCollider();

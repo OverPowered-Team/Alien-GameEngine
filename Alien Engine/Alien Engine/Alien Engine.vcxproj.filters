@@ -97,6 +97,9 @@
     <Filter Include="Tools\Optik">
       <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Physiscs\Constraints">
+      <UniqueIdentifier>{486bf774-5801-43ab-9c6d-1b621ea7d60d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -587,6 +590,9 @@
     </ClInclude>
     <ClInclude Include="ComponentCharacterController.h">
       <Filter>Components\Physiscs</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentPointConstraint.h">
+      <Filter>Components\Physiscs\Constraints</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2542,6 +2548,9 @@
     </ClCompile>
     <ClCompile Include="ComponentCharacterController.cpp">
       <Filter>Components\Physiscs</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentPointConstraint.cpp">
+      <Filter>Components\Physiscs\Constraints</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

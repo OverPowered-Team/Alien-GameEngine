@@ -1715,10 +1715,32 @@ void ModuleObjects::SaveConfig(JSONfilepack*& config)
 	config->SetColor("Configuration.Renderer.RayColor", ray_color);
 }
 
-//void ModuleObjects::HandleAlienEvent(const AlienEvent& alien_event)
-//{
-//
-//}
+void ModuleObjects::HandleAlienEvent(const AlienEvent& alien_event)
+{
+	std::stack<GameObject*> go_stack;
+
+	if (base_game_object)
+	{
+		go_stack.push(base_game_object);
+	}
+	
+	while (!go_stack.empty())
+	{
+		GameObject* go = go_stack.top();
+		go_stack.pop();
+
+		for (Component* component : go->components)
+		{
+			if (component)
+				component->HandleAlienEvent(alien_event);
+		}
+
+		for (GameObject* child : go->children)
+		{
+			go_stack.push(child);
+		}
+	}
+}
 
 void ModuleObjects::HandleEvent(EventType eventType)
 {

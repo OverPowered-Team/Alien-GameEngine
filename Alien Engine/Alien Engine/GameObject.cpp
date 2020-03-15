@@ -85,22 +85,23 @@ GameObject::~GameObject()
 	if (std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
 		App->objects->DeselectObject(this);
 	}
+
 	App->objects->octree.Remove(this);
 
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item) {
-		if (*item != nullptr) {
-			delete* item;
-			*item = nullptr;
-		}
+	std::vector<Component*>::iterator component = components.begin();
+
+	while (component != components.end())
+	{
+		delete* component;
+		component = components.erase(component);
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
-	for (; child != children.end(); ++child) {
-		if (*child != nullptr) {
-			delete* child;
-			*child = nullptr;
-		}
+	
+	while (child != children.end())
+	{
+		delete* child;
+		child = children.erase(child);
 	}
 }
 

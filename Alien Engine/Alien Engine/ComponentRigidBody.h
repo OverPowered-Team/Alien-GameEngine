@@ -9,8 +9,6 @@
 class GameObject;
 class ComponentCollider;
 class ComponentCapsuleCollider;
-//class C_JointP2P;
-//class C_Vehicle;
 
 class __declspec(dllexport) ComponentRigidBody : public Component
 {
@@ -19,8 +17,6 @@ class __declspec(dllexport) ComponentRigidBody : public Component
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
-	//friend class C_JointP2P;
-	//friend class C_Vehicle;
 
 public:
 
@@ -46,12 +42,6 @@ public:
 	void SetVelocity(const float3 velocity);
 	float3 GetAngularVelocity();
 	void SetAngularVelocity(const float3 velocity);
-
-	//bool GetFreezePostion(int coordinate);
-	//void SetFreezePosition(int coordinate, bool value);	
-	//bool GetFreezeRotation(int coordinate);
-	//void SetFreezeRotation(int coordinate, bool value);
-
 
 private:
 
@@ -96,3 +86,7 @@ private:
 #endif // !_C_RIGID_BODY_H__
 
 
+//bool GetFreezePostion(int coordinate);
+//void SetFreezePosition(int coordinate, bool value);	
+//bool GetFreezeRotation(int coordinate);
+//void SetFreezeRotation(int coordinate, bool value);

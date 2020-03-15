@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "Event.h"
 
 Application::Application()
 {
@@ -432,8 +433,15 @@ void Application::CastEvent(EventType eventType)
 		(*item)->HandleEvent(eventType);
 }
 
-void Application::SendAlienEvent(AlienEvent& e)
-{}
+void Application::SendAlienEvent(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+
+	App->objects->HandleAlienEvent(alien_event);
+}
+
 
 void Application::AddModule(Module* mod)
 {
