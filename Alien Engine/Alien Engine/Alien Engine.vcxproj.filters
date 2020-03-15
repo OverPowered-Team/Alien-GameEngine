@@ -91,11 +91,11 @@
     <Filter Include="Components\Physiscs\Colliders">
       <UniqueIdentifier>{d333f66d-da68-46f3-adda-33d2d14d7bba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tools\Tween">
-      <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tools\Optik">
       <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Tween">
+      <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +587,9 @@
     </ClInclude>
     <ClInclude Include="ComponentAnimatedImage.h">
       <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTween.h">
+      <Filter>Modules\Tween</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2514,10 +2517,7 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="AnimTween.h">
-      <Filter>Tools\Tween</Filter>
-    </ClInclude>
-    <ClInclude Include="Tween.h">
-      <Filter>Tools\Tween</Filter>
+      <Filter>Modules\Tween</Filter>
     </ClInclude>
     <ClInclude Include="StaticTween.h">
       <Filter>ScriptHelpers</Filter>
@@ -2542,6 +2542,9 @@
     </ClCompile>
     <ClCompile Include="ComponentAnimatedImage.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTween.cpp">
+      <Filter>Modules\Tween</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3593,10 +3596,7 @@
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="AnimTween.cpp">
-      <Filter>Tools\Tween</Filter>
-    </ClCompile>
-    <ClCompile Include="Tween.cpp">
-      <Filter>Tools\Tween</Filter>
+      <Filter>Modules\Tween</Filter>
     </ClCompile>
     <ClCompile Include="StaticTween.cpp">
       <Filter>ScriptHelpers</Filter>

@@ -887,7 +887,7 @@
     <ClInclude Include="TextEdit\TextEditor.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="Tween.h" />
+    <ClInclude Include="ModuleTween.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="WwiseT.h" />
   </ItemGroup>
@@ -1247,7 +1247,7 @@
     <ClCompile Include="TextEdit\TextEditor.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Tween.cpp" />
+    <ClCompile Include="ModuleTween.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="WwiseT.cpp" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include "Tween.h"
+#include "ModuleTween.h"
 #include "Maths.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
@@ -6,11 +6,10 @@
 #include "ResourceMaterial.h"
 #include "ComponentUI.h"
 #include "Time.h"
-#include "Tween.h"
 
 #include "mmgr/mmgr.h"
 
-bool Tween::UpdateInternal()
+bool ModuleTween::UpdateInternal()
 {
 	bool ret = true;
 	float4 current_value = float4::zero;
@@ -73,7 +72,7 @@ bool Tween::UpdateInternal()
 	return ret;
 }
 
-float4 Tween::CalculateInternal()
+float4 ModuleTween::CalculateInternal()
 {
 	float4 current_value = float4::zero;
 
@@ -115,25 +114,25 @@ float4 Tween::CalculateInternal()
 	return current_value;
 }
 
-float4 Tween::LinealLerp()
+float4 ModuleTween::LinealLerp()
 {
 	float weight = current_time / time;
 	return math::Lerp(from, to, weight);
 }
 
-float4 Tween::EaseInQuadratic()
+float4 ModuleTween::EaseInQuadratic()
 {
 	float aux_time = current_time / time;
 	return (to - from) * aux_time * aux_time + from;
 }
 
-float4 Tween::EaseOutQuadratic()
+float4 ModuleTween::EaseOutQuadratic()
 {
 	float aux_time = current_time / time;
 	return -(to - from) * aux_time * (aux_time - 2) + from;
 }
 
-float4 Tween::EaseInOutQuadratic()
+float4 ModuleTween::EaseInOutQuadratic()
 {
 	float aux_time = current_time / (time * 0.5);
 	if (aux_time < 1) 
@@ -142,7 +141,7 @@ float4 Tween::EaseInOutQuadratic()
 	return -(to - from) / 2 * (aux_time * (aux_time - 2) - 1) + from;
 }
 
-float4 Tween::EaseOutElastic()
+float4 ModuleTween::EaseOutElastic()
 {
 	float aux_time = current_time / time;
 	if (aux_time == 1)
@@ -154,7 +153,7 @@ float4 Tween::EaseOutElastic()
 	return ((to - from) * math::Pow(2, -10 * aux_time) * math::Sin((aux_time * current_time - s) * (2 * math::pi) / p) + (to - from) + from);
 }
 
-float4 Tween::EaseInElastic()
+float4 ModuleTween::EaseInElastic()
 {
 	float aux_time = current_time / time;
 	if (aux_time == 1)
@@ -166,7 +165,7 @@ float4 Tween::EaseInElastic()
 	return -((to - from) * math::Pow(2, 10 * (aux_time -= 1)) * math::Sin((aux_time * time - s) * (2 * math::pi) / p)) + from;
 }
 
-float4 Tween::EaseOutBounce()
+float4 ModuleTween::EaseOutBounce()
 {
 	float aux_time = current_time / time;
 
@@ -180,13 +179,13 @@ float4 Tween::EaseOutBounce()
 		return to * (7.5625f * (aux_time -= (2.625f / 2.75f)) * aux_time + .984375f) + from;
 }
 
-float4 Tween::EaseOutBack()
+float4 ModuleTween::EaseOutBack()
 {
 	float aux_time = current_time / time - 1;
 	return (to - from) * (aux_time * aux_time * ((1.70158f + 1) * aux_time + 1.70158f) + 1) + from;
 }
 
-float4 Tween::EaseInBack()
+float4 ModuleTween::EaseInBack()
 {
 	float aux_time = current_time / time;
 	return (to - from) * aux_time * aux_time * ((1.70158f + 1) * aux_time - 1.70158f) + from;

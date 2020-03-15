@@ -65,7 +65,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentImage;
 	friend class ComponentSlider;
 	friend class ModuleUI;
-	friend class Tween;
+	friend class ModuleTween;
 	friend class AnimTween;
 public:
 	GameObject(GameObject* parent);

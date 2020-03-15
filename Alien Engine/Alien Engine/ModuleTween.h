@@ -5,7 +5,7 @@
 
 class ComponentTransform;
 
-class Tween {
+class ModuleTween {
 
 public:
 	bool UpdateInternal();
