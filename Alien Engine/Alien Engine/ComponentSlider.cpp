@@ -7,6 +7,7 @@
 #include "Application.h"
 #include "PanelGame.h"
 #include "ModuleInput.h"
+#include "ModuleWindow.h"
 #include "ReturnZ.h"
 #include "FileNode.h"
 #include "PanelProject.h"

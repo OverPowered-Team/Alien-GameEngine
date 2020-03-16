@@ -8,6 +8,7 @@
 #include "ModuleUI.h"
 #include "ResourceTexture.h"
 #include "ComponentCamera.h"
+#include "ModuleObjects.h"
 #include "ModuleCamera3D.h"
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "MathGeoLib/include/MathGeoLib.h"

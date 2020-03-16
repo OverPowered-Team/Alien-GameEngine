@@ -9,6 +9,7 @@
 #include "ResourceShader.h"
 #include "Viewport.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleWindow.h"
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
