@@ -42,15 +42,18 @@ void main()
 #shader fragment
 #version 330 core
 
+// Array index
+#define indexPosition = 0
+#define indexAmbient = 1
+#define indexDiffuse = 2
+#define indexSpecular = 3
+#define indexDirection = 4
+
 // Structs
 struct DirectionalLight
 {
     float intensity;
-    vec3 position;
-    vec3 direction;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec3 directionlLightVec3[5];
 };
 
 struct PointLight
@@ -69,10 +72,11 @@ struct SpotLight
 {
     float intensity;
     vec3 position;
-    vec3 direction;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    vec3 direction;
+
     float constant;
     float linear;
     float quadratic;
@@ -150,17 +154,17 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     float intensity = light.intensity;
 
     // Ambient
-    vec3 ambient = light.ambient;
+    vec3 ambient = light.directionlLightVec3[indexAmbient];
     
     // Diffuse
-    vec3 lightDir = normalize(-light.direction);
+    vec3 lightDir = normalize(-light.directionlLightVec3[indexDirection]);
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff;
+    vec3 diffuse = light.directionlLightVec3[indexDiffuse] * diff;
     
     // Specular
     vec3 reflectDir = reflect(-lightDir, normal);  
     float spec = pow(max(dot(view_dir, reflectDir), 0.0), 32);
-    vec3 specular = light.specular * spec;
+    vec3 specular = light.directionlLightVec3[indexSpecular] * spec;
 
     return (ambient + diffuse + specular) * vec3(intensity, intensity, intensity);
 }
