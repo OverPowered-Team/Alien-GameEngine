@@ -26,13 +26,17 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
 	controller->setUp(btVector3(0.f, 1.f, 0.f));
 	controller->setGravity(btVector3(0.f, -10.f, 0.f));
+
+	max_jump_height = 10.f;
+	jump_speed = controller->getJumpSpeed();
+	fall_speed = controller->getFallSpeed();
+
 	App->physics->world->addCollisionObject(body, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::CharacterFilter | btBroadphaseProxy::DefaultFilter);
 	App->physics->AddAction(controller);
 }
 
 ComponentCharacterController::~ComponentCharacterController()
 {
-
 	App->physics->RemoveAction(controller);
 	App->physics->world->removeCollisionObject(body);
 
@@ -41,71 +45,27 @@ ComponentCharacterController::~ComponentCharacterController()
 
 // Movement Functions -----------------------------------------
 
-
 void ComponentCharacterController::SetWalkDirection(float3 direction)
 {
-
 	controller->setWalkDirection(ToBtVector3(direction));
 }
 
-// -------------------------------------------------------------
-
-void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
+void ComponentCharacterController::SetMaxJumpHeight(const float max_jump_height)
 {
-	to_save->SetNumber("Type", (int)type);
-	to_save->SetBoolean("Test", test);
+	this->max_jump_height = max_jump_height;
+	controller->setMaxJumpHeight(max_jump_height);
 }
 
-void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
+void ComponentCharacterController::SetJumpSpeed(const float jump_speed)
 {
-	test = to_load->GetBoolean("Test");
+	this->jump_speed = jump_speed;
+	controller->setJumpSpeed(jump_speed);
 }
 
-void ComponentCharacterController::Update()
+void ComponentCharacterController::SetFallSpeed(const float fall_speed)
 {
-	if (Time::IsPlaying()) 
-	{
-		//
-		//float3 movement = float3::zero();
-	
-		//if (!test)
-		//{
-		//	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-		//		movement.x -= 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-		//		movement.x += 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-		//		movement.z += 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-		//		movement.z -= 1;
-		//}
-		//else
-		//{
-		//	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_STATE::KEY_REPEAT)
-		//		movement.x -= 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_STATE::KEY_REPEAT)
-		//		movement.x += 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_STATE::KEY_REPEAT)
-		//		movement.z += 1;
-		//	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_STATE::KEY_REPEAT)
-		//		movement.z -= 1;
-		//}
-
-		//float speed = (movement.Equals(float3::zero())) ? 0.f : 4.f ;
-		//SetWalkDirection(movement.Normalized() * speed * Time::GetDT());
-
-		btTransform bt_transform = body->getWorldTransform();
-		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = bt_transform.getOrigin();
-
-		body->activate(true);
-		transform->SetGlobalPosition(float3(position));
-		transform->SetGlobalRotation(math::Quat(rotation));
-	}
-	else
-	{
-		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation()));
-	}
+	this->fall_speed = fall_speed;
+	controller->setFallSpeed(fall_speed);
 }
 
 void ComponentCharacterController::Jump(float3 direction)
@@ -123,6 +83,57 @@ void ComponentCharacterController::SetRotation(const Quat rotation)
 	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), rotation));
 	transform->SetGlobalRotation(math::Quat(rotation));
 }
+// -------------------------------------------------------------
+
+void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
+{
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetNumber("MaxJumpHeight", max_jump_height);
+	to_save->SetNumber("JumpSpeed", jump_speed);
+	to_save->SetNumber("FallSpeed", fall_speed);
+}
+
+void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
+{
+	SetMaxJumpHeight(to_load->GetNumber("MaxJumpHeight"));
+	SetJumpSpeed(to_load->GetNumber("JumpSpeed"));
+	SetFallSpeed(to_load->GetNumber("FallSpeed"));
+}
+
+bool ComponentCharacterController::DrawInspector()
+{
+	float current_max_jump_height = max_jump_height;
+	float current_jump_speed = jump_speed;
+	float current_fall_speed = fall_speed;
+
+	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Spacing();
+		ImGui::Title("Max Jump Height", 1);		if (ImGui::DragFloat("##max_jump_height", &current_max_jump_height, 0.01f, 0.00f, FLT_MAX)) { SetMaxJumpHeight(max_jump_height); }
+		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX))			{ SetJumpSpeed(jump_speed); }
+		ImGui::Title("Fall Speed", 1);			if (ImGui::DragFloat("##fall_speed", &current_fall_speed, 0.01f, 0.00f, FLT_MAX))			{ SetFallSpeed(fall_speed); }
+		ImGui::Spacing();
+	}
+	return true;
+}
+
+void ComponentCharacterController::Update()
+{
+	if (Time::IsPlaying()) 
+	{
+		btTransform bt_transform = body->getWorldTransform();
+		btQuaternion rotation = bt_transform.getRotation();
+		btVector3 position = bt_transform.getOrigin();
+
+		body->activate(true);
+		transform->SetGlobalPosition(float3(position));
+		transform->SetGlobalRotation(math::Quat(rotation));
+	}
+	else
+	{
+		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation()));
+	}
+}
 
 void ComponentCharacterController::DrawScene()
 {
@@ -130,20 +141,11 @@ void ComponentCharacterController::DrawScene()
 	{
 		App->physics->DrawCharacterController(this);
 	}
-
 }
 
 void ComponentCharacterController::Reset()
 {
 }
 
-bool ComponentCharacterController::DrawInspector()
-{
-	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Title("Test", 1);	if (ImGui::Checkbox("##test", &test));
-	}
 
-	return true;
-}
 

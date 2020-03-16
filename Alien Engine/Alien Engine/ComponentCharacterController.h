@@ -30,8 +30,12 @@ public:
 
 	void Jump(float3 direction= float3::zero());
 	bool CanJump();
-	void SetRotation(const Quat rotation);
+	void SetJumpSpeed(const float jump_speed);
+	void SetMaxJumpHeight(const float height);
+	void SetFallSpeed(const float fall_speed);
+
 	void SetWalkDirection(float3 direction);
+	void SetRotation(const Quat rotation);
 
 protected:
 
@@ -50,6 +54,11 @@ protected:
 	btKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
 	btCapsuleShape* shape = nullptr;
+
+	float max_jump_height = 0.f;
+	float jump_speed = 0.f;
+	float fall_speed = 0.f;
+
 
 	bool test = false;
 };
