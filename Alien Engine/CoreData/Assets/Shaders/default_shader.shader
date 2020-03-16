@@ -43,11 +43,11 @@ void main()
 #version 330 core
 
 // Array index
-#define indexPosition = 0
-#define indexAmbient = 1
-#define indexDiffuse = 2
-#define indexSpecular = 3
-#define indexDirection = 4
+#define indexPosition 0
+#define indexAmbient 1
+#define indexDiffuse 2
+#define indexSpecular 3
+#define indexDirection 4
 
 // Structs
 struct DirectionalLight
