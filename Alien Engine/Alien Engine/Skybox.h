@@ -6,6 +6,40 @@
 
 #include "Globals.h"
 
+struct Cubemap
+{
+	std::string neg_z;
+	std::string pos_z;
+	std::string pos_y;
+	std::string neg_y;
+	std::string pos_x;
+	std::string neg_x;
+
+	void Reset()
+	{
+		neg_z.clear();
+		pos_z.clear();
+		pos_y.clear();
+		neg_y.clear();
+		pos_x.clear();
+		neg_x.clear();
+	}
+
+	std::vector<std::string> ToVector()
+	{
+		std::vector<std::string> faces;
+
+		faces.push_back(neg_z);
+		faces.push_back(pos_z);
+		faces.push_back(pos_y);
+		faces.push_back(neg_y);
+		faces.push_back(pos_x);
+		faces.push_back(neg_x);
+
+		return faces;
+	}
+};
+
 class Skybox
 {
 public:
