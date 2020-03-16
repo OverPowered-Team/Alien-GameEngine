@@ -92,10 +92,14 @@ public:
 	ResourceShader* GetShaderByName(std::string shaderName);
 	ResourceMaterial* GetMaterialByName(const char* name); 
 
+	const uint GetTextureidByID(const u64& ID) const;
+	ResourceTexture* GetTextureByID(const u64& ID);
+
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
 	ResourceMaterial* CreateMaterial(const char* name);
 
+	void HandleAlienEvent(const AlienEvent& alienEvent);
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
@@ -116,6 +120,7 @@ private:
 
 	void CreateAnimatorController();
 
+
 public:
 
 	Icons icons;
@@ -127,6 +132,8 @@ public:
 	ResourceFont* default_font = nullptr;
 	ResourceMaterial* default_material = nullptr;
 	ResourceShader* default_shader = nullptr;
+	ResourceShader* default_particle_shader = nullptr;
+	ResourceShader* skybox_shader = nullptr;
 
 	FileNode* assets = nullptr;
 

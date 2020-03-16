@@ -7,12 +7,16 @@
 #include "Application.h"
 #include "PanelGame.h"
 #include "ModuleInput.h"
+#include "ModuleWindow.h"
 #include "ReturnZ.h"
 #include "FileNode.h"
 #include "PanelProject.h"
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "StaticInput.h"
+#include "ModuleRenderer3D.h"
 #include "mmgr/mmgr.h"
 
 ComponentSlider::ComponentSlider(GameObject* obj) : ComponentUI(obj)
@@ -560,6 +564,7 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex, bool backgr
 		origin.y = -(-origin.y - 0.5F) * 2;
 		matrix[0][3] = origin.x;
 		matrix[1][3] = origin.y;
+		matrix[2][3] = 0.0f;
 	}
 
 	if (tex != nullptr) {

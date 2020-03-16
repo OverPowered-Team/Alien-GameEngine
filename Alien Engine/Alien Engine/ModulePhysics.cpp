@@ -4,13 +4,15 @@
 #include "Bullet/include/BulletCollision/CollisionShapes/btShapeHull.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
+#include "ComponentCharacterController.h"
 #include "ComponentScript.h"
+#include "ModuleRenderer3D.h"
+#include "Time.h"
 #include "Alien.h"
 #include "Optick/include/optick.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
-
 }
 
 ModulePhysics::~ModulePhysics()
@@ -74,31 +76,22 @@ bool ModulePhysics::Start()
 // ---------------------------------------------------------
 update_status ModulePhysics::PreUpdate(float dt)
 {
+	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	world->stepSimulation(Time::GetDT(), 20);
-
-	/*int numManifolds = world->getDispatcher()->getNumManifolds();
-
-	for (int i = 0; i < numManifolds; i++)
+	if (Time::IsInGameState())
 	{
-		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
-
-		int numContacts = contactManifold->getNumContacts();
-
-		if (numContacts > 0)
+		if (first_frame_playing == false)
 		{
-			GameObject* go_a = (GameObject*)obA->getUserPointer();
-			GameObject* go_b = (GameObject*)obB->getUserPointer();
-
-			if (go_a && go_b)
-			{
-				GameObject* go = (GameObject*)obA->getUserPointer();
-			}
+			world->stepSimulation(Time::GetDT(), 20);
 		}
-	}*/
+		
+		first_frame_playing = false;
+	}
+	else
+	{
+		first_frame_playing = true;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -160,6 +153,14 @@ void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
+void ModulePhysics::DrawCharacterController(ComponentCharacterController* controller)
+{
+	debug_renderer->setDebugMode(btIDebugDraw::DBG_FastWireframe);
+	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
+	world->debugDrawObject(controller->body->getWorldTransform(), controller->shape, btVector3(0.f, 1.f, 0.f));
+	ModuleRenderer3D::EndDebugDraw();
+}
+
 void ModulePhysics::DrawWorld()
 {
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
@@ -188,6 +189,16 @@ void ModulePhysics::AddDetector(btGhostObject* detector)
 void ModulePhysics::RemoveDetector(btGhostObject* detector)
 {
 	world->removeCollisionObject(detector);
+}
+
+void ModulePhysics::AddAction(btActionInterface* action)
+{
+	world->addAction(action);
+}
+
+void ModulePhysics::RemoveAction(btActionInterface* action)
+{
+	world->removeAction(action);
 }
 
 void ModulePhysics::AddConstraint(btTypedConstraint* constraint, bool disableBodiesCollision)

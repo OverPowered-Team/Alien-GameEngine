@@ -5,10 +5,14 @@
 #include "GameObject.h"
 #include "ComponentCanvas.h"
 #include "ComponentTransform.h"
+#include "ModuleWindow.h"
 #include "ResourceTexture.h"
 #include "ResourceFont.h"
 #include "PanelGame.h"
 #include "PanelScene.h"
+#include "ModuleInput.h"
+#include "ModuleObjects.h"
+#include "ModuleRenderer3D.h"
 #include "StaticInput.h"
 #include "mmgr/mmgr.h"
 
@@ -124,6 +128,7 @@ void ComponentUI::Draw(bool isGame)
 	glAlphaFunc(GL_GREATER, 0.0f);
 	
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		#ifndef GAME_VERSION
@@ -153,6 +158,7 @@ void ComponentUI::Draw(bool isGame)
 		origin.y = -(-origin.y - 0.5F) * 2;
 		matrix[0][3] = origin.x;
 		matrix[1][3] = origin.y;
+		matrix[2][3] = 0.0f;
 	}
 
 	if (texture != nullptr) {

@@ -327,6 +327,14 @@ void FileNode::RemoveResourceOfGameObjects()
 	}
 }
 
+void FileNode::ResetChildrenPath()
+{
+	for (auto item = children.begin(); item != children.end(); ++item) {
+		(*item)->ResetPaths();
+		(*item)->ResetChildrenPath();
+	}
+}
+
 void FileNode::SetIcon()
 {
 	if (is_file) {

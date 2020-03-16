@@ -1,15 +1,17 @@
 #include "Application.h"
 #include "ModuleObjects.h"
 #include "ComponentAnimator.h"
-#include "ResourceAnimatorController.h"
 #include "Time.h"
 #include "ComponentTransform.h"
 #include "PanelAnimTimeline.h"
 #include "ResourceScript.h"
+#include "ComponentScript.h"
 #include "ResourceAudio.h"
 #include "ComponentAudioEmitter.h"
-#include "mmgr/mmgr.h"
+#include "ModuleAudio.h"
+#include "ShortCutManager.h"
 
+#include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 
 PanelAnimTimeline::PanelAnimTimeline(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra)
@@ -29,10 +31,6 @@ void PanelAnimTimeline::CleanUp()
 	component_animator = nullptr;
 	animator = nullptr;
 	channel = nullptr;
-
-	//Events
-	emitter = nullptr;
-	anim_event_frames.clear();
 }
 
 bool PanelAnimTimeline::FillInfo()
@@ -98,14 +96,22 @@ void PanelAnimTimeline::Stop()
 	button_position = 0.0f;
 }
 
+void PanelAnimTimeline::OnObjectSelect()
+{
+	changed = true;
+}
+
+void PanelAnimTimeline::OnObjectDelete()
+{
+	changed = true;
+}
+
 void PanelAnimTimeline::MoveBones(GameObject* go)
 {
 	OPTICK_EVENT();
 	if (go)
 	{
 		uint channel_index = current_animation->GetChannelIndex(go->GetName());
-		key = (int)progress / zoom;
-
 		if (channel_index < current_animation->num_channels)
 		{
 			// Position
@@ -147,21 +153,12 @@ void PanelAnimTimeline::PanelLogic()
 	}
 	else
 	{
-		// Check if events exists or not
-		for (std::vector<Event>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
-		{
-			//Audio events
-			if (it->type == EventAnimType::EVENT_AUDIO && !component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
-			{
-				DeleteAnimationEvent(it->frame, it->type);
-				break;
-			}
-		}
 		
 		// Motor Buttons Play, Pause, Stop
 		if (Time::IsPlaying() && !in_game)
 		{
 			Play();
+			animator = component_animator->GetCurrentAnimatorController();
 			in_game = true;
 		}
 		else if (Time::IsPaused())
@@ -200,6 +197,17 @@ void PanelAnimTimeline::PanelLogic()
 			ImGui::SameLine();
 		}
 
+		//Check Events 
+		// Audio
+		if (!animator->GetEmitter() && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+			animator->SetEmitter((ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER));
+		else if (!component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+			animator->SetEmitter(nullptr);
+		// Scripts
+		if (animator->GetScripts().size() < 1 && component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			animator->SetScripts(component_animator->game_object_attached->GetComponents<ComponentScript>());
+		else if (!component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			animator->GetScripts().clear();
 
 		//Animation bar Progress
 		ImGui::SetCursorPosX(165);
@@ -260,17 +268,20 @@ void PanelAnimTimeline::PanelLogic()
 		ImGui::InvisibleButton("scrollbar", { num_frames * zoom + zoom,1 });
 		ImGui::SetCursorScreenPos(p);
 
-		for (int i = 0; i < anim_event_frames.size(); i++)
+		for (int i = 0; i < animator->GetNumAnimEvents(); i++)
 		{
-			ImGui::BeginGroup();
+			if (animator->GetAnimEvents()[i]->animation_id == current_animation->GetID())
+			{
+				ImGui::BeginGroup();
 
-			ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x + (anim_event_frames[i].frame * zoom)), p.y), 
-				ImVec2((p.x + (anim_event_frames[i].frame * zoom)) - 5, p.y + 5),
-				ImVec2((p.x + (anim_event_frames[i].frame * zoom)) + 5, p.y + 5),
-				ImColor(1.0f, 0.0f, 0.0f, 0.5f));
+				ImGui::GetWindowDrawList()->AddTriangleFilled(ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)), p.y),
+					ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) - 5, p.y + 5),
+					ImVec2((p.x + (animator->GetAnimEvents()[i]->frame * zoom)) + 5, p.y + 5),
+					ImColor(1.0f, 0.0f, 0.0f, 0.5f));
 
-			ImGui::EndGroup();
-			ImGui::SameLine();
+				ImGui::EndGroup();
+				ImGui::SameLine();
+			}
 		}
 
 		for (int i = 0; i <= num_frames; i++)
@@ -303,7 +314,7 @@ void PanelAnimTimeline::PanelLogic()
 		}
 
 		//RedLine 
-		if (play)
+		if (play && !in_game)
 		{
 			ImGui::GetWindowDrawList()->AddLine({ redbar.x + progress,redbar.y - 10 }, ImVec2(redbar.x + progress, redbar.y + 135), IM_COL32(255, 0, 0, 255), 1.0f);
 
@@ -328,18 +339,44 @@ void PanelAnimTimeline::PanelLogic()
 					Stop();
 			}
 
-			for (std::vector<Event>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+			// Execute Event
+			if (animator->GetNumAnimEvents() > 0)
 			{
-				if (it->frame == key && component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER))
+				auto aux = animator->GetAnimEvents();
+				for (auto it = aux.begin(); it != aux.end(); ++it)
 				{
-					App->audio->LoadUsedBanks();
-					emitter->StartSound(it->id);
+					if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID())
+					{
+						// Audio
+						if ((*it)->type == EventAnimType::EVENT_AUDIO && animator->GetEmitter() != nullptr)
+						{
+							animator->GetEmitter()->StartSound(std::stoull((*it)->event_id.c_str()));
+						}
+						
+						// Script
+						if ((*it)->type == EventAnimType::EVENT_SCRIPT && animator->GetScripts().size() > 0)
+						{
+							auto scripts = animator->GetScripts();
+							for (auto item = scripts.begin(); item != scripts.end(); ++item)
+							{
+								if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
+								{
+									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+										if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
+										{
+											std::function<void()> functEvent = (*j).second;
+											functEvent();
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 		else
 		{
-
 			if (stop)
 			{
 				progress = 0.0f;
@@ -419,7 +456,15 @@ void PanelAnimTimeline::PanelLogic()
 		// Move Bones
 		if (!in_game && progress > 0)
 		{
+			key = (int)progress / zoom;
 			MoveBones(component_animator->game_object_attached);
+
+			if (key != previous_key)
+			{
+				previous_key = key;
+			}
+			else if(play)
+				key = 0;
 		}
 	}
 
@@ -432,17 +477,27 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 {
 	if (ImGui::BeginPopupContextItem("")) {
 
-		if (anim_event_frames.size() > 0) 
+		if (animator->GetAnimEvents().size() > 0)
 		{
-			for (std::vector<Event>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+			auto aux = animator->GetAnimEvents();
+			for (auto it = aux.begin(); it != aux.end(); ++it)
 			{
-				if (it->frame == key)
+				if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID())
 				{
 					event_created = true;
-					if (it->type == EventAnimType::EVENT_AUDIO)
+					// Audio
+					if ((*it)->type == EventAnimType::EVENT_AUDIO)
 					{
-						ImGui::Text(App->audio->GetEventNameByID(it->id));
+						ImGui::Text(App->audio->GetEventNameByID(std::stoull((*it)->event_id.c_str())));
 						event_audio_created = true;
+					}
+					ImGui::Separator();
+
+					// Script
+					if ((*it)->type == EventAnimType::EVENT_SCRIPT)
+					{
+						ImGui::Text((*it)->event_id.c_str());
+						event_script_created = true;
 					}
 					ImGui::Separator();
 				}
@@ -459,15 +514,17 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 
 			if (ImGui::BeginMenu("Delete Animation Event"))
 			{
+				// Audio
 				if (event_audio_created && ImGui::BeginMenu("AUDIO EVENT"))
 				{
-					for (std::vector<Event>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
+					auto aux = animator->GetAnimEvents();
+					for (auto it = aux.begin(); it != aux.end(); ++it)
 					{
-						if (it->type == EventAnimType::EVENT_AUDIO)
+						if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID() && (*it)->type == EventAnimType::EVENT_AUDIO)
 						{
-							if (ImGui::MenuItem(App->audio->GetEventNameByID(it->id)))
+							if (ImGui::MenuItem(App->audio->GetEventNameByID(std::stoull((*it)->event_id.c_str()))))
 							{
-								DeleteAnimationEvent(key, EventAnimType::EVENT_AUDIO);
+								animator->RemoveAnimEvent((*it));
 								break;
 							}
 						}
@@ -476,12 +533,28 @@ void PanelAnimTimeline::ShowNewEventPopUp()
 				}
 				
 				if (event_particle_created && ImGui::MenuItem("PARTICLE EVENT"))
-					DeleteAnimationEvent(key, EventAnimType::EVENT_PARTICLE);
-				if (event_script_created && ImGui::MenuItem("SCRIPT EVENT"))
-					DeleteAnimationEvent(key, EventAnimType::EVENT_SCRIPT);
+				{
+				}
+
+				// Script
+				if (event_script_created && ImGui::BeginMenu("SCRIPT EVENT"))
+				{
+					auto aux = animator->GetAnimEvents();
+					for (auto it = aux.begin(); it != aux.end(); ++it)
+					{
+						if ((*it)->frame == key && (*it)->animation_id == current_animation->GetID() && (*it)->type == EventAnimType::EVENT_SCRIPT)
+						{
+							if (ImGui::MenuItem((*it)->event_id.c_str()))
+							{
+								animator->RemoveAnimEvent((*it));
+								break;
+							}
+						}
+					}
+					ImGui::EndMenu();
+				}
 				ImGui::EndMenu();
 			}
-				
 		}
 		
 		ShowOptionsToCreate();
@@ -502,7 +575,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 				if (ImGui::BeginMenu("Audio List"))
 				{
 					//For with banks
-					emitter = (ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER);
+					animator->SetEmitter((ComponentAudioEmitter*)component_animator->game_object_attached->GetComponent(ComponentType::A_EMITTER));
 					auto banks = App->audio->GetBanks();
 					if (banks.size() > 0)
 					{
@@ -515,7 +588,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 								{
 									if (ImGui::MenuItem((*j).second.c_str()))
 									{
-										CreateAnimationEvent((*j).first, EventAnimType::EVENT_AUDIO);
+										animator->AddAnimEvent(new AnimEvent(std::to_string((*j).first), current_animation->GetID(), key, EventAnimType::EVENT_AUDIO));
 									}
 								}
 								ImGui::EndMenu();
@@ -530,9 +603,7 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 
 			ImGui::Separator();
 		}
-		else
-			event_audio_created = false;
-		
+
 
 		// Particles
 		if (component_animator->game_object_attached->GetComponent(ComponentType::PARTICLES))
@@ -544,37 +615,49 @@ void PanelAnimTimeline::ShowOptionsToCreate()
 
 		ImGui::Separator();
 
-		// Scripts
-		if (component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
-		{
-			// TODO WITH SCRIPTS
-		}
-		else
-			ImGui::Text("No Component Script Created");
 
-		
-		
+		// Scripts
+		if (!event_script_created)
+		{
+			if (component_animator->game_object_attached->GetComponent(ComponentType::SCRIPT))
+			{
+				if (ImGui::BeginMenu("Scripts List"))
+				{
+					animator->SetScripts(component_animator->game_object_attached->GetComponents<ComponentScript>());
+					auto scripts = animator->GetScripts();
+					for (auto item = scripts.begin(); item != scripts.end(); ++item)
+					{
+						if (*item != nullptr && (*item)->data_ptr != nullptr)
+						{
+							if (ImGui::BeginMenu((*item)->data_name.data())) 
+							{
+								if (!(*item)->functionMap.empty()) 
+								{
+									for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
+										if (ImGui::MenuItem((*j).first.data()))
+										{
+											animator->AddAnimEvent(new AnimEvent((*j).first, current_animation->GetID(), key, EventAnimType::EVENT_SCRIPT));
+										}
+									}
+								}
+								else 
+									ImGui::Text("No exported functions");
+
+								ImGui::EndMenu();
+							}
+						}
+					}
+					ImGui::EndMenu();
+				}
+			}
+			else
+				ImGui::Text("No Component Script Created");
+
+			ImGui::Separator();
+		}
 		ImGui::EndMenu();
 	}
-}
 
-void PanelAnimTimeline::CreateAnimationEvent(uint _id, EventAnimType _type)
-{
-	Event event;
-	event.frame = key;
-	event.id = _id;
-	event.type = _type;
-	anim_event_frames.push_back(event);
-}
-
-void PanelAnimTimeline::DeleteAnimationEvent(uint _key, EventAnimType _type)
-{
-	for (std::vector<Event>::iterator it = anim_event_frames.begin(); it != anim_event_frames.end(); ++it)
-	{
-		if ((*it).frame == _key && (*it).type == _type)
-		{
-			anim_event_frames.erase(it);
-			break;
-		}
-	}
+	event_audio_created = false;
+	event_script_created = false;
 }

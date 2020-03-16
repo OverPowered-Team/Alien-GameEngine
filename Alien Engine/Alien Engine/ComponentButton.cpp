@@ -4,9 +4,12 @@
 #include "ComponentUI.h"
 #include "ComponentCanvas.h"
 #include "ReturnZ.h"
+#include "ComponentScript.h"
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "mmgr/mmgr.h"
 
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
@@ -31,6 +34,47 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("ColorPressed", pressed_color);
 	to_save->SetColor("ColorDisabled", disabled_color);
 
+	//---------------------------------------------------------
+	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
+	if (!listenersOnClick.empty()) {
+		JSONArraypack* onClickArray = to_save->InitNewArray("ListenersOnClick");
+		auto item = listenersOnClick.begin();
+		for (; item != listenersOnClick.end(); ++item) {
+			onClickArray->SetAnotherNode();
+			onClickArray->SetString(std::to_string(item - listenersOnClick.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnHover", !listenersOnHover.empty());
+	if (!listenersOnHover.empty()) {
+		JSONArraypack* onHoverArray = to_save->InitNewArray("ListenersOnHover");
+		auto item = listenersOnHover.begin();
+		for (; item != listenersOnHover.end(); ++item) {
+			onHoverArray->SetAnotherNode();
+			onHoverArray->SetString(std::to_string(item - listenersOnHover.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnClickRepeat", !listenersOnClickRepeat.empty());
+	if (!listenersOnClickRepeat.empty()) {
+		JSONArraypack* onClickRepeatArray = to_save->InitNewArray("ListenersOnClickRepeat");
+		auto item = listenersOnClickRepeat.begin();
+		for (; item != listenersOnClickRepeat.end(); ++item) {
+			onClickRepeatArray->SetAnotherNode();
+			onClickRepeatArray->SetString(std::to_string(item - listenersOnClickRepeat.begin()), (*item).first.data());
+		}
+	}
+
+	to_save->SetBoolean("HasListenersOnRelease", !listenersOnRelease.empty());
+	if (!listenersOnRelease.empty()) {
+		JSONArraypack* onReleaseArray = to_save->InitNewArray("ListenersOnRelease");
+		auto item = listenersOnRelease.begin();
+		for (; item != listenersOnRelease.end(); ++item) {
+			onReleaseArray->SetAnotherNode();
+			onReleaseArray->SetString(std::to_string(item - listenersOnRelease.begin()), (*item).first.data());
+		}
+	}
+	//---------------------------------------------------------------
 	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
 	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
 	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
@@ -54,6 +98,45 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
+
+	//-------------------------------------------------------------
+	if (to_load->GetBoolean("HasListenersOnClick")) {
+		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
+		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onClickListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnClick.push_back(pair);
+			onClickListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnHover")) {
+		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
+		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onHoverListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnHover.push_back(pair);
+			onHoverListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnClickRepeat")) {
+		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
+		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onClickRepeatListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnClickRepeat.push_back(pair);
+			onClickRepeatListeners->GetAnotherNode();
+		}
+	}
+
+	if (to_load->GetBoolean("HasListenersOnRelease")) {
+		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
+		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
+			std::pair<std::string, std::function<void()>> pair = { onReleaseListeners->GetString(std::to_string(i)), std::function<void()>() };
+			listenersOnRelease.push_back(pair);
+			onReleaseListeners->GetAnotherNode();
+		}
+	}
+	//-------------------------------------------------------------
+
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
 	if (textureID != 0) {
@@ -146,8 +229,150 @@ bool ComponentButton::DrawInspector()
 			}
 			ImGui::PopStyleColor(3);
 		}
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
+		//------------------------SCRIPTS----------------------------
+		if (ImGui::TreeNode("Script Listeners")) {
+			//--------------
+			if (ImGui::TreeNode("Functions Added")) {
+				if (ImGui::TreeNode("On Click Added")) {
+					for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Hover Added")) {
+					for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Pressed Added")) {
+					for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::Spacing();
+				if (ImGui::TreeNode("On Release Added")) {
+					for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+						ImGui::Text((*item).first.data());
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::TreePop();
+			}
+			//--------------
+
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+			std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
+			if (ImGui::TreeNode("Functions To Add")) {
+				if (!scripts.empty()) {
+					if (ImGui::TreeNode("On Click To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnClick((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Hover To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnHover((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Pressed To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnClickRepeat((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+					ImGui::Spacing();
+					//-----------------------------
+					if (ImGui::TreeNode("On Release To Add")) {
+						for (auto item = scripts.begin(); item != scripts.end(); ++item) {
+							if (*item != nullptr && (*item)->data_ptr != nullptr) {
+								if (ImGui::BeginMenu((*item)->data_name.data())) {
+									if (!(*item)->functionMap.empty()) {
+										for (auto functs = (*item)->functionMap.begin(); functs != (*item)->functionMap.end(); ++functs) {
+											if (ImGui::MenuItem((*functs).first.data())) {
+												AddListenerOnRelease((*functs).first, (*functs).second);
+											}
+										}
+									}
+									else {
+										ImGui::Text("No exported functions");
+									}
+									ImGui::EndMenu();
+								}
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
+
+				else {
+					ImGui::Text("No Scripts attached");
+				}
+				ImGui::TreePop();
+			}
+
+
+			ImGui::TreePop();
+		}
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 		//------------------------COLOR-------------------------------
 		if (ImGui::TreeNode("Colors"))
 		{
@@ -418,14 +643,14 @@ bool ComponentButton::OnRelease()
 	return true;
 }
 
-void ComponentButton::CallListeners(std::vector<std::function<void()>>* listeners)
+void ComponentButton::CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners)
 {
 	if (listeners != nullptr) {
 		auto item = listeners->begin();
 		for (; item != listeners->end(); ++item) {
-			if (*item != nullptr) {
+			if ((*item).second != nullptr) {
 				try {
-					(*item)();
+					(*item).second();
 				}
 				catch (...) {
 				#ifndef GAME_VERSION
@@ -449,23 +674,52 @@ void ComponentButton::SetActive(bool active)
 	}
 }
 
-void ComponentButton::AddListenerOnHover(std::function<void()> funct)
+void ComponentButton::AddListenerOnHover(std::string name, std::function<void()> funct)
 {
-	listenersOnHover.push_back(funct);
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnHover, name))
+	{
+		listenersOnHover.push_back(pair);
+	}
 }
 
-void ComponentButton::AddListenerOnClick(std::function<void()> funct)
+void ComponentButton::AddListenerOnClick(std::string name, std::function<void()> funct)
 {
-	listenersOnClick.push_back(funct);
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClick, name))
+	{
+		listenersOnClick.push_back(pair);
+	}
 }
 
-void ComponentButton::AddListenerOnClickRepeat(std::function<void()> funct)
+void ComponentButton::AddListenerOnClickRepeat(std::string name, std::function<void()> funct)
 {
-	listenersOnClickRepeat.push_back(funct);
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnClickRepeat, name))
+	{
+		listenersOnClickRepeat.push_back(pair);
+	}
 }
 
-void ComponentButton::AddListenerOnRelease(std::function<void()> funct)
+void ComponentButton::AddListenerOnRelease(std::string name, std::function<void()> funct)
 {
-	listenersOnRelease.push_back(funct);
+	std::pair<std::string, std::function<void()>> pair = { name, funct };
+	if (!CheckIfScriptIsAlreadyAdded(&listenersOnRelease, name))
+	{
+		listenersOnRelease.push_back(pair);
+	}
+}
+
+bool ComponentButton::CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name)
+{
+	if (listeners != nullptr) {
+
+		for (auto item = listeners->begin(); item != listeners->end(); ++item){
+		
+			if ((*item).first == name)
+				return true;
+		}
+	}
+	return false;
 }
 

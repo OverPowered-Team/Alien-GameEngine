@@ -26,11 +26,16 @@ public:
 	void SetFont(ResourceFont* font);
 	ResourceFont* GetFont() const;
 
+	void GenerateVAOVBO();
+
 public:
 	std::string		text = "Non-Text";
 
 private:
 	ResourceFont*	font = nullptr;
+	uint VAO;
+	int width = 200;
+	float interlineal = 1.5;
 };
 
 #endif // !_COMPONENT_TEXT_H_

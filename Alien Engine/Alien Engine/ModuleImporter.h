@@ -19,7 +19,7 @@
 #pragma comment(lib, "Freetype/libx86/freetype.lib")
 
 #include <vector>
-#include "glew/include/glew.h"
+//#include "glew/include/glew.h"
 #include "GameObject.h"
 #include "ComponentMesh.h"
 #include "Shapes.h"
@@ -76,7 +76,7 @@ private:
 	void LoadBone(const aiBone* bone, std::string mesh_name);
 	void LoadMesh(const aiMesh* mesh);
 	void LoadNode(const aiNode* node, const aiScene* scene, uint nodeNum);
-	void LoadMaterials(const aiMaterial* material, const char* extern_path);
+	void LoadMaterials(aiMaterial* material, const char* extern_path);
 	void LoadModelTexture(const aiMaterial* material, ResourceMaterial* mat, aiTextureType assimp_type, TextureType type, const char* extern_path);
 
 private:

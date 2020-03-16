@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
+#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 #include "Globals.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
@@ -153,6 +155,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::WAVE;
 	else if (std::strcmp(name.c_str(), "iluminated_shader") == 0)
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
+	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
+		shaderType = SHADER_TEMPLATE::PARTICLE;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -210,6 +214,10 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniformFloat3("diffuse_color", inputs.iluminatedShaderProperties.object_color);
 		break; }
 
+	case SHADER_TEMPLATE::PARTICLE: {
+		SetUniform4f("diffuse_color", inputs.particleShaderProperties.color);
+		break; }
+
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
@@ -220,10 +228,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 void ResourceShader::ApplyLightsUniforms()
 {
 	// Light uniforms set from here
-	SetUniform1i("max_dir_lights", (int)App->objects->GetNumOfDirLights());
-	SetUniform1i("max_point_lights", (int)App->objects->GetNumOfPointLights());
-	SetUniform1i("max_spot_lights", (int)App->objects->GetNumOfSpotLights());
-
+	SetUniform3i("max_lights", App->objects->GetNumOfDirLights(), App->objects->GetNumOfPointLights(), App->objects->GetNumOfSpotLights());
 
 	if (App->objects->directional_light_properites.size() > 0)
 		SetDirectionalLights("dir_light", App->objects->directional_light_properites);
@@ -245,7 +250,9 @@ void ResourceShader::Unbind() const
 
 void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 {
-	glUniform1i(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1i(location, value);
 }
 
 void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
@@ -255,9 +262,18 @@ void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 {
-	glUniform1f(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1f(location, value);
 }
 
+void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const int& v1, const int& v2)
+{
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform3i(GetUniformLocation(name), v0, v1, v2);
+
+}
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
 {
 	glUniform3f(GetUniformLocation(name), vec.x, vec.y, vec.z);
@@ -275,7 +291,17 @@ void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
 {
-	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.ptr());
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniformMatrix4fv(location, 1, GL_FALSE, matrix.ptr());
+}
+
+void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count)
+{
+
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniformMatrix4fv(location, count, GL_TRUE, matrix[0].ptr());
 }
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
@@ -289,6 +315,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -319,6 +348,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -358,6 +390,9 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+		std::string cintensity = std::string(cname).append(".intensity");
+		SetUniform1f(cintensity, (*iter)->intensity);
+
 		std::string cposition = std::string(cname).append(".position");
 		SetUniformFloat3(cposition, (*iter)->position);
 
@@ -383,10 +418,10 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		SetUniform1f(cquadratic, (*iter)->quadratic);
 
 		std::string ccutoff = std::string(cname).append(".cut_off");
-		SetUniform1f(ccutoff, (*iter)->cut_off);
+		SetUniform1f(ccutoff, cos(math::DegToRad((*iter)->cut_off)));
 
 		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
-		SetUniform1f(coutercutoff, (*iter)->outer_cut_off);
+		SetUniform1f(coutercutoff, cos(math::DegToRad((*iter)->outer_cut_off)));
 
 		++i;
 	}

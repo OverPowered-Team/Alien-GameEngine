@@ -25,7 +25,8 @@ enum class SHADER_TEMPLATE
 	NO_TEMPLATE = -1,
 	DEFAULT,
 	WAVE,
-	ILUMINATED
+	ILUMINATED,
+	PARTICLE
 };
 
 struct ShaderInputs;
@@ -36,6 +37,7 @@ struct SpotLightProperties;
 class ResourceShader : public Resource
 {
 	friend class ComponentMaterial;
+	friend class ComponentText;
 
 public:
 	ResourceShader();	
@@ -72,12 +74,15 @@ public:
 	void SetUniform1ui(const std::string& name, const uint& value);
 	void SetUniform1f(const std::string& name, const float& value);
 
+	void SetUniform3i(const std::string& name, const int& v0, const int& v1, const int& v2);
+
 	void SetUniformFloat3(const std::string& name, const float3& vec3);
 
 	void SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3);
 	void SetUniform4f(const std::string& name, const float4& vec);
 
 	void SetUniformMat4f(const std::string& name, const math::float4x4& matrix);
+	void SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count);
 
 	void SetDirectionalLights(const std::string& name,  const std::list<DirLightProperties*>& dirLights);
 	void SetPointLights(const std::string& name, const std::list<PointLightProperties*>& dirLights);

@@ -8,6 +8,11 @@
 #include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ShortCutManager.h"
+#include "ModuleCamera3D.h"
+#include "ModuleInput.h"
+#include "ModuleUI.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 
@@ -518,7 +523,7 @@ void PanelHierarchy::RightClickMenu()
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Effect"))
+		if (ImGui::BeginMenu("Effects"))
 		{
 			if (ImGui::MenuItem("Particle System"))
 			{
@@ -553,6 +558,10 @@ void PanelHierarchy::RightClickMenu()
 			if (ImGui::MenuItem("Bar"))
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			if (ImGui::MenuItem("Animated Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_ANIMATED_IMAGE);
 			}
 			ImGui::EndMenu();
 		}

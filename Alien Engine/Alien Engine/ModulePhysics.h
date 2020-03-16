@@ -2,9 +2,8 @@
 #define _MODULE_PHYSICS_H__
 
 #include "Module.h"
-#include "Globals.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
-#include "MathGeoLib/include/Math/MathAll.h"
+#include "Bullet/include/LinearMath/btVector3.h"
 #include <list>
 
 // Recommended scale is 1.0f == 1 meter, no less than 0.2 objects
@@ -30,6 +29,7 @@ class btGhostObject;
 
 class ModulePhysics : public Module
 {
+	friend class ComponentCharacterController;
 	friend class ModuleObjects;
 	friend class ComponentCollider;
 	friend class PanelPhysics;
@@ -59,6 +59,8 @@ public:
 
 	void DrawConstraint(btTypedConstraint* constraint);
 
+	void DrawCharacterController(ComponentCharacterController* controller);
+
 	void DrawWorld();
 
 	void AddBody(btRigidBody* body);
@@ -68,6 +70,10 @@ public:
 	void AddDetector(btGhostObject* detector);
 
 	void RemoveDetector(btGhostObject* detector);
+
+	void AddAction(btActionInterface* action);
+
+	void RemoveAction(btActionInterface* action);
 
 	void AddConstraint(btTypedConstraint* constraint, bool bodiesCollision = true);
 

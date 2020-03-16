@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "Module.h"
@@ -13,6 +14,7 @@
 #include <stack>
 #include <functional>
 #include <map>
+#include <string>
 
 class ReturnZ;
 class ResourcePrefab;
@@ -24,8 +26,10 @@ enum class ComponentType;
 class DirLightProperties;
 class PointLightProperties;
 class SpotLightProperties;
+class ComponentUI;
 
 class Viewport;
+struct AlienEvent;
 
 struct InvokeInfo {
 	std::function<void()> function = nullptr;
@@ -82,7 +86,10 @@ public:
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
 
+	void HandleAlienEvent(const AlienEvent& alien_event);
 	void HandleEvent(EventType eventType) override;
+
+
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
@@ -182,6 +189,8 @@ public:
 	void CancelInvokes(Alien* alien);
 	/*bool IsInvoking(std::function<void()> void_no_params_function);*/
 
+	void ReAttachUIScriptEvents();
+
 private:
 
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
@@ -190,6 +199,8 @@ private:
 	void UpdateGamePadInput();
 	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
 	ComponentCanvas* GetCanvas();
+
+	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
 
 public:
 	//Focus

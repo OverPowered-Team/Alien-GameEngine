@@ -1,30 +1,34 @@
 #pragma once
 
-#include "Globals.h"
-#include "Timer.h"
-#include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleCamera3D.h"
-#include "ModuleObjects.h"
-#include "ModuleUI.h"
-#include <list>
-#include "j1PerfTimer.h"
-#include "JSONfilepack.h"
-#include "ShortCutManager.h"
-#include "ModuleImporter.h"
-#include "ModuleFileSystem.h"
-#include "ModuleResources.h"
-#include "ModuleAudio.h"
+#include "imgui/imgui.h"
+#include <regex>
 #include "ModulePhysics.h"
-#include "AnimTween.h"
+#include "j1PerfTimer.h"
+#include "Timer.h"
 
+#include <list>
 #include <string>
 #include <vector>
 
 enum class EventType; 
-struct AlienEvent;
+enum class AlienEventType;
+
+
+class Module;
+class ModuleWindow;
+class ModuleInput;
+class ModuleRenderer3D;
+class ModuleCamera3D;
+class ModuleUI;
+class ModuleImporter;
+class ShortCutManager;
+class ModuleObjects;
+class ModuleFileSystem;
+class ModuleResources;
+class ModuleAudio;
+class AnimTween;
+
+class JSONfilepack;
 
 struct LogInfo {
 	LogInfo(const int& line, const char* file, const char* loged) {
@@ -108,7 +112,7 @@ public:
 
 	void OpenWebsite(const std::string& website);
 	void CastEvent(EventType eventType);
-	void SendAlienEvent(AlienEvent& e);
+	void SendAlienEvent(void * object, AlienEventType type);
 
 	JSONfilepack* LoadJSONFile(const std::string& path);
 	JSONfilepack* CreateJSONFile(const std::string& path);
@@ -126,11 +130,8 @@ private:
 	void OnUpdate(update_status& ret);
 	void PostUpdate(update_status& ret);
 
-
 	bool LoadConfig();
 	bool SaveConfig();
 };
 
 extern Application* App;
-
-

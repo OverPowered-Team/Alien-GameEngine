@@ -19,6 +19,7 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentParticleSystem;
+	friend class PanelAnimTimeline;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
 	friend class ComponentLightPoint;
@@ -34,7 +35,9 @@ class __declspec(dllexport) GameObject
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
+	friend class ComponentPointConstraint;
 	friend class ComponentRigidBody;
+	friend class ComponentCharacterController;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
@@ -42,6 +45,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentText;
 	friend class ComponentButton;
 	friend class ComponentBar;
+	friend class ComponentAnimatedImage;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class CompZ;
@@ -64,8 +68,9 @@ class __declspec(dllexport) GameObject
 	friend class ComponentImage;
 	friend class ComponentSlider;
 	friend class ModuleUI;
-	friend class Tween;
+	friend class ModuleTween;
 	friend class AnimTween;
+	
 public:
 	GameObject(GameObject* parent);
 	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
@@ -265,7 +270,6 @@ public:
 	ComponentTransform* transform = nullptr;
 
 private:
-
 	bool to_delete = false; 
 	u64 prefabID = 0;
 

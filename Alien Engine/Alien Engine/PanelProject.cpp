@@ -7,8 +7,10 @@
 #include "imgui/imgui_internal.h"
 #include "ResourceModel.h"
 #include "ResourcePrefab.h"
+#include "ShortCutManager.h"
 #include "ResourceScript.h"
 #include "ResourceScene.h"
+#include "ModuleUI.h"
 #include "PanelAnimator.h"
 #include "Event.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
@@ -178,6 +180,10 @@ void PanelProject::SeeFiles()
 
 			// go back a folder
 			if (ImGui::IsItemClicked()) {
+
+				App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_DESELECTED);
+				selected_resource = nullptr; 
+
 				current_active_file = &go_back_folder;
 				current_active_folder = current_active_folder->parent;
 				ImGui::EndChild();
@@ -258,7 +264,16 @@ void PanelProject::SeeFiles()
 				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
 				{
 					App->objects->DeselectObjects();
+
+					App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_DESELECTED);
+
+					// Cast Events of selected file
 					App->CastEvent(EventType::ON_ASSET_SELECT);
+					std::string path = App->file_system->GetPathWithoutExtension(current_active_file->path + current_active_file->name) + "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					selected_resource = App->resources->GetResourceWithID(ID);
+
+					App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_SELECTED);
 				}
 			}
 			// right click in file/folder
@@ -451,6 +466,9 @@ void PanelProject::RightClickToWindow(bool pop_up_item)
 		if (ImGui::MenuItem("Create New Material")) {
 			App->resources->CreateMaterial("New Material");
 		}
+		if (ImGui::MenuItem("Create New Animator Controller")) {
+			App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);
+		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Create New Folder")) {
 			int folder_number = 0;
@@ -513,7 +531,9 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 							}
 						}
 						node->DeleteChildren();
+
 						App->file_system->DiscoverEverythig(node);
+						node->ResetChildrenPath();
 					}
 					else {
 						LOG_ENGINE("Fail when moving %s to %s", std::string(node_to_move->path + node_to_move->name).data(), std::string(node->path + node_to_move->name).data());
@@ -534,6 +554,7 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 						}
 						node->DeleteChildren();
 						App->file_system->DiscoverEverythig(node);
+						node->ResetChildrenPath();
 					}
 					else {
 						LOG_ENGINE("Could not move %s to %s", node_to_move->path.data(), std::string(node->path + node_to_move->name + std::string("/")).data());
@@ -554,6 +575,7 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 						App->file_system->DiscoverEverythig(next_parent);
 						current_active_folder = next_parent->FindChildrenByPath(actual_folder_path);
 						current_active_file = nullptr;
+						next_parent->ResetChildrenPath();
 					}
 					else {
 
@@ -584,6 +606,7 @@ bool PanelProject::MoveToFolder(FileNode* node, bool inside)
 						App->file_system->DiscoverEverythig(next_parent);
 						current_active_folder = next_parent->FindChildrenByPath(actual_folder_path);
 						current_active_file = nullptr;
+						next_parent->ResetChildrenPath();
 					}
 					else {
 						LOG_ENGINE("Could not move %s to %s", node_to_move->path.data(), std::string(node_to_move->parent->parent->path + node_to_move->name + std::string("/")).data());

@@ -12,6 +12,7 @@ class __declspec(dllexport) ComponentCheckbox :public ComponentUI
 {
 	friend class ReturnZ;
 	friend class CompZ;
+	friend class ModuleObjects;
 public:
 
 	ComponentCheckbox(GameObject* obj);
@@ -42,10 +43,11 @@ public:
 
 	void SetActive(bool active);
 
-	void AddListenerOnHover(std::function<void()> funct);
-	void AddListenerOnClick(std::function<void()> funct);
-	void AddListenerOnClickRepeat(std::function<void()> funct);
-	void AddListenerOnRelease(std::function<void()> funct);
+	void AddListenerOnHover(std::string name, std::function<void()> funct);
+	void AddListenerOnClick(std::string name, std::function<void()> funct);
+	void AddListenerOnClickRepeat(std::string name, std::function<void()> funct);
+	void AddListenerOnRelease(std::string name, std::function<void()> funct);
+	bool CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name);
 
 	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 
@@ -53,7 +55,7 @@ public:
 	void LoadComponent(JSONArraypack* to_load);
 
 private:
-	void CallListeners(std::vector<std::function<void()>>* listeners);
+	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
 
 private:
 	bool active = true;
@@ -64,10 +66,10 @@ private:
 	float tickScaleY = 0.5F;
 
 private:
-	std::vector<std::function<void()>> listenersOnHover;
-	std::vector<std::function<void()>> listenersOnClick;
-	std::vector<std::function<void()>> listenersOnClickRepeat;
-	std::vector<std::function<void()>> listenersOnRelease;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnHover;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClick;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClickRepeat;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnRelease;
 
 	ComponentCanvas* GetCanvas();
 

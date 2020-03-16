@@ -6,15 +6,18 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 
+#include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentParticleSystem.h"
 #include "GameObject.h"
 #include "ModuleCamera3D.h"
+#include "ModuleFileSystem.h"
 
 #include "ModuleResources.h"
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
+#include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ResourceShader.h"
 #include "ResourceAnimation.h"
@@ -103,7 +106,8 @@ bool ModuleImporter::LoadModelFile(const char *path, const char *extern_path)
 			LOG_ENGINE("Error type: %s", aiGetErrorString());
 		}
 		aiReleaseImport(scene);
-		App->resources->AddNewFileNode(path, true);
+		if(ret)
+			App->resources->AddNewFileNode(path, true);
 	}
 	else
 	{
@@ -167,6 +171,7 @@ void ModuleImporter::InitScene(const char *path, const aiScene *scene, const cha
 	if (model->CreateMetaData())
 	{
 		App->resources->AddResource(model);
+		App->ui->panel_project->RefreshAllNodes();
 		model->ConvertToGameObjects();
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
 	}
@@ -367,7 +372,7 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 			ModelNode nodeMesh;
 			nodeMesh.name = std::string(node->mName.C_Str() + std::to_string(i));
 			nodeMesh.mesh = node->mMeshes[i];
-			model_node.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
+			nodeMesh.material = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
 			nodeMesh.parent_name = model_node.name;
 			nodeMesh.node_num = nodeNum + 2;
 			nodeMesh.parent_num = nodeNum + 1;
@@ -396,11 +401,11 @@ void ModuleImporter::LoadNode(const aiNode *node, const aiScene *scene, uint nod
 	model->model_nodes.push_back(model_node);
 }
 
-void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *extern_path)
+void ModuleImporter::LoadMaterials(aiMaterial *material, const char *extern_path)
 {
 	OPTICK_EVENT();
 	ResourceMaterial* mat = new ResourceMaterial();
-
+	mat->SetName(material->GetName().C_Str());
 	aiColor4D col;
 	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, col))
 	{
@@ -411,8 +416,6 @@ void ModuleImporter::LoadMaterials(const aiMaterial *material, const char *exter
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
-
-	App->resources->AddResource(mat);
 	model->materials_attached.push_back(mat);
 }
 
@@ -669,7 +672,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 		{
 			ComponentMaterial *compMaterial = (ComponentMaterial *)(*item)->GetComponent(ComponentType::MATERIAL);
 
-			if ((*item)->HasComponent(ComponentType::MESH))
+			if ((*item)->HasComponent(ComponentType::MESH) || (*item)->HasComponent(ComponentType::DEFORMABLE_MESH))
 			{
 				bool exists = true;
 				if (compMaterial == nullptr)
@@ -678,7 +681,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 					compMaterial = new ComponentMaterial((*item));
 					(*item)->AddComponent(compMaterial);
 				}
-				compMaterial->SetTexture(texture);
+				compMaterial->SetTexture(texture, TextureType::DIFFUSE);
 
 				if (!exists)
 				{
@@ -692,7 +695,8 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 			else
 				LOG_ENGINE("Selected GameObject has no mesh");
 
-			if ((*item)->HasComponent(ComponentType::PARTICLES))
+
+			/*if ((*item)->HasComponent(ComponentType::PARTICLES))
 			{
 
 				ComponentParticleSystem *particleSystem = (ComponentParticleSystem *)(*item)->GetComponent(ComponentType::PARTICLES);
@@ -703,7 +707,7 @@ void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
 				particleSystem->SetTexture(texture);
 			}
 			else
-				LOG_ENGINE("Selected GameObject has no particle system");
+				LOG_ENGINE("Selected GameObject has no particle system");*/
 		}
 	}
 }
@@ -763,8 +767,8 @@ void ModuleImporter::ApplyMaterialToSelectedObject(ResourceMaterial* material)
 	{
 		if (*item != nullptr)
 		{
-			if (!(*item)->HasComponent(ComponentType::MESH) && !(*item)->HasComponent(ComponentType::PARTICLES))
-				return;
+			if (!(*item)->HasComponent(ComponentType::MESH) && !(*item)->HasComponent(ComponentType::DEFORMABLE_MESH) && !(*item)->HasComponent(ComponentType::PARTICLES))
+				continue;	
 
 			ComponentMaterial* materialComp = (ComponentMaterial*)(*item)->GetComponent(ComponentType::MATERIAL);
 
@@ -994,14 +998,6 @@ bool ModuleImporter::ReImportModel(ResourceModel *model)
 			}
 		}
 		ReImportAnimations(model, scene);
-
-		if (scene->HasMaterials())
-		{
-			for (uint i = 0; i < scene->mNumMaterials; ++i)
-			{
-				LoadMaterials(scene->mMaterials[i], nullptr);
-			}
-		}
 
 		// start recursive function to all nodes
 		for (uint i = 0; i < scene->mRootNode->mNumChildren; ++i)

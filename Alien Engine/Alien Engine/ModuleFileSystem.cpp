@@ -1,7 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleFileSystem.h"
+#include "ModuleWindow.h"
+#include "ModuleImporter.h"
+#include "ModuleObjects.h"
+#include "ModuleResources.h"
 #include "PhysFS/include/physfs.h"
+#include "ModuleObjects.h"
 #include "Assimp/include/cfileio.h"
 #include "Assimp/include/types.h"
 #include "Resource_.h"
@@ -48,7 +53,7 @@ ModuleFileSystem::ModuleFileSystem(const char* game_path) : Module()
 	// Make sure standard paths exist
 	const char* dirs[] = {
 		ASSETS_FOLDER, LIBRARY_FOLDER, CONFIGURATION_FOLDER, MODELS_FOLDER, TEXTURES_FOLDER,SHADERS_FOLDER, FONTS_FOLDER,
-		ANIM_CONTROLLER_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER, ASSETS_PREFAB_FOLDER, AUDIO_FOLDER,
+		ANIM_CONTROLLER_FOLDER, SCRIPTS_FOLDER, SCENE_FOLDER, ASSETS_PREFAB_FOLDER, AUDIO_FOLDER, MATERIALS_FOLDER,
 		LIBRARY_MESHES_FOLDER, LIBRARY_MODELS_FOLDER, LIBRARY_TEXTURES_FOLDER, LIBRARY_SHADERS_FOLDER, LIBRARY_MATERIALS_FOLDER, 
 		LIBRARY_SCENES_FOLDER, LIBRARY_PREFABS_FOLDER, LIBRARY_SCRIPTS_FOLDER, LIBRARY_ANIMATIONS_FOLDER,
 		LIBRARY_AUDIO_FOLDER, LIBRARY_BONES_FOLDER, LIBRARY_FONTS_FOLDER, LIBRARY_ANIM_CONTROLLERS_FOLDER, 

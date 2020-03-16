@@ -12,6 +12,8 @@
 #include "ModuleCamera3D.h"
 #include "ResourceTexture.h"
 #include "ResourceMaterial.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -28,13 +30,16 @@ ComponentMesh::~ComponentMesh()
 	{
 		static_cast<ComponentMaterial*>(game_object_attached->GetComponent(ComponentType::MATERIAL))->not_destroy = false;
 	}
-	if (mesh != nullptr && mesh->is_custom) {
+	if (mesh != nullptr) {
 		mesh->DecreaseReferences();
+		mesh = nullptr;
 	}
 }
 
 void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 {
+	if (resource == nullptr)
+		return;
 	mesh = resource;
 	GenerateLocalAABB();
 	RecalculateAABB_OBB();
@@ -64,25 +69,14 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_POLYGON_OFFSET_FILL);
-	//glPolygonOffset(1.0f, 0.1f);
-
 	// -------------------------- Actual Drawing -------------------------- 
-
-
 	material->ApplyMaterial();
 
 	glBindVertexArray(mesh->vao);
 
 	// Uniforms --------------
-	material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
-	material->used_shader->SetUniformMat4f("model", transform->GetGlobalMatrix().Transposed());
-	material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	material->used_shader->SetUniform1f("time", Time::GetTimeSinceStart());
+	SetUniform(material, camera);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
 	// --------------------------------------------------------------------- 
@@ -172,6 +166,17 @@ void ComponentMesh::DrawMesh()
 	glPopMatrix();
 
 }
+
+void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniform1i("animate", animate);
+}
+
+
 
 void ComponentMesh::DrawVertexNormals()
 {

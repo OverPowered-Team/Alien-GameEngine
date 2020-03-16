@@ -5,6 +5,8 @@
 #include "ComponentTransform.h"
 #include "Application.h"
 #include "ReturnZ.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "ComponentMesh.h"
 #include "Gizmos.h"
 #include "mmgr/mmgr.h"
@@ -36,7 +38,20 @@ void ComponentLightDirectional::LightLogic()
 	ComponentTransform* transform=(ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-	Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::White(), 3.0f);
+#ifndef GAME_VERSION
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
+		App->renderer3D->EndDebugDraw();
+	}
+	else
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
+		App->renderer3D->EndDebugDraw();
+	}
+#endif
 }
 
 bool ComponentLightDirectional::DrawInspector()
@@ -69,6 +84,7 @@ bool ComponentLightDirectional::DrawInspector()
 
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
+		ImGui::DragFloat("Intensity", &light_props.intensity, 0.01f, 0.0f, 2.0f);
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
@@ -120,6 +136,7 @@ void ComponentLightDirectional::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("PrintIcon", print_icon);
 
+	to_save->SetNumber("Intensity", float(light_props.intensity));
 	to_save->SetFloat3("Position", float3(light_props.position));
 	to_save->SetFloat3("Direction", float3(light_props.direction));
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
@@ -133,6 +150,7 @@ void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
 	ID = std::stoull(to_load->GetString("ID"));
 	print_icon = to_load->GetBoolean("PrintIcon");
 
+	light_props.intensity = (float)to_load->GetNumber("Intensity");
 	light_props.position = to_load->GetFloat3("Position");
 	light_props.direction = to_load->GetFloat3("Direction");
 	light_props.ambient = to_load->GetFloat3("Ambient");

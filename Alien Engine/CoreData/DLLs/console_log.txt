@@ -1,29 +1,26 @@
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(48) : -------------- Application Init --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(24) : Init SDL window & surface
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(29) : Init SDL input event system
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(90) : Loading File System
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(53) : Initing Devil
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(60) : FreeType initialized!
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(47) : Creating 3D Physics simulation
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(36) : Creating 3D Renderer context
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(206) : Application Start --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(600) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(336) : File System copied file [Assets/Materials/Default Material.material] to [Library/Materials/13753584922284142239.material]
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(113) : Created alienBone file Library/Bones/3868038089395948660.alienBone
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceModel.cpp(139) : Created alienAnimation file Library/Animations/4497247643614313195.alienAnimation
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceFont.cpp(61) : Own file founded!
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(70) : Starting Module Objects
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(69) : Creating Physics environment
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(55) : Loading UI assets
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(267) : Controller 1 loaded correctly
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(152) : Destroying 3D Renderer
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(93) : Unloading UI scene
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(41) : Cleaning camera
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ResourceAnimation.cpp(120) : Unloading Animation twohandattack
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(314) : Quitting SDL input event subsystem
-C:\Users\wolfs\Documents\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(68) : Destroying SDL window and quitting all SDL systems
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(41) : -------------- Application Creation --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(48) : -------------- Application Init --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(24) : Init SDL window & surface
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(30) : Init SDL input event system
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(95) : Loading File System
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(56) : Initing Devil
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(63) : FreeType initialized!
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(49) : Creating 3D Physics simulation
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(38) : Creating 3D Renderer context
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(221) : Application Start --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(603) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(592) : No shader found with name Resources
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(341) : File System copied file [Assets/Scripts/MoreEventsClass.alienScript] to [Library/Scripts/6951566210901670852.alienPrefab]
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(213) : No resource found with ID -1358199867
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(71) : Creating Physics environment
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleObjects.cpp(78) : Starting Module Objects
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(60) : Loading UI assets
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(147) : Destroying 3D Renderer
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(98) : Unloading UI scene
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(41) : Cleaning camera
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleInput.cpp(315) : Quitting SDL input event subsystem
+C:\Users\Oriorii\Documents\GitHub\Projecte3\Alien-GameEngine\Alien Engine\Alien Engine\ModuleWindow.cpp(68) : Destroying SDL window and quitting all SDL systems

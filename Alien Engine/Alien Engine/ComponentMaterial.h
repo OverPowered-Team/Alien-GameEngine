@@ -7,6 +7,7 @@
 
 class ResourceTexture;
 class ResourceShader;
+enum class TextureType;
 
 class __declspec(dllexport) ComponentMaterial : public Component {
 	friend class ReturnZ;
@@ -14,7 +15,7 @@ class __declspec(dllexport) ComponentMaterial : public Component {
 	friend class GameObject;
 	friend class ModuleImporter;
 	friend class ResourceMesh;
-	friend class Tween;
+	friend class ModuleTween;
 	friend class AnimTween;
 public:
 	ComponentMaterial(GameObject* attach);
@@ -22,8 +23,6 @@ public:
 
 private:
 	bool DrawInspector();
-
-	void InspectorShaderProperties();
 
 	void Reset();
 	void SetComponent(Component* component);
@@ -35,9 +34,9 @@ private:
 
 
 public:
-	void SetTexture(ResourceTexture* tex);
-	void RemoveTexture();
-	const ResourceTexture* GetTexture() const;
+	void SetTexture(ResourceTexture* tex, TextureType texType);
+	void RemoveTexture(TextureType texType);
+	const ResourceTexture* GetTexture(TextureType texType) const;
 
 	void SetMaterial(ResourceMaterial* mat);
 	const ResourceMaterial* GetMaterial() const;
