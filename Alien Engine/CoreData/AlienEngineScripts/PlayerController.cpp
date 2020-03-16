@@ -36,6 +36,12 @@ void PlayerController::Update()
 			state = PlayerState::DASHING;
 		}
 
+		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
+			/*animator->PlayState("Roll");*/
+			state = PlayerState::JUMPING;
+			if(ccontroller->CanJump())ccontroller->Jump();
+		}
+
 	} break;
 	case PlayerController::PlayerState::RUNNING:
 	{
@@ -47,6 +53,12 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
+		}
+
+		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
+			/*animator->PlayState("Roll");*/
+			state = PlayerState::JUMPING;
+			if (ccontroller->CanJump())ccontroller->Jump();
 		}
 
 	} break;
@@ -70,6 +82,13 @@ void PlayerController::Update()
 	if (state == PlayerState::IDLE && abs(playerData.currentSpeed) > 0.1F)
 		state = PlayerState::RUNNING;
 
+	if (state == PlayerState::JUMPING && ccontroller->CanJump()) {
+		if(abs(playerData.currentSpeed) < 0.1F)
+			state = PlayerState::IDLE;
+		if (abs(playerData.currentSpeed) > 0.1F)
+			state = PlayerState::RUNNING;
+	}
+
 	playerData.currentSpeed = 0;
 }
 
@@ -87,6 +106,7 @@ void PlayerController::HandleMovement()
 
 	if (abs(axisX) >= stick_threshold || abs(axisY) >= stick_threshold) {
 		playerData.currentSpeed = (playerData.movementSpeed * speed * Time::GetDT());
+		ccontroller->SetRotation(rot);
 	}
 
 	ccontroller->SetWalkDirection(vector.Normalized() * playerData.currentSpeed);
