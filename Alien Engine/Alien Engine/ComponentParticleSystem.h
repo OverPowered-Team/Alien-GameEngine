@@ -82,5 +82,7 @@ private:
 	//bool texture_activated = true;
 
 	bool enable_render = false;
-	
+	float animSpeed = 0.1f;
+	int texRows = 1;
+	int texColumns = 1;
 };

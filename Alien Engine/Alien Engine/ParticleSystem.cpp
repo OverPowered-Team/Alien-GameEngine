@@ -411,6 +411,61 @@ void ParticleSystem::RemoveMaterial()
 	material = nullptr;
 }
 
+void ParticleSystem::CalculateParticleUV(int rows, int columns)
+{
+	std::vector<uint> ret = LoadTextureUV(rows, columns);
+
+	if (!ret.empty())
+	{
+		LOG_ENGINE("TEXTURE UV IDS FILLED");
+	}
+
+}
+
+std::vector<uint> ParticleSystem::LoadTextureUV(int rows, int columns)
+{
+
+	id_uvs.clear();
+
+	if (rows > 0 && rows > 0)
+	{
+
+		uint texID = 0;
+
+		float r_scale = 1.0f / rows;
+		float c_scale = 1.0f / columns;
+
+
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < columns; ++j)
+			{
+				float uv[]
+				{
+					j * c_scale,					1.0f - (i * r_scale + r_scale),
+					j * c_scale + c_scale,			1.0f - (i * r_scale + r_scale),
+					j * c_scale,					1.0f - i * r_scale,
+					j * c_scale + c_scale,			1.0f - i * r_scale,
+				};
+
+
+				LOG_ENGINE("Texture UV: \n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n", uv[0], uv[1], uv[2], uv[3], uv[4], uv[5], uv[6], uv[7])
+
+				glGenBuffers(1, &texID);
+				glBindBuffer(GL_ARRAY_BUFFER, texID);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+				id_uvs.push_back(texID);
+			}
+		}
+
+	}
+
+	return id_uvs;
+
+}
+
 // ------------------------------ PARTICLE LIGHT ------------------------------
 
 void ParticleSystem::InitLight()

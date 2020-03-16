@@ -111,7 +111,8 @@ public:
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
 	
-
+	void CalculateParticleUV(int rows, int columns);
+	std::vector<uint> LoadTextureUV(int rows, int columns);
 public: 
 
 	ParticleEmmitter emmitter;
@@ -151,4 +152,7 @@ public:
 	Color ambient{ 1.f, 1.f, 1.f, 1.0f };
 	Color diffuse{ 1.f, 1.f, 1.f, 1.0f };
 	uint light_id = 0;
+
+	// UV Buffer ids
+	std::vector<uint> id_uvs;
 };

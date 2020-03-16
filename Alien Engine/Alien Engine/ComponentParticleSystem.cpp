@@ -523,12 +523,62 @@ bool ComponentParticleSystem::DrawInspector()
 				TextureBrowser();
 			}*/
 
-			ImGui::Spacing();
-			ImGui::Spacing();
-			ImGui::Spacing();
 			
 			
+			ImGui::Spacing();
 
+			static bool enable_anim = false;
+
+			// Add Spritesheet texture
+			ImGui::Checkbox("##pptActiveAnim", &enable_anim);
+			ImGui::SameLine();
+
+			if (ImGui::TreeNodeEx("Texture Animation", ImGuiTreeNodeFlags_Framed))
+			{
+
+				ImGui::Spacing();
+
+				if (!enable_anim)
+				{
+					ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+					ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Text("Animation Speed: "); ImGui::SameLine(200, 15);
+				ImGui::SliderFloat("##Animation Speed", &animSpeed, 0.0f, 5.0);
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Text("Rows: "); ImGui::SameLine(200, 15);
+				ImGui::SliderInt("##Rows", &texRows, 1, 10);
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Text("Columns: "); ImGui::SameLine(200, 15);
+				ImGui::SliderInt("##Columns", &texColumns, 1, 10);
+				ImGui::Spacing();
+				ImGui::Spacing(); 
+				ImGui::Spacing();
+				ImGui::SameLine(535, 15);
+				if (ImGui::Button("Calculate UV", { 120,20 }))
+				{
+					particleSystem->CalculateParticleUV(texRows, texColumns);
+				}
+				
+
+				if (!enable_anim)
+				{
+					ImGui::PopItemFlag();
+					ImGui::PopStyleVar();
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				ImGui::TreePop();
+			}
+
+			
 			static bool enable_blend = false;
 
 			ImGui::Checkbox("##pptActiveBlend", &enable_blend);
