@@ -2,8 +2,8 @@
     "Name": "New Material",
     "Color": [
         1,
-        1,
-        1,
+        0,
+        0,
         1
     ],
     "ShaderID": "0",
