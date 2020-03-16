@@ -459,12 +459,16 @@ uint ModuleFileSystem::Load(const char* file, char** buffer) const
 			else
 				ret = readed;
 		}
+		else {
+			LOG_ENGINE("EEEEEEEEEEEERRRORR");
+		}
 
 		if (PHYSFS_close(fs_file) == 0)
 			LOG_ENGINE("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
-	else
+	else {
 		LOG_ENGINE("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
+	}
 
 	return ret;
 }
