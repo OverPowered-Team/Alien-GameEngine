@@ -6,6 +6,7 @@
 #include "ModuleRenderer3D.h"
 #include "ComponentAnimatedImage.h"
 #include "ResourceTexture.h"
+#include "ModuleWindow.h"
 #include "PanelGame.h"
 
 

@@ -770,8 +770,9 @@ void ModuleResources::ReadAllMetaData()
 	}
 	files.clear();
 	directories.clear();
-	default_shader = (ResourceShader*)GetResourceWithID(2146752462670567246);
-	skybox_shader = (ResourceShader*)GetResourceWithID(0); // TODO
+	default_shader = (ResourceShader*)GetResourceWithID(2074311779325559006);
+	skybox_shader = (ResourceShader*)GetResourceWithID(10031399484334738574); // TODO
+	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);

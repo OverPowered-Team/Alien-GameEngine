@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ModuleWindow.h"
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
 #include "ComponentCanvas.h"
@@ -1847,6 +1848,11 @@ void ModuleObjects::HandleEvent(EventType eventType)
 
 	if (eventType == EventType::ON_PLAY) {
 		InitScripts();
+	}
+	else if (eventType == EventType::ON_ASSET_DELETE) {
+		#ifndef GAME_VERSION
+		App->ui->panel_project->selected_resource = nullptr;
+		#endif
 	}
 	
 
