@@ -7,22 +7,22 @@
             {
                 "Name": "Idle",
                 "Speed": 1,
-                "Clip": "14616852132734576951"
+                "Clip": "0"
             },
             {
                 "Name": "Run",
                 "Speed": 1,
-                "Clip": "12468072880108357545"
+                "Clip": "0"
             },
             {
                 "Name": "Attack",
                 "Speed": 1,
-                "Clip": "1381992307201819049"
+                "Clip": "0"
             },
             {
                 "Name": "Roll",
                 "Speed": 3,
-                "Clip": "5429867868596177869"
+                "Clip": "0"
             }
         ],
         "Transitions": [

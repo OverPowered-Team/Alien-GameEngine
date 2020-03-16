@@ -11,7 +11,7 @@ PlayerController::~PlayerController()
 void PlayerController::Start()
 {
 	animator = (ComponentAnimator*)GetComponent(ComponentType::ANIMATOR);
-	rbody = (ComponentRigidBody*)GetComponent(ComponentType::RIGID_BODY);
+	ccontroller = (ComponentCharacterController*)GetComponent(ComponentType::CHARACTER_CONTROLLER);
 }
 
 void PlayerController::Update()
@@ -87,17 +87,9 @@ void PlayerController::HandleMovement()
 
 	if (abs(axisX) >= stick_threshold || abs(axisY) >= stick_threshold) {
 		playerData.currentSpeed = (playerData.movementSpeed * speed * Time::GetDT());
-		transform->SetLocalRotation(rot);
 	}
 
-	if (abs(playerData.currentSpeed) > 0) {
-		rbody->SetVelocity(transform->forward * playerData.currentSpeed * 100.f);
-	}
-	else {
-		rbody->SetVelocity({ 0, rbody->GetVelocity().y, 0 });
-		rbody->SetAngularVelocity({ 0, 0, 0 });
-	}
-
+	ccontroller->SetWalkDirection(vector.Normalized() * playerData.currentSpeed);
 	animator->SetFloat("speed", Maths::Abs(playerData.currentSpeed));
 }
 
