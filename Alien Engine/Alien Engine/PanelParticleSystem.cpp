@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "ComponentParticleSystem.h"
 #include "ParticleSystem.h"
+#include "GameObject.h"
+#include "ModuleObjects.h"
 #include "ModuleCamera3D.h"
 #include "Viewport.h"
 #include "imgui/imgui_internal.h"

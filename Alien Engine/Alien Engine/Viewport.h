@@ -1,6 +1,9 @@
 #ifndef _VIEWPORT_H__
 #define _VIEWPORT_H__
 
+#include "Color.h"
+#include "MathGeoLib/include/Math/float2.h"
+
 class FBO
 {
 public:

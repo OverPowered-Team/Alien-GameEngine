@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include "glew/include/glew.h"
 
 #define LOG_ENGINE(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 

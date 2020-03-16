@@ -8,6 +8,7 @@
 #include "ResourceFont.h"
 #include "ResourceShader.h"
 #include "Viewport.h"
+#include "ModuleRenderer3D.h"
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"

@@ -4,7 +4,10 @@
 #include "Application.h"
 #include "Camera.h"
 #include "GL/gl.h"
+#include "ModuleCamera3D.h"
+#include "ModuleRenderer3D.h"
 #include "ComponentCamera.h"
+#include "ModuleObjects.h"
 #include "Viewport.h"
 
 Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo endInfo) : owner(owner), particleInfo(info), startInfo(info), endInfo(endInfo)

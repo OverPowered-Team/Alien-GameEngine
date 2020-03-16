@@ -1,9 +1,12 @@
 #include "ResourceMaterial.h"
 #include "Application.h"
+#include "ModuleResources.h"
+#include "ModuleFileSystem.h"
 #include "ResourceShader.h"
 #include "ResourceTexture.h"
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
+#include "JSONfilepack.h"
 
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -57,6 +60,16 @@ void ResourceMaterial::FreeMemory()
 				texture->DecreaseReferences();
 		}
 	}
+}
+
+void ResourceMaterial::OnSelected()
+{
+	LoadMemory();
+}
+
+void ResourceMaterial::OnDeselected()
+{
+	FreeMemory();
 }
 
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
@@ -235,12 +248,11 @@ void ResourceMaterial::ApplyMaterial()
 {
 
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
-			used_shader->SetUniform1i("tex", 0);
-		}
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+		used_shader->SetUniform1i("tex", 0);
+	}
 
 	/*if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
 	{

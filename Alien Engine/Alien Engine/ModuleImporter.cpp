@@ -6,11 +6,13 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 
+#include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentParticleSystem.h"
 #include "GameObject.h"
 #include "ModuleCamera3D.h"
+#include "ModuleFileSystem.h"
 
 #include "ModuleResources.h"
 #include "ResourceMesh.h"

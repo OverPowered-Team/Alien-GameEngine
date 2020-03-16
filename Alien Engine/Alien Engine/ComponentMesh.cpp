@@ -12,6 +12,8 @@
 #include "ModuleCamera3D.h"
 #include "ResourceTexture.h"
 #include "ResourceMaterial.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"

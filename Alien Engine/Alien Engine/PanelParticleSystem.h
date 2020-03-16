@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Panel.h"
+#include "MathGeoLib/include/Math/float2.h"
 
 class ParticleSystem;
 

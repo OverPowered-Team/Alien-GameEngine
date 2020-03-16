@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 #include "Application.h"
 #include "ComponentCamera.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleResources.h"
 #include "Camera.h"
 #include "ResourceShader.h"
 #include "GameObject.h"

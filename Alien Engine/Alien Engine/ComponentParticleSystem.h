@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Component.h"
+#include "Color.h"
 class JSONArraypack;
 class ParticleSystem;
+class ResourceTexture;
 
 class __declspec(dllexport) ComponentParticleSystem : public Component {
 	friend class ReturnZ;
