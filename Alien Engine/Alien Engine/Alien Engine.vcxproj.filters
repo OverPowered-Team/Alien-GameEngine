@@ -103,6 +103,12 @@
     <Filter Include="Tools\Stb">
       <UniqueIdentifier>{f47e6cdd-1441-4790-9eda-58f25045718e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Physiscs\Constraints">
+      <UniqueIdentifier>{70f05f8c-bd98-4422-a1e5-e125d4dbfcb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physiscs\Controllers">
+      <UniqueIdentifier>{1867fcbc-9bd2-48f6-bd5b-2dc3dba4f928}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -603,8 +609,15 @@
     <ClInclude Include="stb_image.h">
       <Filter>Tools\Stb</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentCharacterController.h" />
-    <ClInclude Include="ComponentPointConstraint.h" />
+    <ClInclude Include="ComponentPointConstraint.h">
+      <Filter>Components\Physiscs\Constraints</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCharacterController.h">
+      <Filter>Components\Physiscs\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRigidBody.h">
+      <Filter>Components\Physiscs\Controllers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2521,9 +2534,6 @@
     <ClInclude Include="ComponentSphereCollider.h">
       <Filter>Components\Physiscs\Colliders</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentRigidBody.h">
-      <Filter>Components\Physiscs</Filter>
-    </ClInclude>
     <ClInclude Include="ModulePhysics.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -2560,8 +2570,15 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentCharacterController.cpp" />
-    <ClCompile Include="ComponentPointConstraint.cpp" />
+    <ClCompile Include="ComponentPointConstraint.cpp">
+      <Filter>Components\Physiscs\Constraints</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCharacterController.cpp">
+      <Filter>Components\Physiscs\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentRigidBody.cpp">
+      <Filter>Components\Physiscs\Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -3601,9 +3618,6 @@
     </ClCompile>
     <ClCompile Include="ComponentSphereCollider.cpp">
       <Filter>Components\Physiscs\Colliders</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentRigidBody.cpp">
-      <Filter>Components\Physiscs</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Modules</Filter>

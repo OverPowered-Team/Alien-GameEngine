@@ -27,6 +27,8 @@ public:
 	ComponentCharacterController(GameObject* go);
 	virtual ~ComponentCharacterController();
 
+	void SetWalkDirection(float3 direction);
+
 protected:
 
 	void Update();
@@ -44,4 +46,6 @@ protected:
 	btKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
 	btCapsuleShape* shape = nullptr;
+
+	bool test = false;
 };
