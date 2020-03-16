@@ -59,6 +59,16 @@ void ResourceMaterial::FreeMemory()
 	}
 }
 
+void ResourceMaterial::OnSelected()
+{
+	LoadMemory();
+}
+
+void ResourceMaterial::OnDeselected()
+{
+	FreeMemory();
+}
+
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
 	if (force_id == 0) {
@@ -235,12 +245,11 @@ void ResourceMaterial::ApplyMaterial()
 {
 
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
-			used_shader->SetUniform1i("tex", 0);
-		}
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+		used_shader->SetUniform1i("tex", 0);
+	}
 
 	/*if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
 	{

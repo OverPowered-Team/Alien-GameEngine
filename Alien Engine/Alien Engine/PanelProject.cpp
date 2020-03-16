@@ -178,6 +178,10 @@ void PanelProject::SeeFiles()
 
 			// go back a folder
 			if (ImGui::IsItemClicked()) {
+
+				App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_DESELECTED);
+				selected_resource = nullptr; 
+
 				current_active_file = &go_back_folder;
 				current_active_folder = current_active_folder->parent;
 				ImGui::EndChild();
@@ -258,7 +262,16 @@ void PanelProject::SeeFiles()
 				if (ImGui::IsMouseReleased(0) || ImGui::IsMouseClicked(1))
 				{
 					App->objects->DeselectObjects();
+
+					App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_DESELECTED);
+
+					// Cast Events of selected file
 					App->CastEvent(EventType::ON_ASSET_SELECT);
+					std::string path = App->file_system->GetPathWithoutExtension(current_active_file->path + current_active_file->name) + "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					selected_resource = App->resources->GetResourceWithID(ID);
+
+					App->SendAlienEvent(selected_resource, AlienEventType::RESOURCE_SELECTED);
 				}
 			}
 			// right click in file/folder

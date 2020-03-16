@@ -442,6 +442,7 @@ void Application::SendAlienEvent(void* object, AlienEventType type)
 	alien_event.type = type;
 
 	App->objects->HandleAlienEvent(alien_event);
+	App->resources->HandleAlienEvent(alien_event);
 }
 
 
