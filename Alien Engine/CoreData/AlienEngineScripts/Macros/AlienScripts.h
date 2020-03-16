@@ -15,6 +15,7 @@
 #include "..\..\..\Alien Engine\ParticleSystem.h"
 #include "..\..\..\Alien Engine\ParticleEmitter.h"
 #include "..\..\..\Alien Engine\ComponentRigidBody.h"
+#include "..\..\..\Alien Engine\ComponentCharacterController.h"
 #include "..\..\..\Alien Engine\ComponentCollider.h"
 #include "..\..\..\Alien Engine\ComponentBoxCollider.h"
 #include "..\..\..\Alien Engine\ComponentCapsuleCollider.h"
