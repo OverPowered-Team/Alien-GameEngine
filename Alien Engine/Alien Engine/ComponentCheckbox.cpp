@@ -7,6 +7,7 @@
 #include "imgui/imgui.h"
 #include "ComponentUI.h"
 #include "ReturnZ.h"
+#include "ModuleWindow.h"
 #include "PanelGame.h"
 #include "ResourceTexture.h"
 #include "ComponentScript.h"

@@ -1,0 +1,140 @@
+{
+    "ParticleSystem": {
+        "Name": "particleAnimation",
+        "Properties": [
+            {
+                "Type": 15,
+                "ID": "17305115656400971677",
+                "Billboard": 0,
+                "Start": {
+                    "Position": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Global": true,
+                    "Velocity": [
+                        -0,
+                        -0,
+                        0
+                    ],
+                    "Force": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Speed": 0,
+                    "Color": [
+                        0.97804880142211914,
+                        0.97803902626037598,
+                        0.97804683446884155,
+                        1
+                    ],
+                    "Size": 10,
+                    "LightColor": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "MaxLifeTime": 10,
+                    "AxisRotationStart": false,
+                    "Angle3D": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "ChangeOverLifeTime": false,
+                    "RotateOverLifeTime": false
+                },
+                "End": {
+                    "Color": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "Size": 1,
+                    "LightColor": [
+                        -1.5816464369601856e+38,
+                        -1.5816464369601856e+38,
+                        -1.5816464369601856e+38,
+                        -1.5816464369601856e+38
+                    ],
+                    "Force": [
+                        0,
+                        -10,
+                        0
+                    ],
+                    "AxisRotation": false,
+                    "AngularVelocity": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "AngularAcceleration": [
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "Emmitter": {
+                    "Shape": 0,
+                    "Zone": 0,
+                    "Radius": 5,
+                    "OutRadius": 10,
+                    "MaxLife": 10,
+                    "CurrentLife": 5.1380009651184082,
+                    "SpawnRate": 0,
+                    "Delay": 0,
+                    "Loop": true,
+                    "Position": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "RelativePosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        -0,
+                        0,
+                        -0
+                    ],
+                    "RelativeRotation": [
+                        -0,
+                        0,
+                        -0
+                    ],
+                    "Scale": [
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "Bursts": {
+                    "Size": 1
+                },
+                "Burst": {
+                    "TimeBurst-0": 0,
+                    "PartsInstanciate-0": 1
+                },
+                "Blending": {
+                    "Source": 6,
+                    "Destination": 7,
+                    "Equation": 0
+                },
+                "HasMaterial": true,
+                "MaterialID": "1635614383457936258"
+            }
+        ]
+    }
+}

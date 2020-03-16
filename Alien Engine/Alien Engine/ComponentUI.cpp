@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "ComponentCanvas.h"
 #include "ComponentTransform.h"
+#include "ModuleWindow.h"
 #include "ResourceTexture.h"
 #include "ResourceFont.h"
 #include "PanelGame.h"
