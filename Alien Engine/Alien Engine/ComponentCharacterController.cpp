@@ -25,6 +25,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
 	controller->setUp(btVector3(0.f, 1.f, 0.f));
+	controller->setGravity(btVector3(0.f, -10.f, 0.f));
 	App->physics->world->addCollisionObject(body, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::CharacterFilter | btBroadphaseProxy::DefaultFilter);
 	App->physics->AddAction(controller);
 }
@@ -64,39 +65,34 @@ void ComponentCharacterController::Update()
 {
 	if (Time::IsPlaying()) 
 	{
-
-
-		controller->setGravity(btVector3(0.f, -10.f, 0.f));
-		float3 movement = float3::zero();
+		//
+		//float3 movement = float3::zero();
 	
-		if (!test)
-		{
-			if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-				movement.x -= 1;
-			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-				movement.x += 1;
-			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-				movement.z += 1;
-			if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-				movement.z -= 1;
-		}
-		else
-		{
-			if (App->input->GetKey(SDL_SCANCODE_H) == KEY_STATE::KEY_REPEAT)
-				movement.x -= 1;
-			if (App->input->GetKey(SDL_SCANCODE_K) == KEY_STATE::KEY_REPEAT)
-				movement.x += 1;
-			if (App->input->GetKey(SDL_SCANCODE_J) == KEY_STATE::KEY_REPEAT)
-				movement.z += 1;
-			if (App->input->GetKey(SDL_SCANCODE_U) == KEY_STATE::KEY_REPEAT)
-				movement.z -= 1;
-		}
+		//if (!test)
+		//{
+		//	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+		//		movement.x -= 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+		//		movement.x += 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+		//		movement.z += 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+		//		movement.z -= 1;
+		//}
+		//else
+		//{
+		//	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_STATE::KEY_REPEAT)
+		//		movement.x -= 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_STATE::KEY_REPEAT)
+		//		movement.x += 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_STATE::KEY_REPEAT)
+		//		movement.z += 1;
+		//	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_STATE::KEY_REPEAT)
+		//		movement.z -= 1;
+		//}
 
-		float speed = (movement.Equals(float3::zero())) ? 0.f : 4.f ;
-		SetWalkDirection(movement.Normalized() * speed * Time::GetDT());
-
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_DOWN && controller->canJump())
-			controller->jump();
+		//float speed = (movement.Equals(float3::zero())) ? 0.f : 4.f ;
+		//SetWalkDirection(movement.Normalized() * speed * Time::GetDT());
 
 		btTransform bt_transform = body->getWorldTransform();
 		btQuaternion rotation = bt_transform.getRotation();
@@ -105,12 +101,27 @@ void ComponentCharacterController::Update()
 		body->activate(true);
 		transform->SetGlobalPosition(float3(position));
 		transform->SetGlobalRotation(math::Quat(rotation));
-
 	}
 	else
 	{
 		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation()));
 	}
+}
+
+void ComponentCharacterController::Jump(float3 direction)
+{
+	controller->jump(ToBtVector3(direction));
+}
+
+bool ComponentCharacterController::CanJump()
+{
+	return controller->canJump();
+}
+
+void ComponentCharacterController::SetRotation(const Quat rotation)
+{
+	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), rotation));
+	transform->SetGlobalRotation(math::Quat(rotation));
 }
 
 void ComponentCharacterController::DrawScene()

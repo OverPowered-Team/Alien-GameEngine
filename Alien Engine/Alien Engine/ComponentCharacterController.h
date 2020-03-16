@@ -27,6 +27,9 @@ public:
 	ComponentCharacterController(GameObject* go);
 	virtual ~ComponentCharacterController();
 
+	void Jump(float3 direction= float3::zero());
+	bool CanJump();
+	void SetRotation(const Quat rotation);
 	void SetWalkDirection(float3 direction);
 
 protected:
