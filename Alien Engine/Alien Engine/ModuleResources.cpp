@@ -19,6 +19,7 @@
 #include "ComponentCamera.h"
 #include "FileNode.h"
 #include "ResourceScript.h"
+#include "Event.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 #include "ModuleUI.h"
@@ -1122,6 +1123,30 @@ void ModuleResources::CreateAnimatorController()
 	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
 	new_controller->name = asset_name;
 	new_controller->SaveAsset();
+}
+
+void ModuleResources::HandleAlienEvent(const AlienEvent& alienEvent)
+{
+
+	switch (alienEvent.type)
+	{
+	case AlienEventType::RESOURCE_SELECTED:
+		{
+			Resource* resource = static_cast<Resource*>(alienEvent.object);
+			if (resource != nullptr)
+				resource->OnSelected();
+		} break;
+
+	case AlienEventType::RESOURCE_DESELECTED:
+		{
+			Resource* resource = static_cast<Resource*>(alienEvent.object);
+			if (resource != nullptr)
+				resource->OnDeselected();
+		} break;
+
+	default:
+		break;
+	}
 }
 
 ResourceMaterial* ModuleResources::CreateMaterial(const char* name)

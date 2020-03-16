@@ -99,6 +99,7 @@ public:
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
 	ResourceMaterial* CreateMaterial(const char* name);
 
+	void HandleAlienEvent(const AlienEvent& alienEvent);
 
 private:
 	FileNode* GetFileNodeByPath(const std::string& path, FileNode* node);
@@ -118,6 +119,7 @@ private:
 	void GetAllScriptsPath(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder, std::vector<std::string>* scripts);
 
 	void CreateAnimatorController();
+
 
 public:
 

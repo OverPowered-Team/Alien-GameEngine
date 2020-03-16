@@ -66,6 +66,9 @@ public:
 	bool LoadMemory() override;
 	void FreeMemory() override; 
 
+	void OnSelected() override; 
+	void OnDeselected() override;
+
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
 	bool ReadBaseInfo(const char* assets_file_path);

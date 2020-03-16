@@ -240,18 +240,16 @@ void PanelInspector::PanelLogic()
 			}
 		}
 	}
-	else if (App->ui->panel_project->GetSelectedFile())
+	else if (App->ui->panel_project->selected_resource != nullptr)
 	{
-		FileNode* selected_file = App->ui->panel_project->GetSelectedFile();
-		if (selected_file->type == FileDropType::MODEL3D)
+		Resource* selected_file = App->ui->panel_project->selected_resource;
+		if (selected_file->GetType() == ResourceType::RESOURCE_MODEL)
 		{
-			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
-			ShowModelImportSettings(r_model);
+			ShowModelImportSettings((ResourceModel*)selected_file);
 		}
-		else if (selected_file->type == FileDropType::MATERIAL)
+		else if (selected_file->GetType() == ResourceType::RESOURCE_MATERIAL)
 		{
-			ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
-			mat->DisplayMaterialOnInspector();
+			static_cast<ResourceMaterial*>(selected_file)->DisplayMaterialOnInspector();
 		}
 	}
 
