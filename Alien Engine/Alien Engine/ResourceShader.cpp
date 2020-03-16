@@ -257,7 +257,9 @@ void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 
 void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 {
-	glUniform1ui(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if(location != -1)
+		glUniform1ui(GetUniformLocation(name), value);
 }
 
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
@@ -272,12 +274,15 @@ void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const 
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform3i(GetUniformLocation(name), v0, v1, v2);
-
 }
+
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
 {
-	glUniform3f(GetUniformLocation(name), vec.x, vec.y, vec.z);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform3f(location, vec.x, vec.y, vec.z);
 }
+
 void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* vec, uint count)
 {
 	int location = GetUniformLocation(name);
@@ -287,12 +292,16 @@ void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* ve
 
 void ResourceShader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
-	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform4f(location, v0, v1, v2, v3);
 }
 
 void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 {
-	glUniform4f(GetUniformLocation(name), vec.x, vec.y, vec.z, vec.w);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
 }
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
