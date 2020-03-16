@@ -1,4 +1,16 @@
 #include "Application.h"
+#include "ModuleWindow.h"
+#include "ModuleInput.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
+#include "ModuleUI.h"
+#include "AnimTween.h"
+#include "ModulePhysics.h"
+#include "ModuleObjects.h"
+#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
+#include "ModuleAudio.h"
+#include "ShortCutManager.h"
 #include "Parson/parson.h"
 #include "Time.h"
 #include "Skybox.h"
@@ -442,6 +454,7 @@ void Application::SendAlienEvent(void* object, AlienEventType type)
 	alien_event.type = type;
 
 	App->objects->HandleAlienEvent(alien_event);
+	App->resources->HandleAlienEvent(alien_event);
 }
 
 

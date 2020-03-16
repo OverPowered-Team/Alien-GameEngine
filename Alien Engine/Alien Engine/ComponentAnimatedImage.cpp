@@ -2,6 +2,8 @@
 #include "ModuleUI.h"
 #include "PanelProject.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "ComponentAnimatedImage.h"
 #include "ResourceTexture.h"
 #include "PanelGame.h"
@@ -113,9 +115,13 @@ bool ComponentAnimatedImage::DrawInspector()
 			}
 		}
 		ImGui::Spacing();
-		ImGui::Checkbox("Loop", &loop);
+		ImGui::Text("Loop");
+		ImGui::SameLine(85);
+		ImGui::Checkbox("##Loop", &loop);
 		ImGui::Spacing();
-		ImGui::DragFloat("Speed", &speed, 0.5F, 0.1f, 100.0f, "%.1f");
+		ImGui::Text("Speed");
+		ImGui::SameLine(85);
+		ImGui::DragFloat("##Speed", &speed, 0.5F, 0.1f, 100.0f, "%.1f");
 		ImGui::Spacing();
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);

@@ -5,6 +5,7 @@
 #include "AK/Win32/AkFilePackageLowLevelIOBlocking.h"
 #include "AK/MusicEngine/Common/AkMusicEngine.h"                // Music Engine
 #include "AK/Plugin/AkRoomVerbFXFactory.h"
+#include "ModuleAudio.h"
 
 // Wwise libs
 #ifndef _DEBUG  // Profile build configuration must be loaded instead of Debug

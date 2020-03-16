@@ -19,10 +19,15 @@
 #include "ComponentAnimatedImage.h"
 #include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
+#include "ModuleResources.h"
 #include "ComponentSphereCollider.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ModuleUI.h"
+#include "ModuleCamera3D.h"
+#include "ModuleFileSystem.h"
+#include "ModulePhysics.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
@@ -38,6 +43,7 @@
 #include "Viewport.h"
 #include "Alien.h"
 #include "Event.h"
+#include "PanelProject.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -452,6 +458,11 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
+
+	#ifndef GAME_VERSION
+		App->SendAlienEvent(App->ui->panel_project->selected_resource, AlienEventType::RESOURCE_DESELECTED);
+	#endif // !GAME_VERSION
+
 	App->CastEvent(EventType::ON_GO_SELECT);
 
 }

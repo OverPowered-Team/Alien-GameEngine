@@ -1,6 +1,7 @@
 #include "Gizmos.h"
 #include "Application.h"
 #include "ResourceMesh.h"
+#include "ModuleResources.h"
 
 std::vector<Gizmos::Gizmo> Gizmos::active_gizmos;
 bool Gizmos::controller = false;

@@ -1,4 +1,6 @@
 #include "PanelPhysics.h"
+#include "ShortCutManager.h"
+#include "ModulePhysics.h"
 #include "Optick/include/optick.h"
 
 PanelPhysics::PanelPhysics(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) :

@@ -96,7 +96,7 @@
     </Filter>
     <Filter Include="Modules\Tween">
       <UniqueIdentifier>{c078a6a1-17e7-4785-860e-959347ca3e29}</UniqueIdentifier>
-      </Filter>
+    </Filter>
     <Filter Include="Misc">
       <UniqueIdentifier>{ea1781ef-52f3-4b39-923c-9863d1844099}</UniqueIdentifier>
     </Filter>
@@ -596,13 +596,15 @@
     </ClInclude>
     <ClInclude Include="ModuleTween.h">
       <Filter>Modules\Tween</Filter>
-      </ClInclude>
+    </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Tools\Stb</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentCharacterController.h" />
+    <ClInclude Include="ComponentPointConstraint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -876,9 +878,6 @@
       <Filter>Components\Audio</Filter>
     </ClInclude>
     <ClInclude Include="ComponentAudioListener.h">
-      <Filter>Components\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentReverbZone.h">
       <Filter>Components\Audio</Filter>
     </ClInclude>
     <ClInclude Include="WwiseT.h">
@@ -2557,10 +2556,12 @@
     </ClCompile>
     <ClCompile Include="ModuleTween.cpp">
       <Filter>Modules\Tween</Filter>
-      </ClCompile>
+    </ClCompile>
     <ClCompile Include="Skybox.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentCharacterController.cpp" />
+    <ClCompile Include="ComponentPointConstraint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2936,9 +2937,6 @@
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="ComponentAudioEmitter.cpp">
-      <Filter>Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentReverbZone.cpp">
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="WwiseT.cpp">

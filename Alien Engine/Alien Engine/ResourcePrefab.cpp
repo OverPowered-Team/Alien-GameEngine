@@ -4,7 +4,13 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentTransform.h"
 #include "PanelHierarchy.h"
+#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
+#include "ModuleCamera3D.h"
+#include "Time.h"
 #include "ComponentDeformableMesh.h"
+
 #include "mmgr/mmgr.h"
 
 ResourcePrefab::ResourcePrefab() : Resource()

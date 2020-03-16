@@ -1,11 +1,15 @@
 #include "Application.h"
+
 #include "ModuleWindow.h"
 #include "ModuleResources.h"
 #include "ModuleInput.h"
+#include "ModuleUI.h"
+#include "ShortCutManager.h"
+#include "Time.h"
 
 #include "imgui/misc/cpp/imgui_stdlib.h"
 
-#include "ResourceAnimatorController.h"
+#include "Resource_.h"
 #include "ResourceAnimation.h"
 
 #include "PanelProject.h"

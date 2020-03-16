@@ -2,9 +2,8 @@
 #define _MODULE_PHYSICS_H__
 
 #include "Module.h"
-#include "Globals.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
-#include "MathGeoLib/include/Math/MathAll.h"
+#include "Bullet/include/LinearMath/btVector3.h"
 #include <list>
 
 // Recommended scale is 1.0f == 1 meter, no less than 0.2 objects

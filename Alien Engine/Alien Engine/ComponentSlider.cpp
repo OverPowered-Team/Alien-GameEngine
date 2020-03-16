@@ -12,7 +12,10 @@
 #include "PanelProject.h"
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "StaticInput.h"
+#include "ModuleRenderer3D.h"
 #include "mmgr/mmgr.h"
 
 ComponentSlider::ComponentSlider(GameObject* obj) : ComponentUI(obj)

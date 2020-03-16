@@ -11,6 +11,7 @@
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
 #include "ComponentAnimator.h"
+#include "ModuleResources.h"
 
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"
@@ -20,7 +21,6 @@
 
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
-#include "ComponentReverbZone.h"
 #include "ComponentParticleSystem.h"
 #include "ComponentSlider.h"
 #include "ComponentCanvas.h"
@@ -35,6 +35,8 @@
 #include "ReturnZ.h"
 #include "Alien.h"
 #include "ComponentScript.h"
+#include "ShortCutManager.h"
+#include "ModuleCamera3D.h"
 
 #include "mmgr/mmgr.h"
 
@@ -240,18 +242,16 @@ void PanelInspector::PanelLogic()
 			}
 		}
 	}
-	else if (App->ui->panel_project->GetSelectedFile())
+	else if (App->ui->panel_project->selected_resource != nullptr)
 	{
-		FileNode* selected_file = App->ui->panel_project->GetSelectedFile();
-		if (selected_file->type == FileDropType::MODEL3D)
+		Resource* selected_file = App->ui->panel_project->selected_resource;
+		if (selected_file->GetType() == ResourceType::RESOURCE_MODEL)
 		{
-			ResourceModel* r_model = (ResourceModel*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
-			ShowModelImportSettings(r_model);
+			ShowModelImportSettings((ResourceModel*)selected_file);
 		}
-		else if (selected_file->type == FileDropType::MATERIAL)
+		else if (selected_file->GetType() == ResourceType::RESOURCE_MATERIAL)
 		{
-			ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(App->resources->GetIDFromAlienPath(std::string(App->file_system->GetPathWithoutExtension(std::string(selected_file->path + selected_file->name)) + "_meta.alien").data()));
-			mat->DisplayMaterialOnInspector();
+			static_cast<ResourceMaterial*>(selected_file)->DisplayMaterialOnInspector();
 		}
 	}
 
@@ -494,8 +494,9 @@ void PanelInspector::ButtonAddComponent()
 			case ComponentType::A_REVERB: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_REVERB))
 				{
-					comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+					/*comp = new ComponentReverbZone(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);*/
+					LOG_ENGINE("Sorry Oriol, we had to remove that component but it will unbalance all ComponentType ID"); //TODO: remove ComponentReverb
 				}
 
 				else
