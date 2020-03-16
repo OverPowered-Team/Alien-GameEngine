@@ -11,6 +11,7 @@
 #include "ComponentParticleSystem.h"
 #include "GameObject.h"
 #include "ModuleCamera3D.h"
+#include "ModuleFileSystem.h"
 
 #include "ModuleResources.h"
 #include "ResourceMesh.h"

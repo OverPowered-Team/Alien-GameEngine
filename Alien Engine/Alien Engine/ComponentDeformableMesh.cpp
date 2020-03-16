@@ -2,6 +2,8 @@
 #include "Component.h"
 #include "ComponentDeformableMesh.h"
 #include "ComponentTransform.h"
+#include "ModuleObjects.h"
+#include "ModuleResources.h"
 #include "GameObject.h"
 #include "ComponentBone.h"
 #include "ComponentMaterial.h"

@@ -1,6 +1,7 @@
 #include "Component.h"
 #include "imgui/imgui.h"
 #include "Application.h"
+#include "ModuleResources.h"
 #include "SDL/include/SDL_assert.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"

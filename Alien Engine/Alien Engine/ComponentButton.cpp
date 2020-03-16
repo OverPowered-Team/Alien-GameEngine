@@ -8,6 +8,8 @@
 #include "ResourceTexture.h"
 #include "Application.h"
 #include "PanelProject.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "mmgr/mmgr.h"
 
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)

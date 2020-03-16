@@ -5,6 +5,8 @@
 #include "Time.h"
 #include "imgui/imgui.h"
 #include "MathGeoLib/include/Math/float3.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
 #include "ReturnZ.h"
 #include "imgui/imgui_internal.h"
 #include "PanelProject.h"

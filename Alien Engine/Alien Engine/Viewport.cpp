@@ -3,6 +3,7 @@
 #include "Viewport.h"
 #include "GameObject.h"
 #include "ComponentCamera.h"
+#include "ModuleObjects.h"
 
 #include "ModuleRenderer3D.h"
 #include "glew/include/glew.h"

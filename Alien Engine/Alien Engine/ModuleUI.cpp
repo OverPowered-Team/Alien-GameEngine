@@ -5,6 +5,7 @@
 #include "imgui/imgui_internal.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 #include <gl/GL.h>
+#include "ShortCutManager.h"
 #include "PanelAbout.h"
 #include "Viewport.h"
 #include "PanelConfig.h"
@@ -33,6 +34,10 @@
 #include "PanelTextEditor.h"
 #include "PanelParticleSystem.h"
 #include "ModuleObjects.h"
+#include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleResources.h"
+#include "ModuleCamera3D.h"
 #include "ComponentUI.h"
 #include <fstream>
 #include "mmgr/mmgr.h"

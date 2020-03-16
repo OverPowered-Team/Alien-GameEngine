@@ -2,6 +2,8 @@
 #include "ModuleUI.h"
 #include "PanelProject.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "ComponentAnimatedImage.h"
 #include "ResourceTexture.h"
 #include "PanelGame.h"

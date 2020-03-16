@@ -878,9 +878,6 @@
     <ClInclude Include="ComponentAudioListener.h">
       <Filter>Components\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentReverbZone.h">
-      <Filter>Components\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="WwiseT.h">
       <Filter>Tools\Wwise</Filter>
     </ClInclude>
@@ -2936,9 +2933,6 @@
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="ComponentAudioEmitter.cpp">
-      <Filter>Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentReverbZone.cpp">
       <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="WwiseT.cpp">

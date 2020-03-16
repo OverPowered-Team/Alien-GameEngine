@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "imgui/examples/imgui_impl_sdl.h"
 #include "ModuleFileSystem.h"
+#include "ModuleRenderer3D.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 

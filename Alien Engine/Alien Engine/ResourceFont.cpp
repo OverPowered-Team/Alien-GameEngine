@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ResourceFont.h"
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "FreeType/include/freetype/freetype.h"
 #include "glew/include/glew.h"

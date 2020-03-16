@@ -3,9 +3,13 @@
 #include "ComponentCamera.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "MathGeoLib/include/MathBuildConfig.h"
+#include "ModuleResources.h"
+#include "ModuleUI.h"
+#include "ModuleCamera3D.h"
 #include "ComponentTransform.h"
 #include "ModuleObjects.h"
 #include "Gizmos.h"
+#include "ModuleFileSystem.h"
 #include "Application.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>

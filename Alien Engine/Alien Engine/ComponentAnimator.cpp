@@ -8,6 +8,7 @@
 #include "NodeEditor/Include/imgui_node_editor.h"
 #include "ResourceAnimation.h"
 #include "ResourceAnimatorController.h"
+#include "Time.h"
 #include "ComponentAnimator.h"
 #include "mmgr/mmgr.h"
 

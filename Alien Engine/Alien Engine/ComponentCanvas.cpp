@@ -5,6 +5,7 @@
 #include "ResourceShader.h"
 #include "Application.h"
 #include "ModuleResources.h"
+#include "ModuleFileSystem.h"
 #include "glew/include/glew.h"
 #include "imgui/imgui.h"
 #include "ReturnZ.h"

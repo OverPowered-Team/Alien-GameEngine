@@ -7,6 +7,9 @@
 #include "ComponentMesh.h"
 #include "PanelScene.h"
 #include "ResourcePrefab.h"
+#include "ModuleCamera3D.h"
+#include "ModuleUI.h"
+#include "ModuleResources.h"
 #include "PanelProject.h"
 #include "mmgr/mmgr.h"
 

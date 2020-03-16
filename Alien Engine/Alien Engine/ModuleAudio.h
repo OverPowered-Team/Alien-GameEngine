@@ -5,6 +5,7 @@
 #include "WwiseT.h"
 
 #include <list>
+#include <map>
 
 class ComponentAudioEmitter;
 

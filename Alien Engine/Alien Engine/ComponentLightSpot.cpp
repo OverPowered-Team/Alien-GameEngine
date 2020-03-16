@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "imgui/imgui.h"
 #include "ComponentTransform.h"
+#include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "Application.h"
 #include "ReturnZ.h"
 #include "ComponentMesh.h"
