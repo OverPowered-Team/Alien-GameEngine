@@ -55,20 +55,20 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 	mesh_camera->mesh = App->resources->camera_mesh;
 #endif
 
-	// Create skybox
-	std::vector<std::string> skybox_faces = {
-		TEXTURES_FOLDER"Skybox/negz.jpg",
-		TEXTURES_FOLDER"Skybox/posz.jpg",
-		TEXTURES_FOLDER"Skybox/posy.jpg",
-		TEXTURES_FOLDER"Skybox/negy.jpg",
-		TEXTURES_FOLDER"Skybox/posx.jpg",
-		TEXTURES_FOLDER"Skybox/negx.jpg"
-	};
+	/* Create skybox */
+	cubemap = new Cubemap();
+	// This is the default skybox
+	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/negz.jpg");
+	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/posz.jpg");
+	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/posy.jpg");
+	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/negy.jpg");
+	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/posx.jpg");
+	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/negx.jpg");
 
 	skybox = new Skybox();
-	skybox_texture_id = skybox->LoadCubeMap(skybox_faces);
+	auto faces = cubemap->ToVector();
+	skybox_texture_id = skybox->LoadCubeMap(faces);
 	skybox->SetBuffers();
-	skybox_faces.clear();
 
 	skybox_shader = App->resources->skybox_shader;
 	if (skybox_shader != nullptr)
@@ -115,6 +115,7 @@ ComponentCamera::~ComponentCamera()
 #endif
 
 	RELEASE(skybox);
+	RELEASE(cubemap);
 }
 
 bool ComponentCamera::DrawInspector()
