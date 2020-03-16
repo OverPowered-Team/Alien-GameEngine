@@ -429,6 +429,14 @@ void ComponentCamera::Reset()
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;
 
+	// This is the default skybox/cubemap
+	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/negz.jpg");
+	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/posz.jpg");
+	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/posy.jpg");
+	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/negy.jpg");
+	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/posx.jpg");
+	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/negx.jpg");
+
 	vertical_fov = 60.0f;
 	frustum.verticalFov = Maths::Deg2Rad() * vertical_fov;
 	AspectRatio(16, 9);
@@ -662,6 +670,7 @@ void ComponentCamera::Clone(Component* clone)
 	camera->vertical_fov = vertical_fov;
 	camera->ViewMatrix = ViewMatrix;
 	camera->ViewMatrixInverse = ViewMatrixInverse;
+	camera->cubemap = cubemap;
 }
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
@@ -679,7 +688,12 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("IsSelectedCamera", (game_object_attached->IsSelected()) ? true : false);
 	to_save->SetBoolean("PrintIcon", print_icon);
 	to_save->SetColor("IconColor", camera_icon_color);
-
+	to_save->SetString("Skybox_NegativeZ", cubemap->neg_z);
+	to_save->SetString("Skybox_PositiveZ", cubemap->pos_z);
+	to_save->SetString("Skybox_PositiveY", cubemap->pos_y);
+	to_save->SetString("Skybox_NegativeY", cubemap->neg_y);
+	to_save->SetString("Skybox_PositiveX", cubemap->pos_x);
+	to_save->SetString("Skybox_NegativeX", cubemap->neg_x);
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
@@ -700,6 +714,16 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("IsSelectedCamera")) {
 		App->renderer3D->selected_game_camera = this;
 	}
+
+	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
+	cubemap->pos_z.assign(to_load->GetString("Skybox_PositiveZ"));
+	cubemap->pos_y.assign(to_load->GetString("Skybox_PositiveY"));
+	cubemap->neg_y.assign(to_load->GetString("Skybox_NegativeY"));
+	cubemap->pos_x.assign(to_load->GetString("Skybox_PositiveX"));
+	cubemap->neg_x.assign(to_load->GetString("Skybox_NegativeX"));
+
+	auto faces = cubemap->ToVector();
+	skybox_texture_id = skybox->LoadCubeMap(faces);
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;
