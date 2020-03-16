@@ -355,10 +355,16 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
-
-		std::string cposition = std::string(cname).append(".position");
-		SetUniformFloat3(cposition, (*iter)->position);
 		
+		std::string cconstant = std::string(cname).append(".constant");
+		SetUniform1f(cconstant, (*iter)->constant);
+
+		std::string clinear = std::string(cname).append(".linear");
+		SetUniform1f(clinear, (*iter)->linear);
+
+		std::string cquadratic = std::string(cname).append(".quadratic");
+		SetUniform1f(cquadratic, (*iter)->quadratic);
+
 		// Variables Array 
 		float3 variablesVec3[4] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular };
 
