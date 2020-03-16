@@ -40,8 +40,7 @@ public:
 	PlayerState state = PlayerState::IDLE;
 	PlayerData playerData;
 	ComponentAnimator* animator = nullptr;
-	ComponentRigidBody* rbody = nullptr;
-
+	ComponentCharacterController* ccontroller = nullptr;
 
 private:
 	float angle = 0.0f;

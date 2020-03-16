@@ -11,6 +11,7 @@ class ComponentRigidBody;
 class ComponentVehicle;
 class ComponentTransform;
 class btKinematicCharacterController;
+class btPairCachingGhostObject;
 class Alien;
 
 class __declspec(dllexport) ComponentCharacterController : public Component
