@@ -706,7 +706,6 @@
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentPointConstraint.h" />
-    <ClInclude Include="ComponentReverbZone.h" />
     <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentRigidBody.h" />
     <ClInclude Include="ComponentScript.h" />
@@ -1125,7 +1124,6 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentPointConstraint.cpp" />
-    <ClCompile Include="ComponentReverbZone.cpp" />
     <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentRigidBody.cpp" />
     <ClCompile Include="ComponentScript.cpp" />

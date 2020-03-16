@@ -6,6 +6,7 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 
+#include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentParticleSystem.h"
