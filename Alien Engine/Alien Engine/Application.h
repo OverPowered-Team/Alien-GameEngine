@@ -1,6 +1,8 @@
 #pragma once
 
 #include "imgui/imgui.h"
+#include <regex>
+#include "ModulePhysics.h"
 #include "j1PerfTimer.h"
 #include "Timer.h"
 
@@ -23,7 +25,6 @@ class ModuleObjects;
 class ModuleFileSystem;
 class ModuleResources;
 class ModuleAudio;
-class ModulePhysics;
 class AnimTween;
 
 class JSONfilepack;

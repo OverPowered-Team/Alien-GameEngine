@@ -11,6 +11,7 @@
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
 #include "ComponentAnimator.h"
+#include "ModuleResources.h"
 
 #include "ResourceAnimation.h"
 #include "ResourceModel.h"

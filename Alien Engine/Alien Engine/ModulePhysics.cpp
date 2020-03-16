@@ -12,7 +12,6 @@
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
-
 }
 
 ModulePhysics::~ModulePhysics()
