@@ -257,7 +257,9 @@ void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 
 void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 {
-	glUniform1ui(GetUniformLocation(name), value);
+	int location = GetUniformLocation(name);
+	if(location != -1)
+		glUniform1ui(GetUniformLocation(name), value);
 }
 
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
@@ -272,21 +274,34 @@ void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const 
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform3i(GetUniformLocation(name), v0, v1, v2);
-
 }
+
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
 {
-	glUniform3f(GetUniformLocation(name), vec.x, vec.y, vec.z);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform3f(location, vec.x, vec.y, vec.z);
+}
+
+void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* vec, uint count)
+{
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform3fv(location, count, vec[0].ptr());
 }
 
 void ResourceShader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
-	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform4f(location, v0, v1, v2, v3);
 }
 
 void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 {
-	glUniform4f(GetUniformLocation(name), vec.x, vec.y, vec.z, vec.w);
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
 }
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
@@ -298,7 +313,6 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count)
 {
-
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniformMatrix4fv(location, count, GL_TRUE, matrix[0].ptr());
@@ -313,25 +327,16 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	{
 		char cname[128];
 		sprintf_s(cname, tmp_name.c_str(), i);
-
+		
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
 
-		std::string cposition = std::string(cname).append(".position");
-		SetUniformFloat3(cposition, (*iter)->position);
+		// Variables Array 
+		float3 variablesVec3[5] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular, (*iter)->direction };
 
-		std::string cdambient = std::string(cname).append(".ambient");
-		SetUniformFloat3(cdambient, (*iter)->ambient);
-
-		std::string cdirection = std::string(cname).append(".direction");
-		SetUniformFloat3(cdirection, (*iter)->direction);
-
-		std::string cdiffuse = std::string(cname).append(".diffuse");
-		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
-
-		std::string cspecular = std::string(cname).append(".specular");
-		SetUniformFloat3(cspecular, (*iter)->specular);
+		std::string variablesLocation = std::string(cname).append(".dirLightProperties");
+		SetUniformFloat3v(variablesLocation, variablesVec3, 5);
 
 		++i;
 	}
@@ -350,22 +355,7 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
-
-		std::string cposition = std::string(cname).append(".position");
-		SetUniformFloat3(cposition, (*iter)->position);
-
-		/*std::string cdirection = std::string(cname).append(".direction");
-		SetUniformFloat3(cdirection, (*iter)->direction);*/
 		
-		std::string cdambient = std::string(cname).append(".ambient");
-		SetUniformFloat3(cdambient, (*iter)->ambient);
-
-		std::string cdiffuse = std::string(cname).append(".diffuse");
-		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
-
-		std::string cspecular = std::string(cname).append(".specular");
-		SetUniformFloat3(cspecular, (*iter)->specular);
-
 		std::string cconstant = std::string(cname).append(".constant");
 		SetUniform1f(cconstant, (*iter)->constant);
 
@@ -374,6 +364,12 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 		std::string cquadratic = std::string(cname).append(".quadratic");
 		SetUniform1f(cquadratic, (*iter)->quadratic);
+
+		// Variables Array 
+		float3 variablesVec3[4] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular };
+
+		std::string variablesLocation = std::string(cname).append(".pointLightProperties");
+		SetUniformFloat3v(variablesLocation, variablesVec3, 4);
 		
 		++i;
 	}
@@ -390,23 +386,9 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 		sprintf_s(cname, tmp_name.c_str(), i);
 
 		// All uniforms
+
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
-
-		std::string cposition = std::string(cname).append(".position");
-		SetUniformFloat3(cposition, (*iter)->position);
-
-		std::string cdirection = std::string(cname).append(".direction");
-		SetUniformFloat3(cdirection, (*iter)->direction);
-
-		std::string cdambient = std::string(cname).append(".ambient");
-		SetUniformFloat3(cdambient, (*iter)->ambient);
-
-		std::string cdiffuse = std::string(cname).append(".diffuse");
-		SetUniformFloat3(cdiffuse, (*iter)->diffuse);
-
-		std::string cspecular = std::string(cname).append(".specular");
-		SetUniformFloat3(cspecular, (*iter)->specular);
 
 		std::string cconstant = std::string(cname).append(".constant");
 		SetUniform1f(cconstant, (*iter)->constant);
@@ -422,6 +404,13 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 
 		std::string coutercutoff = std::string(cname).append(".outer_cut_off");
 		SetUniform1f(coutercutoff, cos(math::DegToRad((*iter)->outer_cut_off)));
+
+		// Variables Array 
+
+		float3 variablesVec3[5] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular, (*iter)->direction };
+
+		std::string cposition = std::string(cname).append(".spotLightProperties");
+		SetUniformFloat3v(cposition, variablesVec3, 5);
 
 		++i;
 	}
