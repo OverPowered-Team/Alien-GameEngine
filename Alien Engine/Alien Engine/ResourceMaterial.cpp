@@ -246,6 +246,9 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ApplyMaterial()
 {
+	// Bind the actual shader
+	used_shader->Bind();
+
 	// Bind textures
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 	{
@@ -254,6 +257,8 @@ void ResourceMaterial::ApplyMaterial()
 		used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
 	}
+	else
+		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
 
 	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{
@@ -262,9 +267,8 @@ void ResourceMaterial::ApplyMaterial()
 		used_shader->SetUniform1i("objectMaterial.specularMap", 1);
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
 	}
-
-	// Bind the actual shader
-	used_shader->Bind();
+	else	
+		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);

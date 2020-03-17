@@ -112,15 +112,10 @@ out vec4 FragColor;
 void main()
 {
     // ----------------------- Object Color ---------------------
-    vec4 objectColor = vec4(0);
-    vec4 textureColor = vec4(texture(objectMaterial.diffuseTexture, texCoords).rgb, 1.0);
-    if(textureColor != vec4(0,0,0,1))
+    vec4 objectColor = vec4(objectMaterial.diffuse_color, 1.0f);
+    if(objectMaterial.hasDiffuseTexture == true)
     {
-        objectColor = textureColor * vec4(objectMaterial.diffuse_color, 1.0f);
-    }
-    else 
-    {
-        objectColor = vec4(objectMaterial.diffuse_color,1.0f);
+        objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords).rgb, 1.0);
     }
 
     // ----------------------------------------------------------
