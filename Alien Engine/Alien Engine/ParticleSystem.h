@@ -9,7 +9,7 @@
 #include "ResourceShader.h"
 #include "ComponentParticleSystem.h"
 #include <map>
-
+#include <tuple>
 #include "Particle.h"
 
 #define MAX_PARTICLES 10000
@@ -111,8 +111,10 @@ public:
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
 	
-	void CalculateParticleUV(int rows, int columns);
+	void CalculateParticleUV(int rows, int columns, float speed);
+	void ResetParticleUV();
 	std::vector<uint> LoadTextureUV(int rows, int columns);
+	
 public: 
 
 	ParticleEmmitter emmitter;
@@ -154,5 +156,7 @@ public:
 	uint light_id = 0;
 
 	// UV Buffer ids
-	std::vector<uint> id_uvs;
+	
+	std::tuple<std::vector<uint>, float> animation_uvs;
+
 };

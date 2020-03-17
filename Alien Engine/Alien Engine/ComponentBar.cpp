@@ -8,6 +8,7 @@
 #include "ComponentBar.h"
 #include "ResourceTexture.h"
 #include "ModuleResources.h"
+#include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
 #include "ReturnZ.h"
 #include "imgui/imgui.h"

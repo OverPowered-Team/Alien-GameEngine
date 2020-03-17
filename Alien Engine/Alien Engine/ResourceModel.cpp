@@ -42,7 +42,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		ID = App->resources->GetRandomID();
 	else
 		ID = force_id;
-
+	meta_data_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
 	std::string* meta_mesh_paths = nullptr;
 	std::string* meta_animation_paths = nullptr;
 	std::string* meta_bones_paths = nullptr;
@@ -207,7 +207,7 @@ bool ResourceModel::CreateMetaData(const u64& force_id)
 		delete alien;
 
 		App->file_system->Copy(alien_path.data(), library_path.data());
-		meta_data_path = alien_path.data();
+		meta_data_path = library_path.data();
 
 		return true;
 	}
@@ -222,8 +222,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 	bool ret = true;
 
 	path = std::string(assets_file_path);
-	meta_data_path = App->file_system->GetPathWithoutExtension(assets_file_path) + "_meta.alien";
-
+	meta_data_path = App->file_system->GetPathWithoutExtension(path) + "_meta.alien";
 	JSON_Value* value = json_parse_file(meta_data_path.data());
 	JSON_Object* object = json_value_get_object(value);
 
@@ -302,6 +301,7 @@ bool ResourceModel::ReadBaseInfo(const char* assets_file_path)
 
 		// InitMeshes
 		std::string library_path = LIBRARY_MODELS_FOLDER + std::to_string(ID) + ".alienModel";
+		meta_data_path = library_path;
 		JSON_Value* mesh_value = json_parse_file(library_path.data());
 		JSON_Object* mesh_object = json_value_get_object(mesh_value);
 
@@ -481,6 +481,30 @@ bool ResourceModel::LoadMemory()
 	}
 
 	return ret;
+}
+
+void ResourceModel::FreeMemory()
+{
+	std::vector<ResourceMesh*>::iterator item = meshes_attached.begin();
+	for (; item != meshes_attached.end(); ++item) {
+		if (*item != nullptr) {
+			(*item)->FreeMemory();
+		}
+	}
+
+	std::vector<ResourceAnimation*>::iterator anim_item = animations_attached.begin();
+	for (; anim_item != animations_attached.end(); ++anim_item) {
+		if (*anim_item != nullptr) {
+			(*anim_item)->FreeMemory();
+		}
+	}
+
+	std::vector<ResourceBone*>::iterator bone_item = bones_attached.begin();
+	for (; bone_item != bones_attached.end(); ++bone_item) {
+		if (*bone_item != nullptr) {
+			(*bone_item)->FreeMemory();
+		}
+	}
 }
 
 bool ResourceModel::DeleteMetaData()

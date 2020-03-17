@@ -71,7 +71,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -130,30 +130,2290 @@
                             1,
                             1
                         ]
+                    }
+                ]
+            },
+            {
+                "Name": "Street environment_V01",
+                "FamilyNumber": 1,
+                "ID": "14284256730732161695",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3470790887816210288"
+                    }
+                ]
+            },
+            {
+                "Name": "Sky001",
+                "FamilyNumber": 2,
+                "ID": "14528468695079724178",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            18.153732299804688,
+                            0,
+                            58.960910797119141
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1096076179276701790"
+                    }
+                ]
+            },
+            {
+                "Name": "Dummy001",
+                "FamilyNumber": 2,
+                "ID": "17307511418011593688",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.70710676908493042,
+                            0,
+                            0,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11291020605828500991"
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_004",
+                "FamilyNumber": 3,
+                "ID": "15511765731379781009",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -41.47589111328125,
+                            21.01409912109375,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16018730521896605900"
                     },
                     {
-                        "Type": 26,
-                        "ID": "3358857741839937825",
-                        "ResourceID": "17463345760173356884",
-                        "DataName": "TestEvents",
-                        "HasInspector": true,
-                        "Inspector": [
-                            {
-                                "VarType": 10,
-                                "Name": "myEnumTest",
-                                "enumInt": 2
-                            },
-                            {
-                                "VarType": 10,
-                                "Name": "myEnumTest2",
-                                "enumInt": -33
-                            },
-                            {
-                                "VarType": 6,
-                                "Name": "myString",
-                                "string": "AAAAAAAAAAAAAAAAAa"
-                            }
-                        ]
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "9311124382602222423",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7275229234422890546",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "7146105468223563560",
+                        "HasMaterial": true,
+                        "MaterialID": "16948624122495281739",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_001",
+                "FamilyNumber": 3,
+                "ID": "7362221244963614483",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            17.707164764404297,
+                            20.053276062011719,
+                            2.1210729528320371e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8831442141753501576"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "18427081651522148349",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "3627652921194003247",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "3875701242313010199",
+                        "HasMaterial": true,
+                        "MaterialID": "9087622205271915478",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_007",
+                "FamilyNumber": 3,
+                "ID": "1086433368148629126",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            16.010492324829102,
+                            37.4932861328125,
+                            -1.5106878663573298e-06
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16769288674502646873"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "13207536641842461622",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "10855130480098949531",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "13668549858315553764",
+                        "HasMaterial": true,
+                        "MaterialID": "9623493893889704086",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_008",
+                "FamilyNumber": 3,
+                "ID": "17514410066207280151",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            40.979995727539063,
+                            18.270824432373047,
+                            -2.0522466002148576e-06
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13651227499088009586"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "7952060200496193688",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "11955169893373538633",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "7045955995309655302",
+                        "HasMaterial": true,
+                        "MaterialID": "10309623077363581526",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Line002",
+                "FamilyNumber": 3,
+                "ID": "7524295697838518227",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -2.1597719192504883,
+                            1.8538382053375244,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1269846964201782425"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "13537313647290028131",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "5665292059165465212",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "17432460362442760787",
+                        "HasMaterial": true,
+                        "MaterialID": "17491469558230341229",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Plane001",
+                "FamilyNumber": 3,
+                "ID": "1655064551282478766",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.02860260009765625,
+                            0.026032090187072754,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.99663525819778442,
+                            0.97061645984649658,
+                            0.99663525819778442
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13649580568757158278"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "15653810807128610807",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "8955366572091720927",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "9848758517506231327",
+                        "HasMaterial": true,
+                        "MaterialID": "17240666104655471186",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_010",
+                "FamilyNumber": 3,
+                "ID": "5416358292647573454",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            25.154010772705078,
+                            -39.153720855712891,
+                            8.5538641769744572e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4916597590328098399"
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0101",
+                "FamilyNumber": 4,
+                "ID": "4578324098362965865",
+                "ParentID": "5416358292647573454",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16129621732987107341"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "5356835018983647540",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "15450380464679250543",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "16493147333109982865",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0100",
+                "FamilyNumber": 4,
+                "ID": "16034578035181923674",
+                "ParentID": "5416358292647573454",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3295536098887342236"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "3633623342794688065",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "4269508554579574461",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "15950974087391575242",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_011",
+                "FamilyNumber": 3,
+                "ID": "18422672803358850123",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            30.134540557861328,
+                            37.4932861328125,
+                            -1.5106878663573298e-06
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12688750388537699741"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "1614553481068046381",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "10855130480098949531",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "18415221525866618573",
+                        "HasMaterial": true,
+                        "MaterialID": "9623493893889704086",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_013",
+                "FamilyNumber": 3,
+                "ID": "2447580520372589611",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.288055419921875,
+                            33.201576232910156,
+                            5.0146070407208754e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16746096031089606275"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "9501876440063631708",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "4624378243572489222",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "155935707149643490",
+                        "HasMaterial": true,
+                        "MaterialID": "2230062897124301857",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_014",
+                "FamilyNumber": 3,
+                "ID": "8665651333363621459",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -19.439706802368164,
+                            32.061729431152344,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            -4.3711388286737929e-08
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6210007624788192966"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "8217379125989206827",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "14865580159090437609",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "6501541493258777732",
+                        "HasMaterial": true,
+                        "MaterialID": "16948624122495281739",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_016",
+                "FamilyNumber": 3,
+                "ID": "3672213409121729831",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            34.270423889160156,
+                            -41.972747802734375,
+                            8.5538641769744572e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            -4.3711388286737929e-08
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1604070815065553139"
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0161",
+                "FamilyNumber": 4,
+                "ID": "3179081031919305662",
+                "ParentID": "3672213409121729831",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5729577289843902279"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "657123618812504598",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "15450380464679250543",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "7852706110461190173",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0160",
+                "FamilyNumber": 4,
+                "ID": "15527257229859412346",
+                "ParentID": "3672213409121729831",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10155540852706982268"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "10388250975131074744",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "4269508554579574461",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "9158184421149703377",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_024",
+                "FamilyNumber": 3,
+                "ID": "6322148559600367511",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -20.572771072387695,
+                            43.060829162597656,
+                            -0.069194458425045013
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            4.3711388286737929e-08
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3116151865285777526"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "9725984172966325096",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "11955169893373538633",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "12039699216010643541",
+                        "HasMaterial": true,
+                        "MaterialID": "10309623077363581526",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_017",
+                "FamilyNumber": 3,
+                "ID": "10867248765161549005",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            44.260082244873047,
+                            -39.153720855712891,
+                            8.5538641769744572e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16816336301228614803"
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0170",
+                "FamilyNumber": 4,
+                "ID": "5379818607367623062",
+                "ParentID": "10867248765161549005",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13786911338983357998"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "10204580242993226918",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "4269508554579574461",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "16432885520021905105",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_0171",
+                "FamilyNumber": 4,
+                "ID": "1287079278663408176",
+                "ParentID": "10867248765161549005",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15634614800479271222"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "15350889348043858157",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "15450380464679250543",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "2199366254614842370",
+                        "HasMaterial": true,
+                        "MaterialID": "7734643010093074432",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_022",
+                "FamilyNumber": 3,
+                "ID": "12881940969252307837",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -20.831323623657227,
+                            -27.426488876342773,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            1.9470718370939721e-07
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3022997269715986834"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "4034085465371613560",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "12256924138862749789",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "8716908602096025039",
+                        "HasMaterial": true,
+                        "MaterialID": "10784609443232725798",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_023",
+                "FamilyNumber": 3,
+                "ID": "1727310643774190175",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            42.130641937255859,
+                            37.4932861328125,
+                            -1.5106878663573298e-06
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1754507618135797633"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "3102912846338676768",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "10855130480098949531",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "1896088779817543321",
+                        "HasMaterial": true,
+                        "MaterialID": "9623493893889704086",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_031",
+                "FamilyNumber": 3,
+                "ID": "2735711171827715706",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -34.679481506347656,
+                            -41.835563659667969,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17382221358515583948"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "10931866496265915831",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "1729299589951986377",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_026",
+                "FamilyNumber": 3,
+                "ID": "16015153265410466673",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            31.51188850402832,
+                            -16.446016311645508,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            4.3711388286737929e-08
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9559028924408756981"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "16971925644344084304",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "18151985336584559281",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "18373496973481424684",
+                        "HasMaterial": true,
+                        "MaterialID": "10784609443232725798",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_028",
+                "FamilyNumber": 3,
+                "ID": "13588310120924162194",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            13.38798999786377,
+                            -33.755039215087891,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15601614596759130404"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "10107689723802714493",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "13824367078065956131",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Object010",
+                "FamilyNumber": 3,
+                "ID": "2059167256461387698",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -2.5033531188964844,
+                            15.800846099853516,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16047616232385380644"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "4773328558154749540",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "12827398970405912707",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "9057884779832746876",
+                        "HasMaterial": true,
+                        "MaterialID": "17852301630283963851",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_030",
+                "FamilyNumber": 3,
+                "ID": "13457053997048585077",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.807239532470703,
+                            -41.835563659667969,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6661491403225550592"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "12552144169193844853",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "11610326659091190158",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_032",
+                "FamilyNumber": 3,
+                "ID": "12091994635422978669",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -29.478403091430664,
+                            21.01409912109375,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6022562313799149853"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "17812067990673485490",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7275229234422890546",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "8162326346792936776",
+                        "HasMaterial": true,
+                        "MaterialID": "16948624122495281739",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_033",
+                "FamilyNumber": 3,
+                "ID": "5188333185883930908",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -32.361495971679688,
+                            42.37042236328125,
+                            5.0146070407208754e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7491422820531224668"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "3554151330348034861",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "2431240113363357116",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "4867020283963493190",
+                        "HasMaterial": true,
+                        "MaterialID": "2230062897124301857",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_034",
+                "FamilyNumber": 3,
+                "ID": "5677057960562676277",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            16.049516677856445,
+                            -16.696884155273438,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.7071068286895752,
+                            0.70710670948028564
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "166719369433289994"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "4134774666889326071",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "16648679896583584779",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "13260340892013138285",
+                        "HasMaterial": true,
+                        "MaterialID": "10784609443232725798",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_035",
+                "FamilyNumber": 3,
+                "ID": "15754800958216416383",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            13.38798999786377,
+                            -40.802516937255859,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17888695869143530572"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "8828999968384657289",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "7145001304168456708",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_037",
+                "FamilyNumber": 3,
+                "ID": "4551440810335920655",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -20.317693710327148,
+                            -16.163608551025391,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            1,
+                            1.9470718370939721e-07
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13901656112718250430"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "18397773546833513627",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "2534995394919028709",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "957929140213533574",
+                        "HasMaterial": true,
+                        "MaterialID": "10784609443232725798",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_038",
+                "FamilyNumber": 3,
+                "ID": "2927599186206528633",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -41.649002075195313,
+                            -16.495393753051758,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.7071068286895752,
+                            0.70710670948028564
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2791228473939127231"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "2874911696316912234",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "5955901747586236701",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "17004523724873535496",
+                        "HasMaterial": true,
+                        "MaterialID": "10784609443232725798",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_039",
+                "FamilyNumber": 3,
+                "ID": "5124138933404268952",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -42.807239532470703,
+                            -30.643888473510742,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16596122763492945772"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "765758672100549431",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "15220786103520974895",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_040",
+                "FamilyNumber": 3,
+                "ID": "4335314872411029841",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -34.679481506347656,
+                            -30.643888473510742,
+                            -9.3834518111179932e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14975246758205301081"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "13252359647514832254",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "7283818715193720851",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "14820941564802645609",
+                        "HasMaterial": true,
+                        "MaterialID": "7843810619403361361",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_036",
+                "FamilyNumber": 3,
+                "ID": "16377325133441741408",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -31.216331481933594,
+                            33.201576232910156,
+                            5.0146070407208754e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            -0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9159919042021749122"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "15899221901395294616",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "4624378243572489222",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "9521244720568911789",
+                        "HasMaterial": true,
+                        "MaterialID": "2230062897124301857",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "City_building_041",
+                "FamilyNumber": 3,
+                "ID": "7519924501138886705",
+                "ParentID": "17307511418011593688",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            30.695278167724609,
+                            21.612646102905273,
+                            2.1210729528320371e-07
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0.70710676908493042,
+                            0.70710676908493042
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16807546432713803170"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "17231899582807262140",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "3627652921194003247",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "3855777489156075261",
+                        "HasMaterial": true,
+                        "MaterialID": "9087622205271915478",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Spot001",
+                "FamilyNumber": 2,
+                "ID": "15722048598416826478",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -66.721267700195313,
+                            141.93412780761719,
+                            6.2041376622801181e-06
+                        ],
+                        "Rotation": [
+                            0.15443938970565796,
+                            -0.69003510475158691,
+                            0.15443938970565796,
+                            0.69003516435623169
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "757145723757852491"
+                    }
+                ]
+            },
+            {
+                "Name": "Camera001.Target",
+                "FamilyNumber": 2,
+                "ID": "13158427893587380200",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -28.132621765136719,
+                            20.873329162597656,
+                            -35.064212799072266
+                        ],
+                        "Rotation": [
+                            0.049339786171913147,
+                            0.93228733539581299,
+                            0.13933119177818298,
+                            -0.33014044165611267
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999994039535522,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6516270156055478081"
+                    }
+                ]
+            },
+            {
+                "Name": "Spot001.Target",
+                "FamilyNumber": 2,
+                "ID": "45841121402859487",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            28.890945434570313,
+                            -60.963882446289063,
+                            -2.6648158382158726e-06
+                        ],
+                        "Rotation": [
+                            5.9604644775390625e-08,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6515351460306184832"
+                    }
+                ]
+            },
+            {
+                "Name": "Camera001",
+                "FamilyNumber": 2,
+                "ID": "16336522131098842067",
+                "ParentID": "14284256730732161695",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -78.312431335449219,
+                            45.251216888427734,
+                            -97.031112670898438
+                        ],
+                        "Rotation": [
+                            0.04933977872133255,
+                            0.93228739500045776,
+                            0.13933119177818298,
+                            -0.33014035224914551
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999994039535522,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13803952544699282343"
                     }
                 ]
             }
