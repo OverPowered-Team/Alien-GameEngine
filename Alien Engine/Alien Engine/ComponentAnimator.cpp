@@ -66,9 +66,7 @@ void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 
 	if (animator_controller->GetTransform(go_to_update->GetName(), position, rotation, scale))
 	{
-		go_to_update->transform->SetLocalPosition(position);
-		go_to_update->transform->SetLocalRotation(rotation);
-		go_to_update->transform->SetLocalScale(scale);
+		go_to_update->transform->SetLocalTransform(position, rotation, scale);
 	}
 
 	for (int i = 0; i < go_to_update->GetChildren().size(); i++)

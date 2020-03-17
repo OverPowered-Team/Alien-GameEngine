@@ -42,7 +42,7 @@
                         "Type": "float",
                         "CompText": "Greater",
                         "ParameterIndex": 0,
-                        "CompValue": 0.20000000298023224
+                        "CompValue": 0.0099999997764825821
                     }
                 ],
                 "BoolConditions": []
@@ -58,7 +58,7 @@
                         "Type": "float",
                         "CompText": "Lesser",
                         "ParameterIndex": 0,
-                        "CompValue": 0.20000000298023224
+                        "CompValue": 0.0099999997764825821
                     }
                 ],
                 "BoolConditions": []
