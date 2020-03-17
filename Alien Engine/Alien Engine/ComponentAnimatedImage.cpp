@@ -207,6 +207,7 @@ void ComponentAnimatedImage::Draw(bool isGame)
 		ResourceTexture* tex = GetCurrentFrame(Time::GetDT());
 		if (tex != nullptr)
 		{
+			SetSize(tex->width, tex->height);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glBindTexture(GL_TEXTURE_2D, tex->id);
 		}
