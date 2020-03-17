@@ -150,9 +150,9 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -9.5046272277832031,
+                            -38.45611572265625,
                             0,
-                            -10.029176712036133
+                            -58.204368591308594
                         ],
                         "Rotation": [
                             0,
@@ -161,9 +161,9 @@
                             1
                         ],
                         "Scale": [
-                            19.366748809814453,
+                            97.322395324707031,
                             1,
-                            19.928167343139648
+                            115.14395141601563
                         ],
                         "ScaleNegative": false,
                         "ID": "451132560184286048"
@@ -205,120 +205,6 @@
                             1,
                             1
                         ]
-                    }
-                ]
-            },
-            {
-                "Name": "Player",
-                "FamilyNumber": 1,
-                "ID": "11688402473040239397",
-                "ParentID": "0",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": true,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            2.3336005210876465,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "13357985619376320894"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "3146728348907306908",
-                        "HasMesh": true,
-                        "IsPrimitive": true,
-                        "PrimType": 0,
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "8052149363968140629",
-                        "HasMaterial": true,
-                        "MaterialID": "11252057757227352159",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 29,
-                        "ID": "14369343559186433484",
-                        "ResourceID": "4631760735126527781",
-                        "DataName": "PlayerController",
-                        "HasInspector": true,
-                        "Inspector": [
-                            {
-                                "VarType": 0,
-                                "Name": "controllerIndex",
-                                "int": 1
-                            },
-                            {
-                                "VarType": 3,
-                                "Name": "movementSpeed",
-                                "float": 40.5
-                            },
-                            {
-                                "VarType": 3,
-                                "Name": "rotationSpeed",
-                                "float": 120
-                            },
-                            {
-                                "VarType": 3,
-                                "Name": "jumpSpeed",
-                                "float": 9.8000001907348633
-                            },
-                            {
-                                "VarType": 3,
-                                "Name": "fallSpeed",
-                                "float": 10
-                            },
-                            {
-                                "VarType": 3,
-                                "Name": "maxHeight",
-                                "float": 15
-                            },
-                            {
-                                "VarType": 10,
-                                "Name": "state",
-                                "enumInt": 0
-                            }
-                        ]
-                    },
-                    {
-                        "Type": 13,
-                        "MaxJumpHeight": 0,
-                        "JumpSpeed": 0,
-                        "FallSpeed": 0
-                    },
-                    {
-                        "Type": 14,
-                        "ID": "2106582132526291643",
-                        "ControllerID": "3878118131680474472",
-                        "Enabled": true
                     }
                 ]
             },
@@ -544,6 +430,1996 @@
                             1,
                             1
                         ]
+                    }
+                ]
+            },
+            {
+                "Name": "Great Sword Idle",
+                "FamilyNumber": 1,
+                "ID": "7459411503418466461",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            5.3808741569519043,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15935118354834510111"
+                    },
+                    {
+                        "Type": 14,
+                        "ID": "16117011104346941784",
+                        "ControllerID": "3878118131680474472",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "14585125575256923553",
+                        "ResourceID": "4631760735126527781",
+                        "DataName": "PlayerController",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 0,
+                                "Name": "controllerIndex",
+                                "int": 1
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "movementSpeed",
+                                "float": 20
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "rotationSpeed",
+                                "float": 120
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "jumpSpeed",
+                                "float": 9.8000001907348633
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "fallSpeed",
+                                "float": 10
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "maxHeight",
+                                "float": 15
+                            },
+                            {
+                                "VarType": 10,
+                                "Name": "state",
+                                "enumInt": 0
+                            }
+                        ]
+                    },
+                    {
+                        "Type": 13,
+                        "CharacterOffset": [
+                            0,
+                            2.2999999523162842,
+                            0
+                        ],
+                        "CharacterRadius": 1.25,
+                        "CharacterHeight": 3.2999999523162842,
+                        "MaxJumpHeight": 10,
+                        "JumpSpeed": 10,
+                        "FallSpeed": 55
+                    }
+                ]
+            },
+            {
+                "Name": "default",
+                "FamilyNumber": 2,
+                "ID": "9148958823047175065",
+                "ParentID": "7459411503418466461",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4319215108764261958"
+                    }
+                ]
+            },
+            {
+                "Name": "Medallion",
+                "FamilyNumber": 2,
+                "ID": "12299396385611399163",
+                "ParentID": "7459411503418466461",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "544548640482012106"
+                    },
+                    {
+                        "Type": 27,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "5072339850555101589",
+                        "MeshID": "5957890830724782832",
+                        "RootBoneID": "12757600580312568468",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "14368461636053540476",
+                        "HasMaterial": true,
+                        "MaterialID": "6816224213598128398",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Geralt",
+                "FamilyNumber": 2,
+                "ID": "9227378703429020405",
+                "ParentID": "7459411503418466461",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9663245685637192025"
+                    },
+                    {
+                        "Type": 27,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "5382277260559510263",
+                        "MeshID": "8032458109423123402",
+                        "RootBoneID": "12757600580312568468",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "15518372449642766406",
+                        "HasMaterial": true,
+                        "MaterialID": "6816224213598128398",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Hips",
+                "FamilyNumber": 2,
+                "ID": "12757600580312568468",
+                "ParentID": "7459411503418466461",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.0053980001248419285,
+                            16.167348861694336,
+                            -0.13364599645137787
+                        ],
+                        "Rotation": [
+                            0.00066359096672385931,
+                            0.98969143629074097,
+                            0.042868655174970627,
+                            0.13664814829826355
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            1.0000003576278687,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14672949608993606745"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "7156389819866386682",
+                        "BoneID": "9255280895518097530",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Spine",
+                "FamilyNumber": 3,
+                "ID": "10766883960953861530",
+                "ParentID": "12757600580312568468",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.1851599216461182,
+                            0.68079501390457153
+                        ],
+                        "Rotation": [
+                            -0.050525728613138199,
+                            0.036955047398805618,
+                            -0.0066654710099101067,
+                            0.99801653623580933
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            0.99999958276748657,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3368730015606368762"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "5201041799551230140",
+                        "BoneID": "3450750900604871024",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "16807368583076763807",
+                        "BoneID": "2450388462067365883",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Spine1",
+                "FamilyNumber": 4,
+                "ID": "17726381300313950033",
+                "ParentID": "10766883960953861530",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.6702151298522949,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.03219270333647728,
+                            0.012645892798900604,
+                            0.0034255690407007933,
+                            0.99939578771591187
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            1.0000002384185791,
+                            0.9999995231628418
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15924311858330129255"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "6240723916214714276",
+                        "BoneID": "2419521208013392032",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11630422197999169789",
+                        "BoneID": "4619199697063822392",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Spine2",
+                "FamilyNumber": 5,
+                "ID": "18005780799155931432",
+                "ParentID": "17726381300313950033",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            3.0516738891601563,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.032129604369401932,
+                            0.013273345306515694,
+                            0.0033100191503763199,
+                            0.9993901252746582
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            0.9999995231628418,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16863053893172778144"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "2412349328839910407",
+                        "BoneID": "15679564335789810464",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11634171413503195909",
+                        "BoneID": "2484864732985809231",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Neck",
+                "FamilyNumber": 6,
+                "ID": "11807145983956092546",
+                "ParentID": "18005780799155931432",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            3.4331331253051758,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.040372621268033981,
+                            0.0089933006092905998,
+                            -0.020289039239287376,
+                            0.99893826246261597
+                        ],
+                        "Scale": [
+                            1,
+                            1.0000001192092896,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2634135058617442309"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "10395294907294901024",
+                        "BoneID": "4807321100085752821",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_Head",
+                "FamilyNumber": 7,
+                "ID": "1045890560308539366",
+                "ParentID": "11807145983956092546",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.0217740535736084,
+                            -0.25555101037025452
+                        ],
+                        "Rotation": [
+                            0.1242477148771286,
+                            0.064208388328552246,
+                            0.036869432777166367,
+                            0.98948496580123901
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            0.99999964237213135,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5641455755516894298"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "6905096438317970349",
+                        "BoneID": "6266078065884178258",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_HeadTop_End",
+                "FamilyNumber": 8,
+                "ID": "2225121882159382260",
+                "ParentID": "1045890560308539366",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            22.189632415771484,
+                            -2.8047599792480469
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17908780900689631095"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightShoulder",
+                "FamilyNumber": 6,
+                "ID": "6665331154890446012",
+                "ParentID": "18005780799155931432",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.6205070018768311,
+                            2.8556709289550781,
+                            0.21481899917125702
+                        ],
+                        "Rotation": [
+                            0.2601618766784668,
+                            0.62914091348648071,
+                            -0.60876297950744629,
+                            0.40731468796730042
+                        ],
+                        "Scale": [
+                            0.9999995231628418,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17227968329025558027"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "12454105311358205226",
+                        "BoneID": "273567111891575029",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightArm",
+                "FamilyNumber": 7,
+                "ID": "9227043428855041774",
+                "ParentID": "6665331154890446012",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            5.3519492149353027,
+                            0
+                        ],
+                        "Rotation": [
+                            0.11743157356977463,
+                            0.71218270063400269,
+                            0.66562503576278687,
+                            -0.18960195779800415
+                        ],
+                        "Scale": [
+                            1,
+                            1.0000001192092896,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11833995083658381567"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "10775008760175100514",
+                        "BoneID": "10850591467038667957",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightForeArm",
+                "FamilyNumber": 8,
+                "ID": "7639026336783946364",
+                "ParentID": "9227043428855041774",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            6.6082019805908203,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.041898004710674286,
+                            -0.031919807195663452,
+                            0.48517689108848572,
+                            0.87282824516296387
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999970197677612,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18222699245074563603"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11150946315542384581",
+                        "BoneID": "9667593997527906116",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHand",
+                "FamilyNumber": 9,
+                "ID": "7665810248998268287",
+                "ParentID": "7639026336783946364",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            7.4611358642578125,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.1568339467048645,
+                            0.94174778461456299,
+                            0.021259952336549759,
+                            0.29675281047821045
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999982118606567,
+                            0.9999995231628418
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2594644221599526277"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "17707803900703867383",
+                        "BoneID": "14910325686237561592",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandIndex1",
+                "FamilyNumber": 10,
+                "ID": "15639556421938041953",
+                "ParentID": "7665810248998268287",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            1.0186580419540405,
+                            0
+                        ],
+                        "Rotation": [
+                            0.19950015842914581,
+                            -0.14958716928958893,
+                            -0.20386210083961487,
+                            0.94671201705932617
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            1.0000002384185791,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10439344185413775604"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "6567849566357223049",
+                        "BoneID": "12903720844946311144",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandIndex2",
+                "FamilyNumber": 11,
+                "ID": "435693347820725607",
+                "ParentID": "15639556421938041953",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.036520000547170639,
+                            1.3854550123214722,
+                            0
+                        ],
+                        "Rotation": [
+                            0.49020478129386902,
+                            0.0083846952766180038,
+                            -0.66457855701446533,
+                            0.56388324499130249
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            1.0000001192092896,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4808810190170156555"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11568131588200657869",
+                        "BoneID": "11318654262833767823",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandIndex3",
+                "FamilyNumber": 12,
+                "ID": "10576732914725676042",
+                "ParentID": "435693347820725607",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.0085009997710585594,
+                            1.6038579940795898,
+                            0
+                        ],
+                        "Rotation": [
+                            0.17963212728500366,
+                            -0.013429450802505016,
+                            -0.21303515136241913,
+                            0.96029579639434814
+                        ],
+                        "Scale": [
+                            0.9999995231628418,
+                            1.0000003576278687,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6261181940476759844"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "4532707101285846190",
+                        "BoneID": "15423061858238066695",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandIndex4",
+                "FamilyNumber": 13,
+                "ID": "3620576333918017525",
+                "ParentID": "10576732914725676042",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.028018999844789505,
+                            1.0134689807891846,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6844306189652082873"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandThumb1",
+                "FamilyNumber": 10,
+                "ID": "5133827982524798663",
+                "ParentID": "7665810248998268287",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.6878809928894043,
+                            0.651528000831604,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.093086965382099152,
+                            -0.087556414306163788,
+                            -0.27913665771484375,
+                            0.95170974731445313
+                        ],
+                        "Scale": [
+                            0.99999940395355225,
+                            0.99999994039535522,
+                            0.99999970197677612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2021157393283123348"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "9019350088009447505",
+                        "BoneID": "14311015550969566610",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandThumb2",
+                "FamilyNumber": 11,
+                "ID": "3652610720574440883",
+                "ParentID": "5133827982524798663",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.0032870001159608364,
+                            0.75795602798461914,
+                            0
+                        ],
+                        "Rotation": [
+                            0.31707587838172913,
+                            0.14516188204288483,
+                            0.16366271674633026,
+                            0.92282474040985107
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14494782333825200511"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "469006579542678605",
+                        "BoneID": "3605343332761872195",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandThumb3",
+                "FamilyNumber": 12,
+                "ID": "1144596044460077187",
+                "ParentID": "3652610720574440883",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.037466999143362045,
+                            0.96394997835159302,
+                            0
+                        ],
+                        "Rotation": [
+                            0.35470736026763916,
+                            -0.046533592045307159,
+                            0.31084743142127991,
+                            0.88056302070617676
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13943502921338595668"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "7227363760077980731",
+                        "BoneID": "5677881284011454380",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightHandThumb4",
+                "FamilyNumber": 13,
+                "ID": "9509474575086379276",
+                "ParentID": "1144596044460077187",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.034180000424385071,
+                            0.79808300733566284,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12536124063378521870"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftShoulder",
+                "FamilyNumber": 6,
+                "ID": "9881435140115824150",
+                "ParentID": "18005780799155931432",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -2.6205070018768311,
+                            2.8358440399169922,
+                            0.1511790007352829
+                        ],
+                        "Rotation": [
+                            0.35810041427612305,
+                            -0.56877964735031128,
+                            0.61264532804489136,
+                            0.41583576798439026
+                        ],
+                        "Scale": [
+                            0.99999982118606567,
+                            0.99999958276748657,
+                            0.99999946355819702
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10630629812164306221"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11390342199644147957",
+                        "BoneID": "14628392874909776636",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftArm",
+                "FamilyNumber": 7,
+                "ID": "13849597182951353106",
+                "ParentID": "9881435140115824150",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            5.3519492149353027,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.13269767165184021,
+                            0.73592078685760498,
+                            0.66078841686248779,
+                            0.064579270780086517
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1.0000002384185791,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "403909531546226410"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "9153212856257333754",
+                        "BoneID": "909764003550634128",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftForeArm",
+                "FamilyNumber": 8,
+                "ID": "14888067834298320272",
+                "ParentID": "13849597182951353106",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            6.6162447929382324,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.011713316664099693,
+                            0.026531221345067024,
+                            -0.3680635392665863,
+                            0.92934823036193848
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7240754378310205521"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "18375538752075862119",
+                        "BoneID": "5147257391252473672",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHand",
+                "FamilyNumber": 9,
+                "ID": "8148949565014075829",
+                "ParentID": "14888067834298320272",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            7.4842338562011719,
+                            0
+                        ],
+                        "Rotation": [
+                            0.14168700575828552,
+                            0.94671708345413208,
+                            -0.026725256815552711,
+                            -0.28798854351043701
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            0.99999994039535522,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7505096862799513883"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "7852890436546547627",
+                        "BoneID": "14308372824191496035",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandIndex1",
+                "FamilyNumber": 10,
+                "ID": "9130351257642740286",
+                "ParentID": "8148949565014075829",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            1.0521340370178223,
+                            0
+                        ],
+                        "Rotation": [
+                            0.3920215368270874,
+                            -0.098111815750598907,
+                            0.48242059350013733,
+                            0.77715098857879639
+                        ],
+                        "Scale": [
+                            1.0000005960464478,
+                            1.0000001192092896,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8681404072441466409"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "17429163631233286965",
+                        "BoneID": "10712689878974488434",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandIndex2",
+                "FamilyNumber": 11,
+                "ID": "16010091225469169714",
+                "ParentID": "9130351257642740286",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.050108000636100769,
+                            1.4608210325241089,
+                            0
+                        ],
+                        "Rotation": [
+                            0.24534377455711365,
+                            -0.020657837390899658,
+                            0.29465293884277344,
+                            0.92334145307540894
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            0.99999970197677612,
+                            0.99999970197677612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4417315639045247358"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "12002959388604057133",
+                        "BoneID": "13833722681911070918",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandIndex3",
+                "FamilyNumber": 12,
+                "ID": "10675100252846455223",
+                "ParentID": "16010091225469169714",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.010395999997854233,
+                            1.487576961517334,
+                            0
+                        ],
+                        "Rotation": [
+                            0.34352895617485046,
+                            -0.025578679516911507,
+                            0.52142953872680664,
+                            0.78066951036453247
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            0.99999964237213135,
+                            0.99999970197677612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5389425486854632514"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "16085368798432386919",
+                        "BoneID": "3820827232648369107",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandIndex4",
+                "FamilyNumber": 13,
+                "ID": "17386701945169494727",
+                "ParentID": "10675100252846455223",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.039712000638246536,
+                            1.052839994430542,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1425846802533174937"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandThumb1",
+                "FamilyNumber": 10,
+                "ID": "14226873872602141294",
+                "ParentID": "8148949565014075829",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.66618198156356812,
+                            0.59391802549362183,
+                            -9.9999999747524271e-07
+                        ],
+                        "Rotation": [
+                            -0.024297706782817841,
+                            -0.1026766300201416,
+                            0.34553733468055725,
+                            0.93245434761047363
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            0.99999988079071045,
+                            0.9999997615814209
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16750834292916626399"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "556460266426800110",
+                        "BoneID": "9897497147465921761",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandThumb2",
+                "FamilyNumber": 11,
+                "ID": "2672735462613596893",
+                "ParentID": "14226873872602141294",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.035371001809835434,
+                            0.71311402320861816,
+                            0
+                        ],
+                        "Rotation": [
+                            0.29153132438659668,
+                            0.10707437247037888,
+                            -0.13624756038188934,
+                            0.9407343864440918
+                        ],
+                        "Scale": [
+                            0.99999958276748657,
+                            1,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1576766944901800525"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1791706163358676841",
+                        "BoneID": "8631395114598837350",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandThumb3",
+                "FamilyNumber": 12,
+                "ID": "11092732793475897976",
+                "ParentID": "2672735462613596893",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.016326000913977623,
+                            0.94620001316070557,
+                            0
+                        ],
+                        "Rotation": [
+                            0.50797688961029053,
+                            0.42844924330711365,
+                            -0.019665880128741264,
+                            0.74699670076370239
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            0.9999992847442627,
+                            1.0000004768371582
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10924259004419055796"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3441244452110650012",
+                        "BoneID": "18050954093131628765",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftHandThumb4",
+                "FamilyNumber": 13,
+                "ID": "3786840745334587635",
+                "ParentID": "11092732793475897976",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.051695998758077621,
+                            0.83910799026489258,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7906552197928314563"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightUpLeg",
+                "FamilyNumber": 3,
+                "ID": "4252866937861024558",
+                "ParentID": "12757600580312568468",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.0920929908752441,
+                            -1.2107009887695313,
+                            0.15070599317550659
+                        ],
+                        "Rotation": [
+                            -0.11704778671264648,
+                            -0.17526867985725403,
+                            0.96728211641311646,
+                            -0.14123046398162842
+                        ],
+                        "Scale": [
+                            1.0000004768371582,
+                            1.0000002384185791,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1102211486348026971"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "9237478091082902950",
+                        "BoneID": "2991950336538446089",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightLeg",
+                "FamilyNumber": 4,
+                "ID": "12547156137823954755",
+                "ParentID": "4252866937861024558",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            7.9825739860534668,
+                            0
+                        ],
+                        "Rotation": [
+                            0.48058760166168213,
+                            0.16466209292411804,
+                            0.001742586144246161,
+                            0.86134713888168335
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            0.99999964237213135,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12051247218301608958"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "16850845055679649067",
+                        "BoneID": "3401862718360426469",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightFoot",
+                "FamilyNumber": 5,
+                "ID": "14464079362683966129",
+                "ParentID": "12547156137823954755",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            6.1479549407958984,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.013220397755503654,
+                            -0.66520768404006958,
+                            0.74475884437561035,
+                            0.05155862495303154
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            1.0000001192092896,
+                            0.99999970197677612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13095087454586520757"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "5312807373701137951",
+                        "BoneID": "14350214801415040367",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightToeBase",
+                "FamilyNumber": 6,
+                "ID": "1403164286618443275",
+                "ParentID": "14464079362683966129",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            4.4921779632568359,
+                            0
+                        ],
+                        "Rotation": [
+                            0.22215351462364197,
+                            0.18798175454139709,
+                            -0.03132195770740509,
+                            0.95620584487915039
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1.0000003576278687,
+                            0.9999997615814209
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17553476599357346895"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "12243881485401990375",
+                        "BoneID": "9081016670105075670",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_RightToe_End",
+                "FamilyNumber": 7,
+                "ID": "1080427840245869081",
+                "ParentID": "1403164286618443275",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.2247860431671143,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17865055162996135889"
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftUpLeg",
+                "FamilyNumber": 3,
+                "ID": "13309129802890774793",
+                "ParentID": "12757600580312568468",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -2.0920929908752441,
+                            -1.2107009887695313,
+                            0.12629500031471252
+                        ],
+                        "Rotation": [
+                            0.06831543892621994,
+                            -0.34222552180290222,
+                            0.93108135461807251,
+                            0.10631211847066879
+                        ],
+                        "Scale": [
+                            1.0000004768371582,
+                            1,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2604858609944383360"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "9398716023123001688",
+                        "BoneID": "8495300133159070960",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftLeg",
+                "FamilyNumber": 4,
+                "ID": "7273891295543584089",
+                "ParentID": "13309129802890774793",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            7.9682149887084961,
+                            0
+                        ],
+                        "Rotation": [
+                            0.46147042512893677,
+                            -0.16667835414409637,
+                            -0.029255345463752747,
+                            0.87086600065231323
+                        ],
+                        "Scale": [
+                            1,
+                            0.99999958276748657,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17403588536686902258"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "18321632003261525071",
+                        "BoneID": "11781186498390807496",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftFoot",
+                "FamilyNumber": 5,
+                "ID": "18190461761795537947",
+                "ParentID": "7273891295543584089",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            6.0472960472106934,
+                            0
+                        ],
+                        "Rotation": [
+                            0.05695849284529686,
+                            0.77314627170562744,
+                            -0.63165593147277832,
+                            -0.0033725784160196781
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            0.99999994039535522,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "140895430503177753"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1577090774478329575",
+                        "BoneID": "17150962050925320028",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftToeBase",
+                "FamilyNumber": 6,
+                "ID": "4963223099079480345",
+                "ParentID": "18190461761795537947",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            4.2837448120117188,
+                            0
+                        ],
+                        "Rotation": [
+                            0.22503794729709625,
+                            -0.17222924530506134,
+                            0.027587834745645523,
+                            0.9586104154586792
+                        ],
+                        "Scale": [
+                            0.99999994039535522,
+                            1.0000004768371582,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8861729306003295445"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11157677688398932019",
+                        "BoneID": "10938314524563868269",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "mixamorig_LeftToe_End",
+                "FamilyNumber": 7,
+                "ID": "14693412582026899831",
+                "ParentID": "4963223099079480345",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.1440970897674561,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12664096581404890959"
                     }
                 ]
             }

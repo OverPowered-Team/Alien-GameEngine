@@ -18,7 +18,8 @@ void PlayerController::Update()
 {
 
 	/*---------------CONTROLLER-----------------------*/
-	HandleMovement();
+	if (can_move)
+		HandleMovement();
 
 	/*---------------CONTROLLER-----------------------*/
 
@@ -26,15 +27,19 @@ void PlayerController::Update()
 	{
 	case PlayerController::PlayerState::IDLE: {
 
+		can_move = true;
+
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_X)) {
 			animator->PlayState("Attack");
 			state = PlayerState::BASIC_ATTACK;
+			can_move = false;
 		}
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
-			ccontroller->ApplyImpulse(transform->forward * playerData.movementSpeed * 2);
+			//ccontroller->ApplyImpulse(transform->forward.Normalized() * 20);
+
 		}
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
@@ -43,12 +48,15 @@ void PlayerController::Update()
 			ccontroller->SetJumpSpeed(playerData.jumpSpeed);
 			ccontroller->SetMaxJumpHeight(playerData.maxHeight);
 			state = PlayerState::JUMPING;
+			animator->PlayState("Jump");
 			if(ccontroller->CanJump())ccontroller->Jump();
 		}
 
 	} break;
 	case PlayerController::PlayerState::RUNNING:
 	{
+		can_move = true;
+
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_X)) {
 			animator->PlayState("Attack");
 			state = PlayerState::BASIC_ATTACK;
@@ -57,7 +65,7 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
-			ccontroller->ApplyImpulse(transform->forward * playerData.movementSpeed * 2);
+			//ccontroller->ApplyImpulse(transform->forward.Normalized() * 20);
 		}
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
@@ -71,10 +79,14 @@ void PlayerController::Update()
 
 	} break;
 	case PlayerController::PlayerState::BASIC_ATTACK:
+		ccontroller->SetWalkDirection(float3::zero());
+		can_move = false;
 		break;
 	case PlayerController::PlayerState::JUMPING:
+		can_move = true;
 		break;
 	case PlayerController::PlayerState::DASHING:
+		can_move = false;
 		break;
 	case PlayerController::PlayerState::MAX:
 		break;
@@ -117,7 +129,11 @@ void PlayerController::HandleMovement()
 		ccontroller->SetRotation(rot);
 	}
 
-	ccontroller->SetWalkDirection(vector.Normalized() * playerData.currentSpeed);
+	if (state == PlayerState::DASHING) {
+		ccontroller->SetWalkDirection(transform->forward.Normalized() * playerData.movementSpeed * 1.25 * Time::GetDT());
+	}else
+		ccontroller->SetWalkDirection(vector.Normalized() * playerData.currentSpeed);
+
 	animator->SetFloat("speed", Maths::Abs(playerData.currentSpeed));
 }
 
@@ -125,6 +141,10 @@ void PlayerController::OnAnimationEnd(const char* name) {
 	if (strcmp(name, "Attack") == 0)
 		state = PlayerState::IDLE;
 
-	if (strcmp(name, "Roll") == 0)
+	if (strcmp(name, "Roll") == 0) {
+		state = PlayerState::IDLE;
+	}
+
+	if (strcmp(name, "Jump") == 0)
 		state = PlayerState::IDLE;
 }

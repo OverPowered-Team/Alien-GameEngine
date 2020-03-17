@@ -44,6 +44,7 @@ public:
 	PlayerData playerData;
 	ComponentAnimator* animator = nullptr;
 	ComponentCharacterController* ccontroller = nullptr;
+	bool can_move = false;
 
 private:
 	float angle = 0.0f;
