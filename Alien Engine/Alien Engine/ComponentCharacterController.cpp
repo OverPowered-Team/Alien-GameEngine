@@ -85,7 +85,7 @@ bool ComponentCharacterController::CanJump()
 
 void ComponentCharacterController::SetRotation(const Quat rotation)
 {
-	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), rotation));
+	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, rotation));
 	transform->SetGlobalRotation(math::Quat(rotation));
 }
 
