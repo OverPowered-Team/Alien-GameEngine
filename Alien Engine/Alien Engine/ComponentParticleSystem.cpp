@@ -549,22 +549,30 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Animation Speed: "); ImGui::SameLine(200, 15);
-				ImGui::SliderFloat("##Animation Speed", &animSpeed, 0.0f, 5.0);
+				//ImGui::SliderFloat("##Animation Speed", &animSpeed, 0.0f, 5.0);
+				ImGui::DragFloat("##Animation Speed", &animSpeed, 0.0f, 5.0f);
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Rows: "); ImGui::SameLine(200, 15);
-				ImGui::SliderInt("##Rows", &texRows, 1, 10);
+				ImGui::SliderInt("##Rows", &texRows, 0, 10);
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Columns: "); ImGui::SameLine(200, 15);
-				ImGui::SliderInt("##Columns", &texColumns, 1, 10);
+				ImGui::SliderInt("##Columns", &texColumns, 0, 10);
 				ImGui::Spacing();
 				ImGui::Spacing(); 
 				ImGui::Spacing();
-				ImGui::SameLine(535, 15);
+				//ImGui::SameLine(535, 15);
 				if (ImGui::Button("Calculate UV", { 120,20 }))
 				{
 					particleSystem->CalculateParticleUV(texRows, texColumns, animSpeed);
+				}
+				ImGui::SameLine();
+
+
+				if (ImGui::Button("Reset", { 120,20 })  ||  !enable_anim)
+				{
+					particleSystem->ResetParticleUV();
 				}
 				
 
