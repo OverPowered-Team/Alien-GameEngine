@@ -255,12 +255,9 @@ bool ComponentCamera::DrawInspector()
 
 		std::string path_neg_z = App->file_system->GetPathWithoutExtension(cubemap->neg_z);
 		path_neg_z += "_meta.alien";
-
 		u64 id_neg_z = App->resources->GetIDFromAlienPath(path_neg_z.data());
 		ResourceTexture* tex_neg_z = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_z);
 		ImGui::Image((ImTextureID)tex_neg_z->id, ImVec2(100.0f, 100.0f));
-
-		ImGui::Text("Negative Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_z.c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -286,7 +283,14 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
-		ImGui::Text("Positive Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_z.c_str());
+		ImGui::SameLine();
+		ImGui::Text("Negative Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_z.c_str());
+		
+		std::string path_pos_z = App->file_system->GetPathWithoutExtension(cubemap->pos_z);
+		path_pos_z += "_meta.alien";
+		u64 id_pos_z = App->resources->GetIDFromAlienPath(path_pos_z.data());
+		ResourceTexture* tex_pos_z = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_z);
+		ImGui::Image((ImTextureID)tex_pos_z->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -312,7 +316,14 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
-		ImGui::Text("Positive Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_y.c_str());
+		ImGui::SameLine();
+		ImGui::Text("Positive Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_z.c_str());
+		
+		std::string path_pos_y = App->file_system->GetPathWithoutExtension(cubemap->pos_y);
+		path_pos_y += "_meta.alien";
+		u64 id_pos_y = App->resources->GetIDFromAlienPath(path_pos_y.data());
+		ResourceTexture* tex_pos_y = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_y);
+		ImGui::Image((ImTextureID)tex_pos_y->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -338,7 +349,14 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
-		ImGui::Text("Negative Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_y.c_str());
+		ImGui::SameLine();
+		ImGui::Text("Positive Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_y.c_str());
+		
+		std::string path_neg_y = App->file_system->GetPathWithoutExtension(cubemap->neg_y);
+		path_neg_y += "_meta.alien";
+		u64 id_neg_y = App->resources->GetIDFromAlienPath(path_neg_y.data());
+		ResourceTexture* tex_neg_y = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_y);
+		ImGui::Image((ImTextureID)tex_neg_y->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -364,7 +382,14 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
-		ImGui::Text("Positive X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_x.c_str());
+		ImGui::SameLine();
+		ImGui::Text("Negative Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_y.c_str());
+		
+		std::string path_pos_x = App->file_system->GetPathWithoutExtension(cubemap->pos_x);
+		path_pos_x += "_meta.alien";
+		u64 id_pos_x = App->resources->GetIDFromAlienPath(path_pos_x.data());
+		ResourceTexture* tex_pos_x = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_x);
+		ImGui::Image((ImTextureID)tex_pos_x->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -390,7 +415,14 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
-		ImGui::Text("Negative X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_x.c_str());
+		ImGui::SameLine();
+		ImGui::Text("Positive X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_x.c_str());
+		
+		std::string path_neg_x = App->file_system->GetPathWithoutExtension(cubemap->neg_x);
+		path_neg_x += "_meta.alien";
+		u64 id_neg_x = App->resources->GetIDFromAlienPath(path_neg_x.data());
+		ResourceTexture* tex_neg_x = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_x);
+		ImGui::Image((ImTextureID)tex_neg_x->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
@@ -416,6 +448,9 @@ bool ComponentCamera::DrawInspector()
 				}
 			}
 		}
+		ImGui::SameLine();
+		ImGui::Text("Negative X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_x.c_str());
+		
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
