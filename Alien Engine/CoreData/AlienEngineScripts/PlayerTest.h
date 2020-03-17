@@ -15,6 +15,8 @@ public:
 
 	float speed = 5.f;
 
+	void OnDrawGizmos();
+
 };
 
 ALIEN_FACTORY PlayerTest* CreatePlayerTest() {

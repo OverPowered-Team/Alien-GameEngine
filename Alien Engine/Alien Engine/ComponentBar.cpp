@@ -441,6 +441,11 @@ float ComponentBar::GetBarValue()
 
 void ComponentBar::SetBarValue(float factor)
 {
+	if (factor < 0)
+		factor = 0;
+	else if (factor > 1)
+		factor = 1;
+
 	this->factor = factor;
 	currentValue = (factor * (maxValue - minValue)) + minValue;
 }
