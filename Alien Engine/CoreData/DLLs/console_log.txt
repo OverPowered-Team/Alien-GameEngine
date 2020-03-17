@@ -11,7 +11,7 @@ C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\A
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(221) : Application Start --------------
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(532) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(592) : No shader found with name Resources
-C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(341) : File System copied file [Assets/Scripts/PlayerTest.alienScript] to [Library/Scripts/11104439077092258537.alienPrefab]
+C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(341) : File System copied file [Assets/Scripts/PolScriptSushi.alienScript] to [Library/Scripts/13060844952667610911.alienPrefab]
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(213) : No resource found with ID -1358199867
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(583) : Texture successfully loaded: Library/Textures/295965198586293283.dds
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(71) : Creating Physics environment

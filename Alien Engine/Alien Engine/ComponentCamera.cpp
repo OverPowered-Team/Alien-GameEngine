@@ -277,8 +277,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->neg_z.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangeNegativeZ(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}
@@ -310,8 +309,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_z.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangePositiveZ(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}
@@ -343,8 +341,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_y.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangePositiveY(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}
@@ -376,8 +373,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->neg_y.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangeNegativeY(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}
@@ -409,8 +405,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_x.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangePositiveX(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}
@@ -442,8 +437,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->neg_x.assign(texture_dropped->GetAssetsPath());
-						auto faces = cubemap->ToVector();
-						skybox_texture_id = skybox->LoadCubeMap(faces);
+						skybox->ChangeNegativeX(skybox_texture_id, cubemap->neg_z.c_str());
 					}
 				}
 			}

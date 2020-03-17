@@ -74,3 +74,117 @@ void Skybox::SetBuffers()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
+
+void Skybox::ChangeNegativeZ(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+	
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+void Skybox::ChangePositiveZ(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+void Skybox::ChangePositiveY(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+void Skybox::ChangeNegativeY(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+void Skybox::ChangePositiveX(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+void Skybox::ChangeNegativeX(const uint& id, const char* path)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	int width, height, channels;
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
+
+	/*auto item = App->resources->resources.begin();
+	for (; item != App->resources->resources.end(); ++item) {
+		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
+			(*item)->IncreaseReferences();
+			break;
+		}
+	}*/
+
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
