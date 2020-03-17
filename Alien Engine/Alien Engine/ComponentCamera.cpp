@@ -252,6 +252,14 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 		ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Skybox settings:");
+
+		std::string path_neg_z = App->file_system->GetPathWithoutExtension(cubemap->neg_z);
+		path_neg_z += "_meta.alien";
+
+		u64 id_neg_z = App->resources->GetIDFromAlienPath(path_neg_z.data());
+		ResourceTexture* tex_neg_z = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_z);
+		ImGui::Image((ImTextureID)tex_neg_z->id, ImVec2(100.0f, 100.0f));
+
 		ImGui::Text("Negative Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_z.c_str());
 		if (ImGui::BeginDragDropTarget())
 		{

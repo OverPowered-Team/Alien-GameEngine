@@ -2,6 +2,9 @@
 #include "stb_image.h"
 
 #include "Skybox.h"
+#include "Application.h"
+#include "ModuleImporter.h"
+#include "ResourceTexture.h"
 
 Skybox::Skybox()
 {
@@ -24,7 +27,14 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 	int width, height, channels;
 	for (int i = 0; i < texture_files.size(); ++i)
 	{
+		ResourceTexture* t = App->importer->LoadTextureFile(texture_files[i].c_str());
+		if (t)
+			t->IncreaseReferences();
+
 		unsigned char* data = stbi_load(texture_files[i].c_str(), &width, &height, &channels, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
