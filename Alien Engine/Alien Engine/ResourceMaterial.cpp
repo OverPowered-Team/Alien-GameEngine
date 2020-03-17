@@ -246,20 +246,22 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ApplyMaterial()
 {
-
+	// Bind textures
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
-		used_shader->SetUniform1i("tex", 0);
+		used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
+		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
 	}
 
-	/*if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
-		used_shader->SetUniform1i("normalMap", 1);
-	}*/
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
+		used_shader->SetUniform1i("objectMaterial.specularMap", 1);
+		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
+	}
 
 	// Bind the actual shader
 	used_shader->Bind();

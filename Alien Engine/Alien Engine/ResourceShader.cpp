@@ -201,7 +201,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
 	switch (shaderType) {
 	case SHADER_TEMPLATE::DEFAULT: { 
-		SetUniformFloat3("diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		ApplyLightsUniforms();
 		break; }
 
