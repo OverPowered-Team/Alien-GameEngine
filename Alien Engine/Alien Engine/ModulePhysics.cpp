@@ -79,19 +79,7 @@ update_status ModulePhysics::PreUpdate(float dt)
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	if (Time::IsInGameState())
-	{
-		if (first_frame_playing == false)
-		{
-			world->stepSimulation(Time::GetDT(), 20);
-		}
-		
-		first_frame_playing = false;
-	}
-	else
-	{
-		first_frame_playing = true;
-	}
+	world->stepSimulation(Time::GetDT(), 20);
 
 	return UPDATE_CONTINUE;
 }
@@ -147,10 +135,10 @@ void ModulePhysics::DrawConvexCollider(ComponentCollider* collider)
 
 void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 {
-	//debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
 	world->debugDrawConstraint(constraint);
-	//ModuleRenderer3D::EndDebugDraw();
+	ModuleRenderer3D::EndDebugDraw();
 }
 
 void ModulePhysics::DrawCharacterController(ComponentCharacterController* controller)

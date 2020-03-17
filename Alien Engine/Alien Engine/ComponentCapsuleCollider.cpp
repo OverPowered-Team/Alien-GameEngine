@@ -1,5 +1,6 @@
 #include "ComponentCapsuleCollider.h"
 #include "ComponentTransform.h"
+#include "ComponentRigidBody.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
@@ -134,7 +135,7 @@ void ComponentCapsuleCollider::CreateDefaultShape()
 
 void ComponentCapsuleCollider::UpdateShape()
 {
-	if (shape == nullptr)
+	if (shape != nullptr)
 	{
 		delete shape;
 	}
@@ -173,6 +174,13 @@ void ComponentCapsuleCollider::UpdateShape()
 		shape = new btCapsuleShapeZ(final_radius, final_height);
 		break;
 	}
+
+	if (aux_body)
+		aux_body->setCollisionShape(shape);
+	if (detector)
+		detector->setCollisionShape(shape);
+
+	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
 
