@@ -22,8 +22,6 @@ public:
 		float rotationSpeed = 120.0F;
 		float currentSpeed = 0.f;
 		float jumpSpeed = 9.8f;
-		float fallSpeed = 10.0f;
-		float maxHeight = 15.0f;
 		// dmg, deff, lvl bla bla
 	};
 
@@ -58,8 +56,6 @@ ALIEN_FACTORY PlayerController* CreatePlayerController() {
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.movementSpeed);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.rotationSpeed);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.jumpSpeed);
-	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.fallSpeed);
-	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.maxHeight);
 	SHOW_IN_INSPECTOR_AS_ENUM(PlayerController::PlayerState, player->state);
 	return player;
 }
