@@ -27,3 +27,8 @@ void PlayerTest::Update()
 		transform->SetGlobalPosition(transform->GetGlobalPosition() - float3::unitX() * speed * Time::GetDT());
 	}
 }
+
+void PlayerTest::OnDrawGizmos()
+{
+	Gizmos::DrawCube(float3::zero(), { 3,3,3 }, Color::Blue());
+}
