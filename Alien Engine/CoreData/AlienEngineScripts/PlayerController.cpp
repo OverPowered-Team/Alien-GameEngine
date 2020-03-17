@@ -44,12 +44,9 @@ void PlayerController::Update()
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
 			/*animator->PlayState("Roll");*/
-			ccontroller->SetFallSpeed(playerData.fallSpeed);
-			ccontroller->SetJumpSpeed(playerData.jumpSpeed);
-			ccontroller->SetMaxJumpHeight(playerData.maxHeight);
 			state = PlayerState::JUMPING;
 			animator->PlayState("Jump");
-			if(ccontroller->CanJump())ccontroller->Jump();
+			if(ccontroller->CanJump())ccontroller->Jump(transform->up * playerData.jumpSpeed);
 		}
 
 	} break;
@@ -71,10 +68,7 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
 			/*animator->PlayState("Roll");*/
 			state = PlayerState::JUMPING;
-			ccontroller->SetFallSpeed(playerData.fallSpeed);
-			ccontroller->SetJumpSpeed(playerData.jumpSpeed);
-			ccontroller->SetMaxJumpHeight(playerData.maxHeight);
-			if (ccontroller->CanJump())ccontroller->Jump();
+			if (ccontroller->CanJump())ccontroller->Jump(transform->up * playerData.jumpSpeed);
 		}
 
 	} break;
