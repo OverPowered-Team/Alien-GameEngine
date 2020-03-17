@@ -68,6 +68,11 @@ void ComponentCharacterController::SetFallSpeed(const float fall_speed)
 	controller->setFallSpeed(fall_speed);
 }
 
+void ComponentCharacterController::ApplyImpulse(float3 direction)
+{
+	controller->applyImpulse({ direction.x, direction.y, direction.z });
+}
+
 void ComponentCharacterController::Jump(float3 direction)
 {
 	controller->jump(ToBtVector3(direction));

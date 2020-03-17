@@ -215,7 +215,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -287,6 +287,21 @@
                                 "float": 120
                             },
                             {
+                                "VarType": 3,
+                                "Name": "jumpSpeed",
+                                "float": 9.8000001907348633
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "fallSpeed",
+                                "float": 10
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "maxHeight",
+                                "float": 15
+                            },
+                            {
                                 "VarType": 10,
                                 "Name": "state",
                                 "enumInt": 0
@@ -295,12 +310,14 @@
                     },
                     {
                         "Type": 13,
-                        "Test": false
+                        "MaxJumpHeight": 0,
+                        "JumpSpeed": 0,
+                        "FallSpeed": 0
                     },
                     {
                         "Type": 14,
                         "ID": "2106582132526291643",
-                        "ControllerID": "16063468839902248801",
+                        "ControllerID": "3878118131680474472",
                         "Enabled": true
                     }
                 ]
@@ -387,7 +404,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,

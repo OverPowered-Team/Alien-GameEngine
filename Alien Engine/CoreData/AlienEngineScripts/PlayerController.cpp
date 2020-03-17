@@ -34,6 +34,7 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
+			ccontroller->ApplyImpulse(transform->forward * playerData.movementSpeed * 2);
 		}
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
@@ -56,6 +57,7 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_RIGHTSHOULDER)) {
 			animator->PlayState("Roll");
 			state = PlayerState::DASHING;
+			ccontroller->ApplyImpulse(transform->forward * playerData.movementSpeed * 2);
 		}
 
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {

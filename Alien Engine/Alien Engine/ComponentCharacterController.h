@@ -33,6 +33,7 @@ public:
 	void SetJumpSpeed(const float jump_speed);
 	void SetMaxJumpHeight(const float height);
 	void SetFallSpeed(const float fall_speed);
+	void ApplyImpulse(float3 direction = float3::zero());
 
 	void SetWalkDirection(float3 direction);
 	void SetRotation(const Quat rotation);
