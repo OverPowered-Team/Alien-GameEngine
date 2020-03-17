@@ -165,6 +165,77 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	App->objects->first_assigned_selected = false;
 }
 
+void ComponentButton::HandleAlienEvent(const AlienEvent& e)
+{
+	
+	switch (e.type)
+	{
+	case AlienEventType::SCRIPT_DELETED: {
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached)
+		{
+			//Delete on Click
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnClick.erase(item);
+						//delete this from listeners on Click
+						break;
+					}
+				}
+		
+			}
+
+			//Delete on Hover
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnHover.erase(item);
+						//delete this from listeners on Click
+			
+						break;
+					}
+				}
+			}
+
+			//Delete on pressed
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnClickRepeat.erase(item);
+						//delete this from listeners on Click
+						break;
+					}
+				}
+			
+			}
+
+			//delete on release
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnRelease.erase(item);
+						break;
+					}
+				}
+			}
+			
+		}
+		break; }
+
+	default: {
+		break; }
+	}
+}
+
 bool ComponentButton::DrawInspector()
 {
 	static bool check;
