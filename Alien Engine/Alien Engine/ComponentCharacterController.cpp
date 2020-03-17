@@ -152,7 +152,7 @@ void ComponentCharacterController::Update()
 {
 	if (Time::IsPlaying())
 	{
-		float3 movement = float3::zero();
+	/*	float3 movement = float3::zero();
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
 			movement.x -= 1;
@@ -163,11 +163,11 @@ void ComponentCharacterController::Update()
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
 			movement.z -= 1;
 
-		float speed = (movement.Equals(float3::zero())) ? 0.f : 6.f;
+		float speed = (movement.Equals(float3::zero())) ? 0.f : 10.f;
 		controller->setWalkDirection(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
-			Jump();
+			Jump();*/
 
 		btTransform bt_transform = body->getWorldTransform();
 		btQuaternion rotation = bt_transform.getRotation();
