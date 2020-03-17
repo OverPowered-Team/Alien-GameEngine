@@ -62,7 +62,7 @@ void ComponentBoxCollider::CreateDefaultShape()
 
 void ComponentBoxCollider::UpdateShape()
 {
-	if (shape == nullptr)
+	if (shape != nullptr)
 	{
 		delete shape;
 	}

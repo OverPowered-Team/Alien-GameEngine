@@ -18,6 +18,7 @@ void TerrainSwitch::Update()
 
 void TerrainSwitch::OnTrigger(ComponentCollider* collider)
 {
+	
 }
 
 void TerrainSwitch::OnTriggerEnter(ComponentCollider* collider)
