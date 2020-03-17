@@ -96,14 +96,14 @@ void ComponentCharacterController::SetCharacterOffset(const float3 offset)
 
 void ComponentCharacterController::SetCharacterHeight(const float height)
 {
-	float max = FLOAT_INF, min = 0.f;
+	float max = FLOAT_INF, min = 0.1f;
 	character_height = Clamp(height, min, max);
 	RecreateCapusle();
 }
 
 void ComponentCharacterController::SetCharacterRadius(const float radius)
 {
-	float max = FLOAT_INF, min = 0.f;
+	float max = FLOAT_INF, min = 0.1f;
 	character_radius = Clamp(radius, min, max);
 	RecreateCapusle();
 }
@@ -111,18 +111,19 @@ void ComponentCharacterController::SetCharacterRadius(const float radius)
 
 void ComponentCharacterController::RecreateCapusle()
 {
-	if (shape != nullptr)
-	{
-		delete shape;
-	}
-
-	shape = new btCapsuleShape(character_radius, character_height);
-	body->setCollisionShape(shape);
+	shape->setLocalScaling(btVector3(character_radius * 2, character_height, character_radius * 2));
+	//shape = new btCapsuleShape(character_radius, character_height);
+	//body->setCollisionShape(shape);
+	//controller.rad
 }
 
 void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
+
+	to_save->SetFloat3("CharacterOffset", character_offset);
+	to_save->SetNumber("CharacterRadius", character_radius);
+	to_save->SetNumber("CharacterHeight", character_height);
 	to_save->SetNumber("MaxJumpHeight", max_jump_height);
 	to_save->SetNumber("JumpSpeed", jump_speed);
 	to_save->SetNumber("FallSpeed", fall_speed);
@@ -130,6 +131,9 @@ void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 {
+	SetCharacterOffset(to_load->GetFloat3("CharacterOffset"));
+	SetCharacterRadius(to_load->GetNumber("CharacterRadius"));
+	SetCharacterHeight(to_load->GetNumber("CharacterHeight"));
 	SetMaxJumpHeight(to_load->GetNumber("MaxJumpHeight"));
 	SetJumpSpeed(to_load->GetNumber("JumpSpeed"));
 	SetFallSpeed(to_load->GetNumber("FallSpeed"));
@@ -148,8 +152,8 @@ bool ComponentCharacterController::DrawInspector()
 	{
 		ImGui::Spacing();
 		ImGui::Title("Offset", 1);				if (ImGui::DragFloat3("##center", current_character_offset.ptr(), 0.05f)) { SetCharacterOffset(current_character_offset); }
-		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.01f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
-		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.01f, FLT_MAX)) { SetCharacterHeight(current_character_height); }
+		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.1f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
+		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.1f, FLT_MAX)) { SetCharacterHeight(current_character_height); }
 		ImGui::Title("Max Jump Height", 1);		if (ImGui::DragFloat("##max_jump_height", &current_max_jump_height, 0.01f, 0.00f, FLT_MAX)) { SetMaxJumpHeight(current_max_jump_height); }
 		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX))			{ SetJumpSpeed(current_jump_speed); }
 		ImGui::Title("Fall Speed", 1);			if (ImGui::DragFloat("##fall_speed", &current_fall_speed, 0.01f, 0.00f, FLT_MAX))			{ SetFallSpeed(current_fall_speed); }
