@@ -130,7 +130,7 @@ void PlayerController::HandleMovement()
 	}
 
 	if (state == PlayerState::DASHING) {
-		ccontroller->SetWalkDirection(transform->forward.Normalized() * playerData.movementSpeed * 1.25 * Time::GetDT());
+		ccontroller->SetWalkDirection(transform->forward.Normalized() * playerData.movementSpeed * 1.5 * Time::GetDT());
 	}else
 		ccontroller->SetWalkDirection(vector.Normalized() * playerData.currentSpeed);
 

@@ -25,7 +25,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
 	controller->setUp(btVector3(0.f, 1.f, 0.f));
-	controller->setGravity(btVector3(0.f, -10.f, 0.f));
+	controller->setGravity(btVector3(0.f, -20.f, 0.f));
 
 	max_jump_height = 10.f;
 	jump_speed = controller->getJumpSpeed();
