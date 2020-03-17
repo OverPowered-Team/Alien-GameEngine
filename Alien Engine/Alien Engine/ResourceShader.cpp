@@ -202,8 +202,8 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	switch (shaderType) {
 	case SHADER_TEMPLATE::DEFAULT: { 
 		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
-		SetUniform1f("objectMaterial.shininess", inputs.standardShaderProperties.shininess);
-		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.shininess);
+		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
+		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
 		ApplyLightsUniforms();
 		break; }
 
