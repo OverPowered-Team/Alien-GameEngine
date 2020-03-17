@@ -33,10 +33,8 @@ public:
 
 	float GetJumpSpeed() { return jump_speed; }
 	void SetJumpSpeed(const float jump_speed);
-	float GetFallSpeed() { return fall_speed; }
-	void SetFallSpeed(const float fall_speed);
-	float GetMaxJumpHeight() { return max_jump_height; }
-	void SetMaxJumpHeight(const float height);
+	float GetGravity() { return gravity; }
+	void SetGravity(const float fall_speed);
 
 	void ApplyImpulse(float3 direction = float3::zero());
 	void SetWalkDirection(float3 direction);
@@ -72,9 +70,8 @@ protected:
 	float character_height = 1.f;
 	float character_radius = 0.5f;
 
-	float max_jump_height = 0.f;
 	float jump_speed = 0.f;
-	float fall_speed = 0.f;
+	float gravity = 80.f;
 
 
 	bool test = false;

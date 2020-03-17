@@ -142,7 +142,7 @@ bool ComponentCharacterController::DrawInspector()
 		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.1f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
 		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.1f, FLT_MAX)) { SetCharacterHeight(current_character_height); }
 		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX)) { SetJumpSpeed(current_jump_speed); }
-		ImGui::Title("Gravity", 1);				if (ImGui::DragFloat("##gravity", &current_gravity, 0.01f, 0.00f, FLT_MAX)) { SetGravity(current_gravity); }
+		ImGui::Title("Gravity", 1);			if (ImGui::DragFloat("##gravity", &current_gravity, 0.01f, 0.00f, FLT_MAX)) { SetGravity(current_gravity); }
 		ImGui::Spacing();
 	}
 	return true;
@@ -152,22 +152,22 @@ void ComponentCharacterController::Update()
 {
 	if (Time::IsPlaying())
 	{
-		//float3 movement = float3::zero();
+		float3 movement = float3::zero();
 
-		//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-		//	movement.x -= 1;
-		//if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-		//	movement.x += 1;
-		//if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-		//	movement.z += 1;
-		//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-		//	movement.z -= 1;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+			movement.x -= 1;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+			movement.x += 1;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+			movement.z += 1;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+			movement.z -= 1;
 
-		//float speed = (movement.Equals(float3::zero())) ? 0.f : 6.f;
-		//controller->setLinearVelocity(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));
+		float speed = (movement.Equals(float3::zero())) ? 0.f : 6.f;
+		controller->setLinearVelocity(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));
 
-		//if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
-		//	Jump();
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
+			Jump();
 
 		btTransform bt_transform = body->getWorldTransform();
 		btQuaternion rotation = bt_transform.getRotation();
