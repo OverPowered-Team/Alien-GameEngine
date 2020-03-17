@@ -6,6 +6,7 @@
 #include "ModuleObjects.h"
 
 #include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
 #include "glew/include/glew.h"
 
 // FBO ========================================================================
@@ -256,7 +257,8 @@ void Viewport::BeginViewport()
 
 void Viewport::EndViewport()
 {
-	camera->DrawSkybox();
+	if(camera != App->camera->fake_camera && camera != nullptr)
+		camera->DrawSkybox();
 
 	// Disables --------------------------------------------
 	glDisable(GL_LIGHTING);
