@@ -35,12 +35,8 @@ void ComponentCapsuleCollider::SetHeight(float value)
 
 void ComponentCapsuleCollider::DrawSpecificInspector()
 {
-	ImGui::Title("Radius", 1);	if (ImGui::DragFloat("##radius", &radius, 0.1f, 0.01f, FLT_MAX)) 
-	{ 
-		UpdateShape(); }
-	ImGui::Title("Height", 1);	if (ImGui::DragFloat("##height", &height, 0.1f, 0.01f, FLT_MAX)) 
-	{
-		UpdateShape(); }
+	ImGui::Title("Radius", 1);	if (ImGui::DragFloat("##radius", &radius, 0.1f, 0.01f, FLT_MAX)) { UpdateShape(); }
+	ImGui::Title("Height", 1);	if (ImGui::DragFloat("##height", &height, 0.1f, 0.01f, FLT_MAX)) { UpdateShape(); }
 	ImGui::Title("Direction");
 
 	static const char* items[] = { "X", "Y", "Z" };

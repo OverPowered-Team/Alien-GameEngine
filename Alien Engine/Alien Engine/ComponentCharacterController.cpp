@@ -16,12 +16,12 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
 	transform =  game_object_attached->GetComponent<ComponentTransform>();
-	shape = new btCapsuleShape(0.5f, 1);
+	shape = new btCapsuleShape(character_radius, character_height);
 
 	body = new btPairCachingGhostObject();
 	body->setCollisionShape(shape);
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CHARACTER_OBJECT);
-	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation()));
+	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
 
 	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
 	controller->setUp(btVector3(0.f, 1.f, 0.f));
@@ -88,7 +88,37 @@ void ComponentCharacterController::SetRotation(const Quat rotation)
 	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), rotation));
 	transform->SetGlobalRotation(math::Quat(rotation));
 }
+
+void ComponentCharacterController::SetCharacterOffset(const float3 offset)
+{
+	character_offset = offset;
+}
+
+void ComponentCharacterController::SetCharacterHeight(const float height)
+{
+	float max = FLOAT_INF, min = 0.f;
+	character_height = Clamp(height, min, max);
+	RecreateCapusle();
+}
+
+void ComponentCharacterController::SetCharacterRadius(const float radius)
+{
+	float max = FLOAT_INF, min = 0.f;
+	character_radius = Clamp(radius, min, max);
+	RecreateCapusle();
+}
 // -------------------------------------------------------------
+
+void ComponentCharacterController::RecreateCapusle()
+{
+	if (shape != nullptr)
+	{
+		delete shape;
+	}
+
+	shape = new btCapsuleShape(character_radius, character_height);
+	body->setCollisionShape(shape);
+}
 
 void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 {
@@ -107,6 +137,9 @@ void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 
 bool ComponentCharacterController::DrawInspector()
 {
+	float3 current_character_offset = character_offset;
+	float current_character_radius = character_radius;
+	float current_character_height = character_height;
 	float current_max_jump_height = max_jump_height;
 	float current_jump_speed = jump_speed;
 	float current_fall_speed = fall_speed;
@@ -114,6 +147,9 @@ bool ComponentCharacterController::DrawInspector()
 	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
+		ImGui::Title("Offset", 1);				if (ImGui::DragFloat3("##center", current_character_offset.ptr(), 0.05f)) { SetCharacterOffset(current_character_offset); }
+		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.01f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
+		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.01f, FLT_MAX)) { SetCharacterHeight(current_character_height); }
 		ImGui::Title("Max Jump Height", 1);		if (ImGui::DragFloat("##max_jump_height", &current_max_jump_height, 0.01f, 0.00f, FLT_MAX)) { SetMaxJumpHeight(current_max_jump_height); }
 		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX))			{ SetJumpSpeed(current_jump_speed); }
 		ImGui::Title("Fall Speed", 1);			if (ImGui::DragFloat("##fall_speed", &current_fall_speed, 0.01f, 0.00f, FLT_MAX))			{ SetFallSpeed(current_fall_speed); }
@@ -128,7 +164,7 @@ void ComponentCharacterController::Update()
 	{
 		btTransform bt_transform = body->getWorldTransform();
 		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = bt_transform.getOrigin();
+		btVector3 position = bt_transform.getOrigin() - ToBtVector3(character_offset);
 
 		body->activate(true);
 		transform->SetGlobalPosition(float3(position));
@@ -136,7 +172,7 @@ void ComponentCharacterController::Update()
 	}
 	else
 	{
-		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition(), transform->GetGlobalRotation()));
+		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
 	}
 }
 

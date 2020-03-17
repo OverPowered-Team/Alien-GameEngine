@@ -30,31 +30,47 @@ public:
 
 	void Jump(float3 direction= float3::zero());
 	bool CanJump();
-	void SetJumpSpeed(const float jump_speed);
-	void SetMaxJumpHeight(const float height);
-	void SetFallSpeed(const float fall_speed);
-	void ApplyImpulse(float3 direction = float3::zero());
 
+	float GetJumpSpeed() { return jump_speed; }
+	void SetJumpSpeed(const float jump_speed);
+	float GetFallSpeed() { return fall_speed; }
+	void SetFallSpeed(const float fall_speed);
+	float GetMaxJumpHeight() { return max_jump_height; }
+	void SetMaxJumpHeight(const float height);
+
+	void ApplyImpulse(float3 direction = float3::zero());
 	void SetWalkDirection(float3 direction);
 	void SetRotation(const Quat rotation);
 
+	void SetCharacterOffset(const float3 offset);
+	float GetCharacterHeight() { return character_height; }
+	void SetCharacterHeight(const float height);
+	float GetCharacterRadius() { return character_radius; }
+	void SetCharacterRadius(const float radius);
+
 protected:
+
+	void RecreateCapusle();
 
 	void Update();
 	void DrawScene();
 	bool DrawInspector();
 
-	virtual void Reset();
-	virtual void Clone(Component* clone) {}
-	virtual void SetComponent(Component* component) {}
-	virtual void SaveComponent(JSONArraypack* to_save);
-	virtual void LoadComponent(JSONArraypack* to_load);
+	void Reset();
+	void Clone(Component* clone) {}
+	void SetComponent(Component* component) {}
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
 
 protected:
 	ComponentTransform* transform = nullptr;
 	btKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
 	btCapsuleShape* shape = nullptr;
+
+	float3 character_offset = float3::zero();
+	float character_height = 1.f;
+	float character_radius = 0.5f;
 
 	float max_jump_height = 0.f;
 	float jump_speed = 0.f;
