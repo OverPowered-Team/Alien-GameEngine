@@ -77,11 +77,15 @@ struct SpotLight
 };
 
 struct Material {
+    vec3 diffuse_color;
+
     sampler2D diffuseTexture;
     bool hasDiffuseTexture;
+
     sampler2D specularMap;
     bool hasSpecularMap;
-    vec3 diffuse_color;
+
+    float shininess;
 };
 
 // Function declarations
@@ -156,7 +160,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     
     // Specular
     vec3 reflectDir = reflect(-lightDir, normal);  
-    float spec = pow(max(dot(view_dir, reflectDir), 0.0), 32);
+    float spec = pow(max(dot(view_dir, reflectDir), 0.0), objectMaterial.shininess);
 
     vec3 specular = vec3(0);
     if(objectMaterial.hasSpecularMap == true)
@@ -182,7 +186,7 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
 
      // Specular
     vec3 reflectDir = reflect(-lightDir, normal);  
-    float spec = pow(max(dot(view_dir, reflectDir), 0.0), 32);
+    float spec = pow(max(dot(view_dir, reflectDir), 0.0), objectMaterial.shininess);
         
     vec3 specular = vec3(0);
     if(objectMaterial.hasSpecularMap == true)
@@ -214,7 +218,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
     // specular
     vec3 viewDir = normalize(view_pos - frag_pos);
     vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), objectMaterial.shininess);
 
     vec3 specular = vec3(0);
     if(objectMaterial.hasSpecularMap == true)

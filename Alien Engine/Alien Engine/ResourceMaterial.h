@@ -32,7 +32,7 @@ struct ShaderInputs
 	struct StandardShaderProperties
 	{
 		float3 diffuse_color = float3::one();
-		float shininess = 0.5f;
+		float shininess = 32.f;
 	} standardShaderProperties;
 
 	struct WaveShaderProperties

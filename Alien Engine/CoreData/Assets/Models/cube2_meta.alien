@@ -1,6 +1,6 @@
 {
     "Meta": {
-        "ID": "16613065240772025981",
+        "ID": "32109494926617075",
         "NumMeshes": 1,
         "Name": "cube2",
         "NumBones": 0,
@@ -8,12 +8,12 @@
         "Animations": [],
         "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/17690727547788481076.alienMesh"
+            "Library\/Meshes\/11156672535260258727.alienMesh"
         ],
         "PathAnimations": [],
         "PathBones": [],
         "PathMaterials": [
-            "Library\/Materials\/9856333289942092820.material"
+            "Library\/Materials\/3995232420294757645.material"
         ]
     },
     "Nodes": [

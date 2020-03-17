@@ -226,6 +226,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 
 	file->SetString("Name", name);
 	file->SetFloat4("Color", color);
+	file->SetNumber("Shininess", shaderInputs.standardShaderProperties.shininess);
 	file->SetString("ShaderID", std::to_string(used_shader_ID));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		file->SetString(std::to_string(iter), std::to_string(texturesID[iter]));
@@ -238,6 +239,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 {
 	this->name = file->GetString("Name");
 	color = file->GetFloat4("Color");
+	shaderInputs.standardShaderProperties.shininess = (float)file->GetNumber("Shininess");
 	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		texturesID[iter] = std::stoull(file->GetString(std::to_string(iter)));
@@ -412,7 +414,6 @@ void ResourceMaterial::ShaderSelectionHeader()
 
 void ResourceMaterial::ShaderInputsSegment()
 {
-	
 
 	switch (used_shader->GetShaderType())
 	{
@@ -429,7 +430,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Specular:");
 		InputTexture(TextureType::SPECULAR);
 		ImGui::SameLine();
-		ImGui::DragFloat("Shininess", &shaderInputs.standardShaderProperties.shininess, 0.05f, 0.f, 32.f);
+		ImGui::SliderFloat("Shininess", &shaderInputs.standardShaderProperties.shininess, 16.f, 128.f);
 
 		// Normal Map
 		ImGui::Text("Normal Map:");
