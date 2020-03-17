@@ -15,7 +15,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 {
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
-	transform =  game_object_attached->GetComponent<ComponentTransform>();
+	transform = game_object_attached->GetComponent<ComponentTransform>();
 	shape = new btCapsuleShape(character_radius, character_height);
 
 	body = new btPairCachingGhostObject();
@@ -112,9 +112,6 @@ void ComponentCharacterController::SetCharacterRadius(const float radius)
 void ComponentCharacterController::RecreateCapusle()
 {
 	shape->setLocalScaling(btVector3(character_radius * 2, character_height, character_radius * 2));
-	//shape = new btCapsuleShape(character_radius, character_height);
-	//body->setCollisionShape(shape);
-	//controller.rad
 }
 
 void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
@@ -155,8 +152,8 @@ bool ComponentCharacterController::DrawInspector()
 		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.1f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
 		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.1f, FLT_MAX)) { SetCharacterHeight(current_character_height); }
 		ImGui::Title("Max Jump Height", 1);		if (ImGui::DragFloat("##max_jump_height", &current_max_jump_height, 0.01f, 0.00f, FLT_MAX)) { SetMaxJumpHeight(current_max_jump_height); }
-		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX))			{ SetJumpSpeed(current_jump_speed); }
-		ImGui::Title("Fall Speed", 1);			if (ImGui::DragFloat("##fall_speed", &current_fall_speed, 0.01f, 0.00f, FLT_MAX))			{ SetFallSpeed(current_fall_speed); }
+		ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX)) { SetJumpSpeed(current_jump_speed); }
+		ImGui::Title("Fall Speed", 1);			if (ImGui::DragFloat("##fall_speed", &current_fall_speed, 0.01f, 0.00f, FLT_MAX)) { SetFallSpeed(current_fall_speed); }
 		ImGui::Spacing();
 	}
 	return true;
@@ -164,8 +161,23 @@ bool ComponentCharacterController::DrawInspector()
 
 void ComponentCharacterController::Update()
 {
-	if (Time::IsPlaying()) 
+	if (Time::IsPlaying())
 	{
+		//float3 movement = float3::zero();
+
+		//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+		//	movement.x -= 1;
+		//if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+		//	movement.x += 1;
+		//if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+		//	movement.z += 1;
+		//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+		//	movement.z -= 1;
+
+		//float speed = (movement.Equals(float3::zero())) ? 0.f : 4.f;
+		//SetWalkDirection(movement.Normalized() * speed * Time::GetDT());
+
+
 		btTransform bt_transform = body->getWorldTransform();
 		btQuaternion rotation = bt_transform.getRotation();
 		btVector3 position = bt_transform.getOrigin() - ToBtVector3(character_offset);
