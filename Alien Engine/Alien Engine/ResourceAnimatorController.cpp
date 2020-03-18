@@ -367,11 +367,11 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (!transitioning)CheckTriggers();
 
-	if (animation && animation->GetDuration() > 0) {
+	if (animation && animation->GetDuration() * state->GetSpeed() > 0) {
 
 		state->time += (Time::GetDT() * current_state->GetSpeed());
 
-		if (state->time >= animation->GetDuration()) {
+		if (state->time >= animation->GetDuration() * state->GetSpeed()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
 				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
@@ -386,6 +386,20 @@ void ResourceAnimatorController::UpdateState(State* state)
 				state->time = 0;
 			else
 				state->time = animation->GetDuration();
+		}
+
+	}
+
+	if (state->next_state) {
+
+		float to_end = state->fade_duration - state->fade_time;
+
+		if (to_end >= 0) {
+
+			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
+			UpdateState(state->next_state);
+		}
+		else {
 
 			if (Time::IsPlaying()) {
 				for (auto item = App->objects->current_scripts.begin(); item != App->objects->current_scripts.end(); ++item) {
@@ -406,20 +420,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 					}
 				}
 			}
-		}
 
-	}
-
-	if (state->next_state) {
-
-		float to_end = state->fade_duration - state->fade_time;
-
-		if (to_end >= 0) {
-
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
-			UpdateState(state->next_state);
-		}
-		else {
 			current_state = state->next_state;
 			state->next_state = nullptr;
 			state->time = 0;
