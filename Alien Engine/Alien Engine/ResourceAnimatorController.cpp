@@ -367,11 +367,11 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (!transitioning)CheckTriggers();
 
-	if (animation && animation->GetDuration() * state->GetSpeed() > 0) {
+	if (animation && animation->GetDuration() > 0) {
 
 		state->time += (Time::GetDT() * current_state->GetSpeed());
 
-		if (state->time >= animation->GetDuration() * state->GetSpeed()) {
+		if (state->time >= animation->GetDuration()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
 				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
@@ -396,7 +396,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		if (to_end >= 0) {
 
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
+			state->fade_time += (Time::GetDT());
 			UpdateState(state->next_state);
 		}
 		else {
@@ -419,6 +419,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 #endif
 					}
 				}
+
 			}
 
 			current_state = state->next_state;
@@ -427,6 +428,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 			state->fade_time = 0;
 			state->fade_duration = 0;
 			transitioning = false;
+
 		}
 	}
 }
@@ -1407,12 +1409,17 @@ void ResourceAnimatorController::Play(std::string state_name)
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
 		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
+			current_state->next_state = nullptr;
+			current_state->time = 0;
+			current_state->fade_time = 0;
+			current_state->fade_duration = 0;
 			current_state = (*it);
-			FindState(state_name)->next_state = nullptr;
-			FindState(state_name)->time = 0;
-			FindState(state_name)->fade_time = 0;
-			FindState(state_name)->fade_duration = 0;
+			current_state->next_state = nullptr;
+			current_state->time = 0;
+			current_state->fade_time = 0;
+			current_state->fade_duration = 0;
 			transitioning = false;
+			break;
 		}
 	}
 }
@@ -1498,7 +1505,8 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				}
 
 				scale = float3::Lerp(scale, next_scale, t);
-			}else
+			}
+			else
 				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
@@ -1670,7 +1678,7 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
 					{
 						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
-							if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
+							if (strcmp((*j).first.data(), (*it)->event_id.c_str()) == 0)
 							{
 								std::function<void()> functEvent = (*j).second;
 								functEvent();
@@ -1731,7 +1739,7 @@ State::State(State* state)
 	name = state->name;
 	speed = state->speed;
 	clip = state->clip;
-	if(clip)
+	if (clip)
 		clip->IncreaseReferences();
 	pin_in_id = state->pin_in_id;
 	pin_out_id = state->pin_out_id;
