@@ -10,8 +10,8 @@ C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\A
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(38) : Creating 3D Renderer context
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Application.cpp(221) : Application Start --------------
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(532) : Texture successfully loaded: Configuration/EngineTextures/icon_jpg.png
+C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(341) : File System copied file [Assets/Textures/Skybox/sky_11/1.png] to [Library/Textures/4782907769979164310.dds]
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(592) : No shader found with name Resources
-C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleFileSystem.cpp(341) : File System copied file [Assets/Scripts/PolScriptSushi.alienScript] to [Library/Scripts/13060844952667610911.alienPrefab]
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleResources.cpp(213) : No resource found with ID -1358199867
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(583) : Texture successfully loaded: Library/Textures/295965198586293283.dds
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModulePhysics.cpp(71) : Creating Physics environment
@@ -19,8 +19,6 @@ C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\A
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleCamera3D.cpp(31) : Setting up the camera
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(60) : Loading UI assets
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(58) : -------------- Application Update --------------
-C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(587) : Error while loading image in Library/Textures/2455380392509097265.dds
-C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleImporter.cpp(588) : Error: (null)
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\Main.cpp(81) : -------------- Application CleanUp --------------
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleRenderer3D.cpp(147) : Destroying 3D Renderer
 C:\Users\GerardMF21\Documents\Development\GitHub\Alien-GameEngine\Alien Engine\Alien Engine\ModuleUI.cpp(98) : Unloading UI scene
