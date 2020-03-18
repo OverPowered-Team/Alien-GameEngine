@@ -278,6 +278,16 @@ void ResourceMaterial::ApplyMaterial()
 	else	
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
+		used_shader->SetUniform1i("objectMaterial.normalMap", 1);
+		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
+	}
+	else
+		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
+
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	used_shader->UpdateUniforms(shaderInputs);

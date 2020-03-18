@@ -331,6 +331,15 @@ void ModuleImporter::LoadMesh(const aiMesh *mesh)
 		memcpy(ret->uv_cords, (float *)mesh->mTextureCoords[0], sizeof(float) * mesh->mNumVertices * 3);
 	}
 
+	if (mesh->HasTangentsAndBitangents())
+	{
+		ret->tangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->tangents, (float*)mesh->mTangents, sizeof(float) * mesh->mNumVertices * 3);
+
+		ret->biTangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->biTangents, (float*)mesh->mBitangents, sizeof(float) * mesh->mNumVertices * 3);
+	}
+
 	ret->name = std::string(mesh->mName.C_Str());
 	ret->InitBuffers();
 	App->resources->AddResource(ret);
