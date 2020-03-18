@@ -309,7 +309,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_z.assign(texture_dropped->GetAssetsPath());
-						skybox->ChangePositiveZ(skybox_texture_id, cubemap->neg_z.c_str());
+						skybox->ChangePositiveZ(skybox_texture_id, cubemap->pos_z.c_str());
 					}
 				}
 			}
@@ -341,7 +341,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_y.assign(texture_dropped->GetAssetsPath());
-						skybox->ChangePositiveY(skybox_texture_id, cubemap->neg_z.c_str());
+						skybox->ChangePositiveY(skybox_texture_id, cubemap->pos_y.c_str());
 					}
 				}
 			}
@@ -373,7 +373,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->neg_y.assign(texture_dropped->GetAssetsPath());
-						skybox->ChangeNegativeY(skybox_texture_id, cubemap->neg_z.c_str());
+						skybox->ChangeNegativeY(skybox_texture_id, cubemap->neg_y.c_str());
 					}
 				}
 			}
@@ -405,7 +405,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->pos_x.assign(texture_dropped->GetAssetsPath());
-						skybox->ChangePositiveX(skybox_texture_id, cubemap->neg_z.c_str());
+						skybox->ChangePositiveX(skybox_texture_id, cubemap->pos_x.c_str());
 					}
 				}
 			}
@@ -437,7 +437,7 @@ bool ComponentCamera::DrawInspector()
 					if (texture_dropped != nullptr)
 					{
 						cubemap->neg_x.assign(texture_dropped->GetAssetsPath());
-						skybox->ChangeNegativeX(skybox_texture_id, cubemap->neg_z.c_str());
+						skybox->ChangeNegativeX(skybox_texture_id, cubemap->neg_x.c_str());
 					}
 				}
 			}

@@ -83,15 +83,17 @@ void Skybox::ChangeNegativeZ(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 	
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::ChangePositiveZ(const uint& id, const char* path)
@@ -102,15 +104,17 @@ void Skybox::ChangePositiveZ(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::ChangePositiveY(const uint& id, const char* path)
@@ -121,15 +125,17 @@ void Skybox::ChangePositiveY(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::ChangeNegativeY(const uint& id, const char* path)
@@ -140,15 +146,17 @@ void Skybox::ChangeNegativeY(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::ChangePositiveX(const uint& id, const char* path)
@@ -159,15 +167,17 @@ void Skybox::ChangePositiveX(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::ChangeNegativeX(const uint& id, const char* path)
@@ -178,13 +188,15 @@ void Skybox::ChangeNegativeX(const uint& id, const char* path)
 	int width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-	/*auto item = App->resources->resources.begin();
+	auto item = App->resources->resources.begin();
 	for (; item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(path, (*item)->GetAssetsPath()) == 0) {
 			(*item)->IncreaseReferences();
 			break;
 		}
-	}*/
+	}
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
