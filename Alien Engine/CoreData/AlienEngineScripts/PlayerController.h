@@ -21,6 +21,7 @@ public:
 		float movementSpeed = 200.0F;
 		float rotationSpeed = 120.0F;
 		float currentSpeed = 0.f;
+		float jumpSpeed = 9.8f;
 		// dmg, deff, lvl bla bla
 	};
 
@@ -40,8 +41,8 @@ public:
 	PlayerState state = PlayerState::IDLE;
 	PlayerData playerData;
 	ComponentAnimator* animator = nullptr;
-	ComponentRigidBody* rbody = nullptr;
-
+	ComponentCharacterController* ccontroller = nullptr;
+	bool can_move = false;
 
 private:
 	float angle = 0.0f;
@@ -54,6 +55,7 @@ ALIEN_FACTORY PlayerController* CreatePlayerController() {
 	SHOW_IN_INSPECTOR_AS_SLIDER_INT(player->controllerIndex, 1, 2);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.movementSpeed);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.rotationSpeed);
+	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(player->playerData.jumpSpeed);
 	SHOW_IN_INSPECTOR_AS_ENUM(PlayerController::PlayerState, player->state);
 	return player;
 }

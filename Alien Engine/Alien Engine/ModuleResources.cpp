@@ -33,22 +33,21 @@ ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 
 ModuleResources::~ModuleResources()
 {
-	try {
-		std::vector<Resource*>::iterator item = resources.begin();
-		for (; item != resources.end(); ++item) {
-			if (*item != nullptr) {
-				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
-					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+
+	std::vector<Resource*>::iterator item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr) {
+			if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
+				static_cast<ResourceModel*>(*item)->meshes_attached.clear();
 #ifndef GAME_VERSION
-				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
-					static_cast<ResourceMaterial*>(*item)->SaveMaterialFiles();
+			if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
+				static_cast<ResourceMaterial*>(*item)->SaveMaterialFiles();
 #endif
-				delete* item;
-				*item = nullptr;
-			}
+			delete* item;
+			*item = nullptr;
 		}
 	}
-	catch (...) {}
+
 	resources.clear();
 
 	delete cube;
@@ -142,7 +141,6 @@ update_status ModuleResources::Update(float dt)
 bool ModuleResources::CleanUp()
 {
 	OPTICK_EVENT();
-	
 
 	return true;
 }
