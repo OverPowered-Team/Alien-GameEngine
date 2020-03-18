@@ -49,6 +49,13 @@ public:
 	uint LoadCubeMap(const std::vector<std::string>& texture_files);
 	void SetBuffers();
 
+	void ChangeNegativeZ(const uint& id, const char* path);
+	void ChangePositiveZ(const uint& id, const char* path);
+	void ChangePositiveY(const uint& id, const char* path);
+	void ChangeNegativeY(const uint& id, const char* path);
+	void ChangePositiveX(const uint& id, const char* path);
+	void ChangeNegativeX(const uint& id, const char* path);
+
 public:
 	std::vector<std::string> textures[6];
 	uint vao, vbo;
