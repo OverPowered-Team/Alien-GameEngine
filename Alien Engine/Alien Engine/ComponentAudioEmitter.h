@@ -12,6 +12,7 @@ struct Bank;
 class __declspec(dllexport) ComponentAudioEmitter : public Component
 {
 	friend class GameObject;
+	friend class ResourceAnimatorController;
 public:
 	ComponentAudioEmitter(GameObject* parent);
 	~ComponentAudioEmitter();
