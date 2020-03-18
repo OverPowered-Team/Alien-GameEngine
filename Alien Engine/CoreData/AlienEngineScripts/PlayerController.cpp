@@ -46,7 +46,7 @@ void PlayerController::Update()
 			/*animator->PlayState("Roll");*/
 			state = PlayerState::JUMPING;
 			animator->PlayState("Jump");
-			if(ccontroller->CanJump())ccontroller->Jump(transform->up * playerData.jumpSpeed);
+			if(ccontroller->CanJump())ccontroller->Jump();
 		}
 
 	} break;
@@ -68,7 +68,7 @@ void PlayerController::Update()
 		if (Input::GetControllerButtonDown(controllerIndex, Input::CONTROLLER_BUTTON_A)) {
 			/*animator->PlayState("Roll");*/
 			state = PlayerState::JUMPING;
-			if (ccontroller->CanJump())ccontroller->Jump(transform->up * playerData.jumpSpeed);
+			if (ccontroller->CanJump())ccontroller->Jump();
 		}
 
 	} break;
