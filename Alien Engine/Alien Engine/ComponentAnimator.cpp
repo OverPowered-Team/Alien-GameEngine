@@ -110,8 +110,8 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 void ComponentAnimator::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("ControllerID", source_animator_controller ? std::to_string(source_animator_controller->GetID()) : std::to_string(0));
+	to_save->SetString("ID", std::to_string(ID).data());
+	to_save->SetString("ControllerID", source_animator_controller ? std::to_string(source_animator_controller->GetID()).data() : std::to_string(0).data());
 	to_save->SetBoolean("Enabled", enabled);
 }
 

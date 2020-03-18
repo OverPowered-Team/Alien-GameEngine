@@ -720,17 +720,17 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("FarPlane", far_plane);
 	to_save->SetNumber("NearPlane", near_plane);
 	to_save->SetNumber("isFovHori", is_fov_horizontal);
-	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("ID", std::to_string(ID).data());
 	to_save->SetBoolean("IsGameCamera", (App->renderer3D->actual_game_camera == this) ? true : false);
 	to_save->SetBoolean("IsSelectedCamera", (game_object_attached->IsSelected()) ? true : false);
 	to_save->SetBoolean("PrintIcon", print_icon);
 	to_save->SetColor("IconColor", camera_icon_color);
-	to_save->SetString("Skybox_NegativeZ", cubemap->neg_z);
-	to_save->SetString("Skybox_PositiveZ", cubemap->pos_z);
-	to_save->SetString("Skybox_PositiveY", cubemap->pos_y);
-	to_save->SetString("Skybox_NegativeY", cubemap->neg_y);
-	to_save->SetString("Skybox_PositiveX", cubemap->pos_x);
-	to_save->SetString("Skybox_NegativeX", cubemap->neg_x);
+	to_save->SetString("Skybox_NegativeZ", cubemap->neg_z.data());
+	to_save->SetString("Skybox_PositiveZ", cubemap->pos_z.data());
+	to_save->SetString("Skybox_PositiveY", cubemap->pos_y.data());
+	to_save->SetString("Skybox_NegativeY", cubemap->neg_y.data());
+	to_save->SetString("Skybox_PositiveX", cubemap->pos_x.data());
+	to_save->SetString("Skybox_NegativeX", cubemap->neg_x.data());
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
