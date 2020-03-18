@@ -21,7 +21,7 @@ void ComponentBoxCollider::SetCenter(float3 value)
 	final_center = center.Mul(final_size);
 }
 
-void ComponentBoxCollider::SetSize(float3 value)
+void ComponentBoxCollider::SetSize(const float3 value)
 {
 	if (!value.Equals(size))
 	{

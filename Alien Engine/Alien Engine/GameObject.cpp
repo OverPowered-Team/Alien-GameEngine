@@ -1678,9 +1678,9 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				AddComponent(capsule_collider);
 				break; }
 			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
-				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
-				box_collider->LoadComponent(components_to_load);
-				AddComponent(box_collider);
+				ComponentConvexHullCollider* convex_hull_collider = new ComponentConvexHullCollider(this);
+				convex_hull_collider->LoadComponent(components_to_load);
+				AddComponent(convex_hull_collider);
 				break; }
 			case (int)ComponentType::RIGID_BODY: {
 				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);

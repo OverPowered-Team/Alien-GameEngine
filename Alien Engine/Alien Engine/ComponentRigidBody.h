@@ -18,6 +18,7 @@ class __declspec(dllexport) ComponentRigidBody : public Component
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
 
 public:
 
