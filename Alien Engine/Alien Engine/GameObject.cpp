@@ -1529,8 +1529,8 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 {
 	to_save->SetString("Name", name);
 	to_save->SetNumber("FamilyNumber", family_number);
-	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("ParentID",(parent != nullptr) ? std::to_string(parent->ID) : "0");
+	to_save->SetString("ID", std::to_string(ID).data());
+	to_save->SetString("ParentID",(parent != nullptr) ? std::to_string(parent->ID).data() : "0");
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetBoolean("ParentEnabled", parent_enabled);
 	to_save->SetBoolean("Selected", selected);
@@ -1540,7 +1540,7 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 	to_save->SetBoolean("PrefabLocked", prefab_locked);
 	to_save->SetString("Tag", tag);
 	if (IsPrefab()) {
-		to_save->SetString("PrefabID", std::to_string(prefabID));
+		to_save->SetString("PrefabID", std::to_string(prefabID).data());
 	}
 
 	JSONArraypack* components_to_save = to_save->InitNewArray("Components");

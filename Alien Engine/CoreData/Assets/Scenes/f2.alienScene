@@ -1,11 +1,11 @@
 {
     "Scene": {
-        "Name": "test_skybox_scene",
+        "Name": "f2",
         "GameObjects": [
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "14283252876318364087",
+                "ID": "8702456772457543049",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -20,14 +20,14 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            -4.6252145767211914,
+                            0,
                             0
                         ],
                         "Rotation": [
                             0,
-                            0.96937161684036255,
                             0,
-                            0.24559885263442993
+                            0,
+                            0
                         ],
                         "Scale": [
                             1,
@@ -35,13 +35,13 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "11594854218892447283"
+                        "ID": "2106081528715643941"
                     },
                     {
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 91.492843627929688,
+                        "HoritzontalFov": 92.13427734375,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "4774290282092289241",
+                        "ID": "3220341926672549636",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -71,9 +71,9 @@
                 ]
             },
             {
-                "Name": "Directional Light",
+                "Name": "Cube",
                 "FamilyNumber": 1,
-                "ID": "9367617329779308240",
+                "ID": "1780049042510271575",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -92,57 +92,46 @@
                             0
                         ],
                         "Rotation": [
-                            0.2798481285572052,
-                            -0.36470523476600647,
-                            0.115916907787323,
-                            0.88047623634338379
+                            -0.7071068286895752,
+                            0,
+                            0,
+                            0.70710670948028564
                         ],
                         "Scale": [
                             1,
                             1,
-                            0.99999994039535522
+                            1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5454680200998302486"
+                        "ID": "11000448302728260741"
                     },
                     {
-                        "Type": 3,
-                        "Enabled": true,
-                        "ID": "17860462871868360526",
-                        "PrintIcon": true,
-                        "Intensity": 1,
-                        "Position": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Direction": [
-                            -0.57735037803649902,
-                            -0.57735025882720947,
-                            0.57735025882720947
-                        ],
-                        "Ambient": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Diffuse": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "Specular": [
-                            1,
-                            1,
-                            1
-                        ]
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "3509074061284741043",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "11156672535260258727",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "17758791509819377371",
+                        "HasMaterial": true,
+                        "MaterialID": "3995232420294757645",
+                        "Enabled": true
                     }
                 ]
             },
             {
-                "Name": "Empty GameObject",
+                "Name": "Point light",
                 "FamilyNumber": 1,
-                "ID": "11067744830256144921",
+                "ID": "15216827618234059171",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -156,15 +145,15 @@
                     {
                         "Type": 0,
                         "Position": [
-                            0,
-                            0,
-                            0
+                            -1.1830682754516602,
+                            2.0131223201751709,
+                            -0.55032950639724731
                         ],
                         "Rotation": [
                             0,
-                            0.65778940916061401,
                             0,
-                            0.75320190191268921
+                            0,
+                            1
                         ],
                         "Scale": [
                             1,
@@ -172,38 +161,37 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "2439134144485734243"
+                        "ID": "17128091101656618476"
                     },
                     {
+                        "Type": 5,
                         "Enabled": true,
-                        "Type": 6,
-                        "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 91.492843627929688,
-                        "BackCol": [
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            0.10000000149011612,
-                            1
-                        ],
-                        "FarPlane": 200,
-                        "NearPlane": 0.10000000149011612,
-                        "isFovHori": 0,
-                        "ID": "13173318335543829511",
-                        "IsGameCamera": false,
-                        "IsSelectedCamera": true,
+                        "ID": "14882829790699571124",
                         "PrintIcon": true,
-                        "IconColor": [
-                            0.85000002384185791,
-                            0.85000002384185791,
-                            0.85000002384185791,
+                        "Intensity": 2,
+                        "Position": [
+                            -1.1830682754516602,
+                            2.0131223201751709,
+                            -0.55032950639724731
+                        ],
+                        "Ambient": [
+                            0.26960784196853638,
+                            0.26432141661643982,
+                            0.26432141661643982
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
                             1
                         ],
-                        "Skybox_NegativeZ": "Assets\/Textures\/Skybox\/negz.jpg",
-                        "Skybox_PositiveZ": "Assets\/Textures\/Skybox\/posz.jpg",
-                        "Skybox_PositiveY": "Assets\/Textures\/Skybox\/posy.jpg",
-                        "Skybox_NegativeY": "Assets\/Textures\/Skybox\/negy.jpg",
-                        "Skybox_PositiveX": "Assets\/Textures\/Skybox\/posx.jpg",
-                        "Skybox_NegativeX": "Assets\/Textures\/Skybox\/negx.jpg"
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Constant": 1,
+                        "Linear": 0.10000000149011612,
+                        "Quadratic": 0.019999999552965164
                     }
                 ]
             }
