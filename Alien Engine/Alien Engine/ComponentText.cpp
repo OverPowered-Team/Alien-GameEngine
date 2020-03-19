@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleResources.h"
 #include "ModuleObjects.h"
+#include "ModuleFileSystem.h"
 #include "ModuleUI.h"
 #include "PanelGame.h"
 #include "ComponentTransform.h"
@@ -10,6 +11,7 @@
 #include "Viewport.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
+#include "FileNode.h"
 #include "ReturnZ.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -69,9 +71,33 @@ bool ComponentText::DrawInspector()
 			set_bg_Z = true;
 		}
 
-		ImGui::Spacing(); ImGui::Separator(); ImGui::SetNextItemWidth(150);
+		ImGui::Spacing(); ImGui::Separator();
 
-		ImGui::DragInt("Width", &width, 5.f); ImGui::SameLine(); ImGui::SetNextItemWidth(150);
+		ImGui::Text("Font");
+		ImGui::SameLine();
+		ImGui::Button(font ? font->name.data() : "No Font Assigned", { ImGui::GetWindowWidth() * 0.55F , 0 });
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::FONT) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceFont* fnt = (ResourceFont*)App->resources->GetResourceWithID(ID);
+						if (fnt != nullptr) {
+							font = fnt;
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::Separator();
+
+		ImGui::SetNextItemWidth(150); ImGui::DragInt("Width", &width, 5.f); ImGui::SameLine(); ImGui::SetNextItemWidth(150);
 		ImGui::DragFloat("Interlineal", &interlineal, 0.25f);
 
 		ImGui::Spacing();
@@ -81,28 +107,6 @@ bool ComponentText::DrawInspector()
 	else {
 		RightClickMenu("Text");
 	}
-	return true;
-}
-
-bool ComponentText::DrawCharacter(Character ch)
-{
-	glBindTexture(GL_TEXTURE_2D, ch.textureID);
-
-	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, uvID);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	return true;
 }
 
@@ -119,12 +123,13 @@ void ComponentText::Draw(bool isGame)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		canvas->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 		canvas->text_ortho->Bind();
+		canvas->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 
 		glm::mat4 projection;
 		#ifndef GAME_VERSION
@@ -158,8 +163,8 @@ void ComponentText::Draw(bool isGame)
 	}
 	else
 	{
-		canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 		canvas->text_shader->Bind();
+		canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
 		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
 	}
@@ -331,7 +336,8 @@ void ComponentText::LoadComponent(JSONArraypack* to_load)
 
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
-		ResourceFont* font = (ResourceFont*)App->resources->GetResourceWithID(fontID);
+		font = (ResourceFont*)App->resources->GetResourceWithID(fontID);
+		LOG_ENGINE("Loaded font with ID %u", fontID);
 	}
 	else {
 		LOG_ENGINE("Font ID equals to 0! Font not founded");
