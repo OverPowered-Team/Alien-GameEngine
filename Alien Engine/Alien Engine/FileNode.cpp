@@ -382,6 +382,10 @@ void FileNode::SetIcon()
 			icon = App->resources->icons.model;
 			type = FileDropType::FONT;
 		}
+		else if (App->StringCmp(extension.data(), "otf")) {
+			icon = App->resources->icons.model;
+			type = FileDropType::FONT;
+		}
 		else if (App->StringCmp(extension.data(), "alienScene")) {
 			icon = App->resources->icons.scene_file;
 			type = FileDropType::SCENE;
