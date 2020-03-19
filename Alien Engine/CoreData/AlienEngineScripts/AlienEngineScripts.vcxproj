@@ -181,6 +181,7 @@
     <ClInclude Include="Macros\AlienScripts.h" />
     <ClInclude Include="MoreEventsClass.h" />
     <ClInclude Include="TestSwitches.h" />
+    <ClInclude Include="TriggerCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PolScriptSushi.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Macros\dllmain.cpp" />
     <ClCompile Include="MoreEventsClass.cpp" />
     <ClCompile Include="TestSwitches.cpp" />
+    <ClCompile Include="TriggerCamera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
