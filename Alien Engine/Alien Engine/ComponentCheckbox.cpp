@@ -140,7 +140,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && crossTexture != nullptr) {
+			if (ImGui::Button("X##CheckCrossTex") && crossTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (crossTexture != nullptr) {
 					crossTexture->DecreaseReferences();
@@ -198,7 +198,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && tickTexture != nullptr) {
+			if (ImGui::Button("X##CheckTickTex") && tickTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (tickTexture != nullptr) {
 					tickTexture->DecreaseReferences();
@@ -507,7 +507,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectUpCheck")) {
 				if (select_on_up != -1) {
 					select_on_up = -1;
 				}
@@ -545,7 +545,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectDownCheck")) {
 				if (select_on_down != -1) {
 					select_on_down = -1;
 				}
@@ -587,7 +587,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectRightCheck")) {
 				if (select_on_right != -1) {
 					select_on_right = -1;
 				}
@@ -627,7 +627,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectLeftCheck")) {
 				if (select_on_left != -1) {
 					select_on_left = -1;
 				}
