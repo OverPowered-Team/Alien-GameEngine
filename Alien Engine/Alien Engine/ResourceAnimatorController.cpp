@@ -1602,7 +1602,8 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 			if (next_key_time != previous_key_time)
 			{
 				previous_key_time = next_key_time;
-				ActiveEvent(animation, next_key_time);
+				if(!transitioning)
+					ActiveEvent(animation, next_key_time);
 				//LOG_ENGINE("THIS FRAME IS %s", std::to_string(next_key_time).c_str())
 			}
 
