@@ -316,12 +316,15 @@ bool ComponentButton::DrawInspector()
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnClick.begin(), item) + 3876987);
 						if (ImGui::Button("X") && (*item).second != nullptr) {
 							listenersOnClick.erase(item);
+							ImGui::PopID();
 							ImGui::PopStyleColor(3);
 							break;
 							//delete function
 						}
+						ImGui::PopID();
 						ImGui::PopStyleColor(3);
 					}
 
@@ -338,12 +341,15 @@ bool ComponentButton::DrawInspector()
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnHover.begin(), item) + 58613446);
 						if (ImGui::Button("X") && (*item).second != nullptr) {
 							listenersOnHover.erase(item);
+							ImGui::PopID();
 							ImGui::PopStyleColor(3);
 							break;
 							//delete function
 						}
+						ImGui::PopID();
 						ImGui::PopStyleColor(3);
 
 					}
@@ -361,12 +367,15 @@ bool ComponentButton::DrawInspector()
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnClickRepeat.begin(), item) + 4987543);
 						if (ImGui::Button("X") && (*item).second != nullptr) {
 							//delete function
 							listenersOnClickRepeat.erase(item);
+							ImGui::PopID();
 							ImGui::PopStyleColor(3);
 							break;
 						}
+						ImGui::PopID();
 						ImGui::PopStyleColor(3);
 					}
 
@@ -383,12 +392,15 @@ bool ComponentButton::DrawInspector()
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnRelease.begin(), item) + 7654367);
 						if (ImGui::Button("X") && (*item).second != nullptr) {
 							//delete function
 							listenersOnRelease.erase(item);
+							ImGui::PopID();
 							ImGui::PopStyleColor(3);
 							break;
 						}
+						ImGui::PopID();
 						ImGui::PopStyleColor(3);
 					}
 
@@ -586,7 +598,7 @@ bool ComponentButton::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectUpBut")) {
 				if (select_on_up != -1) {
 					select_on_up = -1;
 				}
@@ -624,7 +636,7 @@ bool ComponentButton::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectDownBut")) {
 				if (select_on_down != -1) {
 					select_on_down = -1;
 				}
@@ -666,7 +678,7 @@ bool ComponentButton::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectRightBut")) {
 				if (select_on_right != -1) {
 					select_on_right = -1;
 				}
@@ -709,7 +721,7 @@ bool ComponentButton::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectLeftBut")) {
 				if (select_on_left != -1) {
 					select_on_left = -1;
 				}

@@ -119,7 +119,7 @@ bool ComponentBar::DrawInspector()
 			ImGui::PopStyleColor(3);
 		}
 
-		/*----------SLIDER TEXTURE------------------*/
+		/*----------BAR TEXTURE------------------*/
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Bar Texture");
 
@@ -148,13 +148,7 @@ bool ComponentBar::DrawInspector()
 						ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 						if (tex != nullptr) {
 							ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-							if (tex != nullptr && tex != barTexture) {
-								tex->IncreaseReferences();
-								if (barTexture != nullptr) {
-									barTexture->DecreaseReferences();
-								}
-								barTexture = tex;
-							}
+							SetTextureBar(tex);
 						}
 					}
 				}
@@ -167,7 +161,7 @@ bool ComponentBar::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && barTexture != nullptr) {
+			if (ImGui::Button("X##BarTextureID") && barTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (barTexture != nullptr) {
 					barTexture->DecreaseReferences();
@@ -176,7 +170,7 @@ bool ComponentBar::DrawInspector()
 			}
 			ImGui::PopStyleColor(3);
 		}
-		/*----------SLIDER TEXTURE------------------*/
+		/*----------BAR TEXTURE------------------*/
 
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
@@ -242,7 +236,7 @@ void ComponentBar::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor * barScaleX; //w
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY; //h
-	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX; //x
+	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] /*+ offsetX*/; //x
 	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY; //y
 	DrawTexture(isGame, barTexture);
 
@@ -454,3 +448,16 @@ void ComponentBar::SetBarColor(float r, float g, float b, float a)
 {
 	bar_color = { r,g,b,a };
 }
+
+void ComponentBar::SetTextureBar(ResourceTexture* tex)
+{
+	if (tex != nullptr && tex != barTexture) {
+		tex->IncreaseReferences();
+		if (barTexture != nullptr) {
+			barTexture->DecreaseReferences();
+		}
+		barTexture = tex;
+		//SetSize(tex->width, tex->height);
+	}
+}
+
