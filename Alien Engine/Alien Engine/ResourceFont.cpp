@@ -3,6 +3,7 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
+#include "ResourceShader.h"
 #include "FreeType/include/freetype/freetype.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
@@ -14,13 +15,7 @@ ResourceFont::ResourceFont(ResourceFontData fontData):Resource(), fontData(fontD
 
 ResourceFont::~ResourceFont()
 {
-	for (auto itBuff = fontData.fontBuffer.begin(); itBuff != fontData.fontBuffer.end(); itBuff++)
-	{
-		delete[](*itBuff);
-	}
-
-	fontData.fontBuffer.clear();
-
+	FreeMemory();
 }
 
 void ResourceFont::CreateMeta()
@@ -262,7 +257,6 @@ uint ResourceFont::SaveFile(ResourceFontData& fontData, const char* exported_pat
 		memcpy(cursor, fontData.fontBuffer[i], bytes);
 		cursor += bytes;
 	}
-	// --------------------------------------------------
 
 	// Save the file
 	uint ret = App->file_system->Save(exported_path, buffer, size);
@@ -277,4 +271,14 @@ uint ResourceFont::SaveFile(ResourceFontData& fontData, const char* exported_pat
 	RELEASE_ARRAY(buffer);
 
 	return ret;
+}
+
+void ResourceFont::FreeMemory()
+{
+	for (auto itBuff = fontData.fontBuffer.begin(); itBuff != fontData.fontBuffer.end(); itBuff++)
+	{
+		delete[](*itBuff);
+	}
+
+	fontData.fontBuffer.clear();
 }

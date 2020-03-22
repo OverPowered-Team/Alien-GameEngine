@@ -280,6 +280,32 @@ void ComponentText::Draw(bool isGame)
 	glEnable(GL_CULL_FACE);
 }
 
+void ComponentText::Reset()
+{
+	current_color = Color::White();
+	width = 200;
+	interlineal = 1.5f;
+	text = "Insert Text";
+	font = App->resources->default_font;
+}
+
+void ComponentText::SetComponent(Component* component)
+{
+	component->enabled = enabled;
+	ComponentUI* ui = (ComponentUI*)component;
+	ui->current_color = current_color;
+
+	dynamic_cast<ComponentText*>(component)->text = text;
+	dynamic_cast<ComponentText*>(component)->width = width;
+	dynamic_cast<ComponentText*>(component)->interlineal = interlineal;
+	if (font != nullptr) {
+		dynamic_cast<ComponentText*>(component)->font = font;
+	}
+	else {
+		LOG_ENGINE("There's no default font!");
+	}
+}
+
 void ComponentText::Clone(Component* clone)
 {
 	clone->enabled = enabled;

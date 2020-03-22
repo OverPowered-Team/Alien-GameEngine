@@ -15,8 +15,9 @@ public:
 	bool DrawInspector();
 
 	void Draw(bool isGame) override;
-	void Reset() {};
-	void SetComponent(Component* component) {};
+
+	void Reset();
+	void SetComponent(Component* component);
 	void Clone(Component* clone);
 
 	void SaveComponent(JSONArraypack* to_save);
