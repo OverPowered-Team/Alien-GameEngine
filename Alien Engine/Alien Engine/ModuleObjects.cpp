@@ -1931,7 +1931,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	Component* comp = nullptr;
 	switch (type)
 	{
-	case ComponentType::CANVAS: {
+	case ComponentType::UI_CANVAS: {
 		object->SetName("Canvas");
 		comp = new ComponentCanvas(object);
 		object->AddComponent(comp);
@@ -1990,6 +1990,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		object->AddComponent(comp);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
+
 	case ComponentType::UI_ANIMATED_IMAGE: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentAnimatedImage(object);

@@ -20,7 +20,7 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	text_shader = SetShader("text_shader_meta.alien");
 	text_ortho = SetShader("text_ortho_meta.alien");
 
-	type = ComponentType::CANVAS;
+	type = ComponentType::UI_CANVAS;
 }
 
 ComponentCanvas::~ComponentCanvas()

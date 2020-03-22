@@ -80,7 +80,7 @@ void Component::RightClickMenu(const char* collapsing_header_name)
 			case ComponentType::CAMERA:
 				App->objects->component_in_copy = new ComponentCamera(nullptr);
 				break;
-			case ComponentType::CANVAS:
+			case ComponentType::UI_CANVAS:
 				App->objects->component_in_copy = new ComponentCanvas(nullptr);
 				break;
 			case ComponentType::UI: {
