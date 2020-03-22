@@ -91,7 +91,7 @@ void Skybox::ChangeNegativeZ(const uint& id, const char* path)
 		}
 	}*/
 	
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -112,7 +112,7 @@ void Skybox::ChangePositiveZ(const uint& id, const char* path)
 		}
 	}*/
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -175,7 +175,7 @@ void Skybox::ChangePositiveX(const uint& id, const char* path)
 		}
 	}*/
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -196,7 +196,7 @@ void Skybox::ChangeNegativeX(const uint& id, const char* path)
 		}
 	}*/
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }

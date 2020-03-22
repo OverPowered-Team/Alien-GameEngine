@@ -60,12 +60,12 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 	/* Create skybox */
 	cubemap = new Cubemap();
 	// This is the default skybox
-	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/negz.jpg");
-	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/posz.jpg");
-	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/posy.jpg");
-	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/negy.jpg");
-	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/posx.jpg");
-	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/negx.jpg");
+	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_x.png");
+	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_x.png");
+	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_y.png");
+	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_y.png");
+	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_z.png");
+	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_z.png");
 
 	skybox = new Skybox();
 	auto faces = cubemap->ToVector();
@@ -467,12 +467,12 @@ void ComponentCamera::Reset()
 	frustum.farPlaneDistance = far_plane;
 
 	// This is the default skybox/cubemap
-	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/negz.jpg");
-	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/posz.jpg");
-	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/posy.jpg");
-	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/negy.jpg");
-	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/posx.jpg");
-	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/negx.jpg");
+	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/sky_2/negz.png");
+	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/sky_2/posz.png");
+	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/sky_2/posy.png");
+	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/sky_2/negy.png");
+	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/sky_2/posx.png");
+	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/sky_2/negx.png");
 
 	vertical_fov = 60.0f;
 	frustum.verticalFov = Maths::Deg2Rad() * vertical_fov;
