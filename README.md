@@ -16,7 +16,7 @@ The user can check the editor options activating them in the renderer window.
 * Right Click + W/A/S/D: For Movement
 * Right Click + Z/X: For Going Up/Down
 * Left Alt + Left Click: Rotate
-* Left Alt + Middle Click: Move with mouse
+* Middle Click: Pam/Move with mouse
 * F: Focus the selected object
 * L: Look the selected object
 * Mouse Wheel: Zoom In/Out
