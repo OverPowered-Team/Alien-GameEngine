@@ -122,8 +122,6 @@ void ModuleCamera3D::Movement()
 	OPTICK_EVENT();
 	float3 movement(float3::zero());
 
-
-
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_REPEAT) movement += float3::unitY();
