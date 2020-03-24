@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "ModuleImporter.h"
 #include "ResourceTexture.h"
+#include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 
 Skybox::Skybox()
@@ -27,7 +28,11 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 	
 	for (int i = 0; i < texture_files.size(); ++i)
 	{
-		ResourceTexture* t = App->resources->GetTextureByName(texture_files[i].data());
+		std::string path = App->file_system->GetPathWithoutExtension(texture_files[i]);
+		path += "_meta.alien";
+
+		u64 ID = App->resources->GetIDFromAlienPath(path.data());
+		ResourceTexture* t = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 		t->IncreaseReferences();
 
 		glBindTexture(GL_TEXTURE_2D, t->id);
