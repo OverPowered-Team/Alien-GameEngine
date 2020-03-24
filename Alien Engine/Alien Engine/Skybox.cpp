@@ -28,13 +28,16 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 	int width, height, channels;
 	for (int i = 0; i < texture_files.size(); ++i)
 	{
-		auto item = App->resources->resources.begin();
+		ResourceTexture* t = App->resources->GetTextureByName(texture_files[i].data());
+		t->IncreaseReferences();
+		
+		/*auto item = App->resources->resources.begin();
 		for (; item != App->resources->resources.end(); ++item) {
 			if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && strcmp(texture_files[i].data(), (*item)->GetAssetsPath()) == 0) {
 				(*item)->IncreaseReferences();
 				break;
 			}
-		}
+		}*/
 
 		unsigned char* data = stbi_load(texture_files[i].c_str(), &width, &height, &channels, 0);
 
