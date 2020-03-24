@@ -49,12 +49,12 @@ public:
 	uint LoadCubeMap(const std::vector<std::string>& texture_files);
 	void SetBuffers();
 
-	void ChangePositiveX(const uint& id_skybox, const uint& id_texture, const char* path);
-	void ChangeNegativeX(const uint& id_skybox, const uint& id_texture, const char* path);
-	void ChangePositiveY(const uint& id_skybox, const uint& id_texture, const char* path);
-	void ChangeNegativeY(const uint& id_skybox, const uint& id_texture, const char* path);
-	void ChangePositiveZ(const uint& id_skybox, const uint& id_texture, const char* path);
-	void ChangeNegativeZ(const uint& id_skybox, const uint& id_texture, const char* path);
+	void ChangePositiveX(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
+	void ChangeNegativeX(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
+	void ChangePositiveY(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
+	void ChangeNegativeY(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
+	void ChangePositiveZ(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
+	void ChangeNegativeZ(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);
 
 public:
 	std::vector<std::string> textures[6];
