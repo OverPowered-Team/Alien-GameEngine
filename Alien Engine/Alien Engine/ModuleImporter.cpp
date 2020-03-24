@@ -582,7 +582,7 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 	
 	if (d)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, d);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, d);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		texture->id = tex_id_new;
