@@ -7,6 +7,7 @@
 #include "Devil/include/ilut.h"
 
 #include "stb_image.h"
+#include "FreeImage.h"
 
 #include "ModuleUI.h"
 #include "ComponentTransform.h"
@@ -569,11 +570,19 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	int width, height, channels;
-	unsigned char* tex_data = stbi_load(path, &width, &height, &channels, 0);
+	//unsigned char* tex_data = stbi_load(path, &width, &height, &channels, 0);
+	FREE_IMAGE_FORMAT im_format = FreeImage_GetFileType(path, 0);
+	FIBITMAP* im = FreeImage_Load(im_format, path);
+	im = FreeImage_ConvertTo32Bits(im);
+	FreeImage_FlipVertical(im);
 
-	if (tex_data)
+	BYTE* d = FreeImage_GetBits(im);
+	width = (int)FreeImage_GetWidth(im);
+	height = (int)FreeImage_GetHeight(im);
+	
+	if (d)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, d);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		texture->id = tex_id_new;
@@ -588,7 +597,8 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 		LOG_ENGINE("Can't load texture with path: %s", path);
 	}
 
-	stbi_image_free(tex_data);
+	FreeImage_Unload(im);
+	//stbi_image_free(tex_data);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

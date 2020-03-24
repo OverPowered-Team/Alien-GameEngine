@@ -276,6 +276,9 @@ bool ComponentCamera::DrawInspector()
 
 					if (texture_dropped != nullptr)
 					{
+						if (texture_dropped->references == 0)
+							texture_dropped->IncreaseReferences();
+
 						cubemap->pos_x.assign(texture_dropped->GetAssetsPath());
 						skybox->ChangePositiveX(skybox_texture_id, cubemap->pos_x.c_str());
 					}
