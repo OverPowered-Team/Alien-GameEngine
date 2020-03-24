@@ -113,19 +113,30 @@ void PanelHierarchy::PanelLogic()
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
 			GameObject* obj = *(GameObject**)payload->Data;
-			if (obj != nullptr) {
-				if (obj->IsPrefab() && obj->FindPrefabRoot() != obj) {
-					if (!App->objects->prefab_scene) {
-						popup_prefab_restructurate = true;
+			std::vector<GameObject*> objects;
+			if (!obj->IsSelected()) {
+				objects.push_back(obj);
+			}
+			else {
+				objects.assign(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end());
+			}
+			for (auto item = objects.begin(); item != objects.end(); ++item) {
+				if ((*item) != nullptr) {
+					if ((*item)->IsPrefab() && (*item)->FindPrefabRoot() != (*item)) {
+						if (!App->objects->prefab_scene) {
+							popup_prefab_restructurate = true;
+						}
+						else {
+							popup_move_child_outof_root_prefab_scene = true;
+						}
+					}
+					else if (!(*item)->is_static) {
+						App->objects->ReparentGameObject((*item), App->objects->GetRoot(false));
 					}
 					else {
-						popup_move_child_outof_root_prefab_scene = true;
+						LOG_ENGINE("Objects static can not be reparented");
 					}
 				}
-				else if (!obj->is_static)
-					App->objects->ReparentGameObject(obj, App->objects->GetRoot(false));
-				else
-					LOG_ENGINE("Objects static can not be reparented");
 			}
 			ImGui::ClearDragDrop();
 		}
@@ -304,13 +315,26 @@ void PanelHierarchy::PrintNode(GameObject* node)
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
 			GameObject* obj = *(GameObject**)payload->Data;
-			if (obj != nullptr) {
-				if (!App->objects->prefab_scene && obj->IsPrefab() && obj->FindPrefabRoot() != obj)
-					popup_prefab_restructurate = true;
-				else if (!obj->is_static)
-					App->objects->ReparentGameObject(obj, node);
-				else
-					LOG_ENGINE("Objects static can not be reparented");
+			std::vector<GameObject*> objects;
+			if (!obj->IsSelected()) {
+				objects.push_back(obj);
+			}
+			else {
+				objects.assign(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end());
+			}
+			for (auto item = objects.begin(); item != objects.end(); ++item) {
+				if ((*item) != nullptr) {
+					if (!App->objects->prefab_scene && (*item)->IsPrefab() && (*item)->FindPrefabRoot() != (*item)) {
+						popup_prefab_restructurate = true;
+					}
+					else if (!(*item)->is_static) {
+						App->objects->ReparentGameObject((*item), node);
+						node->open_node = true;
+					}
+					else {
+						LOG_ENGINE("Objects static can not be reparented");
+					}
+				}
 			}
 			ImGui::ClearDragDrop();
 		}
