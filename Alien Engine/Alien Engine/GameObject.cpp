@@ -1657,7 +1657,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				particleSystem->LoadComponent(components_to_load);
 				AddComponent(particleSystem);
 				break; }
-			case (int)ComponentType::CANVAS: {
+			case (int)ComponentType::UI_CANVAS: {
 				ComponentCanvas* canvas = new ComponentCanvas(this);
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
@@ -1822,7 +1822,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(material);
 					clone->AddComponent(material);
 					break; }
-				case ComponentType::CANVAS: {
+				case ComponentType::UI_CANVAS: {
 					ComponentCanvas* canvas = new ComponentCanvas(clone);
 					(*item)->Clone(canvas);
 					clone->AddComponent(canvas);
