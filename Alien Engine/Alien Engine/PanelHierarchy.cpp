@@ -529,41 +529,40 @@ void PanelHierarchy::RightClickMenu()
 			{
 				App->objects->CreateEffect(ComponentType::PARTICLES);
 			}
-
+			
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("UI"))
 		{
-			if (ImGui::MenuItem("Animated Image"))
+			if (ImGui::MenuItem("Image"))
 			{
-				App->objects->CreateBaseUI(ComponentType::UI_ANIMATED_IMAGE);
-			}
-			else if (ImGui::MenuItem("Bar"))
-			{
-				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
 			}
 			if (ImGui::MenuItem("Button"))
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_BUTTON);
 			}
-			else if (ImGui::MenuItem("Checkbox"))
+			if (ImGui::MenuItem("Checkbox"))
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_CHECKBOX);
 			}
-			else if (ImGui::MenuItem("Image"))
-			{
-				App->objects->CreateBaseUI(ComponentType::UI_IMAGE);
-			}
-			else if (ImGui::MenuItem("Slider"))
-			{
-				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
-			}
-			else if (ImGui::MenuItem("Text"))
+			if (ImGui::MenuItem("Text"))
 			{
 				App->objects->CreateBaseUI(ComponentType::UI_TEXT);
 			}
-			
+			if (ImGui::MenuItem("Slider"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_SLIDER);
+			}
+			if (ImGui::MenuItem("Bar"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_BAR);
+			}
+			if (ImGui::MenuItem("Animated Image"))
+			{
+				App->objects->CreateBaseUI(ComponentType::UI_ANIMATED_IMAGE);
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::MenuItem("Create..."))
