@@ -256,7 +256,7 @@ bool ComponentButton::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::Text("Texture");
+		ImGui::Text("Idle Texture");
 
 		ImGui::SameLine(120);
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
@@ -264,10 +264,10 @@ bool ComponentButton::DrawInspector()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 
-		ImGui::Button((texture == nullptr) ? "NULL" : std::string(texture->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+		ImGui::Button((idle_tex == nullptr) ? "NULL" : std::string(idle_tex->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
 
-		if (ImGui::IsItemClicked() && texture != nullptr) {
-			App->ui->panel_project->SelectFile(texture->GetAssetsPath(), App->resources->assets);
+		if (ImGui::IsItemClicked() && idle_tex != nullptr) {
+			App->ui->panel_project->SelectFile(idle_tex->GetAssetsPath(), App->resources->assets);
 		}
 
 		ImGui::PopStyleColor(3);
@@ -282,6 +282,7 @@ bool ComponentButton::DrawInspector()
 					if (ID != 0) {
 						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 						if (texture != nullptr) {
+							SetStateTexture(UIState::Idle, texture);
 							SetTexture(texture);
 						}
 					}
@@ -289,17 +290,217 @@ bool ComponentButton::DrawInspector()
 			}
 			ImGui::EndDragDropTarget();
 		}
-		if (texture != nullptr) {
+		if (idle_tex != nullptr) {
 			ImGui::SameLine();
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && texture != nullptr) {
+			if (ImGui::Button("X") && idle_tex != nullptr) {
 				ClearTexture();
 			}
 			ImGui::PopStyleColor(3);
 		}
+
+		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Hover Texture");
+
+		ImGui::SameLine(120);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+		ImGui::Button((hover_tex == nullptr) ? "NULL" : std::string(hover_tex->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+
+		if (ImGui::IsItemClicked() && hover_tex != nullptr) {
+			App->ui->panel_project->SelectFile(hover_tex->GetAssetsPath(), App->resources->assets);
+		}
+
+		ImGui::PopStyleColor(3);
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetStateTexture(UIState::Hover, texture);
+							
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if (hover_tex != nullptr) {
+			ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X") && hover_tex != nullptr) {
+				ClearTexture();
+			}
+			ImGui::PopStyleColor(3);
+		}
+
+		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Clicked Texture");
+
+		ImGui::SameLine(120);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+		ImGui::Button((clicked_tex == nullptr) ? "NULL" : std::string(clicked_tex->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+
+		if (ImGui::IsItemClicked() && clicked_tex != nullptr) {
+			App->ui->panel_project->SelectFile(clicked_tex->GetAssetsPath(), App->resources->assets);
+		}
+
+		ImGui::PopStyleColor(3);
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetStateTexture(UIState::Click, texture);
+							
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if (clicked_tex != nullptr) {
+			ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X") && clicked_tex != nullptr) {
+				ClearTexture();
+			}
+			ImGui::PopStyleColor(3);
+		}
+
+		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Pressed Texture");
+
+		ImGui::SameLine(120);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+		ImGui::Button((pressed_tex == nullptr) ? "NULL" : std::string(pressed_tex->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+
+		if (ImGui::IsItemClicked() && pressed_tex != nullptr) {
+			App->ui->panel_project->SelectFile(pressed_tex->GetAssetsPath(), App->resources->assets);
+		}
+
+		ImGui::PopStyleColor(3);
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetStateTexture(UIState::Pressed, texture);
+							
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if (pressed_tex != nullptr) {
+			ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X") && pressed_tex != nullptr) {
+				ClearTexture();
+			}
+			ImGui::PopStyleColor(3);
+		}
+
+		ImGui::Spacing();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+		ImGui::Text("Disabled Texture");
+
+		ImGui::SameLine(120);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+		ImGui::Button((disabled_tex == nullptr) ? "NULL" : std::string(disabled_tex->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+
+		if (ImGui::IsItemClicked() && disabled_tex != nullptr) {
+			App->ui->panel_project->SelectFile(disabled_tex->GetAssetsPath(), App->resources->assets);
+		}
+
+		ImGui::PopStyleColor(3);
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (texture != nullptr) {
+							SetStateTexture(UIState::Disabled, texture);
+							
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if (disabled_tex != nullptr) {
+			ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+			if (ImGui::Button("X") && disabled_tex != nullptr) {
+				ClearTexture();
+			}
+			ImGui::PopStyleColor(3);
+		}
+
+
+
+
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
 		//------------------------SCRIPTS----------------------------
@@ -751,6 +952,10 @@ bool ComponentButton::OnHover()
 {
 	if (active) {
 		current_color = hover_color;
+		if (hover_tex != nullptr){
+			SetTexture(hover_tex);
+			SetSize(hover_tex->width, hover_tex->height);
+		}
 		CallListeners(&listenersOnHover);
 	}
 	return true;
@@ -760,6 +965,10 @@ bool ComponentButton::OnClick()
 {
 	if (active) {
 		current_color = clicked_color;
+		if (clicked_tex != nullptr) {
+			SetTexture(clicked_tex);
+			SetSize(clicked_tex->width, clicked_tex->height);
+		}
 		CallListeners(&listenersOnClick);
 	}
 	return true;
@@ -769,6 +978,10 @@ bool ComponentButton::OnPressed()
 {
 	if (active) {
 		current_color = pressed_color;
+		if (pressed_tex != nullptr) {
+			SetTexture(pressed_tex);
+			SetSize(pressed_tex->width, pressed_tex->height);
+		}
 		CallListeners(&listenersOnClickRepeat);
 	}
 	return true;
@@ -778,6 +991,10 @@ bool ComponentButton::OnRelease()
 {
 	if (active) {
 		current_color = idle_color;
+		if (idle_tex != nullptr) {
+			SetTexture(idle_tex);
+			SetSize(idle_tex->width, idle_tex->height);
+		}
 		CallListeners(&listenersOnRelease);
 	}
 	return true;
@@ -803,14 +1020,83 @@ void ComponentButton::CallListeners(std::vector<std::pair<std::string, std::func
 	}
 }
 
+void ComponentButton::SetStateTexture(UIState state, ResourceTexture* tex)
+{
+	switch (state)
+	{
+	case Idle: {
+		if (tex != nullptr && tex != idle_tex) {
+			tex->IncreaseReferences();
+			if (idle_tex != nullptr) {
+				idle_tex->DecreaseReferences();
+			}
+			idle_tex = tex;
+		}
+		break; }
+	case Hover: {
+		if (tex != nullptr && tex != hover_tex) {
+			tex->IncreaseReferences();
+			if (hover_tex != nullptr) {
+				hover_tex->DecreaseReferences();
+			}
+			hover_tex = tex;
+		}
+		break; }
+	case Click: {
+		if (tex != nullptr && tex != clicked_tex) {
+			tex->IncreaseReferences();
+			if (clicked_tex != nullptr) {
+				clicked_tex->DecreaseReferences();
+			}
+			clicked_tex = tex;
+			
+		}
+		break; }
+	case Pressed: {
+		if (tex != nullptr && tex != pressed_tex) {
+			tex->IncreaseReferences();
+			if (pressed_tex != nullptr) {
+				pressed_tex->DecreaseReferences();
+			}
+			pressed_tex = tex;
+			
+		}
+		break; }
+	case Disabled: {
+		if (tex != nullptr && tex != disabled_tex) {
+			tex->IncreaseReferences();
+			if (disabled_tex != nullptr) {
+				disabled_tex->DecreaseReferences();
+			}
+			disabled_tex = tex;
+			
+		}
+		break; }
+	default: {
+		break; }
+	}
+	
+	
+}
+
+
 void ComponentButton::SetActive(bool active)
 {
 	this->active = active;
 	if (active) {
 		current_color = idle_color;
+
+		if (idle_tex != nullptr) {
+			SetTexture(idle_tex);
+			SetSize(idle_tex->width, idle_tex->height);
+		}
 	}
 	else {
 		current_color = disabled_color;
+		if (disabled_tex != nullptr) {
+			SetTexture(disabled_tex);
+			SetSize(disabled_tex->width, disabled_tex->height);
+		}
 	}
 }
 
