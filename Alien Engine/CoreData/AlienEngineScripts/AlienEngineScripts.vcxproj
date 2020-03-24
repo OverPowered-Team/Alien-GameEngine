@@ -182,6 +182,8 @@
     <ClInclude Include="MoreEventsClass.h" />
     <ClInclude Include="TestSwitches.h" />
     <ClInclude Include="TriggerCamera.h" />
+    <ClInclude Include="UI_Char_Frame.h" />
+    <ClInclude Include="UltiBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PolScriptSushi.cpp" />
@@ -195,6 +197,8 @@
     <ClCompile Include="MoreEventsClass.cpp" />
     <ClCompile Include="TestSwitches.cpp" />
     <ClCompile Include="TriggerCamera.cpp" />
+    <ClCompile Include="UI_Char_Frame.cpp" />
+    <ClCompile Include="UltiBar.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
