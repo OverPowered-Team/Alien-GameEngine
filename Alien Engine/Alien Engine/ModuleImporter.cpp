@@ -6,6 +6,8 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 
+#include "stb_image.h"
+
 #include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
@@ -556,39 +558,39 @@ ResourceFont *ModuleImporter::LoadFontFile(const char *path)
 
 void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
 {
-	ILuint new_image_id = 0;
-	ilGenImages(1, &new_image_id);
-	ilBindImage(new_image_id);
+	uint tex_id_new = 0;
 
-	ilutRenderer(ILUT_OPENGL);
+	glGenTextures(1, &tex_id_new);
+	glBindTexture(GL_TEXTURE_2D, tex_id_new);
 
-	if (ilLoadImage(path))
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	int width, height, channels;
+	unsigned char* tex_data = stbi_load(path, &width, &height, &channels, 0);
+
+	if (tex_data)
 	{
-		iluFlipImage();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 
-		texture->id = ilutGLBindTexImage();
+		texture->id = tex_id_new;
 		texture->is_custom = true;
-		texture->width = ilGetInteger(IL_IMAGE_WIDTH);
-		texture->height = ilGetInteger(IL_IMAGE_HEIGHT);
+		texture->width = width;
+		texture->height = height;
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		LOG_ENGINE("Texture successfully loaded: %s", path);
+		LOG_ENGINE("Generated and loaded correctly texture with path: %s", path);
 	}
 	else
 	{
-		LOG_ENGINE("Error while loading image in %s", path);
-		LOG_ENGINE("Error: %s", ilGetString(ilGetError()));
+		LOG_ENGINE("Can't load texture with path: %s", path);
 	}
 
-	ilDeleteImages(1, &new_image_id);
+	stbi_image_free(tex_data);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
