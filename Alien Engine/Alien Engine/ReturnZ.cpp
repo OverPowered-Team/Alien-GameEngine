@@ -238,7 +238,7 @@ bool ReturnZ::DoAction(ReturnZ* action, bool is_fordward)
 					ComponentMesh* mesh = (ComponentMesh*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(mesh, comp->comp);
 					break; }
-				case ComponentType::UI_CANVAS: {
+				case ComponentType::CANVAS: {
 					ComponentCanvas* canvas = (ComponentCanvas*)App->objects->GetGameObjectByID(comp->comp->objectID)->GetComponentWithID(comp->comp->compID);
 					CompZ::SetComponent(canvas, comp->comp);
 					break; }
@@ -395,7 +395,7 @@ void ReturnZ::SetDeleteObject(GameObject* obj, ActionDeleteObject* to_fill)
 					CompZ::SetCompZ((*item), (CompZ**)&meshZ);
 					comp = meshZ;
 					break; }
-				case ComponentType::UI_CANVAS: {
+				case ComponentType::CANVAS: {
 					CompZ* canvasZ = nullptr;
 					CompZ::SetCompZ((*item), (CompZ**)&canvasZ);
 					comp = canvasZ;
@@ -523,7 +523,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 						CompZ::SetComponent(mesh, meshZ);
 						new_obj->AddComponent(mesh);
 						break; }
-					case ComponentType::UI_CANVAS: {
+					case ComponentType::CANVAS: {
 						ComponentCanvas* canvas = new ComponentCanvas(new_obj);
 						CompZ::SetComponent(canvas, (*item));
 						new_obj->AddComponent(canvas);
@@ -697,7 +697,7 @@ void CompZ::SetCompZ(Component* component, CompZ** compZ)
 		*compZ = lightZ;
 		lightZ->objectID = light->game_object_attached->ID;
 		break; }
-	case ComponentType::UI_CANVAS: {
+	case ComponentType::CANVAS: {
 		ComponentCanvas* canvas = (ComponentCanvas*)component;
 		CompZ* canvasZ = new CompZ();
 		*compZ = canvasZ;
@@ -877,7 +877,7 @@ void CompZ::SetComponent(Component* component, CompZ* compZ)
 		ComponentLightPoint* light = (ComponentLightPoint*)component;
 		CompLightZ* lightZ = (CompLightZ*)compZ;
 		break; }
-	case ComponentType::UI_CANVAS: {
+	case ComponentType::CANVAS: {
 		ComponentCanvas* canvas = (ComponentCanvas*)component;
 		CompZ* canvasZ = (CompZ*)compZ;
 		break; }
@@ -1231,7 +1231,7 @@ void CompZ::AttachCompZToGameObject(CompZ* compZ)
 		CompZ::SetComponent(light, compZ);
 		obj->AddComponent(light);
 		break; }
-	case ComponentType::UI_CANVAS: {
+	case ComponentType::CANVAS: {
 		ComponentCanvas* canvas = new ComponentCanvas(obj);
 		CompZ::SetComponent(canvas, compZ);
 		obj->AddComponent(canvas);

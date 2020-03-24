@@ -169,6 +169,8 @@ void ComponentTransform::SetLocalTransform(const float3& position, const Quat& r
 	local_position = position;
 	local_rotation = rotation;
 	local_scale = scale;
+
+	RecalculateTransform();
 }
 
 void ComponentTransform::LookScale()

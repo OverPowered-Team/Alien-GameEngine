@@ -49,11 +49,14 @@
 
 #include "Optick/include/optick.h"
 
-GameObject::GameObject(GameObject* parent)
+GameObject::GameObject(GameObject* parent, bool ignore_transform)
 {
 	ID = App->resources->GetRandomID();
-	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
-	AddComponent(transform);
+	
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 
 	if (parent != nullptr) {
 		this->parent = parent;
@@ -1657,7 +1660,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				particleSystem->LoadComponent(components_to_load);
 				AddComponent(particleSystem);
 				break; }
-			case (int)ComponentType::UI_CANVAS: {
+			case (int)ComponentType::CANVAS: {
 				ComponentCanvas* canvas = new ComponentCanvas(this);
 				canvas->LoadComponent(components_to_load);
 				AddComponent(canvas);
@@ -1765,7 +1768,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 GameObject* GameObject::Clone(GameObject* parent)
 {
 	OPTICK_EVENT();
-	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
+	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent, true);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);
 	return clone;
@@ -1800,7 +1803,10 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					clone->transform->SetGlobalTransformation(transform->global_transformation);
+					ComponentTransform* trans = new ComponentTransform(clone);
+					(*item)->Clone(trans);
+					clone->AddComponent(trans);
+					clone->transform = trans;
 					break; }
 				case ComponentType::LIGHT_DIRECTIONAL: {
 					ComponentLightDirectional* light = new ComponentLightDirectional(clone);
@@ -1822,7 +1828,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(material);
 					clone->AddComponent(material);
 					break; }
-				case ComponentType::UI_CANVAS: {
+				case ComponentType::CANVAS: {
 					ComponentCanvas* canvas = new ComponentCanvas(clone);
 					(*item)->Clone(canvas);
 					clone->AddComponent(canvas);
@@ -1904,7 +1910,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 		auto item = children.begin();
 		for (; item != children.end(); ++item) {
 			if (*item != nullptr) {
-				GameObject* child = new GameObject(clone);
+				GameObject* child = new GameObject(clone, true);
 				(*item)->CloningGameObject(child);
 			}
 		}

@@ -547,7 +547,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		transitions_array->SetString("Source", (*it)->GetSource()->GetName().data());
 		transitions_array->SetString("Target", (*it)->GetTarget()->GetName().data());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
-		transitions_array->SetNumber("End", (*it)->GetEnd());
+		transitions_array->SetBoolean("End", (*it)->GetEnd());
 
 		JSONArraypack* int_conditions_array = transitions_array->InitNewArray("IntConditions");
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();

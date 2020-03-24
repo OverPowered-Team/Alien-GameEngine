@@ -353,7 +353,11 @@ bool ModuleCamera3D::TestTrianglesIntersections(GameObject* object, const LineSe
 			triangle_to_check.Transform(transform->global_transformation);
 			if (ray.Intersects(triangle_to_check, nullptr, nullptr))
 			{
-				object->parent->open_node = true;
+				GameObject* obj = object->parent;
+				while (obj->parent != nullptr) {
+					obj->open_node = true;
+					obj = obj->parent;
+				}
 				App->objects->SetNewSelectedObject(object);
 				ret = true;
 				break;

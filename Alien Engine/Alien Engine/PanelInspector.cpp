@@ -359,9 +359,10 @@ void PanelInspector::ButtonAddComponent()
 			}
 		}
 	}
+
 	else {
-		ImGui::Combo("##choose component", &component,
-			"Select Component\0Animator\0Audio Emitter\0Audio Listener\0Audio Reverb\0Camera\0Character Controller\0Collider Box\0Collider Capsule\0Collider Convexhull\0Collider Sphere\0Light Directional\0Light Point\0Light Spot\0Material\0Mesh\0ParticleSystem\0Rigidbody\0UICanvas\0UIAnimatedImage\0UIBar\0UIButton\0UICheckbox\0UIImage\0UISlider\0UIText\0Script\0"); // SCRIPT MUST BE THE LAST ONE
+		ImGui::Combo("##choose component", &component, 
+			"Select Component\0Mesh\0Material\0Light Directional\0Light Spot\0Light Point\0Camera\0Box Collider\0Sphere Collider\0Capsule Collider\0ConvexHull Collider\0Rigid Body\0Constraint Point\0Character Controller\0Animator\0Particle System\0Audio Emitter\0Audio Listener\0Audio Reverb\0Canvas\0Image\0Button\0Text\0Checkbox\0Slider\0Bar\0AnimatedImage\0DeformableMesh\0Bone\0Script\0"); // SCRIPT MUST BE THE LAST ONE
 		ImGui::SameLine();
 
 		if (ImGui::Button("Add Component"))
@@ -374,6 +375,84 @@ void PanelInspector::ButtonAddComponent()
 				LOG_ENGINE("Select a Component!");
 				break; }
 
+			case ComponentType::MESH: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
+				{
+					comp = new ComponentMesh(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::MATERIAL: {
+
+				if ((!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MATERIAL)) &&
+					App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
+				{
+					comp = new ComponentMaterial(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+
+				else if (App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MATERIAL))
+				{
+					LOG_ENGINE("The selected object already has this component!");
+				}
+
+				else
+					LOG_ENGINE("The object needs a mesh to have a material!");
+
+				break; }
+
+			case ComponentType::LIGHT_DIRECTIONAL: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_DIRECTIONAL))
+				{
+					comp = new ComponentLightDirectional(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_SPOT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_SPOT))
+				{
+					comp = new ComponentLightSpot(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+			case ComponentType::LIGHT_POINT: {
+
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_POINT))
+				{
+					comp = new ComponentLightPoint(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
+			case ComponentType::CAMERA: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CAMERA))
+				{
+					comp = new ComponentCamera(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+					App->renderer3D->selected_game_camera = (ComponentCamera*)comp;
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+
+				break; }
+
 			case ComponentType::ANIMATOR: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::ANIMATOR))
 				{
@@ -383,7 +462,15 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has this component!");
 				break; }
-
+			case ComponentType::PARTICLES: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::PARTICLES))
+				{
+					comp = new ComponentParticleSystem(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				else
+					LOG_ENGINE("The selected object already has this component!");
+				break; }
 			case ComponentType::A_EMITTER: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_EMITTER))
 				{
@@ -394,7 +481,7 @@ void PanelInspector::ButtonAddComponent()
 					LOG_ENGINE("The selected object already has this component!");
 				break; }
 
-			case ComponentType::A_LISTENER: {
+				case ComponentType::A_LISTENER: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::A_LISTENER))
 				{
 					comp = new ComponentAudioListener(App->objects->GetSelectedObjects().back());
@@ -416,154 +503,8 @@ void PanelInspector::ButtonAddComponent()
 					LOG_ENGINE("The selected object already has this component!");
 				break; }
 
-			case ComponentType::CAMERA: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CAMERA))
-				{
-					comp = new ComponentCamera(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-					App->renderer3D->selected_game_camera = (ComponentCamera*)comp;
-				}
-				else
-					LOG_ENGINE("The selected object already has Component Camera!");
-				break; }
-
-			case ComponentType::CHARACTER_CONTROLLER: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CHARACTER_CONTROLLER))
-				{
-					comp = new ComponentCharacterController(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component Character Controller!");
-				break; }
-
-			case ComponentType::BOX_COLLIDER: {
-				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
-				{
-					comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component collider!");
-				break; }
-
-			case ComponentType::CAPSULE_COLLIDER: {
-				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
-				{
-					comp = new ComponentCapsuleCollider(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component collider!");
-				break; }
-
-			case ComponentType::CONVEX_HULL_COLLIDER: {
-				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
-				{
-					comp = new ComponentConvexHullCollider(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component collider!");
-				break; }
-
-			case ComponentType::SPHERE_COLLIDER: {
-				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
-				{
-					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component collider!");
-				break; }
-
-			case ComponentType::LIGHT_DIRECTIONAL: {
-
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_DIRECTIONAL))
-				{
-					comp = new ComponentLightDirectional(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has this component!");
-
-				break; }
-
-			case ComponentType::LIGHT_POINT: {
-
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_POINT))
-				{
-					comp = new ComponentLightPoint(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has this component!");
-
-				break; }
-
-			case ComponentType::LIGHT_SPOT: {
-
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::LIGHT_SPOT))
-				{
-					comp = new ComponentLightSpot(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has this component!");
-
-				break; }
-
-			case ComponentType::MATERIAL: {
-				if ((!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MATERIAL)) &&
-					App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
-				{
-					comp = new ComponentMaterial(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else if (App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MATERIAL))
-				{
-					LOG_ENGINE("The selected object already has this component!");
-				}
-				else
-					LOG_ENGINE("The object needs a mesh to have a material!");
-
-				break; }
-
-			case ComponentType::MESH: {
-
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::MESH))
-				{
-					comp = new ComponentMesh(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-
-				else
-					LOG_ENGINE("The selected object already has this component!");
-
-				break; }
-
-			case ComponentType::PARTICLES: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::PARTICLES))
-				{
-					comp = new ComponentParticleSystem(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has this component!");
-				break; }
-
-			case ComponentType::RIGID_BODY: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::RIGID_BODY))
-				{
-					comp = new ComponentRigidBody(App->objects->GetSelectedObjects().back());
-					App->objects->GetSelectedObjects().back()->AddComponent(comp);
-				}
-				else
-					LOG_ENGINE("The selected object already has a Component Rigidbody!");
-				break; }
-
-			case ComponentType::UI_CANVAS: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI_CANVAS))
+				case ComponentType::CANVAS: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CANVAS))
 				{
 					comp = new ComponentCanvas(App->objects->GetSelectedObjects().back());
 					App->objects->GetSelectedObjects().back()->AddComponent(comp);
@@ -574,34 +515,20 @@ void PanelInspector::ButtonAddComponent()
 
 				break; }
 
-			case ComponentType::UI_ANIMATED_IMAGE: {
+			case ComponentType::UI_IMAGE: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
 					ComponentCanvas* canvas = GetCanvas();
 					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentAnimatedImage(selected);
+					comp = new ComponentImage(selected);
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 				}
+
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
-			case ComponentType::UI_BAR: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
-				{
-					ComponentCanvas* canvas = GetCanvas();
-					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentBar(selected);
-					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
-					selected->AddComponent(comp);
-					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component UI!");
-				break; }
-
 			case ComponentType::UI_BUTTON: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -616,7 +543,19 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
+			case ComponentType::UI_TEXT: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentText(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+				}
+				else
+					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
 			case ComponentType::UI_CHECKBOX: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -631,21 +570,6 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
-			case ComponentType::UI_IMAGE: {
-				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
-				{
-					ComponentCanvas* canvas = GetCanvas();
-					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentImage(selected);
-					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
-					selected->AddComponent(comp);
-					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
-				}
-				else
-					LOG_ENGINE("The selected object already has Component UI!");
-				break; }
-
 			case ComponentType::UI_SLIDER: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
@@ -660,13 +584,12 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
-
-			case ComponentType::UI_TEXT: {
+			case ComponentType::UI_BAR: {
 				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
 				{
 					ComponentCanvas* canvas = GetCanvas();
 					GameObject* selected = App->objects->GetSelectedObjects().back();
-					comp = new ComponentText(selected);
+					comp = new ComponentBar(selected);
 					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 					selected->AddComponent(comp);
 					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
@@ -674,12 +597,68 @@ void PanelInspector::ButtonAddComponent()
 				else
 					LOG_ENGINE("The selected object already has Component UI!");
 				break; }
+			case ComponentType::UI_ANIMATED_IMAGE: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::UI))
+				{
+					ComponentCanvas* canvas = GetCanvas();
+					GameObject* selected = App->objects->GetSelectedObjects().back();
+					comp = new ComponentAnimatedImage(selected);
+					dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+					selected->AddComponent(comp);
+					App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+				}
+				else
+					LOG_ENGINE("The selected object already has Component UI!");
+				break; }
+			case ComponentType::BOX_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentBoxCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::SPHERE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentSphereCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CAPSULE_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentCapsuleCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CONVEX_HULL_COLLIDER: {
+				if (App->objects->GetSelectedObjects().back()->GetComponent<ComponentCollider>() == nullptr)
+				{
+					comp = new ComponentConvexHullCollider(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::RIGID_BODY: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::RIGID_BODY))
+				{
+					comp = new ComponentRigidBody(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
+			case ComponentType::CHARACTER_CONTROLLER: {
+				if (!App->objects->GetSelectedObjects().back()->HasComponent(ComponentType::CHARACTER_CONTROLLER))
+				{
+					comp = new ComponentCharacterController(App->objects->GetSelectedObjects().back());
+					App->objects->GetSelectedObjects().back()->AddComponent(comp);
+				}
+				break; }
 			}
+
 
 			if (comp != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
 			}
-			component = 0;
+			component=0;
 		}
 	}
 }

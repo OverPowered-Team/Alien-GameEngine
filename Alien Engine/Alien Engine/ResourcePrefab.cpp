@@ -4,6 +4,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentTransform.h"
 #include "PanelHierarchy.h"
+#include "Prefab.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleUI.h"
@@ -192,29 +193,6 @@ void ResourcePrefab::Save(GameObject* prefab_root)
 		App->objects->enable_instancies = true;
 		remove("Library/save_prefab_scene.alienScene");
 	}
-	App->objects->ignore_cntrlZ = true;
-	App->objects->in_cntrl_Z = true;
-	std::vector<GameObject*> objs;
-	App->objects->GetRoot(true)->GetObjectWithPrefabID(ID, &objs);
-	if (!objs.empty()) {
-		std::vector<GameObject*>::iterator item = objs.begin();
-		for (; item != objs.end(); ++item) {
-			if (*item != nullptr && !(*item)->prefab_locked && (*item) != prefab_root) {
-				GameObject* parent = (*item)->parent;
-				std::vector<GameObject*>::iterator iter = parent->children.begin();
-				for (; iter != parent->children.end(); ++iter) {
-					if (*iter == (*item)) {
-						(*item)->ToDelete();
-						float3 pos = static_cast<ComponentTransform*>((*item)->GetComponent(ComponentType::TRANSFORM))->GetLocalPosition();
-						ConvertToGameObjects(parent, iter - parent->children.begin(), pos, false);
-						break;
-					}
-				}
-			}
-		}
-	}
-	App->objects->in_cntrl_Z = false;
-	App->objects->ignore_cntrlZ = false;
 }
 
 void ResourcePrefab::OpenPrefabScene()
@@ -288,6 +266,21 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 				}
 			}
 		}
+
+		if (!App->objects->to_add.empty()) {
+			auto item = App->objects->to_add.begin();
+			for (; item != App->objects->to_add.end(); ++item) {
+				GameObject* found = App->objects->GetGameObjectByID((*item).first);
+				if (found != nullptr) {
+					*(*item).second = found;
+				}
+			}
+		}
+
+		if (!App->objects->current_scripts.empty() && Time::IsInGameState()) {
+			Prefab::InitScripts(obj);
+		}
+
 		App->objects->ReAttachUIScriptEvents();
 		obj->ResetIDs();
 		obj->SetPrefab(ID);
