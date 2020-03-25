@@ -299,8 +299,10 @@ uint ResourceFont::SaveFile(ResourceFontData& fontData, const char* exported_pat
 
 bool ResourceFont::LoadMemory()
 {
-	text_shader->LoadMemory();
-	text_ortho->LoadMemory();
+	if (text_shader != nullptr)
+		text_shader->LoadMemory();
+	if (text_ortho != nullptr)
+		text_ortho->LoadMemory();
 	return true;
 }
 

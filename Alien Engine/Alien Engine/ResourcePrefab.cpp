@@ -231,7 +231,7 @@ void ResourcePrefab::OpenPrefabScene()
 	ConvertToGameObjects(App->objects->GetRoot(true));
 }
 
-void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, float3 pos, bool set_selected)
+GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, float3 pos, bool set_selected)
 {
 	JSON_Value* value = json_parse_file(meta_data_path.data());
 	JSON_Object* object = json_value_get_object(value);
@@ -310,8 +310,11 @@ void ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, floa
 		}
 
 		delete prefab;
+
+		return obj;
 	}
 	else {
 		LOG_ENGINE("Error loading prefab %s", path.data());
 	}
+	return nullptr;
 }
