@@ -30,6 +30,13 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 	ui_type = ComponentType::UI_TEXT;
 	tabbable = false;
+
+	font->IncreaseReferences();
+}
+
+ComponentText::~ComponentText()
+{
+	font->DecreaseReferences();
 }
 
 bool ComponentText::DrawInspector()
@@ -112,7 +119,7 @@ bool ComponentText::DrawInspector()
 
 void ComponentText::Draw(bool isGame)
 {
-	if (canvas == nullptr || canvas_trans == nullptr) {
+	if (font == nullptr || canvas_trans == nullptr || canvas == nullptr) {
 		return;
 	}
 
@@ -128,8 +135,8 @@ void ComponentText::Draw(bool isGame)
 	glAlphaFunc(GL_GREATER, 0.0f);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		canvas->text_ortho->Bind();
-		canvas->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+		font->text_ortho->Bind();
+		font->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 
 		glm::mat4 projection;
 		#ifndef GAME_VERSION
@@ -159,14 +166,14 @@ void ComponentText::Draw(bool isGame)
 		y = origin.y * App->window->height;
 		#endif
 
-		canvas->text_ortho->SetUniformMat4f("projection", proj_mat);
+		font->text_ortho->SetUniformMat4f("projection", proj_mat);
 	}
 	else
 	{
-		canvas->text_shader->Bind();
-		canvas->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
-		canvas->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
-		canvas->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+		font->text_shader->Bind();
+		font->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+		font->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+		font->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
 	}
 
 	glActiveTexture(GL_TEXTURE0);
@@ -271,7 +278,7 @@ void ComponentText::Draw(bool isGame)
 		}
 	}
 	
-	canvas->text_shader->Unbind();
+	font->text_shader->Unbind();
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 

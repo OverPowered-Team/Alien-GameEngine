@@ -10,7 +10,7 @@ class __declspec(dllexport) ComponentText :public ComponentUI
 {
 public:
 	ComponentText(GameObject* obj);
-	virtual ~ComponentText() {};
+	~ComponentText();
 
 	bool DrawInspector();
 
