@@ -26,6 +26,12 @@
     <ClCompile Include="TriggerCamera.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Char_Frame.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UltiBar.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -51,6 +57,12 @@
     <ClInclude Include="TerrainSwitch.h" />
     <ClInclude Include="TestSwitches.h" />
     <ClInclude Include="TriggerCamera.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Char_Frame.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UltiBar.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
