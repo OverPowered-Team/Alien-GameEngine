@@ -19,6 +19,8 @@
 #include "ResourceMesh.h"
 #include "ResourceMaterial.h"
 
+#include "imgui/imgui_internal.h"
+
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
 #include "ComponentParticleSystem.h"
@@ -96,6 +98,9 @@ void PanelInspector::PanelLogic()
 		else {
 			draw_add = true;
 		}
+
+		DropScript();
+
 	}
 	else if (App->objects->GetSelectedObjects().size() > 1) 
 	{
@@ -746,5 +751,61 @@ ComponentCanvas* PanelInspector::GetCanvas()
 		obj->AddComponent(canvas);
 	}
 	return canvas;
+}
+
+void PanelInspector::DropScript()
+{
+	// drop a node in the window, parent is base_game_object
+	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
+	ImVec2 max_space = ImGui::GetWindowContentRegionMax();
+
+	min_space.x += ImGui::GetWindowPos().x;
+	min_space.y += ImGui::GetWindowPos().y;
+	max_space.x += ImGui::GetWindowPos().x;
+	max_space.y += ImGui::GetWindowPos().y;
+
+	if (ImGui::BeginDragDropTargetCustom({ min_space.x,min_space.y, max_space.x,max_space.y }, ImGui::GetID(panel_name.data()))) {
+		const ImGuiPayload* payload = ImGui::GetDragDropPayload();
+		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+			FileNode* node = *(FileNode**)payload->Data;
+			if (node->type == FileDropType::SCRIPT && ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover)) {
+				if (App->objects->GetSelectedObjects().size() == 1) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					ResourceScript* script = (ResourceScript*)App->resources->GetResourceWithID(ID);
+					path = node->path + node->name;
+					JSONfilepack* scriptData = JSONfilepack::GetJSON(path.data());
+					if (script != nullptr && scriptData != nullptr && scriptData->GetBoolean("HasData")) {
+						JSONArraypack* structure = scriptData->GetArray("DataStructure");
+						if (structure != nullptr) {
+							structure->GetFirstNode();
+							for (uint i = 0; i < structure->GetArraySize(); ++i) {
+								if (strcmp(structure->GetString("DataName"), App->file_system->GetBaseFileName(node->name.data()).data()) == 0) {
+									ComponentScript* comp_script = new ComponentScript(App->objects->GetSelectedObjects().back());
+									comp_script->resourceID = script->GetID();
+									comp_script->LoadData(structure->GetString("DataName"), structure->GetBoolean("UsesAlien"));
+									ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, (void*)comp_script);
+									if (Time::IsInGameState() && comp_script->need_alien && comp_script->data_ptr != nullptr) {
+										Alien* alien = (Alien*)comp_script;
+										if (alien != nullptr) {
+											alien->Awake();
+											alien->Start();
+										}
+									}
+									break;
+								}
+								structure->GetAnotherNode();
+							}
+							delete scriptData;
+						}
+					}
+				}
+
+				ImGui::ClearDragDrop();
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
 }
 
