@@ -4,17 +4,17 @@
             {
                 "Name": "Great_Sword_Idle",
                 "FamilyNumber": 1,
-                "ID": "11145484787557281305",
+                "ID": "16477760167829773675",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -35,24 +35,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6068321562088761484"
+                        "ID": "3029944236260916990"
                     }
                 ]
             },
             {
                 "Name": "default",
                 "FamilyNumber": 2,
-                "ID": "10480602446537100259",
-                "ParentID": "11145484787557281305",
+                "ID": "2657250607311549344",
+                "ParentID": "16477760167829773675",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -73,24 +73,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "3365123391791527507"
+                        "ID": "13971104461323593540"
                     }
                 ]
             },
             {
                 "Name": "GeraltSubs_Belt006_Belt007",
                 "FamilyNumber": 2,
-                "ID": "1219473156397670931",
-                "ParentID": "11145484787557281305",
+                "ID": "12061163916903885554",
+                "ParentID": "16477760167829773675",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -111,7 +111,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "4577481967696373016"
+                        "ID": "8192796234936178987"
                     },
                     {
                         "Type": 27,
@@ -121,14 +121,14 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "3864962023932145877",
+                        "ID": "2912370254259490193",
                         "MeshID": "5230083952495365391",
-                        "RootBoneID": "8795078489707592305",
+                        "RootBoneID": "8886242359707193203",
                         "Enabled": true
                     },
                     {
                         "Type": 2,
-                        "ID": "5413032124427940102",
+                        "ID": "13267851351537899453",
                         "HasMaterial": true,
                         "MaterialID": "8151822872482897144",
                         "Enabled": true
@@ -138,17 +138,17 @@
             {
                 "Name": "mixamorig_Hips",
                 "FamilyNumber": 2,
-                "ID": "8795078489707592305",
-                "ParentID": "11145484787557281305",
+                "ID": "8886242359707193203",
+                "ParentID": "16477760167829773675",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -169,11 +169,11 @@
                             1.0000004768371582
                         ],
                         "ScaleNegative": false,
-                        "ID": "11512157572854438249"
+                        "ID": "2394042222721391523"
                     },
                     {
                         "Type": 28,
-                        "ID": "16300129130901838558",
+                        "ID": "8155814879415468121",
                         "BoneID": "4863480344879175963",
                         "Enabled": true
                     }
@@ -182,17 +182,17 @@
             {
                 "Name": "mixamorig_Spine",
                 "FamilyNumber": 3,
-                "ID": "5252538276077438258",
-                "ParentID": "8795078489707592305",
+                "ID": "9049306706341334748",
+                "ParentID": "8886242359707193203",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -213,11 +213,11 @@
                             1.0000003576278687
                         ],
                         "ScaleNegative": false,
-                        "ID": "8392098090918183033"
+                        "ID": "9587751780676570395"
                     },
                     {
                         "Type": 28,
-                        "ID": "15267391911334019829",
+                        "ID": "15153206951170488687",
                         "BoneID": "10574838394962252281",
                         "Enabled": true
                     }
@@ -226,17 +226,17 @@
             {
                 "Name": "mixamorig_Spine1",
                 "FamilyNumber": 4,
-                "ID": "5797437136330911964",
-                "ParentID": "5252538276077438258",
+                "ID": "4399454512554918461",
+                "ParentID": "9049306706341334748",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -257,11 +257,11 @@
                             0.9999997615814209
                         ],
                         "ScaleNegative": false,
-                        "ID": "4873995761355228898"
+                        "ID": "8628590612705093255"
                     },
                     {
                         "Type": 28,
-                        "ID": "15547176141764676460",
+                        "ID": "2241731462772534230",
                         "BoneID": "11151079237885737252",
                         "Enabled": true
                     }
@@ -270,17 +270,17 @@
             {
                 "Name": "mixamorig_Spine2",
                 "FamilyNumber": 5,
-                "ID": "3841896070592915468",
-                "ParentID": "5797437136330911964",
+                "ID": "3862793465206698756",
+                "ParentID": "4399454512554918461",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -301,11 +301,11 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "16896773297788951317"
+                        "ID": "7904105220046736482"
                     },
                     {
                         "Type": 28,
-                        "ID": "15390360876372111608",
+                        "ID": "1724054691209887619",
                         "BoneID": "10932326513274412437",
                         "Enabled": true
                     }
@@ -314,17 +314,17 @@
             {
                 "Name": "mixamorig_Neck",
                 "FamilyNumber": 6,
-                "ID": "3119529640729231045",
-                "ParentID": "3841896070592915468",
+                "ID": "2214909106515514709",
+                "ParentID": "3862793465206698756",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -345,11 +345,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "16470119480571741426"
+                        "ID": "13802242812262022193"
                     },
                     {
                         "Type": 28,
-                        "ID": "14909193452658843255",
+                        "ID": "2985442684890644045",
                         "BoneID": "12238168528349380836",
                         "Enabled": true
                     }
@@ -358,17 +358,17 @@
             {
                 "Name": "mixamorig_Head",
                 "FamilyNumber": 7,
-                "ID": "1629880089291635064",
-                "ParentID": "3119529640729231045",
+                "ID": "4651015842526117465",
+                "ParentID": "2214909106515514709",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -389,11 +389,11 @@
                             1.0000003576278687
                         ],
                         "ScaleNegative": false,
-                        "ID": "2897571105195426849"
+                        "ID": "8693058115966788176"
                     },
                     {
                         "Type": 28,
-                        "ID": "7578679190472718409",
+                        "ID": "10276483289578421251",
                         "BoneID": "3368753901894931582",
                         "Enabled": true
                     }
@@ -402,17 +402,17 @@
             {
                 "Name": "mixamorig_HeadTop_End",
                 "FamilyNumber": 8,
-                "ID": "1228752426826483227",
-                "ParentID": "1629880089291635064",
+                "ID": "12274473513940577824",
+                "ParentID": "4651015842526117465",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -433,24 +433,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "18345972342353852973"
+                        "ID": "10396049683511545917"
                     }
                 ]
             },
             {
                 "Name": "mixamorig_LeftShoulder",
                 "FamilyNumber": 6,
-                "ID": "8391959988017501326",
-                "ParentID": "3841896070592915468",
+                "ID": "2120418999606699277",
+                "ParentID": "3862793465206698756",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -471,11 +471,11 @@
                             0.9999995231628418
                         ],
                         "ScaleNegative": false,
-                        "ID": "14837385871499368674"
+                        "ID": "14707541626146860938"
                     },
                     {
                         "Type": 28,
-                        "ID": "18010583323736744187",
+                        "ID": "3736513379900000844",
                         "BoneID": "2554909679241347740",
                         "Enabled": true
                     }
@@ -484,17 +484,17 @@
             {
                 "Name": "mixamorig_LeftArm",
                 "FamilyNumber": 7,
-                "ID": "13341676478259955742",
-                "ParentID": "8391959988017501326",
+                "ID": "3155614240898352182",
+                "ParentID": "2120418999606699277",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -515,11 +515,11 @@
                             0.99999964237213135
                         ],
                         "ScaleNegative": false,
-                        "ID": "5675430430071517764"
+                        "ID": "17852730015951146992"
                     },
                     {
                         "Type": 28,
-                        "ID": "10106823963672205069",
+                        "ID": "11506112865122511100",
                         "BoneID": "17268081418746190379",
                         "Enabled": true
                     }
@@ -528,17 +528,17 @@
             {
                 "Name": "mixamorig_LeftForeArm",
                 "FamilyNumber": 8,
-                "ID": "6483689272480737798",
-                "ParentID": "13341676478259955742",
+                "ID": "13182745901927468212",
+                "ParentID": "3155614240898352182",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -559,11 +559,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5239751596082487996"
+                        "ID": "2066351011000172030"
                     },
                     {
                         "Type": 28,
-                        "ID": "10770392733608391232",
+                        "ID": "11013950241320415890",
                         "BoneID": "7420451899765078083",
                         "Enabled": true
                     }
@@ -572,17 +572,17 @@
             {
                 "Name": "mixamorig_LeftHand",
                 "FamilyNumber": 9,
-                "ID": "3884626468230980750",
-                "ParentID": "6483689272480737798",
+                "ID": "12737310541737718035",
+                "ParentID": "13182745901927468212",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -603,11 +603,11 @@
                             1.0000002384185791
                         ],
                         "ScaleNegative": false,
-                        "ID": "16327952302045014780"
+                        "ID": "16751360423709494078"
                     },
                     {
                         "Type": 28,
-                        "ID": "5426254558422853706",
+                        "ID": "1254601937907942809",
                         "BoneID": "13330451648418861277",
                         "Enabled": true
                     }
@@ -616,17 +616,17 @@
             {
                 "Name": "mixamorig_LeftHandIndex1",
                 "FamilyNumber": 10,
-                "ID": "9666141087039152360",
-                "ParentID": "3884626468230980750",
+                "ID": "15481840256152043690",
+                "ParentID": "12737310541737718035",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -647,11 +647,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "9966998146455404419"
+                        "ID": "12262838058776083012"
                     },
                     {
                         "Type": 28,
-                        "ID": "6560090294193708175",
+                        "ID": "9712242977605398859",
                         "BoneID": "8872855530296393438",
                         "Enabled": true
                     }
@@ -660,17 +660,17 @@
             {
                 "Name": "mixamorig_LeftHandIndex2",
                 "FamilyNumber": 11,
-                "ID": "5592804942818714743",
-                "ParentID": "9666141087039152360",
+                "ID": "16917789978214650070",
+                "ParentID": "15481840256152043690",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -691,11 +691,11 @@
                             0.99999982118606567
                         ],
                         "ScaleNegative": false,
-                        "ID": "15094209157174808969"
+                        "ID": "4060126197881251880"
                     },
                     {
                         "Type": 28,
-                        "ID": "5434914880102406210",
+                        "ID": "9397474579187005235",
                         "BoneID": "14412150370117766667",
                         "Enabled": true
                     }
@@ -704,17 +704,17 @@
             {
                 "Name": "mixamorig_LeftHandIndex3",
                 "FamilyNumber": 12,
-                "ID": "1813497027545053914",
-                "ParentID": "5592804942818714743",
+                "ID": "3255922923580963852",
+                "ParentID": "16917789978214650070",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -735,11 +735,11 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "2742738175018117581"
+                        "ID": "5248845988821117720"
                     },
                     {
                         "Type": 28,
-                        "ID": "16050052279882482135",
+                        "ID": "7562593801501353078",
                         "BoneID": "2485958836937655973",
                         "Enabled": true
                     }
@@ -748,17 +748,17 @@
             {
                 "Name": "mixamorig_LeftHandIndex4",
                 "FamilyNumber": 13,
-                "ID": "15029909718886644064",
-                "ParentID": "1813497027545053914",
+                "ID": "10373566559809226507",
+                "ParentID": "3255922923580963852",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -779,24 +779,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "18181670565124058903"
+                        "ID": "7685464191383155801"
                     }
                 ]
             },
             {
                 "Name": "mixamorig_RightShoulder",
                 "FamilyNumber": 6,
-                "ID": "15456946338946861204",
-                "ParentID": "3841896070592915468",
+                "ID": "14291396988128197778",
+                "ParentID": "3862793465206698756",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -817,11 +817,11 @@
                             0.99999970197677612
                         ],
                         "ScaleNegative": false,
-                        "ID": "17019516241032756023"
+                        "ID": "5801587330975446831"
                     },
                     {
                         "Type": 28,
-                        "ID": "4351250595191368262",
+                        "ID": "9616082322225440344",
                         "BoneID": "14865079460515680777",
                         "Enabled": true
                     }
@@ -830,17 +830,17 @@
             {
                 "Name": "mixamorig_RightArm",
                 "FamilyNumber": 7,
-                "ID": "5753315842527370025",
-                "ParentID": "15456946338946861204",
+                "ID": "15281344091067085951",
+                "ParentID": "14291396988128197778",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -861,11 +861,11 @@
                             0.99999958276748657
                         ],
                         "ScaleNegative": false,
-                        "ID": "9552975989009113322"
+                        "ID": "9892512886873019715"
                     },
                     {
                         "Type": 28,
-                        "ID": "4523812646009975683",
+                        "ID": "10722844456176363617",
                         "BoneID": "3581913581210300460",
                         "Enabled": true
                     }
@@ -874,17 +874,17 @@
             {
                 "Name": "mixamorig_RightForeArm",
                 "FamilyNumber": 8,
-                "ID": "4731081371874263093",
-                "ParentID": "5753315842527370025",
+                "ID": "1155261107991740022",
+                "ParentID": "15281344091067085951",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -905,11 +905,11 @@
                             1.0000003576278687
                         ],
                         "ScaleNegative": false,
-                        "ID": "17255248003300282138"
+                        "ID": "3587673625919565659"
                     },
                     {
                         "Type": 28,
-                        "ID": "533714177428682370",
+                        "ID": "17172163468950630746",
                         "BoneID": "14046756431058248264",
                         "Enabled": true
                     }
@@ -918,17 +918,17 @@
             {
                 "Name": "mixamorig_RightHand",
                 "FamilyNumber": 9,
-                "ID": "10232232283306634604",
-                "ParentID": "4731081371874263093",
+                "ID": "594344544318930630",
+                "ParentID": "1155261107991740022",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -949,11 +949,11 @@
                             0.9999997615814209
                         ],
                         "ScaleNegative": false,
-                        "ID": "6290851122617745413"
+                        "ID": "872187078379781502"
                     },
                     {
                         "Type": 28,
-                        "ID": "10505151319171309879",
+                        "ID": "11049300051650609812",
                         "BoneID": "5294188076946905083",
                         "Enabled": true
                     }
@@ -962,17 +962,17 @@
             {
                 "Name": "mixamorig_RightHandIndex1",
                 "FamilyNumber": 10,
-                "ID": "6889242549757917750",
-                "ParentID": "10232232283306634604",
+                "ID": "6667337392831870734",
+                "ParentID": "594344544318930630",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -993,11 +993,11 @@
                             0.99999964237213135
                         ],
                         "ScaleNegative": false,
-                        "ID": "7986266585890983681"
+                        "ID": "1193390376577932482"
                     },
                     {
                         "Type": 28,
-                        "ID": "11497740413629203187",
+                        "ID": "6941885621925092211",
                         "BoneID": "11928327445489620300",
                         "Enabled": true
                     }
@@ -1006,17 +1006,17 @@
             {
                 "Name": "mixamorig_RightHandIndex2",
                 "FamilyNumber": 11,
-                "ID": "4198549422705812586",
-                "ParentID": "6889242549757917750",
+                "ID": "13611905975483716688",
+                "ParentID": "6667337392831870734",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1037,11 +1037,11 @@
                             0.99999982118606567
                         ],
                         "ScaleNegative": false,
-                        "ID": "1577955103678559588"
+                        "ID": "5755218115242185951"
                     },
                     {
                         "Type": 28,
-                        "ID": "16884689124481840021",
+                        "ID": "7449633484177601103",
                         "BoneID": "15136311069096890265",
                         "Enabled": true
                     }
@@ -1050,17 +1050,17 @@
             {
                 "Name": "mixamorig_RightHandIndex3",
                 "FamilyNumber": 12,
-                "ID": "5811786113292715404",
-                "ParentID": "4198549422705812586",
+                "ID": "602329646662565219",
+                "ParentID": "13611905975483716688",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1081,11 +1081,11 @@
                             0.99999982118606567
                         ],
                         "ScaleNegative": false,
-                        "ID": "5465218046770924720"
+                        "ID": "9971252734924625651"
                     },
                     {
                         "Type": 28,
-                        "ID": "14132096434621024496",
+                        "ID": "13150756901715607839",
                         "BoneID": "17438266185536266428",
                         "Enabled": true
                     }
@@ -1094,17 +1094,17 @@
             {
                 "Name": "mixamorig_RightHandIndex4",
                 "FamilyNumber": 13,
-                "ID": "2622743188014450791",
-                "ParentID": "5811786113292715404",
+                "ID": "14107684467229657919",
+                "ParentID": "602329646662565219",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1125,24 +1125,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "14505137809335240459"
+                        "ID": "8501252955452033743"
                     }
                 ]
             },
             {
                 "Name": "mixamorig_LeftUpLeg",
                 "FamilyNumber": 3,
-                "ID": "7976947544315298002",
-                "ParentID": "8795078489707592305",
+                "ID": "14178133909927738743",
+                "ParentID": "8886242359707193203",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1163,11 +1163,11 @@
                             0.99999958276748657
                         ],
                         "ScaleNegative": false,
-                        "ID": "2316831806724872685"
+                        "ID": "8735130252451397707"
                     },
                     {
                         "Type": 28,
-                        "ID": "4144274486856888079",
+                        "ID": "4039692651047790232",
                         "BoneID": "7755814439799539237",
                         "Enabled": true
                     }
@@ -1176,17 +1176,17 @@
             {
                 "Name": "mixamorig_LeftLeg",
                 "FamilyNumber": 4,
-                "ID": "14465149219293458459",
-                "ParentID": "7976947544315298002",
+                "ID": "8696493121246063677",
+                "ParentID": "14178133909927738743",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1207,11 +1207,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "9710097465348893284"
+                        "ID": "15603647875024421048"
                     },
                     {
                         "Type": 28,
-                        "ID": "7190800099135150973",
+                        "ID": "4402921907999508879",
                         "BoneID": "12553905656340156561",
                         "Enabled": true
                     }
@@ -1220,17 +1220,17 @@
             {
                 "Name": "mixamorig_LeftFoot",
                 "FamilyNumber": 5,
-                "ID": "12334624529700429527",
-                "ParentID": "14465149219293458459",
+                "ID": "3208007603157324495",
+                "ParentID": "8696493121246063677",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1251,11 +1251,11 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "18197148317187416075"
+                        "ID": "17074039840489642619"
                     },
                     {
                         "Type": 28,
-                        "ID": "15072306691472420418",
+                        "ID": "9483128570715023144",
                         "BoneID": "10931204242744649317",
                         "Enabled": true
                     }
@@ -1264,17 +1264,17 @@
             {
                 "Name": "mixamorig_LeftToeBase",
                 "FamilyNumber": 6,
-                "ID": "1117235646531055757",
-                "ParentID": "12334624529700429527",
+                "ID": "15168467188546320261",
+                "ParentID": "3208007603157324495",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1295,11 +1295,11 @@
                             1.0000001192092896
                         ],
                         "ScaleNegative": false,
-                        "ID": "1039421777918197624"
+                        "ID": "18277026710487754582"
                     },
                     {
                         "Type": 28,
-                        "ID": "9809435436682087216",
+                        "ID": "10664353209130431327",
                         "BoneID": "11600803473466315675",
                         "Enabled": true
                     }
@@ -1308,17 +1308,17 @@
             {
                 "Name": "mixamorig_LeftToe_End",
                 "FamilyNumber": 7,
-                "ID": "9741384186996845515",
-                "ParentID": "1117235646531055757",
+                "ID": "16869992975196518917",
+                "ParentID": "15168467188546320261",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1339,24 +1339,24 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "7251633750711501459"
+                        "ID": "1432599796816701859"
                     }
                 ]
             },
             {
                 "Name": "mixamorig_RightUpLeg",
                 "FamilyNumber": 3,
-                "ID": "9324853494611736128",
-                "ParentID": "8795078489707592305",
+                "ID": "10066770058708157220",
+                "ParentID": "8886242359707193203",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1377,11 +1377,11 @@
                             0.99999940395355225
                         ],
                         "ScaleNegative": false,
-                        "ID": "7283174426362526162"
+                        "ID": "3518055673015808897"
                     },
                     {
                         "Type": 28,
-                        "ID": "16921841062019197595",
+                        "ID": "9743994412348837207",
                         "BoneID": "17375727825168540989",
                         "Enabled": true
                     }
@@ -1390,17 +1390,17 @@
             {
                 "Name": "mixamorig_RightLeg",
                 "FamilyNumber": 4,
-                "ID": "2640702677785307444",
-                "ParentID": "9324853494611736128",
+                "ID": "15541863893389491725",
+                "ParentID": "10066770058708157220",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1421,11 +1421,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "2213385475853408665"
+                        "ID": "17123761446633402936"
                     },
                     {
                         "Type": 28,
-                        "ID": "8830937781312332067",
+                        "ID": "2255322121329641883",
                         "BoneID": "11950818179526877922",
                         "Enabled": true
                     }
@@ -1434,17 +1434,17 @@
             {
                 "Name": "mixamorig_RightFoot",
                 "FamilyNumber": 5,
-                "ID": "2485273252825175068",
-                "ParentID": "2640702677785307444",
+                "ID": "1216622796852281595",
+                "ParentID": "15541863893389491725",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1465,11 +1465,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "4489251578022262132"
+                        "ID": "13736451014107503799"
                     },
                     {
                         "Type": 28,
-                        "ID": "17305587567989122029",
+                        "ID": "17681721882887338781",
                         "BoneID": "16570135156372729578",
                         "Enabled": true
                     }
@@ -1478,17 +1478,17 @@
             {
                 "Name": "mixamorig_RightToeBase",
                 "FamilyNumber": 6,
-                "ID": "8873534507505980284",
-                "ParentID": "2485273252825175068",
+                "ID": "10753353009062999041",
+                "ParentID": "1216622796852281595",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1509,11 +1509,11 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "13756853280447416484"
+                        "ID": "9637990297253585877"
                     },
                     {
                         "Type": 28,
-                        "ID": "4603928880001745820",
+                        "ID": "1169846141753304594",
                         "BoneID": "9950900651026915906",
                         "Enabled": true
                     }
@@ -1522,17 +1522,17 @@
             {
                 "Name": "mixamorig_RightToe_End",
                 "FamilyNumber": 7,
-                "ID": "16679351596445574859",
-                "ParentID": "8873534507505980284",
+                "ID": "6555444009820888398",
+                "ParentID": "10753353009062999041",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
-                "ParentSelected": true,
+                "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "841184796184585368",
+                "PrefabID": "13055910508079525481",
                 "Components": [
                     {
                         "Type": 0,
@@ -1553,7 +1553,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "17032506255028373767"
+                        "ID": "13079323792577132639"
                     }
                 ]
             }
