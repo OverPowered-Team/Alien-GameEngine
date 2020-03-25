@@ -40,11 +40,11 @@ public:
 
 private:
 	static uint LoadTextureCharacter(uint width, uint height, uchar* buffer);
-	static uint SaveFile(ResourceFontData& fontData, const char* exported_path);
-	/*virtual ~ResourceFont();*/
+	static uint SaveFile(ResourceFontData& fontData, const char* exported_path, u64 ortho, u64 text);
 
-	//bool LoadMemory();
+	bool LoadMemory();
 	void FreeMemory();
+	static ResourceShader* SetShader(const char* path);
 	//bool ReadBaseInfo(const char* assets_path);
 	//void ReadLibrary(const char* meta_data);
 	//bool DeleteMetaData();
@@ -52,4 +52,7 @@ private:
 public:
 	FontImportSettings importSettings;
 	ResourceFontData fontData;
+
+	ResourceShader* text_shader = nullptr;
+	ResourceShader* text_ortho = nullptr;
 };

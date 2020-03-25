@@ -5,7 +5,7 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "13512025934085801097",
+                "ID": "936344721623818322",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -35,13 +35,13 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "4263622811097982986"
+                        "ID": "4915049858165526556"
                     },
                     {
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 73.998748779296875,
+                        "HoritzontalFov": 93.438819885253906,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "15594772623905798434",
+                        "ID": "11795582590285071361",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -73,7 +73,7 @@
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "1482099300348960866",
+                "ID": "2102234878677548624",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -103,12 +103,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "13714506115665782756"
+                        "ID": "6700190583925811575"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "10530148450558695444",
+                        "ID": "4457738030064926939",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -142,7 +142,7 @@
             {
                 "Name": "Canvas",
                 "FamilyNumber": 1,
-                "ID": "3237208064428918560",
+                "ID": "606149336108054735",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -172,7 +172,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "9588861634990616780"
+                        "ID": "6533683569382829247"
                     },
                     {
                         "Enabled": true,
@@ -183,8 +183,8 @@
             {
                 "Name": "Text",
                 "FamilyNumber": 2,
-                "ID": "3182933979123750550",
-                "ParentID": "3237208064428918560",
+                "ID": "10893069199709338992",
+                "ParentID": "606149336108054735",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": true,
@@ -197,8 +197,8 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -78.551666259765625,
-                            35.251350402832031,
+                            -74.627120971679688,
+                            26.770362854003906,
                             0
                         ],
                         "Rotation": [
@@ -208,79 +208,28 @@
                             1
                         ],
                         "Scale": [
-                            0.029999999329447746,
-                            0.029999999329447746,
+                            0.05000000074505806,
+                            0.05000000074505806,
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "12228328093404537729"
+                        "ID": "11038418556233310374"
                     },
                     {
                         "Type": 30,
-                        "ID": "5647341295898327372",
-                        "Text": "Ya no tiene excusa. Hoy salio con sus amigas y es que pa' matar la tusa.",
+                        "ID": "12757765891904576",
+                        "Text": "Patatillas fritas",
                         "UIType": 22,
                         "FontID": "6090935666492539845",
                         "Enabled": true,
                         "Color": [
-                            0.80000001192092896,
-                            0.80000001192092896,
-                            0.80000001192092896,
+                            1,
+                            1,
+                            1,
                             1
                         ],
-                        "Width": 145,
+                        "Width": 200,
                         "Interlineal": 1.5
-                    }
-                ]
-            },
-            {
-                "Name": "Image",
-                "FamilyNumber": 2,
-                "ID": "16333942976304116577",
-                "ParentID": "3237208064428918560",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            0,
-                            -20.164993286132813
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            81.5,
-                            51,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "9171062922049772776"
-                    },
-                    {
-                        "Width": 10,
-                        "Height": 10,
-                        "Enabled": true,
-                        "Type": 30,
-                        "UIType": 20,
-                        "TextureID": "0",
-                        "Color": [
-                            0.80000001192092896,
-                            0.80000001192092896,
-                            0.80000001192092896,
-                            1
-                        ]
                     }
                 ]
             }
