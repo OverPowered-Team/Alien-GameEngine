@@ -14,7 +14,7 @@ void PlayerTest::Start()
 
 void PlayerTest::Update()
 {
-	if (Input::GetKey(SDL_SCANCODE_W)) {
+	/*if (Input::GetKey(SDL_SCANCODE_W)) {
 		transform->SetGlobalPosition(transform->GetGlobalPosition() + float3::unitZ() * speed * Time::GetDT());
 	}
 	if (Input::GetKey(SDL_SCANCODE_S)) {
@@ -25,7 +25,7 @@ void PlayerTest::Update()
 	}
 	if (Input::GetKey(SDL_SCANCODE_D)) {
 		transform->SetGlobalPosition(transform->GetGlobalPosition() - float3::unitX() * speed * Time::GetDT());
-	}
+	}*/
 }
 
 void PlayerTest::OnDrawGizmos()
