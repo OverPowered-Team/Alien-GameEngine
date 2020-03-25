@@ -45,6 +45,7 @@ private:
 
 	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
 	void SetStateTexture(UIState state, ResourceTexture* tex);
+	void ClearStateTexture(UIState state);
 
 
 public:
