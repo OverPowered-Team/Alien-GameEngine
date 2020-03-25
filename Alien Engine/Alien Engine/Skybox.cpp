@@ -8,6 +8,8 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 
+#include "Optick/include/optick.h"
+
 Skybox::Skybox()
 {
 
@@ -21,6 +23,8 @@ Skybox::~Skybox()
 
 uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 {
+	OPTICK_EVENT();
+
 	GLuint texture_id;
 	glGenTextures(1, &texture_id);
 	glActiveTexture(GL_TEXTURE0);
@@ -80,6 +84,8 @@ void Skybox::SetBuffers()
 
 void Skybox::ChangePositiveX(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
@@ -97,6 +103,8 @@ void Skybox::ChangePositiveX(const uint& id_skybox, const uint& id_texture, cons
 
 void Skybox::ChangeNegativeX(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
@@ -114,6 +122,8 @@ void Skybox::ChangeNegativeX(const uint& id_skybox, const uint& id_texture, cons
 
 void Skybox::ChangePositiveY(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
@@ -131,6 +141,8 @@ void Skybox::ChangePositiveY(const uint& id_skybox, const uint& id_texture, cons
 
 void Skybox::ChangeNegativeY(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
@@ -148,6 +160,8 @@ void Skybox::ChangeNegativeY(const uint& id_skybox, const uint& id_texture, cons
 
 void Skybox::ChangePositiveZ(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
@@ -165,6 +179,8 @@ void Skybox::ChangePositiveZ(const uint& id_skybox, const uint& id_texture, cons
 
 void Skybox::ChangeNegativeZ(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height)
 {
+	OPTICK_EVENT();
+
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
