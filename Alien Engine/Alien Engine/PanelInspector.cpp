@@ -534,7 +534,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentImage(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
@@ -548,7 +547,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentButton(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
@@ -562,7 +560,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentText(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
@@ -575,7 +572,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 
 						comp = new ComponentCheckbox(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
@@ -589,7 +585,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentSlider(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
@@ -603,7 +598,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentBar(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
@@ -616,7 +610,6 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-						GameObject* selected = selected;
 						comp = new ComponentAnimatedImage(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);

@@ -5,7 +5,7 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "15919458352083239127",
+                "ID": "936344721623818322",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -35,13 +35,13 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "829083688244964877"
+                        "ID": "4915049858165526556"
                     },
                     {
                         "Enabled": true,
-                        "Type": 5,
+                        "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 73.998748779296875,
+                        "HoritzontalFov": 93.438819885253906,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "1196787186692622707",
+                        "ID": "11795582590285071361",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -73,7 +73,7 @@
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "15609549068438929884",
+                "ID": "2102234878677548624",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -103,12 +103,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "5851952936016758805"
+                        "ID": "6700190583925811575"
                     },
                     {
-                        "Type": 11,
+                        "Type": 3,
                         "Enabled": true,
-                        "ID": "13558109951837421442",
+                        "ID": "4457738030064926939",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -142,7 +142,7 @@
             {
                 "Name": "Canvas",
                 "FamilyNumber": 1,
-                "ID": "9701775876224917894",
+                "ID": "606149336108054735",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -172,19 +172,19 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5049379030696073830"
+                        "ID": "6533683569382829247"
                     },
                     {
                         "Enabled": true,
-                        "Type": 18
+                        "Type": 19
                     }
                 ]
             },
             {
                 "Name": "Text",
                 "FamilyNumber": 2,
-                "ID": "7688760412373284864",
-                "ParentID": "9701775876224917894",
+                "ID": "10893069199709338992",
+                "ParentID": "606149336108054735",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": true,
@@ -197,8 +197,8 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -71.437644958496094,
-                            24.275779724121094,
+                            -74.627120971679688,
+                            26.770362854003906,
                             0
                         ],
                         "Rotation": [
@@ -213,22 +213,22 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "8250964568871986452"
+                        "ID": "11038418556233310374"
                     },
                     {
                         "Type": 30,
-                        "ID": "16928041724256018844",
-                        "Text": "Hola, que tal? Bien y usted, que explicas",
-                        "UIType": 25,
+                        "ID": "12757765891904576",
+                        "Text": "Patatillas fritas",
+                        "UIType": 22,
                         "FontID": "6090935666492539845",
                         "Enabled": true,
                         "Color": [
-                            0.80000001192092896,
-                            0.80000001192092896,
-                            0.80000001192092896,
+                            1,
+                            1,
+                            1,
                             1
                         ],
-                        "Width": 90,
+                        "Width": 200,
                         "Interlineal": 1.5
                     }
                 ]

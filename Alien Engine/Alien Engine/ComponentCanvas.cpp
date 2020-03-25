@@ -17,7 +17,7 @@ ComponentCanvas::ComponentCanvas(GameObject* obj):Component(obj)
 	width = 160;
 	height = 90;
 
-	type = ComponentType::UI_CANVAS;
+	type = ComponentType::CANVAS;
 }
 
 ComponentCanvas::~ComponentCanvas()
