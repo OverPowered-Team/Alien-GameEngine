@@ -496,6 +496,7 @@ void ComponentSlider::Update()
 		switch (state)
 		{
 		case Idle:
+			OnIdle();
 			break;
 		case Hover:
 			OnHover();
@@ -739,6 +740,12 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 	}
 	App->objects->first_assigned_selected = false;
 }
+bool ComponentSlider::OnIdle()
+{
+	current_color = idle_color;
+	slider_current_color = slider_idle_color;
+	return true;
+}
 bool ComponentSlider::OnHover()
 {
 	current_color = hover_color;
@@ -804,8 +811,8 @@ bool ComponentSlider::OnPressed()
 
 bool ComponentSlider::OnRelease()
 {
-	current_color = idle_color;
-	slider_current_color = slider_idle_color;
+	current_color = hover_color;
+	slider_current_color = slider_hover_color;
 	return true;
 }
 
