@@ -513,7 +513,7 @@ void ComponentSlider::Update()
 		default:
 			break;
 		}
-		if (canvas->game_object_attached->enabled)
+		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
 			UILogicGamePad();
 	}
 }
