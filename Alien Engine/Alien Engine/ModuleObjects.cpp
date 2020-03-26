@@ -174,6 +174,21 @@ update_status ModuleObjects::PreUpdate(float dt)
 	}
 	base_game_object->PreUpdate();
 	ScriptsPreUpdate();
+
+#ifndef GAME_VERSION
+	for (Viewport* viewport : viewports)
+	{
+		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
+			continue;
+
+		viewport->BeginViewport();
+		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
+		bool isGameCamera = (viewport == game_viewport) ? true : false;
+
+		viewport->EndViewport();
+	}
+#endif
+
 	return UPDATE_CONTINUE;
 }
 
