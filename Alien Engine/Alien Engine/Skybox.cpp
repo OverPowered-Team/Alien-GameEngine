@@ -67,6 +67,50 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 	return texture_id;
 }
 
+uint Skybox::LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture_files)
+{
+	OPTICK_EVENT();
+
+	GLuint texture_id;
+	glGenTextures(1, &texture_id);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+
+	for (int i = 0; i < texture_files.size(); ++i)
+	{
+		std::string name_id = App->file_system->GetBaseFileName(texture_files[i].c_str());
+		u64 ID = std::stoull(name_id);
+		ResourceTexture* t = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+		t->IncreaseReferences();
+
+		glBindTexture(GL_TEXTURE_2D, t->id);
+		unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_BGRA, t->width, t->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+		}
+		else
+		{
+			LOG_ENGINE("Cubemap texture couldn't be loaded: %s", texture_files[i].c_str());
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		RELEASE_ARRAY(data);
+	}
+
+	return texture_id;
+}
+
 void Skybox::SetBuffers()
 {
 	glGenVertexArrays(1, &vao);

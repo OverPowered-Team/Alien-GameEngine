@@ -47,6 +47,7 @@ public:
 	~Skybox();
 
 	uint LoadCubeMap(const std::vector<std::string>& texture_files);
+	uint LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture_files);
 	void SetBuffers();
 
 	void ChangePositiveX(const uint& id_skybox, const uint& id_texture, const uint& width, const uint& height);

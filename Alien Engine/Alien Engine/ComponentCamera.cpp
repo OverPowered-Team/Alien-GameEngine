@@ -871,7 +871,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
 
 	auto faces = cubemap->ToVector();
-	skybox_texture_id = skybox->LoadCubeMap(faces);
+	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;
