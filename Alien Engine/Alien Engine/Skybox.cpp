@@ -37,7 +37,8 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 
 		u64 ID = App->resources->GetIDFromAlienPath(path.data());
 		ResourceTexture* t = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-		t->IncreaseReferences();
+		if(t->references == 0)
+			t->IncreaseReferences();
 
 		glBindTexture(GL_TEXTURE_2D, t->id);
 		unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
@@ -81,7 +82,8 @@ uint Skybox::LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture
 		std::string name_id = App->file_system->GetBaseFileName(texture_files[i].c_str());
 		u64 ID = std::stoull(name_id);
 		ResourceTexture* t = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-		t->IncreaseReferences();
+		if(t->references == 0)
+			t->IncreaseReferences();
 
 		glBindTexture(GL_TEXTURE_2D, t->id);
 		unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
