@@ -787,12 +787,61 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("IsSelectedCamera", (game_object_attached->IsSelected()) ? true : false);
 	to_save->SetBoolean("PrintIcon", print_icon);
 	to_save->SetColor("IconColor", camera_icon_color);
-	to_save->SetString("Skybox_NegativeZ", cubemap->neg_z.data());
-	to_save->SetString("Skybox_PositiveZ", cubemap->pos_z.data());
-	to_save->SetString("Skybox_PositiveY", cubemap->pos_y.data());
-	to_save->SetString("Skybox_NegativeY", cubemap->neg_y.data());
-	to_save->SetString("Skybox_PositiveX", cubemap->pos_x.data());
-	to_save->SetString("Skybox_NegativeX", cubemap->neg_x.data());
+
+	/* Save skybox (Library File) */
+	std::string path1 = App->file_system->GetPathWithoutExtension(cubemap->pos_x);
+	path1 += "_meta.alien";
+	u64 ID1 = App->resources->GetIDFromAlienPath(path1.data());
+	char lib_path1_local[256];
+	snprintf(lib_path1_local, 256, "%llu", ID1);
+	std::string id_path1(LIBRARY_TEXTURES_FOLDER);
+	id_path1.append(lib_path1_local).append(".dds");
+	to_save->SetString("Skybox_PositiveX", id_path1.c_str());
+
+	std::string path2 = App->file_system->GetPathWithoutExtension(cubemap->neg_x);
+	path2 += "_meta.alien";
+	u64 ID2 = App->resources->GetIDFromAlienPath(path2.data());
+	char lib_path2_local[256];
+	snprintf(lib_path2_local, 256, "%llu", ID2);
+	std::string id_path2(LIBRARY_TEXTURES_FOLDER);
+	id_path2.append(lib_path2_local).append(".dds");
+	to_save->SetString("Skybox_NegativeX", id_path2.c_str());
+
+	std::string path3 = App->file_system->GetPathWithoutExtension(cubemap->pos_y);
+	path3 += "_meta.alien";
+	u64 ID3 = App->resources->GetIDFromAlienPath(path3.data());
+	char lib_path3_local[256];
+	snprintf(lib_path3_local, 256, "%llu", ID3);
+	std::string id_path3(LIBRARY_TEXTURES_FOLDER);
+	id_path3.append(lib_path3_local).append(".dds");
+	to_save->SetString("Skybox_PositiveY", id_path3.c_str());
+
+	std::string path4 = App->file_system->GetPathWithoutExtension(cubemap->neg_y);
+	path4 += "_meta.alien";
+	u64 ID4 = App->resources->GetIDFromAlienPath(path4.data());
+	char lib_path4_local[256];
+	snprintf(lib_path4_local, 256, "%llu", ID4);
+	std::string id_path4(LIBRARY_TEXTURES_FOLDER);
+	id_path4.append(lib_path4_local).append(".dds");
+	to_save->SetString("Skybox_NegativeY", id_path4.c_str());
+
+	std::string path5 = App->file_system->GetPathWithoutExtension(cubemap->pos_z);
+	path5 += "_meta.alien";
+	u64 ID5 = App->resources->GetIDFromAlienPath(path5.data());
+	char lib_path5_local[256];
+	snprintf(lib_path5_local, 256, "%llu", ID5);
+	std::string id_path5(LIBRARY_TEXTURES_FOLDER);
+	id_path5.append(lib_path5_local).append(".dds");
+	to_save->SetString("Skybox_PositiveZ", id_path5.c_str());
+
+	std::string path6 = App->file_system->GetPathWithoutExtension(cubemap->neg_z);
+	path6 += "_meta.alien";
+	u64 ID6 = App->resources->GetIDFromAlienPath(path6.data());
+	char lib_path6_local[256];
+	snprintf(lib_path6_local, 256, "%llu", ID6);
+	std::string id_path6(LIBRARY_TEXTURES_FOLDER);
+	id_path6.append(lib_path6_local).append(".dds");
+	to_save->SetString("Skybox_NegativeZ", id_path6.c_str());
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
@@ -814,12 +863,12 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 		App->renderer3D->selected_game_camera = this;
 	}
 
-	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
-	cubemap->pos_z.assign(to_load->GetString("Skybox_PositiveZ"));
-	cubemap->pos_y.assign(to_load->GetString("Skybox_PositiveY"));
-	cubemap->neg_y.assign(to_load->GetString("Skybox_NegativeY"));
 	cubemap->pos_x.assign(to_load->GetString("Skybox_PositiveX"));
 	cubemap->neg_x.assign(to_load->GetString("Skybox_NegativeX"));
+	cubemap->pos_y.assign(to_load->GetString("Skybox_PositiveY"));
+	cubemap->neg_y.assign(to_load->GetString("Skybox_NegativeY"));
+	cubemap->pos_z.assign(to_load->GetString("Skybox_PositiveZ"));
+	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
 
 	auto faces = cubemap->ToVector();
 	skybox_texture_id = skybox->LoadCubeMap(faces);
