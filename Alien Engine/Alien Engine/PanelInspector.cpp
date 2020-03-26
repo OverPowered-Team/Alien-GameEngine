@@ -350,12 +350,13 @@ void PanelInspector::ButtonAddComponent()
 						added = true;
 						ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, (void*)comp_script);
 						if (Time::IsInGameState() && comp_script->need_alien && comp_script->data_ptr != nullptr) {
-							Alien* alien = (Alien*)comp_script;
+							Alien* alien = (Alien*)comp_script->data_ptr;
 							if (alien != nullptr) {
 								alien->Awake();
 								alien->Start();
 							}
 						}
+						break;
 					}
 					else {
 						LOG_ENGINE("This script is already attached!");
