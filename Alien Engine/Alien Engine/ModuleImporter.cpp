@@ -7,7 +7,9 @@
 #include "Devil/include/ilut.h"
 
 #include "stb_image.h"
-#include "FreeImage.h"
+#include "FreeImage/src/FreeImage.h"
+
+#pragma comment ( lib, "FreeImage/lib/FreeImage.lib ")
 
 #include "ModuleUI.h"
 #include "ComponentTransform.h"
