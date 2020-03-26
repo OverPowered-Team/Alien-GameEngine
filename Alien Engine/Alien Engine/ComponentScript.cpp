@@ -856,7 +856,7 @@ void ComponentScript::LoadData(const char* name, bool is_alien)
 			alien->game_object = game_object_attached;
 			alien->transform = game_object_attached->transform;
 			alien->enabled = &enabled;
-			strcpy(alien->data_name, name);
+			strcpy(alien->data_name, data_name.data());
 		}
 
 		App->SendAlienEvent(this, AlienEventType::SCRIPT_ADDED);
