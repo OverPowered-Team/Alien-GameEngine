@@ -13,7 +13,7 @@ public:
 	void Start();
 	void Update();
 
-	float speed = 5.f;
+	GameObject* speed = 0;
 
 	void OnDrawGizmos();
 
@@ -22,7 +22,7 @@ public:
 ALIEN_FACTORY PlayerTest* CreatePlayerTest() {
 	PlayerTest* alien = new PlayerTest();
 	// To show in inspector here
-	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->speed);
+	SHOW_IN_INSPECTOR_AS_GAMEOBJECT(alien->speed);
 
 	return alien;
 } 

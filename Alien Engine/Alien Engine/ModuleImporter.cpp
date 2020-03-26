@@ -562,7 +562,7 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 
 	ilutRenderer(ILUT_OPENGL);
 
-	if (ilLoadImage(path))
+	if (ilLoadImage(path) == IL_TRUE)
 	{
 		iluFlipImage();
 
