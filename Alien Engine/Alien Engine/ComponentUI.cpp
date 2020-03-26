@@ -109,7 +109,9 @@ void ComponentUI::Update()
 		default: {
 			break; }
 		}
-		UILogicGamePad();
+
+		if (canvas->game_object_attached->enabled)
+			UILogicGamePad();
 	}
 }
 
