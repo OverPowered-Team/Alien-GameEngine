@@ -284,7 +284,7 @@ void ComponentUI::CheckFirstSelected()
 	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
 	{
 		if (App->objects->GetGameObjectByID(App->objects->selected_ui)!=nullptr &&  App->objects->selected_ui != -1)
-			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Release;
+			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 
 		App->objects->selected_ui = this->game_object_attached->ID;
 		App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Hover;
@@ -315,6 +315,7 @@ void ComponentUI::UILogicGamePad()
 	switch (state)
 	{
 	case Idle: {
+		state = Idle;
 		//not necessary to do anything
 		break; }
 	case Hover: {
@@ -327,16 +328,16 @@ void ComponentUI::UILogicGamePad()
 			state = Pressed;
 		
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Hover;
+			state = Release;
 		
 		break; }
 	case Pressed: {
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Hover;
+			state = Release;
 		
 		break; }
 	case Release: {
-		state = Idle;
+		state = Hover;
 		break; }
 	}
 }
