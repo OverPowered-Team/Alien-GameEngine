@@ -287,7 +287,7 @@ void ComponentUI::CheckFirstSelected()
 	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
 	{
 		if (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && App->objects->selected_ui != -1)
-			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Release;
+			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 
 		App->objects->selected_ui = this->game_object_attached->ID;
 		App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Hover;
