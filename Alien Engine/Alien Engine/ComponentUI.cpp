@@ -16,7 +16,7 @@
 #include "StaticInput.h"
 #include "mmgr/mmgr.h"
 
-ComponentUI::ComponentUI(GameObject* obj):Component(obj)
+ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
 {
 	glGenBuffers(1, &verticesID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
@@ -86,7 +86,7 @@ void ComponentUI::Update()
 	if (Time::IsPlaying()) {
 		if (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled))
 			CheckFirstSelected();
-		
+
 		//UILogicMouse();
 
 		switch (state)
@@ -126,16 +126,16 @@ void ComponentUI::Draw(bool isGame)
 	glEnable(GL_BLEND);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
-	
+
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		#ifndef GAME_VERSION
-		glOrtho(0,App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
-		#else
+#ifndef GAME_VERSION
+		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+#else
 		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
-		#endif
+#endif
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -145,15 +145,15 @@ void ComponentUI::Draw(bool isGame)
 		float3 object_pos = transform->GetGlobalPosition();
 		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
 		float2 origin = float2((object_pos.x - canvasPivot.x) / (canvas->width), (object_pos.y - canvasPivot.y) / (canvas->height));
-		
-		#ifndef GAME_VERSION
+
+#ifndef GAME_VERSION
 		x = origin.x * App->ui->panel_game->width;
 		y = -origin.y * App->ui->panel_game->height;
-		#else
+#else
 		x = origin.x * App->window->width;
 		y = origin.y * App->window->height;
-		#endif
-		
+#endif
+
 		origin.x = (origin.x - 0.5F) * 2;
 		origin.y = -(-origin.y - 0.5F) * 2;
 		matrix[0][3] = origin.x;
@@ -238,13 +238,13 @@ void ComponentUI::UILogicMouse()
 {
 	float3 mouse_pos;
 
-	#ifndef GAME_VERSION
-	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY ), App->input->GetMouseZ());
+#ifndef GAME_VERSION
+	mouse_pos = float3((App->input->GetMouseX() - App->ui->panel_game->posX), (App->input->GetMouseY() - App->ui->panel_game->posY), App->input->GetMouseZ());
 	LOG_ENGINE("%f", mouse_pos.y);
 	LOG_ENGINE("MOUSE POS: %i", App->input->GetMouseY());
-	#else
+#else
 	mouse_pos = App->input->GetMousePosition();
-	#endif
+#endif
 
 	switch (state)
 	{
@@ -262,7 +262,7 @@ void ComponentUI::UILogicMouse()
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 			state = Pressed;
 		break;
-	case Pressed:	
+	case Pressed:
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && CheckMouseInside(mouse_pos))
 			state = Hover;
 		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !CheckMouseInside(mouse_pos))
@@ -283,8 +283,8 @@ void ComponentUI::CheckFirstSelected()
 {
 	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
 	{
-		if (App->objects->GetGameObjectByID(App->objects->selected_ui)!=nullptr &&  App->objects->selected_ui != -1)
-			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Idle;
+		if (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && App->objects->selected_ui != -1)
+			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Release;
 
 		App->objects->selected_ui = this->game_object_attached->ID;
 		App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Hover;
@@ -315,29 +315,28 @@ void ComponentUI::UILogicGamePad()
 	switch (state)
 	{
 	case Idle: {
-		state = Idle;
 		//not necessary to do anything
 		break; }
 	case Hover: {
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
 			state = Click;
-		
+
 		break; }
 	case Click: {
 		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_REPEAT)
 			state = Pressed;
-		
+
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Release;
-		
+			state = Hover;
+
 		break; }
 	case Pressed: {
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Release;
-		
+			state = Hover;
+
 		break; }
 	case Release: {
-		state = Hover;
+		state = Idle;
 		break; }
 	}
 }

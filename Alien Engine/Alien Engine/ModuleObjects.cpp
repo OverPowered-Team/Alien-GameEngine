@@ -1525,7 +1525,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("up", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
 				if (selected_ui == -1)
@@ -1537,7 +1537,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("down", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
 				if (selected_ui == -1)
@@ -1549,7 +1549,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("right", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
 				if (selected_ui == -1)
@@ -1561,7 +1561,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("left", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
 				if (selected_ui == -1)
