@@ -91,22 +91,23 @@ void ComponentUI::Update()
 
 		switch (state)
 		{
-		case Idle:
-			break;
-		case Hover:
+		case Idle: {
+			OnIdle();
+			break; }
+		case Hover: {
 			OnHover();
-			break;
-		case Click:
+			break; }
+		case Click: {
 			OnClick();
-			break;
-		case Pressed:
+			break; }
+		case Pressed: {
 			OnPressed();
-			break;
-		case Release:
+			break; }
+		case Release: {
 			OnRelease();
-			break;
-		default:
-			break;
+			break; }
+		default: {
+			break; }
 		}
 		UILogicGamePad();
 	}
@@ -316,6 +317,7 @@ void ComponentUI::UILogicGamePad()
 	{
 	case Idle: {
 		//not necessary to do anything
+		state = Idle;
 		break; }
 	case Hover: {
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
@@ -327,16 +329,16 @@ void ComponentUI::UILogicGamePad()
 			state = Pressed;
 
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Hover;
+			state = Release;
 
 		break; }
 	case Pressed: {
 		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
-			state = Hover;
+			state = Release;
 
 		break; }
 	case Release: {
-		state = Idle;
+		state = Hover;
 		break; }
 	}
 }
