@@ -60,6 +60,10 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	/* Create skybox */
 	cubemap = new Cubemap();
+	skybox = new Skybox();
+
+#ifndef GAME_VERSION
+
 	// This is the default skybox
 	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_x.png");
 	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_x.png");
@@ -68,9 +72,11 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_z.png");
 	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_z.png");
 
-	skybox = new Skybox();
 	auto faces = cubemap->ToVector();
 	skybox_texture_id = skybox->LoadCubeMap(faces);
+
+#endif
+
 	skybox->SetBuffers();
 
 	skybox_shader = App->resources->skybox_shader;
