@@ -487,7 +487,7 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		if (!App->objects->first_assigned_selected || !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)
+		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 		//UILogicMouse();
 		
@@ -513,7 +513,8 @@ void ComponentSlider::Update()
 		default:
 			break;
 		}
-		UILogicGamePad();
+		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
+			UILogicGamePad();
 	}
 }
 

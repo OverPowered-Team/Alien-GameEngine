@@ -84,7 +84,7 @@ void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
 void ComponentUI::Update()
 {
 	if (Time::IsPlaying()) {
-		if (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled))
+		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 
 		//UILogicMouse();
@@ -109,7 +109,9 @@ void ComponentUI::Update()
 		default: {
 			break; }
 		}
-		UILogicGamePad();
+
+		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
+			UILogicGamePad();
 	}
 }
 
@@ -285,7 +287,7 @@ void ComponentUI::CheckFirstSelected()
 	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
 	{
 		if (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && App->objects->selected_ui != -1)
-			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Release;
+			App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 
 		App->objects->selected_ui = this->game_object_attached->ID;
 		App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Hover;
