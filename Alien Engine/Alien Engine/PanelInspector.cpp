@@ -60,7 +60,7 @@ PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode
 
 	components.push_back(std::pair<std::string, ComponentType>("AASelect Component", ComponentType::NONE)); // This name is for the sort in order to have it at the begin
 	for (int i = 0; i < (int)ComponentType::MAX; i++) {
-		if (i != (int)ComponentType::BONE && i != (int)ComponentType::MAX && i != (int)ComponentType::UI) //Add the component types you don't want to show in combo
+		if (i != (int)ComponentType::BONE && i != (int)ComponentType::MESH && i != (int)ComponentType::DEFORMABLE_MESH && i != (int)ComponentType::MAX && i != (int)ComponentType::UI) //Add the component types you don't want to show in combo
 			components.push_back(
 				std::pair<std::string, ComponentType>(
 					Component::EnumToString((ComponentType)i), (ComponentType)i)
