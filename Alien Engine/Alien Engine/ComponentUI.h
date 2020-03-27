@@ -38,7 +38,7 @@ public:
 
 	virtual ~ComponentUI();
 
-	virtual void ChangeVertex(float width, float height);
+	
 	void UpdateVertex();
 
 	virtual bool OnIdle() { return true; };

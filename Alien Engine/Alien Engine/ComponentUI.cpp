@@ -19,16 +19,16 @@
 ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
 {
 	glGenBuffers(1, &verticesID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &uvID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uvID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, uvID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &indexID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6 * 3, index, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
 
 	type = ComponentType::UI;
 }
@@ -42,22 +42,8 @@ ComponentUI::~ComponentUI()
 	if (texture != nullptr) {
 		texture->DecreaseReferences();
 	}
+
 }
-
-void ComponentUI::ChangeVertex(float width, float height)
-{
-	size = { width, height };
-
-	vertices[0] = { 0,0,0 };
-	vertices[1] = { 0,-size.y,0 };
-	vertices[2] = { size.x,-size.y,0 };
-	vertices[3] = { size.x, 0,0 };
-
-	glGenBuffers(1, &verticesID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
-}
-
 void ComponentUI::UpdateVertex()
 {
 	/*vertices[0] = { -size.x,size.y,0 };
@@ -65,8 +51,8 @@ void ComponentUI::UpdateVertex()
 	vertices[2] = { size.x, -size.y,0 };
 	vertices[3] = { size.x, size.y,0 };*/
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
 }
 
 void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
@@ -189,10 +175,13 @@ void ComponentUI::Draw(bool isGame)
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-	glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
