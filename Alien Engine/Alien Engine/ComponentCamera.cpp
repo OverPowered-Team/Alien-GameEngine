@@ -124,6 +124,8 @@ ComponentCamera::~ComponentCamera()
 	delete mesh_camera;
 #endif
 
+	glDeleteTextures(1, &skybox_texture_id);
+
 	RELEASE(skybox);
 	RELEASE(cubemap);
 }
