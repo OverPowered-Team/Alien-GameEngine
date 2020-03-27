@@ -65,15 +65,15 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 #ifndef GAME_VERSION
 
 	// This is the default skybox
-	cubemap->pos_x.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_x.png");
-	cubemap->neg_x.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_x.png");
-	cubemap->pos_y.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_y.png");
-	cubemap->neg_y.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_y.png");
-	cubemap->pos_z.assign(TEXTURES_FOLDER"Skybox/sky_2/pos_z.png");
-	cubemap->neg_z.assign(TEXTURES_FOLDER"Skybox/sky_2/neg_z.png");
+	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"575523041464209442.dds");
+	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"2272049821688510999.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"8243941029542624066.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13353609087236361933.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"14034231489549923375.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"10216792741298181251.dds");
 
 	auto faces = cubemap->ToVector();
-	skybox_texture_id = skybox->LoadCubeMap(faces);
+	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
 
 #endif
 
@@ -795,59 +795,23 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("IconColor", camera_icon_color);
 
 	/* Save skybox (Library File) */
-	std::string path1 = App->file_system->GetPathWithoutExtension(cubemap->pos_x);
-	path1 += "_meta.alien";
-	u64 ID1 = App->resources->GetIDFromAlienPath(path1.data());
-	char lib_path1_local[256];
-	snprintf(lib_path1_local, 256, "%llu", ID1);
-	std::string id_path1(LIBRARY_TEXTURES_FOLDER);
-	id_path1.append(lib_path1_local).append(".dds");
-	to_save->SetString("Skybox_PositiveX", id_path1.c_str());
+	std::string path1 = cubemap->pos_x;
+	to_save->SetString("Skybox_PositiveX", path1.c_str());
 
-	std::string path2 = App->file_system->GetPathWithoutExtension(cubemap->neg_x);
-	path2 += "_meta.alien";
-	u64 ID2 = App->resources->GetIDFromAlienPath(path2.data());
-	char lib_path2_local[256];
-	snprintf(lib_path2_local, 256, "%llu", ID2);
-	std::string id_path2(LIBRARY_TEXTURES_FOLDER);
-	id_path2.append(lib_path2_local).append(".dds");
-	to_save->SetString("Skybox_NegativeX", id_path2.c_str());
+	std::string path2 = cubemap->neg_x;
+	to_save->SetString("Skybox_NegativeX", path2.c_str());
 
-	std::string path3 = App->file_system->GetPathWithoutExtension(cubemap->pos_y);
-	path3 += "_meta.alien";
-	u64 ID3 = App->resources->GetIDFromAlienPath(path3.data());
-	char lib_path3_local[256];
-	snprintf(lib_path3_local, 256, "%llu", ID3);
-	std::string id_path3(LIBRARY_TEXTURES_FOLDER);
-	id_path3.append(lib_path3_local).append(".dds");
-	to_save->SetString("Skybox_PositiveY", id_path3.c_str());
+	std::string path3 = cubemap->pos_y;
+	to_save->SetString("Skybox_PositiveY", path3.c_str());
 
-	std::string path4 = App->file_system->GetPathWithoutExtension(cubemap->neg_y);
-	path4 += "_meta.alien";
-	u64 ID4 = App->resources->GetIDFromAlienPath(path4.data());
-	char lib_path4_local[256];
-	snprintf(lib_path4_local, 256, "%llu", ID4);
-	std::string id_path4(LIBRARY_TEXTURES_FOLDER);
-	id_path4.append(lib_path4_local).append(".dds");
-	to_save->SetString("Skybox_NegativeY", id_path4.c_str());
+	std::string path4 = cubemap->neg_y;
+	to_save->SetString("Skybox_NegativeY", path4.c_str());
 
-	std::string path5 = App->file_system->GetPathWithoutExtension(cubemap->pos_z);
-	path5 += "_meta.alien";
-	u64 ID5 = App->resources->GetIDFromAlienPath(path5.data());
-	char lib_path5_local[256];
-	snprintf(lib_path5_local, 256, "%llu", ID5);
-	std::string id_path5(LIBRARY_TEXTURES_FOLDER);
-	id_path5.append(lib_path5_local).append(".dds");
-	to_save->SetString("Skybox_PositiveZ", id_path5.c_str());
+	std::string path5 = cubemap->pos_z;
+	to_save->SetString("Skybox_PositiveZ", path5.c_str());
 
-	std::string path6 = App->file_system->GetPathWithoutExtension(cubemap->neg_z);
-	path6 += "_meta.alien";
-	u64 ID6 = App->resources->GetIDFromAlienPath(path6.data());
-	char lib_path6_local[256];
-	snprintf(lib_path6_local, 256, "%llu", ID6);
-	std::string id_path6(LIBRARY_TEXTURES_FOLDER);
-	id_path6.append(lib_path6_local).append(".dds");
-	to_save->SetString("Skybox_NegativeZ", id_path6.c_str());
+	std::string path6 = cubemap->neg_z;
+	to_save->SetString("Skybox_NegativeZ", path6.c_str());
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
