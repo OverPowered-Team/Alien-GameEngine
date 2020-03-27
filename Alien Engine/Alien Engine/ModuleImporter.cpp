@@ -561,46 +561,39 @@ ResourceFont *ModuleImporter::LoadFontFile(const char *path)
 
 void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
 {
-	uint tex_id_new = 0;
+	ILuint new_image_id = 0;
+	ilGenImages(1, &new_image_id);
+	ilBindImage(new_image_id);
 
-	glGenTextures(1, &tex_id_new);
-	glBindTexture(GL_TEXTURE_2D, tex_id_new);
+	ilutRenderer(ILUT_OPENGL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	int width, height, channels;
-	FREE_IMAGE_FORMAT im_format = FreeImage_GetFileType(path, 0);
-	FIBITMAP* im = FreeImage_Load(im_format, path);
-	im = FreeImage_ConvertTo32Bits(im);
-	FreeImage_FlipVertical(im);
-
-	BYTE* d = FreeImage_GetBits(im);
-	width = (int)FreeImage_GetWidth(im);
-	height = (int)FreeImage_GetHeight(im);
-
-	if (d)
+	if (ilLoadImage(path))
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, d);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		iluFlipImage();
 
-		texture->id = tex_id_new;
+		texture->id = ilutGLBindTexImage();
 		texture->is_custom = true;
-		texture->width = width;
-		texture->height = height;
+		texture->width = ilGetInteger(IL_IMAGE_WIDTH);
+		texture->height = ilGetInteger(IL_IMAGE_HEIGHT);
 
-		LOG_ENGINE("Generated and loaded correctly texture with path: %s", path);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		LOG_ENGINE("Texture successfully loaded: %s", path);
 	}
 	else
 	{
-		LOG_ENGINE("Can't load texture with path: %s", path);
+		LOG_ENGINE("Error while loading image in %s", path);
+		LOG_ENGINE("Error: %s", ilGetString(ilGetError()));
 	}
 
-	FreeImage_Unload(im);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	ilDeleteImages(1, &new_image_id);
 }
 
 void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
