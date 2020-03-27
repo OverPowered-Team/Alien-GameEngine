@@ -561,87 +561,39 @@ ResourceFont *ModuleImporter::LoadFontFile(const char *path)
 
 void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
 {
-	ILuint imageID;
-	GLuint textureID;
-	ILboolean success;
-	ILenum error;
-
-	ilGenImages(1, &imageID);
-	ilBindImage(imageID);
+	ILuint new_image_id = 0;
+	ilGenImages(1, &new_image_id);
+	ilBindImage(new_image_id);
 
 	ilutRenderer(ILUT_OPENGL);
 
-	success = ilLoadImage(path);
-
-	if (texture != nullptr)
+	if (ilLoadImage(path))
 	{
-		if (success)
-		{
-			//iluFlipImage();
+		iluFlipImage();
 
-			//success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+		texture->id = ilutGLBindTexImage();
+		texture->is_custom = true;
+		texture->width = ilGetInteger(IL_IMAGE_WIDTH);
+		texture->height = ilGetInteger(IL_IMAGE_HEIGHT);
 
-			glGenTextures(1, &textureID);
-			glBindTexture(GL_TEXTURE_2D, textureID);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
-			int width = ilGetInteger(IL_IMAGE_WIDTH);
-			int height = ilGetInteger(IL_IMAGE_HEIGHT);
-
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-			glTexImage2D(GL_TEXTURE_2D,
-				0,
-				GL_RGBA,
-				width,
-				height,
-				0,
-				GL_RGBA,
-				GL_UNSIGNED_BYTE,
-				ilGetData());
-
-			texture->id = (uint)textureID;
-			texture->is_custom = true;
-			texture->width = width;
-			texture->height = height;
-		}
+		LOG_ENGINE("Texture successfully loaded: %s", path);
 	}
 	else
 	{
-		if (success)
-		{
-			//iluFlipImage();
-
-			//success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-			glGenTextures(1, &textureID);
-			glBindTexture(GL_TEXTURE_2D, textureID);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-			int width = ilGetInteger(IL_IMAGE_WIDTH);
-			int height = ilGetInteger(IL_IMAGE_HEIGHT);
-
-			glTexImage2D(GL_TEXTURE_2D,
-				0,
-				GL_RGBA,
-				width,
-				height,
-				0,
-				GL_RGBA,
-				GL_UNSIGNED_BYTE,
-				ilGetData());
-		}
+		LOG_ENGINE("Error while loading image in %s", path);
+		LOG_ENGINE("Error: %s", ilGetString(ilGetError()));
 	}
 
-	ilDeleteImages(1, &imageID);
+	ilDeleteImages(1, &new_image_id);
 }
 
 void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)
