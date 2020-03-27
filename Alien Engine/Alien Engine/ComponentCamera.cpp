@@ -260,10 +260,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Spacing();
 		ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Skybox settings:");
 		
-		std::string path_pos_x = App->file_system->GetPathWithoutExtension(cubemap->pos_x);
-		path_pos_x += "_meta.alien";
-		u64 id_pos_x = App->resources->GetIDFromAlienPath(path_pos_x.data());
-		ResourceTexture* tex_pos_x = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_x);
+		std::string path_pos_x = App->file_system->GetBaseFileName(cubemap->pos_x.c_str());
+		ResourceTexture* tex_pos_x = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_x));
 		ImGui::Image((ImTextureID)tex_pos_x->id, ImVec2(100.0f, 100.0f));
 		
 		if (ImGui::BeginDragDropTarget())
@@ -288,7 +286,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->pos_x.assign(texture_dropped->GetAssetsPath());
+							cubemap->pos_x.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangePositiveX(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -302,10 +300,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::SameLine();
 		ImGui::Text("Positive X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_x.c_str());
 
-		std::string path_neg_x = App->file_system->GetPathWithoutExtension(cubemap->neg_x);
-		path_neg_x += "_meta.alien";
-		u64 id_neg_x = App->resources->GetIDFromAlienPath(path_neg_x.data());
-		ResourceTexture* tex_neg_x = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_x);
+		std::string path_neg_x = App->file_system->GetBaseFileName(cubemap->neg_x.c_str());
+		ResourceTexture* tex_neg_x = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_x));
 		ImGui::Image((ImTextureID)tex_neg_x->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -329,7 +325,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->neg_x.assign(texture_dropped->GetAssetsPath());
+							cubemap->neg_x.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangeNegativeX(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -344,10 +340,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Text("Negative X: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_x.c_str());
 
 
-		std::string path_pos_y = App->file_system->GetPathWithoutExtension(cubemap->pos_y);
-		path_pos_y += "_meta.alien";
-		u64 id_pos_y = App->resources->GetIDFromAlienPath(path_pos_y.data());
-		ResourceTexture* tex_pos_y = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_y);
+		std::string path_pos_y = App->file_system->GetBaseFileName(cubemap->pos_y.c_str());
+		ResourceTexture* tex_pos_y = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_y));
 		ImGui::Image((ImTextureID)tex_pos_y->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -372,7 +366,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->pos_y.assign(texture_dropped->GetAssetsPath());
+							cubemap->pos_y.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangePositiveY(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -386,10 +380,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::SameLine();
 		ImGui::Text("Positive Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_y.c_str());
 		
-		std::string path_neg_y = App->file_system->GetPathWithoutExtension(cubemap->neg_y);
-		path_neg_y += "_meta.alien";
-		u64 id_neg_y = App->resources->GetIDFromAlienPath(path_neg_y.data());
-		ResourceTexture* tex_neg_y = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_y);
+		std::string path_neg_y = App->file_system->GetBaseFileName(cubemap->neg_y.c_str());
+		ResourceTexture* tex_neg_y = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_y));
 		ImGui::Image((ImTextureID)tex_neg_y->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -414,7 +406,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->neg_y.assign(texture_dropped->GetAssetsPath());
+							cubemap->neg_y.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangeNegativeY(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -428,10 +420,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::SameLine();
 		ImGui::Text("Negative Y: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->neg_y.c_str());
 		
-		std::string path_pos_z = App->file_system->GetPathWithoutExtension(cubemap->pos_z);
-		path_pos_z += "_meta.alien";
-		u64 id_pos_z = App->resources->GetIDFromAlienPath(path_pos_z.data());
-		ResourceTexture* tex_pos_z = (ResourceTexture*)App->resources->GetResourceWithID(id_pos_z);
+		std::string path_pos_z = App->file_system->GetBaseFileName(cubemap->pos_z.c_str());
+		ResourceTexture* tex_pos_z = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_z));
 		ImGui::Image((ImTextureID)tex_pos_z->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -456,7 +446,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->pos_z.assign(texture_dropped->GetAssetsPath());
+							cubemap->pos_z.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangePositiveZ(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -471,10 +461,8 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Text("Positive Z: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), cubemap->pos_z.c_str());
 
 
-		std::string path_neg_z = App->file_system->GetPathWithoutExtension(cubemap->neg_z);
-		path_neg_z += "_meta.alien";
-		u64 id_neg_z = App->resources->GetIDFromAlienPath(path_neg_z.data());
-		ResourceTexture* tex_neg_z = (ResourceTexture*)App->resources->GetResourceWithID(id_neg_z);
+		std::string path_neg_z = App->file_system->GetBaseFileName(cubemap->neg_z.c_str());
+		ResourceTexture* tex_neg_z = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_z));
 		ImGui::Image((ImTextureID)tex_neg_z->id, ImVec2(100.0f, 100.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -499,7 +487,7 @@ bool ComponentCamera::DrawInspector()
 							if (texture_dropped->references == 0)
 								texture_dropped->IncreaseReferences();
 
-							cubemap->neg_z.assign(texture_dropped->GetAssetsPath());
+							cubemap->neg_z.assign(texture_dropped->GetLibraryPath());
 							skybox->ChangeNegativeZ(skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 						}
 					}
@@ -839,9 +827,6 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	cubemap->neg_y.assign(to_load->GetString("Skybox_NegativeY"));
 	cubemap->pos_z.assign(to_load->GetString("Skybox_PositiveZ"));
 	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
-
-	auto faces = cubemap->ToVector();
-	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;
