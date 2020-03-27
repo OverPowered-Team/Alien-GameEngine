@@ -10,6 +10,7 @@
 #include "ModuleWindow.h"
 #include "ResourceScene.h"
 #include "ComponentMesh.h"
+#include "ComponentUI.h"
 #include "ComponentCanvas.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -244,6 +245,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<GameObject*> to_draw_ui;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
 
@@ -257,7 +259,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, frustum_camera);
+					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
 				}
 			}
 
@@ -275,6 +277,19 @@ update_status ModuleObjects::PostUpdate(float dt)
 						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
+
+			std::vector<GameObject*>::iterator it_ui = to_draw_ui.begin();
+			for (; it_ui != to_draw_ui.end(); ++it_ui) {
+				if ((*it_ui) != nullptr) {
+					ComponentUI* ui = (*it_ui)->GetComponent<ComponentUI>();
+					if (ui != nullptr && ui->IsEnabled())
+					{			
+						ui->Draw(!App->objects->printing_scene);
+
+					}
+				}
+			}
+
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {
@@ -296,6 +311,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		OnPreCull(game_viewport->GetCamera());
 
 		std::vector<std::pair<float, GameObject*>> to_draw;
+		std::vector<GameObject*> to_draw_ui;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
@@ -304,7 +320,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 		for (; item != base_game_object->children.end(); ++item) {
 			if (*item != nullptr && (*item)->IsEnabled()) {
-				(*item)->SetDrawList(&to_draw, frustum_camera);
+				(*item)->SetDrawList(&to_draw,&to_draw_ui, frustum_camera);
 			}
 		}
 
