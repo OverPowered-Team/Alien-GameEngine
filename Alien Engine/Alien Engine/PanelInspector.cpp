@@ -58,20 +58,31 @@ PanelInspector::PanelInspector(const std::string& panel_name, const SDL_Scancode
 {
 	shortcut = App->shortcut_manager->AddShortCut("Inspector", key1_down, std::bind(&Panel::ChangeEnable, this), key2_repeat, key3_repeat_extra);
 
-	for (int i = 0; i < (int)ComponentType::UNKNOWN; i++) {
-		if (i != (int)ComponentType::BONE) //Add the component types you don't want to show in combo
+	components.push_back(std::pair<std::string, ComponentType>("AASelect Component", ComponentType::NONE)); // This name is for the sort in order to have it at the begin
+	for (int i = 0; i < (int)ComponentType::MAX; i++) {
+		if (i != (int)ComponentType::BONE && i != (int)ComponentType::MAX && i != (int)ComponentType::UI) //Add the component types you don't want to show in combo
 			components.push_back(
 				std::pair<std::string, ComponentType>(
-					Component::EnumToString((ComponentType)i), (ComponentType)i
-					)
+					Component::EnumToString((ComponentType)i), (ComponentType)i)
 			);
 	}
 
-	std::sort(components.begin(), components.end());
-	combo_select.assign("Select Component\0");
+	//if there is an empty id in ComponentType we have to exclude if they have no name
+	auto i = components.begin();
+	while (i != components.end()) {
+		if ((*i).first.compare("Not valid") == 0)
+			i = components.erase(i);
+		else
+			++i;
+	}
 
-	for (auto i = components.begin(); i != components.end(); i++)
+	std::sort(components.begin(), components.end()); // Sort components by name
+
+	for (auto i = components.begin(); i != components.end(); i++) { // iterate and add the name and '\0' to the combo for imgui
+		if ((*i).second == ComponentType::NONE)
+			(*i).first.assign("Select Component"); // rename NONE id
 		combo_select += (*i).first + '\0';
+	}
 }
 
 PanelInspector::~PanelInspector()
@@ -401,7 +412,7 @@ void PanelInspector::ButtonAddComponent()
 				switch (components[component].second)
 				{
 
-				case (ComponentType)0: {
+				case ComponentType::NONE: {
 					LOG_ENGINE("Select a Component!");
 					break; }
 

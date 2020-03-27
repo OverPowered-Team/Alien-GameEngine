@@ -48,6 +48,9 @@ std::string Component::EnumToString(ComponentType type)
 {
 	switch (type)
 	{
+	case ComponentType::NONE:
+		return std::string("NONE");
+		break;
 	case ComponentType::TRANSFORM:
 		return std::string("Transform");
 		break;
@@ -138,9 +141,11 @@ std::string Component::EnumToString(ComponentType type)
 	case ComponentType::UI:
 		return std::string("UI");
 		break;
-	case ComponentType::UNKNOWN:
+	case ComponentType::MAX:
+		return std::string("MAX");
+		break;
 	default:
-		return std::string("Unknown");
+		return std::string("Not valid");
 		break;
 	}
 }
@@ -157,7 +162,7 @@ void Component::RightClickMenu(const char* collapsing_header_name)
 		ImGui::Separator();
 		
 		if (ImGui::MenuItem("Copy Component")) {
-			SDL_assert((uint)ComponentType::UNKNOWN == 4); // add new case here
+			SDL_assert((uint)ComponentType::MAX == 4); // add new case here
 			if (App->objects->component_in_copy != nullptr) {
 				delete App->objects->component_in_copy;
 				App->objects->component_in_copy = nullptr;

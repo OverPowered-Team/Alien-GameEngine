@@ -10,6 +10,7 @@ class JSONArraypack;
 typedef unsigned long long u64;
 
 enum class ComponentType {
+	NONE = -1,
 	TRANSFORM = 0,
 	MESH = 1,
 	MATERIAL = 2,
@@ -42,7 +43,7 @@ enum class ComponentType {
 	SCRIPT = 29,
 	UI = 30,
 
-	UNKNOWN //LAST LAST LAST
+	MAX //LAST LAST LAST
 };
 
 class __declspec(dllexport) Component {
@@ -116,7 +117,7 @@ protected:
 
 protected:
 
-	ComponentType type = ComponentType::UNKNOWN;
+	ComponentType type = ComponentType::NONE;
 	bool enabled = true;
 	u64 ID = 0;
 	bool not_destroy = true;
