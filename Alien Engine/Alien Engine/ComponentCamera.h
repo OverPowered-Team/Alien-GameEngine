@@ -57,6 +57,8 @@ public:
 
 	void DrawSkybox();
 
+	void CreateDefaultSetup();
+
 private:
 	void AspectRatio(int width_ratio, int height_ratio, bool fov_type = 0);
 
