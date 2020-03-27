@@ -313,7 +313,7 @@ void PanelInspector::ButtonAddComponent()
 {
 	ImGui::Spacing();
 
-	if (component == (uint)ComponentType::SCRIPT) {
+	if (components[component].second == ComponentType::SCRIPT) {
 		if (ImGui::BeginCombo("##Scriptss", std::get<0>(script_info)))
 		{
 			bool sel = App->StringCmp("Return To Components", std::get<0>(script_info));
@@ -412,12 +412,10 @@ void PanelInspector::ButtonAddComponent()
 						comp = new ComponentMesh(selected);
 						selected->AddComponent(comp);
 					}
-
 					else
 						LOG_ENGINE("The selected object already has this component!");
 
 					break; }
-
 				case ComponentType::MATERIAL: {
 
 					if ((!selected->HasComponent(ComponentType::MATERIAL)) &&
@@ -664,7 +662,6 @@ void PanelInspector::ButtonAddComponent()
 					}
 					break; }
 				}
-
 
 				if (comp != nullptr) {
 					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_COMPONENT, comp);
