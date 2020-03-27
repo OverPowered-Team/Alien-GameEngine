@@ -822,11 +822,64 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	}
 
 	cubemap->pos_x.assign(to_load->GetString("Skybox_PositiveX"));
+	std::string path_pos_x = App->file_system->GetBaseFileName(cubemap->pos_x.c_str());
+	ResourceTexture* tex_pos_x = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_x));
+	if (tex_pos_x != nullptr)
+	{
+		if (tex_pos_x->references == 0)
+			tex_pos_x->IncreaseReferences();
+		skybox->ChangePositiveX(skybox_texture_id, tex_pos_x->id, tex_pos_x->width, tex_pos_x->height);
+	}
+
 	cubemap->neg_x.assign(to_load->GetString("Skybox_NegativeX"));
+	std::string path_neg_x = App->file_system->GetBaseFileName(cubemap->neg_x.c_str());
+	ResourceTexture* tex_neg_x = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_x));
+	if (tex_neg_x != nullptr)
+	{
+		if (tex_neg_x->references == 0)
+			tex_neg_x->IncreaseReferences();
+		skybox->ChangeNegativeX(skybox_texture_id, tex_neg_x->id, tex_neg_x->width, tex_neg_x->height);
+	}
+	
 	cubemap->pos_y.assign(to_load->GetString("Skybox_PositiveY"));
+	std::string path_pos_y = App->file_system->GetBaseFileName(cubemap->pos_y.c_str());
+	ResourceTexture* tex_pos_y = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_y));
+	if (tex_pos_y != nullptr)
+	{
+		if (tex_pos_y->references == 0)
+			tex_pos_y->IncreaseReferences();
+		skybox->ChangePositiveY(skybox_texture_id, tex_pos_y->id, tex_pos_y->width, tex_pos_y->height);
+	}
+	
 	cubemap->neg_y.assign(to_load->GetString("Skybox_NegativeY"));
+	std::string path_neg_y = App->file_system->GetBaseFileName(cubemap->neg_y.c_str());
+	ResourceTexture* tex_neg_y = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_y));
+	if (tex_neg_y != nullptr)
+	{
+		if (tex_neg_y->references == 0)
+			tex_neg_y->IncreaseReferences();
+		skybox->ChangeNegativeY(skybox_texture_id, tex_neg_y->id, tex_neg_y->width, tex_neg_y->height);
+	}
+	
 	cubemap->pos_z.assign(to_load->GetString("Skybox_PositiveZ"));
+	std::string path_pos_z = App->file_system->GetBaseFileName(cubemap->pos_z.c_str());
+	ResourceTexture* tex_pos_z = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_pos_z));
+	if (tex_pos_z != nullptr)
+	{
+		if (tex_pos_z->references == 0)
+			tex_pos_z->IncreaseReferences();
+		skybox->ChangePositiveZ(skybox_texture_id, tex_pos_z->id, tex_pos_z->width, tex_pos_z->height);
+	}
+
 	cubemap->neg_z.assign(to_load->GetString("Skybox_NegativeZ"));
+	std::string path_neg_z = App->file_system->GetBaseFileName(cubemap->neg_z.c_str());
+	ResourceTexture* tex_neg_z = (ResourceTexture*)App->resources->GetResourceWithID(std::stoull(path_neg_z));
+	if (tex_neg_z != nullptr)
+	{
+		if (tex_neg_z->references == 0)
+			tex_neg_z->IncreaseReferences();
+		skybox->ChangeNegativeZ(skybox_texture_id, tex_neg_z->id, tex_neg_z->width, tex_neg_z->height);
+	}
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;
