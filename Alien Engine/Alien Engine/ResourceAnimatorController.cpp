@@ -1052,6 +1052,16 @@ bool ResourceAnimatorController::ReadBaseInfo(const char* assets_file_path)
 
 		meta_data_path = LIBRARY_ANIM_CONTROLLERS_FOLDER + std::to_string(ID) + ".alienAnimController";
 		char* buffer;
+
+		struct stat fileMeta;
+		struct stat fileAssets;
+		if (stat(meta_data_path.c_str(), &fileMeta) == 0 && stat(path.c_str(), &fileAssets) == 0) {
+			if (fileAssets.st_mtime > fileMeta.st_mtime) {
+				remove(meta_data_path.data());
+				ReImport(GetID());
+			}
+		}
+
 		uint size = App->file_system->Load(meta_data_path.data(), &buffer);
 
 		if (size > 0)

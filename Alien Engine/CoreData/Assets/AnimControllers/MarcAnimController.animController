@@ -1,0 +1,66 @@
+{
+    "Controller": {
+        "Name": "MarcAnimController",
+        "NumStates": 4,
+        "NumTransitions": 2,
+        "States": [
+            {
+                "Name": "NewState1",
+                "Speed": 1,
+                "Clip": "15685939318256760475"
+            },
+            {
+                "Name": "NewState2",
+                "Speed": 1,
+                "Clip": "0"
+            },
+            {
+                "Name": "NewState3",
+                "Speed": 1,
+                "Clip": "0"
+            },
+            {
+                "Name": "NewState4",
+                "Speed": 1,
+                "Clip": "0"
+            }			
+        ],
+        "Transitions": [
+            {
+                "Source": "NewState1",
+                "Target": "NewState2",
+                "Blend": 0.25,
+                "End": false,
+                "IntConditions": [],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
+                        "ParameterIndex": 0,
+                        "CompValue": 0
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "NewState2",
+                "Target": "NewState3",
+                "Blend": 0.25,
+                "End": false,
+                "IntConditions": [],
+                "FloatConditions": [],
+                "BoolConditions": []
+            }
+        ],
+        "IntParameters": [],
+        "FloatParameters": [
+            {
+                "Name": "NewFloat",
+                "Value": 0
+            }
+        ],
+        "BoolParameters": [],
+        "Events": [],
+        "Objects": []
+    }
+}
