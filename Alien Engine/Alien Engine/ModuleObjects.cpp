@@ -174,6 +174,21 @@ update_status ModuleObjects::PreUpdate(float dt)
 	}
 	base_game_object->PreUpdate();
 	ScriptsPreUpdate();
+
+#ifndef GAME_VERSION
+	for (Viewport* viewport : viewports)
+	{
+		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
+			continue;
+
+		viewport->BeginViewport();
+		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
+		bool isGameCamera = (viewport == game_viewport) ? true : false;
+
+		viewport->EndViewport();
+	}
+#endif
+
 	return UPDATE_CONTINUE;
 }
 
@@ -1056,34 +1071,6 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				delete scene;
 
 				if (change_scene) {
-					struct stat file;
-					stat(path.data(), &file);
-
-					// refresh prefabs if are not locked
-					std::vector<GameObject*> prefab_roots;
-					base_game_object->GetAllPrefabRoots(prefab_roots);
-
-					for (uint i = 0; i < prefab_roots.size(); ++i) {
-						if (prefab_roots[i] != nullptr && !prefab_roots[i]->prefab_locked) {
-							ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab_roots[i]->GetPrefabID());
-							if (prefab != nullptr && prefab->GetID() != 0) {
-								struct stat prefab_file;
-								// TODO: when passing to library change
-								if (stat(prefab->GetAssetsPath(), &prefab_file) == 0) {
-									if (prefab_file.st_mtime > file.st_mtime) {
-										auto find = prefab_roots[i]->parent->children.begin();
-										for (; find != prefab_roots[i]->parent->children.end(); ++find) {
-											if (*find == prefab_roots[i]) {
-												prefab->ConvertToGameObjects(prefab_roots[i]->parent, find - prefab_roots[i]->parent->children.begin(), (*find)->GetComponent<ComponentTransform>()->GetGlobalPosition());
-												prefab_roots[i]->ToDelete();
-												break;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
 					DeleteReturns();
 				}
 
@@ -1377,10 +1364,10 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 					for (; script != scripts.end(); ++script) {
 						if (*script != nullptr) {
 							to_save->SetAnotherNode();
-							to_save->SetString("GameObjectID", std::to_string((*item)->ID));
-							to_save->SetString("ResourceScriptID", std::to_string((*script)->resourceID));
-							to_save->SetString("DataName", (*script)->data_name);
-							to_save->SetString("CompScriptID", std::to_string((*script)->ID));
+							to_save->SetString("GameObjectID", std::to_string((*item)->ID).data());
+							to_save->SetString("ResourceScriptID", std::to_string((*script)->resourceID).data());
+							to_save->SetString("DataName", (*script)->data_name.data());
+							to_save->SetString("CompScriptID", std::to_string((*script)->ID).data());
 							if ((*script)->inspector_variables.empty()) {
 								to_save->SetBoolean("HasInspector", false);
 							}
@@ -1394,7 +1381,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 										continue;
 									}
 									inspector->SetBoolean("IsNull", false);
-									inspector->SetString("Name", (*script)->inspector_variables[i].variable_name);
+									inspector->SetString("Name", (*script)->inspector_variables[i].variable_name.data());
 									inspector->SetNumber("Type", (*script)->inspector_variables[i].variable_type);
 									switch ((*script)->inspector_variables[i].variable_type)
 									{
@@ -1415,12 +1402,12 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 										break; }
 									case InspectorScriptData::DataType::PREFAB: {
 										Prefab* prefab = ((Prefab*)((*script)->inspector_variables[i].ptr));
-										inspector->SetString("prefab", std::to_string(prefab->prefabID));
+										inspector->SetString("prefab", std::to_string(prefab->prefabID).data());
 										break; }
 									case InspectorScriptData::DataType::GAMEOBJECT: {
 										GameObject** obj = ((GameObject**)((*script)->inspector_variables[i].obj));
 										if (obj != nullptr && *obj != nullptr) {
-											inspector->SetString("gameobject", std::to_string((*obj)->ID));
+											inspector->SetString("gameobject", std::to_string((*obj)->ID).data());
 										}
 										else {
 											inspector->SetString("gameobject", "0");
@@ -1547,13 +1534,13 @@ void ModuleObjects::DeleteReturns()
 
 void ModuleObjects::UpdateGamePadInput()
 {
-	if (GetGameObjectByID(selected_ui) != nullptr &&GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed)
+	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed)
 	{
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) > 0.2f)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("up", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
 				if (selected_ui == -1)
@@ -1565,7 +1552,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("down", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
 				if (selected_ui == -1)
@@ -1577,7 +1564,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("right", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
 				if (selected_ui == -1)
@@ -1589,7 +1576,7 @@ void ModuleObjects::UpdateGamePadInput()
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
 			{
-				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Release;
+				GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
 				u64 safe_selected = selected_ui;
 				selected_ui = SetNewSelected("left", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
 				if (selected_ui == -1)

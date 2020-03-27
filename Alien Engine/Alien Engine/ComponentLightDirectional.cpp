@@ -39,17 +39,20 @@ void ComponentLightDirectional::LightLogic()
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
 #ifndef GAME_VERSION
-	if (this->game_object_attached->IsSelected())
+	if (App->objects->printing_scene)
 	{
-		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
-		App->renderer3D->EndDebugDraw();
-	}
-	else
-	{
-		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
-		App->renderer3D->EndDebugDraw();
+		if (this->game_object_attached->IsSelected())
+		{
+			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
+			App->renderer3D->EndDebugDraw();
+		}
+		else
+		{
+			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
+			App->renderer3D->EndDebugDraw();
+		}
 	}
 #endif
 }
@@ -133,7 +136,7 @@ void ComponentLightDirectional::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetBoolean("Enabled", enabled);
-	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("ID", std::to_string(ID).data());
 	to_save->SetBoolean("PrintIcon", print_icon);
 
 	to_save->SetNumber("Intensity", float(light_props.intensity));

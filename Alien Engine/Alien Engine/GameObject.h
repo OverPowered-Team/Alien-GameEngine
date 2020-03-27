@@ -35,6 +35,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
 	friend class ComponentPointConstraint;
 	friend class ComponentRigidBody;
 	friend class ComponentCharacterController;
@@ -64,6 +65,7 @@ class __declspec(dllexport) GameObject
 	friend class ResourceMesh;
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
+	friend class ResourceAnimatorController;
 	friend class ModuleObjects;
 	friend class ComponentImage;
 	friend class ComponentSlider;
@@ -72,7 +74,7 @@ class __declspec(dllexport) GameObject
 	friend class AnimTween;
 	
 public:
-	GameObject(GameObject* parent);
+	GameObject(GameObject* parent, bool ignore_transform = false);
 	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);
 	GameObject(bool ignore_transform = false); // just for loading objects, dont use it
 	virtual ~GameObject();

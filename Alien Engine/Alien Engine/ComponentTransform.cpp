@@ -3,6 +3,7 @@
 #include "imgui/imgui.h"
 #include "ModuleObjects.h"
 #include "Application.h"
+#include "ComponentScript.h"
 #include "ReturnZ.h"
 #include "ComponentMesh.h"
 #include "PanelScene.h"
@@ -11,6 +12,7 @@
 #include "ModuleUI.h"
 #include "ModuleResources.h"
 #include "PanelProject.h"
+#include "Alien.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -160,6 +162,15 @@ void ComponentTransform::SetLocalScale(const float& x, const float& y, const flo
 	local_scale.z = z;
 
 	LookScale();
+
+	RecalculateTransform();
+}
+
+void ComponentTransform::SetLocalTransform(const float3& position, const Quat& rotation, const float3& scale)
+{
+	local_position = position;
+	local_rotation = rotation;
+	local_scale = scale;
 
 	RecalculateTransform();
 }
@@ -413,8 +424,40 @@ bool ComponentTransform::DrawInspector()
 						if (*item != nullptr && *item == obj) {
 							ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(obj->GetPrefabID());
 							if (prefab != nullptr) {
+								std::vector<ComponentScript*> current_scripts;
+								App->objects->GetRoot(true)->GetComponentsChildren(ComponentType::SCRIPT, (std::vector<Component*>*)&current_scripts, true);
+								std::vector<std::pair<GameObject**, std::string>> objectsToAssign;
+								for (auto scripts = current_scripts.begin(); scripts != current_scripts.end(); ++scripts) {
+									if (!game_object_attached->Exists((*scripts)->game_object_attached)) {
+										for (auto variables = (*scripts)->inspector_variables.begin(); variables != (*scripts)->inspector_variables.end(); ++variables) {
+											if ((*variables).variable_type == InspectorScriptData::DataType::GAMEOBJECT && (*variables).obj != nullptr && game_object_attached->Exists(*(*variables).obj)) {
+												GameObject* nameObj = *(*variables).obj;
+												objectsToAssign.push_back({ (*variables).obj, nameObj->GetName() });
+												*(*variables).obj = nullptr;
+											}
+										}
+									}
+								}
+
 								(*item)->ToDelete();
-								prefab->ConvertToGameObjects(obj->parent, item - obj->parent->children.begin(), (*item)->GetComponent<ComponentTransform>()->local_position);
+								GameObject* newObj = prefab->ConvertToGameObjects(obj->parent, item - obj->parent->children.begin(), (*item)->GetComponent<ComponentTransform>()->local_position);
+							
+								if (!objectsToAssign.empty()) {
+									std::stack<GameObject*> objects;
+									objects.push(newObj);
+									while (!objects.empty()) {
+										GameObject* toCheck = objects.top();
+										objects.pop();
+										for (auto it = objectsToAssign.begin(); it != objectsToAssign.end(); ++it) {
+											if (strcmp((*it).second.data(), toCheck->GetName()) == 0) {
+												*(*it).first = toCheck;
+											}
+										}
+										for (auto child = toCheck->children.begin(); child != toCheck->children.end(); ++child) {
+											objects.push(*child);
+										}
+									}
+								}
 							}
 							return false;
 						}
@@ -682,7 +725,7 @@ bool ComponentTransform::DrawInspector()
 					auto item = App->objects->tags.begin() + 1;
 					for (; item != App->objects->tags.end(); ++item) {
 						new_tags->SetAnotherNode();
-						new_tags->SetString("Tag", *item);
+						new_tags->SetString("Tag", (*item).data());
 					}
 					alien->FinishSave();
 					delete alien;
@@ -827,7 +870,7 @@ bool ComponentTransform::AddNewTagClicked(const char* new_tag)
 		auto item = App->objects->tags.begin() + 1;
 		for (; item != App->objects->tags.end(); ++item) {
 			new_tags->SetAnotherNode();
-			new_tags->SetString("Tag", *item);
+			new_tags->SetString("Tag", (*item).data());
 		}
 		alien->FinishSave();
 		delete alien;
@@ -901,7 +944,7 @@ void ComponentTransform::SaveComponent(JSONArraypack* to_save)
 	to_save->SetQuat("Rotation", local_rotation);
 	to_save->SetFloat3("Scale", local_scale);
 	to_save->SetBoolean("ScaleNegative", is_scale_negative);
-	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("ID", std::to_string(ID).data());
 }
 
 void ComponentTransform::LoadComponent(JSONArraypack* to_load)

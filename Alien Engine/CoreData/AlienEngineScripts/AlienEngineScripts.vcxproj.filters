@@ -23,6 +23,17 @@
     <ClCompile Include="ReverbZone.cpp" />
     <ClCompile Include="TerrainSwitch.cpp" />
     <ClCompile Include="TestSwitches.cpp" />
+    <ClCompile Include="TriggerCamera.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Char_Frame.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UltiBar.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="NilfgaardSoldier.cpp" />
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -47,6 +58,17 @@
     <ClInclude Include="ReverbZone.h" />
     <ClInclude Include="TerrainSwitch.h" />
     <ClInclude Include="TestSwitches.h" />
+    <ClInclude Include="TriggerCamera.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Char_Frame.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UltiBar.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="NilfgaardSoldier.h" />
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

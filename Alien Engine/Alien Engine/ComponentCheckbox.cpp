@@ -140,7 +140,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && crossTexture != nullptr) {
+			if (ImGui::Button("X##CheckCrossTex") && crossTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (crossTexture != nullptr) {
 					crossTexture->DecreaseReferences();
@@ -198,7 +198,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && tickTexture != nullptr) {
+			if (ImGui::Button("X##CheckTickTex") && tickTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (tickTexture != nullptr) {
 					tickTexture->DecreaseReferences();
@@ -229,7 +229,24 @@ bool ComponentCheckbox::DrawInspector()
 			if (ImGui::TreeNode("Functions Added")) {
 				if (ImGui::TreeNode("On Click Added")) {
 					for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+
 						ImGui::Text((*item).first.data());
+
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnClick.begin(), item) + 312387);
+						if (ImGui::Button("X") && (*item).second != nullptr) {
+							listenersOnClick.erase(item);
+							ImGui::PopID();
+							ImGui::PopStyleColor(3);
+							break;
+							//delete function
+						}
+						ImGui::PopID();
+						ImGui::PopStyleColor(3);
 					}
 
 					ImGui::TreePop();
@@ -237,7 +254,25 @@ bool ComponentCheckbox::DrawInspector()
 				ImGui::Spacing();
 				if (ImGui::TreeNode("On Hover Added")) {
 					for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+
 						ImGui::Text((*item).first.data());
+
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnHover.begin(), item) + 7867246);
+						if (ImGui::Button("X") && (*item).second != nullptr) {
+							listenersOnHover.erase(item);
+							ImGui::PopID();
+							ImGui::PopStyleColor(3);
+							break;
+							//delete function
+						}
+						ImGui::PopID();
+						ImGui::PopStyleColor(3);
+
 					}
 
 					ImGui::TreePop();
@@ -245,7 +280,24 @@ bool ComponentCheckbox::DrawInspector()
 				ImGui::Spacing();
 				if (ImGui::TreeNode("On Pressed Added")) {
 					for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+
 						ImGui::Text((*item).first.data());
+
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnClickRepeat.begin(), item) + 4987321);
+						if (ImGui::Button("X") && (*item).second != nullptr) {
+							//delete function
+							listenersOnClickRepeat.erase(item);
+							ImGui::PopID();
+							ImGui::PopStyleColor(3);
+							break;
+						}
+						ImGui::PopID();
+						ImGui::PopStyleColor(3);
 					}
 
 					ImGui::TreePop();
@@ -253,14 +305,31 @@ bool ComponentCheckbox::DrawInspector()
 				ImGui::Spacing();
 				if (ImGui::TreeNode("On Release Added")) {
 					for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+
 						ImGui::Text((*item).first.data());
+
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 3);
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
+						ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
+						ImGui::PushID(std::distance(listenersOnRelease.begin(), item) + 7691967);
+						if (ImGui::Button("X") && (*item).second != nullptr) {
+							//delete function
+							listenersOnRelease.erase(item);
+							ImGui::PopID();
+							ImGui::PopStyleColor(3);
+							break;
+						}
+						ImGui::PopID();
+						ImGui::PopStyleColor(3);
 					}
 
 					ImGui::TreePop();
 				}
 				ImGui::TreePop();
 			}
-			//--------------
+			//----------------------
 
 			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
@@ -507,7 +576,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectUpCheck")) {
 				if (select_on_up != -1) {
 					select_on_up = -1;
 				}
@@ -545,7 +614,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectDownCheck")) {
 				if (select_on_down != -1) {
 					select_on_down = -1;
 				}
@@ -587,7 +656,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectRightCheck")) {
 				if (select_on_right != -1) {
 					select_on_right = -1;
 				}
@@ -627,7 +696,7 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X")) {
+			if (ImGui::Button("X##selectLeftCheck")) {
 				if (select_on_left != -1) {
 					select_on_left = -1;
 				}
@@ -775,6 +844,15 @@ void ComponentCheckbox::DrawTexture(bool isGame, ResourceTexture* tex, bool back
 	glEnable(GL_CULL_FACE);
 }
 
+bool ComponentCheckbox::OnIdle()
+{
+	if (active) {
+		current_color = idle_color;
+		checkbox_current_color = checkbox_idle_color;
+	}
+	return true;
+}
+
 bool ComponentCheckbox::OnHover()
 {
 	if (active)
@@ -814,8 +892,8 @@ bool ComponentCheckbox::OnRelease()
 {
 	if (active)
 	{ 
-		current_color = idle_color;
-		checkbox_current_color = checkbox_idle_color;
+		current_color = hover_color;
+		checkbox_current_color = checkbox_hover_color;
 		CallListeners(&listenersOnRelease);
 	}
 	return true;
@@ -897,9 +975,9 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("clicked", clicked);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
-	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
-	to_save->SetString("crossTexture", (crossTexture != nullptr) ? std::to_string(crossTexture->GetID()) : "0");
-	to_save->SetString("tickTexture", (tickTexture != nullptr) ? std::to_string(tickTexture->GetID()) : "0");
+	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()).data() : "0");
+	to_save->SetString("crossTexture", (crossTexture != nullptr) ? std::to_string(crossTexture->GetID()).data() : "0");
+	to_save->SetString("tickTexture", (tickTexture != nullptr) ? std::to_string(tickTexture->GetID()).data() : "0");
 	to_save->SetColor("Color", current_color);
 
 	to_save->SetNumber("crossScaleX", crossScaleX);
@@ -922,10 +1000,10 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("CheckboxColorPressed", checkbox_pressed_color);
 	to_save->SetColor("CheckboxColorDisabled", checkbox_disabled_color);
 
-	to_save->SetString("SelectOnUp", std::to_string(select_on_up));
-	to_save->SetString("SelectOnDown", std::to_string(select_on_down));
-	to_save->SetString("SelectOnRight", std::to_string(select_on_right));
-	to_save->SetString("SelectOnLeft", std::to_string(select_on_left));
+	to_save->SetString("SelectOnUp", std::to_string(select_on_up).data());
+	to_save->SetString("SelectOnDown", std::to_string(select_on_down).data());
+	to_save->SetString("SelectOnRight", std::to_string(select_on_right).data());
+	to_save->SetString("SelectOnLeft", std::to_string(select_on_left).data());
 
 	//---------------------------------------------------------
 	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
@@ -934,7 +1012,7 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 		auto item = listenersOnClick.begin();
 		for (; item != listenersOnClick.end(); ++item) {
 			onClickArray->SetAnotherNode();
-			onClickArray->SetString(std::to_string(item - listenersOnClick.begin()), (*item).first.data());
+			onClickArray->SetString(std::to_string(item - listenersOnClick.begin()).data(), (*item).first.data());
 		}
 	}
 
@@ -944,7 +1022,7 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 		auto item = listenersOnHover.begin();
 		for (; item != listenersOnHover.end(); ++item) {
 			onHoverArray->SetAnotherNode();
-			onHoverArray->SetString(std::to_string(item - listenersOnHover.begin()), (*item).first.data());
+			onHoverArray->SetString(std::to_string(item - listenersOnHover.begin()).data(), (*item).first.data());
 		}
 	}
 
@@ -954,7 +1032,7 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 		auto item = listenersOnClickRepeat.begin();
 		for (; item != listenersOnClickRepeat.end(); ++item) {
 			onClickRepeatArray->SetAnotherNode();
-			onClickRepeatArray->SetString(std::to_string(item - listenersOnClickRepeat.begin()), (*item).first.data());
+			onClickRepeatArray->SetString(std::to_string(item - listenersOnClickRepeat.begin()).data(), (*item).first.data());
 		}
 	}
 
@@ -964,7 +1042,7 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 		auto item = listenersOnRelease.begin();
 		for (; item != listenersOnRelease.end(); ++item) {
 			onReleaseArray->SetAnotherNode();
-			onReleaseArray->SetString(std::to_string(item - listenersOnRelease.begin()), (*item).first.data());
+			onReleaseArray->SetString(std::to_string(item - listenersOnRelease.begin()).data(), (*item).first.data());
 		}
 	}
 	//---------------------------------------------------------------
@@ -1007,7 +1085,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasListenersOnClick")) {
 		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
 		for (int i = 0; i < onClickListeners->GetArraySize(); ++i) {
-			std::pair<std::string, std::function<void()>> pair = { onClickListeners->GetString(std::to_string(i)), std::function<void()>() };
+			std::pair<std::string, std::function<void()>> pair = { onClickListeners->GetString(std::to_string(i).data()), std::function<void()>() };
 			listenersOnClick.push_back(pair);
 			onClickListeners->GetAnotherNode();
 		}
@@ -1016,7 +1094,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasListenersOnHover")) {
 		JSONArraypack* onHoverListeners = to_load->GetArray("ListenersOnHover");
 		for (int i = 0; i < onHoverListeners->GetArraySize(); ++i) {
-			std::pair<std::string, std::function<void()>> pair = { onHoverListeners->GetString(std::to_string(i)), std::function<void()>() };
+			std::pair<std::string, std::function<void()>> pair = { onHoverListeners->GetString(std::to_string(i).data()), std::function<void()>() };
 			listenersOnHover.push_back(pair);
 			onHoverListeners->GetAnotherNode();
 		}
@@ -1025,7 +1103,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasListenersOnClickRepeat")) {
 		JSONArraypack* onClickRepeatListeners = to_load->GetArray("ListenersOnClickRepeat");
 		for (int i = 0; i < onClickRepeatListeners->GetArraySize(); ++i) {
-			std::pair<std::string, std::function<void()>> pair = { onClickRepeatListeners->GetString(std::to_string(i)), std::function<void()>() };
+			std::pair<std::string, std::function<void()>> pair = { onClickRepeatListeners->GetString(std::to_string(i).data()), std::function<void()>() };
 			listenersOnClickRepeat.push_back(pair);
 			onClickRepeatListeners->GetAnotherNode();
 		}
@@ -1034,7 +1112,7 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("HasListenersOnRelease")) {
 		JSONArraypack* onReleaseListeners = to_load->GetArray("ListenersOnRelease");
 		for (int i = 0; i < onReleaseListeners->GetArraySize(); ++i) {
-			std::pair<std::string, std::function<void()>> pair = { onReleaseListeners->GetString(std::to_string(i)), std::function<void()>() };
+			std::pair<std::string, std::function<void()>> pair = { onReleaseListeners->GetString(std::to_string(i).data()), std::function<void()>() };
 			listenersOnRelease.push_back(pair);
 			onReleaseListeners->GetAnotherNode();
 		}
@@ -1093,6 +1171,76 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 		}
 	}
 	App->objects->first_assigned_selected = false;
+}
+
+void ComponentCheckbox::HandleAlienEvent(const AlienEvent& e)
+{
+	switch (e.type)
+	{
+	case AlienEventType::SCRIPT_DELETED: {
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached)
+		{
+			//Delete on Click
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnClick.begin(); item != listenersOnClick.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnClick.erase(item);
+						//delete this from listeners on Click
+						break;
+					}
+				}
+
+			}
+
+			//Delete on Hover
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnHover.begin(); item != listenersOnHover.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnHover.erase(item);
+						//delete this from listeners on Click
+
+						break;
+					}
+				}
+			}
+
+			//Delete on pressed
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnClickRepeat.begin(); item != listenersOnClickRepeat.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnClickRepeat.erase(item);
+						//delete this from listeners on Click
+						break;
+					}
+				}
+
+			}
+
+			//delete on release
+			for (auto functs = script->functionMap.begin(); functs != script->functionMap.end(); ++functs)
+			{
+				for (auto item = listenersOnRelease.begin(); item != listenersOnRelease.end(); ++item) {
+					if ((*item).first == (*functs).first)
+					{
+						listenersOnRelease.erase(item);
+						break;
+					}
+				}
+			}
+
+		}
+		break; }
+
+	default: {
+		break; }
+	}
 }
 
 void ComponentCheckbox::CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners)

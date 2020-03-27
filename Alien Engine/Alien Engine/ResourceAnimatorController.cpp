@@ -9,6 +9,7 @@
 #include "ComponentScript.h"
 #include "ModuleFileSystem.h"
 #include "ResourceAnimation.h"
+#include "GameObject.h"
 #include "Alien.h"
 #include "ResourceScript.h"
 #include <fstream>
@@ -51,6 +52,16 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 	for (int i = 0; i < controller->anim_events.size(); ++i)
 		anim_events.push_back(new AnimEvent(controller->anim_events[i]));
 
+	for (int i = 0; i < controller->gameobjects.size(); ++i)
+	{
+		if (App->objects->GetGameObjectByID(controller->gameobjects[i]->ID))
+		{
+			gameobjects.push_back(App->objects->GetGameObjectByID(controller->gameobjects[i]->ID));
+			emitter = App->objects->GetGameObjectByID(controller->gameobjects[i]->ID)->GetComponent<ComponentAudioEmitter>();
+			SetScripts(App->objects->GetGameObjectByID(controller->gameobjects[i]->ID)->GetComponents<ComponentScript>());
+		}
+	}
+
 	ed_context = ax::NodeEditor::CreateEditor();
 
 }
@@ -67,7 +78,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 	if (value != nullptr && object != nullptr)
 	{
-		JSONfilepack* asset = new JSONfilepack(path, object, value);
+		JSONfilepack* asset = new JSONfilepack(path.data(), object, value);
 
 		name = asset->GetString("Controller.Name");
 		int num_states = asset->GetNumber("Controller.NumStates");
@@ -189,6 +200,23 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 				anim_events.push_back(new AnimEvent(event_id, animation_id, frame, type));
 				events->GetAnotherNode();
+			}
+		}
+		JSONArraypack* objects = asset->GetArray("Controller.Objects");
+		if (objects) {
+			objects->GetFirstNode();
+			for (int i = 0; i < objects->GetArraySize(); ++i) {
+				u64 id = std::stoull(objects->GetString("Id"));
+
+				if (App->objects->GetGameObjectByID(id))
+				{
+					gameobjects.push_back(App->objects->GetGameObjectByID(id));
+					emitter = App->objects->GetGameObjectByID(id)->GetComponent<ComponentAudioEmitter>();
+					SetScripts(App->objects->GetGameObjectByID(id)->GetComponents<ComponentScript>());
+				}
+				
+
+				objects->GetAnotherNode();
 			}
 		}
 
@@ -367,11 +395,11 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 	if (!transitioning)CheckTriggers();
 
-	if (animation && animation->GetDuration() > 0) {
+	if (animation && (animation->GetDuration() / current_state->GetSpeed()) > 0) {
 
 		state->time += (Time::GetDT() * current_state->GetSpeed());
 
-		if (state->time >= animation->GetDuration()) {
+		if (state->time >= animation->GetDuration() / current_state->GetSpeed()) {
 			if (!state->next_state) {
 				std::vector<Transition*> possible_transitions = FindTransitionsFromSourceState(state);
 				for (std::vector<Transition*>::iterator it = possible_transitions.begin(); it != possible_transitions.end(); ++it) {
@@ -385,7 +413,21 @@ void ResourceAnimatorController::UpdateState(State* state)
 			if (state->GetClip()->loops)
 				state->time = 0;
 			else
-				state->time = animation->GetDuration();
+				state->time = animation->GetDuration() / current_state->GetSpeed();
+		}
+
+	}
+
+	if (state->next_state) {
+
+		float to_end = state->fade_duration - state->fade_time;
+
+		if (to_end >= 0) {
+
+			state->fade_time += (Time::GetDT());
+			UpdateState(state->next_state);
+		}
+		else {
 
 			if (Time::IsPlaying()) {
 				for (auto item = App->objects->current_scripts.begin(); item != App->objects->current_scripts.end(); ++item) {
@@ -405,21 +447,9 @@ void ResourceAnimatorController::UpdateState(State* state)
 #endif
 					}
 				}
+
 			}
-		}
 
-	}
-
-	if (state->next_state) {
-
-		float to_end = state->fade_duration - state->fade_time;
-
-		if (to_end >= 0) {
-
-			state->fade_time += (Time::GetDT() * current_state->GetSpeed());
-			UpdateState(state->next_state);
-		}
-		else {
 			current_state = state->next_state;
 			state->next_state = nullptr;
 			state->time = 0;
@@ -495,9 +525,9 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	JSON_Object* asset_object = json_value_get_object(asset_value);
 	json_serialize_to_file_pretty(asset_value, path.data());
 
-	JSONfilepack* asset = new JSONfilepack(path, asset_object, asset_value);
+	JSONfilepack* asset = new JSONfilepack(path.data(), asset_object, asset_value);
 	asset->StartSave();
-	asset->SetString("Controller.Name", name);
+	asset->SetString("Controller.Name", name.data());
 	asset->SetNumber("Controller.NumStates", states.size());
 	asset->SetNumber("Controller.NumTransitions", transitions.size());
 
@@ -505,26 +535,26 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
 		states_array->SetAnotherNode();
-		states_array->SetString("Name", (*it)->GetName());
+		states_array->SetString("Name", (*it)->GetName().data());
 		states_array->SetNumber("Speed", (*it)->GetSpeed());
-		states_array->SetString("Clip", (*it)->GetClip() ? std::to_string((*it)->GetClip()->GetID()) : std::to_string(0));
+		states_array->SetString("Clip", (*it)->GetClip() ? std::to_string((*it)->GetClip()->GetID()).data() : std::to_string(0).data());
 	}
 
 	JSONArraypack* transitions_array = asset->InitNewArray("Controller.Transitions");
 	for (std::vector<Transition*>::iterator it = transitions.begin(); it != transitions.end(); ++it)
 	{
 		transitions_array->SetAnotherNode();
-		transitions_array->SetString("Source", (*it)->GetSource()->GetName());
-		transitions_array->SetString("Target", (*it)->GetTarget()->GetName());
+		transitions_array->SetString("Source", (*it)->GetSource()->GetName().data());
+		transitions_array->SetString("Target", (*it)->GetTarget()->GetName().data());
 		transitions_array->SetNumber("Blend", (*it)->GetBlend());
-		transitions_array->SetNumber("End", (*it)->GetEnd());
+		transitions_array->SetBoolean("End", (*it)->GetEnd());
 
 		JSONArraypack* int_conditions_array = transitions_array->InitNewArray("IntConditions");
 		std::vector<IntCondition*> int_conditions = (*it)->GetIntConditions();
 		for (std::vector<IntCondition*>::iterator it_int = int_conditions.begin(); it_int != int_conditions.end(); ++it_int) {
 			int_conditions_array->SetAnotherNode();
-			int_conditions_array->SetString("Type", (*it_int)->type);
-			int_conditions_array->SetString("CompText", (*it_int)->comp_text);
+			int_conditions_array->SetString("Type", (*it_int)->type.data());
+			int_conditions_array->SetString("CompText", (*it_int)->comp_text.data());
 			int_conditions_array->SetNumber("ParameterIndex", (*it_int)->parameter_index);
 			int_conditions_array->SetNumber("CompValue", (*it_int)->comp);
 		}
@@ -533,8 +563,8 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		std::vector<FloatCondition*> float_conditions = (*it)->GetFloatConditions();
 		for (std::vector<FloatCondition*>::iterator it_float = float_conditions.begin(); it_float != float_conditions.end(); ++it_float) {
 			float_conditions_array->SetAnotherNode();
-			float_conditions_array->SetString("Type", (*it_float)->type);
-			float_conditions_array->SetString("CompText", (*it_float)->comp_text);
+			float_conditions_array->SetString("Type", (*it_float)->type.data());
+			float_conditions_array->SetString("CompText", (*it_float)->comp_text.data());
 			float_conditions_array->SetNumber("ParameterIndex", (*it_float)->parameter_index);
 			float_conditions_array->SetNumber("CompValue", (*it_float)->comp);
 		}
@@ -543,41 +573,46 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 		std::vector<BoolCondition*> bool_conditions = (*it)->GetBoolConditions();
 		for (std::vector<BoolCondition*>::iterator it_bool = bool_conditions.begin(); it_bool != bool_conditions.end(); ++it_bool) {
 			bool_conditions_array->SetAnotherNode();
-			bool_conditions_array->SetString("Type", (*it_bool)->type);
-			bool_conditions_array->SetString("CompText", (*it_bool)->comp_text);
+			bool_conditions_array->SetString("Type", (*it_bool)->type.data());
+			bool_conditions_array->SetString("CompText", (*it_bool)->comp_text.data());
 			bool_conditions_array->SetNumber("ParameterIndex", (*it_bool)->parameter_index);
-
 		}
 	}
 
 	JSONArraypack* int_parameters_array = asset->InitNewArray("Controller.IntParameters");
 	for (std::vector <std::pair <std::string, int>>::iterator it = int_parameters.begin(); it != int_parameters.end(); ++it) {
 		int_parameters_array->SetAnotherNode();
-		int_parameters_array->SetString("Name", (*it).first);
+		int_parameters_array->SetString("Name", (*it).first.data());
 		int_parameters_array->SetNumber("Value", (*it).second);
 	}
 
 	JSONArraypack* float_parameters_array = asset->InitNewArray("Controller.FloatParameters");
 	for (std::vector <std::pair <std::string, float>>::iterator it = float_parameters.begin(); it != float_parameters.end(); ++it) {
 		float_parameters_array->SetAnotherNode();
-		float_parameters_array->SetString("Name", (*it).first);
+		float_parameters_array->SetString("Name", (*it).first.data());
 		float_parameters_array->SetNumber("Value", (*it).second);
 	}
 
 	JSONArraypack* bool_parameters_array = asset->InitNewArray("Controller.BoolParameters");
 	for (std::vector <std::pair <std::string, bool>>::iterator it = bool_parameters.begin(); it != bool_parameters.end(); ++it) {
 		bool_parameters_array->SetAnotherNode();
-		bool_parameters_array->SetString("Name", (*it).first);
+		bool_parameters_array->SetString("Name", (*it).first.data());
 		bool_parameters_array->SetBoolean("Value", (*it).second);
 	}
 
 	JSONArraypack* events_array = asset->InitNewArray("Controller.Events");
 	for (std::vector <AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it) {
 		events_array->SetAnotherNode();
-		events_array->SetString("Event_Id", (*it)->event_id);
-		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id));
+		events_array->SetString("Event_Id", (*it)->event_id.data());
+		events_array->SetString("Animation_Id", std::to_string((*it)->animation_id).data());
 		events_array->SetNumber("Frame", (*it)->frame);
 		events_array->SetNumber("Type", (int)(*it)->type);
+	}
+
+	JSONArraypack* objects_array = asset->InitNewArray("Controller.Objects");
+	for (std::vector <GameObject*>::iterator it = gameobjects.begin(); it != gameobjects.end(); ++it) {
+		objects_array->SetAnotherNode();
+		objects_array->SetString("Id", std::to_string((*it)->ID).data());
 	}
 
 	asset->FinishSave();
@@ -621,6 +656,7 @@ void ResourceAnimatorController::FreeMemory()
 
 	anim_events.clear();
 	scripts.clear();
+	gameobjects.clear();
 	emitter = nullptr;
 
 	default_state = nullptr;
@@ -762,6 +798,31 @@ bool ResourceAnimatorController::LoadMemory()
 
 			anim_events.push_back(new AnimEvent(tmp_param_event, tmp_param_anim, tmp_param_frames, tmp_param_types));
 		}
+
+		// Objects FOR ANIM EVENTS
+		bytes = sizeof(uint);
+		uint num_objects;
+		memcpy(&num_objects, cursor, bytes);
+		cursor += bytes;
+
+		for (int j = 0; j < num_objects; ++j) {
+
+			bytes = sizeof(u64);
+			u64 tmp_param_object;
+			memcpy(&tmp_param_object, cursor, bytes);
+			cursor += bytes;
+
+			if (App->objects->GetGameObjectByID(tmp_param_object))
+			{
+				gameobjects.push_back(App->objects->GetGameObjectByID(tmp_param_object));
+				// Scripts
+				SetScripts(App->objects->GetGameObjectByID(tmp_param_object)->GetComponents<ComponentScript>());
+
+				// Emitter
+				emitter = App->objects->GetGameObjectByID(tmp_param_object)->GetComponent<ComponentAudioEmitter>();
+			}
+		}
+
 
 		//Load transitions and states nums
 		bytes = sizeof(uint);
@@ -983,7 +1044,7 @@ bool ResourceAnimatorController::ReadBaseInfo(const char* assets_file_path)
 
 	if (value != nullptr && object != nullptr)
 	{
-		JSONfilepack* meta = new JSONfilepack(alien_path, object, value);
+		JSONfilepack* meta = new JSONfilepack(alien_path.data(), object, value);
 
 		ID = std::stoull(meta->GetString("Meta.ID"));
 
@@ -1054,14 +1115,14 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 	if (meta_value != nullptr && meta_object != nullptr)
 	{
-		JSONfilepack* meta = new JSONfilepack(meta_path, meta_object, meta_value);
+		JSONfilepack* meta = new JSONfilepack(meta_path.data(), meta_object, meta_value);
 		meta->StartSave();
-		meta->SetString("Meta.ID", std::to_string(ID));
+		meta->SetString("Meta.ID", std::to_string(ID).data());
 		meta->FinishSave();
 	}
 
 	//SAVE LIBRARY FILE
-	uint size = sizeof(uint) + name.size() + sizeof(uint) * 6;
+	uint size = sizeof(uint) + name.size() + sizeof(uint) * 7;
 
 	for (std::vector<std::pair<std::string, int>>::iterator int_pit = int_parameters.begin(); int_pit != int_parameters.end(); ++int_pit) {
 		size += sizeof(uint) + (*int_pit).first.size() + sizeof(int);
@@ -1074,9 +1135,13 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 	for (std::vector<std::pair<std::string, bool>>::iterator bool_pit = bool_parameters.begin(); bool_pit != bool_parameters.end(); ++bool_pit) {
 		size += sizeof(uint) + (*bool_pit).first.size() + sizeof(bool);
 	}
-
+	//AnimEvents
 	for (std::vector<AnimEvent*>::iterator event_pit = anim_events.begin(); event_pit != anim_events.end(); ++event_pit) {
 		size += sizeof(uint) + (*event_pit)->event_id.size() + sizeof(u64) + sizeof(uint) + sizeof(EventAnimType);
+	}
+	//Objects
+	for (std::vector<GameObject*>::iterator go_pit = gameobjects.begin(); go_pit != gameobjects.end(); ++go_pit) {
+		size += sizeof(u64);
 	}
 
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
@@ -1178,6 +1243,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		cursor += bytes;
 	}
 
+	// Events
 	bytes = sizeof(uint);
 	uint num_events = anim_events.size();
 	memcpy(cursor, &num_events, bytes);
@@ -1204,6 +1270,19 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 
 		bytes = sizeof(EventAnimType);
 		memcpy(cursor, &anim_events[j]->type, bytes);
+		cursor += bytes;
+	}
+
+	// GameObject For AnimEvents
+	bytes = sizeof(uint);
+	uint num_objects = gameobjects.size();
+	memcpy(cursor, &num_objects, bytes);
+	cursor += bytes;
+
+	for (int j = 0; j < num_objects; ++j) {
+
+		bytes = sizeof(u64);
+		memcpy(cursor, &gameobjects[j]->ID, bytes);
 		cursor += bytes;
 	}
 
@@ -1406,12 +1485,17 @@ void ResourceAnimatorController::Play(std::string state_name)
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
 		if (strcmp((*it)->GetName().c_str(), state_name.c_str()) == 0) {
+			current_state->next_state = nullptr;
+			current_state->time = 0;
+			current_state->fade_time = 0;
+			current_state->fade_duration = 0;
 			current_state = (*it);
-			FindState(state_name)->next_state = nullptr;
-			FindState(state_name)->time = 0;
-			FindState(state_name)->fade_time = 0;
-			FindState(state_name)->fade_duration = 0;
+			current_state->next_state = nullptr;
+			current_state->time = 0;
+			current_state->fade_time = 0;
+			current_state->fade_duration = 0;
 			transitioning = false;
+			break;
 		}
 	}
 }
@@ -1497,7 +1581,8 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 				}
 
 				scale = float3::Lerp(scale, next_scale, t);
-			}else
+			}
+			else
 				scale = animation->channels[channel_index].scale_keys[0].value;
 
 
@@ -1517,7 +1602,8 @@ bool ResourceAnimatorController::GetTransformState(State* state, std::string cha
 			if (next_key_time != previous_key_time)
 			{
 				previous_key_time = next_key_time;
-				ActiveEvent(animation, next_key_time);
+				if(!transitioning)
+					ActiveEvent(animation, next_key_time);
 				//LOG_ENGINE("THIS FRAME IS %s", std::to_string(next_key_time).c_str())
 			}
 
@@ -1649,6 +1735,23 @@ void ResourceAnimatorController::RemoveAnimEvent(AnimEvent* _event)
 	}
 }
 
+void ResourceAnimatorController::AddAnimGameObject(GameObject* _game_object)
+{
+	bool add = true;
+	if (!_game_object)
+		add = false;
+	for (auto it = gameobjects.begin(); it != gameobjects.end(); ++it)
+	{
+		if ((*it)->ID == _game_object->ID)
+		{
+			add = false;
+			break;
+		}
+	}
+	if (add)
+		gameobjects.push_back(_game_object);
+}
+
 void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint _key)
 {
 	for (std::vector<AnimEvent*>::iterator it = anim_events.begin(); it != anim_events.end(); ++it)
@@ -1669,7 +1772,7 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 					if (*item != nullptr && (*item)->data_ptr != nullptr && !(*item)->functionMap.empty())
 					{
 						for (auto j = (*item)->functionMap.begin(); j != (*item)->functionMap.end(); ++j) {
-							if (strcmp((*j).first.data(),(*it)->event_id.c_str()) == 0)
+							if (strcmp((*j).first.data(), (*it)->event_id.c_str()) == 0)
 							{
 								std::function<void()> functEvent = (*j).second;
 								functEvent();
@@ -1730,7 +1833,7 @@ State::State(State* state)
 	name = state->name;
 	speed = state->speed;
 	clip = state->clip;
-	if(clip)
+	if (clip)
 		clip->IncreaseReferences();
 	pin_in_id = state->pin_in_id;
 	pin_out_id = state->pin_out_id;

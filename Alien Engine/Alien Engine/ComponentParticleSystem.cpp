@@ -831,7 +831,7 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 {
 	// --------------- General Info -------------------- //
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("ID", std::to_string(ID).data());
 
 	// ----------------------- Billboard Info ----------------------- //
 
@@ -900,6 +900,8 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Emmitter.Radius", particleSystem->emmitter.GetRadius());
 	// OutterRadius
 	to_save->SetNumber("Emmitter.OutRadius", particleSystem->emmitter.GetOutRadius());
+	// CubeSize
+	to_save->SetFloat3("Emmitter.CubeSize", (float3)particleSystem->emmitter.GetCubeSize());
 	// MaxLife
 	to_save->SetNumber("Emmitter.MaxLife", particleSystem->emmitter.GetMaxLife());
 	// CurrentLife
@@ -953,7 +955,7 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	
 	to_save->SetBoolean("HasMaterial", (particleSystem->material != nullptr) ? true : false);
 	if (particleSystem->material != nullptr) {
-		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()));
+		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()).data());
 		to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.start_color);
 		to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.color);
 		to_save->SetFloat4("End.Color", particleSystem->material->shaderInputs.particleShaderProperties.end_color);
@@ -1041,6 +1043,8 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->emmitter.SetRadius(to_load->GetNumber("Emmitter.Radius"));
 	// OutterRadius
 	particleSystem->emmitter.SetOutRadius(to_load->GetNumber("Emmitter.OutRadius"));
+	//CubeSize
+	particleSystem->emmitter.SetCubeSize(to_load->GetFloat3("Emmitter.CubeSize"));
 	// MaxLife
 	particleSystem->emmitter.SetMaxLife(to_load->GetNumber("Emmitter.MaxLife"));
 	//// CurrentLife
@@ -1248,7 +1252,7 @@ void ComponentParticleSystem::SaveParticles()
 			App->file_system->NormalizePath(path);
 			std::string name = App->file_system->GetBaseFileName(path.data());
 
-			particles->SetString("ParticleSystem.Name", name);
+			particles->SetString("ParticleSystem.Name", name.data());
 			JSONArraypack* properties = particles->InitNewArray("ParticleSystem.Properties");
 			
 			properties->SetAnotherNode();

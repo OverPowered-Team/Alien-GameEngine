@@ -245,12 +245,19 @@ void Application::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 	dt = frame_time.ReadSec();
-	Time::engine_dt = dt;
-	if (Time::IsPlaying()) {
-		Time::SetDT(dt);
+	if (Time::is_paused) {
+		Time::engine_dt = 0;
+		Time::SetDT(0);
+		dt = 0;
 	}
 	else {
-		Time::SetDT(0);
+		Time::engine_dt = dt;
+		if (Time::IsPlaying()) {
+			Time::SetDT(dt);
+		}
+		else {
+			Time::SetDT(0);
+		}
 	}
 	frame_time.Start();
 	ptimer.Start();
@@ -296,7 +303,7 @@ JSONfilepack* Application::LoadJSONFile(const std::string& path)
 		return nullptr;
 	}
 	else {
-		json_files.push_back(new JSONfilepack(path, object, value));
+		json_files.push_back(new JSONfilepack(path.data(), object, value));
 		return json_files.back();
 	}
 }
@@ -311,7 +318,7 @@ JSONfilepack* Application::CreateJSONFile(const std::string& path)
 		return nullptr;
 	}
 	else {
-		json_files.push_back(new JSONfilepack(path, object, value));
+		json_files.push_back(new JSONfilepack(path.data(), object, value));
 		return json_files.back();
 	}
 }

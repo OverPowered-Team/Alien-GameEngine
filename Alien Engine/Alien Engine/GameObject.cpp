@@ -49,11 +49,14 @@
 
 #include "Optick/include/optick.h"
 
-GameObject::GameObject(GameObject* parent)
+GameObject::GameObject(GameObject* parent, bool ignore_transform)
 {
 	ID = App->resources->GetRandomID();
-	this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
-	AddComponent(transform);
+	
+	if (!ignore_transform) {
+		this->transform = new ComponentTransform(this, { 0,0,0 }, { 0,0,0,0 }, { 1,1,1 });
+		AddComponent(transform);
+	}
 
 	if (parent != nullptr) {
 		this->parent = parent;
@@ -1529,8 +1532,8 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 {
 	to_save->SetString("Name", name);
 	to_save->SetNumber("FamilyNumber", family_number);
-	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("ParentID",(parent != nullptr) ? std::to_string(parent->ID) : "0");
+	to_save->SetString("ID", std::to_string(ID).data());
+	to_save->SetString("ParentID",(parent != nullptr) ? std::to_string(parent->ID).data() : "0");
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetBoolean("ParentEnabled", parent_enabled);
 	to_save->SetBoolean("Selected", selected);
@@ -1540,7 +1543,7 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 	to_save->SetBoolean("PrefabLocked", prefab_locked);
 	to_save->SetString("Tag", tag);
 	if (IsPrefab()) {
-		to_save->SetString("PrefabID", std::to_string(prefabID));
+		to_save->SetString("PrefabID", std::to_string(prefabID).data());
 	}
 
 	JSONArraypack* components_to_save = to_save->InitNewArray("Components");
@@ -1678,9 +1681,9 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				AddComponent(capsule_collider);
 				break; }
 			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
-				ComponentBoxCollider* box_collider = new ComponentBoxCollider(this);
-				box_collider->LoadComponent(components_to_load);
-				AddComponent(box_collider);
+				ComponentConvexHullCollider* convex_hull_collider = new ComponentConvexHullCollider(this);
+				convex_hull_collider->LoadComponent(components_to_load);
+				AddComponent(convex_hull_collider);
 				break; }
 			case (int)ComponentType::RIGID_BODY: {
 				ComponentRigidBody* rigi_body = new ComponentRigidBody(this);
@@ -1765,7 +1768,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 GameObject* GameObject::Clone(GameObject* parent)
 {
 	OPTICK_EVENT();
-	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent);
+	GameObject* clone = new GameObject((parent == nullptr) ? this->parent : parent, true);
 	CloningGameObject(clone);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, clone);
 	return clone;
@@ -1800,7 +1803,10 @@ void GameObject::CloningGameObject(GameObject* clone)
 			if (*item != nullptr) {
 				switch ((*item)->GetType()) {
 				case ComponentType::TRANSFORM: {
-					clone->transform->SetGlobalTransformation(transform->global_transformation);
+					ComponentTransform* trans = new ComponentTransform(clone);
+					(*item)->Clone(trans);
+					clone->AddComponent(trans);
+					clone->transform = trans;
 					break; }
 				case ComponentType::LIGHT_DIRECTIONAL: {
 					ComponentLightDirectional* light = new ComponentLightDirectional(clone);
@@ -1904,7 +1910,7 @@ void GameObject::CloningGameObject(GameObject* clone)
 		auto item = children.begin();
 		for (; item != children.end(); ++item) {
 			if (*item != nullptr) {
-				GameObject* child = new GameObject(clone);
+				GameObject* child = new GameObject(clone, true);
 				(*item)->CloningGameObject(child);
 			}
 		}

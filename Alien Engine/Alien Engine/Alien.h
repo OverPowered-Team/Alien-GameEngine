@@ -3,6 +3,7 @@
 #include <functional>
 
 class ComponentTransform;
+class ComponentCharacterController;
 class ComponentCollider;
 class GameObject;
 enum class ComponentType;
@@ -13,6 +14,7 @@ class __declspec(dllexport) Alien {
 	friend class ComponentScript;
 	friend class ComponentCollider;
 	friend class ModuleObjects;
+	friend class ComponentTransform;
 	friend class ResourceAnimatorController;
 public:
 	Alien();
@@ -124,7 +126,8 @@ public:
 
 private:
 
+	virtual bool IsAlien() { return true; }
+
 	bool* enabled = nullptr;
 	char data_name[260];
-
 };

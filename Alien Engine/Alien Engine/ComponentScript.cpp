@@ -333,9 +333,9 @@ bool ComponentScript::DrawInspector()
 void ComponentScript::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("ResourceID", std::to_string(resourceID));
-	to_save->SetString("DataName", data_name);
+	to_save->SetString("ID", std::to_string(ID).data());
+	to_save->SetString("ResourceID", std::to_string(resourceID).data());
+	to_save->SetString("DataName", data_name.data());
 	if (inspector_variables.empty()) {
 		to_save->SetBoolean("HasInspector", false);
 	}
@@ -345,7 +345,7 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 		for (uint i = 0; i < inspector_variables.size(); ++i) {
 			inspector->SetAnotherNode();
 			inspector->SetNumber("VarType", inspector_variables[i].variable_type);
-			inspector->SetString("Name", inspector_variables[i].variable_name);
+			inspector->SetString("Name", inspector_variables[i].variable_name.data());
 			switch (inspector_variables[i].variable_type) {
 			case InspectorScriptData::DataType::INT: {
 				int value = *(int*)inspector_variables[i].ptr;
@@ -369,11 +369,11 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 				break; }
 			case InspectorScriptData::DataType::PREFAB: {
 				Prefab* value = (Prefab*)inspector_variables[i].ptr;
-				inspector->SetString("prefab", std::to_string(value->prefabID));
+				inspector->SetString("prefab", std::to_string(value->prefabID).data());
 				break; }
 			case InspectorScriptData::DataType::GAMEOBJECT: {
 				if (inspector_variables[i].obj != nullptr && *inspector_variables[i].obj != nullptr) {
-					inspector->SetString("gameobject", std::to_string((*inspector_variables[i].obj)->ID));
+					inspector->SetString("gameobject", std::to_string((*inspector_variables[i].obj)->ID).data());
 				}
 				else {
 					inspector->SetString("gameobject", "0");
@@ -850,15 +850,20 @@ void ComponentScript::LoadData(const char* name, bool is_alien)
 			return;
 		}
 		game_object_attached->AddComponent(this);
-		if (need_alien) {
-			Alien* alien = (Alien*)data_ptr;
+		Alien* alien = (Alien*)data_ptr;
+		try {
+			alien->IsAlien();
+			need_alien = true;
 			App->objects->current_scripts.push_back(alien);
 			alien->game_object = game_object_attached;
 			alien->transform = game_object_attached->transform;
 			alien->enabled = &enabled;
-			strcpy(alien->data_name, name);
-		}
+			strcpy(alien->data_name, data_name.data());
 
+		}
+		catch (...) {
+
+		}
 		App->SendAlienEvent(this, AlienEventType::SCRIPT_ADDED);
 	}
 }
@@ -867,10 +872,16 @@ std::string ComponentScript::GetVariableName(const char* ptr_name)
 {
 	std::string ptr_strg(ptr_name);
 	std::string variable_name;
-	for (uint i = ptr_strg.size() - 1; i >= 0; --i) {
-		if (ptr_strg[i] == '&' || ptr_strg[i] == '*' || ptr_strg[i] == '>' || ptr_strg[i] == '.')
-			break;
-		variable_name = ptr_strg[i] + variable_name;
+	bool startCopy = false;
+	for (uint i = 0; i < ptr_strg.size(); ++i) {
+		if (!startCopy) {
+			if (ptr_strg[i] == '>' || ptr_strg[i] == '.') {
+				startCopy = true;
+			}
+		}
+		else {
+			variable_name = variable_name + ptr_strg[i];
+		}
 	}
 	return variable_name;
 }

@@ -710,7 +710,7 @@ PanelAnimator::PanelAnimator(const std::string& panel_name, const SDL_Scancode& 
 
 PanelAnimator::~PanelAnimator()
 {
-	if (current_animator)
+	if (current_animator && !App->IsQuiting())
 		current_animator->SaveAsset(current_animator->GetID());
 }
 
@@ -789,6 +789,14 @@ void PanelAnimator::PanelLogic()
 		}
 
 		ImGui::EndChild();
+
+		ImGui::SetCursorPos({ ImGui::GetWindowWidth() - 140, 30 });
+		ImGui::BeginChild("Save", { 130, 35}, true);
+		if(ImGui::Button("Save controller") && Time::GetGameState() != Time::GameState::PLAY) {
+			current_animator->SaveAsset(current_animator->GetID());
+		}
+		ImGui::EndChild();
+
 		ImGui::PopStyleColor();
 	}
 
