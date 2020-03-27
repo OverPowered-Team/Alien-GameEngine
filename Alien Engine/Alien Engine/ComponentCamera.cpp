@@ -64,10 +64,20 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 #ifndef GAME_VERSION
 
-		
-	
+	// This is the default skybox
+	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"575523041464209442.dds");
+	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"2272049821688510999.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"8243941029542624066.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13353609087236361933.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"14034231489549923375.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"10216792741298181251.dds");
+
+	auto faces = cubemap->ToVector();
+	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
 
 #endif
+
+	skybox->SetBuffers();
 
 	skybox_shader = App->resources->skybox_shader;
 	if (skybox_shader != nullptr)
@@ -670,22 +680,6 @@ void ComponentCamera::DrawSkybox()
 	glDepthFunc(GL_LESS);
 	glBindVertexArray(0);
 	skybox_shader->Unbind();
-}
-
-void ComponentCamera::CreateDefaultSetup()
-{
-	// This is the default skybox
-	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"575523041464209442.dds");
-	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"2272049821688510999.dds");
-	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"8243941029542624066.dds");
-	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13353609087236361933.dds");
-	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"14034231489549923375.dds");
-	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"10216792741298181251.dds");
-
-	auto faces = cubemap->ToVector();
-	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
-
-	skybox->SetBuffers();
 }
 
 void ComponentCamera::DrawFrustum()

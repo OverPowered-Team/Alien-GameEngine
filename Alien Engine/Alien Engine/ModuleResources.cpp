@@ -128,7 +128,6 @@ bool ModuleResources::Start()
 	App->camera->fake_camera = new ComponentCamera(nullptr);
 	App->camera->fake_camera->frustum.farPlaneDistance = 1000.0F;
 	App->renderer3D->scene_fake_camera = App->camera->fake_camera;
-	App->camera->fake_camera->CreateDefaultSetup();
 #endif
 
 	return true;
