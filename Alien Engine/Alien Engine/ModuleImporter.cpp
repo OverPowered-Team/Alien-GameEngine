@@ -561,46 +561,87 @@ ResourceFont *ModuleImporter::LoadFontFile(const char *path)
 
 void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
 {
-	uint tex_id_new = 0;
+	ILuint imageID;
+	GLuint textureID;
+	ILboolean success;
+	ILenum error;
 
-	glGenTextures(1, &tex_id_new);
-	glBindTexture(GL_TEXTURE_2D, tex_id_new);
+	ilGenImages(1, &imageID);
+	ilBindImage(imageID);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	ilutRenderer(ILUT_OPENGL);
 
-	int width, height, channels;
-	FREE_IMAGE_FORMAT im_format = FreeImage_GetFileType(path, 0);
-	FIBITMAP* im = FreeImage_Load(im_format, path);
-	im = FreeImage_ConvertTo32Bits(im);
-	FreeImage_FlipVertical(im);
+	success = ilLoadImage(path);
 
-	BYTE* d = FreeImage_GetBits(im);
-	width = (int)FreeImage_GetWidth(im);
-	height = (int)FreeImage_GetHeight(im);
-
-	if (d)
+	if (texture != nullptr)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, d);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		if (success)
+		{
+			//iluFlipImage();
 
-		texture->id = tex_id_new;
-		texture->is_custom = true;
-		texture->width = width;
-		texture->height = height;
+			//success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 
-		LOG_ENGINE("Generated and loaded correctly texture with path: %s", path);
+			glGenTextures(1, &textureID);
+			glBindTexture(GL_TEXTURE_2D, textureID);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			int width = ilGetInteger(IL_IMAGE_WIDTH);
+			int height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			glTexImage2D(GL_TEXTURE_2D,
+				0,
+				GL_RGBA,
+				width,
+				height,
+				0,
+				GL_RGBA,
+				GL_UNSIGNED_BYTE,
+				ilGetData());
+
+			texture->id = (uint)textureID;
+			texture->is_custom = true;
+			texture->width = width;
+			texture->height = height;
+		}
 	}
 	else
 	{
-		LOG_ENGINE("Can't load texture with path: %s", path);
+		if (success)
+		{
+			//iluFlipImage();
+
+			//success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+			glGenTextures(1, &textureID);
+			glBindTexture(GL_TEXTURE_2D, textureID);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			int width = ilGetInteger(IL_IMAGE_WIDTH);
+			int height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+			glTexImage2D(GL_TEXTURE_2D,
+				0,
+				GL_RGBA,
+				width,
+				height,
+				0,
+				GL_RGBA,
+				GL_UNSIGNED_BYTE,
+				ilGetData());
+		}
 	}
 
-	FreeImage_Unload(im);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	ilDeleteImages(1, &imageID);
 }
 
 void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)

@@ -65,6 +65,7 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 #ifndef GAME_VERSION
 
 	// This is the default skybox
+
 	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"575523041464209442.dds");
 	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"2272049821688510999.dds");
 	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"8243941029542624066.dds");
