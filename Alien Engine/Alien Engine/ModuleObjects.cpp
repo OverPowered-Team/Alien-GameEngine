@@ -278,6 +278,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 
+			//std::sort(to_draw_ui.begin(), to_draw_ui.end());
 			std::vector<GameObject*>::iterator it_ui = to_draw_ui.begin();
 			for (; it_ui != to_draw_ui.end(); ++it_ui) {
 				if ((*it_ui) != nullptr) {

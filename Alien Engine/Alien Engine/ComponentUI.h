@@ -65,6 +65,7 @@ public:
 
 	//Script
 	void SetBackgroundColor(float r, float g, float b, float a);
+	UIState GetActualState();
 
 
 private:

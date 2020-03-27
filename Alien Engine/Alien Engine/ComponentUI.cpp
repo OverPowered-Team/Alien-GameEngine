@@ -271,6 +271,11 @@ void ComponentUI::SetBackgroundColor(float r, float g, float b, float a)
 	current_color = { r,g,b,a };
 }
 
+UIState ComponentUI::GetActualState()
+{
+	return state;
+}
+
 void ComponentUI::CheckFirstSelected()
 {
 	if (tabbable && this->game_object_attached != nullptr && this->game_object_attached->enabled)
