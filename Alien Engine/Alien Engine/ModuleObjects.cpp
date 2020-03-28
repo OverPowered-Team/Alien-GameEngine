@@ -278,14 +278,18 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 
+
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
+			if (!printing_scene) {
+				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
+			}
 			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
 			for (; it_ui != to_draw_ui.end(); ++it_ui) {
 				if ((*it_ui).second != nullptr) {
 					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{			
-						ui->Draw(!App->objects->printing_scene);
+						ui->Draw(!printing_scene);
 
 					}
 				}
@@ -312,7 +316,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		OnPreCull(game_viewport->GetCamera());
 
 		std::vector<std::pair<float, GameObject*>> to_draw;
-		std::vector<GameObject*> to_draw_ui;
+		std::vector<std::pair<float, GameObject*>> to_draw_ui;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
@@ -337,6 +341,19 @@ update_status ModuleObjects::PostUpdate(float dt)
 		}
 
 		OnPostRender(game_viewport->GetCamera());
+
+		std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
+		for (; it_ui != to_draw_ui.end(); ++it_ui) {
+			if ((*it_ui).second != nullptr) {
+				ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+				if (ui != nullptr && ui->IsEnabled())
+				{
+					ui->Draw(!printing_scene);
+
+				}
+			}
+		}
 	}
 
 	game_viewport->EndViewport();
