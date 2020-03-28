@@ -464,7 +464,7 @@ void PanelProject::RightClickToWindow(bool pop_up_item)
 			App->ui->creating_script = true;
 		}
 		if (ImGui::MenuItem("Create New Material")) {
-			App->resources->CreateMaterial("New Material");
+			App->resources->CreateMaterial("New Material", current_active_folder->path.c_str());
 		}
 		if (ImGui::MenuItem("Create New Animator Controller")) {
 			App->resources->CreateAsset(FileDropType::ANIM_CONTROLLER);

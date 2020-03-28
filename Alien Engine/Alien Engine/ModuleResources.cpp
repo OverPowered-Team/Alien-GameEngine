@@ -1152,14 +1152,17 @@ void ModuleResources::HandleAlienEvent(const AlienEvent& alienEvent)
 	}
 }
 
-ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
+ResourceMaterial* ModuleResources::CreateMaterial(const char* name, const char* folderPath)
 {
+	if (!App->file_system->IsPathInsideOtherPath(folderPath, MATERIALS_FOLDER))
+		folderPath = MATERIALS_FOLDER;
+
 	std::string materialName = name;
-	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
+	App->ui->panel_project->GetUniqueFileName(materialName, folderPath);
 	
 	ResourceMaterial* new_material = new ResourceMaterial();
 	new_material->SetName(materialName.c_str());
-	new_material->SetAssetsPath(std::string(MATERIALS_FOLDER + materialName + ".material").data());
+	new_material->SetAssetsPath(std::string(folderPath + materialName + ".material").data());
 	new_material->SaveMaterialFiles();
 	App->ui->panel_project->RefreshAllNodes();
 

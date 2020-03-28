@@ -97,7 +97,7 @@ public:
 
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);
-	ResourceMaterial* CreateMaterial(const char* name);
+	ResourceMaterial* CreateMaterial(const char* name, const char* folderPath = "Assets/Materials/" /*MATERIALS_FOLDER*/);
 
 	void HandleAlienEvent(const AlienEvent& alienEvent);
 
