@@ -130,6 +130,7 @@ void ComponentUI::Draw(bool isGame)
 
 		matrix[0][0] /= canvas->width * 0.5F;
 		matrix[1][1] /= canvas->height * 0.5F;
+		depth = matrix[2][3];
 		float3 canvas_pos = canvas_trans->GetGlobalPosition();
 		float3 object_pos = transform->GetGlobalPosition();
 		float3 canvasPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };

@@ -95,6 +95,7 @@ protected:
 
 	float2 size = { 10,10 };
 
+	float depth = 0.0f;
 	//UI FOCUS
 	
 	bool tabbable			= false;

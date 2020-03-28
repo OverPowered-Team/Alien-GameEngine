@@ -245,7 +245,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
-			std::vector<GameObject*> to_draw_ui;
+			std::vector<std::pair<float, GameObject*>> to_draw_ui;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
 
@@ -278,11 +278,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 
-			//std::sort(to_draw_ui.begin(), to_draw_ui.end());
-			std::vector<GameObject*>::iterator it_ui = to_draw_ui.begin();
+			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
 			for (; it_ui != to_draw_ui.end(); ++it_ui) {
-				if ((*it_ui) != nullptr) {
-					ComponentUI* ui = (*it_ui)->GetComponent<ComponentUI>();
+				if ((*it_ui).second != nullptr) {
+					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{			
 						ui->Draw(!App->objects->printing_scene);
@@ -1254,6 +1254,11 @@ void ModuleObjects::HotReload()
 bool ModuleObjects::SortGameObjectToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
 	return first.first > last.first;
+}
+
+bool ModuleObjects::SortUIToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
+{
+	return first.first < last.first;
 }
 
 void ModuleObjects::AddScriptObject(const u64& ID, GameObject** object)
