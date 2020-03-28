@@ -940,6 +940,8 @@ void ModuleObjects::ReparentGameObject(GameObject* object, GameObject* next_pare
 void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_with_path)
 {
 	OPTICK_EVENT();
+	App->CastEvent(EventType::ON_SAVE);
+
 	if (to_load_scene == nullptr && force_with_path == nullptr) {
 		LOG_ENGINE("Scene to load was nullptr");
 		return;

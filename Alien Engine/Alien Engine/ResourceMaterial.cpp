@@ -72,6 +72,11 @@ void ResourceMaterial::OnDeselected()
 	FreeMemory();
 }
 
+void ResourceMaterial::SaveResource()
+{
+	SaveMaterialFiles();
+}
+
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
 	if (force_id == 0) {
@@ -112,8 +117,7 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		// ...?
 	}
 
-	if(!App->IsQuiting())
-		App->resources->AddResource(this);
+	App->resources->AddResource(this);
 	return true;
 }
 

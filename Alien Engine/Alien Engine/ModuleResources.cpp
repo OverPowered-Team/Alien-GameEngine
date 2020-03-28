@@ -39,10 +39,7 @@ ModuleResources::~ModuleResources()
 		if (*item != nullptr) {
 			if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
 				static_cast<ResourceModel*>(*item)->meshes_attached.clear();
-#ifndef GAME_VERSION
-			if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
-				static_cast<ResourceMaterial*>(*item)->SaveMaterialFiles();
-#endif
+
 			delete* item;
 			*item = nullptr;
 		}
@@ -1126,6 +1123,21 @@ void ModuleResources::CreateAnimatorController()
 	ResourceAnimatorController* new_controller = new ResourceAnimatorController();
 	new_controller->name = asset_name;
 	new_controller->SaveAsset();
+}
+
+void ModuleResources::HandleEvent(EventType eventType)
+{
+	switch (eventType)
+	{
+	case EventType::ON_SAVE:
+		for (std::vector<Resource*>::iterator iter = resources.begin(); iter != resources.end(); ++iter) {
+			(*iter)->SaveResource();
+		}
+		break;
+
+	default:
+		break;
+	}
 }
 
 void ModuleResources::HandleAlienEvent(const AlienEvent& alienEvent)
