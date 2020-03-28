@@ -74,7 +74,19 @@ void ResourceMaterial::OnDeselected()
 
 void ResourceMaterial::SaveResource()
 {
-	SaveMaterialFiles();
+	remove(path.c_str());
+
+	JSON_Value* alien_value = json_value_init_object();
+	JSON_Object* alien_object = json_value_get_object(alien_value);
+	json_serialize_to_file_pretty(alien_value, path.data());
+
+	if (alien_value != nullptr && alien_object != nullptr) {
+		JSONfilepack* alien = new JSONfilepack(path.data(), alien_object, alien_value);
+		SaveMaterialValues(alien);
+		delete alien;
+	}
+
+	CreateMetaData(ID);
 }
 
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
@@ -205,23 +217,6 @@ bool ResourceMaterial::DeleteMetaData()
 {
 	remove(meta_data_path.data());
 	return true;
-}
-
-void ResourceMaterial::SaveMaterialFiles()
-{
-	remove(path.c_str());
-
-	JSON_Value* alien_value = json_value_init_object();
-	JSON_Object* alien_object = json_value_get_object(alien_value);
-	json_serialize_to_file_pretty(alien_value, path.data());
-
-	if (alien_value != nullptr && alien_object != nullptr) {
-		JSONfilepack* alien = new JSONfilepack(path.data(), alien_object, alien_value);
-		SaveMaterialValues(alien);
-		delete alien;
-	}
-
-	CreateMetaData(ID);
 }
 
 void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
@@ -365,6 +360,13 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 		ImGui::Spacing();
 
 		TexturesSegment();
+
+		if (ImGui::Button("Save Material"))
+			SaveResource(); 
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 
 		if (this == App->resources->default_material)
 		{

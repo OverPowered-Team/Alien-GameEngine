@@ -81,7 +81,6 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
-	void SaveMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 

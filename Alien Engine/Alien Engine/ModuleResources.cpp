@@ -1175,7 +1175,7 @@ ResourceMaterial* ModuleResources::CreateMaterial(const char* name, const char* 
 	ResourceMaterial* new_material = new ResourceMaterial();
 	new_material->SetName(materialName.c_str());
 	new_material->SetAssetsPath(std::string(folderPath + materialName + ".material").data());
-	new_material->SaveMaterialFiles();
+	new_material->SaveResource();
 	App->ui->panel_project->RefreshAllNodes();
 
 	return new_material;
