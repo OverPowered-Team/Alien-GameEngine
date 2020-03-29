@@ -157,7 +157,7 @@ void ComponentText::Draw(bool isGame)
 
 		float3 canvas_pos = canvas_trans->GetGlobalPosition();
 		float3 object_pos = transform->GetGlobalPosition();
-		float3 canvasPivot = {	canvas_pos.x - font->fontData.charactersMap[text[0]].bearing.x * scale.x - canvas->width * 0.5F, 
+		float3 canvasPivot = {	canvas_pos.x - canvas->width * 0.5F, 
 								canvas_pos.y + canvas->height * 0.5F,
 								0 };
 
