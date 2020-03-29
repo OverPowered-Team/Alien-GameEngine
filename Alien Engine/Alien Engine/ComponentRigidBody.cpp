@@ -319,6 +319,66 @@ void ComponentRigidBody::AddTorque(const float3 force, ForceMode mode, Space spa
 
 // Rigid Body Values ----------------------------
 
+void ComponentRigidBody::SetPosition(const float3 new_position)
+{
+	btTransform new_trans = body->getCenterOfMassTransform();
+	new_trans.setOrigin( (collider)
+		? ToBtVector3(new_position + collider->GetWorldCenter())
+		: ToBtVector3(new_position));
+	
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+void ComponentRigidBody::SetRotation(const Quat new_rotation)
+{
+	btTransform new_trans = body->getCenterOfMassTransform();
+	new_trans.setRotation(ToBtQuaternion(new_rotation));
+
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+void ComponentRigidBody::SetTransform(const float3 new_position, const Quat new_rotation)
+{
+	btTransform new_trans = ToBtTransform((collider)
+		? new_position + collider->GetWorldCenter()
+		: new_position, new_rotation);
+
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+float3 ComponentRigidBody::GetPosition()
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btVector3 position = (collider) ? trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : trans.getOrigin();
+	return (float3)position;
+}
+
+Quat ComponentRigidBody::GetRotation()
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btQuaternion rotation = trans.getRotation();
+	return (Quat)rotation;
+
+}
+
 void ComponentRigidBody::SetIsKinematic(const bool value)
 {
 	is_kinematic = value;

@@ -31,6 +31,11 @@ public:
 	void AddTorque(const float3 force, ForceMode mode = ForceMode::IMPULSE, Space space = Space::Global);
 
 	// Rigid Body Values 
+	void SetPosition(const float3 position);
+	void SetRotation(const Quat rotation);
+	void SetTransform(const float3 position, const Quat rotation);
+	float3 GetPosition();
+	Quat GetRotation();
 
 	void SetIsKinematic(const bool value);
 
