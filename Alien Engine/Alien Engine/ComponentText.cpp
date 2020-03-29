@@ -101,6 +101,11 @@ bool ComponentText::DrawInspector()
 			}
 			ImGui::EndDragDropTarget();
 		}
+		static int align_curr = 0;
+		if (ImGui::Combo("Text Align", &align_curr, "Left\0Middle\0Right"))
+		{
+			align = (TextAlign)align_curr;
+		}
 
 		ImGui::Separator();
 
@@ -185,7 +190,6 @@ void ComponentText::Draw(bool isGame)
 	float line = 0;
 	// Divides the current panel width by the canvas width in order to set a relation between the elements in the canvas and the ones in the panel
 	// TODO2: Que cuando se este escribiendo no afecte al Gizmos
-	// TODO3: Mirar ResourceFont load Bug
 	// TODO4: Modo game la UI
 	float factor_x = 0;
 	float factor_y = 0;
@@ -255,13 +259,17 @@ void ComponentText::Draw(bool isGame)
 		//Render loop line
 		float3 pos = transform->GetGlobalPosition();
 
-		glBegin(GL_LINE_LOOP);
-		glVertex3f(pos.x, pos.y, pos.z);
-		glVertex3f(pos.x + width * scale.x, pos.y, pos.z);
-		glVertex3f(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
-		glVertex3f(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
-		glEnd();
-
+#ifndef GAME_VERSION
+		if (!isGame)
+		{
+			glBegin(GL_LINE_LOOP);
+			glVertex3f(pos.x, pos.y, pos.z);
+			glVertex3f(pos.x + width * scale.x, pos.y, pos.z);
+			glVertex3f(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+			glVertex3f(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+			glEnd();
+		}
+#endif
 
 		if (isGame && App->renderer3D->actual_game_camera != nullptr)
 		{
@@ -371,15 +379,18 @@ void ComponentText::SaveComponent(JSONArraypack* to_save)
 	to_save->SetColor("Color", current_color);
 	to_save->SetNumber("Width", width);
 	to_save->SetNumber("Interlineal", interlineal);
+	to_save->SetNumber("Align", (int)align);
 }
 
 void ComponentText::LoadComponent(JSONArraypack* to_load)
 {
+	current_color = to_load->GetColor("Color");
 	enabled = to_load->GetBoolean("Enabled");
 	text = to_load->GetString("Text");
 	interlineal = to_load->GetNumber("Interlineal");
 	width = to_load->GetNumber("Width");
-
+	int aux_type = (int)to_load->GetNumber("Align");
+	align = (TextAlign)aux_type;
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
 		font = (ResourceFont*)App->resources->GetResourceWithID(fontID);
