@@ -196,6 +196,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 		CreateMetaData(ID);
 		FreeMemory();
+		delete asset;
 	}
 }
 
@@ -590,6 +591,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 
 	asset->FinishSave();
 	CreateMetaData(ID);
+	delete asset;
 
 	return true;
 }
