@@ -19,8 +19,6 @@
 #include "ResourceAnimatorController.h"
 #include "mmgr/mmgr.h"
 
-
-
 ResourceAnimatorController::ResourceAnimatorController() : Resource()
 {
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
@@ -60,6 +58,7 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 
 ResourceAnimatorController::~ResourceAnimatorController()
 {
+	FreeMemory();
 	ax::NodeEditor::DestroyEditor(ed_context);
 }
 
@@ -601,6 +600,7 @@ void ResourceAnimatorController::FreeMemory()
 	{
 		if ((*it)->GetClip())
 			(*it)->GetClip()->DecreaseReferences();
+
 		delete (*it);
 	}
 	states.clear();
@@ -627,6 +627,11 @@ void ResourceAnimatorController::FreeMemory()
 	bool_parameters.clear();
 	float_parameters.clear();
 	int_parameters.clear();
+
+	for (std::vector<AnimEvent*>::iterator it_anim = anim_events.begin(); it_anim != anim_events.end(); ++it_anim)
+	{
+		delete (*it_anim);
+	}
 
 	anim_events.clear();
 
@@ -1076,6 +1081,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		meta->StartSave();
 		meta->SetString("Meta.ID", std::to_string(ID).data());
 		meta->FinishSave();
+		delete meta;
 	}
 
 	//SAVE LIBRARY FILE

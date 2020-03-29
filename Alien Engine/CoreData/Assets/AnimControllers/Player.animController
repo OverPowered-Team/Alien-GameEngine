@@ -1,0 +1,75 @@
+{
+    "Controller": {
+        "Name": "Player",
+        "NumStates": 2,
+        "NumTransitions": 2,
+        "States": [
+            {
+                "Name": "NewState1",
+                "Speed": 1,
+                "Clip": "15685939318256760475"
+            },
+            {
+                "Name": "NewState2",
+                "Speed": 1,
+                "Clip": "15685939318256760475"
+            }
+        ],
+        "Transitions": [
+            {
+                "Source": "NewState1",
+                "Target": "NewState2",
+                "Blend": 0.25,
+                "End": false,
+                "IntConditions": [],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Lesser",
+                        "ParameterIndex": 0,
+                        "CompValue": 12
+                    }
+                ],
+                "BoolConditions": []
+            },
+            {
+                "Source": "NewState2",
+                "Target": "NewState1",
+                "Blend": 0.25,
+                "End": false,
+                "IntConditions": [],
+                "FloatConditions": [
+                    {
+                        "Type": "float",
+                        "CompText": "Greater",
+                        "ParameterIndex": 0,
+                        "CompValue": 12
+                    }
+                ],
+                "BoolConditions": []
+            }
+        ],
+        "IntParameters": [],
+        "FloatParameters": [
+            {
+                "Name": "speed",
+                "Value": 0
+            }
+        ],
+        "BoolParameters": [],
+        "Events": [
+            {
+                "Event_Id": "545371390",
+                "Animation_Id": "15685939318256760475",
+                "Frame": 19,
+                "Type": 0
+            },
+            {
+                "Event_Id": "545371390",
+                "Animation_Id": "15685939318256760475",
+                "Frame": 29,
+                "Type": 0
+            }
+        ]
+    }
+}
