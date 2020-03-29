@@ -29,9 +29,12 @@ class btGhostObject;
 
 class ModulePhysics : public Module
 {
+	friend class Application;
 	friend class ComponentCharacterController;
 	friend class ModuleObjects;
 	friend class ComponentCollider;
+	friend class ComponentRigidBody;
+	friend class ComponentPointConstraint;
 	friend class ComponentConvexHullCollider;
 	friend class PanelPhysics;
 
@@ -39,6 +42,14 @@ public:
 	ModulePhysics( bool start_enabled = true);
 
 	~ModulePhysics();
+
+	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
+
+	ComponentCollider* RayCastClosest(math::Ray ray);
+
+	std::vector<ComponentCollider*>  SphereCast(float3 position, float radius);
+
+private:
 
 	void LoadConfig(JSONfilepack*& config);
 
@@ -53,10 +64,6 @@ public:
 	update_status PostUpdate(float dt);
 
 	bool CleanUp();
-
-	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
-
-	ComponentCollider* RayCastClosest(math::Ray ray);
 
 	void DrawCollider(ComponentCollider* collider);
 

@@ -139,6 +139,16 @@ ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
 	return nullptr;
 }
 
+std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float radius)
+{
+	std::vector<ComponentCollider*> return_vector;
+	//btSphereShape* shape = new btSphereShape(radius);
+	//btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
+	//btCollisionWorld::ConvexResultCallback result(btVector3(0.f, 0.f,0.f), btVector3(0.f, 0.f, 0.f));
+	//world->convexSweepTest(shape, transform, transform, result);
+	return return_vector;
+}
+
 
 void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
