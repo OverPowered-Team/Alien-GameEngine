@@ -506,12 +506,15 @@ void ResourceMaterial::InputTexture(TextureType texType)
 					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 					if (texture != nullptr) {
 						SetTexture(texture, texType);
+
+						// Save files when modifying material's textures
+						SaveResource();
 					}
 				}
 			}
 		}
 		ImGui::EndDragDropTarget();
-	}
+	}	
 
 	ImGui::SameLine();
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
@@ -519,6 +522,10 @@ void ResourceMaterial::InputTexture(TextureType texType)
 	if (ImGui::RadioButton("", false))
 	{
 		RemoveTexture(texType);
+
+		// Save files when modifying material's textures
+		SaveResource();
+
 		// On hold to revise references
 		/*change_texture_menu = true;
 		selectedType = texType;*/
