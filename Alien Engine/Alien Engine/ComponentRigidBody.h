@@ -48,6 +48,8 @@ public:
 private:
 
 	void Update();
+	void OnEnable();
+	void OnDisable();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);
@@ -58,6 +60,8 @@ private:
 	void UpdateCollider();
 	void RemoveCollider();
 	void UpdateBodyInertia();
+
+	void HandleAlienEvent(const AlienEvent& e);
 
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 

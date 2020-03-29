@@ -52,7 +52,7 @@ ComponentCharacterController::~ComponentCharacterController()
 {
 	App->physics->RemoveAction(controller);
 	App->physics->RemoveDetector(body);
-	App->physics->AddDetector(detector);
+	App->physics->RemoveDetector(detector);
 
 	delete shape;
 	delete body;

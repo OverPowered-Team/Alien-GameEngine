@@ -132,5 +132,7 @@ btTransform ToBtTransform(const btVector3& pos, const btQuaternion& quat);
 
 btTransform ToBtTransform(const float3& pos, const Quat& quat);
 
+btTransform ToBtTransform(const float3& pos, const float3x3& rotation);
+
 #endif // !_MODULE_PHYSICS_H__
 

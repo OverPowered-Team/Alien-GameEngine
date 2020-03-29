@@ -316,3 +316,11 @@ btTransform ToBtTransform(const float3& pos, const Quat& quat)
 	trans.setRotation(ToBtQuaternion(quat));
 	return trans;
 }
+
+btTransform ToBtTransform(const float3& pos, const float3x3& rotation)
+{
+	const float* rot = rotation.ptr();
+	btMatrix3x3 mat(rot[0], rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8]);
+	btTransform trans(mat, ToBtVector3(pos));
+	return trans;
+}

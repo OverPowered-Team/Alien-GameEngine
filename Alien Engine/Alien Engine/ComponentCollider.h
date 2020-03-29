@@ -49,9 +49,14 @@ protected:
 
 	float3 GetWorldCenter();
 
+	void AddToWorld();
+	void RemoveFromWorld();
+
 	void Init();
 	void Update();
-	
+	void OnEnable();
+	void OnDisable();
+
 	bool DrawInspector();
 	void HandleAlienEvent(const AlienEvent& e);
 
@@ -95,4 +100,5 @@ protected:
 
 	bool first_frame = false;
 	bool internal_collider = false;
+	bool added_to_world = false;
 };
