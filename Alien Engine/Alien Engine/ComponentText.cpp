@@ -201,25 +201,68 @@ void ComponentText::Draw(bool isGame)
 	factor_y = App->window->height / canvas->height;
 	#endif
 
+	int current_size = 0;
 	for (c = text.begin(); c != text.end(); c++) {
 		Character ch = font->fontData.charactersMap[*c];
 		static float xpos = 0;
 		static float ypos = 0;
 		static float w = 0;
 		static float h = 0;
-		if (isGame && App->renderer3D->actual_game_camera != nullptr) 
+
+		switch (align)
 		{
-			xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
-			ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
-			w = ch.size.x * scale.x * factor_x;
-			h = ch.size.y * scale.y * factor_y;
-		}
-		else
-		{
-			xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
-			ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
-			w = ch.size.x * scale.x;
-			h = ch.size.y * scale.y;
+		case LEFT:
+			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
+				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+				w = ch.size.x * scale.x * factor_x;
+				h = ch.size.y * scale.y * factor_y;
+			}
+			else
+			{
+				xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
+				w = ch.size.x * scale.x;
+				h = ch.size.y * scale.y;
+			}
+			break;
+		case MIDDLE:
+			if(c == text.begin())
+				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
+					current_size += font->fontData.charactersMap[*aux_c].advance;
+
+			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				xpos = x + pos_x + (ch.bearing.x + (width - current_size) * 0.5) * scale.x * factor_x;
+				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+				w = ch.size.x * scale.x * factor_x;
+				h = ch.size.y * scale.y * factor_y;
+			}
+			else
+			{
+				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - current_size) * 0.5) * scale.x;
+				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
+				w = ch.size.x * scale.x;
+				h = ch.size.y * scale.y;
+			}
+			break;
+		case RIGHT:
+			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
+				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+				w = ch.size.x * scale.x * factor_x;
+				h = ch.size.y * scale.y * factor_y;
+			}
+			else
+			{
+				xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
+				w = ch.size.x * scale.x;
+				h = ch.size.y * scale.y;
+			}
+			break;
 		}
 		
 
@@ -391,6 +434,7 @@ void ComponentText::LoadComponent(JSONArraypack* to_load)
 	width = to_load->GetNumber("Width");
 	int aux_type = (int)to_load->GetNumber("Align");
 	align = (TextAlign)aux_type;
+
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
 		font = (ResourceFont*)App->resources->GetResourceWithID(fontID);

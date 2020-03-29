@@ -187,7 +187,7 @@
                 "ParentID": "2223484164866947112",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -197,7 +197,7 @@
                     {
                         "Type": 0,
                         "Position": [
-                            0,
+                            -38.349365234375,
                             0,
                             0
                         ],
@@ -208,8 +208,8 @@
                             1
                         ],
                         "Scale": [
-                            1,
-                            1,
+                            0.05000000074505806,
+                            0.05000000074505806,
                             1
                         ],
                         "ScaleNegative": false,
@@ -217,7 +217,7 @@
                     },
                     {
                         "Type": 30,
-                        "ID": "3353952527648431795",
+                        "ID": "5446203248502179885",
                         "Text": "Hola",
                         "UIType": 22,
                         "FontID": "6090935666492539845",
@@ -228,9 +228,9 @@
                             0.70999997854232788,
                             1
                         ],
-                        "Width": 200,
+                        "Width": 835,
                         "Interlineal": 1.5,
-                        "Align": 0
+                        "Align": 1
                     }
                 ]
             }
