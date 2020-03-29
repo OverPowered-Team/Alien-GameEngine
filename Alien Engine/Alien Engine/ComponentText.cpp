@@ -241,19 +241,32 @@ void ComponentText::Draw(bool isGame)
 
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
+
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), vertex);
 		glBindBuffer(GL_ARRAY_BUFFER, uvID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		//Render loop line
+		float3 pos = transform->GetGlobalPosition();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(pos.x, pos.y, pos.z);
+		glVertex3f(pos.x + width * scale.x, pos.y, pos.z);
+		glVertex3f(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+		glVertex3f(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+		glEnd();
+
 
 		if (isGame && App->renderer3D->actual_game_camera != nullptr)
 		{
 			line = pos_x += ch.advance * scale.x * factor_x;
-			if (line > width* factor_x)
+			if (line > width * scale.x * factor_x)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
@@ -266,7 +279,7 @@ void ComponentText::Draw(bool isGame)
 		else
 		{
 			line = pos_x += ch.advance * scale.x;
-			if (line > width)
+			if (line > width * scale.x)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
