@@ -405,6 +405,12 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 	case PrimitiveType::CUBE: {
 		par_mesh = par_shapes_create_cube();
 		(*ret)->SetName("Cube");
+		for (uint i = 0; i < par_mesh->npoints; i++)
+		{
+			par_mesh->points[i*3] -= 0.5;
+			par_mesh->points[i*3+1] -= 0.5;
+			par_mesh->points[i*3+2] -= 0.5;
+		}
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
 		par_mesh = par_shapes_create_subdivided_sphere(1);
