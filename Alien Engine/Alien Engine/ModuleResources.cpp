@@ -1103,7 +1103,7 @@ void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, st
 
 		for (uint i = 0; i < directories.size(); ++i) {
 			std::string dir = current_folder + directories[i] + "/";
-			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories, true);
 			GetAllScriptsPath(new_directories, new_files, dir, scripts);
 		}
 	}
