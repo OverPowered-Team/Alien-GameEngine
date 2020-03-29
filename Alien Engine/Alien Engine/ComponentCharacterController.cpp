@@ -51,9 +51,12 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 ComponentCharacterController::~ComponentCharacterController()
 {
 	App->physics->RemoveAction(controller);
-	App->physics->world->removeCollisionObject(body);
+	App->physics->RemoveDetector(body);
+	App->physics->AddDetector(detector);
 
 	delete shape;
+	delete body;
+	delete detector;
 	delete collider;
 }
 
