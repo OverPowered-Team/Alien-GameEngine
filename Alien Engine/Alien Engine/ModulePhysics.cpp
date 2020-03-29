@@ -303,10 +303,16 @@ btQuaternion ToBtQuaternion(const Quat& quat)
 
 btTransform ToBtTransform(const btVector3& pos, const  btQuaternion& quat)
 {
-	return btTransform(quat, pos);
+	btTransform trans;
+	trans.setOrigin(pos);
+	trans.setRotation(quat);
+	return trans;
 }
 
 btTransform ToBtTransform(const float3& pos, const Quat& quat)
 {
-	return btTransform(ToBtQuaternion(quat), ToBtVector3(pos));
+	btTransform trans;
+	trans.setOrigin(ToBtVector3(pos));
+	trans.setRotation(ToBtQuaternion(quat));
+	return trans;
 }

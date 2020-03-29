@@ -34,17 +34,20 @@ ComponentCollider::~ComponentCollider()
 {
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
 
-	if (rigid_body)
+	if (internal_collider == false)
 	{
-		rigid_body->RemoveCollider();
+		if (rigid_body)
+		{
+			rigid_body->RemoveCollider();
+		}
+
+		App->physics->RemoveBody(aux_body);
+		App->physics->RemoveDetector(detector); // TestCallback
+
+		delete detector;
+		delete aux_body;
+		delete shape;
 	}
-
-	App->physics->RemoveBody(aux_body);
-	App->physics->RemoveDetector(detector); // TestCallback
-
-	delete detector;
-	delete aux_body;
-	delete shape;
 }
 
 void ComponentCollider::Init()
@@ -56,7 +59,7 @@ void ComponentCollider::Init()
 	aux_body = new btRigidBody(rbInfo);
 	aux_body->setUserPointer(this);
 	aux_body->setWorldTransform(go_bullet_transform);
-	detector = new btGhostObject();
+	detector = new btPairCachingGhostObject();
 	detector->setUserPointer(this);
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -148,20 +151,24 @@ void ComponentCollider::SetScale(float3 scale)
 
 void ComponentCollider::Update()
 {
-	static float3 last_scale = transform->GetGlobalScale();
-	float3 current_scale = transform->GetGlobalScale();
-
-	if (!last_scale.Equals(current_scale))
-	{
-		last_scale = current_scale;
-		SetScale(last_scale);
-	}
-
 	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation());
 
-	if (rigid_body == nullptr)
+	if (internal_collider == false)
 	{
-		aux_body->setWorldTransform(go_bullet_transform);
+		static float3 last_scale = transform->GetGlobalScale();
+		float3 current_scale = transform->GetGlobalScale();
+
+		if (!last_scale.Equals(current_scale))
+		{
+			last_scale = current_scale;
+			SetScale(last_scale);
+		}
+
+
+		if (rigid_body == nullptr)
+		{
+			aux_body->setWorldTransform(go_bullet_transform);
+		}
 	}
 
 	detector->setWorldTransform(go_bullet_transform);
@@ -177,19 +184,19 @@ void ComponentCollider::Update()
 
 		if (first_frame == true)
 		{
-			int numObjectsInGhost = 0;
+			int num_obj_inside = 0;
 			int test = 0;
-			numObjectsInGhost = detector->getNumOverlappingObjects(); //numObjectsInGhost is set to 0xcdcdcdcd
+			num_obj_inside = detector->getNumOverlappingObjects(); //num_obj_inside is set to 0xcdcdcdcd
 
 			for (auto& x : collisions)
 			{
 				x.second = false;
 			}
 
-			for (int i = 0; i < numObjectsInGhost; ++i)
+			for (int i = 0; i < num_obj_inside; ++i)
 			{
 				btCollisionObject* obj = detector->getOverlappingObject(i);
-				btGhostObject* ghost = dynamic_cast<btGhostObject*>(obj);
+				btPairCachingGhostObject* ghost = dynamic_cast<btPairCachingGhostObject*>(obj);
 				if (ghost)
 				{
 					ComponentCollider* coll = (ComponentCollider*)ghost->getUserPointer();
@@ -345,6 +352,6 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 
 float3 ComponentCollider::GetWorldCenter()
 {
-	return transform->GetGlobalRotation().Mul(final_center);
+	return transform->GetGlobalMatrix().RotatePart().Mul(final_center);
 }
 
