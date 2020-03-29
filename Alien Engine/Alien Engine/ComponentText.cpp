@@ -101,7 +101,7 @@ bool ComponentText::DrawInspector()
 			}
 			ImGui::EndDragDropTarget();
 		}
-		static int align_curr = 0;
+		static int align_curr = (int)align;
 		if (ImGui::Combo("Text Align", &align_curr, "Left\0Middle\0Right"))
 		{
 			align = (TextAlign)align_curr;
@@ -248,16 +248,20 @@ void ComponentText::Draw(bool isGame)
 			}
 			break;
 		case RIGHT:
+			if (c == text.begin())
+				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
+					current_size += font->fontData.charactersMap[*aux_c].advance;
+
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
-				xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
+				xpos = x + pos_x + (ch.bearing.x + (width - current_size)) * scale.x * factor_x;
 				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
 				w = ch.size.x * scale.x * factor_x;
 				h = ch.size.y * scale.y * factor_y;
 			}
 			else
 			{
-				xpos = matrix[0][3] + pos_x + ch.bearing.x * scale.x;
+				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - current_size)) * scale.x;
 				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
 				w = ch.size.x * scale.x;
 				h = ch.size.y * scale.y;
@@ -325,6 +329,7 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
+				current_size = 0;
 			}
 		}
 		else
@@ -338,6 +343,7 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
+				current_size = 0;
 			}
 		}
 	}
