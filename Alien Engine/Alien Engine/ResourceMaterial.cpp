@@ -386,7 +386,7 @@ void ResourceMaterial::MaterialHeader()
 	{
 		ImGui::BeginTooltip();
 		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references - 1)).c_str());
+		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references)).c_str());
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
