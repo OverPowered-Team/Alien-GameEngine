@@ -193,6 +193,8 @@ public:
 
 	void ReAttachUIScriptEvents();
 
+	void ResetUIFocus();
+
 private:
 
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
