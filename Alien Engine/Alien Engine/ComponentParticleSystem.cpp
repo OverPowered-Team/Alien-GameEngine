@@ -690,7 +690,22 @@ bool ComponentParticleSystem::DrawInspector()
 		ImGui::Spacing();
 
 		if (particleSystem->material != nullptr) {
+
+			if (particleSystem->material == particleSystem->default_material)
+			{
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+
+
 			particleSystem->material->DisplayMaterialOnInspector();
+
+
+			if (particleSystem->material == particleSystem->default_material)
+			{
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
 		}
 		
 	}
