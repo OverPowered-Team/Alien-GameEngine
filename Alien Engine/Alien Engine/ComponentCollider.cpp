@@ -15,6 +15,8 @@ ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 {
 	// GameObject Components 
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
+	if(transform)
+		last_scale = transform->GetGlobalScale();
 
 	std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
 
@@ -180,11 +182,7 @@ void ComponentCollider::Update()
 
 	if (internal_collider == false)
 	{
-		static float3 last_scale = transform->GetGlobalScale();
 		float3 current_scale = transform->GetGlobalScale();
-
-		// Old Method
-
 		if (!last_scale.Equals(current_scale))
 		{
 			last_scale = current_scale;
