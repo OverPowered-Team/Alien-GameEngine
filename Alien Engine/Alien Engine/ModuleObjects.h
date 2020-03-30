@@ -221,6 +221,10 @@ public:
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 
+	std::vector<std::function<void()>> functions_to_call;
+
+	bool is_saving_prefab = false;
+
 	// Frustum
 	bool draw_frustum = true;
 	Color frustum_color{ 1,0,0,1 };
