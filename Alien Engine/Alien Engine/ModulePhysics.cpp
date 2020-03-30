@@ -10,6 +10,7 @@
 #include "Time.h"
 #include "Alien.h"
 #include "Optick/include/optick.h"
+#include "mmgr/mmgr.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -91,8 +92,65 @@ update_status ModulePhysics::PostUpdate(float dt)
 
 bool ModulePhysics::CleanUp()
 {
+
 	return true;
 }
+
+std::vector<ComponentCollider*> ModulePhysics::RayCastAll( math::Ray ray)
+{
+	std::vector<ComponentCollider*> return_vector;
+	btCollisionWorld::AllHitsRayResultCallback results(ToBtVector3(ray.pos), ToBtVector3(ray.dir));
+	world->rayTest(ToBtVector3(ray.pos), ToBtVector3(ray.dir), results);
+	int size = results.m_collisionObjects.size();
+
+	for (int i = 0; i < size; ++i)
+	{
+		const btCollisionObject* obj = results.m_collisionObjects.at(i);
+		const btGhostObject* ghost = btGhostObject::upcast(obj);
+		if (ghost != nullptr)
+		{
+			ComponentCollider* collider = (ComponentCollider*) ghost->getUserPointer();
+
+			if (collider != nullptr)
+			{
+				return_vector.push_back(collider);
+			}
+		}
+	}
+	
+	return return_vector;
+}
+
+ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
+{
+	btCollisionWorld::ClosestRayResultCallback results(ToBtVector3(ray.pos), ToBtVector3(ray.dir));
+	world->rayTest(ToBtVector3(ray.pos), ToBtVector3(ray.dir), results);
+	const btCollisionObject* obj = results.m_collisionObject;
+	const btGhostObject* ghost = btGhostObject::upcast(obj);
+
+	if (ghost != nullptr)
+	{
+		ComponentCollider* collider = (ComponentCollider*)ghost->getUserPointer();
+
+		if (collider != nullptr)
+		{
+			return collider;
+		}
+	}
+
+	return nullptr;
+}
+
+std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float radius)
+{
+	std::vector<ComponentCollider*> return_vector;
+	//btSphereShape* shape = new btSphereShape(radius);
+	//btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
+	//btCollisionWorld::ConvexResultCallback result(btVector3(0.f, 0.f,0.f), btVector3(0.f, 0.f, 0.f));
+	//world->convexSweepTest(shape, transform, transform, result);
+	return return_vector;
+}
+
 
 void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
@@ -257,10 +315,24 @@ btQuaternion ToBtQuaternion(const Quat& quat)
 
 btTransform ToBtTransform(const btVector3& pos, const  btQuaternion& quat)
 {
-	return btTransform(quat, pos);
+	btTransform trans;
+	trans.setOrigin(pos);
+	trans.setRotation(quat);
+	return trans;
 }
 
 btTransform ToBtTransform(const float3& pos, const Quat& quat)
 {
-	return btTransform(ToBtQuaternion(quat), ToBtVector3(pos));
+	btTransform trans;
+	trans.setOrigin(ToBtVector3(pos));
+	trans.setRotation(ToBtQuaternion(quat));
+	return trans;
+}
+
+btTransform ToBtTransform(const float3& pos, const float3x3& rotation)
+{
+	const float* rot = rotation.ptr();
+	btMatrix3x3 mat(rot[0], rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8]);
+	btTransform trans(mat, ToBtVector3(pos));
+	return trans;
 }

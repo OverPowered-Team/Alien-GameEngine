@@ -9,6 +9,7 @@
 #include "ModuleResources.h"
 
 #include "Optick/include/optick.h"
+#include "mmgr/mmgr.h"
 
 Skybox::Skybox()
 {
@@ -42,14 +43,14 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 
 		glBindTexture(GL_TEXTURE_2D, t->id);
 		unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_BGRA, t->width, t->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, t->width, t->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		}
 		else
 		{
@@ -82,32 +83,34 @@ uint Skybox::LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture
 		std::string name_id = App->file_system->GetBaseFileName(texture_files[i].c_str());
 		u64 ID = std::stoull(name_id);
 		ResourceTexture* t = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-		if(t->references == 0)
+		if(t != nullptr && t->references == 0)
 			t->IncreaseReferences();
-
-		glBindTexture(GL_TEXTURE_2D, t->id);
-		unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
-		if (data)
+		if (t != nullptr)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_BGRA, t->width, t->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
-		}
-		else
-		{
-			LOG_ENGINE("Cubemap texture couldn't be loaded: %s", texture_files[i].c_str());
-		}
+			glBindTexture(GL_TEXTURE_2D, t->id);
+			unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+			if (data)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, t->width, t->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			}
+			else
+			{
+				LOG_ENGINE("Cubemap texture couldn't be loaded: %s", texture_files[i].c_str());
+			}
 
-		RELEASE_ARRAY(data);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			RELEASE_ARRAY(data);
+		}
 	}
 
 	return texture_id;
@@ -134,13 +137,13 @@ void Skybox::ChangePositiveX(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
@@ -153,13 +156,13 @@ void Skybox::ChangeNegativeX(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
@@ -172,13 +175,13 @@ void Skybox::ChangePositiveY(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
@@ -191,13 +194,13 @@ void Skybox::ChangeNegativeY(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
@@ -210,13 +213,13 @@ void Skybox::ChangePositiveZ(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	
@@ -229,13 +232,13 @@ void Skybox::ChangeNegativeZ(const uint& id_skybox, const uint& id_texture, cons
 
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 	unsigned char* data = new unsigned char[sizeof(char) * width * height * 4];
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id_skybox);
 
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
