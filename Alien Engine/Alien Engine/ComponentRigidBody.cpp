@@ -84,13 +84,14 @@ void ComponentRigidBody::Update()
 {
 	// Set Go Transform ---------------------------
 
-	if (enabled == false) return;
+	if (enabled == false) 
+		return;
 
 	if (Time::IsPlaying() != false)
 	{
 		btTransform bt_transform = body->getCenterOfMassTransform();
 		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = (collider) ? bt_transform.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : bt_transform.getOrigin() ;
+		btVector3 position = (collider) ? bt_transform.getOrigin() - ToBtVector3(collider->center) : bt_transform.getOrigin() ;
 
 		transform->SetGlobalPosition(float3(position));
 		transform->SetGlobalRotation(math::Quat(rotation));
@@ -98,10 +99,11 @@ void ComponentRigidBody::Update()
 	}
 	else
 	{
-		SetBodyTranform((collider)
-			? transform->GetGlobalPosition() + collider->GetWorldCenter()
-			: transform->GetGlobalPosition(),
-			transform->GetGlobalRotation());
+		btTransform go_bullet_transform = ToBtTransform((collider)
+			? collider->GetWorldCenter()
+			: transform->GetGlobalPosition(), transform->GetGlobalMatrix().RotatePart());
+		body->setWorldTransform(go_bullet_transform);
+		
 	}
 
 	btVector3 freeze_p((float)!freeze_position[0], (float)!freeze_position[1], (float)!freeze_position[2]);
