@@ -148,8 +148,8 @@ void main()
     if(objectMaterial.hasNormalMap == true)
     {
         normal = texture(objectMaterial.normalMap, texCoords).rgb;
-        normal = normalize(normal * 2.0 - 1.0);   
-        normal = normalize(TBN * normal);    
+        normal = normalize(normal * 2.0 - 1.0);
+        normal = normalize(TBN * normal);
     }
     else 
     {

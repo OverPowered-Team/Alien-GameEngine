@@ -86,6 +86,7 @@ public:
 
 	// Functionality
 	void ApplyMaterial();
+	void UnbindMaterial();
 
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
 	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
