@@ -28,6 +28,7 @@ ResourcePrefab::~ResourcePrefab()
 
 bool ResourcePrefab::CreateMetaData(GameObject* object, const char* folder, u64 force_id)
 {
+	App->objects->is_saving_prefab = true;
 	std::vector<std::string> files;
 	std::vector<std::string> dir;
 	if (folder == nullptr) {
@@ -108,7 +109,7 @@ bool ResourcePrefab::CreateMetaData(GameObject* object, const char* folder, u64 
 	else {
 		LOG_ENGINE("Could not load scene, fail when creating the file");
 	}
-
+	App->objects->is_saving_prefab = false;
 	return true;
 }
 
@@ -184,6 +185,7 @@ bool ResourcePrefab::DeleteMetaData()
 
 void ResourcePrefab::Save(GameObject* prefab_root)
 {
+	App->objects->is_saving_prefab = true;
 	remove(meta_data_path.data());
 	remove(path.data());
 	JSON_Value* prefab_value = json_value_init_object();
@@ -212,6 +214,7 @@ void ResourcePrefab::Save(GameObject* prefab_root)
 		App->objects->enable_instancies = true;
 		remove("Library/save_prefab_scene.alienScene");
 	}
+	App->objects->is_saving_prefab = false;
 }
 
 void ResourcePrefab::OpenPrefabScene()
