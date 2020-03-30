@@ -1,6 +1,6 @@
 {
     "Build": {
-        "FirstScene": "Assets\/Scenes\/skybox4test.alienScene",
+        "FirstScene": "Assets\/Scenes\/t.alienScene",
         "GameName": "MyAwesomeGame"
     }
 }
