@@ -32,6 +32,11 @@ public:
 	void AddTorque(const float3 force, ForceMode mode = ForceMode::IMPULSE, Space space = Space::Global);
 
 	// Rigid Body Values 
+	void SetPosition(const float3 position);
+	void SetRotation(const Quat rotation);
+	void SetTransform(const float3 position, const Quat rotation);
+	float3 GetPosition();
+	Quat GetRotation();
 
 	void SetIsKinematic(const bool value);
 
@@ -55,6 +60,8 @@ public:
 private:
 
 	void Update();
+	void OnEnable();
+	void OnDisable();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);
@@ -65,6 +72,8 @@ private:
 	void UpdateCollider();
 	void RemoveCollider();
 	void UpdateBodyInertia();
+
+	void HandleAlienEvent(const AlienEvent& e);
 
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 

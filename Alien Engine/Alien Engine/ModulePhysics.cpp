@@ -141,6 +141,16 @@ ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
 	return nullptr;
 }
 
+std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float radius)
+{
+	std::vector<ComponentCollider*> return_vector;
+	//btSphereShape* shape = new btSphereShape(radius);
+	//btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
+	//btCollisionWorld::ConvexResultCallback result(btVector3(0.f, 0.f,0.f), btVector3(0.f, 0.f, 0.f));
+	//world->convexSweepTest(shape, transform, transform, result);
+	return return_vector;
+}
+
 
 void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
@@ -305,10 +315,24 @@ btQuaternion ToBtQuaternion(const Quat& quat)
 
 btTransform ToBtTransform(const btVector3& pos, const  btQuaternion& quat)
 {
-	return btTransform(quat, pos);
+	btTransform trans;
+	trans.setOrigin(pos);
+	trans.setRotation(quat);
+	return trans;
 }
 
 btTransform ToBtTransform(const float3& pos, const Quat& quat)
 {
-	return btTransform(ToBtQuaternion(quat), ToBtVector3(pos));
+	btTransform trans;
+	trans.setOrigin(ToBtVector3(pos));
+	trans.setRotation(ToBtQuaternion(quat));
+	return trans;
+}
+
+btTransform ToBtTransform(const float3& pos, const float3x3& rotation)
+{
+	const float* rot = rotation.ptr();
+	btMatrix3x3 mat(rot[0], rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8]);
+	btTransform trans(mat, ToBtVector3(pos));
+	return trans;
 }

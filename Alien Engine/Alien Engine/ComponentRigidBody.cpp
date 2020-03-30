@@ -41,11 +41,11 @@ ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 
 	// Search Collider 
 
-	ComponentCollider* new_coll = game_object_attached->GetComponent<ComponentCollider>();
+	ComponentCollider* coll_found = game_object_attached->GetComponent<ComponentCollider>();
 
-	if (new_coll != nullptr)
+	if (coll_found != nullptr && coll_found->IsEnabled())
 	{
-		AddCollider(new_coll);
+		AddCollider(coll_found);
 	}
 
 	SetBodyTranform((collider)
@@ -60,9 +60,14 @@ ComponentRigidBody::~ComponentRigidBody()
 {
 	App->SendAlienEvent(this, AlienEventType::RIGIDBODY_DELETED);
 
-	if (collider)
+	if (enabled == true)
 	{
-		RemoveCollider();
+		if (collider)
+		{
+			RemoveCollider();
+		}
+
+		App->physics->RemoveBody(body);
 	}
 
 	for (int i = 0; i < body->getNumConstraintRefs(); ++i)
@@ -72,8 +77,6 @@ ComponentRigidBody::~ComponentRigidBody()
 		body->removeConstraintRef(body->getConstraintRef(i));
 	}
 
-	App->physics->RemoveBody(body);
-
 	delete body;
 	delete aux_shape;
 }
@@ -82,15 +85,17 @@ void ComponentRigidBody::Update()
 {
 	// Set Go Transform ---------------------------
 
-	if (Time::GetGameState() != Time::GameState::NONE)
+	if (enabled == false) return;
+
+	if (Time::IsPlaying() != false)
 	{
 		btTransform bt_transform = body->getCenterOfMassTransform();
 		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = (collider) ? bt_transform.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : bt_transform.getOrigin();
+		btVector3 position = (collider) ? bt_transform.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : bt_transform.getOrigin() ;
 
-		body->activate(true);
 		transform->SetGlobalPosition(float3(position));
 		transform->SetGlobalRotation(math::Quat(rotation));
+		body->activate(DISABLE_DEACTIVATION);
 	}
 	else
 	{
@@ -105,12 +110,10 @@ void ComponentRigidBody::Update()
 
 	if (body->getLinearFactor() != freeze_p)
 	{
-		body->activate(true);
 		body->setLinearFactor(freeze_p);
 	}
 	if (body->getAngularFactor() != freeze_r)
 	{
-		body->activate(true);
 		body->setAngularFactor(freeze_r);
 	}
 
@@ -152,13 +155,50 @@ void ComponentRigidBody::Update()
 	}
 }
 
+void ComponentRigidBody::OnEnable()
+{
+	ComponentCollider* new_coll = game_object_attached->GetComponent<ComponentCollider>();
+
+	if (new_coll != nullptr)
+	{
+		AddCollider(new_coll);
+	}
+
+	App->physics->AddBody(body);
+}
+
+void ComponentRigidBody::OnDisable()
+{
+	if (collider)
+	{
+		RemoveCollider();
+	}
+
+	App->physics->RemoveBody(body);
+}
+
 bool ComponentRigidBody::DrawInspector()
 {
+
+	static bool check;
+	check = enabled;
+
+	ImGui::PushID(this);
+
+	if (ImGui::Checkbox("##CmpActive", &check)) {
+		enabled = check;
+		if (!enabled)
+			OnDisable();
+		else
+			OnEnable();
+	}
+
 	bool current_is_kinematic = is_kinematic;
 	float current_mass = mass;
 	float current_drag = drag;
 	float current_angular_drag = angular_drag;
 
+	ImGui::SameLine();
 
 	// RigidBody Config --------------------------------------
 
@@ -187,6 +227,8 @@ bool ComponentRigidBody::DrawInspector()
 		ImGui::Spacing();
 	}
 
+	ImGui::PopID();
+
 	return true;
 }
 
@@ -211,6 +253,7 @@ void ComponentRigidBody::Clone(Component* clone)
 
 void ComponentRigidBody::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 
 	to_save->SetNumber("IsKinematic", is_kinematic);
@@ -229,6 +272,12 @@ void ComponentRigidBody::SaveComponent(JSONArraypack* to_save)
 
 void ComponentRigidBody::LoadComponent(JSONArraypack* to_load)
 {
+	enabled = to_load->GetBoolean("Enabled");
+	if (enabled == false)
+	{
+		OnDisable();
+	}
+
 	SetIsKinematic(to_load->GetNumber("IsKinematic"));
 	SetMass(to_load->GetNumber("Mass"));
 	SetDrag(to_load->GetNumber("Drag"));
@@ -270,6 +319,66 @@ void ComponentRigidBody::AddTorque(const float3 force, ForceMode mode, Space spa
 }
 
 // Rigid Body Values ----------------------------
+
+void ComponentRigidBody::SetPosition(const float3 new_position)
+{
+	btTransform new_trans = body->getCenterOfMassTransform();
+	new_trans.setOrigin( (collider)
+		? ToBtVector3(new_position + collider->GetWorldCenter())
+		: ToBtVector3(new_position));
+	
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+void ComponentRigidBody::SetRotation(const Quat new_rotation)
+{
+	btTransform new_trans = body->getCenterOfMassTransform();
+	new_trans.setRotation(ToBtQuaternion(new_rotation));
+
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+void ComponentRigidBody::SetTransform(const float3 new_position, const Quat new_rotation)
+{
+	btTransform new_trans = ToBtTransform((collider)
+		? new_position + collider->GetWorldCenter()
+		: new_position, new_rotation);
+
+	body->setCenterOfMassTransform(new_trans);
+
+	btQuaternion rotation = new_trans.getRotation();
+	btVector3 position = (collider) ? new_trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : new_trans.getOrigin();
+
+	transform->SetGlobalPosition(float3(position));
+	transform->SetGlobalRotation(math::Quat(rotation));
+}
+
+float3 ComponentRigidBody::GetPosition()
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btVector3 position = (collider) ? trans.getOrigin() - ToBtVector3(collider->GetWorldCenter()) : trans.getOrigin();
+	return (float3)position;
+}
+
+Quat ComponentRigidBody::GetRotation()
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btQuaternion rotation = trans.getRotation();
+	return (Quat)rotation;
+
+}
 
 void ComponentRigidBody::SetIsKinematic(const bool value)
 {
@@ -383,17 +492,12 @@ void ComponentRigidBody::RemoveCollider()
 {
 	if (collider != nullptr)
 	{
-		collider->SetIsTrigger(true);
-		collider->SetBouncing(0.f);
-		collider->SetFriction(0.f);
-		collider->SetAngularFriction(0.f);
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
 		App->physics->AddBody(collider->aux_body);
 		body->setCollisionShape(aux_shape);
 
 		collider->rigid_body = nullptr;
-		collider = nullptr;
+		collider = nullptr;		
 
 		UpdateBodyInertia();
 	}
@@ -406,4 +510,29 @@ void ComponentRigidBody::UpdateBodyInertia()
 		: aux_shape->calculateLocalInertia(mass, inertia);
 
 	body->setMassProps(mass, inertia);
+}
+
+void ComponentRigidBody::HandleAlienEvent(const AlienEvent& e)
+{
+	switch (e.type)
+	{
+	case AlienEventType::COLLIDER_ADDED:
+	{
+		ComponentCollider* col = (ComponentCollider*)e.object;
+		if (collider == nullptr && col->game_object_attached == game_object_attached)
+		{
+
+		}
+		break;
+	}
+	case AlienEventType::COLLIDER_DELETED:
+	{
+		ComponentCollider* col = (ComponentCollider*)e.object;
+		if (collider != nullptr && collider == col )
+		{
+
+		}
+		break;
+	}
+	}
 }
