@@ -16,6 +16,7 @@ private:
 
 	void GuizmosControls();
 	void GuizmosLogic();
+	void DrawNavigationWindows();
 
 public:
 	bool is_window_being_rendered = true;

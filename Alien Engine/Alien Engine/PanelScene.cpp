@@ -6,6 +6,7 @@
 #include "imgui/imgui_internal.h"
 #include "FileNode.h"
 #include "PanelSceneSelector.h"
+#include "PanelNavigation.h"
 #include "ResourcePrefab.h"
 #include "ComponentTransform.h"
 #include "Prefab.h"
@@ -17,6 +18,7 @@
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "ModuleUI.h"
+#include "ModuleNavigation.h"
 #include "ModuleRenderer3D.h"
 #include "Time.h"
 #include "Viewport.h"
@@ -207,6 +209,26 @@ void PanelScene::PanelLogic()
 		App->camera->selected_viewport->active = false; // Active/disavtive with window active
 	}
 
+	if (App->ui->panel_navigation->panel_nav_rendered && is_window_being_rendered)
+	{
+		DrawNavigationWindows();
+	}
+
+	ImGui::End();
+}
+
+void PanelScene::DrawNavigationWindows()
+{
+	ImVec2 panel_size = {192, 150};
+	ImVec2 panel_offset = { 20,40 };
+
+	ImGui::SetNextWindowPos(ImVec2(		ImGui::GetWindowContentRegionMax().x + ImGui::GetWindowPos().x - panel_size.x - panel_offset.x, 
+										ImGui::GetWindowPos().y + panel_offset.y));
+	ImGui::SetNextWindowSize(panel_size);
+	ImGui::Begin("Navmesh Display", 0,	ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar	| ImGuiWindowFlags_NoScrollWithMouse | 
+										ImGuiWindowFlags_NoMove		| ImGuiWindowFlags_NoResize		| ImGuiWindowFlags_NoFocusOnAppearing);
+	ImGui::Checkbox("Show NavMesh",		&App->nav->show_navmesh);
+	ImGui::Checkbox("Show HeightMesh",	&App->nav->show_heightmesh);
 	ImGui::End();
 }
 

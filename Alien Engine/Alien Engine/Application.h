@@ -25,6 +25,7 @@ class ShortCutManager;
 class ModuleObjects;
 class ModuleFileSystem;
 class ModuleResources;
+class ModuleNavigation;
 class ModuleAudio;
 class AnimTween;
 
@@ -59,6 +60,7 @@ public:
 	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
 	ModulePhysics* 		physics = nullptr;
+	ModuleNavigation*	nav = nullptr;
 	AnimTween*			tween = nullptr;
 
 	bool fps_cap = true;

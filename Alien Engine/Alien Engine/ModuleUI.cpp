@@ -27,6 +27,7 @@
 #include "PanelAnimTimeline.h"
 #include "PanelAnimator.h"
 #include "PanelPhysics.h"
+#include "PanelNavigation.h"
 #include <string>
 #include "ResourceTexture.h"
 #include "ReturnZ.h"
@@ -554,7 +555,7 @@ void ModuleUI::MainMenuBar()
 		{
 			if (panel->shortcut != nullptr)
 			{
-				if (ImGui::MenuItem(panel->GetName().c_str(), panel->shortcut->GetNameScancodes()))
+				if (ImGui::MenuItem(panel->GetName().c_str(), panel->shortcut->GetNameScancodes(), panel->enabled))
 				{
 					panel->ChangeEnable();
 				}
@@ -1178,6 +1179,7 @@ void ModuleUI::InitPanels()
 	panel_animator = new PanelAnimator("Animator", panel_animator_codes[0], panel_animator_codes[1], panel_animator_codes[2]);
 	panel_particles = new PanelParticleSystem("Particle System", panel_particles_codes[0], panel_particles_codes[1], panel_particles_codes[2]);
 	panel_physics = new PanelPhysics("Physics", panel_physics_codes[0], panel_physics_codes[1], panel_physics_codes[2]);
+	panel_navigation = new PanelNavigation("Navigation", panel_navigation_codes[0], panel_navigation_codes[1], panel_navigation_codes[2]);
 
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
@@ -1197,6 +1199,7 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_build);
 	panels.push_back(panel_particles);
 	panels.push_back(panel_physics);
+	panels.push_back(panel_navigation);
 }
 
 void ModuleUI::UpdatePanels()

@@ -38,8 +38,8 @@ private:
 public:
 
 	ShortCut* shortcut = nullptr;
-
+	bool enabled = false;
 protected:
 	std::string panel_name;
-	bool enabled = false;
+	
 };
