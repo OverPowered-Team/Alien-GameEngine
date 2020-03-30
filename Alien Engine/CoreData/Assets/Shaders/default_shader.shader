@@ -36,6 +36,7 @@ void main()
     }
     frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
+    
     norms = mat3(transpose(inverse(model))) * normals;
 
     vec3 T = normalize(vec3(model * vec4(tangents,   0.0)));
@@ -133,22 +134,21 @@ void main()
     vec4 objectColor = vec4(objectMaterial.diffuse_color, 1.0f);
     if(objectMaterial.hasDiffuseTexture == true)
     {
-        objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords).rgb, 1.0);
+        objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords));
     }
 
-    // ----------------------------------------------------------
-
-
-    // ------------------------- Light --------------------------
-
-    vec3 result = vec3(0);
-    vec3 view_dir = normalize(view_pos - frag_pos);
+    if(objectColor.w < 0.3)
+    {
+        discard;
+    }
+    // ------------------------ Normals --------------------------------
 
     vec3 normal = vec3(0);
     if(objectMaterial.hasNormalMap == true)
     {
         normal = texture(objectMaterial.normalMap, texCoords).rgb;
-        normal = normalize(normal * 2.0 - 1.0);
+        normal = normal * 2.0 - 1.0;
+        // normal = normal * vec3(-1, -1, 0);
         normal = normalize(TBN * normal);
     }
     else 
@@ -156,7 +156,13 @@ void main()
         normal = normalize(norms);
     }
 
+    // ------------------------- Light --------------------------
+
+    vec3 result = vec3(0);
+    vec3 view_dir = normalize(view_pos - frag_pos);
+
     // Light calculations
+
     for(int i = 0; i < max_lights.x; i++)
         result += CalculateDirectionalLight(dir_light[i], normal, view_dir, objectMaterial, texCoords);
     for(int i = 0; i < max_lights.y; i++)

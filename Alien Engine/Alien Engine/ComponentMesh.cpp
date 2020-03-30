@@ -77,6 +77,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	// Uniforms --------------
 	SetUniform(material, camera);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
 	// --------------------------------------------------------------------- 

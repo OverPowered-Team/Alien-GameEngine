@@ -281,7 +281,7 @@ void ResourceMaterial::ApplyMaterial()
 	{
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
-		used_shader->SetUniform1i("objectMaterial.normalMap", 1);
+		used_shader->SetUniform1i("objectMaterial.normalMap", 2);
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
 	}
 	else
@@ -297,10 +297,17 @@ void ResourceMaterial::UnbindMaterial()
 {
 	used_shader->Unbind();
 	
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
+	{	
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	// Leave active texture 0 by default, unbinded
 	glActiveTexture(GL_TEXTURE0);

@@ -1,6 +1,6 @@
 {
     "Scene": {
-        "Name": "gunScene",
+        "Name": "potion",
         "GameObjects": [
             {
                 "Name": "Main Camera",
@@ -71,534 +71,6 @@
                 ]
             },
             {
-                "Name": "Handgun_fbx_7.4_binary",
-                "FamilyNumber": 1,
-                "ID": "8718568032429909681",
-                "ParentID": "0",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "9491132778305300009"
-                    }
-                ]
-            },
-            {
-                "Name": "Hemi.001",
-                "FamilyNumber": 2,
-                "ID": "10152074316608811396",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -73.702903747558594,
-                            -130.66830444335938,
-                            65.328361511230469
-                        ],
-                        "Rotation": [
-                            -0.57821023464202881,
-                            0.17215824127197266,
-                            0.79360085725784302,
-                            -0.078943878412246704
-                        ],
-                        "Scale": [
-                            100,
-                            99.999992370605469,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "14584755965311939437"
-                    }
-                ]
-            },
-            {
-                "Name": "Hemi",
-                "FamilyNumber": 2,
-                "ID": "3250344642008122903",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            37.185382843017578,
-                            146.08464050292969,
-                            119.92494964599609
-                        ],
-                        "Rotation": [
-                            0.50885158777236938,
-                            -0.075779661536216736,
-                            -0.17379018664360046,
-                            0.83971685171127319
-                        ],
-                        "Scale": [
-                            100,
-                            100.00000762939453,
-                            99.999984741210938
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "15991049479700182525"
-                    }
-                ]
-            },
-            {
-                "Name": "Point.001",
-                "FamilyNumber": 2,
-                "ID": "13528588852582747403",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -289.29742431640625,
-                            283.34732055664063,
-                            -250.80410766601563
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            100,
-                            100,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "18322232470234312003"
-                    }
-                ]
-            },
-            {
-                "Name": "Point",
-                "FamilyNumber": 2,
-                "ID": "13607350805613542701",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            562.644775390625,
-                            294.14239501953125,
-                            -459.34921264648438
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            100,
-                            100,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "12928445580705924105"
-                    }
-                ]
-            },
-            {
-                "Name": "bullet_light",
-                "FamilyNumber": 2,
-                "ID": "881040929644381210",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -17.57684326171875,
-                            8.116337776184082,
-                            82.511245727539063
-                        ],
-                        "Rotation": [
-                            1.5777146700202138e-08,
-                            -3.1539624245624509e-08,
-                            0.90847045183181763,
-                            -0.41794902086257935
-                        ],
-                        "Scale": [
-                            99.999992370605469,
-                            99.999992370605469,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "8170254733038765155"
-                    }
-                ]
-            },
-            {
-                "Name": "Cube.002",
-                "FamilyNumber": 2,
-                "ID": "12269428838810933224",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -59.725963592529297,
-                            -12.053897857666016,
-                            0
-                        ],
-                        "Rotation": [
-                            -0.7071068286895752,
-                            0,
-                            0,
-                            0.70710670948028564
-                        ],
-                        "Scale": [
-                            100,
-                            100,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "7155435178733068182"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "6223608452995925504",
-                        "HasMesh": true,
-                        "IsPrimitive": false,
-                        "MeshID": "5665245732851923567",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "4155780588950295178",
-                        "HasMaterial": true,
-                        "MaterialID": "15725504273677607030",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
-                "Name": "Gun",
-                "FamilyNumber": 2,
-                "ID": "12457687238464006057",
-                "ParentID": "8718568032429909681",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": true,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            -0.7071068286895752,
-                            0,
-                            0,
-                            0.70710670948028564
-                        ],
-                        "Scale": [
-                            100,
-                            100,
-                            100
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "12474238798853102146"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "9445704171455741401",
-                        "HasMesh": true,
-                        "IsPrimitive": false,
-                        "MeshID": "18053558566143887898",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "5811971972165517198",
-                        "HasMaterial": true,
-                        "MaterialID": "15725504273677607030",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
-                "Name": "muni_rot",
-                "FamilyNumber": 3,
-                "ID": "4261316617489189794",
-                "ParentID": "12457687238464006057",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": true,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -0.29434645175933838,
-                            -0.052684754133224487,
-                            0.51824229955673218
-                        ],
-                        "Rotation": [
-                            0.017541106790304184,
-                            0.043780811131000519,
-                            -0.043118271976709366,
-                            0.99795609712600708
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "15812673536921698558"
-                    }
-                ]
-            },
-            {
-                "Name": "bullet shooter",
-                "FamilyNumber": 3,
-                "ID": "9705927122630016910",
-                "ParentID": "12457687238464006057",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": true,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0.87474864721298218,
-                            0,
-                            0.49839532375335693
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            1,
-                            1.9470718370939721e-07
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "7731593858599992639"
-                    }
-                ]
-            },
-            {
-                "Name": "Cube.005",
-                "FamilyNumber": 3,
-                "ID": "2678753240114824842",
-                "ParentID": "12457687238464006057",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": true,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -0.0049976781010627747,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "16085140694904256183"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "15236072261759983409",
-                        "HasMesh": true,
-                        "IsPrimitive": false,
-                        "MeshID": "6167789987297610461",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "5706846487231633652",
-                        "HasMaterial": true,
-                        "MaterialID": "15725504273677607030",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
-                "Name": "Gun_trigger",
-                "FamilyNumber": 3,
-                "ID": "9944199446365173897",
-                "ParentID": "12457687238464006057",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": true,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            -0.1308179646730423,
-                            3.3625633388822962e-09,
-                            0.24100036919116974
-                        ],
-                        "Rotation": [
-                            0,
-                            0.11513814330101013,
-                            0,
-                            0.99334949254989624
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "6772126219427798335"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "15633860545623215618",
-                        "HasMesh": true,
-                        "IsPrimitive": false,
-                        "MeshID": "3372718363595377746",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "12593968540506518301",
-                        "HasMaterial": true,
-                        "MaterialID": "15725504273677607030",
-                        "Enabled": true
-                    }
-                ]
-            },
-            {
                 "Name": "Directional light",
                 "FamilyNumber": 1,
                 "ID": "4700010344921568095",
@@ -664,6 +136,439 @@
                             1,
                             1
                         ]
+                    }
+                ]
+            },
+            {
+                "Name": "Directional light (1)",
+                "FamilyNumber": 1,
+                "ID": "14509326767187508507",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.99991458654403687,
+                            0,
+                            0,
+                            0.013070728629827499
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5195756410184039011"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "10883799032216267781",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            0,
+                            -0.026139223948121071,
+                            -0.99965834617614746
+                        ],
+                        "Ambient": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_low",
+                "FamilyNumber": 1,
+                "ID": "7835828988012487476",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10074473353754368836"
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_01_low",
+                "FamilyNumber": 2,
+                "ID": "8718819032626269118",
+                "ParentID": "7835828988012487476",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6012622257953590526"
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_02_low",
+                "FamilyNumber": 3,
+                "ID": "13220573653859518032",
+                "ParentID": "8718819032626269118",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18362085213814672817"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "7514190849895425399",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "9138075420823582885",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "8973740114710130259",
+                        "HasMaterial": true,
+                        "MaterialID": "257922025884512373",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_03_low",
+                "FamilyNumber": 3,
+                "ID": "5127932976995070043",
+                "ParentID": "8718819032626269118",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1117375722229830881"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "248687689351307355",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "3696146798508183840",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "15008574719954872777",
+                        "HasMaterial": true,
+                        "MaterialID": "257922025884512373",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_04_low",
+                "FamilyNumber": 3,
+                "ID": "8751917641022158322",
+                "ParentID": "8718819032626269118",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12533733183931890693"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "3414328654248389189",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "8766423302263104743",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "10979215500031801461",
+                        "HasMaterial": true,
+                        "MaterialID": "257922025884512373",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_05_low",
+                "FamilyNumber": 3,
+                "ID": "9491603559206623791",
+                "ParentID": "8718819032626269118",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13039323864612288646"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "16067873837495735396",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "15429975872819512246",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "10627759661708043020",
+                        "HasMaterial": true,
+                        "MaterialID": "257922025884512373",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "potion_container_06_low",
+                "FamilyNumber": 3,
+                "ID": "15940880822826204251",
+                "ParentID": "8718819032626269118",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9254185249532979510"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "468472529172997182",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "18066934979946851648",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "12284470032439996852",
+                        "HasMaterial": true,
+                        "MaterialID": "257922025884512373",
+                        "Enabled": true
                     }
                 ]
             }
