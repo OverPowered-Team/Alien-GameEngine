@@ -348,6 +348,16 @@ ResourceTexture* ComponentAnimatedImage::SetTextureArray(ResourceTexture* tex, R
 	return nullptr;
 }
 
+void ComponentAnimatedImage::SetAnimSpeed(float speed)
+{
+	this->speed = speed;
+}
+
+float ComponentAnimatedImage::GetAnimSpeed()
+{
+	return speed;
+}
+
 ResourceTexture* ComponentAnimatedImage::GetCurrentFrame(float dt)
 {
 	current_frame += speed * dt;
