@@ -269,7 +269,7 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		}
 		GameObject* obj = parent->children.back();
 		parent->children.pop_back();
-		parent->children.insert(parent->children.begin(), obj);
+		App->objects->GetRoot(true)->children.insert(App->objects->GetRoot(true)->children.begin(), obj);
 
 		if (!App->objects->to_add.empty()) {
 			auto item = App->objects->to_add.begin();
@@ -280,7 +280,8 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 				}
 			}
 		}
-		parent->children.erase(parent->children.begin());
+
+		App->objects->GetRoot(true)->children.erase(App->objects->GetRoot(true)->children.begin());
 
 		if (list_num != -1) {
 			parent->children.insert(parent->children.begin() + list_num, obj);
@@ -288,6 +289,7 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		else {
 			parent->children.push_back(obj);
 		}
+
 		for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
 		{
 			ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
