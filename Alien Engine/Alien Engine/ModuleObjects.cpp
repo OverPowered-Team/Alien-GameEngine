@@ -136,6 +136,12 @@ bool ModuleObjects::Start()
 update_status ModuleObjects::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
+	
+	if (!sceneNameToChange.empty()) {
+		LoadScene(sceneNameToChange.data());
+		sceneNameToChange.clear();
+	}
+	
 	// delete objects
 	if (need_to_delete_objects) { 
 		need_to_delete_objects = false;

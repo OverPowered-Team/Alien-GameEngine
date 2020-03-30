@@ -311,6 +311,8 @@ public:
 
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
+	std::string sceneNameToChange;
+
 private:
 	// root
 	GameObject* base_game_object = nullptr;
