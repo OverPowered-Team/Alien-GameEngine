@@ -5,6 +5,7 @@
 #include "Bullet/include/btBulletDynamicsCommon.h"
 #include "Bullet/include/LinearMath/btVector3.h"
 #include <list>
+#include <vector>
 
 // Recommended scale is 1.0f == 1 meter, no less than 0.2 objects
 #define GRAVITY btVector3(0.0f, -9.8f, 0.0f) 
@@ -22,6 +23,8 @@ enum class ForceMode : uint
 	IMPULSE,
 	MAX
 };
+
+
 
 class ComponentCollider;
 class DebugRenderer;
@@ -44,9 +47,7 @@ public:
 	~ModulePhysics();
 
 	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
-
 	ComponentCollider* RayCastClosest(math::Ray ray);
-
 	std::vector<ComponentCollider*>  SphereCast(float3 position, float radius);
 
 private:
@@ -111,6 +112,11 @@ private:
 	std::list<btTypedConstraint*> constraints;
 };
 
+struct CastResult : public btCollisionWorld::ContactResultCallback
+{
+	std::vector<ComponentCollider*> hit_colliders;
+	btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1);
+};
 
 class DebugRenderer : public btIDebugDraw
 {

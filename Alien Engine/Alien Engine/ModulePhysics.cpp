@@ -12,6 +12,9 @@
 #include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
+
+#include "ModuleInput.h"
+
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
 }
@@ -87,6 +90,14 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 update_status ModulePhysics::PostUpdate(float dt)
 {
+	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		SphereCast(float3(0.f, 0.f, 0.f), 0.5f);
+		RayCastAll(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+		RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -96,7 +107,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-std::vector<ComponentCollider*> ModulePhysics::RayCastAll( math::Ray ray)
+std::vector<ComponentCollider*> ModulePhysics::RayCastAll(math::Ray ray)
 {
 	std::vector<ComponentCollider*> return_vector;
 	btCollisionWorld::AllHitsRayResultCallback results(ToBtVector3(ray.pos), ToBtVector3(ray.dir));
@@ -106,18 +117,14 @@ std::vector<ComponentCollider*> ModulePhysics::RayCastAll( math::Ray ray)
 	for (int i = 0; i < size; ++i)
 	{
 		const btCollisionObject* obj = results.m_collisionObjects.at(i);
-		const btGhostObject* ghost = btGhostObject::upcast(obj);
-		if (ghost != nullptr)
-		{
-			ComponentCollider* collider = (ComponentCollider*) ghost->getUserPointer();
+		ComponentCollider* collider = (ComponentCollider*)obj->getUserPointer();
 
-			if (collider != nullptr)
-			{
-				return_vector.push_back(collider);
-			}
+		if (collider != nullptr)
+		{
+			return_vector.push_back(collider);
 		}
 	}
-	
+
 	return return_vector;
 }
 
@@ -126,11 +133,10 @@ ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
 	btCollisionWorld::ClosestRayResultCallback results(ToBtVector3(ray.pos), ToBtVector3(ray.dir));
 	world->rayTest(ToBtVector3(ray.pos), ToBtVector3(ray.dir), results);
 	const btCollisionObject* obj = results.m_collisionObject;
-	const btGhostObject* ghost = btGhostObject::upcast(obj);
 
-	if (ghost != nullptr)
+	if (obj != nullptr)
 	{
-		ComponentCollider* collider = (ComponentCollider*)ghost->getUserPointer();
+		ComponentCollider* collider = (ComponentCollider*)obj->getUserPointer();
 
 		if (collider != nullptr)
 		{
@@ -143,12 +149,19 @@ ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
 
 std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float radius)
 {
-	std::vector<ComponentCollider*> return_vector;
-	//btSphereShape* shape = new btSphereShape(radius);
-	//btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
-	//btCollisionWorld::ConvexResultCallback result(btVector3(0.f, 0.f,0.f), btVector3(0.f, 0.f, 0.f));
-	//world->convexSweepTest(shape, transform, transform, result);
-	return return_vector;
+	btSphereShape* shape = new btSphereShape(radius);
+	btGhostObject* ghost = new btGhostObject();
+	btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
+	CastResult result;
+
+	ghost->setCollisionShape(shape);
+	ghost->setWorldTransform(transform);
+	world->contactTest(ghost, result);
+
+	delete ghost;
+	delete shape;
+
+	return result.hit_colliders;
 }
 
 
@@ -335,4 +348,21 @@ btTransform ToBtTransform(const float3& pos, const float3x3& rotation)
 	btMatrix3x3 mat(rot[0], rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8]);
 	btTransform trans(mat, ToBtVector3(pos));
 	return trans;
+}
+
+btScalar CastResult::addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
+{
+	const btCollisionObject* obj = colObj1Wrap->m_collisionObject;
+
+	if (obj != nullptr)
+	{
+		ComponentCollider* collider = (ComponentCollider*)obj->getUserPointer();
+
+		if (collider != nullptr)
+		{
+			hit_colliders.push_back(collider);
+		}
+	}
+
+	return 1;
 }
