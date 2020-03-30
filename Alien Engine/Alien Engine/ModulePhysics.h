@@ -47,9 +47,7 @@ public:
 	~ModulePhysics();
 
 	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
-
 	ComponentCollider* RayCastClosest(math::Ray ray);
-
 	std::vector<ComponentCollider*>  SphereCast(float3 position, float radius);
 
 private:
