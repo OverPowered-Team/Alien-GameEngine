@@ -80,7 +80,7 @@ protected:
 
 	float3 center = float3::zero();
 	float3 final_center = float3::zero();
-
+	float3 last_scale = float3::zero();
 	bool is_trigger = false;
 	float bouncing = 0.f;
 	float friction = 0.f;
