@@ -268,9 +268,25 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 			game_objects->GetAnotherNode();
 		}
 		GameObject* obj = parent->children.back();
+		parent->children.pop_back();
+		parent->children.insert(parent->children.begin(), obj);
+
+		if (!App->objects->to_add.empty()) {
+			auto item = App->objects->to_add.begin();
+			for (; item != App->objects->to_add.end(); ++item) {
+				GameObject* found = App->objects->GetGameObjectByID((*item).first);
+				if (found != nullptr) {
+					*(*item).second = found;
+				}
+			}
+		}
+		parent->children.erase(parent->children.begin());
+
 		if (list_num != -1) {
-			parent->children.pop_back();
 			parent->children.insert(parent->children.begin() + list_num, obj);
+		}
+		else {
+			parent->children.push_back(obj);
 		}
 		for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
 		{
@@ -285,16 +301,6 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 					}
 					if (def_mesh->root_bone != nullptr)
 						def_mesh->AttachSkeleton(def_mesh->root_bone->transform);
-				}
-			}
-		}
-
-		if (!App->objects->to_add.empty()) {
-			auto item = App->objects->to_add.begin();
-			for (; item != App->objects->to_add.end(); ++item) {
-				GameObject* found = App->objects->GetGameObjectByID((*item).first);
-				if (found != nullptr) {
-					*(*item).second = found;
 				}
 			}
 		}

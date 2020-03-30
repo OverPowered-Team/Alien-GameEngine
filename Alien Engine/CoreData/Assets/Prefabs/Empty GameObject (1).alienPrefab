@@ -2,9 +2,9 @@
     "Prefab": {
         "GameObjects": [
             {
-                "Name": "FFFFFFFFFF",
+                "Name": "Empty GameObject",
                 "FamilyNumber": 1,
-                "ID": "16811691421430975777",
+                "ID": "9344202078534922551",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -14,7 +14,7 @@
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "10483643004439860733",
+                "PrefabID": "14224096087879198771",
                 "Components": [
                     {
                         "Type": 0,
@@ -35,11 +35,11 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6886518545065905844"
+                        "ID": "11740868336041826699"
                     },
                     {
                         "Type": 29,
-                        "ID": "5643575782631036844",
+                        "ID": "8406817755635488520",
                         "ResourceID": "16641756662378091880",
                         "DataName": "UltiBar",
                         "HasInspector": true,
@@ -47,7 +47,7 @@
                             {
                                 "VarType": 9,
                                 "Name": "ultibar",
-                                "gameobject": "17367411240530646205"
+                                "gameobject": "9351144706917012691"
                             },
                             {
                                 "VarType": 9,
@@ -59,10 +59,10 @@
                 ]
             },
             {
-                "Name": "Cube2",
+                "Name": "Cube",
                 "FamilyNumber": 2,
-                "ID": "17367411240530646205",
-                "ParentID": "16811691421430975777",
+                "ID": "9351144706917012691",
+                "ParentID": "9344202078534922551",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -71,7 +71,7 @@
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "10483643004439860733",
+                "PrefabID": "14224096087879198771",
                 "Components": [
                     {
                         "Type": 0,
@@ -92,7 +92,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6093553435002107331"
+                        "ID": "7340482084566710474"
                     },
                     {
                         "Type": 1,
@@ -102,7 +102,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "9836251417772359491",
+                        "ID": "4568036015390125096",
                         "HasMesh": true,
                         "IsPrimitive": true,
                         "PrimType": 0,
@@ -110,7 +110,7 @@
                     },
                     {
                         "Type": 2,
-                        "ID": "17574214226575256939",
+                        "ID": "3505554794588756242",
                         "HasMaterial": true,
                         "MaterialID": "0",
                         "Enabled": true
@@ -136,10 +136,10 @@
                 ]
             },
             {
-                "Name": "Empty GameObject",
+                "Name": "Sphere",
                 "FamilyNumber": 2,
-                "ID": "10537760772103393",
-                "ParentID": "16811691421430975777",
+                "ID": "17578731267636194240",
+                "ParentID": "9344202078534922551",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -148,7 +148,7 @@
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "10483643004439860733",
+                "PrefabID": "14224096087879198771",
                 "Components": [
                     {
                         "Type": 0,
@@ -169,7 +169,42 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "15638642514626444591"
+                        "ID": "1965843375546959967"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "4972634816212291632",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "13940242423864736811",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0.10000000149011612,
+                        "Friction": 0.5,
+                        "AngularFriction": 0.10000000149011612,
+                        "Radius": 1
                     }
                 ]
             }
