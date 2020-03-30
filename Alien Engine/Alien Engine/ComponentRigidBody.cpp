@@ -372,14 +372,6 @@ float3 ComponentRigidBody::GetPosition()
 	return (float3)position;
 }
 
-Quat ComponentRigidBody::GetRotation()
-{
-	btTransform trans = body->getCenterOfMassTransform();
-	btQuaternion rotation = trans.getRotation();
-	return (Quat)rotation;
-
-}
-
 void ComponentRigidBody::SetIsKinematic(const bool value)
 {
 	is_kinematic = value;
@@ -406,25 +398,11 @@ void ComponentRigidBody::SetAngularDrag(const float value)
 	body->setDamping(drag, angular_drag);
 }
 
-void ComponentRigidBody::SetPosition(float3 pos)
-{
-	btTransform trans = body->getCenterOfMassTransform();
-	trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
-	body->setCenterOfMassTransform(trans);
-}
-
 float3 ComponentRigidBody::GetPosition() const
 {
 	btTransform trans = body->getCenterOfMassTransform();
 	btVector3 pos = trans.getOrigin();
 	return float3(pos.x(), pos.y(), pos.z());
-}
-
-void ComponentRigidBody::SetRotation(const Quat rot)
-{
-	btTransform trans = body->getCenterOfMassTransform();
-	trans.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
-	body->setCenterOfMassTransform(trans);
 }
 
 Quat ComponentRigidBody::GetRotation() const
