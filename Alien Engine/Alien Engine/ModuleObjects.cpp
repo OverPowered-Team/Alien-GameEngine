@@ -280,9 +280,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
-			if (!printing_scene) {
+			/*if (!printing_scene) {
 				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-			}
+			}*/
 			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
 			for (; it_ui != to_draw_ui.end(); ++it_ui) {
 				if ((*it_ui).second != nullptr) {
@@ -1383,8 +1383,7 @@ void ModuleObjects::ResetUIFocus()
 {
 	if (GetGameObjectByID(selected_ui) != nullptr && selected_ui != -1) {
 		GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Idle;
-		GameObject* selected = GetGameObjectByID(selected_ui);
-		selected = nullptr;
+		selected_ui = -1;
 	}
 
 	first_assigned_selected = false;
