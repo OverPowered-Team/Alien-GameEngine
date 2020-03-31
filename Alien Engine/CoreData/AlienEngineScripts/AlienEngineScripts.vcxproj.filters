@@ -35,6 +35,7 @@
     <ClCompile Include="NilfgaardSoldier.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Instatiate.cpp" />
+    <ClCompile Include="Subtitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -71,6 +72,7 @@
     <ClInclude Include="NilfgaardSoldier.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Instatiate.h" />
+    <ClInclude Include="Subtitle.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
