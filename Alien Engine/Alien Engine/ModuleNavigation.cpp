@@ -6,6 +6,15 @@
 #include "Alien.h"
 #include "Optick/include/optick.h"
 
+// Recast/detour/detourcrowd ----
+#include "Recast.h"
+//#include "RecastDebugDraw.h"
+//#include "RecastDump.h"
+//#include "DetourNavMesh.h"
+//#include "DetourNavMeshBuilder.h"
+//#include "DetourDebugDraw.h"
+
+
 ModuleNavigation::ModuleNavigation(bool start_enabled) : Module(start_enabled)
 {
 }

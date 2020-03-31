@@ -321,6 +321,7 @@ bool ComponentTransform::DrawInspector()
 	if (ImGui::Checkbox("Static", &game_object_attached->is_static)) {
 		if (!game_object_attached->is_static && (game_object_attached->children.empty() || !game_object_attached->HasChildrenStatic())) {
 			App->objects->octree.Remove(game_object_attached);
+			game_object_attached->nav_data.nav_static = false;
 		}
 		else if (game_object_attached->is_static && game_object_attached->parent != nullptr && game_object_attached->parent->is_static && game_object_attached->children.empty()) {
 			App->objects->octree.Insert(game_object_attached, false);
@@ -759,12 +760,14 @@ bool ComponentTransform::DrawInspector()
 					if (ImGui::Button("Accept", { 100,20 })) {
 						popup_static = false;
 						game_object_attached->is_static = false;
+						game_object_attached->nav_data.nav_static = false;
 					}
 					ImGui::EndPopup();
 				}
 				else {
 					popup_static = false;
 					game_object_attached->is_static = false;
+					game_object_attached->nav_data.nav_static = false;
 				}
 			}
 			else {

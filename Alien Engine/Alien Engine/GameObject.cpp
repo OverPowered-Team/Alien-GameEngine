@@ -1548,6 +1548,9 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 	if (IsPrefab()) {
 		to_save->SetString("PrefabID", std::to_string(prefabID).data());
 	}
+	to_save->SetBoolean("NavStatic", nav_data.nav_static);
+	to_save->SetBoolean("GenOffMeshLinks", nav_data.gen_offmesh_links);
+	to_save->SetNumber("NavArea", nav_data.nav_area);
 
 	JSONArraypack* components_to_save = to_save->InitNewArray("Components");
 
@@ -1587,6 +1590,10 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 		this->parent = parent;
 		parent->AddChild(this);
 	}
+
+	nav_data.nav_static = to_load->GetBoolean("NavStatic");
+	nav_data.gen_offmesh_links = to_load->GetBoolean("GenOffMeshLinks");
+	nav_data.nav_area = to_load->GetNumber("NavArea");
 
 	JSONArraypack* components_to_load = to_load->GetArray("Components");
 

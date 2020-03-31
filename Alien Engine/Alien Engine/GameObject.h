@@ -14,6 +14,13 @@ class Prefab;
 class ComponentCanvas;
 class ComponentCamera;
 
+struct nav_info
+{
+	bool nav_static = false;
+	bool gen_offmesh_links = false;
+	int nav_area = 0x00; // stores navigation area
+};
+
 class __declspec(dllexport) GameObject
 {
 	friend class Component;
@@ -57,6 +64,7 @@ class __declspec(dllexport) GameObject
 	friend class FileNode;
 	friend class ModuleImporter;
 	friend class PanelHierarchy;
+	friend class PanelNavigation;
 	friend class PanelScene;
 	friend class ModuleRenderer3D;
 	friend class PanelCreateObject;
@@ -270,6 +278,8 @@ public:
 
 	GameObject* parent = nullptr;
 	ComponentTransform* transform = nullptr;
+	// for navigation 
+	nav_info nav_data;
 
 private:
 	bool to_delete = false; 
@@ -290,6 +300,7 @@ private:
 	bool parent_selected = false;
 	bool open_node = false;
 	bool prefab_locked = false;
+
 };
 
 template<class Comp>

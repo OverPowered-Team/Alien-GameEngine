@@ -22,7 +22,7 @@ void PanelNavigation::PanelLogic()
 
 	// -----------------------------------------------
 	std::list<GameObject*> gos = App->objects->GetSelectedObjects();
-	std::list<GameObject*> mesh_gos;
+	std::vector<GameObject*> mesh_gos;
 
 	for (std::list<GameObject*>::iterator it = gos.begin(); it != gos.end(); ++it) {
 		if ((*it)->GetComponent(ComponentType::MESH) != nullptr) { // TODO: needs to check mesh in children?
@@ -44,10 +44,35 @@ void PanelNavigation::PanelLogic()
 		panel_nav_rendered = false;
 	}
 	// -----------------------------------------------
-
+	uint num_go_valids = mesh_gos.size();
 	ImGui::Text("selected %i gameobject/s", gos.size());
-	ImGui::Text("with %i meshes", mesh_gos.size());
+	ImGui::Text("with %i meshes", num_go_valids);
 
+	ImGui::Separator();
+
+	if (num_go_valids == 0)
+	{
+		ImGui::Text("Select any gameobject with mesh from the scene");
+	}
+	else
+	{
+		ImGui::Text("%s", mesh_gos.front()->GetName());
+		if (num_go_valids > 1)
+		{
+			ImGui::SameLine();
+			ImGui::Text(num_go_valids > 2 ? "and %i others" : "and %i other", num_go_valids - 1);
+		}
+
+		GameObject* first_selected = mesh_gos.front();
+		if (ImGui::Checkbox("Navigation Static", &first_selected->nav_data.nav_static))
+		{
+			// change all valids gameobjects too at once
+			for (uint i = 0; i < num_go_valids; ++i)
+				mesh_gos[i]->nav_data.nav_static = first_selected->nav_data.nav_static;
+		}
+	}
+
+	
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
 		LOG_ENGINE("TODO: send mesh gos list to Module Navigation");
 	}
@@ -58,7 +83,7 @@ void PanelNavigation::PanelLogic()
 	ImGui::End();
 }
 
-void PanelNavigation::OnPanelDesactive() // TODO: this call doesn't work if the window is NOT docked and closed by the top right X icon
+void PanelNavigation::OnPanelDesactive() // TODO: this call doesn't work if the window is NOT docked and is closed by the top right X icon
 {
 	panel_nav_rendered = false;
 }
