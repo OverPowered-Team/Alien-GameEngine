@@ -249,6 +249,21 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
+		
+		ImGui::Checkbox("Active Fog", &activeFog);
+		if (activeFog)
+		{
+			ImGui::DragFloat("Density", &fogDensity, 0.001f, 0.0f, 10.f);
+			ImGui::DragFloat("Gradient", &fogGradient, 0.02f, 0.0f, 10.f);
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 		ImGui::PushID("vcnsdbiobsdifnidsofnionew");
 		ImGui::Checkbox("Print Icon", &print_icon);
 		ImGui::PopID();
@@ -662,7 +677,7 @@ float3 ComponentCamera::GetCameraPosition() const
 
 void ComponentCamera::DrawSkybox()
 {
-	if (App->renderer3D->render_skybox)
+	if (App->renderer3D->render_skybox && !activeFog)
 	{
 		glDepthFunc(GL_LEQUAL);
 		skybox_shader->Bind();
