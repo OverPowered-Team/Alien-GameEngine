@@ -22,7 +22,6 @@ enum class ForceMode : uint
 };
 
 
-
 class ComponentCollider;
 class DebugRenderer;
 class btGhostObject;
@@ -62,8 +61,9 @@ private:
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
-
 	bool CleanUp();
+
+	static bool CanCollide(int layer_0, int layer_1);
 
 	void DrawCollider(ComponentCollider* collider);
 	void DrawConvexCollider(ComponentCollider* collider);
@@ -91,6 +91,9 @@ public:
 	btDefaultVehicleRaycaster* vehicle_raycaster = nullptr;
 
 private:
+
+	std::vector<std::string> layers;
+	bool**layers_table = nullptr;
 
 	bool debug_physics = false;
 	float3 gravity = float3(0.f, -9.8f, 0.f);

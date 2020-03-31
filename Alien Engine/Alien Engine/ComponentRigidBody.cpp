@@ -6,6 +6,7 @@
 #include "Time.h"
 #include "ModuleInput.h"
 #include "Event.h"
+#include "mmgr/mmgr.h"
 
 ComponentRigidBody::ComponentRigidBody(GameObject* go) : Component(go)
 {
@@ -373,14 +374,6 @@ float3 ComponentRigidBody::GetPosition()
 	return (float3)position;
 }
 
-Quat ComponentRigidBody::GetRotation()
-{
-	btTransform trans = body->getCenterOfMassTransform();
-	btQuaternion rotation = trans.getRotation();
-	return (Quat)rotation;
-
-}
-
 void ComponentRigidBody::SetIsKinematic(const bool value)
 {
 	is_kinematic = value;
@@ -405,6 +398,20 @@ void ComponentRigidBody::SetAngularDrag(const float value)
 {
 	angular_drag = value;
 	body->setDamping(drag, angular_drag);
+}
+
+float3 ComponentRigidBody::GetPosition() const
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btVector3 pos = trans.getOrigin();
+	return float3(pos.x(), pos.y(), pos.z());
+}
+
+Quat ComponentRigidBody::GetRotation() const
+{
+	btTransform trans = body->getCenterOfMassTransform();
+	btQuaternion rot = trans.getRotation();
+	return Quat(rot.x(), rot.y(), rot.z(), rot.w());
 }
 
 void ComponentRigidBody::SetVelocity(float3 velocity)

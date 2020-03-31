@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "ReturnZ.h"
 #include "Alien.h"
+#include "mmgr/mmgr.h"
 
 ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 {
@@ -376,6 +377,7 @@ bool ComponentCollider::DrawInspector()
 		ImGui::Title("Linear Fric.", 2);	if (ImGui::DragFloat("##friction", &current_friction, 0.01f, 0.00f, FLT_MAX)) { SetFriction(current_friction); }
 		ImGui::Title("Angular Fric.", 2);	if (ImGui::DragFloat("##angular_friction", &current_angular_friction, 0.01f, 0.00f, FLT_MAX)) { SetAngularFriction(current_angular_friction); }
 		ImGui::Spacing();
+
 	}
 
 	ImGui::PopID();

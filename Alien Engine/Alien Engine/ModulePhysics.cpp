@@ -74,6 +74,7 @@ bool ModulePhysics::Init()
 	solver = new btSequentialImpulseConstraintSolver();
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
+	gravity = float3(0.f, -9.8f, 0.f);
 	world->setGravity(ToBtVector3(gravity));
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
@@ -88,6 +89,22 @@ bool ModulePhysics::Init()
 bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
+
+	layers.push_back("Default");
+	layers.push_back("Player");
+	layers.push_back("Arrow");
+	layers.push_back("Wall");
+	layers.push_back("Ground");
+
+
+	int size = layers.size();
+	layers_table = new bool* [size];
+	for (int i = 0; i < size; i++)
+		layers_table[i] = new bool[size];
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			layers_table[i][j] = true;
 
 	return true;
 }
@@ -117,7 +134,13 @@ update_status ModulePhysics::PostUpdate(float dt)
 
 bool ModulePhysics::CleanUp()
 {
+
 	return true;
+}
+
+bool ModulePhysics::CanCollide(int layer_0, int layer_1)
+{
+	return (layer_0 < layer_1)  ? App->physics->layers_table[layer_0][layer_1] : App->physics->layers_table[layer_1][layer_0];
 }
 
 std::vector<ComponentCollider*> ModulePhysics::RayCastAll(math::Ray ray)

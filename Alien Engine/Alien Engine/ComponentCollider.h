@@ -101,4 +101,5 @@ protected:
 	bool first_frame = false;
 	bool internal_collider = false;
 	bool added_to_world = false;
+	int  layer = 0;
 };
