@@ -78,7 +78,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	SetUniform(material, camera);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	// --------------------------------------------------------------------- 
 
@@ -126,7 +126,7 @@ void ComponentMesh::DrawOutLine()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
 
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_POLYGON_OFFSET_FILL);
@@ -159,7 +159,7 @@ void ComponentMesh::DrawMesh()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	glLineWidth(1);
 	glDisableClientState(GL_VERTEX_ARRAY);

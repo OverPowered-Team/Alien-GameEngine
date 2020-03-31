@@ -109,7 +109,7 @@ public:
 
 public:
 
-	float4 color;
+	float4 color = float4::one;
 
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];
