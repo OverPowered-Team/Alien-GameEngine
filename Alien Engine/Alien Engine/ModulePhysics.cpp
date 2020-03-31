@@ -10,12 +10,12 @@
 #include "Time.h"
 #include "Alien.h"
 #include "Optick/include/optick.h"
-
-
+#include "mmgr/mmgr.h"
 #include "ModuleInput.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
+	gravity = float3(0.f, -9.8f, 0.f);
 }
 
 ModulePhysics::~ModulePhysics()
@@ -37,13 +37,26 @@ ModulePhysics::~ModulePhysics()
 	delete collision_config;
 }
 
-void ModulePhysics::LoadConfig(JSONfilepack*& config)
+void ModulePhysics::SetGravity(const float3 gravity)
 {
-
+	this->gravity = gravity;
+	if (world)
+		world->setGravity(ToBtVector3(gravity));
 }
+
+const float3 ModulePhysics::GetGravity()
+{
+	return gravity;
+}
+
 void ModulePhysics::SaveConfig(JSONfilepack*& config)
 {
+	config->SetFloat3("Gravity", gravity);
+}
 
+void ModulePhysics::LoadConfig(JSONfilepack*& config)
+{
+	SetGravity(config->GetFloat3("Gravity"));
 }
 
 bool ModulePhysics::Init()
@@ -55,16 +68,20 @@ bool ModulePhysics::Init()
 
 	debug_renderer = new DebugRenderer();
 	collision_config = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(collision_config);
+	dispatcher = new MyDispatcher(collision_config);
 	broad_phase = new btDbvtBroadphase();
 	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	solver = new btSequentialImpulseConstraintSolver();
-
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
-	world->setGravity(GRAVITY);
+	gravity = float3(0.f, -9.8f, 0.f);
+	world->setGravity(ToBtVector3(gravity));
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
+
+
+	//btOverlapFilterCallback* filterCallback = new MyOwnFilterCallback();
+	//world->getPairCache()->setOverlapFilterCallback(filterCallback);
 
 	return ret;
 }
@@ -72,6 +89,22 @@ bool ModulePhysics::Init()
 bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
+
+	layers.push_back("Default");
+	layers.push_back("Player");
+	layers.push_back("Arrow");
+	layers.push_back("Wall");
+	layers.push_back("Ground");
+
+
+	int size = layers.size();
+	layers_table = new bool* [size];
+	for (int i = 0; i < size; i++)
+		layers_table[i] = new bool[size];
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			layers_table[i][j] = true;
 
 	return true;
 }
@@ -96,13 +129,18 @@ update_status ModulePhysics::PostUpdate(float dt)
 		RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
 
 	}
-
 	return UPDATE_CONTINUE;
 }
 
 bool ModulePhysics::CleanUp()
 {
+
 	return true;
+}
+
+bool ModulePhysics::CanCollide(int layer_0, int layer_1)
+{
+	return (layer_0 < layer_1)  ? App->physics->layers_table[layer_0][layer_1] : App->physics->layers_table[layer_1][layer_0];
 }
 
 std::vector<ComponentCollider*> ModulePhysics::RayCastAll(math::Ray ray)
@@ -149,11 +187,10 @@ std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float
 {
 	btSphereShape* shape = new btSphereShape(radius);
 	btGhostObject* ghost = new btGhostObject();
-	btTransform transform(btQuaternion::getIdentity(), ToBtVector3(position));
 	CastResult result;
 
+	ghost->setWorldTransform(btTransform(btQuaternion::getIdentity(), ToBtVector3(position)));
 	ghost->setCollisionShape(shape);
-	ghost->setWorldTransform(transform);
 	world->contactTest(ghost, result);
 
 	delete ghost;
@@ -162,6 +199,21 @@ std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float
 	return result.hit_colliders;
 }
 
+std::vector<ComponentCollider*> ModulePhysics::BoxCast(float3 size ,float3 position, Quat rotation)
+{
+	btBoxShape* shape = new btBoxShape(ToBtVector3(size * 0.5f));
+	btGhostObject* ghost = new btGhostObject();
+	CastResult result;
+
+	ghost->setWorldTransform(btTransform(ToBtQuaternion(rotation), ToBtVector3(position)));
+	ghost->setCollisionShape(shape);
+	world->contactTest(ghost, result);
+
+	delete ghost;
+	delete shape;
+
+	return result.hit_colliders;
+}
 
 void ModulePhysics::DrawCollider(ComponentCollider* collider)
 {
@@ -363,4 +415,19 @@ btScalar CastResult::addSingleResult(btManifoldPoint& cp, const btCollisionObjec
 	}
 
 	return 1;
+}
+
+
+MyDispatcher::MyDispatcher(btCollisionConfiguration* collisionConfiguration) : btCollisionDispatcher(collisionConfiguration){}
+
+bool MyDispatcher::needsCollision(const btCollisionObject* obj_0, const btCollisionObject* obj_1)
+{
+	ComponentCollider* coll_0 = (ComponentCollider*)obj_0->getUserPointer();
+	ComponentCollider* coll_1 = (ComponentCollider*)obj_1->getUserPointer();
+
+	if (coll_0 == nullptr || coll_1 == nullptr)
+		return true;
+
+	return ModulePhysics::CanCollide(coll_0->layer, coll_1->layer);
+
 }

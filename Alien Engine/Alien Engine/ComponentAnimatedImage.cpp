@@ -8,6 +8,7 @@
 #include "ResourceTexture.h"
 #include "ModuleWindow.h"
 #include "PanelGame.h"
+#include "mmgr/mmgr.h"
 
 
 ComponentAnimatedImage::ComponentAnimatedImage(GameObject* obj): ComponentUI(obj)
@@ -345,6 +346,16 @@ ResourceTexture* ComponentAnimatedImage::SetTextureArray(ResourceTexture* tex, R
 		return tex;
 	}
 	return nullptr;
+}
+
+void ComponentAnimatedImage::SetAnimSpeed(float speed)
+{
+	this->speed = speed;
+}
+
+float ComponentAnimatedImage::GetAnimSpeed()
+{
+	return speed;
 }
 
 ResourceTexture* ComponentAnimatedImage::GetCurrentFrame(float dt)

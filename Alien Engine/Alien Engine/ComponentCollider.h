@@ -26,7 +26,7 @@ class __declspec(dllexport) ComponentCollider : public Component
 	friend class ModulePhysics;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
-
+	friend class MyDispatcher;
 public:
 
 	ComponentCollider(GameObject* go);
@@ -101,4 +101,5 @@ protected:
 	bool first_frame = false;
 	bool internal_collider = false;
 	bool added_to_world = false;
+	int  layer = 0;
 };

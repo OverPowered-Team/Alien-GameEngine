@@ -1,0 +1,37 @@
+{
+    "Controller": {
+        "Name": "Player",
+        "NumStates": 1,
+        "NumTransitions": 0,
+        "States": [
+            {
+                "Name": "NewState1",
+                "Speed": 1,
+                "Clip": "15685939318256760475"
+            }
+        ],
+        "Transitions": [],
+        "IntParameters": [],
+        "FloatParameters": [
+            {
+                "Name": "speed",
+                "Value": 0
+            }
+        ],
+        "BoolParameters": [],
+        "Events": [
+            {
+                "Event_Id": "545371390",
+                "Animation_Id": "15685939318256760475",
+                "Frame": 19,
+                "Type": 0
+            },
+            {
+                "Event_Id": "545371390",
+                "Animation_Id": "15685939318256760475",
+                "Frame": 29,
+                "Type": 0
+            }
+        ]
+    }
+}

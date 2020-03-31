@@ -50,9 +50,9 @@ struct ShaderInputs
 	} iluminatedShaderProperties;
 
 	struct ParticleShaderProperties {
-		float4 color = float4(1.f, 0.f, 0.8f, 1.f);
-		float4 start_color = float4(1.f, 0.f, 0.8f, 1.f);
-		float4 end_color = float4(1.f, 1.f, 1.f, 1.f);
+		float3 color = float3(1.f, 0.f, 0.8f);
+		float3 start_color = float3(1.f, 0.f, 0.8f);
+		float3 end_color = float3(1.f, 1.f, 1.f);
 	} particleShaderProperties;
 };
 
@@ -73,13 +73,14 @@ public:
 	void OnSelected() override; 
 	void OnDeselected() override;
 
+	void SaveResource() override; 
+
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
 	bool ReadBaseInfo(const char* assets_file_path);
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
-	void SaveMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
@@ -107,7 +108,7 @@ public:
 
 public:
 
-	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 color;
 
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];
