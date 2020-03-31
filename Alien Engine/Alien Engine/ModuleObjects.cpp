@@ -212,7 +212,7 @@ update_status ModuleObjects::Update(float dt)
 			}
 			catch (...)
 			{
-				LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALL A FUNTION IN TIMELINE");
+				LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING A FUNTION IN TIMELINE");
 			}	
 		}
 		functions_to_call.clear();
