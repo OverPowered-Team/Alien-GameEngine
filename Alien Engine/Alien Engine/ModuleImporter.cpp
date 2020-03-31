@@ -430,6 +430,9 @@ void ModuleImporter::LoadMaterials(aiMaterial *material, const char *extern_path
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_SPECULAR, TextureType::SPECULAR, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_NORMALS, TextureType::NORMALS, extern_path);
+
 	model->materials_attached.push_back(mat);
 }
 
