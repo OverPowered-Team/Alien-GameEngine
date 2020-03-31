@@ -417,7 +417,6 @@ btScalar CastResult::addSingleResult(btManifoldPoint& cp, const btCollisionObjec
 	return 1;
 }
 
-
 MyDispatcher::MyDispatcher(btCollisionConfiguration* collisionConfiguration) : btCollisionDispatcher(collisionConfiguration){}
 
 bool MyDispatcher::needsCollision(const btCollisionObject* obj_0, const btCollisionObject* obj_1)

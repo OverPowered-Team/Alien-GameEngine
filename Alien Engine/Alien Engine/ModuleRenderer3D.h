@@ -54,4 +54,6 @@ public:
 	Color grid_color{ 1,1,1 };
 	float grid_spacing = 1.f;
 	int line_grid_width = 1;
+
+	bool render_skybox = true;
 };
