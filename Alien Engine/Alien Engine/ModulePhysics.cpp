@@ -12,9 +12,6 @@
 #include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
-
-#include "ModuleInput.h"
-
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
 	gravity = float3(0.f, -9.8f, 0.f);
@@ -77,9 +74,14 @@ bool ModulePhysics::Init()
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
+	gravity = float3(0.f, -9.8f, 0.f);
 	world->setGravity(ToBtVector3(gravity));
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
+
+
+	btOverlapFilterCallback* filterCallback = new MyOwnFilterCallback();
+	world->getPairCache()->setOverlapFilterCallback(filterCallback);
 
 	return ret;
 }
@@ -87,6 +89,22 @@ bool ModulePhysics::Init()
 bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
+
+	layers.push_back("Default");
+	layers.push_back("Player");
+	layers.push_back("Arrow");
+	layers.push_back("Wall");
+	layers.push_back("Ground");
+
+
+	int size = layers.size();
+	layers_table = new bool* [size];
+	for (int i = 0; i < size; i++)
+		layers_table[i] = new bool[size];
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			layers_table[i][j] = true;
 
 	return true;
 }
@@ -104,14 +122,13 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 update_status ModulePhysics::PostUpdate(float dt)
 {
-	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		SphereCast(float3(0.f, 0.f, 0.f), 0.5f);
-		RayCastAll(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
-		RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_SPACE) == KEY_DOWN)
+	//{
+	//	SphereCast(float3(0.f, 0.f, 0.f), 0.5f);
+	//	RayCastAll(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+	//	RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
 
-	}
-
+	//}
 	return UPDATE_CONTINUE;
 }
 
@@ -119,6 +136,11 @@ bool ModulePhysics::CleanUp()
 {
 
 	return true;
+}
+
+bool ModulePhysics::CanCollide(int layer_0, int layer_1)
+{
+	return (layer_0 < layer_1)  ? App->physics->layers_table[layer_0][layer_1] : App->physics->layers_table[layer_1][layer_0];
 }
 
 std::vector<ComponentCollider*> ModulePhysics::RayCastAll(math::Ray ray)
@@ -379,4 +401,25 @@ btScalar CastResult::addSingleResult(btManifoldPoint& cp, const btCollisionObjec
 	}
 
 	return 1;
+}
+
+bool MyOwnFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const
+{
+	btCollisionObject* obj_0 = (btCollisionObject*)proxy0->m_clientObject;
+	btCollisionObject* obj_1 = (btCollisionObject*)proxy1->m_clientObject;
+	ComponentCollider* coll_0 = (ComponentCollider * )obj_0->getUserPointer();
+	ComponentCollider* coll_1 = (ComponentCollider * )obj_1->getUserPointer();
+
+	if (coll_0 == nullptr || coll_1 == nullptr) 
+		return true;
+	
+	//add some additional logic here that modified 'collides'
+	if (ModulePhysics::CanCollide(coll_0->layer, coll_1->layer))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

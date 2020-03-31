@@ -339,6 +339,29 @@ bool ComponentCollider::DrawInspector()
 	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
+
+		ImGui::Title("Layer");
+
+		if (ImGui::BeginComboEx(std::string("##viewport_modes").c_str(), std::string(" " + App->physics->layers.at(layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
+		{
+			for (int n = 0; n < App->physics->layers.size(); ++n)
+			{
+				bool is_selected = (layer == n);
+
+				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
+				{
+					layer = n;
+				}
+
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.05f)) { SetCenter(current_center); }
 
 		DrawSpecificInspector();
@@ -354,6 +377,7 @@ bool ComponentCollider::DrawInspector()
 		ImGui::Title("Linear Fric.", 2);	if (ImGui::DragFloat("##friction", &current_friction, 0.01f, 0.00f, FLT_MAX)) { SetFriction(current_friction); }
 		ImGui::Title("Angular Fric.", 2);	if (ImGui::DragFloat("##angular_friction", &current_angular_friction, 0.01f, 0.00f, FLT_MAX)) { SetAngularFriction(current_angular_friction); }
 		ImGui::Spacing();
+
 	}
 
 	ImGui::PopID();

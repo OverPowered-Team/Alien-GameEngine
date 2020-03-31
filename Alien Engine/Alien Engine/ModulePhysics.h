@@ -22,7 +22,6 @@ enum class ForceMode : uint
 };
 
 
-
 class ComponentCollider;
 class DebugRenderer;
 class btGhostObject;
@@ -37,6 +36,7 @@ class ModulePhysics : public Module
 	friend class ComponentPointConstraint;
 	friend class ComponentConvexHullCollider;
 	friend class PanelPhysics;
+	friend class MyOwnFilterCallback;
 
 public:
 	ModulePhysics( bool start_enabled = true);
@@ -59,8 +59,9 @@ private:
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
-
 	bool CleanUp();
+
+	static bool CanCollide(int layer_0, int layer_1);
 
 	void DrawCollider(ComponentCollider* collider);
 	void DrawConvexCollider(ComponentCollider* collider);
@@ -89,6 +90,9 @@ public:
 
 private:
 
+	std::vector<std::string> layers;
+	bool**layers_table = nullptr;
+
 	bool debug_physics = false;
 	float3 gravity = float3(0.f, -9.8f, 0.f);
 	DebugRenderer* debug_renderer = nullptr;
@@ -98,6 +102,12 @@ private:
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
 	std::list<btTypedConstraint*> constraints;
+};
+
+struct MyOwnFilterCallback : public btOverlapFilterCallback
+{
+	// return true when pairs need collision
+	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const;
 };
 
 struct CastResult : public btCollisionWorld::ContactResultCallback
