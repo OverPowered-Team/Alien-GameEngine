@@ -195,7 +195,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::PARTICLE: {
-		SetUniform4f("diffuse_color", inputs.particleShaderProperties.color);
+		SetUniformFloat3("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
 		break; }
 
 	default:

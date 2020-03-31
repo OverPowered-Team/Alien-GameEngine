@@ -16,6 +16,8 @@ ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
 {
 	// GameObject Components 
 	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
+	if(transform)
+		last_scale = transform->GetGlobalScale();
 
 	std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
 
@@ -170,29 +172,31 @@ void ComponentCollider::SetScale(float3 scale)
 
 void ComponentCollider::Update()
 {
-	//btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalMatrix().RotatePart()); // New Method
-	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()); // Old Method
+	float3 pos = transform->GetGlobalMatrix().MulPos(GetWorldCenter());
+	float3x3 rot = transform->GetGlobalMatrix().RotatePart();
+	rot.SetCol(0,(float3)rot.Col(0) / rot.Col(0).Length());
+	rot.SetCol(1,(float3)rot.Col(1) / rot.Col(1).Length());
+	rot.SetCol(2,(float3)rot.Col(2) / rot.Col(2).Length());
+	
+	btTransform go_bullet_transform = ToBtTransform(GetWorldCenter(), rot ); // New Method
+	//btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()); // Old Method
 
 	if (internal_collider == false)
 	{
-		static float3 last_scale = transform->GetGlobalScale();
 		float3 current_scale = transform->GetGlobalScale();
-
-		// Old Method
-
 		if (!last_scale.Equals(current_scale))
 		{
 			last_scale = current_scale;
 			SetScale(last_scale);
 		}
 		
-
 		if (rigid_body == nullptr)
 		{
 			aux_body->setWorldTransform(go_bullet_transform);
 		}
 	}
 
+	
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(DISABLE_DEACTIVATION);
 
@@ -335,6 +339,29 @@ bool ComponentCollider::DrawInspector()
 	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Spacing();
+
+		ImGui::Title("Layer");
+
+		if (ImGui::BeginComboEx(std::string("##viewport_modes").c_str(), std::string(" " + App->physics->layers.at(layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
+		{
+			for (int n = 0; n < App->physics->layers.size(); ++n)
+			{
+				bool is_selected = (layer == n);
+
+				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
+				{
+					layer = n;
+				}
+
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.05f)) { SetCenter(current_center); }
 
 		DrawSpecificInspector();
@@ -350,6 +377,7 @@ bool ComponentCollider::DrawInspector()
 		ImGui::Title("Linear Fric.", 2);	if (ImGui::DragFloat("##friction", &current_friction, 0.01f, 0.00f, FLT_MAX)) { SetFriction(current_friction); }
 		ImGui::Title("Angular Fric.", 2);	if (ImGui::DragFloat("##angular_friction", &current_angular_friction, 0.01f, 0.00f, FLT_MAX)) { SetAngularFriction(current_angular_friction); }
 		ImGui::Spacing();
+
 	}
 
 	ImGui::PopID();
@@ -402,7 +430,7 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 
 float3 ComponentCollider::GetWorldCenter()
 {
-	return transform->GetGlobalMatrix().RotatePart().Mul(center);
+	return transform->GetGlobalMatrix().MulPos(center);
 }
 
 void ComponentCollider::AddToWorld()

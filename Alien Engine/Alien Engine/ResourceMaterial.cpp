@@ -289,6 +289,7 @@ void ResourceMaterial::ApplyMaterial()
 
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shaderInputs.particleShaderProperties.color = float3(color.x, color.y, color.z);
 	used_shader->UpdateUniforms(shaderInputs);
 
 }
@@ -514,7 +515,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		ImGui::SameLine(120,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.start_color.ptr(), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Albedo",color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
 	default:

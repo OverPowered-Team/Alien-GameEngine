@@ -193,6 +193,8 @@ public:
 
 	void ReAttachUIScriptEvents();
 
+	void ResetUIFocus();
+
 private:
 
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
@@ -220,6 +222,8 @@ public:
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
 
 	std::vector<std::function<void()>> functions_to_call;
+
+	bool is_saving_prefab = false;
 
 	// Frustum
 	bool draw_frustum = true;
@@ -306,6 +310,8 @@ public:
 	std::list<SpotLightProperties*> spot_light_properites;
 
 	std::vector<std::pair<u64, GameObject**>> to_add;
+
+	std::string sceneNameToChange;
 
 private:
 	// root

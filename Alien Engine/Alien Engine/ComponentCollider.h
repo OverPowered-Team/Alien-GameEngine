@@ -27,6 +27,8 @@ class __declspec(dllexport) ComponentCollider : public Component
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 
+	friend struct MyOwnFilterCallback;
+
 public:
 
 	ComponentCollider(GameObject* go);
@@ -80,7 +82,7 @@ protected:
 
 	float3 center = float3::zero();
 	float3 final_center = float3::zero();
-
+	float3 last_scale = float3::zero();
 	bool is_trigger = false;
 	float bouncing = 0.f;
 	float friction = 0.f;
@@ -101,4 +103,5 @@ protected:
 	bool first_frame = false;
 	bool internal_collider = false;
 	bool added_to_world = false;
+	int  layer = 0;
 };
