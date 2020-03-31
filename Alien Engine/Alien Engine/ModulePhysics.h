@@ -26,6 +26,7 @@ enum class ForceMode : uint
 class ComponentCollider;
 class DebugRenderer;
 class btGhostObject;
+struct CastResult;
 
 class ModulePhysics : public Module
 {
@@ -37,6 +38,7 @@ class ModulePhysics : public Module
 	friend class ComponentPointConstraint;
 	friend class ComponentConvexHullCollider;
 	friend class PanelPhysics;
+	friend class MyDispatcher;
 
 public:
 	ModulePhysics( bool start_enabled = true);
@@ -46,11 +48,10 @@ public:
 	void SetGravity(const float3 gravity);
 	const float3 GetGravity();
 
+	std::vector<ComponentCollider*> SphereCast(float3 position, float radius);
+	std::vector<ComponentCollider*> BoxCast(float3 size, float3 position, Quat rotation);
 	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
-
-	ComponentCollider* RayCastClosest(math::Ray ray);
-
-	std::vector<ComponentCollider*>  SphereCast(float3 position, float radius);
+	ComponentCollider*				RayCastClosest(math::Ray ray);
 
 private:
 
@@ -95,12 +96,21 @@ private:
 	float3 gravity = float3(0.f, -9.8f, 0.f);
 	DebugRenderer* debug_renderer = nullptr;
 	btDefaultCollisionConfiguration* collision_config = nullptr;
-	btCollisionDispatcher* dispatcher = nullptr;
+	MyDispatcher* dispatcher = nullptr;
 	btBroadphaseInterface* broad_phase = nullptr;
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
 	std::list<btTypedConstraint*> constraints;
 };
+
+class MyDispatcher : public btCollisionDispatcher
+{
+public:
+
+	MyDispatcher(btCollisionConfiguration* collisionConfiguration);
+	bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+};
+
 
 struct CastResult : public btCollisionWorld::ContactResultCallback
 {

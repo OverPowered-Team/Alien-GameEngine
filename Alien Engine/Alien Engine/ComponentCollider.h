@@ -26,7 +26,7 @@ class __declspec(dllexport) ComponentCollider : public Component
 	friend class ModulePhysics;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
-
+	friend class MyDispatcher;
 public:
 
 	ComponentCollider(GameObject* go);
