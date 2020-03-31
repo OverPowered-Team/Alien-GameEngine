@@ -207,7 +207,13 @@ update_status ModuleObjects::Update(float dt)
 	base_game_object->Update();
 	if (!functions_to_call.empty()) {
 		for (auto item = functions_to_call.begin(); item != functions_to_call.end(); ++item) {
-			(*item)();
+			try {
+				(*item)();
+			}
+			catch (...)
+			{
+				LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALL A FUNTION IN TIMELINE");
+			}	
 		}
 		functions_to_call.clear();
 	}
