@@ -2,6 +2,16 @@
 #include "Application.h"
 #include "ModulePhysics.h"
 
+void Physics::SetGravity(const float3 gravity)
+{
+	App->physics->SetGravity(gravity);
+}
+
+float3 Physics::GetGravity()
+{
+	return App->physics->GetGravity();
+}
+
 std::vector<ComponentCollider*> Physics::RayCastAll(Ray ray)
 {
 	return App->physics->RayCastAll(ray);
