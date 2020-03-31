@@ -175,29 +175,6 @@ SHADER_TEMPLATE ResourceShader::GetShaderType() const
 	return shaderType;
 }
 
-bool ResourceShader::ChangeTemplate()
-{
-	//bool ret = false;
-	//static int prev_type = (int)uniform_data.type;
-	//ImGui::Combo("Select Shader", &prev_type, "Diffuse\0Wave\0Basic Lighting\0\0");
-	//{
-	//	//change shader
-	//	if (prev_type != (int)uniform_data.type)
-	//	{
-	//		uniform_data.type = (SHADER_TEMPLATE)prev_type;
-
-	//		ret = true;
-	//	}
-	//}
-	//return ret;
-	return true;
-}
-
-void ResourceShader::HierarchyUniforms()
-{
-	
-}
-
 void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
 	switch (shaderType) {

@@ -1,0 +1,47 @@
+{
+    "Meta": {
+        "ID": "16549533976564692850",
+        "NumMeshes": 1,
+        "Name": "Barrel_style1_fbx",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/17963681244543708764.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/5487928562107152044.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0.1680406928062439,
+                0,
+                -0.05601700022816658
+            ],
+            "scale": [
+                1,
+                1,
+                1.1248250007629395
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Cylinder001",
+            "parentName": "Barrel_style1_fbx",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}

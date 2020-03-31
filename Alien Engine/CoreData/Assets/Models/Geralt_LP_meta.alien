@@ -1,0 +1,238 @@
+{
+    "Meta": {
+        "ID": "8237552059246861212",
+        "NumMeshes": 8,
+        "Name": "Geralt_LP",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 3,
+        "PathMeshes": [
+            "Library\/Meshes\/10970677741372918541.alienMesh",
+            "Library\/Meshes\/1905707017214443147.alienMesh",
+            "Library\/Meshes\/8027376311402198694.alienMesh",
+            "Library\/Meshes\/9707396366106768965.alienMesh",
+            "Library\/Meshes\/7435452849338939196.alienMesh",
+            "Library\/Meshes\/2688517423742947400.alienMesh",
+            "Library\/Meshes\/12752272066847483855.alienMesh",
+            "Library\/Meshes\/17175248091174892938.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/13665568298959282873.material",
+            "Library\/Materials\/15965785308407844271.material",
+            "Library\/Materials\/17866453304245781685.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                -2.57562255859375,
+                -14.27171516418457
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.66594260931015015,
+                0,
+                0,
+                0.74600297212600708
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Medallion",
+            "parentName": "Geralt_LP",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0.98056840896606445,
+                0,
+                0.61885833740234375
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Hair",
+            "parentName": "Geralt_LP",
+            "meshIndex": 1,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Belt hip",
+            "parentName": "Geralt_LP",
+            "meshIndex": 2,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Belt",
+            "parentName": "Geralt_LP",
+            "meshIndex": 3,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Belt2",
+            "parentName": "Geralt_LP",
+            "meshIndex": 4,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                -1.1204147338867188,
+                0.5663299560546875,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Shoulder plate",
+            "parentName": "Geralt_LP",
+            "meshIndex": 5,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Shoulder plate2",
+            "parentName": "Geralt_LP",
+            "meshIndex": 6,
+            "materialIndex": 1,
+            "numBones": 0,
+            "bonesIndex": []
+        },
+        {
+            "pos": [
+                0,
+                0,
+                -0.019511222839355469
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Body",
+            "parentName": "Geralt_LP",
+            "meshIndex": 7,
+            "materialIndex": 2,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}

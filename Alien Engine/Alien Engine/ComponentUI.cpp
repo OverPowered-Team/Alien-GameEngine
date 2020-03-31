@@ -30,6 +30,9 @@ ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	type = ComponentType::UI;
 }
 
@@ -53,6 +56,8 @@ void ComponentUI::UpdateVertex()
 
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ComponentUI::SetCanvas(ComponentCanvas* canvas_)

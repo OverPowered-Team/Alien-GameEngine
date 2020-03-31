@@ -86,6 +86,7 @@ public:
 
 	// Functionality
 	void ApplyMaterial();
+	void UnbindMaterial();
 
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
 	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
@@ -108,7 +109,7 @@ public:
 
 public:
 
-	float4 color;
+	float4 color = float4::one;
 
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];
