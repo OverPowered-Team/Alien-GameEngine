@@ -17,6 +17,7 @@
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
+	gravity = float3(0.f, -9.8f, 0.f);
 }
 
 ModulePhysics::~ModulePhysics()
@@ -38,13 +39,26 @@ ModulePhysics::~ModulePhysics()
 	delete collision_config;
 }
 
-void ModulePhysics::LoadConfig(JSONfilepack*& config)
+void ModulePhysics::SetGravity(const float3 gravity)
 {
-
+	this->gravity = gravity;
+	if (world)
+		world->setGravity(ToBtVector3(gravity));
 }
+
+const float3 ModulePhysics::GetGravity()
+{
+	return gravity;
+}
+
 void ModulePhysics::SaveConfig(JSONfilepack*& config)
 {
+	config->SetFloat3("Gravity", gravity);
+}
 
+void ModulePhysics::LoadConfig(JSONfilepack*& config)
+{
+	SetGravity(config->GetFloat3("Gravity"));
 }
 
 bool ModulePhysics::Init()
@@ -63,7 +77,7 @@ bool ModulePhysics::Init()
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
-	world->setGravity(GRAVITY);
+	world->setGravity(ToBtVector3(gravity));
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
 

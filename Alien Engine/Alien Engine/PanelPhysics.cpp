@@ -17,7 +17,20 @@ PanelPhysics::~PanelPhysics()
 void PanelPhysics::PanelLogic()
 {
 	OPTICK_EVENT();
-	ImGui::Begin(panel_name.data(), &enabled);
-	ImGui::Title("Debug All"); ImGui::Checkbox("##debug_all_physics", &App->physics->debug_physics);
+
+	ImGui::PushID(this);    
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(300, 900));
+
+	if (ImGui::Begin(panel_name.data(), &enabled))
+	{
+		float3 current_gravity = App->physics->gravity;
+
+		ImGui::Spacing();
+		ImGui::Title("Gravity");	if (ImGui::DragFloat3("##gravity", current_gravity.ptr(), 0.05f)) { App->physics->SetGravity(current_gravity); }
+		ImGui::Title("Draw All");	ImGui::Checkbox("##debug_all_physics", &App->physics->debug_physics);
+	}
+
 	ImGui::End();
+	ImGui::PopStyleVar();
+	ImGui::PopID();
 }
