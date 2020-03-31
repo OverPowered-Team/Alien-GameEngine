@@ -146,7 +146,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -199,9 +199,9 @@
                         "Enabled": true,
                         "Type": 7,
                         "Center": [
-                            0.5,
-                            0.5,
-                            0.5
+                            0,
+                            0,
+                            0
                         ],
                         "IsTrigger": false,
                         "Bouncing": 0.10000000149011612,
@@ -289,9 +289,9 @@
                         "Enabled": true,
                         "Type": 7,
                         "Center": [
-                            0.5,
-                            0.5,
-                            0.5
+                            0,
+                            0,
+                            0
                         ],
                         "IsTrigger": false,
                         "Bouncing": 0.10000000149011612,
@@ -312,7 +312,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -365,9 +365,9 @@
                         "Enabled": true,
                         "Type": 7,
                         "Center": [
-                            0.5,
-                            0.5,
-                            0.5
+                            0,
+                            0,
+                            0
                         ],
                         "IsTrigger": false,
                         "Bouncing": 0.10000000149011612,

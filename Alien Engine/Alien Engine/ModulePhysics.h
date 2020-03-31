@@ -7,9 +7,6 @@
 #include <list>
 #include <vector>
 
-// Recommended scale is 1.0f == 1 meter, no less than 0.2 objects
-#define GRAVITY btVector3(0.0f, -9.8f, 0.0f) 
-
 enum class Space
 {
 	Global,
@@ -25,10 +22,10 @@ enum class ForceMode : uint
 };
 
 
-
 class ComponentCollider;
 class DebugRenderer;
 class btGhostObject;
+struct CastResult;
 
 class ModulePhysics : public Module
 {
@@ -40,62 +37,53 @@ class ModulePhysics : public Module
 	friend class ComponentPointConstraint;
 	friend class ComponentConvexHullCollider;
 	friend class PanelPhysics;
+	friend class MyDispatcher;
 
 public:
 	ModulePhysics( bool start_enabled = true);
 
 	~ModulePhysics();
 
+	void SetGravity(const float3 gravity);
+	const float3 GetGravity();
+
+	std::vector<ComponentCollider*> SphereCast(float3 position, float radius);
+	std::vector<ComponentCollider*> BoxCast(float3 size, float3 position, Quat rotation);
 	std::vector<ComponentCollider*> RayCastAll(math::Ray ray);
-
-	ComponentCollider* RayCastClosest(math::Ray ray);
-
-	std::vector<ComponentCollider*>  SphereCast(float3 position, float radius);
+	ComponentCollider*				RayCastClosest(math::Ray ray);
 
 private:
 
 	void LoadConfig(JSONfilepack*& config);
-
 	void SaveConfig(JSONfilepack*& config);
 
 	bool Init();
-
 	bool Start();
-
 	update_status PreUpdate(float dt);
-
 	update_status PostUpdate(float dt);
-
 	bool CleanUp();
 
+	static bool CanCollide(int layer_0, int layer_1);
+
 	void DrawCollider(ComponentCollider* collider);
-
 	void DrawConvexCollider(ComponentCollider* collider);
-
 	void DrawConstraint(btTypedConstraint* constraint);
-
 	void DrawCharacterController(ComponentCharacterController* controller);
-
 	void DrawWorld();
 
 	void AddBody(btRigidBody* body);
-
 	void RemoveBody(btRigidBody* body);
 
 	void AddDetector(btGhostObject* detector);
-
 	void RemoveDetector(btGhostObject* detector);
 
 	void AddAction(btActionInterface* action);
-
 	void RemoveAction(btActionInterface* action);
 
 	void AddConstraint(btTypedConstraint* constraint, bool bodiesCollision = true);
-
 	void RemoveConstraint(btTypedConstraint* constraint);
 
 	void AddVehicle(btRaycastVehicle* vehicle);
-
 	void RemoveVehicle(btRaycastVehicle* vehicle);
 
 public:
@@ -104,15 +92,28 @@ public:
 
 private:
 
+	std::vector<std::string> layers;
+	bool**layers_table = nullptr;
+
 	bool debug_physics = false;
+	float3 gravity = float3(0.f, -9.8f, 0.f);
 	DebugRenderer* debug_renderer = nullptr;
 	btDefaultCollisionConfiguration* collision_config = nullptr;
-	btCollisionDispatcher* dispatcher = nullptr;
+	MyDispatcher* dispatcher = nullptr;
 	btBroadphaseInterface* broad_phase = nullptr;
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
 	std::list<btTypedConstraint*> constraints;
 };
+
+class MyDispatcher : public btCollisionDispatcher
+{
+public:
+
+	MyDispatcher(btCollisionConfiguration* collisionConfiguration);
+	bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+};
+
 
 struct CastResult : public btCollisionWorld::ContactResultCallback
 {
