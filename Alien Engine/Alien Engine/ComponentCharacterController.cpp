@@ -17,7 +17,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 {
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
-	transform = game_object_attached->GetComponent<ComponentTransform>();
+	transform = go->GetComponent<ComponentTransform>();
 
 	shape = new btCapsuleShape(character_radius, character_height);
 
@@ -42,7 +42,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 	detector->setCollisionShape(shape);
 	App->physics->AddDetector(detector);
 
-	collider = new ComponentCollider(game_object_attached);
+	collider = new ComponentCollider(go);
 	collider->internal_collider = true;
 	collider->detector = detector;
 
