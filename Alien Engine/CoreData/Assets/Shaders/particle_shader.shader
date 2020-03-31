@@ -44,7 +44,7 @@ void main()
 
     if(objectMaterial.hasDiffuseTexture == true)
     {
-        objectColor = vec4(texture(objectMaterial.diffuseTexture, texCoords));
+        objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords));
 
         if (objectColor.w < 0.0001)
             discard;
