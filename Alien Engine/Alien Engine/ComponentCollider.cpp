@@ -172,12 +172,7 @@ void ComponentCollider::SetScale(float3 scale)
 void ComponentCollider::Update()
 {
 	float3 pos = transform->GetGlobalMatrix().MulPos(GetWorldCenter());
-	float3x3 rot = transform->GetGlobalMatrix().RotatePart();
-	rot.SetCol(0,(float3)rot.Col(0) / rot.Col(0).Length());
-	rot.SetCol(1,(float3)rot.Col(1) / rot.Col(1).Length());
-	rot.SetCol(2,(float3)rot.Col(2) / rot.Col(2).Length());
-	
-	btTransform go_bullet_transform = ToBtTransform(GetWorldCenter(), rot ); // New Method
+	btTransform go_bullet_transform = ToBtTransform(GetWorldCenter(), transform->GetGlobalMatrix().RotatePart().RemoveScale2()); // New Method
 	//btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()); // Old Method
 
 	if (internal_collider == false)
