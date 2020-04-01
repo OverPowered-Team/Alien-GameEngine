@@ -24,7 +24,6 @@ public:
 ALIEN_FACTORY ReverbZone* CreateReverbZone() {
 	ReverbZone* alien = new ReverbZone();
 	// To show in inspector here
-	SHOW_IN_INSPECTOR_AS_STRING(alien->zone_name);
 	SHOW_IN_INSPECTOR_AS_SLIDER_FLOAT(alien->strength, 0.f, 1.f);
 
 	return alien;
