@@ -9,7 +9,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -53,7 +53,7 @@
                         "isFovHori": 0,
                         "ID": "3049832112587989125",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": false,
+                        "IsSelectedCamera": true,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -61,6 +61,9 @@
                             0.85000002384185791,
                             1
                         ],
+                        "Fog": true,
+                        "Density": 0.037999998778104782,
+                        "Gradient": 1.3400000333786011,
                         "Skybox_PositiveX": "Library\/Textures\/575523041464209442.dds",
                         "Skybox_NegativeX": "Library\/Textures\/2272049821688510999.dds",
                         "Skybox_PositiveY": "Library\/Textures\/8243941029542624066.dds",
@@ -64308,7 +64311,7 @@
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -64354,9 +64357,9 @@
                             ],
                             "Global": true,
                             "Velocity": [
-                                -0.71232450008392334,
-                                0.34322717785835266,
-                                -0.61220002174377441
+                                -0.65674000978469849,
+                                0.3325214684009552,
+                                -0.67684715986251831
                             ],
                             "Force": [
                                 0,
@@ -64384,7 +64387,7 @@
                                 0
                             ],
                             "ChangeOverLifeTime": false,
-                            "RotateOverLifeTime": false
+                            "RotateOverLifeTime": true
                         },
                         "End": {
                             "Color": [
@@ -64427,7 +64430,7 @@
                                 10
                             ],
                             "MaxLife": 10,
-                            "CurrentLife": 6.5979981422424316,
+                            "CurrentLife": 8.6179990768432617,
                             "SpawnRate": 20,
                             "Delay": 2,
                             "Loop": true,

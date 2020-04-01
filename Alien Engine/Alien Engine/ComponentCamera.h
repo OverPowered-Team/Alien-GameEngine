@@ -55,6 +55,17 @@ public:
 	void SetCameraPosition(const float3& position);
 	float3 GetCameraPosition() const;
 
+	void EnableFog();
+	void DisableFog();
+
+	void SetFogDensity(const float& density);
+	void SetFogGradient(const float& gradient);
+	float GetFogDensity() const;
+	float GetFogGradient() const;
+
+	void SetBackgroundColor(const float3& color);
+	float3 GetBackgroundColor() const;
+
 	void DrawSkybox();
 
 private:
