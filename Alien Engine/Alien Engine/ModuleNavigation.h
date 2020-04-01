@@ -2,11 +2,33 @@
 #define _MODULE_NAVIGATION_H__
 
 #include "Module.h"
-//#include <list>
-
-
+#include "Recast.h"
+#include "RecastDump.h"
 
 class GameObject;
+
+class BuildContext : public rcContext
+{
+	j1PerfTimer timers[RC_MAX_TIMERS];
+	
+	static const int MAX_MESSAGES = 1000;
+	const char* messages[MAX_MESSAGES];
+	int messageCount;
+	static const int TEXT_POOL_SIZE = 8000;
+	char textPool[TEXT_POOL_SIZE];
+	int textPoolSize;
+
+public:
+	BuildContext();
+
+	const char* getLogText(const int i) const;
+	int getLogCount() const;
+
+protected:
+	virtual void doLog(const rcLogCategory category, const char* msg, const int len);
+	virtual void doStartTimer(const rcTimerLabel label);
+	virtual int doGetAccumulatedTime(const rcTimerLabel label) const;
+};
 
 class ModuleNavigation : public Module
 {
@@ -28,14 +50,47 @@ public:
 	bool CleanUp();
 
 public:
-	bool Bake(std::list<GameObject*> go_meshes);
+	bool Bake();
+
+private:
+	void resetCommonSettings();
 
 public:
 	bool show_navmesh = true;
 	bool show_heightmesh = false;
 	
 private:
-	std::list<uint64_t> go_meshes_id;
+
+	BuildContext ctx;
+	bool keepInterResults = true;
+
+	unsigned char* triareas = nullptr;
+	rcHeightfield* solid = nullptr;
+	rcCompactHeightfield* chf = nullptr;
+	rcContourSet* cset = nullptr;
+	rcPolyMesh* pmesh = nullptr;
+	rcPolyMeshDetail* dmesh = nullptr;
+
+	float cellSize;
+	float cellHeight;
+	float agentHeight;
+	float agentRadius;
+	float agentMaxClimb;
+	float agentMaxSlope;
+	float regionMinSize;
+	float regionMergeSize;
+	float edgeMaxLen;
+	float edgeMaxError;
+	float vertsPerPoly;
+	float detailSampleDist;
+	float detailSampleMaxError;
+	int partitionType;
+
+	bool filterLowHangingObstacles;
+	bool filterLedgeSpans;
+	bool filterWalkableLowHeightSpans;
+
+
 };
 
 

@@ -3,6 +3,7 @@
 //#include "ModuleNavigation.h"
 #include "Optick/include/optick.h"
 #include "ModuleObjects.h"
+#include "ModuleNavigation.h"
 
 
 PanelNavigation::PanelNavigation(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) :
@@ -74,7 +75,7 @@ void PanelNavigation::PanelLogic()
 
 	
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
-		LOG_ENGINE("TODO: send mesh gos list to Module Navigation");
+		App->nav->Bake();
 	}
 
 	if (enabled != true)

@@ -35,6 +35,7 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ResourceModel;
 	friend class PanelCreateObject;
 	friend class PanelRender;
+	friend class ModuleNavigation;
 
 public:
 	ComponentMesh(GameObject* attach);
