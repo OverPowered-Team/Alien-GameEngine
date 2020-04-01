@@ -202,9 +202,13 @@ void ComponentText::Draw(bool isGame)
 	factor_y = App->window->height / canvas->height;
 	#endif
 
-	int current_size = 0;
-	for (c = text.begin(); c != text.end(); c++) {
-		Character ch = font->fontData.charactersMap[*c];
+	int current_line = 0;
+	// First text pos and second line size
+	std::vector<int> lines_current_size;
+	std::vector<int> current_line_pos;
+
+	for (int i = 0; i < text.size(); ++i) {
+		Character ch = font->fontData.charactersMap[text[i]];
 		static float xpos = 0;
 		static float ypos = 0;
 		static float w = 0;
@@ -229,27 +233,48 @@ void ComponentText::Draw(bool isGame)
 			}
 			break;
 		case MIDDLE:
-			if(c == text.begin())
+			if (i == 0)
+			{
+				int aux = 0;
+				int current_size = 0;
 				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
+				{
 					current_size += font->fontData.charactersMap[*aux_c].advance;
+					if (current_size > width)
+					{
+						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance);
+						current_line_pos.push_back(aux);
+						current_size = 0;
+					}
+					aux++;
+				}
+				lines_current_size.push_back(current_size);
+				current_line_pos.push_back(aux);
+			}
+
+			if (i == current_line_pos[current_line])
+			{
+				current_line++;
+				pos_x = 0;
+			}
 
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
-				xpos = x + pos_x + (ch.bearing.x + (width - current_size) * 0.5) * scale.x * factor_x;
-				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+				xpos = x + pos_x + (ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
+				ypos = y - pos_y - (ch.size.y - ch.bearing.y + (font->fontData.charactersMap['l'].size.y * current_line * interlineal)) * scale.y * factor_y;
 				w = ch.size.x * scale.x * factor_x;
 				h = ch.size.y * scale.y * factor_y;
 			}
 			else
 			{
-				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - current_size) * 0.5) * scale.x;
-				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
+				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
+				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y + (font->fontData.charactersMap['l'].size.y * current_line * interlineal)) * scale.y;
 				w = ch.size.x * scale.x;
 				h = ch.size.y * scale.y;
 			}
 			break;
 		case RIGHT:
-			if (c == text.begin())
+			/*if (c == text.begin())
 				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
 					current_size += font->fontData.charactersMap[*aux_c].advance;
 
@@ -266,7 +291,7 @@ void ComponentText::Draw(bool isGame)
 				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
 				w = ch.size.x * scale.x;
 				h = ch.size.y * scale.y;
-			}
+			}*/
 			break;
 		}
 		
@@ -318,8 +343,16 @@ void ComponentText::Draw(bool isGame)
 			glEnd();
 		}
 #endif
-
 		if (isGame && App->renderer3D->actual_game_camera != nullptr)
+		{
+			pos_x += ch.advance * scale.x * factor_x;
+		}
+		else
+		{
+			pos_x += ch.advance * scale.x;
+		}
+			
+		/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
 		{
 			line = pos_x += ch.advance * scale.x * factor_x;
 			if (line > width * scale.x * factor_x)
@@ -339,14 +372,14 @@ void ComponentText::Draw(bool isGame)
 			if (line > width * scale.x)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal ;
 				else
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
 				current_size = 0;
 			}
-		}
+		}*/
 	}
 	
 	font->text_shader->Unbind();
