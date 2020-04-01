@@ -14,6 +14,7 @@
 #include "..\..\..\Alien Engine\ComponentAnimator.h"
 #include "..\..\..\Alien Engine\ParticleSystem.h"
 #include "..\..\..\Alien Engine\ParticleEmitter.h"
+#include "..\..\..\Alien Engine\ComponentDeformableMesh.h"
 #include "..\..\..\Alien Engine\ComponentRigidBody.h"
 #include "..\..\..\Alien Engine\ComponentCharacterController.h"
 #include "..\..\..\Alien Engine\ComponentCollider.h"
@@ -25,6 +26,7 @@
 #include "..\..\..\Alien Engine\ComponentLightSpot.h"
 #include "..\..\..\Alien Engine\ComponentUI.h"
 #include "..\..\..\Alien Engine\ComponentButton.h"
+#include "..\..\..\Alien Engine\ComponentText.h"
 #include "..\..\..\Alien Engine\ComponentImage.h"
 /*-----------------COMPONENTS-------------------*/
 

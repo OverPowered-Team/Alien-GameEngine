@@ -1,5 +1,5 @@
 #include "TestEvents.h"
-
+#include "..\..\ComponentText.h"
 TestEvents::TestEvents() : Alien()
 {
 }
@@ -10,8 +10,8 @@ TestEvents::~TestEvents()
 
 void TestEvents::Start()
 {
-	LOG("%s", myString.data());
-	LOG("%s", testChar);
+	ComponentText* cText = (ComponentText*)GetComponent(ComponentType::UI_TEXT);
+	cText->SetText("AAAAAAAAAAAAAAAAAAAAA");
 }
 
 void TestEvents::Update()
