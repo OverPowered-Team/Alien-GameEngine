@@ -1090,6 +1090,12 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 			base_game_object->ID = 0;
 			base_game_object->is_static = true;
 
+			GameObject* scene_root = new GameObject();
+			scene_root->ID = App->resources->GetRandomID();
+			scene_root->is_static = true;
+			scene_root->SetName(name);
+			base_game_object->children.push_back(scene_root);
+
 			if (Time::IsInGameState()) {
 				CleanUpScriptsOnStop();
 			}
@@ -1100,11 +1106,11 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 			JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
 
 			if (game_objects != nullptr) {
-				std::vector<std::tuple<uint, u64, uint>> objects_to_create;
 				std::vector<GameObject*> objects_created;
 
 				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 					GameObject* obj = new GameObject(true);
+					obj->scene_root = scene_root;
 					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
 					if (parentID != 0) {
 						std::vector<GameObject*>::iterator objects = objects_created.begin();
@@ -1116,7 +1122,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 						}
 					}
 					else {
-						obj->LoadObject(game_objects, base_game_object);
+						obj->LoadObject(game_objects, scene_root);
 					}
 					objects_created.push_back(obj);
 					game_objects->GetAnotherNode();
