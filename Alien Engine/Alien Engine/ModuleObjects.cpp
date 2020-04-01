@@ -30,6 +30,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
 #include "ModulePhysics.h"
+#include "ModuleNavigation.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
@@ -39,6 +40,7 @@
 #include "ModuleRenderer3D.h"
 #include "ComponentScript.h"
 #include "PanelHierarchy.h"
+#include "PanelNavigation.h"
 #include "PanelAnimTimeline.h"
 #include "StaticInput.h"
 #include "Gizmos.h"
@@ -237,6 +239,14 @@ update_status ModuleObjects::PostUpdate(float dt)
 			{
 				App->physics->DrawWorld();
 			}
+
+			// debug draw navigation meshes ---------------
+			if(App->ui->panel_navigation->panel_nav_rendered && App->nav->show_navmesh)
+				App->nav->DrawPolyMesh();
+			if (App->ui->panel_navigation->panel_nav_rendered && App->nav->show_heightmesh)
+				App->nav->DrawHeightMesh();
+
+			// --------------------------------------------
 		}
 
 		if (base_game_object->HasChildren()) {

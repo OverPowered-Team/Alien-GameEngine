@@ -14,7 +14,7 @@
 #include "RecastDump.h"
 //#include "DetourNavMesh.h"
 //#include "DetourNavMeshBuilder.h"
-//#include "DetourDebugDraw.h"
+#include "DetourDebugDraw.h"
 
 
 ModuleNavigation::ModuleNavigation(bool start_enabled) : Module(start_enabled)
@@ -82,6 +82,23 @@ bool ModuleNavigation::CleanUp()
 	return true;
 }
 // -----------------------------------------------------------
+// TODO: make this debug draw functions in one with enum 
+void ModuleNavigation::DrawPolyMesh()
+{
+	if (pmesh)
+	{
+		duDebugDrawPolyMesh(&dd, *pmesh);
+		//duDebugDrawPolyMeshDetail(&dd, *dmesh);
+	}
+}
+
+void ModuleNavigation::DrawHeightMesh()
+{
+	if (solid)
+	{
+		duDebugDrawHeightfieldSolid(&dd, *solid);
+	}
+}
 
 bool ModuleNavigation::Bake()
 {
@@ -387,3 +404,100 @@ int BuildContext::getLogCount() const
 {
 	return messageCount;
 }
+
+// DEBUG DRAW IMPLEMENTATION -------------------------------------------------------------------
+
+void DebugDrawGL::depthMask(bool state)
+{
+	glDepthMask(state ? GL_TRUE : GL_FALSE);
+}
+
+void DebugDrawGL::texture(bool state)
+{
+	/*if (state)
+	{
+		glEnable(GL_TEXTURE_2D);
+		g_tex.bind();
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+	}*/
+}
+
+void DebugDrawGL::begin(duDebugDrawPrimitives prim, float size)
+{
+	switch (prim)
+	{
+	case DU_DRAW_POINTS:
+		glPointSize(size);
+		glBegin(GL_POINTS);
+		break;
+	case DU_DRAW_LINES:
+		glLineWidth(size);
+		glBegin(GL_LINES);
+		break;
+	case DU_DRAW_TRIS:
+		glBegin(GL_TRIANGLES);
+		break;
+	case DU_DRAW_QUADS:
+		glBegin(GL_QUADS);
+		break;
+	};
+}
+
+void DebugDrawGL::vertex(const float* pos, unsigned int color)
+{
+	glColor4ubv((GLubyte*)&color);
+	glVertex3fv(pos);
+}
+
+void DebugDrawGL::vertex(const float x, const float y, const float z, unsigned int color)
+{
+	glColor4ubv((GLubyte*)&color);
+	glVertex3f(x, y, z);
+}
+
+void DebugDrawGL::vertex(const float* pos, unsigned int color, const float* uv)
+{
+	glColor4ubv((GLubyte*)&color);
+	glTexCoord2fv(uv);
+	glVertex3fv(pos);
+}
+
+void DebugDrawGL::vertex(const float x, const float y, const float z, unsigned int color, const float u, const float v)
+{
+	glColor4ubv((GLubyte*)&color);
+	glTexCoord2f(u, v);
+	glVertex3f(x, y, z);
+}
+
+void DebugDrawGL::end()
+{
+	glEnd();
+	glLineWidth(1.0f);
+	glPointSize(1.0f);
+}
+
+unsigned int DebugDrawGL::areaToCol(unsigned int area)
+{
+	switch (area)
+	{
+		// Ground (0) : light blue
+	case SAMPLE_POLYAREA_GROUND: return duRGBA(0, 192, 255, 255);
+		// Water : blue
+	case SAMPLE_POLYAREA_WATER: return duRGBA(0, 0, 255, 255);
+		// Road : brown
+	case SAMPLE_POLYAREA_ROAD: return duRGBA(50, 20, 12, 255);
+		// Door : cyan
+	case SAMPLE_POLYAREA_DOOR: return duRGBA(0, 255, 255, 255);
+		// Grass : green
+	case SAMPLE_POLYAREA_GRASS: return duRGBA(0, 255, 0, 255);
+		// Jump : yellow
+	case SAMPLE_POLYAREA_JUMP: return duRGBA(255, 255, 0, 255);
+		// Unexpected : red
+	default: return duRGBA(255, 0, 0, 255);
+	}
+}
+
+// ---------------------------------------------------------------------------------------------

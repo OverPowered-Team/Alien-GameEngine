@@ -4,8 +4,19 @@
 #include "Module.h"
 #include "Recast.h"
 #include "RecastDump.h"
+#include "DebugDraw.h"
 
 class GameObject;
+
+enum PolyAreas
+{
+	SAMPLE_POLYAREA_GROUND,
+	SAMPLE_POLYAREA_WATER,
+	SAMPLE_POLYAREA_ROAD,
+	SAMPLE_POLYAREA_DOOR,
+	SAMPLE_POLYAREA_GRASS,
+	SAMPLE_POLYAREA_JUMP,
+};
 
 class BuildContext : public rcContext
 {
@@ -30,6 +41,21 @@ protected:
 	virtual int doGetAccumulatedTime(const rcTimerLabel label) const;
 };
 
+class DebugDrawGL : public duDebugDraw
+{
+public:
+	virtual void depthMask(bool state);
+	virtual void texture(bool state);
+	virtual void begin(duDebugDrawPrimitives prim, float size = 1.0f);
+	virtual void vertex(const float* pos, unsigned int color);
+	virtual void vertex(const float x, const float y, const float z, unsigned int color);
+	virtual void vertex(const float* pos, unsigned int color, const float* uv);
+	virtual void vertex(const float x, const float y, const float z, unsigned int color, const float u, const float v);
+	virtual void end();
+
+	virtual unsigned int areaToCol(unsigned int area);
+};
+
 class ModuleNavigation : public Module
 {
 	friend class ModuleObjects;
@@ -51,6 +77,8 @@ public:
 
 public:
 	bool Bake();
+	void DrawPolyMesh();
+	void DrawHeightMesh();
 
 private:
 	void resetCommonSettings();
@@ -62,6 +90,7 @@ public:
 private:
 
 	BuildContext ctx;
+	DebugDrawGL dd;
 	bool keepInterResults = true;
 
 	unsigned char* triareas = nullptr;
@@ -92,6 +121,8 @@ private:
 
 
 };
+
+
 
 
 #endif // !_MODULE_NAVIGATION_H__
