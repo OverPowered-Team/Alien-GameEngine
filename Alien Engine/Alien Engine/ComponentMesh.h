@@ -49,6 +49,8 @@ protected:
 	virtual void DrawMesh();
 	virtual void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera);
 
+	void SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera);
+
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();

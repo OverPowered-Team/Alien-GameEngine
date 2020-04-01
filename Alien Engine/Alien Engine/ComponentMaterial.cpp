@@ -322,6 +322,8 @@ void ComponentMaterial::ShowShaderTextEditor()
 
 				// Save text library folder
 				App->file_system->Save(material->used_shader->GetLibraryPath(), textToSave.c_str(), textToSave.size());
+				App->file_system->Save(material->shadow_shader->GetLibraryPath(), textToSave.c_str(), textToSave.size());
+
 			}
 
 			ImGui::EndMenu();

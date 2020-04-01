@@ -115,6 +115,8 @@ void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCa
 {
 	ComponentMesh::SetUniform(material, camera);
 	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+	material->shadow_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+
 }
 
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)

@@ -698,7 +698,7 @@ void ModuleResources::ReadAllMetaData()
 	directories.clear();
 	default_shader = GetShaderByName("default_shader");
 	default_particle_shader = GetShaderByName("particle_shader");
-
+	shadow_shader = GetShaderByName("shadow_shader");
 	skybox_shader = GetShaderByName("skybox_shader");
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);

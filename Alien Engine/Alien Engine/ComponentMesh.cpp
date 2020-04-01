@@ -66,21 +66,53 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	ResourceMaterial* material = mat->material;
 
+
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	// -------------------------- Actual Drawing -------------------------- 
-	material->ApplyMaterial();
+	//Shadows------------------------------
+	if (material->recive_shadow)
+	{
+		//material->ApplyMaterial();
+		//glBindVertexArray(mesh->vao);
 
-	glBindVertexArray(mesh->vao);
+		//// Uniforms --------------
+		//glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
 
-	// Uniforms --------------
-	SetUniform(material, camera);
+		//// --------------------------------------------------------------------- 
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+		//glBindVertexArray(0);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		//material->used_shader->Unbind();
 
-	// --------------------------------------------------------------------- 
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		material->ApplyShadows();
+		glBindVertexArray(mesh->vao);
 
+		SetUniformShadow(material, camera);
+
+		// Uniforms --------------
+		glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+		// --------------------------------------------------------------------- 
+	}
+	else
+	{
+		// -------------------------- Actual Drawing -------------------------- 
+		material->ApplyMaterial();
+
+		glBindVertexArray(mesh->vao);
+
+		// Uniforms --------------
+		SetUniform(material, camera);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+
+		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
+
+		// --------------------------------------------------------------------- 
+
+	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -88,6 +120,8 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
+
 }
 
 void ComponentMesh::DrawOutLine()
@@ -174,8 +208,17 @@ void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCam
 	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 	resource_material->used_shader->SetUniform1i("animate", animate);
+
 }
 
+void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	//resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->shadow_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	//resource_material->shadow_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	//resource_material->shadow_shader->SetUniform1i("animate", animate);
+}
 
 
 void ComponentMesh::DrawVertexNormals()

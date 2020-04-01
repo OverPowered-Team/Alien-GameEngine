@@ -41,6 +41,7 @@ public:
 
 	float* GetViewMatrix() const;
 	float4x4 GetViewMatrix4x4() const; 
+	void SetViewMatrix4x4(const float4x4& mat);
 
 	void SetVerticalFov(const float& vertical_fov);
 	float GetVerticalFov() const;

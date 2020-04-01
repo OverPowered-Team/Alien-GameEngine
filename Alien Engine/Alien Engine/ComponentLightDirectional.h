@@ -13,6 +13,9 @@ struct __declspec(dllexport) DirLightProperties
 	float3 ambient = float3::zero();
 	float3 diffuse = float3::one();
 	float3 specular = float3::one();
+
+	uint depthMap = 0;
+	uint depthMapFBO;
 };
 
 class __declspec(dllexport) ComponentLightDirectional : public Component {
@@ -22,6 +25,7 @@ public:
 	ComponentLightDirectional(GameObject* attach);
 	virtual ~ComponentLightDirectional();
 
+	void PostUpdate();
 private:
 	void LightLogic();
 

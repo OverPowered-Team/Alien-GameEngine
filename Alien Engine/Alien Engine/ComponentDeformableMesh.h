@@ -36,6 +36,5 @@ private:
 	u64 rootID = 0;
 
 	math::float4x4* bones_matrix = nullptr;
-	ComponentMaterial* material = nullptr;
-	
+	ComponentMaterial* material = nullptr;	
 };

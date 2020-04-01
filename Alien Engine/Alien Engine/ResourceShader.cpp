@@ -13,6 +13,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "Viewport.h"
 
 ResourceShader::ResourceShader()
 {
@@ -157,6 +158,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
+	else if (std::strcmp(name.c_str(), "shadow_shader") == 0)
+		shaderType = SHADER_TEMPLATE::SHADOW;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -218,6 +221,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("diffuse_color", inputs.particleShaderProperties.color);
+		break; }
+	case SHADER_TEMPLATE::SHADOW: {
+
 		break; }
 
 	default:
@@ -327,9 +333,10 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	tmp_name.append("[%i]");
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
+
 		char cname[128];
 		sprintf_s(cname, tmp_name.c_str(), i);
-		
+
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
@@ -339,6 +346,8 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 		std::string variablesLocation = std::string(cname).append(".dirLightProperties");
 		SetUniformFloat3v(variablesLocation, variablesVec3, 5);
+		
+		//CreateDepthMap(*iter);
 
 		++i;
 	}
@@ -586,4 +595,83 @@ void ResourceShader::CreateShaderDoc(const int& type, const char* name)
 		file.close();
 	}
 	App->file_system->Save(file_output.data(), file_str.data(), file_str.size());
+}
+
+void ResourceShader::CreateDepthMap(DirLightProperties* light)
+{
+
+}
+
+void ResourceShader::DrawShadows()
+{
+	// 1. first render to depth map
+	int i = 0;
+	std::string tmp_name("dir_light");
+	tmp_name.append("[%i]");
+
+	for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, (*iter)->depthMapFBO);
+
+		glActiveTexture(GL_TEXTURE3);
+
+		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
+		SetUniform1i("depthMap", (*iter)->depthMap);
+
+		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
+
+		float3 cameraPos = current_camera->GetCameraPosition();
+		float3 cameraViewDir = current_camera->frustum.front;
+
+		current_camera->SetCameraPosition((*iter)->position);
+		current_camera->Look((*iter)->direction);
+
+		float4x4 lightProjection = current_camera->GetProjectionMatrix4f4();
+		float4x4 lightView = current_camera->GetViewMatrix4x4();
+		float4x4 lightSpaceMatrix = lightProjection * lightView;
+		SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
+
+		current_camera->SetCameraPosition(cameraPos);
+		current_camera->Look(cameraViewDir);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+		/*ComponentCamera * current_camera = App->objects->current_viewport->GetCamera();
+		float4x4 lightProjection = current_camera->GetProjectionMatrix4f4();
+		float4x4 lightView = current_camera->GetViewMatrix4x4();
+		float4x4 lightSpaceMatrix = lightProjection * lightView;
+
+		SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);*/
+		/*char cname[128];
+		sprintf_s(cname, tmp_name.c_str(), i);*/
+
+		// All uniforms
+		//std::string cintensity = std::string(cname).append(".intensity");
+		//SetUniform1f(cintensity, (*iter)->intensity);
+
+		//// Variables Array 
+		//float3 variablesVec3[5] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular, (*iter)->direction };
+
+		//std::string variablesLocation = std::string(cname).append(".dirLightProperties");
+		//SetUniformFloat3v(variablesLocation, variablesVec3, 5);
+
+		////change
+		//float2 size = App->objects->current_viewport->GetSize();
+		//ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
+
+		//float3 camera_position = current_camera->GetCameraPosition();
+		//float3 camera_direction = current_camera->frustum.front;
+
+		//current_camera->SetCameraPosition((*iter)->position);
+		//current_camera->Look((*iter)->direction);
+
+		//SetUniformMat4f("lightSpaceMatrix", current_camera->GetViewMatrix4x4());
+
+
+		//current_camera->SetCameraPosition(camera_position);
+		//current_camera->Look(camera_direction);
+
+		//++i;
+	}
 }

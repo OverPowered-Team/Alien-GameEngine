@@ -86,6 +86,8 @@ public:
 	// Functionality
 	void ApplyMaterial();
 
+	void ApplyShadows();
+
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
 	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
 	ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE);
@@ -110,11 +112,13 @@ public:
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	bool textureActivated = true;
+	bool recive_shadow = false;
 	u64 texturesID[(uint)TextureType::MAX];
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;
 	ResourceShader* used_shader = nullptr; 
+	ResourceShader* shadow_shader = nullptr;
 	const char* selectedShader = nullptr;
 	ResourceTexture* selected_texture = nullptr;
 	bool change_texture_menu = false;

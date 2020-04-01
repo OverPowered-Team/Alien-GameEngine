@@ -197,6 +197,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
 			continue;
 
+		current_viewport = viewport;
 		viewport->BeginViewport();
 		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
 		bool isGameCamera = (viewport == game_viewport) ? true : false;
@@ -1056,6 +1057,34 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				delete scene;
 
 				if (change_scene) {
+					struct stat file;
+					stat(path.data(), &file);
+
+					// refresh prefabs if are not locked
+					std::vector<GameObject*> prefab_roots;
+					base_game_object->GetAllPrefabRoots(prefab_roots);
+
+					for (uint i = 0; i < prefab_roots.size(); ++i) {
+						if (prefab_roots[i] != nullptr && !prefab_roots[i]->prefab_locked) {
+							ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab_roots[i]->GetPrefabID());
+							if (prefab != nullptr && prefab->GetID() != 0) {
+								struct stat prefab_file;
+								// TODO: when passing to library change
+								if (stat(prefab->GetAssetsPath(), &prefab_file) == 0) {
+									if (prefab_file.st_mtime > file.st_mtime) {
+										auto find = prefab_roots[i]->parent->children.begin();
+										for (; find != prefab_roots[i]->parent->children.end(); ++find) {
+											if (*find == prefab_roots[i]) {
+												prefab->ConvertToGameObjects(prefab_roots[i]->parent, find - prefab_roots[i]->parent->children.begin(), (*find)->GetComponent<ComponentTransform>()->GetGlobalPosition());
+												prefab_roots[i]->ToDelete();
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					DeleteReturns();
 				}
 

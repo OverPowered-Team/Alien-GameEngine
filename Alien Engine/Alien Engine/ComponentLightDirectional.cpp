@@ -7,6 +7,8 @@
 #include "ReturnZ.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleObjects.h"
+#include "Viewport.h"
 #include "ComponentMesh.h"
 #include "Gizmos.h"
 #include "mmgr/mmgr.h"
@@ -16,6 +18,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	type = ComponentType::LIGHT_DIRECTIONAL;
 	App->objects->directional_light_properites.push_back(&light_props);
 	App->objects->AddNumOfDirLights();
+	glGenFramebuffers(1, &light_props.depthMapFBO);
 
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
@@ -31,7 +34,54 @@ ComponentLightDirectional::~ComponentLightDirectional()
 
 	App->objects->directional_light_properites.remove(&light_props);
 	App->objects->ReduceNumOfDirLights();
+	glDeleteFramebuffers(1, &light_props.depthMapFBO);
 }
+
+void ComponentLightDirectional::PostUpdate()
+{
+	//Create DepthTex
+	if (App->objects->current_viewport == nullptr || App->objects->current_viewport->GetCamera() == nullptr)
+		return;
+
+	float2 size = App->objects->current_viewport->GetSize();
+
+	/*ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
+
+	float3 cameraPos = current_camera->GetCameraPosition();
+	float3 cameraViewDir = current_camera->frustum.front;
+
+	current_camera->SetCameraPosition(light_props.position);
+	current_camera->Look(light_props.direction);*/
+
+	glBindFramebuffer(GL_FRAMEBUFFER, light_props.depthMapFBO);
+	glDeleteTextures(1, &light_props.depthMap);
+	glGenTextures(1, &light_props.depthMap);
+	glBindTexture(GL_TEXTURE_2D, light_props.depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		1024,1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, light_props.depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light_props.depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/*current_camera->SetCameraPosition(cameraPos);
+	current_camera->Look(cameraViewDir);*/
+}
+
 
 void ComponentLightDirectional::LightLogic()
 {
@@ -92,6 +142,10 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
+
+
+		ImGui::ImageButton((ImTextureID)light_props.depthMap, ImVec2(100, 100));
+
 	}
 	else
 		RightClickMenu("Light Directional");

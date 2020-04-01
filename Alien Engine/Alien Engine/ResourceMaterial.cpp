@@ -21,11 +21,16 @@ ResourceMaterial::ResourceMaterial() : Resource()
 	}
 
 	used_shader = App->resources->default_shader;
-
 	if (used_shader != nullptr)
 		used_shader->IncreaseReferences();
 	else
 		LOG_ENGINE("There was an error. Could not find the default shader");
+
+	shadow_shader = App->resources->shadow_shader;
+	if (shadow_shader != nullptr)
+		shadow_shader->IncreaseReferences();
+	else
+		LOG_ENGINE("There was an error. Could not find the shadow shader");
 }
 
 ResourceMaterial::~ResourceMaterial()
@@ -257,6 +262,8 @@ void ResourceMaterial::ApplyMaterial()
 	// Bind the actual shader
 	used_shader->Bind();
 
+	if (recive_shadow)
+		used_shader->has_shadow = true;
 	// Bind textures
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 	{
@@ -281,8 +288,21 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	used_shader->UpdateUniforms(shaderInputs);
-
 }
+
+void ResourceMaterial::ApplyShadows()
+{
+	// Bind the actual shader
+	shadow_shader->Bind();
+
+	shadow_shader->DrawShadows();
+
+	// Update uniforms
+	//shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shadow_shader->SetUniformFloat3("diffuse_color", shaderInputs.standardShaderProperties.diffuse_color);
+	//shadow_shader->ApplyLightsUniforms();
+}
+
 
 void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 {
@@ -483,6 +503,10 @@ void ResourceMaterial::ShaderInputsSegment()
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
 	}
+	ImGui::Spacing();
+	if (ImGui::Checkbox("recive shadow", &recive_shadow))
+		recive_shadow ? false : true;
+
 }
 
 void ResourceMaterial::InputTexture(TextureType texType)
