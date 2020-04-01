@@ -37,6 +37,7 @@
 /*-----------------MATH-------------------*/
 
 /*-----------------HELPERS-------------------*/
+#include "..\..\..\Alien Engine\String.h"
 #include "..\..\..\Alien Engine\StaticInput.h"
 #include "..\..\..\Alien Engine\StaticTween.h"
 #include "..\..\..\Alien Engine\Maths.h"
@@ -65,7 +66,10 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
-static char* helper = nullptr;
+ALIEN_FACTORY void ChangeString(String* pointer, const char* newString) {
+	pointer->create(newString);
+}
+
 // ------------INSPECTOR MACROS----------------\\
 /*--------------------int--------------------*/
 #define SHOW_IN_INSPECTOR_AS_INPUT_INT(INT_) ComponentScript::InspectorInputInt(&INT_, #INT_)
@@ -78,7 +82,7 @@ static char* helper = nullptr;
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
 /*--------------------string--------------------*/
-#define SHOW_IN_INSPECTOR_AS_STRING(STD_STRING) ComponentScript::InspectorString(STD_STRING.data(), #STD_STRING)
+#define SHOW_IN_INSPECTOR_AS_STRING(STRING) ComponentScript::InspectorString(&STRING, #STRING)
 /*--------------------enum--------------------*/
 #define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/

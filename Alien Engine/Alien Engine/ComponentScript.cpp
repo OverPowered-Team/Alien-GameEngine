@@ -8,6 +8,7 @@
 #include "FileNode.h"
 #include "ResourcePrefab.h"
 #include "ModuleResources.h"
+#include "String.h"
 #include "ModuleUI.h"
 #include "Prefab.h"
 #include "mmgr/mmgr.h"
@@ -201,14 +202,15 @@ bool ComponentScript::DrawInspector()
 				case InspectorScriptData::DataType::STRING: {
 					ImGui::PushID(inspector_variables[i].ptr);
 
-					char* ptr = (char*)inspector_variables[i].ptr;
-					static char name[MAX_PATH];
-					memcpy(name, ptr, MAX_PATH);
+					String* ptr = (String*)inspector_variables[i].ptr;
+					static char name[TMP_STRING_SIZE];
+					memcpy(name, ptr->GetString(), TMP_STRING_SIZE);
 
 					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.5F);
 
-					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
-						memcpy(ptr, name, MAX_PATH);
+					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, TMP_STRING_SIZE, ImGuiInputTextFlags_AutoSelectAll)) {
+						void (*Add)(String* , const char*) = (void (*)(String*, const char*))GetProcAddress(App->scripts_dll, std::string("ChangeString").data());
+						Add(ptr, name);
 					}
 
 					ImGui::PopID();
@@ -666,7 +668,7 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 	}
 }
 
-void ComponentScript::InspectorString(const char* ptr, const char* ptr_name)
+void ComponentScript::InspectorString(String* ptr, const char* ptr_name)
 {
 	std::string variable_name = GetVariableName(ptr_name);
 

@@ -10,13 +10,9 @@ PolScriptSushi::~PolScriptSushi()
 
 void PolScriptSushi::Start()
 {
+	LOG("%s", myString.GetString());
 }
 
 void PolScriptSushi::Update()
 {
-}
-
-void PolScriptSushi::EatSushi()
-{
-
 }
