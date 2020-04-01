@@ -4,7 +4,7 @@
         "NumMeshes": 7,
         "Name": "Handgun_fbx_7.4_binary",
         "NumBones": 0,
-        "NumAnimations": 247,
+        "NumAnimations": 288,
         "Animations": [
             {
                 "Name": "Cube.002|Cube.001Action",
@@ -257,6 +257,252 @@
                 "Loops": false,
                 "Start_Tick": 0,
                 "End_Tick": 5
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
+            },
+            {
+                "Name": "",
+                "Loops": false,
+                "Start_Tick": 0,
+                "End_Tick": 0
             },
             {
                 "Name": "",
@@ -1746,7 +1992,48 @@
             "Library\/Animations\/18057809250828521712.alienAnimation",
             "Library\/Animations\/2320008467896964509.alienAnimation",
             "Library\/Animations\/4184332358345100784.alienAnimation",
-            "Library\/Animations\/16346991465291573273.alienAnimation"
+            "Library\/Animations\/16346991465291573273.alienAnimation",
+            "Library\/Animations\/6300174887169602155.alienAnimation",
+            "Library\/Animations\/11989897887403597357.alienAnimation",
+            "Library\/Animations\/3765934009096037888.alienAnimation",
+            "Library\/Animations\/2027857762108405545.alienAnimation",
+            "Library\/Animations\/16135599449666909970.alienAnimation",
+            "Library\/Animations\/10869010658676711209.alienAnimation",
+            "Library\/Animations\/1807526366089070733.alienAnimation",
+            "Library\/Animations\/7297113582212494247.alienAnimation",
+            "Library\/Animations\/12817283562303240635.alienAnimation",
+            "Library\/Animations\/12670184459718469982.alienAnimation",
+            "Library\/Animations\/2243181290487653550.alienAnimation",
+            "Library\/Animations\/17975862628730096745.alienAnimation",
+            "Library\/Animations\/11577601541143524986.alienAnimation",
+            "Library\/Animations\/7852847339492820150.alienAnimation",
+            "Library\/Animations\/9767255531387418729.alienAnimation",
+            "Library\/Animations\/11803809596130548409.alienAnimation",
+            "Library\/Animations\/14465046882576863834.alienAnimation",
+            "Library\/Animations\/7777390318987949527.alienAnimation",
+            "Library\/Animations\/17018789347791428026.alienAnimation",
+            "Library\/Animations\/3896963941740148923.alienAnimation",
+            "Library\/Animations\/10017488216198274054.alienAnimation",
+            "Library\/Animations\/6873249229406030046.alienAnimation",
+            "Library\/Animations\/4302627020149984518.alienAnimation",
+            "Library\/Animations\/8646465256826807379.alienAnimation",
+            "Library\/Animations\/10686333417933110312.alienAnimation",
+            "Library\/Animations\/16947960204993017296.alienAnimation",
+            "Library\/Animations\/3566310706959930274.alienAnimation",
+            "Library\/Animations\/14145495195332016334.alienAnimation",
+            "Library\/Animations\/18289497730709595736.alienAnimation",
+            "Library\/Animations\/10324992909968818099.alienAnimation",
+            "Library\/Animations\/17995160611209381257.alienAnimation",
+            "Library\/Animations\/6008278894920649779.alienAnimation",
+            "Library\/Animations\/3294926739305662729.alienAnimation",
+            "Library\/Animations\/864071312769794555.alienAnimation",
+            "Library\/Animations\/5980403134550228372.alienAnimation",
+            "Library\/Animations\/16508313294825278640.alienAnimation",
+            "Library\/Animations\/17565257383992793825.alienAnimation",
+            "Library\/Animations\/17452599439717535133.alienAnimation",
+            "Library\/Animations\/8987993910314890934.alienAnimation",
+            "Library\/Animations\/13749272635605241459.alienAnimation",
+            "Library\/Animations\/5880013931182497340.alienAnimation"
         ],
         "PathBones": [],
         "PathMaterials": []
