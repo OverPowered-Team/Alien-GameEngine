@@ -57,7 +57,5 @@ ALIEN_FACTORY TestEvents* CreateTestEvents() {
 	SHOW_SPACING();
 	SHOW_IN_INSPECTOR_AS_ENUM(MYENUM2, events->myEnumTest2);
 
-	SHOW_IN_INSPECTOR_AS_STRING(events->myString);
-
 	return events;
 } 

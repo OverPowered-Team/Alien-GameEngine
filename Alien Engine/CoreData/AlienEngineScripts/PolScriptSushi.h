@@ -3,6 +3,11 @@
 #include "..\..\Alien Engine\Alien.h"
 #include "Macros/AlienScripts.h"
 
+enum(AAAAAAA,
+	dsadsad,
+	sdasd,
+	sdasdsad);
+
 class ALIEN_ENGINE_API PolScriptSushi : public Alien {
 
 public:
@@ -13,13 +18,15 @@ public:
 	void Start();
 	void Update();
 
-	void EatSushi();
+	std::string myString;
 
+	AAAAAAA dsadsa = AAAAAAA::sdasd;
 };
 
 ALIEN_FACTORY PolScriptSushi* CreatePolScriptSushi() {
 	PolScriptSushi* sushi = new PolScriptSushi();
 	// To show in inspector here
-	//SHOW_VOID_FUNCTION(PolScriptSushi::EatSushi, sushi);
+	SHOW_IN_INSPECTOR_AS_STRING(sushi->myString);
+	SHOW_IN_INSPECTOR_AS_ENUM(AAAAAAA, sushi->dsadsa);
 	return sushi;
 } 
