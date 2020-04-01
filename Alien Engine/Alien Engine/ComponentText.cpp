@@ -246,6 +246,16 @@ void ComponentText::Draw(bool isGame)
 						current_line_pos.push_back(aux);
 						current_size = 0;
 					}
+					else if (aux_c != (text.end() - 1) && (*aux_c) == '/' && *(aux_c + 1) == 'n')
+					{
+						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance - font->fontData.charactersMap[*(aux_c + 1)].advance);
+						current_line_pos.push_back(aux);
+						current_size = 0;
+					}
+					else if (aux_c != text.begin() && *(aux_c - 1) == '/' && *aux_c == 'n')
+					{
+						current_size -= (font->fontData.charactersMap[*aux_c].advance + font->fontData.charactersMap[*(aux_c - 1)].advance);
+					}
 					aux++;
 				}
 				lines_current_size.push_back(current_size);
@@ -257,6 +267,9 @@ void ComponentText::Draw(bool isGame)
 				current_line++;
 				pos_x = 0;
 			}
+
+			if ((i < text.size() && (text[i]) == '/' && (text[i + 1]) == 'n') || (i != 0 && (text[i - 1]) == '/' && (text[i]) == 'n'))
+				continue;
 
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
@@ -272,6 +285,8 @@ void ComponentText::Draw(bool isGame)
 				w = ch.size.x * scale.x;
 				h = ch.size.y * scale.y;
 			}
+
+
 			break;
 
 		case RIGHT:
@@ -288,11 +303,18 @@ void ComponentText::Draw(bool isGame)
 						current_line_pos.push_back(aux);
 						current_size = 0;
 					}
+					if((*aux_c) == '/' && (*aux_c + 1) == '0')
+					{
+						lines_current_size.push_back(current_size);
+						current_line_pos.push_back(aux);
+						current_size = 0;
+					}
 					aux++;
 				}
 				lines_current_size.push_back(current_size);
 				current_line_pos.push_back(aux);
 			}
+
 
 			if (i == current_line_pos[current_line])
 			{
