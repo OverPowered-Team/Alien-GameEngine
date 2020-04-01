@@ -35,6 +35,9 @@ ModulePhysics::~ModulePhysics()
 	delete broad_phase;
 	delete dispatcher;
 	delete collision_config;
+	delete ghost_pair_callback;
+
+	delete[] layers_table;
 }
 
 void ModulePhysics::SetGravity(const float3 gravity)
@@ -70,7 +73,9 @@ bool ModulePhysics::Init()
 	collision_config = new btDefaultCollisionConfiguration();
 	dispatcher = new MyDispatcher(collision_config);
 	broad_phase = new btDbvtBroadphase();
-	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	ghost_pair_callback = new MyGhostPairCallback();
+
+	broad_phase->getOverlappingPairCache()->setInternalGhostPairCallback(ghost_pair_callback);
 	solver = new btSequentialImpulseConstraintSolver();
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_config);
 
@@ -78,10 +83,6 @@ bool ModulePhysics::Init()
 	world->setGravity(ToBtVector3(gravity));
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
-
-
-	//btOverlapFilterCallback* filterCallback = new MyOwnFilterCallback();
-	//world->getPairCache()->setOverlapFilterCallback(filterCallback);
 
 	return ret;
 }
@@ -122,13 +123,13 @@ update_status ModulePhysics::PreUpdate(float dt)
 
 update_status ModulePhysics::PostUpdate(float dt)
 {
-	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		SphereCast(float3(0.f, 0.f, 0.f), 0.5f);
-		RayCastAll(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
-		RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_SPACE) == KEY_DOWN)
+	//{
+	//	SphereCast(float3(0.f, 0.f, 0.f), 0.5f);
+	//	RayCastAll(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
+	//	RayCastClosest(Ray(float3(0.f, 0.f, 0.f), float3(0.f, 10.f, 0.f)));
 
-	}
+	//}
 	return UPDATE_CONTINUE;
 }
 
@@ -429,4 +430,22 @@ bool MyDispatcher::needsCollision(const btCollisionObject* obj_0, const btCollis
 
 	return ModulePhysics::CanCollide(coll_0->layer, coll_1->layer);
 
+}
+
+btBroadphasePair* MyGhostPairCallback::addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
+{
+	btCollisionObject* colObj0 = (btCollisionObject*)proxy0->m_clientObject;
+	btCollisionObject* colObj1 = (btCollisionObject*)proxy1->m_clientObject;
+	btGhostObject* ghost0 = btGhostObject::upcast(colObj0);
+	btGhostObject* ghost1 = btGhostObject::upcast(colObj1);
+
+	if (Time::IsPlaying())
+	{
+ 		if (ghost0)
+			ghost0->addOverlappingObjectInternal(proxy1, proxy0);
+		if (ghost1)
+			ghost1->addOverlappingObjectInternal(proxy0, proxy1);
+	}
+
+	return 0;
 }

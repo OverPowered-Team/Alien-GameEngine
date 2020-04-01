@@ -4,6 +4,8 @@
 #include "Module.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
 #include "Bullet/include/LinearMath/btVector3.h"
+#include "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
+#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 #include <list>
 #include <vector>
 
@@ -21,11 +23,16 @@ enum class ForceMode : uint
 	MAX
 };
 
-
 class ComponentCollider;
 class DebugRenderer;
 class btGhostObject;
 struct CastResult;
+
+class MyGhostPairCallback : public btGhostPairCallback
+{
+public:
+	btBroadphasePair* addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1);
+};
 
 class ModulePhysics : public Module
 {
@@ -100,6 +107,7 @@ private:
 	DebugRenderer* debug_renderer = nullptr;
 	btDefaultCollisionConfiguration* collision_config = nullptr;
 	MyDispatcher* dispatcher = nullptr;
+	MyGhostPairCallback* ghost_pair_callback = nullptr;
 	btBroadphaseInterface* broad_phase = nullptr;
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
@@ -113,7 +121,6 @@ public:
 	MyDispatcher(btCollisionConfiguration* collisionConfiguration);
 	bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 };
-
 
 struct CastResult : public btCollisionWorld::ContactResultCallback
 {

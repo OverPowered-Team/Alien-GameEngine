@@ -38,6 +38,7 @@ private:
 	friend class ComponentSlider;
 	friend class ComponentBar;
 	friend class ComponentCanvas;
+	friend class MyGhostPairCallback;
 
 	static void Start();
 	static void Update();
