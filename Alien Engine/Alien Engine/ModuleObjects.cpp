@@ -1148,7 +1148,9 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					OnPlay();
 				}
 			}
-			current_scene = to_load;
+			if (change_scene) {
+				current_scene = to_load;
+			}
 		}
 		else {
 			LOG_ENGINE("Error loading scene %s", path.data());
