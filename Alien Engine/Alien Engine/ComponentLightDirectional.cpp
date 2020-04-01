@@ -20,6 +20,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	App->objects->AddNumOfDirLights();
 	glGenFramebuffers(1, &light_props.depthMapFBO);
 
+	light_props.light = this;
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
 	bulb->mesh = App->resources->light_mesh;
@@ -58,7 +59,7 @@ void ComponentLightDirectional::PostUpdate()
 	glGenTextures(1, &light_props.depthMap);
 	glBindTexture(GL_TEXTURE_2D, light_props.depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		1024,1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -142,9 +143,6 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
-
-
-		ImGui::ImageButton((ImTextureID)light_props.depthMap, ImVec2(100, 100));
 
 	}
 	else

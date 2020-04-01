@@ -80,7 +80,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		SetUniformShadow(material, camera);
 
 		// Uniforms --------------
-		glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 		material->shadow_shader->Unbind();
 
@@ -89,7 +89,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 		SetUniform(material, camera);
 		// Uniforms --------------
-		glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 		// --------------------------------------------------------------------- 
 
@@ -216,10 +216,10 @@ void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCam
 
 void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
-	//resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->shadow_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	//resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	//resource_material->shadow_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->shadow_shader->SetUniformFloat3("viewPos", camera->GetCameraPosition());
 	//resource_material->shadow_shader->SetUniform1i("animate", animate);
 }
 

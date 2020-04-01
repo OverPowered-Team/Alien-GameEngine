@@ -14,6 +14,7 @@ struct __declspec(dllexport) DirLightProperties
 	float3 diffuse = float3::one();
 	float3 specular = float3::one();
 
+	ComponentLightDirectional* light = nullptr;
 	uint depthMap = 0;
 	uint depthMapFBO;
 };

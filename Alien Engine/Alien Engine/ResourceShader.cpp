@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentTransform.h"
 #include "ComponentLightPoint.h"
 #include "Viewport.h"
 
@@ -626,13 +627,12 @@ void ResourceShader::DrawShadows()
 		current_camera->SetCameraPosition((*iter)->position);
 		current_camera->Look((*iter)->direction);*/
 
-		float4x4 lightProjection = current_camera->GetProjectionMatrix4f4();
-		float4x4 lightView = current_camera->GetViewMatrix4x4();
-		float4x4 lightSpaceMatrix = lightProjection.Transposed() * lightView;
-		SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
+		SetUniformMat4f("lightSpaceMatrix", (*iter)->light->game_object_attached->transform->GetGlobalMatrix());
 
 		/*current_camera->SetCameraPosition(cameraPos);
 		current_camera->Look(cameraViewDir);*/
+		SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
+		SetUniformFloat3("lightPos", (*iter)->position);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

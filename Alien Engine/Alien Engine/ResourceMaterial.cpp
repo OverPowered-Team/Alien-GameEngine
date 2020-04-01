@@ -271,10 +271,19 @@ void ResourceMaterial::ApplyMaterial()
 		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
 		used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
+		//shadows
+		if (recive_shadow)
+		{
+			shadow_shader->SetUniform1i("diffuseTexture", 0);
+			shadow_shader->SetUniform1i("hasDiffuseTexture", 1);
+		}
 	}
 	else
+	{
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
-
+		if (recive_shadow)
+			shadow_shader->SetUniform1i("hasDiffuseTexture", 0);
+	}
 	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{
 		glActiveTexture(GL_TEXTURE1);
@@ -298,9 +307,7 @@ void ResourceMaterial::ApplyShadows()
 	shadow_shader->DrawShadows();
 
 	// Update uniforms
-	//shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	shadow_shader->SetUniformFloat3("diffuse_color", shaderInputs.standardShaderProperties.diffuse_color);
-	//shadow_shader->ApplyLightsUniforms();
 }
 
 
