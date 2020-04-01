@@ -273,25 +273,47 @@ void ComponentText::Draw(bool isGame)
 				h = ch.size.y * scale.y;
 			}
 			break;
+
 		case RIGHT:
-			/*if (c == text.begin())
+			if (i == 0)
+			{
+				int aux = 0;
+				int current_size = 0;
 				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
+				{
 					current_size += font->fontData.charactersMap[*aux_c].advance;
+					if (current_size > width)
+					{
+						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance);
+						current_line_pos.push_back(aux);
+						current_size = 0;
+					}
+					aux++;
+				}
+				lines_current_size.push_back(current_size);
+				current_line_pos.push_back(aux);
+			}
+
+			if (i == current_line_pos[current_line])
+			{
+				current_line++;
+				pos_x = 0;
+			}
 
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
-				xpos = x + pos_x + (ch.bearing.x + (width - current_size)) * scale.x * factor_x;
-				ypos = y - pos_y - (ch.size.y - ch.bearing.y) * scale.y * factor_y;
+				xpos = x + pos_x + (ch.bearing.x + (width - lines_current_size[current_line])) * scale.x * factor_x;
+				ypos = y - pos_y - (ch.size.y - ch.bearing.y + (font->fontData.charactersMap['l'].size.y * current_line * interlineal)) * scale.y * factor_y;
 				w = ch.size.x * scale.x * factor_x;
 				h = ch.size.y * scale.y * factor_y;
 			}
 			else
 			{
-				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - current_size)) * scale.x;
-				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y) * scale.y;
+				xpos = matrix[0][3] + pos_x + (ch.bearing.x + (width - lines_current_size[current_line])) * scale.x;
+				ypos = matrix[1][3] - pos_y - (ch.size.y - ch.bearing.y + (font->fontData.charactersMap['l'].size.y * current_line * interlineal)) * scale.y;
 				w = ch.size.x * scale.x;
 				h = ch.size.y * scale.y;
-			}*/
+			}
 			break;
 		}
 		
@@ -343,16 +365,16 @@ void ComponentText::Draw(bool isGame)
 			glEnd();
 		}
 #endif
-		if (isGame && App->renderer3D->actual_game_camera != nullptr)
+		if (isGame && App->renderer3D->actual_game_camera != nullptr && align != TextAlign::LEFT)
 		{
 			pos_x += ch.advance * scale.x * factor_x;
 		}
-		else
+		else if(align != TextAlign::LEFT)
 		{
 			pos_x += ch.advance * scale.x;
 		}
 			
-		/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
+		if (isGame && App->renderer3D->actual_game_camera != nullptr && align == TextAlign::LEFT)
 		{
 			line = pos_x += ch.advance * scale.x * factor_x;
 			if (line > width * scale.x * factor_x)
@@ -363,10 +385,9 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
-				current_size = 0;
 			}
 		}
-		else
+		else if(align == TextAlign::LEFT)
 		{
 			line = pos_x += ch.advance * scale.x;
 			if (line > width * scale.x)
@@ -377,9 +398,8 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
-				current_size = 0;
 			}
-		}*/
+		}
 	}
 	
 	font->text_shader->Unbind();
