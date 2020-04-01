@@ -620,19 +620,19 @@ void ResourceShader::DrawShadows()
 
 		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
 
-		float3 cameraPos = current_camera->GetCameraPosition();
-		float3 cameraViewDir = current_camera->frustum.front;
+		/*float3 cameraPos = current_camera->GetCameraPosition();
+		float3 cameraViewDir = (*iter)->direction - current_camera->frustum.pos;
 
 		current_camera->SetCameraPosition((*iter)->position);
-		current_camera->Look((*iter)->direction);
+		current_camera->Look((*iter)->direction);*/
 
 		float4x4 lightProjection = current_camera->GetProjectionMatrix4f4();
 		float4x4 lightView = current_camera->GetViewMatrix4x4();
-		float4x4 lightSpaceMatrix = lightProjection * lightView;
+		float4x4 lightSpaceMatrix = lightProjection.Transposed() * lightView;
 		SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 
-		current_camera->SetCameraPosition(cameraPos);
-		current_camera->Look(cameraViewDir);
+		/*current_camera->SetCameraPosition(cameraPos);
+		current_camera->Look(cameraViewDir);*/
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

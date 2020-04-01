@@ -73,19 +73,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	//Shadows------------------------------
 	if (material->recive_shadow)
 	{
-		//material->ApplyMaterial();
-		//glBindVertexArray(mesh->vao);
 
-		//// Uniforms --------------
-		//glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
-
-		//// --------------------------------------------------------------------- 
-
-		//glBindVertexArray(0);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		//material->used_shader->Unbind();
-
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		material->ApplyShadows();
 		glBindVertexArray(mesh->vao);
 
@@ -93,6 +81,21 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 		// Uniforms --------------
 		glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+		material->shadow_shader->Unbind();
+
+		material->ApplyMaterial();
+		glBindVertexArray(mesh->vao);
+
+		SetUniform(material, camera);
+		// Uniforms --------------
+		glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+
+		// --------------------------------------------------------------------- 
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		material->used_shader->Unbind();
 
 		// --------------------------------------------------------------------- 
 	}
@@ -215,7 +218,7 @@ void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, Compon
 {
 	//resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->shadow_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	//resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	//resource_material->shadow_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 	//resource_material->shadow_shader->SetUniform1i("animate", animate);
 }
