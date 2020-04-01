@@ -37,7 +37,6 @@
 /*-----------------MATH-------------------*/
 
 /*-----------------HELPERS-------------------*/
-#include "..\..\..\Alien Engine\String.h"
 #include "..\..\..\Alien Engine\StaticInput.h"
 #include "..\..\..\Alien Engine\StaticTween.h"
 #include "..\..\..\Alien Engine\Maths.h"
@@ -45,6 +44,7 @@
 #include "..\..\..\Alien Engine\Debug.h"
 #include "..\..\..\Alien Engine\RandomHelper.h"
 #include "..\..\..\Alien Engine\Time.h"
+#include "..\..\..\Alien Engine\Physics.h"
 #include "..\..\..\Alien Engine\Camera.h"
 #include "..\..\..\Alien Engine\Gizmos.h"
 #include "..\..\..\Alien Engine\Color.h"
@@ -66,8 +66,8 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
-ALIEN_FACTORY void ChangeString(String* pointer, const char* newString) {
-	pointer->create(newString);
+ALIEN_FACTORY void ChangeString(std::string* pointer, const char* newString) {
+	pointer->assign(newString);
 }
 
 // ------------INSPECTOR MACROS----------------\\

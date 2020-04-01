@@ -18,7 +18,7 @@ public:
 	void Start();
 	void Update();
 
-	String myString;
+	std::string myString;
 
 	AAAAAAA dsadsa = AAAAAAA::sdasd;
 };

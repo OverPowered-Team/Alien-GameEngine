@@ -7,7 +7,6 @@
 #include <map>
 
 class Prefab;
-class String;
 
 struct __declspec(dllexport) InspectorScriptData {
 	friend class ComponentScript;
@@ -114,7 +113,7 @@ public:
 	/*--------------------BOOL-----------------------*/
 	static void InspectorBool(bool* ptr, const char* ptr_name);
 	/*--------------------STRING-----------------------*/
-	static void InspectorString(String* ptr, const char* ptr_name);
+	static void InspectorString(std::string* ptr, const char* ptr_name);
 	/*--------------------ENUM-----------------------*/
 	static void InspectorEnum(int* ptr, const char* ptr_name, const char* enumAllString);
 	/*--------------------PREFAB-----------------------*/

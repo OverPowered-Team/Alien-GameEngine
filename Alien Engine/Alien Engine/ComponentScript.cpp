@@ -8,7 +8,6 @@
 #include "FileNode.h"
 #include "ResourcePrefab.h"
 #include "ModuleResources.h"
-#include "String.h"
 #include "ModuleUI.h"
 #include "Prefab.h"
 #include "mmgr/mmgr.h"
@@ -202,14 +201,14 @@ bool ComponentScript::DrawInspector()
 				case InspectorScriptData::DataType::STRING: {
 					ImGui::PushID(inspector_variables[i].ptr);
 
-					String* ptr = (String*)inspector_variables[i].ptr;
-					static char name[TMP_STRING_SIZE];
-					memcpy(name, ptr->GetString(), TMP_STRING_SIZE);
+					std::string* ptr = (std::string*)inspector_variables[i].ptr;
+					static char name[MAX_PATH];
+					memcpy(name, ptr->data(), MAX_PATH);
 
 					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.5F);
 
-					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, TMP_STRING_SIZE, ImGuiInputTextFlags_AutoSelectAll)) {
-						void (*Add)(String* , const char*) = (void (*)(String*, const char*))GetProcAddress(App->scripts_dll, std::string("ChangeString").data());
+					if (ImGui::InputText(inspector_variables[i].variable_name.data(), name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll)) {
+						void (*Add)(std::string* , const char*) = (void (*)(std::string*, const char*))GetProcAddress(App->scripts_dll, std::string("ChangeString").data());
 						Add(ptr, name);
 					}
 
@@ -358,8 +357,8 @@ void ComponentScript::SaveComponent(JSONArraypack* to_save)
 				inspector->SetNumber("enumInt", value);
 				break; }
 			case InspectorScriptData::DataType::STRING: {
-				char* value = (char*)inspector_variables[i].ptr;
-				inspector->SetString("string", value);
+				std::string* value = (std::string*)inspector_variables[i].ptr;
+				inspector->SetString("string", value->data());
 				break; }
 			case InspectorScriptData::DataType::FLOAT: {
 				float value = *(float*)inspector_variables[i].ptr;
@@ -422,8 +421,9 @@ void ComponentScript::LoadComponent(JSONArraypack* to_load)
 							*value = inspector->GetNumber("enumInt");
 							break; }
 						case InspectorScriptData::DataType::STRING: {
-							char* value = (char*)inspector_variables[i].ptr;
-							strcpy(value, inspector->GetString("string"));
+							std::string* value = (std::string*)inspector_variables[i].ptr;
+							void (*Add)(std::string*, const char*) = (void (*)(std::string*, const char*))GetProcAddress(App->scripts_dll, std::string("ChangeString").data());
+							Add(value, inspector->GetString("string"));
 							break; }
 						case InspectorScriptData::DataType::FLOAT: {
 							float* value = (float*)inspector_variables[i].ptr;
@@ -489,9 +489,9 @@ void ComponentScript::Clone(Component* clone)
 					*script_var = variable;
 					break; }
 				case InspectorScriptData::DataType::STRING: {
-					char* variable = (char*)inspector_variables[i].ptr;
+					/*char* variable = (char*)inspector_variables[i].ptr;
 					char* script_var = (char*)script->inspector_variables[i].ptr;
-					strcpy(script_var, variable);
+					strcpy(script_var, variable);*/
 					break; }
 				case InspectorScriptData::DataType::FLOAT: {
 					float variable = *(float*)inspector_variables[i].ptr;
@@ -668,7 +668,7 @@ void ComponentScript::InspectorBool(bool* ptr, const char* ptr_name)
 	}
 }
 
-void ComponentScript::InspectorString(String* ptr, const char* ptr_name)
+void ComponentScript::InspectorString(std::string* ptr, const char* ptr_name)
 {
 	std::string variable_name = GetVariableName(ptr_name);
 

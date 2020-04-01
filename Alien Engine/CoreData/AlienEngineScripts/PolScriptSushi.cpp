@@ -10,7 +10,7 @@ PolScriptSushi::~PolScriptSushi()
 
 void PolScriptSushi::Start()
 {
-	LOG("%s", myString.GetString());
+	LOG("%s", myString.data());
 }
 
 void PolScriptSushi::Update()
