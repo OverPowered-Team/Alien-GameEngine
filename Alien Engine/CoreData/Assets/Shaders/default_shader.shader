@@ -16,8 +16,8 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform int animate;
 
-uniform float density;
-uniform float gradient;
+uniform float density = 0;
+uniform float gradient = 0;
 
 out vec3 frag_pos;
 out vec2 texCoords;
