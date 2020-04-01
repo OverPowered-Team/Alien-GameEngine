@@ -1389,6 +1389,7 @@ void ModuleObjects::ReAttachUIScriptEvents()
 				CompareName(&button->listenersOnClickRepeat, scriptsVec);
 				CompareName(&button->listenersOnHover, scriptsVec);
 				CompareName(&button->listenersOnRelease, scriptsVec);
+				CompareName(&button->listenersOnExit, scriptsVec);
 			}
 			else {
 				ComponentCheckbox* checkbox = obj->GetComponent<ComponentCheckbox>();
@@ -1397,6 +1398,7 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
 					CompareName(&checkbox->listenersOnHover, scriptsVec);
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
+					//CompareName(&checkbox->listenersOnExit, scriptsVec);
 				}
 			}
 		}
