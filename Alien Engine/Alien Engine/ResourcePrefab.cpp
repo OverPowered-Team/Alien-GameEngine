@@ -248,11 +248,11 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		JSONArraypack* game_objects = prefab->GetArray("Prefab.GameObjects");
 
 		std::vector<GameObject*> objects_created;
-
+		bool is_first = true;
 		for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 			GameObject* obj = new GameObject(true);
 			u64 parentID = std::stoull(game_objects->GetString("ParentID"));
-			if (parentID != 0) {
+			if (!is_first) {
 				std::vector<GameObject*>::iterator objects = objects_created.begin();
 				for (; objects != objects_created.end(); ++objects) {
 					if ((*objects)->ID == parentID) {
@@ -262,7 +262,8 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 				}
 			}
 			else {
-				obj->LoadObject(game_objects, App->objects->GetRoot(false));
+				obj->LoadObject(game_objects, parent);
+				is_first = false;
 			}
 			objects_created.push_back(obj);
 			game_objects->GetAnotherNode();
