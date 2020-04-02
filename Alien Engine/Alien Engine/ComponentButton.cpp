@@ -3,6 +3,7 @@
 #include "imgui/imgui.h"
 #include "ComponentUI.h"
 #include "ComponentCanvas.h"
+#include "ComponentAudioEmitter.h"
 #include "ReturnZ.h"
 #include "ComponentScript.h"
 #include "ResourceTexture.h"
@@ -1154,6 +1155,11 @@ bool ComponentButton::OnEnter()
 	if (active)
 	{
 		//baina loka
+		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+		if (emitter != nullptr)
+		{
+			emitter->StartSound("ENTER");
+		}
 		CallListeners(&listenersOnEnter);
 	}
 	return true;
@@ -1174,6 +1180,7 @@ bool ComponentButton::OnIdle()
 bool ComponentButton::OnHover()
 {
 	if (active) {
+
 		current_color = hover_color;
 		if (hover_tex != nullptr){
 			SetTexture(hover_tex);
@@ -1187,6 +1194,13 @@ bool ComponentButton::OnHover()
 bool ComponentButton::OnClick()
 {
 	if (active) {
+
+		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+		if (emitter != nullptr)
+		{
+			emitter->StartSound("CLICK");
+		}
+
 		current_color = clicked_color;
 		if (clicked_tex != nullptr) {
 			SetTexture(clicked_tex);
@@ -1200,6 +1214,7 @@ bool ComponentButton::OnClick()
 bool ComponentButton::OnPressed()
 {
 	if (active) {
+
 		current_color = pressed_color;
 		if (pressed_tex != nullptr) {
 			SetTexture(pressed_tex);
@@ -1213,6 +1228,7 @@ bool ComponentButton::OnPressed()
 bool ComponentButton::OnRelease()
 {
 	if (active) {
+	
 		current_color = hover_color;
 		if (hover_tex != nullptr) {
 			SetTexture(hover_tex);
@@ -1227,7 +1243,7 @@ bool ComponentButton::OnExit()
 {
 	if (active) 
 	{
-		//baina loka
+		
 		CallListeners(&listenersOnExit);
 	}
 	return true;

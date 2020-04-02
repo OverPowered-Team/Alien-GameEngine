@@ -3,6 +3,7 @@
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "ComponentImage.h"
 #include "ComponentTransform.h"
+#include "ComponentAudioEmitter.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
 #include "ComponentUI.h"
@@ -967,8 +968,12 @@ bool ComponentCheckbox::OnClick()
 {
 	if (active)
 	{ 
-		
-		
+		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+		if (emitter != nullptr)
+		{
+			emitter->StartSound("CLICK");
+		}
+
 		current_color = clicked_color;
 		checkbox_current_color = checkbox_clicked_color;
 
@@ -1002,11 +1007,25 @@ bool ComponentCheckbox::OnRelease()
 
 bool ComponentCheckbox::OnExit()
 {
+	if (active)
+	{
+		CallListeners(&listenersOnExit);
+	}
 	return true;
 }
 
 bool ComponentCheckbox::OnEnter()
 {
+	if (active)
+	{
+		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+		if (emitter != nullptr)
+		{
+			emitter->StartSound("ENTER");
+		}
+
+		CallListeners(&listenersOnEnter);
+	}
 	return true;
 }
 
