@@ -1,12 +1,12 @@
 {
     "Scene": {
-        "Name": "SCENE1",
+        "Name": "cccccccccccccc",
         "GameObjects": [
             {
-                "Name": "Cube",
+                "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "716375010757913133",
-                "ParentID": "8630787970630141583",
+                "ID": "5695638213619938792",
+                "ParentID": "15836977119600584954",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -19,7 +19,76 @@
                     {
                         "Type": 0,
                         "Position": [
-                            -8.0040283203125,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.2798481285572052,
+                            -0.36470523476600647,
+                            0.115916907787323,
+                            0.88047623634338379
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17818285713262542366"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "7058387058143228747",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            -0.57735037803649902,
+                            -0.57735025882720947,
+                            0.57735025882720947
+                        ],
+                        "Ambient": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Cube",
+                "FamilyNumber": 1,
+                "ID": "17363829254817656582",
+                "ParentID": "15836977119600584954",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
                             0,
                             0
                         ],
@@ -27,15 +96,15 @@
                             0,
                             0,
                             0,
-                            1
+                            0
                         ],
                         "Scale": [
-                            5.2899999618530273,
-                            5.2899999618530273,
-                            5.2899999618530273
+                            1,
+                            1,
+                            1
                         ],
                         "ScaleNegative": false,
-                        "ID": "10152273272678779215"
+                        "ID": "251848387922828240"
                     },
                     {
                         "Type": 1,
@@ -45,7 +114,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "8646904412243234217",
+                        "ID": "4714942938071328993",
                         "HasMesh": true,
                         "IsPrimitive": true,
                         "PrimType": 0,
@@ -53,7 +122,7 @@
                     },
                     {
                         "Type": 2,
-                        "ID": "16248049137665278533",
+                        "ID": "10333156426502573544",
                         "HasMaterial": true,
                         "MaterialID": "0",
                         "Enabled": true
@@ -75,78 +144,6 @@
                             1,
                             1
                         ]
-                    }
-                ]
-            },
-            {
-                "Name": "Sphere",
-                "FamilyNumber": 1,
-                "ID": "2419898769655002050",
-                "ParentID": "8630787970630141583",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            24.503719329833984,
-                            0,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            3.7099997997283936,
-                            3.7099997997283936,
-                            3.7099997997283936
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "17848205943350932603"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "17635486902575404507",
-                        "HasMesh": true,
-                        "IsPrimitive": true,
-                        "PrimType": 1,
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "3587168339130574894",
-                        "HasMaterial": true,
-                        "MaterialID": "0",
-                        "Enabled": true
-                    },
-                    {
-                        "Enabled": true,
-                        "Type": 8,
-                        "Center": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "IsTrigger": false,
-                        "Bouncing": 0.10000000149011612,
-                        "Friction": 0.5,
-                        "AngularFriction": 0.10000000149011612,
-                        "Radius": 1
                     }
                 ]
             }

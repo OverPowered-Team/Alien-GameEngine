@@ -1043,8 +1043,11 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 
 		// get scene root
 		GameObject* scene_root = nullptr;
-		if (current_scenes.empty() || to_load_scene == nullptr) {
+		if (current_scenes.empty()) {
 			scene_root = base_game_object->children[0];
+		}
+		else if (to_load_scene == nullptr) {
+			scene_root = base_game_object;
 		}
 		else {
 			for (auto item = base_game_object->children.begin(); item != base_game_object->children.end(); ++item) {
@@ -1053,6 +1056,12 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 					break;
 				}
 			}
+		}
+
+		if (current_scenes.empty()) {
+			scene_root->SetName(to_load_scene->GetName());
+			scene_root->ID = to_load_scene->GetID();
+			current_scenes.push_back(to_load_scene);
 		}
 
 		if (!scene_root->children.empty()) { // if scene_root has children, save them
@@ -1073,11 +1082,6 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		scene->FinishSave();
 		delete scene;
 		if (force_with_path == nullptr) {
-			if (current_scenes.empty()) {
-				scene_root->children[0]->SetName(to_load_scene->GetName());
-				scene_root->children[0]->ID = to_load_scene->GetID();
-				current_scenes.push_back(to_load_scene);
-			}
 			App->file_system->Copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
 		}
 	}
@@ -2119,7 +2123,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 
 void ModuleObjects::CreateBaseUI(ComponentType type)
 {
-	GameObject* object = CreateEmptyGameObject(nullptr);
+	GameObject* object = CreateEmptyGameObject(nullptr, false);
 	Component* comp = nullptr;
 	switch (type)
 	{
@@ -2194,7 +2198,9 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	default: {
 		break; }
 	}
-
+	if (object != nullptr) {
+		SetNewSelectedObject(object);
+	}
 }
 
 void ModuleObjects::CreateLight(LightTypeObj type)
