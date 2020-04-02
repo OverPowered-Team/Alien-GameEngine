@@ -1399,6 +1399,8 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
 					CompareName(&checkbox->listenersOnHover, scriptsVec);
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
+					CompareName(&checkbox->listenersOnExit, scriptsVec);
+					CompareName(&checkbox->listenersOnEnter, scriptsVec);
 					
 				}
 			}
@@ -1629,7 +1631,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("up", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1645,7 +1647,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("down", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1661,7 +1663,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("right", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1677,7 +1679,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("left", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}

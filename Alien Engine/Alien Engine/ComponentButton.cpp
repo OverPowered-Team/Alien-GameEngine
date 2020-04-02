@@ -881,6 +881,7 @@ bool ComponentButton::DrawInspector()
 						ImGui::TreePop();
 					}
 
+					ImGui::Spacing();
 					//-----------------------------
 					if (ImGui::TreeNode("On Enter To Add")) {
 						for (auto item = scripts.begin(); item != scripts.end(); ++item) {

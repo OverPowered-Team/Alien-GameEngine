@@ -513,6 +513,9 @@ void ComponentSlider::Update()
 		case Exit:
 			OnExit();
 			break;
+		case Enter:
+			OnEnter();
+			break;
 		default:
 			break;
 		}
@@ -829,6 +832,11 @@ bool ComponentSlider::OnExit()
 	return true;
 }
 
+bool ComponentSlider::OnEnter()
+{
+	return true;
+}
+
 void ComponentSlider::SetValue(float factor)
 {
 	if (factor >= 0.0f && factor <= 1.0f)
@@ -875,6 +883,14 @@ void ComponentSlider::UILogicGamePad()
 		break; }
 	case Release: {
 		state = Idle;
+		break; }
+
+	case Exit: {
+		state = Idle;
+		break; }
+
+	case Enter: {
+		state = Hover;
 		break; }
 	}
 }
