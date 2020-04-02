@@ -234,7 +234,7 @@ void ModuleCamera3D::Focus()
 
 void ModuleCamera3D::CreateRay()
 {
-	if (App->objects->GetRoot(true)->children.empty())
+	if (App->objects->GetGlobalRoot()->children.empty())
 		return;
 
 	float2 origin = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
@@ -250,8 +250,8 @@ void ModuleCamera3D::CreateRay()
 	CreateObjectsHitMap(&hits, App->objects->octree.root, ray);
 	
 	// without octree for the dynamics
-	std::vector<GameObject*>::iterator item = App->objects->GetRoot(true)->children.begin();
-	for (; item != App->objects->GetRoot(true)->children.end(); ++item) {
+	std::vector<GameObject*>::iterator item = App->objects->GetGlobalRoot()->children.begin();
+	for (; item != App->objects->GetGlobalRoot()->children.end(); ++item) {
 		if (*item != nullptr && (*item)->IsEnabled()) {
 			CreateObjectsHitMap(&hits, (*item), ray);
 		}
