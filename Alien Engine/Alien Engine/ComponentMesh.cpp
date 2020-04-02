@@ -73,6 +73,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	//Shadows------------------------------
 	if (material->recive_shadow)
 	{
+		// --------------------------------------------------------------------- 
 
 		material->ApplyShadows();
 		glBindVertexArray(mesh->vao);
@@ -84,20 +85,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 		material->shadow_shader->Unbind();
 
-		material->ApplyMaterial();
-		glBindVertexArray(mesh->vao);
-
-		SetUniform(material, camera);
-		// Uniforms --------------
-		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
-
-		// --------------------------------------------------------------------- 
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		material->used_shader->Unbind();
-
-		// --------------------------------------------------------------------- 
+		material->recive_shadow = false;
 	}
 	else
 	{
@@ -114,11 +102,10 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 		// --------------------------------------------------------------------- 
-
+		material->recive_shadow = true;
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	material->used_shader->Unbind();
 
 	if (transform->IsScaleNegative())

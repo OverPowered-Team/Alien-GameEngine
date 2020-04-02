@@ -263,7 +263,9 @@ void ResourceMaterial::ApplyMaterial()
 	used_shader->Bind();
 
 	if (recive_shadow)
+	{
 		used_shader->has_shadow = true;
+	}
 	// Bind textures
 	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 	{
@@ -511,8 +513,6 @@ void ResourceMaterial::ShaderInputsSegment()
 		break;
 	}
 	ImGui::Spacing();
-	if (ImGui::Checkbox("recive shadow", &recive_shadow))
-		recive_shadow ? false : true;
 
 }
 

@@ -251,6 +251,26 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
+			
+			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+			{
+				glViewport(0, 0, 1024, 1024);
+				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
+				glClear(GL_DEPTH_BUFFER_BIT);
+
+				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+				for (; it != to_draw.end(); ++it) {
+					if ((*it).second != nullptr) {
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
+					}
+				}
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			}
+			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
+			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
@@ -261,6 +281,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {

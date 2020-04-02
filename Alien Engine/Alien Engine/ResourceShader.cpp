@@ -334,7 +334,6 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	tmp_name.append("[%i]");
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
-
 		char cname[128];
 		sprintf_s(cname, tmp_name.c_str(), i);
 
@@ -612,66 +611,19 @@ void ResourceShader::DrawShadows()
 
 	for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
 	{
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, (*iter)->depthMapFBO);
-
-		glActiveTexture(GL_TEXTURE3);
+		glActiveTexture(GL_TEXTURE0);
 
 		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
-		SetUniform1i("depthMap", (*iter)->depthMap);
+
+		SetUniform1i("depthMap", 0);
 
 		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
 
-		/*float3 cameraPos = current_camera->GetCameraPosition();
-		float3 cameraViewDir = (*iter)->direction - current_camera->frustum.pos;
-
-		current_camera->SetCameraPosition((*iter)->position);
-		current_camera->Look((*iter)->direction);*/
-
 		SetUniformMat4f("lightSpaceMatrix", (*iter)->light->game_object_attached->transform->GetGlobalMatrix());
 
-		/*current_camera->SetCameraPosition(cameraPos);
-		current_camera->Look(cameraViewDir);*/
 		SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
 		SetUniformFloat3("lightPos", (*iter)->position);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-		/*ComponentCamera * current_camera = App->objects->current_viewport->GetCamera();
-		float4x4 lightProjection = current_camera->GetProjectionMatrix4f4();
-		float4x4 lightView = current_camera->GetViewMatrix4x4();
-		float4x4 lightSpaceMatrix = lightProjection * lightView;
-
-		SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);*/
-		/*char cname[128];
-		sprintf_s(cname, tmp_name.c_str(), i);*/
-
-		// All uniforms
-		//std::string cintensity = std::string(cname).append(".intensity");
-		//SetUniform1f(cintensity, (*iter)->intensity);
-
-		//// Variables Array 
-		//float3 variablesVec3[5] = { (*iter)->position,(*iter)->ambient, (*iter)->diffuse,(*iter)->specular, (*iter)->direction };
-
-		//std::string variablesLocation = std::string(cname).append(".dirLightProperties");
-		//SetUniformFloat3v(variablesLocation, variablesVec3, 5);
-
-		////change
-		//float2 size = App->objects->current_viewport->GetSize();
-		//ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
-
-		//float3 camera_position = current_camera->GetCameraPosition();
-		//float3 camera_direction = current_camera->frustum.front;
-
-		//current_camera->SetCameraPosition((*iter)->position);
-		//current_camera->Look((*iter)->direction);
-
-		//SetUniformMat4f("lightSpaceMatrix", current_camera->GetViewMatrix4x4());
 
 
-		//current_camera->SetCameraPosition(camera_position);
-		//current_camera->Look(camera_direction);
-
-		//++i;
 	}
 }
