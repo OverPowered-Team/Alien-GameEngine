@@ -166,6 +166,7 @@ public:
 	// scenes
 	void SaveScene(ResourceScene* scene, const char* force_with_path = nullptr);
 	void LoadScene(const char * name, bool change_scene = true);
+	void OpenCoScene(const char* name);
 	void CreateEmptyScene(ResourceScene* scene);
 
 	static bool SortByFamilyNumber(std::tuple<uint, u64, uint> pair1, std::tuple<uint, u64, uint> pair2);
@@ -210,7 +211,7 @@ public:
 	//Focus
 	u64 selected_ui = -1;
 
-	ResourceScene* current_scene = nullptr;
+	std::vector<ResourceScene*> current_scenes;
 
 	std::list<Alien*> current_scripts;
 

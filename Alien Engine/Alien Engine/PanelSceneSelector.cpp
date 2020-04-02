@@ -50,11 +50,13 @@ void PanelSceneSelector::OrganizeSave(const SceneSelectorState& state)
 
 void PanelSceneSelector::OrganizeSaveScene()
 {
-	if (App->objects->current_scene == nullptr) {
+	if (App->objects->current_scenes.empty()) {
 		OrganizeSave(SceneSelectorState::SAVE_AS_NEW);
 	}
 	else {
-		App->objects->SaveScene(App->objects->current_scene);
+		for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+			App->objects->SaveScene(*item);
+		}
 	}
 }
 
@@ -287,8 +289,13 @@ void PanelSceneSelector::MenuSaveCurrentScene()
 
 		ImGui::Spacing();
 
-		if (App->objects->current_scene != nullptr) {
-			ImGui::Text(App->file_system->GetBaseFileNameWithExtension(App->objects->current_scene->GetAssetsPath()).data());
+		if (!App->objects->current_scenes.empty()) {
+			if (App->objects->current_scenes.size() == 1) {
+				ImGui::Text(App->file_system->GetBaseFileNameWithExtension(App->objects->current_scenes[0]->GetAssetsPath()).data());
+			}
+			else {
+				ImGui::Text("Multiples scenes opened");
+			}
 		}
 		else {
 			ImGui::Text("Untitled*");
@@ -302,11 +309,13 @@ void PanelSceneSelector::MenuSaveCurrentScene()
 		ImGui::Spacing();
 
 		if (ImGui::Button("Save", { 65,20 })) {
-			if (App->objects->current_scene == nullptr) {
+			if (App->objects->current_scenes.empty()) {
 				SaveSceneAsNew();
 			}
 			else {
-				App->objects->SaveScene(App->objects->current_scene);
+				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+					App->objects->SaveScene(*item);
+				}
 			}
 			menu_save_current = false;
 		}

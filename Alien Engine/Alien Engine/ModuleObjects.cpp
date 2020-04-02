@@ -98,11 +98,17 @@ bool ModuleObjects::Start()
 
 	game_viewport = new Viewport(nullptr);
 #ifndef GAME_VERSION
-	GameObject* camera = new GameObject(base_game_object);
+	GameObject* scene_root = new GameObject();
+	scene_root->ID = App->resources->GetRandomID();
+	scene_root->is_static = true;
+	scene_root->SetName("Untitled");
+	base_game_object->children.push_back(scene_root);
+
+	GameObject* camera = new GameObject(scene_root);
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
 
-	GameObject* light = new GameObject(base_game_object);
+	GameObject* light = new GameObject(scene_root);
 	light->SetName("Directional Light");
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
@@ -1034,16 +1040,30 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 			scene->SetString("Scene.Name", "NONE");
 		}
 
-		if (!base_game_object->children.empty()) { // if base game objects has children, save them
+		// get scene root
+		GameObject* scene_root = nullptr;
+		if (current_scenes.empty() || to_load_scene == nullptr) {
+			scene_root = base_game_object->children[0];
+		}
+		else {
+			for (auto item = base_game_object->children.begin(); item != base_game_object->children.end(); ++item) {
+				if ((*item)->ID == to_load_scene->GetID()) {
+					scene_root = *item;
+					break;
+				}
+			}
+		}
+
+		if (!scene_root->children.empty()) { // if scene_root has children, save them
 			JSONArraypack* game_objects = scene->InitNewArray("Scene.GameObjects");
 
 			game_objects->SetAnotherNode();
 
-			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-			for (; item != base_game_object->children.end(); ++item) {
+			std::vector<GameObject*>::iterator item = scene_root->children.begin();
+			for (; item != scene_root->children.end(); ++item) {
 				if (*item != nullptr) {
 					SaveGameObject(*item, game_objects, 1);
-					if ((*item) != base_game_object->children.back())
+					if ((*item) != scene_root->children.back())
 						game_objects->SetAnotherNode();
 				}
 			}
@@ -1052,8 +1072,11 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		scene->FinishSave();
 		delete scene;
 		if (force_with_path == nullptr) {
-			current_scene = to_load_scene;
-			//std::experimental::filesystem::copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
+			if (current_scenes.empty()) {
+				scene_root->children[0]->SetName(to_load_scene->GetName());
+				scene_root->children[0]->ID = to_load_scene->GetID();
+				current_scenes.push_back(to_load_scene);
+			}
 			App->file_system->Copy(to_load_scene->GetAssetsPath(), to_load_scene->GetLibraryPath());
 		}
 	}
@@ -1090,11 +1113,17 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 			base_game_object->ID = 0;
 			base_game_object->is_static = true;
 
-			GameObject* scene_root = new GameObject();
-			scene_root->ID = App->resources->GetRandomID();
-			scene_root->is_static = true;
-			scene_root->SetName(name);
-			base_game_object->children.push_back(scene_root);
+			GameObject* scene_root = nullptr;
+			if (!change_scene) {
+				scene_root = base_game_object;
+			}
+			else {
+				scene_root = new GameObject();
+				scene_root->ID = to_load->GetID();
+				scene_root->is_static = true;
+				scene_root->SetName(name);
+				base_game_object->children.push_back(scene_root);
+			}
 
 			if (Time::IsInGameState()) {
 				CleanUpScriptsOnStop();
@@ -1112,7 +1141,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					GameObject* obj = new GameObject(true);
 					obj->scene_root = scene_root;
 					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
-					if (parentID != 0) {
+					if (parentID != scene_root->ID) {
 						std::vector<GameObject*>::iterator objects = objects_created.begin();
 						for (; objects != objects_created.end(); ++objects) {
 							if ((*objects)->ID == parentID) {
@@ -1155,12 +1184,79 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				}
 			}
 			if (change_scene) {
-				current_scene = to_load;
+				current_scenes.clear();
+				current_scenes.push_back(to_load);
 			}
 		}
 		else {
 			LOG_ENGINE("Error loading scene %s", path.data());
 		}
+	}
+}
+
+void ModuleObjects::OpenCoScene(const char* name)
+{
+	OPTICK_EVENT();
+	ResourceScene* to_load = App->resources->GetSceneByName(name);
+	if (to_load != nullptr) {
+
+		std::string path;
+		if (to_load != nullptr) {
+			path = to_load->GetLibraryPath();
+		}
+		else {
+			path = name;
+		}
+
+		JSON_Value* value = json_parse_file(path.data());
+		JSON_Object* object = json_value_get_object(value);
+
+		if (value != nullptr && object != nullptr) {
+			current_scenes.push_back(to_load);
+			GameObject* scene_root = new GameObject();
+			scene_root->ID = to_load->GetID();
+			scene_root->is_static = true;
+			scene_root->SetName(name);
+			base_game_object->children.push_back(scene_root);
+
+
+			JSONfilepack* scene = new JSONfilepack(path.data(), object, value);
+
+			JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
+
+			if (game_objects != nullptr) {
+				std::vector<GameObject*> objects_created;
+
+				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
+					GameObject* obj = new GameObject(true);
+					obj->scene_root = scene_root;
+					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
+					if (parentID != scene_root->ID) {
+						std::vector<GameObject*>::iterator objects = objects_created.begin();
+						for (; objects != objects_created.end(); ++objects) {
+							if ((*objects)->ID == parentID) {
+								obj->LoadObject(game_objects, *objects);
+								break;
+							}
+						}
+					}
+					else {
+						obj->LoadObject(game_objects, scene_root);
+					}
+					objects_created.push_back(obj);
+					game_objects->GetAnotherNode();
+				}
+				for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+				{
+					ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
+					if (def_mesh)
+						def_mesh->AttachSkeleton();
+				}
+				ReAttachUIScriptEvents();
+				delete scene;
+			}
+		}
+
 	}
 }
 
@@ -1173,7 +1269,8 @@ void ModuleObjects::CreateEmptyScene(ResourceScene* scene)
 		base_game_object->ID = 0;
 		base_game_object->is_static = true;
 
-		current_scene = scene;
+		current_scenes.clear();
+		current_scenes.push_back(scene);
 	}
 }
 
