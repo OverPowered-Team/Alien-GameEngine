@@ -151,6 +151,7 @@ void PanelScene::PanelLogic()
 					else {
 						prefab_parent = App->objects->GetSelectedObjects().front()->scene_root;
 					}
+					prefab_parent = App->objects->GetRoot(false);
 					prefab->ConvertToGameObjects(prefab_parent);
 					if (Time::IsInGameState()) {
 						Prefab::InitScripts(prefab_parent->children.back());

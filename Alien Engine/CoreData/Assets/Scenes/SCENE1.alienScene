@@ -9,7 +9,7 @@
                 "ParentID": "8630787970630141583",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -85,7 +85,7 @@
                 "ParentID": "8630787970630141583",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -95,7 +95,7 @@
                     {
                         "Type": 0,
                         "Position": [
-                            5.174346923828125,
+                            24.503719329833984,
                             0,
                             0
                         ],

@@ -173,6 +173,7 @@ public:
 	void SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number);
 
 	GameObject* GetRoot(bool ignore_prefab);
+	GameObject* GetGlobalRoot();
 	void CreateRoot();
 
 	void SwapReturnZ(bool get_save, bool delete_current);

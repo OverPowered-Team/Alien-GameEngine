@@ -88,9 +88,9 @@ void PanelHierarchy::PanelLogic()
 	ImGui::Spacing();
 
 	object_hovered = nullptr;
-	if (!App->objects->GetRoot(true)->children.empty()) {
-		std::vector<GameObject*>::iterator item = App->objects->GetRoot(true)->children.begin();
-		for (; item != App->objects->GetRoot(true)->children.end(); ++item)
+	if (!App->objects->GetGlobalRoot()->children.empty()) {
+		std::vector<GameObject*>::iterator item = App->objects->GetGlobalRoot()->children.begin();
+		for (; item != App->objects->GetGlobalRoot()->children.end(); ++item)
 		{
 			if (*item != nullptr)
 			{
