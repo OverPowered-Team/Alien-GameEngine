@@ -46,6 +46,7 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "ComponentAnimator.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -1146,6 +1147,13 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
 					OnPlay();
+					for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+					{
+						ComponentAnimator* anim = obj->GetComponent<ComponentAnimator>();
+						if (anim != nullptr) {
+							anim->OnPlay();
+						}
+					}
 				}
 			}
 			if (change_scene) {
