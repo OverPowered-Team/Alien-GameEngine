@@ -231,7 +231,8 @@ void ComponentAudioEmitter::OnEnable()
 {
 	Bank* bank = App->audio->GetBankByID(current_bank);
 	if (bank != nullptr)
-		audio_name = bank->events.at(current_event);
+		if (bank->events.find(current_event) != bank->events.end())
+			audio_name = bank->events.at(current_event);
 }
 
 void ComponentAudioEmitter::OnDisable()
