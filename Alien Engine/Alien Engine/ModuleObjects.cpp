@@ -26,6 +26,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentAudioEmitter.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
@@ -2015,6 +2016,8 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 {
 	GameObject* object = CreateEmptyGameObject(nullptr);
 	Component* comp = nullptr;
+	Component* comp_emitter = nullptr;
+
 	switch (type)
 	{
 	case ComponentType::CANVAS: {
@@ -2035,9 +2038,12 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	case ComponentType::UI_BUTTON: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Button");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
+		
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
@@ -2053,18 +2059,22 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	case ComponentType::UI_CHECKBOX: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentCheckbox(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Checkbox");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
 	case ComponentType::UI_SLIDER: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentSlider(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Slider");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
