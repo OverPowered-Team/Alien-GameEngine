@@ -27,7 +27,7 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 	body->setActivationState(DISABLE_DEACTIVATION);
 	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
 
-	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
+	controller = new MyKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
 	controller->setUp(btVector3(0.f, 1.f, 0.f));
 	controller->setGravity(btVector3(0.f, -gravity, 0.f));
 	jump_speed = controller->getJumpSpeed();
@@ -151,6 +151,7 @@ void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
 
+	to_save->SetNumber("CharacterLayer", collider->layer);
 	to_save->SetFloat3("CharacterOffset", character_offset);
 	to_save->SetNumber("CharacterRadius", character_radius);
 	to_save->SetNumber("CharacterHeight", character_height);
@@ -160,6 +161,7 @@ void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 {
+	collider->layer = to_load->GetNumber("CharacterLayer");
 	SetCharacterOffset(to_load->GetFloat3("CharacterOffset"));
 	SetCharacterRadius(to_load->GetNumber("CharacterRadius"));
 	SetCharacterHeight(to_load->GetNumber("CharacterHeight"));
@@ -271,6 +273,5 @@ void ComponentCharacterController::Reset()
 {
 
 }
-
 
 

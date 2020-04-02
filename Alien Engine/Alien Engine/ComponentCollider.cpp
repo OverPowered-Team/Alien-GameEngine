@@ -141,6 +141,7 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 
+	to_save->SetNumber("Layer", layer);
 	to_save->SetFloat3("Center", center);
 	to_save->SetBoolean("IsTrigger", is_trigger);
 	to_save->SetNumber("Bouncing", bouncing);
@@ -156,6 +157,7 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 		OnDisable();
 	}
 
+	layer = to_load->GetNumber("layer");
 	SetCenter(to_load->GetFloat3("Center"));
 	SetIsTrigger(to_load->GetBoolean("IsTrigger"));
 	SetBouncing( to_load->GetNumber("Bouncing"));
@@ -191,7 +193,8 @@ void ComponentCollider::Update()
 		}
 	}
 
-	
+	if (aux_body) 
+		aux_body->activate(true);
 	detector->setWorldTransform(go_bullet_transform);
 	detector->setActivationState(DISABLE_DEACTIVATION);
 

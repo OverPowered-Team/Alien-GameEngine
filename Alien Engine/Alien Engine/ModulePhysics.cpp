@@ -434,10 +434,10 @@ bool MyDispatcher::needsCollision(const btCollisionObject* obj_0, const btCollis
 
 btBroadphasePair* MyGhostPairCallback::addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
 {
-	btCollisionObject* colObj0 = (btCollisionObject*)proxy0->m_clientObject;
-	btCollisionObject* colObj1 = (btCollisionObject*)proxy1->m_clientObject;
-	btGhostObject* ghost0 = btGhostObject::upcast(colObj0);
-	btGhostObject* ghost1 = btGhostObject::upcast(colObj1);
+	btCollisionObject* obj_0 = (btCollisionObject*)proxy0->m_clientObject;
+	btCollisionObject* obj_1 = (btCollisionObject*)proxy1->m_clientObject;
+	btGhostObject* ghost0 = btGhostObject::upcast(obj_0);
+	btGhostObject* ghost1 = btGhostObject::upcast(obj_1);
 
 	if (Time::IsPlaying())
 	{
@@ -448,4 +448,19 @@ btBroadphasePair* MyGhostPairCallback::addOverlappingPair(btBroadphaseProxy* pro
 	}
 
 	return 0;
+}
+
+
+MyKinematicCharacterController::MyKinematicCharacterController(btPairCachingGhostObject* ghostObject, btConvexShape* convexShape, btScalar stepHeight, const btVector3& up):
+	btKinematicCharacterController(ghostObject, convexShape, stepHeight, up) {}
+
+bool MyKinematicCharacterController::needsCollision(const btCollisionObject* obj_0, const btCollisionObject* obj_1)
+{
+	ComponentCollider* coll_0 = (ComponentCollider*)obj_0->getUserPointer();
+	ComponentCollider* coll_1 = (ComponentCollider*)obj_1->getUserPointer();
+
+	if (coll_0 == nullptr || coll_1 == nullptr)
+		return true;
+
+	return ModulePhysics::CanCollide(coll_0->layer, coll_1->layer);
 }

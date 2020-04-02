@@ -10,9 +10,10 @@ class ComponentMesh;
 class ComponentRigidBody;
 class ComponentVehicle;
 class ComponentTransform;
-class btKinematicCharacterController;
+class MyKinematicCharacterController;
 class btPairCachingGhostObject;
 class Alien;
+
 
 class __declspec(dllexport) ComponentCharacterController : public Component
 {
@@ -71,7 +72,7 @@ protected:
 protected:
 	ComponentTransform* transform = nullptr;
 	ComponentCollider* collider = nullptr;
-	btKinematicCharacterController* controller = nullptr;
+	MyKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
 	btPairCachingGhostObject* detector = nullptr;
 	btCapsuleShape* shape = nullptr;

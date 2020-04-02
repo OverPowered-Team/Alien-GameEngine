@@ -94,9 +94,9 @@ void ComponentRigidBody::Update()
 		btQuaternion rotation = bt_transform.getRotation();
 		btVector3 position = (collider) ? bt_transform.getOrigin() - quatRotate(rotation, ToBtVector3(collider->center)) : bt_transform.getOrigin() ;
 
+		body->forceActivationState(DISABLE_DEACTIVATION);
 		transform->SetGlobalPosition(float3(position));
 		transform->SetGlobalRotation(math::Quat(rotation));
-		body->activate(DISABLE_DEACTIVATION);
 	}
 	else
 	{

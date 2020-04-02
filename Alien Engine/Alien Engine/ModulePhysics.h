@@ -5,7 +5,9 @@
 #include "Bullet/include/btBulletDynamicsCommon.h"
 #include "Bullet/include/LinearMath/btVector3.h"
 #include "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
+#include "BulletDynamics\Character\btKinematicCharacterController.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
+
 #include <list>
 #include <vector>
 
@@ -34,6 +36,13 @@ public:
 	btBroadphasePair* addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1);
 };
 
+class MyKinematicCharacterController : public btKinematicCharacterController
+{
+public:
+	MyKinematicCharacterController(btPairCachingGhostObject* ghostObject, btConvexShape* convexShape, btScalar stepHeight, const btVector3& up = btVector3(1.0, 0.0, 0.0));
+	bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+};
+
 class ModulePhysics : public Module
 {
 	friend class Application;
@@ -45,6 +54,8 @@ class ModulePhysics : public Module
 	friend class ComponentConvexHullCollider;
 	friend class PanelPhysics;
 	friend class MyDispatcher;
+	friend class MyGhostPairCallback;
+	friend class MyKinematicCharacterController;
 
 public:
 	ModulePhysics( bool start_enabled = true);
