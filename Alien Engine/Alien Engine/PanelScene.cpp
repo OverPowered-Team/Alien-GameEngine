@@ -139,11 +139,23 @@ void PanelScene::PanelLogic()
 				u64 ID = App->resources->GetIDFromAlienPath(path.data());
 				if (ID != 0) {
 					ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(ID);
-					prefab->ConvertToGameObjects(App->objects->GetRoot(false));
-					if (Time::IsInGameState()) {
-						Prefab::InitScripts(App->objects->GetRoot(false)->children.back());
+					GameObject* prefab_parent = nullptr;
+					if (App->objects->current_scenes.empty() || App->objects->GetSelectedObjects().empty()) {
+						if (App->objects->prefab_scene) {
+							prefab_parent = App->objects->GetRoot(false);
+						}
+						else {
+							prefab_parent = App->objects->GetRoot(true)->children.front();
+						}
 					}
-					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
+					else {
+						prefab_parent = App->objects->GetSelectedObjects().front()->scene_root;
+					}
+					prefab->ConvertToGameObjects(prefab_parent);
+					if (Time::IsInGameState()) {
+						Prefab::InitScripts(prefab_parent->children.back());
+					}
+					ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, prefab_parent->children.back());
 				}
 			}
 

@@ -102,6 +102,7 @@ bool ModuleObjects::Start()
 	scene_root->ID = App->resources->GetRandomID();
 	scene_root->is_static = true;
 	scene_root->SetName("Untitled");
+	scene_root->scene_root = scene_root;
 	base_game_object->children.push_back(scene_root);
 
 	GameObject* camera = new GameObject(scene_root);
@@ -1122,6 +1123,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				scene_root->ID = to_load->GetID();
 				scene_root->is_static = true;
 				scene_root->SetName(name);
+				scene_root->scene_root = scene_root;
 				base_game_object->children.push_back(scene_root);
 			}
 
@@ -1217,6 +1219,7 @@ void ModuleObjects::OpenCoScene(const char* name)
 			scene_root->ID = to_load->GetID();
 			scene_root->is_static = true;
 			scene_root->SetName(name);
+			scene_root->scene_root = scene_root;
 			base_game_object->children.push_back(scene_root);
 
 
