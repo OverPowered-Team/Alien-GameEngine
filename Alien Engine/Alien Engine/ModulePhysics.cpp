@@ -12,6 +12,8 @@
 #include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 #include "ModuleInput.h"
+//#include "RandomHelper.h"
+#include "ModuleFileSystem.h"
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -37,29 +39,241 @@ ModulePhysics::~ModulePhysics()
 	delete collision_config;
 	delete ghost_pair_callback;
 
+
+	DeleteLayersTable();
+}
+
+void ModulePhysics::CreateLayersTable()
+{
+	int size = layers.size();
+
+	layers_table = new bool* [size];
+	for (int i = 0; i < size; i++)
+		layers_table[i] = new bool[size];
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			layers_table[i][j] = true;
+}
+
+void ModulePhysics::DeleteLayersTable()
+{
+	int size = layers.size();
+
+	for (int i = 0; i < size; i++)
+		delete[] layers_table[i];
+
 	delete[] layers_table;
 }
 
-void ModulePhysics::SetGravity(const float3 gravity)
+bool ModulePhysics::CollisionLayerExist(std::string layer)
 {
-	this->gravity = gravity;
-	if (world)
-		world->setGravity(ToBtVector3(gravity));
+	return (std::find(layers.begin(), layers.end(), layer) != layers.end());
 }
 
-const float3 ModulePhysics::GetGravity()
+void ModulePhysics::AddCollisionLayer(std::string layer)
 {
-	return gravity;
+	int size = layers.size();
+
+	if (CollisionLayerExist(layer) == false)
+	{
+		// Create Aux ---------------------------------
+
+		bool** aux_table = new bool* [size];
+		for (int i = 0; i < size; i++)
+			aux_table[i] = new bool[size];
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				aux_table[i][j] = layers_table[i][j];
+
+		// Create New Table ----------------------------
+
+		DeleteLayersTable();
+		layers.push_back(layer);
+		CreateLayersTable();
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				layers_table[i][j] = aux_table[i][j];
+
+		// Delete Aux ----------------------------------
+
+		for (int i = 0; i < size; i++)
+			delete[] aux_table[i];
+
+		delete[] aux_table;
+	}
 }
 
-void ModulePhysics::SaveConfig(JSONfilepack*& config)
+void ModulePhysics::RemoveCollisionLayer(std::string layer)
 {
-	config->SetFloat3("Gravity", gravity);
+	int size = layers.size();
+	int to_delete = -1;
+
+	if (CollisionLayerExist(layer) == true)
+	{
+		// Find index to Delete ------------------------
+		
+		for (int i = 0; i < size; ++i)
+		{
+			if (layer == layers[i])
+			{
+				to_delete = i;
+				break;
+			}
+		}
+
+		if (to_delete == -1) return;
+
+		// Create Aux ---------------------------------
+
+		bool** aux_table = new bool* [size];
+		for (int i = 0; i < size; i++)
+			aux_table[i] = new bool[size];
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				aux_table[i][j] = layers_table[i][j];
+
+		// Create New Table ----------------------------
+
+		DeleteLayersTable();
+		layers.erase(std::find(layers.begin(), layers.end(), layer));
+		CreateLayersTable();
+
+		int aux_i = 0, aux_j = 0;
+
+		for (int i = 0; i < size -1; ++i)
+		{
+			if (to_delete == i) 
+				++aux_i;
+
+			for (int j = 0; j < size - 1; ++j)
+			{
+				if (to_delete == j) 
+					++aux_j;
+
+				layers_table[i][j] = aux_table[aux_i][aux_j];
+
+				++aux_j;
+			}
+
+			++aux_i;
+			aux_j = 0;
+		}
+
+		// Delete Aux ----------------------------------
+
+		for (int i = 0; i < size; i++)
+			delete[] aux_table[i];
+
+		delete[] aux_table;
+
+	}
 }
 
-void ModulePhysics::LoadConfig(JSONfilepack*& config)
+void ModulePhysics::AddCollisionLayer(std::string layer)
 {
-	SetGravity(config->GetFloat3("Gravity"));
+	int size = layers.size();
+
+	if (CollisionLayerExist(layer) == false)
+	{
+		// Create Aux ---------------------------------
+
+		bool** aux_table = new bool* [size];
+		for (int i = 0; i < size; i++)
+			aux_table[i] = new bool[size];
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				aux_table[i][j] = layers_table[i][j];
+
+		// Create New Table ----------------------------
+
+		DeleteLayersTable();
+		layers.push_back(layer);
+		CreateLayersTable();
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				layers_table[i][j] = aux_table[i][j];
+
+		// Delete Aux ----------------------------------
+
+		for (int i = 0; i < size; i++)
+			delete[] aux_table[i];
+
+		delete[] aux_table;
+	}
+}
+
+void ModulePhysics::RemoveCollisionLayer(std::string layer)
+{
+	int size = layers.size();
+	int to_delete = -1;
+
+	if (CollisionLayerExist(layer) == true)
+	{
+		// Find index to Delete ------------------------
+		
+		for (int i = 0; i < size; ++i)
+		{
+			if (layer == layers[i])
+			{
+				to_delete = i;
+				break;
+			}
+		}
+
+		if (to_delete == -1) return;
+
+		// Create Aux ---------------------------------
+
+		bool** aux_table = new bool* [size];
+		for (int i = 0; i < size; i++)
+			aux_table[i] = new bool[size];
+
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				aux_table[i][j] = layers_table[i][j];
+
+		// Create New Table ----------------------------
+
+		DeleteLayersTable();
+		layers.erase(std::find(layers.begin(), layers.end(), layer));
+		CreateLayersTable();
+
+		int aux_i = 0, aux_j = 0;
+
+		for (int i = 0; i < size -1; ++i)
+		{
+			if (to_delete == i) 
+				++aux_i;
+
+			for (int j = 0; j < size - 1; ++j)
+			{
+				if (to_delete == j) 
+					++aux_j;
+
+				layers_table[i][j] = aux_table[aux_i][aux_j];
+
+				++aux_j;
+			}
+
+			++aux_i;
+			aux_j = 0;
+		}
+
+		// Delete Aux ----------------------------------
+
+		for (int i = 0; i < size; i++)
+			delete[] aux_table[i];
+
+		delete[] aux_table;
+
+	}
+
 }
 
 bool ModulePhysics::Init()
@@ -91,24 +305,87 @@ bool ModulePhysics::Start()
 {
 	LOG_ENGINE("Creating Physics environment");
 
-	layers.push_back("Default");
-	layers.push_back("Player");
-	layers.push_back("Arrow");
-	layers.push_back("Wall");
-	layers.push_back("Ground");
+	if (App->file_system->Exists(FILE_PHYSICS)) 
+	{
 
+		JSON_Value* physics_value = json_parse_file(FILE_PHYSICS);
+		JSON_Object* physics_object = json_value_get_object(physics_value);
 
-	int size = layers.size();
-	layers_table = new bool* [size];
-	for (int i = 0; i < size; i++)
-		layers_table[i] = new bool[size];
+		if (physics_value != nullptr && physics_object != nullptr)
+		{
+			JSONfilepack* physics_config = new JSONfilepack(FILE_PHYSICS, physics_object, physics_value);
 
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
-			layers_table[i][j] = true;
+			// Read All Layer Names -------------------------------
+
+			JSONArraypack* layers_array = physics_config->GetArray("Layers");
+
+			for (uint i = 0; i < layers_array->GetArraySize(); ++i) {
+				layers.push_back(layers_array->GetString("Layer"));
+				layers_array->GetAnotherNode();
+			}
+
+			// Create Layers Table -------------------------------
+
+			CreateLayersTable();
+
+			// Get Config for every Layer ------------------------
+
+			int size = layers.size();
+
+			for (uint i = 0; i < size; ++i)
+			{
+				for (uint j = 0; j < size; ++j)
+				{
+					layers_table[i][j] = physics_config->GetBoolean((layers[i]+ "." +layers[j]).c_str());
+				}
+			}
+			
+			delete physics_config;
+		}
+	}
 
 	return true;
 }
+
+bool ModulePhysics::CleanUp()
+{
+	remove(FILE_PHYSICS);
+
+	JSON_Value* physics_value = json_value_init_object();
+	JSON_Object* physics_object = json_value_get_object(physics_value);
+	json_serialize_to_file_pretty(physics_value, FILE_PHYSICS);
+
+	if (physics_value != nullptr && physics_object != nullptr)
+	{
+		JSONfilepack* physics_config = new JSONfilepack(FILE_PHYSICS, physics_object, physics_value);
+		int size = layers.size();
+
+		physics_config->StartSave();
+
+		JSONArraypack* layers_array = physics_config->InitNewArray("Layers");
+
+		for (int i = 0; i < size; ++i)
+		{
+			layers_array->SetAnotherNode();
+			layers_array->SetString("Layer", layers[i].c_str());
+		}
+
+		for (uint i = 0; i < size; ++i)
+		{
+			for (uint j = 0; j < size; ++j)
+			{
+				physics_config->SetBoolean((layers[i] + "." + layers[j]).c_str(), layers_table[i][j]);
+			}
+		}
+
+		physics_config->FinishSave();
+
+		delete physics_config;
+	}
+
+	return true;
+}
+
 
 // ---------------------------------------------------------
 update_status ModulePhysics::PreUpdate(float dt)
@@ -133,10 +410,26 @@ update_status ModulePhysics::PostUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-bool ModulePhysics::CleanUp()
+void ModulePhysics::SetGravity(const float3 gravity)
 {
+	this->gravity = gravity;
+	if (world)
+		world->setGravity(ToBtVector3(gravity));
+}
 
-	return true;
+const float3 ModulePhysics::GetGravity()
+{
+	return gravity;
+}
+
+void ModulePhysics::SaveConfig(JSONfilepack*& config)
+{
+	config->SetFloat3("Gravity", gravity);
+}
+
+void ModulePhysics::LoadConfig(JSONfilepack*& config)
+{
+	SetGravity(config->GetFloat3("Gravity"));
 }
 
 bool ModulePhysics::CanCollide(int layer_0, int layer_1)

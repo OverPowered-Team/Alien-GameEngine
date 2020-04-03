@@ -183,27 +183,8 @@ bool ComponentCharacterController::DrawInspector()
 	{
 		ImGui::Spacing();
 
-		ImGui::Title("Layer");
+		collider->DrawLayersCombo();
 
-		if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + App->physics->layers.at(collider->layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
-		{
-			for (int n = 0; n < App->physics->layers.size(); ++n)
-			{
-				bool is_selected = (collider->layer == n);
-
-				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
-				{
-					collider->layer = n;
-				}
-
-				if (is_selected)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}
 		ImGui::Title("Offset", 1);				if (ImGui::DragFloat3("##center", current_character_offset.ptr(), 0.05f)) { SetCharacterOffset(current_character_offset); }
 		ImGui::Title("Radius", 1);				if (ImGui::DragFloat("##radius", &current_character_radius, 0.05f, 0.1f, FLT_MAX)) { SetCharacterRadius(current_character_radius); }
 		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &current_character_height, 0.05f, 0.1f, FLT_MAX)) { SetCharacterHeight(current_character_height); }

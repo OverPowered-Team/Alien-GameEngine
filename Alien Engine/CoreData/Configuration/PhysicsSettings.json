@@ -1,0 +1,54 @@
+{
+    "Layers": [
+        {
+            "Layer": "Default"
+        },
+        {
+            "Layer": "Arrow"
+        },
+        {
+            "Layer": "Wall"
+        },
+        {
+            "Layer": "Enemy"
+        },
+        {
+            "Layer": "Player"
+        }
+    ],
+    "Default": {
+        "Default": true,
+        "Arrow": true,
+        "Wall": true,
+        "Enemy": true,
+        "Player": true
+    },
+    "Arrow": {
+        "Default": true,
+        "Arrow": true,
+        "Wall": true,
+        "Enemy": true,
+        "Player": true
+    },
+    "Wall": {
+        "Default": true,
+        "Arrow": true,
+        "Wall": true,
+        "Enemy": true,
+        "Player": true
+    },
+    "Enemy": {
+        "Default": true,
+        "Arrow": true,
+        "Wall": true,
+        "Enemy": true,
+        "Player": true
+    },
+    "Player": {
+        "Default": true,
+        "Arrow": true,
+        "Wall": true,
+        "Enemy": true,
+        "Player": true
+    }
+}

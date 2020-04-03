@@ -62,6 +62,10 @@ public:
 
 	~ModulePhysics();
 
+	bool CollisionLayerExist(std::string layer);
+	void AddCollisionLayer(std::string layer);
+	void RemoveCollisionLayer(std::string layer);
+
 	void SetGravity(const float3 gravity);
 	const float3 GetGravity();
 
@@ -74,6 +78,8 @@ private:
 
 	void LoadConfig(JSONfilepack*& config);
 	void SaveConfig(JSONfilepack*& config);
+	void SaveCollisionLayers();
+	void LoadCollisionLayers();
 
 	bool Init();
 	bool Start();
@@ -103,6 +109,9 @@ private:
 
 	void AddVehicle(btRaycastVehicle* vehicle);
 	void RemoveVehicle(btRaycastVehicle* vehicle);
+
+	void CreateLayersTable();
+	void DeleteLayersTable();
 
 public:
 

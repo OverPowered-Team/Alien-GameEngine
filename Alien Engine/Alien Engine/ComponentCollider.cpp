@@ -191,12 +191,11 @@ void ComponentCollider::Update()
 		{
 			aux_body->setWorldTransform(go_bullet_transform);
 		}
+
+		aux_body->activate(true);
 	}
 
-	if (aux_body) 
-		aux_body->activate(true);
 	detector->setWorldTransform(go_bullet_transform);
-	detector->setActivationState(DISABLE_DEACTIVATION);
 
 	if (!alien_scripts.empty() && Time::IsPlaying())
 	{
@@ -371,27 +370,7 @@ bool ComponentCollider::DrawInspector()
 	{
 		ImGui::Spacing();
 
-		ImGui::Title("Layer");
-
-		if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + App->physics->layers.at(layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
-		{
-			for (int n = 0; n < App->physics->layers.size(); ++n)
-			{
-				bool is_selected = (layer == n);
-
-				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
-				{
-					layer = n;
-				}
-
-				if (is_selected)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}
+		DrawLayersCombo();
 
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.05f)) { SetCenter(current_center); }
 
@@ -414,6 +393,31 @@ bool ComponentCollider::DrawInspector()
 	ImGui::PopID();
 
 	return true;
+}
+
+void ComponentCollider::DrawLayersCombo()
+{
+	ImGui::Title("Layer");
+
+	if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + App->physics->layers.at(layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
+	{
+		for (int n = 0; n < App->physics->layers.size(); ++n)
+		{
+			bool is_selected = (layer == n);
+
+			if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
+			{
+				layer = n;
+			}
+
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
 }
 
 void ComponentCollider::HandleAlienEvent(const AlienEvent& e)

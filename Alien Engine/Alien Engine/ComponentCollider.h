@@ -61,6 +61,7 @@ protected:
 	void OnDisable();
 
 	bool DrawInspector();
+	void DrawLayersCombo();
 	void HandleAlienEvent(const AlienEvent& e);
 
 	virtual void DrawSpecificInspector() {}

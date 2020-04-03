@@ -49,6 +49,7 @@ struct aiFileIO;
 // -------DLL Paths--------
 
 #define FILE_TAGS "Configuration/Tags/tags.alienTags"
+#define FILE_PHYSICS "Configuration/PhysicsSettings.json"
 #define BUILD_SETTINGS_PATH "Configuration/BuildSettings.alienBuild"
 #define BUILD_EXE_PATH "../Alien Engine/EngineBuild/Alien Engine.exe"
 #define BUILD_DIRECT_ACCESS_PATH "../Alien Engine/EngineBuild/DirectAccess.lnk"
