@@ -213,25 +213,21 @@ void PanelScene::PanelLogic()
 void PanelScene::GuizmosLogic()
 {
 	if (!App->objects->GetSelectedObjects().empty()) {
-		bool block_move = false;
 		float4x4 trans = float4x4::zero();
 		std::list<GameObject*> selected = App->objects->GetSelectedObjects();
-		auto item = selected.begin();
-		for (; item != selected.end(); ++item) {
+		
+		for (auto item = selected.begin(); item != selected.end(); ++item) {
 			if (*item != nullptr) {
 				if ((*item)->is_static) {
-					block_move = true;
+					return;
 				}
 				trans += (*item)->GetComponent<ComponentTransform>()->global_transformation;
 			}
 		}
 
-		float4x4 view_transposed = App->camera->fake_camera->frustum.ViewMatrix();
-		view_transposed.Transpose();
-		float4x4 projection_transposed = App->camera->fake_camera->frustum.ProjectionMatrix();
-		projection_transposed.Transpose();
-		float4x4 object_transform_matrix = trans / selected.size();
-		object_transform_matrix.Transpose();
+		float4x4 view_transposed = float4x4(App->camera->fake_camera->frustum.ViewMatrix()).Transposed();
+		float4x4 projection_transposed = float4x4(App->camera->fake_camera->frustum.ProjectionMatrix()).Transposed();
+		float4x4 object_transform_matrix = float4x4(trans / selected.size()).Transposed();
 		float4x4 delta_matrix;
 
 		ImGuizmo::SetRect(viewport_min.x, viewport_min.y, current_viewport_size.x, current_viewport_size.y);
@@ -240,32 +236,41 @@ void PanelScene::GuizmosLogic()
 		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation, guizmo_mode, object_transform_matrix.ptr(), delta_matrix.ptr());
 		static bool guizmo_return = true;
 		static bool duplicate = false;
-		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && !block_move && ImGui::IsWindowFocused())
+		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && ImGui::IsWindowFocused())
 		{
 			if (!duplicate && (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)) {
 				duplicate = true;
 				App->objects->DuplicateObjects();
 			}
 			GameObject* root = App->objects->GetRoot(true);
-			item = selected.begin();
-			for (; item != selected.end(); ++item) {
-				if (*item != nullptr) {
-					if (guizmo_return) {
-						ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, (*item)->GetComponent<ComponentTransform>());
+			if (selected.size() > 1)
+			{
+				for (auto item = selected.begin(); item != selected.end(); ++item) {
+					if (*item != nullptr) {
+						if (guizmo_return) {
+							ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, (*item)->transform);
+						}
+						if ((*item)->parent != root)
+						{
+							ComponentTransform* parent_transform = (ComponentTransform*)(*item)->parent->transform;
+							(*item)->transform->SetGlobalTransformation(parent_transform->global_transformation.Inverted() * delta_matrix.Transposed() * (*item)->transform->global_transformation);
+						}
+						else {
+							(*item)->transform->SetGlobalTransformation(delta_matrix.Transposed() * (*item)->transform->global_transformation);
+						}
 					}
-					if ((*item)->parent != root)
-					{
-						ComponentTransform* parent_transform = (ComponentTransform*)(*item)->parent->GetComponent(ComponentType::TRANSFORM);
-						(*item)->GetComponent<ComponentTransform>()->SetGlobalTransformation(parent_transform->global_transformation.Inverted() * delta_matrix.Transposed() * (*item)->GetComponent<ComponentTransform>()->global_transformation);
+					if (guizmo_return && (*item) == selected.back()) {
+						guizmo_return = false;
 					}
-					else {
-						(*item)->GetComponent<ComponentTransform>()->SetGlobalTransformation(delta_matrix.Transposed() * (*item)->GetComponent<ComponentTransform>()->global_transformation);
-					}
-				}
-				if (guizmo_return && (*item) == selected.back()) {
-					guizmo_return = false;
 				}
 			}
+			else
+			{
+				GameObject* selected_object = (*selected.begin());
+				ComponentTransform* parent_transform = selected_object->parent->transform;
+				selected_object->transform->SetGlobalTransformation(parent_transform->global_transformation.Inverted() * object_transform_matrix.Transposed());
+			}
+			
 		}
 		else if (!guizmo_return) {
 			guizmo_return = true;
@@ -300,4 +305,5 @@ void PanelScene::GuizmosControls()
 	{
 		guizmo_mode = ImGuizmo::MODE::LOCAL;
 	}
+
 }
