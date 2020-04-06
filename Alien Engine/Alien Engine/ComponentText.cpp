@@ -31,6 +31,7 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 	ui_type = ComponentType::UI_TEXT;
 	tabbable = false;
+	text_background.color = Color::White();
 
 	font->IncreaseReferences();
 }
@@ -67,13 +68,25 @@ bool ComponentText::DrawInspector()
 			text = text_str;
 		}
 
+		static bool set_Z = true;
+		static Color col = current_color;
+		if (ImGui::ColorEdit4("Color", &col, ImGuiColorEditFlags_Float)) {
+			if (set_Z)
+				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
+			set_Z = false;
+			current_color = col;
+		}
+		else if (!set_Z && ImGui::IsMouseReleased(0)) {
+			set_Z = true;
+		}
+
 		static bool set_bg_Z = true;
-		static Color bg_col;
-		if (ImGui::ColorEdit4("##Color", &bg_col, ImGuiColorEditFlags_Float)) {
+		static Color bg_col = text_background.color;
+		if (ImGui::ColorEdit4("Background Color", &bg_col, ImGuiColorEditFlags_Float)) {
 			if (set_bg_Z)
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 			set_bg_Z = false;
-			current_color = bg_col;
+			text_background.color = bg_col;
 		}
 		else if (!set_bg_Z && ImGui::IsMouseReleased(0)) {
 			set_bg_Z = true;
@@ -110,8 +123,9 @@ bool ComponentText::DrawInspector()
 
 		ImGui::Separator();
 
-		ImGui::SetNextItemWidth(150); ImGui::DragInt("Width", &width, 5.f); ImGui::SameLine(); ImGui::SetNextItemWidth(150);
-		ImGui::DragFloat("Interlineal", &interlineal, 0.25f);
+		ImGui::SetNextItemWidth(100); ImGui::DragInt("Width", &width, 5.f); ImGui::SameLine(); ImGui::SetNextItemWidth(100);
+		ImGui::DragFloat("Interlineal", &interlineal, 0.25f); ImGui::SameLine(); ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Background", &text_background.visible);
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -132,6 +146,7 @@ void ComponentText::Draw(bool isGame)
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
 	float2 scale = float2(matrix[0][0], matrix[1][1]);
+	float4x4 proj_mat;
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
@@ -141,17 +156,17 @@ void ComponentText::Draw(bool isGame)
 	glAlphaFunc(GL_GREATER, 0.0f);
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		font->text_ortho->Bind();
-		font->text_ortho->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
+		font->text_shader->Bind();
+		font->text_shader->SetUniform1i("isGame", isGame);
+		font->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 
-		glm::mat4 projection;
 		#ifndef GAME_VERSION
-		projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
+		glm::mat4 projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
 		#else
 		projection = glm::ortho(0.0f, (float)App->window->width, 0.0f, (float)App->window->height);
 		#endif
 
-		float4x4 proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
+		proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
 			projection[1][0], projection[1][1], projection[1][2], projection[1][3],
 			projection[2][0], projection[2][1], projection[2][2], projection[2][3],
 			projection[3][0], projection[3][1], projection[3][2], projection[3][3]);
@@ -172,11 +187,12 @@ void ComponentText::Draw(bool isGame)
 		y = origin.y * App->window->height;
 		#endif
 
-		font->text_ortho->SetUniformMat4f("projection", proj_mat);
+		font->text_shader->SetUniformMat4f("projection", proj_mat);
 	}
 	else
 	{
 		font->text_shader->Bind();
+		font->text_shader->SetUniform1i("isGame", isGame);
 		font->text_shader->SetUniformFloat3("textColor", float3(current_color.r, current_color.g, current_color.b));
 		font->text_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
 		font->text_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
@@ -206,6 +222,7 @@ void ComponentText::Draw(bool isGame)
 	// First text pos and second line size
 	std::vector<int> lines_current_size;
 	std::vector<int> current_line_pos;
+	int max_lines = 1;
 
 	for (int i = 0; i < text.size(); ++i) {
 		Character ch = font->fontData.charactersMap[text[i]];
@@ -245,12 +262,14 @@ void ComponentText::Draw(bool isGame)
 						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance);
 						current_line_pos.push_back(aux);
 						current_size = 0;
+						max_lines++;
 					}
 					else if (aux_c != (text.end() - 1) && (*aux_c) == '/' && *(aux_c + 1) == 'n')
 					{
 						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance - font->fontData.charactersMap[*(aux_c + 1)].advance);
 						current_line_pos.push_back(aux);
 						current_size = 0;
+						max_lines++;
 					}
 					else if (aux_c != text.begin() && *(aux_c - 1) == '/' && *aux_c == 'n')
 					{
@@ -363,30 +382,14 @@ void ComponentText::Draw(bool isGame)
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
 
-		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), vertex);
 		glBindBuffer(GL_ARRAY_BUFFER, uvID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		//Render loop line
-		float3 pos = transform->GetGlobalPosition();
-
-#ifndef GAME_VERSION
-		if (!isGame)
-		{
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(pos.x, pos.y, pos.z);
-			glVertex3f(pos.x + width * scale.x, pos.y, pos.z);
-			glVertex3f(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
-			glVertex3f(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
-			glEnd();
-		}
-#endif
+	
 		if (isGame && App->renderer3D->actual_game_camera != nullptr && align != TextAlign::LEFT)
 		{
 			pos_x += ch.advance * scale.x * factor_x;
@@ -423,10 +426,40 @@ void ComponentText::Draw(bool isGame)
 			}
 		}
 	}
-	
+
 	font->text_shader->Unbind();
-	glBindVertexArray(0);
+	font->background_shader->Bind();
+
+	//Render loop line
+	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+		font->background_shader->SetUniform1i("isGame", isGame);
+		font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
+		font->background_shader->SetUniformMat4f("projection", proj_mat);
+	}
+	else
+	{
+		font->background_shader->SetUniform1i("isGame", isGame);
+		font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
+		font->background_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+		font->background_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+	}
+
+	float3 pos = transform->GetGlobalPosition();
+	float3 back_vertex[4];
+	back_vertex[0] = float3(pos.x, pos.y, matrix[2][3]);
+	back_vertex[1] = float3(pos.x + width * scale.x, pos.y, matrix[2][3]);
+	back_vertex[2] = float3(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y * max_lines, matrix[2][3]);
+	back_vertex[3] = float3(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y * max_lines, matrix[2][3]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
+
+	// Render quad
+	glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+	font->background_shader->Unbind();
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
 
 	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
@@ -451,6 +484,10 @@ void ComponentText::SetComponent(Component* component)
 	dynamic_cast<ComponentText*>(component)->text = text;
 	dynamic_cast<ComponentText*>(component)->width = width;
 	dynamic_cast<ComponentText*>(component)->interlineal = interlineal;
+	dynamic_cast<ComponentText*>(component)->align = align;
+	dynamic_cast<ComponentText*>(component)->text_background.visible = text_background.visible;
+	dynamic_cast<ComponentText*>(component)->text_background.color = text_background.color;
+
 	if (font != nullptr) {
 		dynamic_cast<ComponentText*>(component)->font = font;
 	}
@@ -466,6 +503,12 @@ void ComponentText::Clone(Component* clone)
 	ui->current_color = current_color;
 
 	dynamic_cast<ComponentText*>(clone)->text = text;
+	dynamic_cast<ComponentText*>(clone)->width = width;
+	dynamic_cast<ComponentText*>(clone)->interlineal = interlineal;
+	dynamic_cast<ComponentText*>(clone)->align = align;
+	dynamic_cast<ComponentText*>(clone)->text_background.visible = text_background.visible;
+	dynamic_cast<ComponentText*>(clone)->text_background.color = text_background.color;
+
 	if (font != nullptr) {
 		dynamic_cast<ComponentText*>(clone)->font = font;
 	}
@@ -505,6 +548,8 @@ void ComponentText::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Width", width);
 	to_save->SetNumber("Interlineal", interlineal);
 	to_save->SetNumber("Align", (int)align);
+	to_save->SetColor("BackgroundColor", text_background.color);
+	to_save->SetBoolean("BackgroundVisible", text_background.visible);
 }
 
 void ComponentText::LoadComponent(JSONArraypack* to_load)
@@ -516,6 +561,8 @@ void ComponentText::LoadComponent(JSONArraypack* to_load)
 	width = to_load->GetNumber("Width");
 	int aux_type = (int)to_load->GetNumber("Align");
 	align = (TextAlign)aux_type;
+	text_background.color = to_load->GetColor("BackgroundColor");
+	text_background.visible = to_load->GetBoolean("BackgroundVisible");
 
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
@@ -560,6 +607,7 @@ void ComponentText::GenerateVAOVBO()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &verticesID);
 	glGenBuffers(1, &uvID);
+	glGenBuffers(1, &text_background.id);
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
@@ -571,6 +619,11 @@ void ComponentText::GenerateVAOVBO()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 2, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 3, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
