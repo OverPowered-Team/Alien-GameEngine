@@ -391,7 +391,7 @@ bool ComponentTransform::DrawInspector()
 			ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.1f);
 			if (ImGui::Button("Select Prefab Root"))
 			{
-				App->objects->SetNewSelectedObject(game_object_attached->FindPrefabRoot());
+				App->objects->SetNewSelectedObject(game_object_attached->FindPrefabRoot(), false);
 				App->camera->Focus();
 				return false;
 			}
@@ -471,7 +471,7 @@ bool ComponentTransform::DrawInspector()
 				ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(game_object_attached->GetPrefabID());
 				if (prefab != nullptr) {
 					prefab->Save(game_object_attached->FindPrefabRoot());
-					App->objects->SetNewSelectedObject(game_object_attached);
+					App->objects->SetNewSelectedObject(game_object_attached, false);
 					return false;
 				}
 			}

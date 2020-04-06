@@ -358,14 +358,14 @@ bool ModuleCamera3D::TestTrianglesIntersections(GameObject* object, const LineSe
 					obj->open_node = true;
 					obj = obj->parent;
 				}
-				App->objects->SetNewSelectedObject(object);
+				App->objects->SetNewSelectedObject(object, false);
 				ret = true;
 				break;
 			}
 		}
 	}
 	else if (object->children.empty()){
-		App->objects->SetNewSelectedObject(object);
+		App->objects->SetNewSelectedObject(object, false);
 		ret = true;
 	}
 	return ret;

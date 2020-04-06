@@ -1587,7 +1587,7 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 	enabled = to_load->GetBoolean("Enabled");
 	parent_enabled = to_load->GetBoolean("ParentEnabled");
 	if (!force_no_selected && to_load->GetBoolean("Selected")) {
-		App->objects->SetNewSelectedObject(this);
+		App->objects->SetNewSelectedObject(this, false);
 	}
 	prefab_locked = to_load->GetBoolean("PrefabLocked");
 	parent_selected = to_load->GetBoolean("ParentSelected");
