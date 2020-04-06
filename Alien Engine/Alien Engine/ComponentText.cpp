@@ -410,6 +410,9 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
+				max_lines++;
+				current_line_pos.push_back(i);
+				lines_current_size.push_back(line);
 			}
 		}
 		else if(align == TextAlign::LEFT)
@@ -423,6 +426,9 @@ void ComponentText::Draw(bool isGame)
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
+				max_lines++;
+				current_line_pos.push_back(i);
+				lines_current_size.push_back(line);
 			}
 		}
 	}
@@ -444,18 +450,58 @@ void ComponentText::Draw(bool isGame)
 		font->background_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
 	}
 
-	float3 pos = transform->GetGlobalPosition();
+	float2 initial_pos;
+	float2 back_size;
 	float3 back_vertex[4];
-	back_vertex[0] = float3(pos.x, pos.y, matrix[2][3]);
-	back_vertex[1] = float3(pos.x + width * scale.x, pos.y, matrix[2][3]);
-	back_vertex[2] = float3(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y * max_lines, matrix[2][3]);
-	back_vertex[3] = float3(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y * max_lines, matrix[2][3]);
+	Character first_ch = font->fontData.charactersMap[text[0]];
 
-	glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
+	for (int i = 0; i < lines_current_size.size(); ++i)
+	{
+		switch (align)
+		{
+		case LEFT:
+		{
+			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				initial_pos.x = x;
+				initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
+				back_size.x = lines_current_size[i] * scale.x * factor_x;
+				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines;
+			}
+			else
+			{
+				initial_pos.x = matrix[0][3];
+				initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
+				back_size.x = lines_current_size[i] * scale.x;
+				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
+			}
+			break;
+		}
+		break;
+		case MIDDLE:
+			break;
+		case RIGHT:
+			break;
+		default:
+			break;
+		}
 
-	// Render quad
-	glDrawArrays(GL_LINE_LOOP, 0, 4);
+		back_vertex[0] = float3(initial_pos.x, initial_pos.y, matrix[2][3]);
+		back_vertex[1] = float3(initial_pos.x + back_size.x, initial_pos.y, matrix[2][3]);
+		back_vertex[2] = float3(initial_pos.x + back_size.x, initial_pos.y + back_size.y, matrix[2][3]);
+		back_vertex[3] = float3(initial_pos.x, initial_pos.y + back_size.y, matrix[2][3]);
+
+		glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
+
+		// Render quad
+		if (text_background.visible)
+			glDrawArrays(GL_QUADS, 0, 4);
+		else
+			glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+		first_ch = font->fontData.charactersMap[current_line_pos[i]];
+	}
 
 	font->background_shader->Unbind();
 	glBindTexture(GL_TEXTURE_2D, 0);
