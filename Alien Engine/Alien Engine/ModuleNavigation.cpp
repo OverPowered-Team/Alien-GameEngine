@@ -20,6 +20,7 @@
 ModuleNavigation::ModuleNavigation(bool start_enabled) : Module(start_enabled)
 {
 	resetCommonSettings();
+	drawModes[(int)NavDrawMode::DRAWMODE_NAVMESH] = true;
 }
 
 ModuleNavigation::~ModuleNavigation()
@@ -82,22 +83,40 @@ bool ModuleNavigation::CleanUp()
 	return true;
 }
 // -----------------------------------------------------------
-// TODO: make this debug draw functions in one with enum 
-void ModuleNavigation::DrawPolyMesh()
-{
-	if (pmesh)
-	{
-		duDebugDrawPolyMesh(&dd, *pmesh);
-		//duDebugDrawPolyMeshDetail(&dd, *dmesh);
-	}
-}
 
-void ModuleNavigation::DrawHeightMesh()
+void ModuleNavigation::DebugDrawNavMeshes(NavDrawMode drawMode)
 {
+	glDisable(GL_LIGHTING);
+	//glDepthMask(GL_FALSE);
+
 	if (solid)
 	{
-		duDebugDrawHeightfieldSolid(&dd, *solid);
+		if(drawMode == NavDrawMode::DRAWMODE_VOXELS)
+			duDebugDrawHeightfieldSolid(&dd, *solid);
 	}
+	if (cset)
+	{
+		if(drawMode == NavDrawMode::DRAWMODE_CONTOURS)
+			duDebugDrawContours(&dd, *cset);
+	}
+	if (chf && cset)
+	{
+		if (drawMode == NavDrawMode::DRAWMODE_REGION_CONNECTIONS)
+		{
+			duDebugDrawCompactHeightfieldRegions(&dd, *chf);
+			duDebugDrawRegionConnections(&dd, *cset);
+		}
+	}
+	if (pmesh)
+	{
+		if (drawMode == NavDrawMode::DRAWMODE_POLYMESH)
+			duDebugDrawPolyMesh(&dd, *pmesh);
+		if (drawMode == NavDrawMode::DRAWMODE_POLYMESH_DETAIL)
+			duDebugDrawPolyMeshDetail(&dd, *dmesh);
+	}
+
+	//glDepthMask(GL_TRUE);
+	glEnable(GL_LIGHTING);
 }
 
 bool ModuleNavigation::Bake()
@@ -112,13 +131,13 @@ bool ModuleNavigation::Bake()
 	std::stack<GameObject*> stacked_go;
 
 	stacked_go.push(scene_root);
-	while (!stacked_go.empty())	{
+	while (!stacked_go.empty()) {
 		GameObject* go = stacked_go.top();
 		stacked_go.pop();
 
 		if (go->GetComponent(ComponentType::MESH) != nullptr && go->nav_data.nav_static)
 			gos_with_mesh.push_back(go);
-		
+
 		std::vector<GameObject*> child_gos = go->GetChildren();
 		for (uint i = 0; i < child_gos.size(); ++i)
 			stacked_go.push(child_gos[i]);
@@ -155,12 +174,13 @@ bool ModuleNavigation::Bake()
 	rc_conf.maxVertsPerPoly = vertsPerPoly;
 	rc_conf.detailSampleDist = detailSampleDist < 0.9f ? 0 : cellSize * detailSampleDist;
 	rc_conf.detailSampleMaxError = cellHeight * detailSampleMaxError;
-	
+
 	// area where the navigation will be build
 	rcVcopy(rc_conf.bmin, (float*)&aabb.minPoint);
 	rcVcopy(rc_conf.bmax, (float*)&aabb.maxPoint);
 	rcCalcGridSize(rc_conf.bmin, rc_conf.bmax, rc_conf.cs, &rc_conf.width, &rc_conf.height);
 
+	ctx.resetTimers();
 	ctx.startTimer(RC_TIMER_TOTAL);
 	ctx.log(RC_LOG_PROGRESS, "Building navigation:");
 	ctx.log(RC_LOG_PROGRESS, " - %d x %d cells", rc_conf.width, rc_conf.height);
@@ -183,7 +203,7 @@ bool ModuleNavigation::Bake()
 	triareas = new unsigned char[ntris];
 	if (!triareas)
 	{
-		ctx.log(RC_LOG_ERROR,"build Navigation: Out of memory 'triareas' (%d)", ntris);
+		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'triareas' (%d)", ntris);
 		return false;
 	}
 
@@ -195,7 +215,7 @@ bool ModuleNavigation::Bake()
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not rasterize triangles.");
 		return false;
 	}
-	
+
 	if (!keepInterResults)
 	{
 		delete[] triareas;
@@ -233,7 +253,7 @@ bool ModuleNavigation::Bake()
 
 	if (!rcErodeWalkableArea(&ctx, rc_conf.walkableRadius, *chf))
 	{
-		ctx.log(RC_LOG_ERROR,"build Navigation: Could not erode.");
+		ctx.log(RC_LOG_ERROR, "build Navigation: Could not erode.");
 		return false;
 	}
 
@@ -250,7 +270,7 @@ bool ModuleNavigation::Bake()
 
 	if (!rcBuildRegions(&ctx, *chf, 0, rc_conf.minRegionArea, rc_conf.mergeRegionArea))
 	{
-		ctx.log(RC_LOG_ERROR,"build Navigation: Could not build watershed regions.");
+		ctx.log(RC_LOG_ERROR, "build Navigation: Could not build watershed regions.");
 		return false;
 	}
 
@@ -304,7 +324,7 @@ bool ModuleNavigation::Bake()
 	}
 
 	// TODO: Create detour data from recast poly mesh 
-	
+
 
 
 
@@ -323,8 +343,6 @@ bool ModuleNavigation::Bake()
 	{
 		LOG_ENGINE("%s", ctx.getLogText(i));
 	}
-
-
 
 
 	return ret;
@@ -367,10 +385,20 @@ void BuildContext::doStartTimer(const rcTimerLabel label)
 		timers[label].Start();
 }
 
+void BuildContext::doResetTimers()
+{
+	for (int i = 0; i < RC_MAX_TIMERS; ++i)
+		timers[i].Reset();
+}
+
+void BuildContext::doStopTimer(const rcTimerLabel label)
+{
+	timers[label].Pause();
+}
 
 int BuildContext::doGetAccumulatedTime(const rcTimerLabel label) const
 {
-	return (int)timers[label].ReadMs();
+	return (int)timers[label].ReadMs() * 1000; // useconds
 }
 
 void BuildContext::doLog(const rcLogCategory category, const char* msg, const int len)

@@ -78,6 +78,23 @@ void PanelNavigation::PanelLogic()
 		App->nav->Bake();
 	}
 
+	ImGui::Separator();
+
+	if(ImGui::CollapsingHeader("Advanced options"))
+	{
+		const char* drawNames[] = { "DRAWMODE_NAVMESH",
+									"DRAWMODE_VOXELS",
+									"DRAWMODE_REGION_CONNECTIONS",
+									"DRAWMODE_CONTOURS",
+									"DRAWMODE_POLYMESH",
+									"DRAWMODE_POLYMESH_DETAIL", };
+		
+		for (uint i = 0; i < (uint)NavDrawMode::MAX_DRAWMODE; ++i)
+		{
+			ImGui::Checkbox(drawNames[i], &App->nav->drawModes[i]);
+		}
+	}
+
 	if (enabled != true)
 		OnPanelDesactive();
 

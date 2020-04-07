@@ -241,11 +241,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			// debug draw navigation meshes ---------------
-			if(App->ui->panel_navigation->panel_nav_rendered && App->nav->show_navmesh)
-				App->nav->DrawPolyMesh();
-			if (App->ui->panel_navigation->panel_nav_rendered && App->nav->show_heightmesh)
-				App->nav->DrawHeightMesh();
-
+			if (App->ui->panel_navigation->panel_nav_rendered)
+			{
+				for (uint i = 0; i < (uint)NavDrawMode::MAX_DRAWMODE; ++i)
+					App->nav->drawModes[i] ? App->nav->DebugDrawNavMeshes(NavDrawMode(i)) : 0;
+			}
 			// --------------------------------------------
 		}
 

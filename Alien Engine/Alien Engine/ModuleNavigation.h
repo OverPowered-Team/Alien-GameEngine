@@ -8,6 +8,18 @@
 
 class GameObject;
 
+enum class NavDrawMode : uint
+{
+	DRAWMODE_NAVMESH,
+	DRAWMODE_VOXELS,
+	DRAWMODE_REGION_CONNECTIONS,
+	DRAWMODE_CONTOURS,
+	DRAWMODE_POLYMESH,
+	DRAWMODE_POLYMESH_DETAIL,
+
+	MAX_DRAWMODE
+};
+
 enum PolyAreas
 {
 	SAMPLE_POLYAREA_GROUND,
@@ -38,6 +50,8 @@ public:
 protected:
 	virtual void doLog(const rcLogCategory category, const char* msg, const int len);
 	virtual void doStartTimer(const rcTimerLabel label);
+	virtual void doStopTimer(const rcTimerLabel label);
+	virtual void doResetTimers();
 	virtual int doGetAccumulatedTime(const rcTimerLabel label) const;
 };
 
@@ -77,18 +91,21 @@ public:
 
 public:
 	bool Bake();
-	void DrawPolyMesh();
-	void DrawHeightMesh();
+	void DebugDrawNavMeshes(NavDrawMode drawMode);
 
 private:
 	void resetCommonSettings();
 
 public:
+	bool drawModes[(uint)NavDrawMode::MAX_DRAWMODE] = { false };
 	bool show_navmesh = true;
 	bool show_heightmesh = false;
+	bool show_contours = false;
+	bool show_polymesh = false;
+	bool show_polymesh_detail = false;
+	bool show_region_conn = false;
 	
 private:
-
 	BuildContext ctx;
 	DebugDrawGL dd;
 	bool keepInterResults = true;

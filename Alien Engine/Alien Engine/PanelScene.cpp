@@ -227,8 +227,9 @@ void PanelScene::DrawNavigationWindows()
 	ImGui::SetNextWindowSize(panel_size);
 	ImGui::Begin("Navmesh Display", 0,	ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar	| ImGuiWindowFlags_NoScrollWithMouse | 
 										ImGuiWindowFlags_NoMove		| ImGuiWindowFlags_NoResize		| ImGuiWindowFlags_NoFocusOnAppearing);
-	ImGui::Checkbox("Show NavMesh",		&App->nav->show_navmesh);
-	ImGui::Checkbox("Show HeightMesh",	&App->nav->show_heightmesh);
+
+	ImGui::Checkbox("Show NavMesh",		&App->nav->drawModes[(int)NavDrawMode::DRAWMODE_NAVMESH]);
+	ImGui::Checkbox("Show HeightMesh",	&App->nav->drawModes[(int)NavDrawMode::DRAWMODE_VOXELS]);
 	ImGui::End();
 }
 
