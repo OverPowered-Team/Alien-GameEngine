@@ -7,6 +7,7 @@
 #include "Alien.h"
 #include "Optick/include/optick.h"
 #include "ResourceMesh.h"
+#include "ComponentTransform.h"
 
 // Recast/detour/detourcrowd ----
 #include "Recast.h"
@@ -149,13 +150,32 @@ bool ModuleNavigation::Bake()
 	// get min and max aabb
 	GameObject* go = gos_with_mesh.front();
 	ComponentMesh* mesh = static_cast<ComponentMesh*>(go->GetComponent(ComponentType::MESH));
-	AABB aabb = mesh->GetLocalAABB();
+	AABB aabb = mesh->GetGlobalAABB();
+	ComponentTransform* transform = go->transform;
 
 	// get vertex data
 	const int nverts = mesh->mesh->num_vertex;
-	const float* verts = mesh->mesh->vertex;
+	//const float* verts = mesh->mesh->vertex;
 	const int ntris = mesh->mesh->num_faces;
 	const uint* tris = mesh->mesh->index;
+
+	// generate new all in vertex array to copy transformed vertex
+	float* verts = new float[nverts * 3];
+	memcpy(verts, mesh->mesh->vertex, sizeof(float)* nverts * 3);
+
+	// Transform each vertex data from mesh to real coordinates based on its transform
+	// each mesh can be different scale, this needs this step here (more computational cost) and not on the
+	// generated heightfield (less cpu)
+
+	for (uint i = 0; i < nverts; ++i) 
+	{
+		float* v = &verts[i * 3];
+		float4 expanded_vector(v[0], v[1], v[2], 1);
+		expanded_vector = transform->GetGlobalMatrix()* expanded_vector;
+		v[0] = expanded_vector.x;
+		v[1] = expanded_vector.y;
+		v[2] = expanded_vector.z;
+	}
 
 	// Init build configuration from TODO: UNHARDCODE TEST, and make from gui or something ---------------
 
@@ -215,6 +235,9 @@ bool ModuleNavigation::Bake()
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not rasterize triangles.");
 		return false;
 	}
+
+	// delete transformed vertices
+	delete[] verts;
 
 	if (!keepInterResults)
 	{
@@ -324,8 +347,7 @@ bool ModuleNavigation::Bake()
 	}
 
 	// TODO: Create detour data from recast poly mesh 
-
-
+	
 
 
 
