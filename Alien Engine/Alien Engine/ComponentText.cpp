@@ -222,7 +222,7 @@ void ComponentText::Draw(bool isGame)
 	// First text pos and second line size
 	std::vector<int> lines_current_size;
 	std::vector<int> current_line_pos;
-	int max_lines = 1;
+	int max_lines = 0;
 
 	for (int i = 0; i < text.size(); ++i) {
 		Character ch = font->fontData.charactersMap[text[i]];
@@ -411,7 +411,7 @@ void ComponentText::Draw(bool isGame)
 
 				pos_x = 0;
 				max_lines++;
-				current_line_pos.push_back(i);
+				current_line_pos.push_back(i - 1);
 				lines_current_size.push_back(line);
 			}
 		}
@@ -421,13 +421,13 @@ void ComponentText::Draw(bool isGame)
 			if (line > width * scale.x)
 			{
 				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal ;
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
 				else
 					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
 
 				pos_x = 0;
 				max_lines++;
-				current_line_pos.push_back(i);
+				current_line_pos.push_back(i - 1);
 				lines_current_size.push_back(line);
 			}
 		}
@@ -463,22 +463,35 @@ void ComponentText::Draw(bool isGame)
 		{
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
-				initial_pos.x = x;
+				initial_pos.x = x + first_ch.bearing.x * scale.x * factor_x;
 				initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
 				back_size.x = lines_current_size[i] * scale.x * factor_x;
-				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines;
+				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines * interlineal;
 			}
 			else
 			{
-				initial_pos.x = matrix[0][3];
+				initial_pos.x = matrix[0][3] + first_ch.bearing.x * scale.x;
 				initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
-				back_size.x = lines_current_size[i] * scale.x;
+				back_size.x = lines_current_size[i];
 				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
 			}
-			break;
 		}
 		break;
 		case MIDDLE:
+			/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				initial_pos.x = x + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
+				initial_pos.y = y - (first_ch.size.y - first_ch.bearing.y) * scale.y * factor_y;
+				back_size.x = lines_current_size[i] * scale.x * factor_x;
+				back_size.y = -font->fontData.charactersMap['l'].size.y * scale.y * current_line * interlineal * factor_y;
+			}
+			else
+			{
+				initial_pos.x = matrix[0][3] + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
+				initial_pos.y = matrix[1][3] - (first_ch.size.y - first_ch.bearing.y ) * scale.y;
+				back_size.x = lines_current_size[i] * scale.x;
+				back_size.y = -font->fontData.charactersMap['l'].size.y  * scale.y * current_line * interlineal;
+			}*/
 			break;
 		case RIGHT:
 			break;
