@@ -147,35 +147,79 @@ bool ModuleNavigation::Bake()
 	if (gos_with_mesh.empty())
 		return false;
 
-	// get min and max aabb
-	GameObject* go = gos_with_mesh.front();
-	ComponentMesh* mesh = static_cast<ComponentMesh*>(go->GetComponent(ComponentType::MESH));
-	AABB aabb = mesh->GetGlobalAABB();
-	ComponentTransform* transform = go->transform;
+	// ---------------------------------------------------
+	// data for all meshes
 
-	// get vertex data
-	const int nverts = mesh->mesh->num_vertex;
-	//const float* verts = mesh->mesh->vertex;
-	const int ntris = mesh->mesh->num_faces;
-	const uint* tris = mesh->mesh->index;
-
-	// generate new all in vertex array to copy transformed vertex
-	float* verts = new float[nverts * 3];
-	memcpy(verts, mesh->mesh->vertex, sizeof(float)* nverts * 3);
-
-	// Transform each vertex data from mesh to real coordinates based on its transform
-	// each mesh can be different scale, this needs this step here (more computational cost) and not on the
-	// generated heightfield (less cpu)
-
-	for (uint i = 0; i < nverts; ++i) 
+	int nverts = 0;
+	int ntris = 0;
+	
+	// iterate and fill number of vertex and indices -----
+	std::vector<ComponentMesh*> meshes;
+	for (int i = 0; i < gos_with_mesh.size(); ++i)
 	{
-		float* v = &verts[i * 3];
-		float4 expanded_vector(v[0], v[1], v[2], 1);
-		expanded_vector = transform->GetGlobalMatrix()* expanded_vector;
-		v[0] = expanded_vector.x;
-		v[1] = expanded_vector.y;
-		v[2] = expanded_vector.z;
+		GameObject* go = gos_with_mesh[i];
+		ComponentMesh* mesh =  static_cast<ComponentMesh*>(go->GetComponent(ComponentType::MESH));
+		nverts += mesh->mesh->num_vertex;
+		ntris += mesh->mesh->num_faces;
+		meshes.push_back(mesh);
 	}
+
+	// create new all in vertex and index data
+
+	float* verts = new float[nverts * 3];
+	uint* tris = new uint[ntris * 3]; // faces * 3 vertex each triangle face
+
+	// re-iterate and copy by memory blocks
+	float* next_vertex_mem_block = verts;
+	uint* next_tri_mem_block = tris;
+	int accumulated_vertex_count = 0;
+	for (int i = 0; i < gos_with_mesh.size(); ++i)
+	{
+		int num_vertex = meshes[i]->mesh->num_vertex;
+		int size = sizeof(float) * num_vertex * 3;
+		// Transform each vertex data from mesh to real coordinates based on its transform
+		// each mesh can be different scale, this needs this step here (more computational cost) and not on the
+		// generated heightfield (less cpu)
+		float* transformed_vertices = new float[nverts * 3];
+		memcpy(transformed_vertices, meshes[i]->mesh->vertex, size);
+		float4x4 global_mat = meshes[i]->game_object_attached->transform->GetGlobalMatrix();
+		for (int vertex_num = 0; vertex_num < nverts; ++vertex_num) 
+		{
+			float* v = &transformed_vertices[vertex_num * 3];
+			float4 expanded_vector(v[0], v[1], v[2], 1);
+			expanded_vector = global_mat * expanded_vector;
+			v[0] = expanded_vector.x;
+			v[1] = expanded_vector.y;
+			v[2] = expanded_vector.z;
+		}
+		memcpy(next_vertex_mem_block, transformed_vertices, size); // global vertices
+		next_vertex_mem_block += num_vertex * 3;
+		// shift indices by accumulated count ------------------
+		// copy indices to be transformed
+		int num_tris = meshes[i]->mesh->num_faces;
+		uint* shifted_idx = new uint[num_tris * 3];
+		size = sizeof(uint) * num_tris * 3;
+		memcpy(shifted_idx, meshes[i]->mesh->index, size);
+		// iterate indices and sum by accumulated vertex count
+		if (i > 0) {
+			for (int index = 0; index < num_tris * 3; ++index) {
+				shifted_idx[index] += accumulated_vertex_count;
+			}
+		}
+		// finally copy this block to tris array
+		memcpy(next_tri_mem_block, shifted_idx, size); // global triangle faces
+		next_tri_mem_block += num_tris *3;
+		// store accumulated vertex
+		accumulated_vertex_count += meshes[i]->mesh->num_vertex;
+
+		delete[] shifted_idx;
+		delete[] transformed_vertices;
+	}
+
+	// recalculate minimal enclose aabb given modified points
+	AABB aabb;
+	aabb.SetNegativeInfinity();
+	aabb.Enclose((float3*)verts, nverts);
 
 	// Init build configuration from TODO: UNHARDCODE TEST, and make from gui or something ---------------
 
@@ -212,11 +256,13 @@ bool ModuleNavigation::Bake()
 	if (!solid)
 	{
 		ctx.log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
+		ShowBakeLogs();
 		return false;
 	}
 	if (!rcCreateHeightfield(&ctx, *solid, rc_conf.width, rc_conf.height, rc_conf.bmin, rc_conf.bmax, rc_conf.cs, rc_conf.ch))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not create solid heightfield.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -224,6 +270,7 @@ bool ModuleNavigation::Bake()
 	if (!triareas)
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'triareas' (%d)", ntris);
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -233,11 +280,13 @@ bool ModuleNavigation::Bake()
 	if (!rcRasterizeTriangles(&ctx, verts, nverts, (int*)tris, triareas, ntris, *solid, rc_conf.walkableClimb))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not rasterize triangles.");
+		ShowBakeLogs();
 		return false;
 	}
 
-	// delete transformed vertices
+	// delete transformed vertices and indices
 	delete[] verts;
+	delete[] tris;
 
 	if (!keepInterResults)
 	{
@@ -260,11 +309,13 @@ bool ModuleNavigation::Bake()
 	if (!chf)
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'chf'.");
+		ShowBakeLogs();
 		return false;
 	}
 	if (!rcBuildCompactHeightfield(&ctx, rc_conf.walkableHeight, rc_conf.walkableClimb, *solid, *chf))
 	{
-		LOG_ENGINE("build Navigation: Could not build compact data.");
+		ctx.log(RC_LOG_ERROR, "build Navigation: Could not build compact data.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -277,6 +328,7 @@ bool ModuleNavigation::Bake()
 	if (!rcErodeWalkableArea(&ctx, rc_conf.walkableRadius, *chf))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not erode.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -286,6 +338,7 @@ bool ModuleNavigation::Bake()
 	if (!rcBuildDistanceField(&ctx, *chf))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not build distance field.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -294,6 +347,7 @@ bool ModuleNavigation::Bake()
 	if (!rcBuildRegions(&ctx, *chf, 0, rc_conf.minRegionArea, rc_conf.mergeRegionArea))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not build watershed regions.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -303,11 +357,13 @@ bool ModuleNavigation::Bake()
 	if (!cset)
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'contour set'.");
+		ShowBakeLogs();
 		return false;
 	}
 	if (!rcBuildContours(&ctx, *chf, rc_conf.maxSimplificationError, rc_conf.maxEdgeLen, *cset))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not create contours.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -317,11 +373,14 @@ bool ModuleNavigation::Bake()
 	if (!pmesh)
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'pmesh'.");
+		ShowBakeLogs();
 		return false;
 	}
 	if (!rcBuildPolyMesh(&ctx, *cset, rc_conf.maxVertsPerPoly, *pmesh))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not triangulate contours.");
+		ShowBakeLogs();
+		return false;
 	}
 
 	// Create detail mesh -------------------------------------------------------------------------------------
@@ -330,11 +389,13 @@ bool ModuleNavigation::Bake()
 	if (!dmesh)
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Out of memory 'polymesh detail'.");
+		ShowBakeLogs();
 		return false;
 	}
 	if (!rcBuildPolyMeshDetail(&ctx, *pmesh, *chf, rc_conf.detailSampleDist, rc_conf.detailSampleMaxError, *dmesh))
 	{
 		ctx.log(RC_LOG_ERROR, "build Navigation: Could not build detail mesh.");
+		ShowBakeLogs();
 		return false;
 	}
 
@@ -360,11 +421,7 @@ bool ModuleNavigation::Bake()
 	duLogBuildTimes(ctx, ctx.getAccumulatedTime(RC_TIMER_TOTAL));
 
 	ctx.log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", pmesh->nverts, pmesh->npolys);
-
-	for (int i = 0; i < ctx.getLogCount(); ++i)
-	{
-		LOG_ENGINE("%s", ctx.getLogText(i));
-	}
+	ShowBakeLogs();
 
 
 	return ret;
@@ -387,6 +444,14 @@ void ModuleNavigation::resetCommonSettings()
 	detailSampleDist = 6.0f;
 	detailSampleMaxError = 1.0f;
 	partitionType = 0; // PARTITION_WATERSHED
+}
+
+void ModuleNavigation::ShowBakeLogs()
+{
+	for (int i = 0; i < ctx.getLogCount(); ++i)
+	{
+		LOG_ENGINE("%s", ctx.getLogText(i));
+	}
 }
 
 // --------------------------------------------------------------------------------------

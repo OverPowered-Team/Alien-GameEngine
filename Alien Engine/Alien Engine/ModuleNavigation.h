@@ -46,6 +46,7 @@ public:
 
 	const char* getLogText(const int i) const;
 	int getLogCount() const;
+	void showError();
 
 protected:
 	virtual void doLog(const rcLogCategory category, const char* msg, const int len);
@@ -68,6 +69,7 @@ public:
 	virtual void end();
 
 	virtual unsigned int areaToCol(unsigned int area);
+
 };
 
 class ModuleNavigation : public Module
@@ -95,6 +97,7 @@ public:
 
 private:
 	void resetCommonSettings();
+	void ShowBakeLogs();
 
 public:
 	bool drawModes[(uint)NavDrawMode::MAX_DRAWMODE] = { false };
