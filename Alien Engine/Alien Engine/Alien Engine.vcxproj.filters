@@ -651,6 +651,9 @@
     <ClInclude Include="String.h">
       <Filter>Tools\OurClassHelpers</Filter>
     </ClInclude>
+    <ClInclude Include="WaterFrameBuffers.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2620,6 +2623,9 @@
     </ClCompile>
     <ClCompile Include="Physics.cpp">
       <Filter>ScriptHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterFrameBuffers.cpp">
+      <Filter>Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
