@@ -59,6 +59,24 @@ bool ComponentAnimator::IsPlaying(const char* name)
 	return ret;
 }
 
+void ComponentAnimator::IncreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() * value);
+	}
+}
+
+void ComponentAnimator::DecreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() / value);
+	}
+}
+
 void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 {
 	float3 position, scale;
