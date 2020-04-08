@@ -306,7 +306,7 @@ void PanelHierarchy::PrintNode(GameObject* node)
 	if (node->IsPrefab() && node->FindPrefabRoot() != node)
 		ImGui::PopStyleColor();
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
-		App->objects->SetNewSelectedObject(node);
+		App->objects->SetNewSelectedObject(node, App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT);
 	}
 	if (ImGui::IsItemHovered()) {
 		object_hovered = node;
@@ -369,7 +369,7 @@ void PanelHierarchy::RightClickMenu()
 			in_menu = true;
 			object_menu = object_hovered;
 			if (object_menu != nullptr) {
-				App->objects->SetNewSelectedObject(object_menu);
+				App->objects->SetNewSelectedObject(object_menu, false);
 			}
 		}
 		if (ImGui::MenuItem("Create New Script")) {
@@ -416,7 +416,7 @@ void PanelHierarchy::RightClickMenu()
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Select Prefab Root")) {
-					App->objects->SetNewSelectedObject(object_menu->FindPrefabRoot());
+					App->objects->SetNewSelectedObject(object_menu->FindPrefabRoot(), false);
 					App->camera->Focus();
 				}
 
@@ -496,7 +496,7 @@ void PanelHierarchy::RightClickMenu()
 					ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(object_menu->GetPrefabID());
 					if (prefab != nullptr) {
 						prefab->Save(object_menu->FindPrefabRoot());
-						App->objects->SetNewSelectedObject(object_menu);
+						App->objects->SetNewSelectedObject(object_menu, false);
 					}
 				}
 

@@ -130,7 +130,7 @@ public:
 	void DeleteAllObjects();
 
 	// select/disselect objects
-	void SetNewSelectedObject(GameObject* selected);
+	void SetNewSelectedObject(GameObject* selected, bool select_children);
 	const std::list<GameObject*>& GetSelectedObjects();
 	void DeselectObjects();
 	void DeselectObject(GameObject* obj);

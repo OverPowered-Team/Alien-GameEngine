@@ -47,6 +47,7 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "ComponentAnimator.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -502,7 +503,7 @@ void ModuleObjects::ChangeEnableOBB()
 	base_game_object->ChangeOBB(draw_all_OBB);
 }
 
-void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
+void ModuleObjects::SetNewSelectedObject(GameObject* object_selected, bool select_children)
 {
 	bool exists = std::find(game_objects_selected.begin(), game_objects_selected.end(), object_selected) != game_objects_selected.end();
 
@@ -510,6 +511,25 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		object_selected->ChangeSelected(!exists);
 		if (!exists) {
 			game_objects_selected.push_back(object_selected);
+			if (select_children) {
+				object_selected->open_node = true;
+				std::stack<GameObject*> objects;
+				for (auto item = object_selected->children.begin(); item != object_selected->children.end(); ++item) {
+					objects.push(*item);
+				}
+				while (!objects.empty()) {
+					GameObject* obj = objects.top();
+					objects.pop();
+
+					obj->ChangeSelected(true);
+					obj->open_node = true;
+					game_objects_selected.push_back(obj);
+					for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+						objects.push(*item);
+					}
+
+				}
+			}
 		}
 		else {
 			game_objects_selected.remove(object_selected);
@@ -526,6 +546,25 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		game_objects_selected.push_back(object_selected);
 		if (!exists) {
 			object_selected->ChangeSelected(true);
+		}
+		if (select_children) {
+			object_selected->open_node = true;
+			std::stack<GameObject*> objects;
+			for (auto item = object_selected->children.begin(); item != object_selected->children.end(); ++item) {
+				objects.push(*item);
+			}
+			while (!objects.empty()) {
+				GameObject* obj = objects.top();
+				objects.pop();
+
+				obj->ChangeSelected(true);
+				obj->open_node = true;
+				game_objects_selected.push_back(obj);
+				for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+					objects.push(*item);
+				}
+
+			}
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
@@ -881,7 +920,7 @@ GameObject* ModuleObjects::CreateEmptyGameObject(GameObject* parent, bool set_se
 	}
 	
 	if (set_selected)
-		SetNewSelectedObject(object);
+		SetNewSelectedObject(object, false);
 
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 
@@ -1147,6 +1186,13 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
 					OnPlay();
+					for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+					{
+						ComponentAnimator* anim = obj->GetComponent<ComponentAnimator>();
+						if (anim != nullptr) {
+							anim->OnPlay();
+						}
+					}
 				}
 			}
 			if (change_scene) {
@@ -2008,7 +2054,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	// ---------------------------------------------------------
 
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
@@ -2133,7 +2179,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		break;
 	}
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
@@ -2155,7 +2201,7 @@ void ModuleObjects::CreateEffect(ComponentType type)
 		break;
 	}
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
