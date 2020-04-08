@@ -212,70 +212,102 @@ void PanelScene::PanelLogic()
 
 void PanelScene::GuizmosLogic()
 {
-	if (!App->objects->GetSelectedObjects().empty()) {
-		float4x4 trans = float4x4::zero();
+	if (!App->objects->GetSelectedObjects().empty()) 
+	{
 		std::list<GameObject*> selected = App->objects->GetSelectedObjects();
-		
-		for (auto item = selected.begin(); item != selected.end(); ++item) {
-			if (*item != nullptr) {
-				if ((*item)->is_static) {
-					return;
-				}
-				trans += (*item)->GetComponent<ComponentTransform>()->global_transformation;
-			}
-		}
 
 		float4x4 view_transposed = float4x4(App->camera->fake_camera->frustum.ViewMatrix()).Transposed();
 		float4x4 projection_transposed = float4x4(App->camera->fake_camera->frustum.ProjectionMatrix()).Transposed();
-		float4x4 object_transform_matrix = float4x4(trans / selected.size()).Transposed();
-		float4x4 delta_matrix;
+		math::float4x4 object_transform_matrix;
+		math::float3 globalPosition = float3::zero();
+		math::float3 globalSize = float3::zero();
+		
+
+		if (selected.size() > 1)
+		{
+			for (auto item = selected.begin(); item != selected.end(); ++item)
+			{
+				if (*item != nullptr)
+				{
+					if ((*item)->is_static)
+						return;
+
+					globalPosition += (*item)->transform->GetGlobalMatrix().TranslatePart();
+					globalSize += (*item)->transform->GetGlobalMatrix().GetScale();
+				}
+			}
+
+			globalPosition /= selected.size();
+			globalSize /= selected.size();
+			object_transform_matrix = float4x4::FromTRS(globalPosition, math::Quat::identity(), globalSize).Transposed();
+		}
+		else
+		{
+			object_transform_matrix = (*selected.begin())->transform->GetGlobalMatrix().Transposed();
+		}
 
 		ImGuizmo::SetRect(viewport_min.x, viewport_min.y, current_viewport_size.x, current_viewport_size.y);
 		ImGuizmo::SetDrawlist();
 
-		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation, guizmo_mode, object_transform_matrix.ptr(), delta_matrix.ptr());
+		ImGuizmo::Manipulate(view_transposed.ptr(), projection_transposed.ptr(), guizmo_operation,  (guizmo_operation!= ImGuizmo::OPERATION::SCALE) ? guizmo_mode : ImGuizmo::MODE::LOCAL, object_transform_matrix.ptr());
+
 		static bool guizmo_return = true;
 		static bool duplicate = false;
-		if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && ImGui::IsWindowFocused())
-		{
-			if (!duplicate && (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)) {
-				duplicate = true;
-				App->objects->DuplicateObjects();
-			}
-			GameObject* root = App->objects->GetRoot(true);
-			if (selected.size() > 1)
+
+			if (!ImGui::IsAnyPopupActive() && ImGuizmo::IsUsing() && ImGui::IsWindowFocused())
 			{
-				for (auto item = selected.begin(); item != selected.end(); ++item) {
-					if (*item != nullptr) {
-						if (guizmo_return) {
-							ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, (*item)->transform);
-						}
-						if ((*item)->parent != root)
+				if (!duplicate && (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)) {
+					duplicate = true;
+					App->objects->DuplicateObjects();
+				}
+				if (selected.size() > 1)
+				{
+					object_transform_matrix.Transpose();
+					math::float3 transformPos = object_transform_matrix.TranslatePart();
+					math::Quat resformQuat = object_transform_matrix.RotatePart().ToQuat();
+					math::float3 transformScale = object_transform_matrix.GetScale();
+
+					for (auto item = selected.begin(); item != selected.end(); ++item) {
+						if (*item != nullptr) 
 						{
-							ComponentTransform* parent_transform = (ComponentTransform*)(*item)->parent->transform;
-							(*item)->transform->SetGlobalTransformation(parent_transform->global_transformation.Inverted() * delta_matrix.Transposed() * (*item)->transform->global_transformation);
+							if (guizmo_return)
+								ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, (*item)->transform);
+							
+							math::float3 finalPos, finalScale;
+							math::Quat finalRot;
+
+							(*item)->transform->GetGlobalMatrix().Decompose(finalPos, finalRot, finalScale);
+
+							finalPos += transformPos - globalPosition;
+							finalRot = resformQuat * finalRot;
+							finalScale += transformScale - globalSize;
+
+							(*item)->transform->SetGlobalTransformation(math::float4x4::FromTRS(finalPos, finalRot, finalScale));
+
 						}
-						else {
-							(*item)->transform->SetGlobalTransformation(delta_matrix.Transposed() * (*item)->transform->global_transformation);
-						}
+						if (guizmo_return && (*item) == selected.back()) 
+							guizmo_return = false;
+						
 					}
-					if (guizmo_return && (*item) == selected.back()) {
+				}
+				else
+				{
+					if (guizmo_return) 
+						ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, (*selected.begin())->transform);
+			
+					(*selected.begin())->transform->SetGlobalTransformation((*selected.begin())->parent->transform->global_transformation.Inverted() * object_transform_matrix.Transposed());
+
+					if (guizmo_return) {
 						guizmo_return = false;
 					}
 				}
-			}
-			else
-			{
-				GameObject* selected_object = (*selected.begin());
-				ComponentTransform* parent_transform = selected_object->parent->transform;
-				selected_object->transform->SetGlobalTransformation(parent_transform->global_transformation.Inverted() * object_transform_matrix.Transposed());
-			}
 			
-		}
-		else if (!guizmo_return) {
-			guizmo_return = true;
-			duplicate = false;
-		}
+			}
+			else if (!guizmo_return) {
+				guizmo_return = true;
+				duplicate = false;
+			}
+		
 	}
 }
 
@@ -305,5 +337,6 @@ void PanelScene::GuizmosControls()
 	{
 		guizmo_mode = ImGuizmo::MODE::LOCAL;
 	}
+	
 
 }
