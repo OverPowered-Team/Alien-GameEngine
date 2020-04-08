@@ -163,7 +163,7 @@ void ComponentText::Draw(bool isGame)
 		#ifndef GAME_VERSION
 		glm::mat4 projection = glm::ortho(0.0f, App->ui->panel_game->width, 0.0f, App->ui->panel_game->height);
 		#else
-		projection = glm::ortho(0.0f, (float)App->window->width, 0.0f, (float)App->window->height);
+		glm::mat4 projection = glm::ortho(0.0f, (float)App->window->width, 0.0f, (float)App->window->height);
 		#endif
 
 		proj_mat = float4x4(projection[0][0], projection[0][1], projection[0][2], projection[0][3],
