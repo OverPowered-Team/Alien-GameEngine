@@ -273,7 +273,7 @@ void ComponentText::Draw(bool isGame)
 				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
 				{
 					current_size += font->fontData.charactersMap[*aux_c].advance;
-					if (current_size > width)
+					if (current_size > width && (*aux_c == ' '))
 					{
 						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance);
 						current_line_pos.push_back(aux);
@@ -332,7 +332,7 @@ void ComponentText::Draw(bool isGame)
 				for (std::string::const_iterator aux_c = text.begin(); aux_c != text.end(); aux_c++)
 				{
 					current_size += font->fontData.charactersMap[*aux_c].advance;
-					if (current_size > width)
+					if (current_size > width && (*aux_c == ' '))
 					{
 						lines_current_size.push_back(current_size - font->fontData.charactersMap[*aux_c].advance);
 						current_line_pos.push_back(aux);
@@ -356,6 +356,9 @@ void ComponentText::Draw(bool isGame)
 				current_line++;
 				pos_x = 0;
 			}
+
+			if ((i < text.size() && (text[i]) == '/' && (text[i + 1]) == 'n') || (i != 0 && (text[i - 1]) == '/' && (text[i]) == 'n'))
+				continue;
 
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
@@ -432,7 +435,7 @@ void ComponentText::Draw(bool isGame)
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
 				line = pos_x += ch.advance * scale.x * factor_x;
-				if (line > width* scale.x* factor_x)
+				if (line > width* scale.x* factor_x && (text[i] == ' '))
 				{
 					if (isGame && App->renderer3D->actual_game_camera != nullptr)
 						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
@@ -448,7 +451,7 @@ void ComponentText::Draw(bool isGame)
 			else
 			{
 				line = pos_x += ch.advance * scale.x;
-				if (line > width* scale.x)
+				if (line > width* scale.x && (text[i] == ' '))
 				{
 					if (isGame && App->renderer3D->actual_game_camera != nullptr)
 						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
