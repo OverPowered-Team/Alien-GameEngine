@@ -26,6 +26,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentAudioEmitter.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
@@ -1436,6 +1437,7 @@ void ModuleObjects::ReAttachUIScriptEvents()
 				CompareName(&button->listenersOnHover, scriptsVec);
 				CompareName(&button->listenersOnRelease, scriptsVec);
 				CompareName(&button->listenersOnExit, scriptsVec);
+				CompareName(&button->listenersOnEnter, scriptsVec);
 			}
 			else {
 				ComponentCheckbox* checkbox = obj->GetComponent<ComponentCheckbox>();
@@ -1444,7 +1446,9 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
 					CompareName(&checkbox->listenersOnHover, scriptsVec);
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
-					//CompareName(&checkbox->listenersOnExit, scriptsVec);
+					CompareName(&checkbox->listenersOnExit, scriptsVec);
+					CompareName(&checkbox->listenersOnEnter, scriptsVec);
+					
 				}
 			}
 		}
@@ -1674,7 +1678,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("up", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1690,7 +1694,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("down", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1706,7 +1710,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("right", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -1722,7 +1726,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("left", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -2058,6 +2062,8 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 {
 	GameObject* object = CreateEmptyGameObject(nullptr);
 	Component* comp = nullptr;
+	Component* comp_emitter = nullptr;
+
 	switch (type)
 	{
 	case ComponentType::CANVAS: {
@@ -2078,9 +2084,12 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	case ComponentType::UI_BUTTON: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Button");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
+		
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
@@ -2096,18 +2105,22 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	case ComponentType::UI_CHECKBOX: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentCheckbox(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Checkbox");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
 	case ComponentType::UI_SLIDER: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentSlider(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Slider");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 

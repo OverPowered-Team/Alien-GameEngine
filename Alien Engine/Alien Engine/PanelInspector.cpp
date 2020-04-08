@@ -559,9 +559,12 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
+						Component* comp_emitter = nullptr;
 						comp = new ComponentButton(selected);
+						comp_emitter = new ComponentAudioEmitter(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
+						selected->AddComponent(comp_emitter);
 						App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 					}
 
@@ -584,10 +587,12 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
-
+						Component* comp_emitter = nullptr;	
 						comp = new ComponentCheckbox(selected);
+						comp_emitter = new ComponentAudioEmitter(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
+						selected->AddComponent(comp_emitter);
 						App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 					}
 					else
@@ -597,9 +602,12 @@ void PanelInspector::ButtonAddComponent()
 					if (!selected->HasComponent(ComponentType::UI))
 					{
 						ComponentCanvas* canvas = GetCanvas();
+						Component* comp_emitter = nullptr;
 						comp = new ComponentSlider(selected);
+						comp_emitter = new ComponentAudioEmitter(selected);
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 						selected->AddComponent(comp);
+						selected->AddComponent(comp_emitter);
 						App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
 
 					}
