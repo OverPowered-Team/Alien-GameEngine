@@ -234,6 +234,22 @@ void ComponentText::Draw(bool isGame)
 		switch (align)
 		{
 		case LEFT:
+			if (text[i] == '/' && text[i + 1] == 'n')
+			{
+				if (isGame && App->renderer3D->actual_game_camera != nullptr)
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
+				else
+					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
+
+				pos_x = 0;
+				max_lines++;
+				current_line_pos.push_back(i - 1);
+				lines_current_size.push_back(line);
+				continue;
+			}
+			else if (i != 0 && text[i - 1] == '/' && text[i] == 'n')
+				continue;
+
 			if (isGame && App->renderer3D->actual_game_camera != nullptr)
 			{
 				xpos = x + pos_x + ch.bearing.x * scale.x * factor_x;
@@ -389,47 +405,63 @@ void ComponentText::Draw(bool isGame)
 
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		float3 pos = transform->GetGlobalPosition();
+
+#ifndef GAME_VERSION
+		if (!isGame)
+		{
+			glBegin(GL_LINE_LOOP);
+			glVertex3f(pos.x, pos.y, pos.z);
+			glVertex3f(pos.x + width * scale.x, pos.y, pos.z);
+			glVertex3f(pos.x + width * scale.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+			glVertex3f(pos.x, pos.y + font->fontData.charactersMap['l'].size.y * scale.y, pos.z);
+			glEnd();
+		}
+#endif
 	
-		if (isGame && App->renderer3D->actual_game_camera != nullptr && align != TextAlign::LEFT)
+		if (align != TextAlign::LEFT)
 		{
-			pos_x += ch.advance * scale.x * factor_x;
-		}
-		else if(align != TextAlign::LEFT)
+			if(isGame && App->renderer3D->actual_game_camera != nullptr)
+				pos_x += ch.advance * scale.x * factor_x;
+			else
+				pos_x += ch.advance * scale.x;
+		}	
+		else if (align == TextAlign::LEFT)
 		{
-			pos_x += ch.advance * scale.x;
-		}
+			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			{
+				line = pos_x += ch.advance * scale.x * factor_x;
+				if (line > width* scale.x* factor_x)
+				{
+					if (isGame && App->renderer3D->actual_game_camera != nullptr)
+						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
+					else
+						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
+
+					pos_x = 0;
+					max_lines++;
+					current_line_pos.push_back(i - 1);
+					lines_current_size.push_back(line);
+				}
+			}
+			else
+			{
+				line = pos_x += ch.advance * scale.x;
+				if (line > width* scale.x)
+				{
+					if (isGame && App->renderer3D->actual_game_camera != nullptr)
+						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
+					else
+						pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
+
+					pos_x = 0;
+					max_lines++;
+					current_line_pos.push_back(i - 1);
+					lines_current_size.push_back(line);
+				}
+			}
 			
-		if (isGame && App->renderer3D->actual_game_camera != nullptr && align == TextAlign::LEFT)
-		{
-			line = pos_x += ch.advance * scale.x * factor_x;
-			if (line > width * scale.x * factor_x)
-			{
-				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
-				else
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
-
-				pos_x = 0;
-				max_lines++;
-				current_line_pos.push_back(i - 1);
-				lines_current_size.push_back(line);
-			}
-		}
-		else if(align == TextAlign::LEFT)
-		{
-			line = pos_x += ch.advance * scale.x;
-			if (line > width * scale.x)
-			{
-				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * factor_y * interlineal;
-				else
-					pos_y += font->fontData.charactersMap['l'].size.y * scale.y * interlineal;
-
-				pos_x = 0;
-				max_lines++;
-				current_line_pos.push_back(i - 1);
-				lines_current_size.push_back(line);
-			}
 		}
 	}
 
@@ -455,65 +487,65 @@ void ComponentText::Draw(bool isGame)
 	float3 back_vertex[4];
 	Character first_ch = font->fontData.charactersMap[text[0]];
 
-	for (int i = 0; i < lines_current_size.size(); ++i)
+	if (text_background.visible)
 	{
-		switch (align)
+		for (int i = 0; i < lines_current_size.size(); ++i)
 		{
-		case LEFT:
-		{
-			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+			switch (align)
 			{
-				initial_pos.x = x + first_ch.bearing.x * scale.x * factor_x;
-				initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
-				back_size.x = lines_current_size[i] * scale.x * factor_x;
-				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines * interlineal;
+			case LEFT:
+			{
+				if (isGame && App->renderer3D->actual_game_camera != nullptr)
+				{
+					initial_pos.x = x + first_ch.bearing.x * scale.x * factor_x;
+					initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
+					back_size.x = lines_current_size[i] * scale.x * factor_x;
+					back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines * interlineal;
+				}
+				else
+				{
+					initial_pos.x = matrix[0][3] + first_ch.bearing.x * scale.x;
+					initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
+					back_size.x = lines_current_size[i];
+					back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
+				}
 			}
-			else
-			{
-				initial_pos.x = matrix[0][3] + first_ch.bearing.x * scale.x;
-				initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
-				back_size.x = lines_current_size[i];
-				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
+			break;
+			case MIDDLE:
+				/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
+				{
+					initial_pos.x = x + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
+					initial_pos.y = y - (first_ch.size.y - first_ch.bearing.y) * scale.y * factor_y;
+					back_size.x = lines_current_size[i] * scale.x * factor_x;
+					back_size.y = -font->fontData.charactersMap['l'].size.y * scale.y * current_line * interlineal * factor_y;
+				}
+				else
+				{
+					initial_pos.x = matrix[0][3] + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
+					initial_pos.y = matrix[1][3] - (first_ch.size.y - first_ch.bearing.y ) * scale.y;
+					back_size.x = lines_current_size[i] * scale.x;
+					back_size.y = -font->fontData.charactersMap['l'].size.y  * scale.y * current_line * interlineal;
+				}*/
+				break;
+			case RIGHT:
+				break;
+			default:
+				break;
 			}
-		}
-		break;
-		case MIDDLE:
-			/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
-			{
-				initial_pos.x = x + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
-				initial_pos.y = y - (first_ch.size.y - first_ch.bearing.y) * scale.y * factor_y;
-				back_size.x = lines_current_size[i] * scale.x * factor_x;
-				back_size.y = -font->fontData.charactersMap['l'].size.y * scale.y * current_line * interlineal * factor_y;
-			}
-			else
-			{
-				initial_pos.x = matrix[0][3] + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
-				initial_pos.y = matrix[1][3] - (first_ch.size.y - first_ch.bearing.y ) * scale.y;
-				back_size.x = lines_current_size[i] * scale.x;
-				back_size.y = -font->fontData.charactersMap['l'].size.y  * scale.y * current_line * interlineal;
-			}*/
-			break;
-		case RIGHT:
-			break;
-		default:
-			break;
-		}
 
-		back_vertex[0] = float3(initial_pos.x, initial_pos.y, matrix[2][3]);
-		back_vertex[1] = float3(initial_pos.x + back_size.x, initial_pos.y, matrix[2][3]);
-		back_vertex[2] = float3(initial_pos.x + back_size.x, initial_pos.y + back_size.y, matrix[2][3]);
-		back_vertex[3] = float3(initial_pos.x, initial_pos.y + back_size.y, matrix[2][3]);
+			back_vertex[0] = float3(initial_pos.x, initial_pos.y, matrix[2][3]);
+			back_vertex[1] = float3(initial_pos.x + back_size.x, initial_pos.y, matrix[2][3]);
+			back_vertex[2] = float3(initial_pos.x + back_size.x, initial_pos.y + back_size.y, matrix[2][3]);
+			back_vertex[3] = float3(initial_pos.x, initial_pos.y + back_size.y, matrix[2][3]);
 
-		glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
+			glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
 
-		// Render quad
-		if (text_background.visible)
+			// Render quad
 			glDrawArrays(GL_QUADS, 0, 4);
-		else
-			glDrawArrays(GL_LINE_LOOP, 0, 4);
 
-		first_ch = font->fontData.charactersMap[current_line_pos[i]];
+			first_ch = font->fontData.charactersMap[current_line_pos[i]];
+		}
 	}
 
 	font->background_shader->Unbind();
