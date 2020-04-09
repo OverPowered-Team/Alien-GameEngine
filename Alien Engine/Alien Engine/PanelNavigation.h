@@ -14,6 +14,10 @@ public:
 private:
 	void OnPanelDesactive();
 
+	void ShowObjectTab();
+	void ShowAreaTab();
+	void ShowBakeTab();
+
 public:
 
 	bool panel_nav_rendered = false;

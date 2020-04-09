@@ -81,6 +81,21 @@ update_status ModuleNavigation::PostUpdate(float dt)
 
 bool ModuleNavigation::CleanUp()
 {
+	delete[] triareas;
+	triareas = nullptr;
+	rcFreeHeightField(solid);
+	solid = nullptr;
+	rcFreeCompactHeightfield(chf);
+	chf = nullptr;
+	rcFreeContourSet(cset);
+	cset = nullptr;
+	rcFreePolyMesh(pmesh);
+	pmesh = nullptr;
+	rcFreePolyMeshDetail(dmesh);
+	dmesh = nullptr;
+	/*dtFreeNavMesh(navMesh);
+	navMesh = nullptr;*/
+
 	return true;
 }
 // -----------------------------------------------------------
@@ -92,7 +107,7 @@ void ModuleNavigation::DebugDrawNavMeshes(NavDrawMode drawMode)
 
 	if (solid)
 	{
-		if(drawMode == NavDrawMode::DRAWMODE_VOXELS)
+		if (drawMode == NavDrawMode::DRAWMODE_VOXELS)
 			duDebugDrawHeightfieldSolid(&dd, *solid);
 	}
 	if (cset)
@@ -122,8 +137,7 @@ void ModuleNavigation::DebugDrawNavMeshes(NavDrawMode drawMode)
 
 bool ModuleNavigation::Bake()
 {
-	bool ret = true;
-
+	CleanUp();
 	// get all flagged navigation static gameobjects that has mesh -----
 
 	GameObject* scene_root = App->objects->GetRoot(true);
@@ -168,6 +182,13 @@ bool ModuleNavigation::Bake()
 
 	float* verts = new float[nverts * 3];
 	uint* tris = new uint[ntris * 3]; // faces * 3 vertex each triangle face
+
+	if (!verts || !tris)
+	{
+		ctx.log(RC_LOG_ERROR, "buildNavigation: Out of memory 'verts' 'tris'.");
+		ShowBakeLogs();
+		return false;
+	}
 
 	// re-iterate and copy by memory blocks
 	float* next_vertex_mem_block = verts;
@@ -244,6 +265,7 @@ bool ModuleNavigation::Bake()
 	rcVcopy(rc_conf.bmax, (float*)&aabb.maxPoint);
 	rcCalcGridSize(rc_conf.bmin, rc_conf.bmax, rc_conf.cs, &rc_conf.width, &rc_conf.height);
 
+	ctx.resetLog();
 	ctx.resetTimers();
 	ctx.startTimer(RC_TIMER_TOTAL);
 	ctx.log(RC_LOG_PROGRESS, "Building navigation:");
@@ -294,7 +316,7 @@ bool ModuleNavigation::Bake()
 		triareas = nullptr;
 	}
 
-	//// Filter walkable surfaces --------------------------------------------------------------------------
+	// Filter walkable surfaces --------------------------------------------------------------------------
 
 	if (filterLowHangingObstacles)
 		rcFilterLowHangingWalkableObstacles(&ctx, rc_conf.walkableClimb, *solid);
@@ -303,7 +325,7 @@ bool ModuleNavigation::Bake()
 	if (filterWalkableLowHeightSpans)
 		rcFilterWalkableLowHeightSpans(&ctx, rc_conf.walkableHeight, *solid);
 
-	//// Partition walkable surface to simple regions -------------------------------------------------------
+	// Partition walkable surface to simple regions -------------------------------------------------------
 
 	chf = rcAllocCompactHeightfield();
 	if (!chf)
@@ -409,6 +431,7 @@ bool ModuleNavigation::Bake()
 
 	// TODO: Create detour data from recast poly mesh 
 	
+	LOG_ENGINE("%i", sizeof(char));
 
 
 
@@ -424,7 +447,7 @@ bool ModuleNavigation::Bake()
 	ShowBakeLogs();
 
 
-	return ret;
+	return true;
 
 }
 
@@ -508,6 +531,14 @@ void BuildContext::doLog(const rcLogCategory category, const char* msg, const in
 	text[count - 1] = '\0';
 	textPoolSize += 1 + count;
 	messages[messageCount++] = dst;
+}
+
+void BuildContext::doResetLog()
+{
+	memset(textPool, 0, sizeof(char) * TEXT_POOL_SIZE);
+	memset(messages, 0, sizeof(char*) * MAX_MESSAGES);
+	textPoolSize = 0;
+	messageCount = 0;
 }
 
 const char* BuildContext::getLogText(const int i) const

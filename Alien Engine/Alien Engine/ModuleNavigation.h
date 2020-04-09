@@ -46,13 +46,13 @@ public:
 
 	const char* getLogText(const int i) const;
 	int getLogCount() const;
-	void showError();
 
 protected:
 	virtual void doLog(const rcLogCategory category, const char* msg, const int len);
 	virtual void doStartTimer(const rcTimerLabel label);
 	virtual void doStopTimer(const rcTimerLabel label);
 	virtual void doResetTimers();
+	virtual void doResetLog();
 	virtual int doGetAccumulatedTime(const rcTimerLabel label) const;
 };
 

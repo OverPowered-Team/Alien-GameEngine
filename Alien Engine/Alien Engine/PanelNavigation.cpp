@@ -21,7 +21,67 @@ void PanelNavigation::PanelLogic()
 {
 	OPTICK_EVENT();
 
+	ImGui::Begin(panel_name.data(), &enabled);
+	ImGui::Title("Panel Navigation");
+	ImGui::Spacing();
+	ImGui::Separator();
+
+	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+	if (ImGui::BeginTabBar("NavigationTabs", tab_bar_flags))
+	{
+		if (ImGui::BeginTabItem("Areas"))
+		{
+			ShowAreaTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Bake"))
+		{
+			ShowBakeTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Object"))
+		{
+			ShowObjectTab();
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+	// ----------------------------------------------
+	// Used to know when to draw navigation meshes and other recast data on scene panel
+	ImDrawList* list = ImGui::GetWindowDrawList();
+	if (list != nullptr && list->IdxBuffer.size() > 0) { // TODO: this is shit
+		panel_nav_rendered = true;
+	}
+	else {
+		panel_nav_rendered = false;
+	}
 	// -----------------------------------------------
+
+	ImGui::Separator();
+
+	if(ImGui::CollapsingHeader("Advanced options"))
+	{
+		const char* drawNames[] = { "DRAWMODE_NAVMESH",
+									"DRAWMODE_VOXELS",
+									"DRAWMODE_REGION_CONNECTIONS",
+									"DRAWMODE_CONTOURS",
+									"DRAWMODE_POLYMESH",
+									"DRAWMODE_POLYMESH_DETAIL", };
+		
+		for (uint i = 0; i < (uint)NavDrawMode::MAX_DRAWMODE; ++i)
+		{
+			ImGui::Checkbox(drawNames[i], &App->nav->drawModes[i]);
+		}
+	}
+
+	if (enabled != true)
+		OnPanelDesactive();
+
+	ImGui::End();
+}
+
+void PanelNavigation::ShowObjectTab()
+{
 	std::list<GameObject*> gos = App->objects->GetSelectedObjects();
 	std::vector<GameObject*> mesh_gos;
 
@@ -31,20 +91,6 @@ void PanelNavigation::PanelLogic()
 		}
 	}
 
-	ImGui::Begin(panel_name.data(), &enabled);
-	ImGui::Title("Panel Navigation");
-	ImGui::Spacing();
-	ImGui::Separator();
-	// ----------------------------------------------
-	// Used to know when to draw navigation meshes and other recast data on scene panel
-	ImDrawList* list = ImGui::GetWindowDrawList();
-	if (list != nullptr && list->IdxBuffer.size() > 0) {
-		panel_nav_rendered = true;
-	}
-	else {
-		panel_nav_rendered = false;
-	}
-	// -----------------------------------------------
 	uint num_go_valids = mesh_gos.size();
 	ImGui::Text("selected %i gameobject/s", gos.size());
 	ImGui::Text("with %i meshes", num_go_valids);
@@ -73,32 +119,97 @@ void PanelNavigation::PanelLogic()
 		}
 	}
 
+
 	
-	if (ImGui::Button("Bake", ImVec2(100, 20))) {
-		App->nav->Bake();
-	}
+}
+
+void PanelNavigation::ShowAreaTab()
+{
+	ImGui::Text("Nothing to see here");
+}
+
+void PanelNavigation::ShowBakeTab()
+{
+	ImGui::Text("Baked Agent Size");
+	ImGui::Separator();
+
+	ImVec2 draw_canvas_size((36 + 10) * 9.8f, (36 + 10) * 3);
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+	const ImVec2 p = ImGui::GetCursorScreenPos();
+	const ImU32 light_blue = ImColor(0.13f, 0.72f, 1.0f, 1.0f);
+	const ImU32 mid_blue = ImColor(0.22f, 0.62f, 1.0f, 0.6f);
+	const ImU32 dark_blue = ImColor(0.02f, 0.46f, 1.0f, 1.0f);
+
+	float window_w = ImGui::GetWindowContentRegionWidth();
+	float window_center =  window_w * 0.5f;
+
+	//float spacing = 10.0f;
+
+	float proportion_scale = 0.33f;
+	float scale_factor = 40.0f;
+
+	float* agent_radius = &App->nav->agentRadius;
+	float* agent_height = &App->nav->agentHeight;
+
+	const float max_draw_rad = 2.5f * scale_factor;
+	const float max_draw_height = draw_canvas_size.y;
+	float draw_radius = *agent_radius * scale_factor;
+
+	//draw_radius = std::fmod(draw_radius, max_draw_rad);
+
+	float dif = max_draw_rad - draw_radius;
+
+	draw_radius = std::fmin(draw_radius, max_draw_rad);
+
+	//float draw_height = *agent_height * scale_factor;
+
+
+	int bottom_line_length = 60;
+	const ImU32 line_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
+	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+	float fixed_bottom_agent_line = 160;
+
+	float top_offset = 20;
+	
+	ImGui::Text("dif: %f", dif);
+
+	// drawing shapes ------------------------------------
+	ImVec2 top_ellipse_center(p.x + window_center, (p.y + top_offset) + (draw_radius * proportion_scale));
+	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * proportion_scale)); // Always "fixed"
+	float center_height = bot_ellipse_c.y - top_ellipse_center.y;
+
+	// bottom "floor" line
+	draw_list->AddLine(ImVec2(p.x, bot_ellipse_c.y), ImVec2(p.x + window_w, bot_ellipse_c.y), line_col);
+	// bottom mid agent line
+	float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
+	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
+
+	// body agent rect
+	ImVec2 p_min(top_ellipse_center.x - draw_radius, bot_ellipse_c.y);
+	ImVec2 p_max(top_ellipse_center.x + draw_radius, top_ellipse_center.y);
+
+	draw_list->AddRectFilled(p_min, p_max, mid_blue);
+
+	// bottom ellipse (only thing fixed on point)
+	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * proportion_scale, dark_blue, 0.0f, 24);
+
+	// top ellipse
+	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * proportion_scale, light_blue, 0.0f, 24);
+	
+
+	ImGui::Dummy(draw_canvas_size);
 
 	ImGui::Separator();
 
-	if(ImGui::CollapsingHeader("Advanced options"))
-	{
-		const char* drawNames[] = { "DRAWMODE_NAVMESH",
-									"DRAWMODE_VOXELS",
-									"DRAWMODE_REGION_CONNECTIONS",
-									"DRAWMODE_CONTOURS",
-									"DRAWMODE_POLYMESH",
-									"DRAWMODE_POLYMESH_DETAIL", };
-		
-		for (uint i = 0; i < (uint)NavDrawMode::MAX_DRAWMODE; ++i)
-		{
-			ImGui::Checkbox(drawNames[i], &App->nav->drawModes[i]);
-		}
+	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 10.0f);
+	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 10.0f);
+	
+
+	if (ImGui::Button("Bake", ImVec2(100, 20))) {
+		App->nav->Bake();
 	}
-
-	if (enabled != true)
-		OnPanelDesactive();
-
-	ImGui::End();
 }
 
 void PanelNavigation::OnPanelDesactive() // TODO: this call doesn't work if the window is NOT docked and is closed by the top right X icon
