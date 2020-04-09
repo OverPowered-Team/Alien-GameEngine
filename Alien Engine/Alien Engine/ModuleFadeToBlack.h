@@ -13,7 +13,7 @@ enum class FadeToBlackType
 	DIAGONAL_1,
 	DIAGONAL_2,
 
-	NONE
+	NONE=-1
 };
 
 enum class FadeType
@@ -22,7 +22,7 @@ enum class FadeType
 	FADE_FROM,
 	COMPLETE_FADE,
 
-	NONE
+	NONE=-1
 };
 
 struct Fade
@@ -67,7 +67,7 @@ public:
 
 	update_status PreUpdate(float dt);
 
-	void StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color);
+	void StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color, const char* scene_name_to_change=nullptr);
 
 	void Reset();
 
@@ -78,4 +78,5 @@ private:
 private:
 	Fade* fade = nullptr;
 	bool fading_from = false;
+	const char* scene_name = nullptr;
 };

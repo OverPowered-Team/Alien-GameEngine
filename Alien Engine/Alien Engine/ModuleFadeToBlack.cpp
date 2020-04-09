@@ -45,7 +45,7 @@ update_status FadeToBlack::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color)
+void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color, const char* scene_name_to_change)
 {
 	if (FTB_Type != FadeToBlackType::NONE && ((fade == nullptr) || fading_from))
 	{
@@ -56,20 +56,28 @@ void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType F
 		fade->fade_type = fade_type;
 		fade->ftb_type = FTB_Type;
 		fade->fade_color = fade_color;
+		scene_name = scene_name_to_change;
+
+		if ((scene_name_to_change)||fade->fade_type==FadeType::COMPLETE_FADE)
+		{
+			fade->fading_time = seconds * 0.5f;
+		}
+		else
+		{
+			fade->fading_time = seconds;
+		}
 
 		// Fade Type
 		switch (fade_type)
 		{
 		case FadeType::FADE_TO:
 		{
-			fade->fading_time = seconds;
 			fade->origin_value = 0;
 			fade->final_value = 1.0f;
 			break;
 		}
 		case FadeType::FADE_FROM:
 		{
-			fade->fading_time = seconds;
 			fade->origin_value = 1.0f;
 			fade->final_value = 0;
 			fading_from = false;
@@ -77,7 +85,6 @@ void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType F
 		}
 		case FadeType::COMPLETE_FADE:
 		{
-			fade->fading_time = seconds * 0.5f;
 			fade->origin_value = 0;
 			fade->final_value = 1.0f;
 			fading_from = true;
@@ -126,6 +133,12 @@ void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType F
 void FadeToBlack::Reset()
 {
 	GameObject::DestroyInstantly(fade->root_object);
+
+	if (scene_name)
+	{
+		App->objects->LoadScene(scene_name);
+		fading_from = true;
+	}
 
 	if (fading_from)
 	{
