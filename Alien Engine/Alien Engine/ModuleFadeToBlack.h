@@ -5,11 +5,13 @@
 
 class GameObject;
 class ComponentImage;
+class ComponentCanvas;
 
 enum class FadeToBlackType
 {
 	FADE,
-	DIAGONAL,
+	DIAGONAL_1,
+	DIAGONAL_2,
 
 	NONE
 };
@@ -22,6 +24,37 @@ enum class FadeType
 
 	NONE
 };
+
+struct Fade
+{
+	Fade() {}
+
+	// Fade Types
+	FadeType fade_type = FadeType::NONE;
+	FadeToBlackType ftb_type = FadeToBlackType::NONE;
+
+	// Time values
+	float fading_time = 0.0f;
+	float time_start = 0.0f;
+
+	// Global Items
+	GameObject* root_object = nullptr;
+
+	union
+	{
+		struct
+		{
+			ComponentImage* fading_image = nullptr;
+		}linear_fade;
+
+		struct
+		{
+			ComponentImage* diagonal_image_1 = nullptr;
+			ComponentImage* diagonal_image_2 = nullptr;
+		}diagonal_fade;
+	};
+};
+
 
 class FadeToBlack : public Module
 {
@@ -36,12 +69,10 @@ public:
 	void Reset();
 
 private:
-	float fading_time = 0.0f;
-	FadeToBlackType ftb_type = FadeToBlackType::NONE;
-	FadeType fade_type = FadeType::NONE;
-	float time_start = 0.0f;
-	// Items
-	GameObject* fading_item = nullptr;
-	GameObject* image = nullptr;
-	ComponentImage* c_image = nullptr;
+
+	void CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image);
+
+private: 
+	Fade* fade = nullptr;
+
 };

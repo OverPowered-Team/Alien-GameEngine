@@ -7,6 +7,7 @@
 #include "ComponentTransform.h"
 #include "AnimTween.h"
 #include "Time.h"
+
 FadeToBlack::FadeToBlack(bool start_enabled): Module(start_enabled)
 {
 	name.assign("FadeToBlack");
@@ -18,59 +19,90 @@ FadeToBlack::~FadeToBlack()
 
 update_status FadeToBlack::PreUpdate(float dt)
 {
-	float increment = (Time::GetTimeSinceStart()-time_start)/fading_time;
-	c_image->SetBackgroundColor(0, 0, 0, math::Lerp(0.0f, 1.0f, increment));
-	if ((time_start + fading_time) < Time::GetTimeSinceStart())
+	if (fade != nullptr)
 	{
-		// Tween completed
-		Reset();
-	}
+		float increment = (Time::GetTimeSinceStart() - fade->time_start) / fade->fading_time;
 
+		switch (fade->ftb_type)
+		{
+		case FadeToBlackType::FADE:
+		{
+			fade->linear_fade.fading_image->SetBackgroundColor(0, 0, 0, math::Lerp(0.0f, 1.0f, increment));
+			break;
+		}
+		case FadeToBlackType::DIAGONAL_1:
+			break;
+		}
+
+
+		if ((fade->time_start + fade->fading_time) < Time::GetTimeSinceStart())
+		{
+			// Tween completed
+			Reset();
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
 void FadeToBlack::StartFade(float seconds, FadeToBlackType FTB_Type)
 {
-	if (FTB_Type != FadeToBlackType::NONE)
+	if (FTB_Type != FadeToBlackType::NONE && fade == nullptr)
 	{
-		fading_time = seconds;
-		ftb_type = FTB_Type;
+		fade = new Fade();
+		fade->fading_time = seconds;
+		fade->ftb_type = FTB_Type;
 
 		// Create Canvas
-		fading_item = App->objects->CreateEmptyGameObject(nullptr, false);
-		App->objects->MoveObjectUp(fading_item, true);
-		ComponentCanvas* canvas = new ComponentCanvas(fading_item);
-		fading_item->AddComponent(canvas);
+		fade->root_object = App->objects->CreateEmptyGameObject(nullptr, false);
+		fade->root_object->SetName("FadeToBlack");
+		App->objects->MoveObjectUp(fade->root_object, true);
+		ComponentCanvas* canvas = new ComponentCanvas(fade->root_object);
+		fade->root_object->AddComponent(canvas);
 
 		// Fades
 		switch (FTB_Type)
 		{
 		case FadeToBlackType::FADE:
 		{
-			// Create Image
-			image = new GameObject(fading_item);
-			c_image = new ComponentImage(image);
-			image->AddComponent(c_image);
-			c_image->SetBackgroundColor(0, 0, 0, 0);
-			c_image->SetCanvas(canvas);
-			image->transform->SetLocalScale(float3(80, 50, 1));
-
+			CreateComponentImage(canvas, &fade->linear_fade.fading_image);
 			break;
 		}
-		case FadeToBlackType::DIAGONAL:
+		case FadeToBlackType::DIAGONAL_1:
 		{
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1);
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2);
+			break;
+		}
+		case FadeToBlackType::DIAGONAL_2:
+		{
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1);
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2);
 			break;
 		}
 		}
 		
 		// Enable Module to start PreUpdate
-		time_start = Time::GetTimeSinceStart();
+		fade->time_start = Time::GetTimeSinceStart();
 		SetEnable(true);
 	}
 }
 
 void FadeToBlack::Reset()
 {
-	GameObject::DestroyInstantly(fading_item);
+	GameObject::DestroyInstantly(fade->root_object);
+	delete fade;
+	fade = nullptr;
 	SetEnable(false);
+}
+
+void FadeToBlack::CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image)
+{
+	// Create Image and Set Component
+	GameObject* image = new GameObject(fade->root_object);
+	image->SetName("Fade");
+	*c_image = new ComponentImage(image);
+	image->AddComponent(*c_image);
+	(*c_image)->SetBackgroundColor(0, 0, 0, 1);
+	(*c_image)->SetCanvas(canvas);
+	image->transform->SetLocalScale(float3(80, 45, 1));
 }

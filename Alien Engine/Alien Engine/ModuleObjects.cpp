@@ -224,7 +224,7 @@ update_status ModuleObjects::Update(float dt)
 	ScriptsUpdate();
 	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_P)==KEY_STATE::KEY_DOWN)
 	{
-		App->fade_to_black->StartFade(0.5, FadeToBlackType::FADE);
+		App->fade_to_black->StartFade(1.0f, FadeToBlackType::FADE);
 	}
 	return UPDATE_CONTINUE;
 }
