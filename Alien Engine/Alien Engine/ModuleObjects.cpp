@@ -53,6 +53,7 @@
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleFadeToBlack.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -221,6 +222,10 @@ update_status ModuleObjects::Update(float dt)
 	}
 	UpdateGamePadInput();
 	ScriptsUpdate();
+	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_P)==KEY_STATE::KEY_DOWN)
+	{
+		App->fade_to_black->StartFade(0.5, FadeToBlackType::FADE);
+	}
 	return UPDATE_CONTINUE;
 }
 
