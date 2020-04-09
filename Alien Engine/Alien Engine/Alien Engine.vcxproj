@@ -85,10 +85,11 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;%(AdditionalIncludeDirectories);PhysX\include</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +123,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories);PhysX\include</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
@@ -821,6 +822,7 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleObjects.h" />
     <ClInclude Include="ModulePhysics.h" />
+    <ClInclude Include="ModulePhysX.h" />
     <ClInclude Include="ModuleRenderer3D.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleUI.h" />
@@ -862,6 +864,7 @@
     <ClInclude Include="PCG\pcg_random.hpp" />
     <ClInclude Include="PCG\pcg_uint128.hpp" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysxAbstraction.h" />
     <ClInclude Include="Prefab.h" />
     <ClInclude Include="RandomHelper.h" />
     <ClInclude Include="RayCreator.h" />
@@ -1194,6 +1197,7 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleObjects.cpp" />
     <ClCompile Include="ModulePhysics.cpp" />
+    <ClCompile Include="ModulePhysX.cpp" />
     <ClCompile Include="ModuleRenderer3D.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleUI.cpp" />
@@ -1228,6 +1232,7 @@
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysxAbstraction.cpp" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
     <ClCompile Include="ResourceAnimation.cpp" />

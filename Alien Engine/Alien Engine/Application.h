@@ -27,7 +27,7 @@ class ModuleFileSystem;
 class ModuleResources;
 class ModuleAudio;
 class AnimTween;
-
+class ModulePhysX;
 class JSONfilepack;
 
 struct LogInfo {
@@ -59,6 +59,7 @@ public:
 	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
 	ModulePhysics* 		physics = nullptr;
+	ModulePhysX*		physx = nullptr;
 	AnimTween*			tween = nullptr;
 
 	bool fps_cap = true;

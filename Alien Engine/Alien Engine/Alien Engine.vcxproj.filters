@@ -121,6 +121,9 @@
     <Filter Include="Tools\FreeImage">
       <UniqueIdentifier>{78bf3428-1a09-4931-84fd-d3b902f84b5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Physics">
+      <UniqueIdentifier>{74e51cef-a711-46f9-850d-a5d57ea7f61b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -647,6 +650,15 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>ScriptHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysics.h">
+      <Filter>Modules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysX.h">
+      <Filter>Modules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysxAbstraction.h">
+      <Filter>Modules\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2549,9 +2561,6 @@
     <ClInclude Include="ComponentSphereCollider.h">
       <Filter>Components\Physiscs\Colliders</Filter>
     </ClInclude>
-    <ClInclude Include="ModulePhysics.h">
-      <Filter>Modules</Filter>
-    </ClInclude>
     <ClInclude Include="AnimTween.h">
       <Filter>Modules\Tween</Filter>
     </ClInclude>
@@ -2617,6 +2626,15 @@
     </ClCompile>
     <ClCompile Include="Physics.cpp">
       <Filter>ScriptHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulePhysics.cpp">
+      <Filter>Modules\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulePhysX.cpp">
+      <Filter>Modules\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysxAbstraction.cpp">
+      <Filter>Modules\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3639,9 +3657,6 @@
     </ClCompile>
     <ClCompile Include="ComponentSphereCollider.cpp">
       <Filter>Components\Physiscs\Colliders</Filter>
-    </ClCompile>
-    <ClCompile Include="ModulePhysics.cpp">
-      <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="AnimTween.cpp">
       <Filter>Modules\Tween</Filter>

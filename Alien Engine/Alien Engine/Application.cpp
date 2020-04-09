@@ -10,6 +10,7 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleAudio.h"
+#include "ModulePhysX.h"
 #include "ShortCutManager.h"
 #include "Parson/parson.h"
 #include "Time.h"
@@ -33,6 +34,7 @@ Application::Application()
 	tween = new AnimTween();
 	objects = new ModuleObjects();
 	physics = new ModulePhysics();
+	physx = new ModulePhysX();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
 	audio = new ModuleAudio();
@@ -52,6 +54,7 @@ Application::Application()
 	AddModule(audio);
 	// Scenes
 	AddModule(physics);
+	AddModule(physx);
 	AddModule(objects);
 	AddModule(tween);
 #ifndef GAME_VERSION
