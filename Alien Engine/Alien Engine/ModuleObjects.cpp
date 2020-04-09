@@ -31,6 +31,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
@@ -1105,6 +1106,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
 	OPTICK_EVENT();
+	App->audio->Stop();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
