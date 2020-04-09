@@ -12,6 +12,8 @@ enum class FadeToBlackType
 	FADE,
 	DIAGONAL_1,
 	DIAGONAL_2,
+	HORIZONTAL_CURTAIN,
+	VERTICAL_CURTAIN,
 
 	NONE=-1
 };
@@ -36,8 +38,6 @@ struct Fade
 	// Time values
 	float fading_time = 0.0f;
 	float time_start = 0.0f;
-	float origin_value = 0.0f;
-	float final_value = 1.0f;
 
 	// Global Items
 	GameObject* root_object = nullptr;
@@ -48,13 +48,15 @@ struct Fade
 		struct
 		{
 			ComponentImage* fading_image = nullptr;
+			float origin_value = 0.0f;
+			float final_value = 1.0f;
 		}linear_fade;
 
 		struct
 		{
-			ComponentImage* diagonal_image_1 = nullptr;
-			ComponentImage* diagonal_image_2 = nullptr;
-		}diagonal_fade;
+			ComponentImage* image1 = nullptr;
+			ComponentImage* image2 = nullptr;
+		}curtain;
 	};
 };
 

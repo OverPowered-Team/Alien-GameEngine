@@ -22,21 +22,46 @@ update_status FadeToBlack::PreUpdate(float dt)
 	if (fade != nullptr)
 	{
 		float increment = (Time::GetTimeSinceStart() - fade->time_start) / fade->fading_time;
-
+		
 		switch (fade->ftb_type)
 		{
 		case FadeToBlackType::FADE:
 		{
 			fade->linear_fade.fading_image->SetBackgroundColor(fade->fade_color.x, fade->fade_color.y, fade->fade_color.z, 
-				math::Lerp(fade->origin_value, fade->final_value, increment));
+				math::Lerp(fade->linear_fade.origin_value, fade->linear_fade.final_value, increment));
 			break;
 		}
-		case FadeToBlackType::DIAGONAL_1:
+		case FadeToBlackType::HORIZONTAL_CURTAIN:
+		{
+			if (fade->fade_type == FadeType::FADE_FROM)
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(-40, 0, 0), float3(-120, 0, 0), increment));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(40, 0, 0), float3(120, 0, 0), increment));
+			}
+			else
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(-120, 0, 0), float3(-38, 0, 0), increment));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(120, 0, 0), float3(38, 0, 0), increment));
+			}
 			break;
 		}
+		case FadeToBlackType::VERTICAL_CURTAIN:
+		{
+			if (fade->fade_type == FadeType::FADE_FROM)
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(0, -20, 0), float3(0, -67.5, 0), increment));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(0, 20, 0), float3(0, 67.5, 0), increment));
+			}
+			else
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(0, -67.5, 0), float3(0, -22.5, 0), increment));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(math::Lerp(float3(0, 67.5, 0), float3(0, 22.5, 0), increment));
+			}
+			break;
+		}
+		}
 
-
-		if ((fade->time_start + fade->fading_time) < Time::GetTimeSinceStart())
+		if (increment > 1)
 		{
 			// Tween completed
 			Reset();
@@ -72,21 +97,21 @@ void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType F
 		{
 		case FadeType::FADE_TO:
 		{
-			fade->origin_value = 0;
-			fade->final_value = 1.0f;
+			fade->linear_fade.origin_value = 0;
+			fade->linear_fade.final_value = 1.0f;
 			break;
 		}
 		case FadeType::FADE_FROM:
 		{
-			fade->origin_value = 1.0f;
-			fade->final_value = 0;
+			fade->linear_fade.origin_value = 1.0f;
+			fade->linear_fade.final_value = 0;
 			fading_from = false;
 			break;
 		}
 		case FadeType::COMPLETE_FADE:
 		{
-			fade->origin_value = 0;
-			fade->final_value = 1.0f;
+			fade->linear_fade.origin_value = 0;
+			fade->linear_fade.final_value = 1.0f;
 			fading_from = true;
 			break;
 		}
@@ -109,14 +134,46 @@ void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType F
 		}
 		case FadeToBlackType::DIAGONAL_1:
 		{
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1, float3(fade_color.x, fade_color.y, fade_color.z));
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image2, float3(fade_color.x, fade_color.y, fade_color.z));
 			break;
 		}
 		case FadeToBlackType::DIAGONAL_2:
 		{
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1, float3(fade_color.x, fade_color.y, fade_color.z));
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image2, float3(fade_color.x, fade_color.y, fade_color.z));
+			break;
+		}
+		case FadeToBlackType::HORIZONTAL_CURTAIN:
+		{
+			CreateComponentImage(canvas, &fade->curtain.image1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image2, float3(fade_color.x, fade_color.y, fade_color.z));
+			if (fade->fade_type == FadeType::FADE_FROM)
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(float3(-38, 0, 0));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(float3(38, 0, 0));
+			}
+			else
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(float3(-125, 0, 0));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(float3(125, 0, 0));
+			}
+			break;
+		}
+		case FadeToBlackType::VERTICAL_CURTAIN:
+		{
+			CreateComponentImage(canvas, &fade->curtain.image1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->curtain.image2, float3(fade_color.x, fade_color.y, fade_color.z));
+			if (fade->fade_type == FadeType::FADE_FROM)
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(float3(0, -22.5, 0));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(float3(0, 22.5, 0));
+			}
+			else
+			{
+				fade->curtain.image1->game_object_attached->transform->SetLocalPosition(float3(0, -67.5, 0));
+				fade->curtain.image2->game_object_attached->transform->SetLocalPosition(float3(0, 67.5, 0));
+			}
 			break;
 		}
 		}
@@ -159,7 +216,27 @@ void FadeToBlack::CreateComponentImage(ComponentCanvas* canvas, ComponentImage**
 	image->SetName("Fade");
 	*c_image = new ComponentImage(image);
 	image->AddComponent(*c_image);
-	(*c_image)->SetBackgroundColor(color.x, color.y, color.z, fade->origin_value);
 	(*c_image)->SetCanvas(canvas);
-	image->transform->SetLocalScale(float3(80, 45, 1));
+	switch (fade->ftb_type)
+	{
+	case FadeToBlackType::FADE:
+	{
+		(*c_image)->SetBackgroundColor(color.x, color.y, color.z, fade->linear_fade.origin_value);
+		image->transform->SetLocalScale(float3(80, 45, 1));
+		break;
+	}
+	case FadeToBlackType::HORIZONTAL_CURTAIN:
+	{
+		(*c_image)->SetBackgroundColor(color.x, color.y, color.z, 1);
+		image->transform->SetLocalScale(float3(45, 45, 1));
+		break;
+	}
+	case FadeToBlackType::VERTICAL_CURTAIN:
+	{
+		(*c_image)->SetBackgroundColor(color.x, color.y, color.z, 1);
+		image->transform->SetLocalScale(float3(80, 25, 1));
+		break;
+	}
+	}
+	
 }

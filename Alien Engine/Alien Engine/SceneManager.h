@@ -11,7 +11,7 @@ public:
 	static int ScenesLoaded();
 	static const char* GetCurrentScene();
 
-	// This function does not change the scene, only does a fade
+	// This function does not change the scene, only does a fade. Use LoadScene to change the scene with a Fade
 	static void StartFade(float seconds, FadeType fade_type, FadeToBlackType ftb_type, float3 color);
 private:
 
