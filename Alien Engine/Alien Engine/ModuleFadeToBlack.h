@@ -36,9 +36,12 @@ struct Fade
 	// Time values
 	float fading_time = 0.0f;
 	float time_start = 0.0f;
+	float origin_value = 0.0f;
+	float final_value = 1.0f;
 
 	// Global Items
 	GameObject* root_object = nullptr;
+	float3 fade_color = { 0,0,0 };
 
 	union
 	{
@@ -64,15 +67,15 @@ public:
 
 	update_status PreUpdate(float dt);
 
-	void StartFade(float seconds, FadeToBlackType FTB_Type);
+	void StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color);
 
 	void Reset();
 
 private:
 
-	void CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image);
+	void CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image, float3 color);
 
-private: 
+private:
 	Fade* fade = nullptr;
-
+	bool fading_from = false;
 };

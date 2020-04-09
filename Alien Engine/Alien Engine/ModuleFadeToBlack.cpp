@@ -27,7 +27,8 @@ update_status FadeToBlack::PreUpdate(float dt)
 		{
 		case FadeToBlackType::FADE:
 		{
-			fade->linear_fade.fading_image->SetBackgroundColor(0, 0, 0, math::Lerp(0.0f, 1.0f, increment));
+			fade->linear_fade.fading_image->SetBackgroundColor(fade->fade_color.x, fade->fade_color.y, fade->fade_color.z, 
+				math::Lerp(fade->origin_value, fade->final_value, increment));
 			break;
 		}
 		case FadeToBlackType::DIAGONAL_1:
@@ -44,13 +45,45 @@ update_status FadeToBlack::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-void FadeToBlack::StartFade(float seconds, FadeToBlackType FTB_Type)
+void FadeToBlack::StartFade(float seconds, FadeType fade_type, FadeToBlackType FTB_Type, float3 fade_color)
 {
-	if (FTB_Type != FadeToBlackType::NONE && fade == nullptr)
+	if (FTB_Type != FadeToBlackType::NONE && ((fade == nullptr) || fading_from))
 	{
-		fade = new Fade();
-		fade->fading_time = seconds;
+		if (fade == nullptr)
+		{
+			fade = new Fade();
+		}
+		fade->fade_type = fade_type;
 		fade->ftb_type = FTB_Type;
+		fade->fade_color = fade_color;
+
+		// Fade Type
+		switch (fade_type)
+		{
+		case FadeType::FADE_TO:
+		{
+			fade->fading_time = seconds;
+			fade->origin_value = 0;
+			fade->final_value = 1.0f;
+			break;
+		}
+		case FadeType::FADE_FROM:
+		{
+			fade->fading_time = seconds;
+			fade->origin_value = 1.0f;
+			fade->final_value = 0;
+			fading_from = false;
+			break;
+		}
+		case FadeType::COMPLETE_FADE:
+		{
+			fade->fading_time = seconds * 0.5f;
+			fade->origin_value = 0;
+			fade->final_value = 1.0f;
+			fading_from = true;
+			break;
+		}
+		}
 
 		// Create Canvas
 		fade->root_object = App->objects->CreateEmptyGameObject(nullptr, false);
@@ -59,50 +92,61 @@ void FadeToBlack::StartFade(float seconds, FadeToBlackType FTB_Type)
 		ComponentCanvas* canvas = new ComponentCanvas(fade->root_object);
 		fade->root_object->AddComponent(canvas);
 
-		// Fades
+		// Create Images
 		switch (FTB_Type)
 		{
 		case FadeToBlackType::FADE:
 		{
-			CreateComponentImage(canvas, &fade->linear_fade.fading_image);
+			CreateComponentImage(canvas, &fade->linear_fade.fading_image, float3(fade_color.x, fade_color.y, fade_color.z));
 			break;
 		}
 		case FadeToBlackType::DIAGONAL_1:
 		{
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1);
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2);
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2, float3(fade_color.x, fade_color.y, fade_color.z));
 			break;
 		}
 		case FadeToBlackType::DIAGONAL_2:
 		{
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1);
-			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2);
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_1, float3(fade_color.x, fade_color.y, fade_color.z));
+			CreateComponentImage(canvas, &fade->diagonal_fade.diagonal_image_2, float3(fade_color.x, fade_color.y, fade_color.z));
 			break;
 		}
 		}
-		
+
 		// Enable Module to start PreUpdate
+		if (!IsEnabled())
+		{
+			SetEnable(true);
+		}
 		fade->time_start = Time::GetTimeSinceStart();
-		SetEnable(true);
 	}
 }
 
 void FadeToBlack::Reset()
 {
 	GameObject::DestroyInstantly(fade->root_object);
-	delete fade;
-	fade = nullptr;
-	SetEnable(false);
+
+	if (fading_from)
+	{
+		StartFade(fade->fading_time, FadeType::FADE_FROM, fade->ftb_type, fade->fade_color);
+	}
+	else
+	{
+		delete fade;
+		fade = nullptr;
+		SetEnable(false);
+	}
 }
 
-void FadeToBlack::CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image)
+void FadeToBlack::CreateComponentImage(ComponentCanvas* canvas, ComponentImage** c_image, float3 color)
 {
 	// Create Image and Set Component
 	GameObject* image = new GameObject(fade->root_object);
 	image->SetName("Fade");
 	*c_image = new ComponentImage(image);
 	image->AddComponent(*c_image);
-	(*c_image)->SetBackgroundColor(0, 0, 0, 1);
+	(*c_image)->SetBackgroundColor(color.x, color.y, color.z, fade->origin_value);
 	(*c_image)->SetCanvas(canvas);
 	image->transform->SetLocalScale(float3(80, 45, 1));
 }
