@@ -62,6 +62,8 @@ ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 ModuleObjects::~ModuleObjects()
 {
 	DeleteReturns();
+
+	RELEASE(wfbos);
 }
 
 bool ModuleObjects::Init()
@@ -97,8 +99,10 @@ bool ModuleObjects::Start()
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
 
-
 	game_viewport = new Viewport(nullptr);
+
+	wfbos = new WaterFrameBuffers();
+
 #ifndef GAME_VERSION
 	GameObject* camera = new GameObject(base_game_object);
 	camera->SetName("Main Camera");
@@ -289,6 +293,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
+
+			// Snapshot of every frame of the scene
+			// TODOviewport->GetSize().x;
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {

@@ -14,7 +14,7 @@ public:
 public:
 	void BindReflectionFrameBuffer();
 	void BindRefractionFrameBuffer();
-	void UnbindCurrentFrameBuffer();
+	void UnbindCurrentFrameBuffer(); // Note: width and height of the current viewport
 
 	uint GetReflectionTexture();
 	uint GetRefractionTexture();
