@@ -73,7 +73,8 @@ class __declspec(dllexport) GameObject
 	friend class ModuleUI;
 	friend class ModuleTween;
 	friend class AnimTween;
-	
+	friend class FadeToBlack;
+
 public:
 	GameObject(GameObject* parent, bool ignore_transform = false);
 	GameObject(GameObject* parent, const float3& pos, const Quat& rot, const float3& scale);

@@ -54,6 +54,8 @@
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleFadeToBlack.h"
+#include "SceneManager.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -222,6 +224,16 @@ update_status ModuleObjects::Update(float dt)
 	}
 	UpdateGamePadInput();
 	ScriptsUpdate();
+	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_P)==KEY_STATE::KEY_DOWN)
+	{
+		App->fade_to_black->StartFade(2.0f, FadeType::COMPLETE_FADE, FadeToBlackType::FADE, float3(0, 0, 0));
+	}
+
+	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_I) == KEY_STATE::KEY_DOWN)
+	{
+		SceneManager::LoadScene("fade_testing", FadeToBlackType::FADE, 2.0f, float3(0, 0, 255));
+	}
+
 	return UPDATE_CONTINUE;
 }
 
