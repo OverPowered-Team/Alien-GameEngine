@@ -582,6 +582,10 @@ void GameObject::DrawScene(ComponentCamera* camera)
 			mesh->DrawOBB(camera);
 	}
 
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
 
 	for (Component* component : components)
 	{
@@ -610,6 +614,11 @@ void GameObject::DrawGame(ComponentCamera* camera)
 			glColor3f(1, 1, 1);
 		mesh->DrawPolygon(camera);
 	}
+
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
 }
 
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
