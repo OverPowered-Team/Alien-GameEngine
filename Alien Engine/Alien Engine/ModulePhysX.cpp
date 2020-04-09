@@ -27,6 +27,7 @@
 #endif
 
 #include "PhysX\include\PxPhysicsAPI.h"
+
 ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 {
 	gravity = float3(0.f, -9.8f, 0.f);
