@@ -111,8 +111,7 @@ bool ModuleObjects::Start()
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 
-	App->camera->fake_camera->frustum.pos = { 25,25,25 };
-	App->camera->fake_camera->Look(float3(0, 0, 0));
+	
 
 #else 
 	JSON_Value* value = json_parse_file(BUILD_SETTINGS_PATH);
