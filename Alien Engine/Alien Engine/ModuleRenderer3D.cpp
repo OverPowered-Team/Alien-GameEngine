@@ -54,10 +54,30 @@ bool ModuleRenderer3D::Init()
 		//Use Vsync
 		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG_ENGINE("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+		
+		
+		// Create CUDA context
+		if (g_device == -1)
+			g_device = NvFlexDeviceGetSuggestedOrdinal();
 
+		bool success = NvFlexDeviceCreateCudaContext(g_device);
+
+		if (!success)
+		{
+			LOG_ENGINE("Error creating CUDA context.\n");
+			ret = false;
+		}
 
 		//Init FleX
-		g_flexLib = NvFlexInit();
+
+		NvFlexInitDesc desc;
+		desc.deviceIndex = g_device;
+		desc.enableExtensions = g_extensions;
+		desc.renderDevice = 0;
+		desc.renderContext = 0;
+		desc.computeType = eNvFlexCUDA;
+
+		g_flexLib = NvFlexInit(NV_FLEX_VERSION, 0, &desc);
 
 		if (g_flexLib == NULL)
 		{
@@ -65,6 +85,11 @@ bool ModuleRenderer3D::Init()
 			ret = false;
 		}
 
+
+		// store device name
+		strcpy(g_deviceName, NvFlexGetDeviceName(g_flexLib));
+		LOG_ENGINE("Compute Device: %s\n\n", g_deviceName);
+		
 
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
@@ -293,5 +318,11 @@ void ModuleRenderer3D::RenderCircleAroundX(const float& x, const float& y, const
 	}
 	glEnd();
 	EndDebugDraw();
+}
+
+void ModuleRenderer3D::FlexErrorCallback(NvFlexErrorSeverity, const char* msg, const char* file, int line)
+{
+	LOG_ENGINE("Flex: %s - %s:%d\n", msg, file, line);
+	g_Error = true;
 }
 

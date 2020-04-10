@@ -37,6 +37,8 @@ public:
 	void RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
 	void RenderCircleAroundX(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
 
+	void FlexErrorCallback(NvFlexErrorSeverity, const char* msg, const char* file, int line);
+	
 	
 
 	ComponentCamera* GetCurrentMainCamera();
@@ -60,4 +62,10 @@ public:
 	int line_grid_width = 1;
 
 	bool render_skybox = true;
+
+	//flex
+	int g_device = -1; // a setting of -1 means Flex will use the device specified in the NVIDIA control panel
+	char g_deviceName[256];
+	bool g_extensions = true;
+	bool g_Error = false;
 };
