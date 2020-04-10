@@ -29,3 +29,8 @@ const char* SceneManager::GetCurrentScene()
 {
 	return App->objects->current_scene->GetName();
 }
+
+void SceneManager::StartFade(float seconds, FadeType fade_type, FadeToBlackType ftb_type, float3 color)
+{
+	App->fade_to_black->StartFade(seconds, fade_type, ftb_type, color);
+}
