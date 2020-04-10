@@ -18,13 +18,13 @@ using namespace physx;
 #define DLL_NAME_BITS "32"
 #endif
 #if PX_DEBUG
-	#define DLL_DIR "\\physx\\debug\\"
+	#define DLL_DIR "\\physx\\_debug\\"
 #elif PX_CHECKED
 	#define DLL_DIR "checked\\" 
 #elif PX_PROFILE
 	#define DLL_DIR "profile\\" 
 #else
-#define DLL_DIR "\\physx\\release\\" 
+#define DLL_DIR "\\physx\\_release\\" 
 #endif
 
 // TODO: rework custom delayhooks
