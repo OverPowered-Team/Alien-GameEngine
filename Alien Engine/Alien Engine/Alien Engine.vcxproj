@@ -98,7 +98,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXExtensions_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysX_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXPvdSDK_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXVehicle_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXCharacterKinematic_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXCooking_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXCommon_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\SnippetUtils_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\SnippetRender_static_32.lib;C:\Users\Peter\Desktop\PhysX-4.1\physx\bin\win.x86_32.vc142.mt\debug\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX\libx86\_debug\PhysXExtensions_static_32.lib;PhysX\libx86\_debug\PhysX_32.lib;PhysX\libx86\_debug\PhysXPvdSDK_static_32.lib;PhysX\libx86\_debug\PhysXVehicle_static_32.lib;PhysX\libx86\_debug\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_debug\PhysXCooking_32.lib;PhysX\libx86\_debug\PhysXCommon_32.lib;PhysX\libx86\_debug\SnippetUtils_static_32.lib;PhysX\libx86\_debug\SnippetRender_static_32.lib;PhysX\libx86\_debug\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Debug;glm;PhysX\libx86\_debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>
       </ImportLibrary>
@@ -132,17 +132,19 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;RENDER_SNIPPET;PX_SUPPORT_PVD=0;CMAKE_INTDIR="release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysX\libx86\_release\PhysXExtensions_static_32.lib;PhysX\libx86\_release\PhysX_32.lib;PhysX\libx86\_release\PhysXPvdSDK_static_32.lib;PhysX\libx86\_release\PhysXVehicle_static_32.lib;PhysX\libx86\_release\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_release\PhysXCooking_32.lib;PhysX\libx86\_release\PhysXCommon_32.lib;PhysX\libx86\_release\SnippetUtils_static_32.lib;PhysX\libx86\_release\SnippetRender_static_32.lib;PhysX\libx86\_release\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;PhysX\lib86\_release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>PhysX_32.dll;PhysXFoundation_32.dll;PhysXCommon_32.dll;PhysXCooking_32.dll; PhysXGpu_32.dll</DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(IntDir)$(ProjectName).lib" "EngineBuild\$(ProjectName).lib"</Command>

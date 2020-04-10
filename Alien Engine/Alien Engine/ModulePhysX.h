@@ -32,12 +32,12 @@ class customDelayLoadHook : public PxDelayLoadHook
 {
 	virtual const char* getPhysXCommonDllName() const
 	{
-		return "..\\physx\debug\PhysXCommon_32.dll";
+		return "DLLs\\physx\\release\\PhysXCommon_32.dll";
 	}
 
 	virtual const char* getPhysXFoundationDllName() const
 	{
-		return "..\\physx\debug\PhysXFoundation_32.dll";
+		return "DLLs\\physx\\release\\PhysXFoundation_32.dll";
 	}
 };
 
@@ -45,7 +45,7 @@ class customGpuLoadHook : public PxGpuLoadHook
 {
 	virtual const char* getPhysXGpuDllName() const
 	{
-		return "..\\physx\debug\PhysXGpu_32.dll";;
+		return "DLLs\\physx\\release\\PhysXGpu_32.dll";;
 	}
 };
 
