@@ -55,6 +55,15 @@ bool ModulePhysX::loadPhysicsExplicitely()
 		return false;
 	}
 
+	cookingLibrary = LoadLibraryA(cookingLibraryPath);
+	if (!cookingLibrary)
+	{
+		FreeLibrary(foundationLibrary);
+		FreeLibrary(commonLibrary);
+		FreeLibrary(physxLibrary);
+		return false;
+	}
+
 	//// get the function pointers
 	//s_PxCreateFoundation_Func = (PxCreateFoundation_FUNC*)GetProcAddress(foundationLibrary, "PxCreateFoundation");
 	//s_PxCreatePhysics_Func = (PxCreatePhysics_FUNC*)GetProcAddress(physxLibrary, "PxCreateBasePhysics");
@@ -92,7 +101,8 @@ bool ModulePhysX::Init()
 	customDelayLoadHook delayLoadHook;
 	PxSetPhysXDelayLoadHook(&delayLoadHook);
 	PxSetPhysXCommonDelayLoadHook(&delayLoadHook);
-	
+	PxSetPhysXCookingDelayLoadHook(&delayLoadHook);
+
 	// set PhysXGpu load hook
 	customGpuLoadHook gpuLoadHook;
 	PxSetPhysXGpuLoadHook(&gpuLoadHook);

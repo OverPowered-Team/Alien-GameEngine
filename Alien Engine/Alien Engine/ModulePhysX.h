@@ -39,6 +39,8 @@ class customDelayLoadHook : public PxDelayLoadHook
 	{
 		return "TODO";//DLLs\\physx\\debug\\PhysXFoundation_32.dll";
 	}
+
+
 };
 
 class customGpuLoadHook : public PxGpuLoadHook
@@ -97,10 +99,13 @@ private:
 	HMODULE foundationLibrary = NULL;
 	HMODULE commonLibrary = NULL;
 	HMODULE physxLibrary = NULL;
+	HMODULE cookingLibrary = NULL;
 	const char* foundationLibraryPath = APP_BIN_DIR DLL_DIR "PhysXFoundation_" DLL_NAME_BITS ".dll";
 	const char* commonLibraryPath = APP_BIN_DIR DLL_DIR "PhysXCommon_" DLL_NAME_BITS ".dll";
 	const char* physxLibraryPath = APP_BIN_DIR DLL_DIR "PhysX_" DLL_NAME_BITS ".dll";
 	const char* gpuLibraryPath = APP_BIN_DIR DLL_DIR "PhysXGpu_" DLL_NAME_BITS ".dll";
+	const char* cookingLibraryPath = APP_BIN_DIR DLL_DIR "PhysXCooking_" DLL_NAME_BITS ".dll";
+
 
 	// ----------------------------------------------------------------------------------------------------------------------------
 
