@@ -5,6 +5,9 @@
 #include "SDL/include/SDL_video.h"
 #include "ComponentCamera.h"
 
+#include "FleX/include/NvFlex.h"
+#include "FleX/include/NvFlexExt.h"
+#include "FleX/include/NvFlexDevice.h"
 #define MAX_LIGHTS 8
 
 class ModuleRenderer3D : public Module
@@ -42,6 +45,7 @@ public:
 public:
 
 	SDL_GLContext context;
+	NvFlexLibrary* g_flexLib;
 
 public:
 

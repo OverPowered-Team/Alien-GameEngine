@@ -122,15 +122,15 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>FleX\include;..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FleX/lib/win32/NvFlexReleaseCUDA_x86.lib;FleX/lib/win32/NvFlexExtReleaseCUDA_x86.lib;FleX/lib/win32/NvFlexDeviceRelease_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>FleX\lib\win32;..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(IntDir)$(ProjectName).lib" "EngineBuild\$(ProjectName).lib"</Command>

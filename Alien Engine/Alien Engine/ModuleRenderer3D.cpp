@@ -16,6 +16,7 @@
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
 
+
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "glew/glew32.lib") 
@@ -53,6 +54,17 @@ bool ModuleRenderer3D::Init()
 		//Use Vsync
 		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG_ENGINE("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+
+
+		//Init FleX
+		g_flexLib = NvFlexInit();
+
+		if (g_flexLib == NULL)
+		{
+			LOG_ENGINE("Could not initialize Flex, exiting.\n");
+			ret = false;
+		}
+
 
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
@@ -145,7 +157,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG_ENGINE("Destroying 3D Renderer");
-
+	
+	NvFlexShutdown(g_flexLib);
 	SDL_GL_DeleteContext(context);
 
 	return true;
