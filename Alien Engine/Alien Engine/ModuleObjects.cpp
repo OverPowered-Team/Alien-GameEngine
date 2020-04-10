@@ -2077,6 +2077,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	GameObject* object = CreateEmptyGameObject(nullptr);
 	Component* comp = nullptr;
 	Component* comp_emitter = nullptr;
+	Component* comp_text = nullptr;
 
 	switch (type)
 	{
@@ -2096,15 +2097,28 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 
 	case ComponentType::UI_BUTTON: {
+		GameObject* object_text = CreateEmptyGameObject(nullptr);
+
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
 		comp_emitter = new ComponentAudioEmitter(object);
+
+		comp_text = new ComponentText(object_text);
+
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		dynamic_cast<ComponentUI*>(comp_text)->SetCanvas(canvas);
+
 		object->SetName("Button");
 		object->AddComponent(comp);
 		object->AddComponent(comp_emitter);
+
+		object_text->SetName("Text");
+		object_text->AddComponent(comp_text);
+
+
 		
 		ReparentGameObject(object, canvas->game_object_attached, false);
+		ReparentGameObject(object_text, object, false);
 		break; }
 
 	case ComponentType::UI_TEXT: {

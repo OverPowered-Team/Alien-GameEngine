@@ -560,12 +560,26 @@ void PanelInspector::ButtonAddComponent()
 					{
 						ComponentCanvas* canvas = GetCanvas();
 						Component* comp_emitter = nullptr;
+						Component* comp_text = nullptr;
+
+						GameObject* object_text = App->objects->CreateEmptyGameObject(nullptr);
+
 						comp = new ComponentButton(selected);
 						comp_emitter = new ComponentAudioEmitter(selected);
+						comp_text = new ComponentText(object_text);
+
 						dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+						dynamic_cast<ComponentUI*>(comp_text)->SetCanvas(canvas);
+
+						selected->SetName("Button");
 						selected->AddComponent(comp);
 						selected->AddComponent(comp_emitter);
+
+						object_text->SetName("Text");
+						object_text->AddComponent(comp_text);
+
 						App->objects->ReparentGameObject(selected, canvas->game_object_attached, false);
+						App->objects->ReparentGameObject(object_text, selected, false);
 					}
 
 					else
