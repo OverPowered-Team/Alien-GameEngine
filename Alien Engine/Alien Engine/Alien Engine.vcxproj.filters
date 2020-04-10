@@ -121,6 +121,9 @@
     <Filter Include="Tools\FreeImage">
       <UniqueIdentifier>{78bf3428-1a09-4931-84fd-d3b902f84b5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\PhysX">
+      <UniqueIdentifier>{f18078d5-71e9-4ac4-afce-49d35e0fead5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -652,6 +655,9 @@
       <Filter>Tools\OurClassHelpers</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFadeToBlack.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysX.h">
       <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2625,6 +2631,9 @@
       <Filter>ScriptHelpers</Filter>
     </ClCompile>
     <ClCompile Include="ModuleFadeToBlack.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulePhysX.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
