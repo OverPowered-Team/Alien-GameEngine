@@ -36,7 +36,7 @@ bool ModuleCamera3D::Start()
 	final_yaw = current_yaw = 225;
 	final_pitch = current_pitch = 30;
 	Rotate(current_yaw, current_pitch);
-	max_distance = fake_camera->frustum.pos.Length();
+	max_distance = 10;
 	return ret;
 }
 // -----------------------------------------------------------------
@@ -109,7 +109,7 @@ update_status ModuleCamera3D::Update(float dt)
 			}
 			else
 			{
-				reference = fake_camera->frustum.pos + (-fake_camera->frustum.front) * max_distance;
+				reference = fake_camera->frustum.pos + (fake_camera->frustum.front) * max_distance;
 			}
 		}
 
