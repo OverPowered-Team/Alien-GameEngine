@@ -109,7 +109,7 @@ update_status ModuleCamera3D::Update(float dt)
 			}
 			else
 			{
-				reference = fake_camera->frustum.pos + (fake_camera->frustum.front) * max_distance;
+				reference = fake_camera->frustum.pos + (fake_camera->frustum.front) * (fake_camera->frustum.pos - reference).Length();
 			}
 		}
 
