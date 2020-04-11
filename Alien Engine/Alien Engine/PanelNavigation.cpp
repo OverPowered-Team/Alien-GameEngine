@@ -154,29 +154,35 @@ void PanelNavigation::ShowBakeTab()
 	const float fixed_bottom_agent_line = 160;
 
 	//1
-	const float ideal_proportion = 1.0f / 4.0f;//The width / height on the ideal cylinder
-	float curr_proportion = *agent_radius / *agent_height;
-	float proportion_diff = curr_proportion / ideal_proportion;
+	//const float ideal_proportion = 1.0f / 4.0f;//The width / height on the ideal cylinder
+	//float curr_proportion = *agent_radius / *agent_height;
+	//float proportion_diff = curr_proportion / ideal_proportion;
 
-	float draw_radius = *agent_radius * proportion_diff;
-	float draw_height = *agent_height / proportion_diff;
+	//float draw_radius = *agent_radius * proportion_diff;
+	//float draw_height = *agent_height / proportion_diff;
 
-	float norm = std::sqrt(draw_radius * draw_radius + draw_height * draw_height);
+	//float norm = std::sqrt(draw_radius * draw_radius + draw_height * draw_height);
 
-	float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
+	//float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
 
-	draw_radius = (draw_radius / norm) * square_min;
-	draw_height = (draw_height / norm) * square_min;
+	//draw_radius = (draw_radius / norm) * square_min;
+	//draw_height = (draw_height / norm) * square_min;
 
 	//2
-	//float norm = std::sqrt(*agent_radius * *agent_radius + *agent_height * *agent_height);
-	//float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
-	//float draw_radius = (*agent_radius / norm) * square_min;
-	//float draw_height = (*agent_height / norm) * square_min;
-	//float elipse_relation = 0.5f;//Normally the lower radius is half the bigger one
+	float elipse_relation = 0.3f;//Normally the lower radius is half the bigger one
+	
+	//Normalize the proportions
+	float norm = std::sqrt(*agent_radius * *agent_radius + *agent_height * *agent_height);
+	float draw_radius = (*agent_radius / norm);
+	float draw_height = (*agent_height / norm);
+	
+	//Scale it so it fits the maximum possible space available
+	float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
+	draw_radius *= square_min;
+	draw_height *= square_min;
 
 	// drawing shapes ------------------------------------
-	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ideal_proportion)); // Always "fixed"
+	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * elipse_relation)); // Always "fixed"
 	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - draw_height);//(draw_radius * proportion_scale));
 	float center_height = bot_ellipse_c.y - top_ellipse_center.y;
 
@@ -193,18 +199,18 @@ void PanelNavigation::ShowBakeTab()
 	draw_list->AddRectFilled(p_min, p_max, mid_blue);
 
 	// bottom ellipse (only thing fixed on point)
-	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * ideal_proportion, dark_blue, 0.0f, 24);
+	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * elipse_relation, dark_blue, 0.0f, 24);
 
 	// top ellipse
-	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ideal_proportion, light_blue, 0.0f, 24);
+	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * elipse_relation, light_blue, 0.0f, 24);
 	
 
 	ImGui::Dummy(draw_canvas_size);
 
 	ImGui::Separator();
 
-	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 20.0f);
-	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 20.0f);
+	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 500.0f);
+	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 500.0f);
 	
 
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
