@@ -234,6 +234,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
+	ImGui::Begin("WReflection");
+	ImGui::Text("Test");
+	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(100.0f, 100.0f));
+	ImGui::End();
+
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
 		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
@@ -336,23 +341,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 		{
 			if (printing_scene)
 			{
-				if (draw_ray)
-					DrawRay();
-
-				if (allow_grid)
-					App->renderer3D->RenderGrid();
-
-				if (render_octree)
-					octree.Draw();
-
-				if (prefab_scene) {
-					static float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-					static float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-					glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-					glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-					glEnable(GL_LIGHT0);
-				}
-
 				if (App->physics->debug_physics)
 				{
 					App->physics->DrawWorld();
@@ -398,25 +386,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 					}
 				}
 
-
-				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
-				if (!printing_scene) {
-					std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-				}
-				std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-				for (; it_ui != to_draw_ui.end(); ++it_ui) {
-					if ((*it_ui).second != nullptr) {
-						ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
-						if (ui != nullptr && ui->IsEnabled())
-						{
-							ui->Draw(!printing_scene);
-
-						}
-					}
-				}
-
-				if (printing_scene)
-					OnDrawGizmos();
 				if (isGameCamera) {
 					OnPostRender(viewport->GetCamera());
 				}
