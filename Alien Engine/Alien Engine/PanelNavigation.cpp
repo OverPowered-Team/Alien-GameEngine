@@ -144,58 +144,40 @@ void PanelNavigation::ShowBakeTab()
 	float window_w = ImGui::GetWindowContentRegionWidth();
 	float window_center =  window_w * 0.5f;
 
-	//float spacing = 10.0f;
-
-	float proportion_scale = 0.30f;
-	float scale_factor = 40.0f;
-
 	float* agent_radius = &App->nav->agentRadius;
 	float* agent_height = &App->nav->agentHeight;
-
-	/*const float max_draw_rad = 2.5f * scale_factor;
-	const float max_draw_height = draw_canvas_size.y;
-	float draw_radius = *agent_radius * scale_factor;*/
-
-	//draw_radius = std::fmod(draw_radius, max_draw_rad);
-
-	/*float dif = max_draw_rad - draw_radius;*/
-
-	/*draw_radius = std::fmin(draw_radius, max_draw_rad);*/
-
-	//float draw_height = *agent_height * scale_factor;
-
 
 	int bottom_line_length = 60;
 	const ImU32 line_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
 	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
 
-	float fixed_bottom_agent_line = 160;
+	const float fixed_bottom_agent_line = 160;
 
-	float top_offset = 20;
-	
-	//ImGui::Text("dif: %f", dif);
-	const float t_radius = 0.5f * scale_factor; // proportional scale
-	const float t_height = 2.0f * scale_factor;
+	//1
+	const float ideal_proportion = 1.0f / 4.0f;//The width / height on the ideal cylinder
+	float curr_proportion = *agent_radius / *agent_height;
+	float proportion_diff = curr_proportion / ideal_proportion;
 
-	float radius = (*agent_radius *scale_factor);
-	float height = (*agent_height * scale_factor);
+	float draw_radius = *agent_radius * proportion_diff;
+	float draw_height = *agent_height / proportion_diff;
 
-	// adjust proportional scaling
-	const float p_factor = 0.5f / 2.0f;
-	//float pr = radius;
-	radius = radius + ((t_height - height) * p_factor);
-	height = height + ((t_radius - radius) * p_factor);
+	float norm = std::sqrt(draw_radius * draw_radius + draw_height * draw_height);
 
-	// clamp draw radius to max value
-	// TODO: proper clamp
-	/*radius = std::fmin(radius, 1.5f * scale_factor);
-	height = std::fmin(height, 2.f * scale_factor);*/
-	radius = radius <= 0 ? 0 : radius;
-	height = height <= 0 ? 0 : height;
+	float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
+
+	draw_radius = (draw_radius / norm) * square_min;
+	draw_height = (draw_height / norm) * square_min;
+
+	//2
+	//float norm = std::sqrt(*agent_radius * *agent_radius + *agent_height * *agent_height);
+	//float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
+	//float draw_radius = (*agent_radius / norm) * square_min;
+	//float draw_height = (*agent_height / norm) * square_min;
+	//float elipse_relation = 0.5f;//Normally the lower radius is half the bigger one
 
 	// drawing shapes ------------------------------------
-	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (radius * p_factor)); // Always "fixed"
-	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - height);//(draw_radius * proportion_scale));
+	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ideal_proportion)); // Always "fixed"
+	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - draw_height);//(draw_radius * proportion_scale));
 	float center_height = bot_ellipse_c.y - top_ellipse_center.y;
 
 	// bottom "floor" line
@@ -205,16 +187,16 @@ void PanelNavigation::ShowBakeTab()
 	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
 
 	// body agent rect
-	ImVec2 p_min(top_ellipse_center.x - radius, bot_ellipse_c.y);
-	ImVec2 p_max(top_ellipse_center.x + radius, top_ellipse_center.y);
+	ImVec2 p_min(top_ellipse_center.x - draw_radius, bot_ellipse_c.y);
+	ImVec2 p_max(top_ellipse_center.x + draw_radius, top_ellipse_center.y);
 
 	draw_list->AddRectFilled(p_min, p_max, mid_blue);
 
 	// bottom ellipse (only thing fixed on point)
-	draw_list->AddEllipseFilled(bot_ellipse_c, radius, radius * p_factor, dark_blue, 0.0f, 24);
+	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * ideal_proportion, dark_blue, 0.0f, 24);
 
 	// top ellipse
-	draw_list->AddEllipseFilled(top_ellipse_center, radius, radius * p_factor, light_blue, 0.0f, 24);
+	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ideal_proportion, light_blue, 0.0f, 24);
 	
 
 	ImGui::Dummy(draw_canvas_size);
