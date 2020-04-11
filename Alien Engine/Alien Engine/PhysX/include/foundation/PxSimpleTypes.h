@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXSIMPLETYPES_H
 #define PXFOUNDATION_PXSIMPLETYPES_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

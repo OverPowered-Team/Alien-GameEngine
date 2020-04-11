@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXALLOCATORCALLBACK_H
 #define PXFOUNDATION_PXALLOCATORCALLBACK_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

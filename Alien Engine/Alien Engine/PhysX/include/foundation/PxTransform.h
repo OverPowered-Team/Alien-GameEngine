@@ -29,7 +29,7 @@
 
 #ifndef PXFOUNDATION_PXTRANSFORM_H
 #define PXFOUNDATION_PXTRANSFORM_H
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

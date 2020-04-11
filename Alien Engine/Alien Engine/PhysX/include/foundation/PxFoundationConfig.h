@@ -32,7 +32,7 @@
 
 #include "foundation/PxPreprocessor.h"
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

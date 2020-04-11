@@ -45,7 +45,7 @@ build number.  See BuildNumber.h for that.
 Each of these three values should stay below 255 because
 sometimes they are stored in a byte.
 */
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

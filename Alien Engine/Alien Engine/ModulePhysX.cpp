@@ -1,7 +1,8 @@
-
 #include "Globals.h"
 #include "Application.h"
 #include "ModulePhysX.h"
+#include "ModuleRenderer3D.h"
+#include "UtilitiesPhysX.h"
 #include "Optick/include/optick.h"
 
 
@@ -17,71 +18,22 @@ ModulePhysX::~ModulePhysX()
 // TODO: DELETE ME
 void ModulePhysX::CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
-	PxShape* shape = gPhysics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
+	PxShape* shape = px_physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *px_default_material);
 	for (PxU32 i = 0; i < size; i++)
 	{
 		for (PxU32 j = 0; j < size - i; j++)
 		{
 			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-			PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
+			PxRigidDynamic* body = px_physics->createRigidDynamic(t.transform(localTm));
 			body->attachShape(*shape);
 			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			gScene->addActor(*body);
+			px_scene->addActor(*body);
 		}
 	}
 	shape->release();
 }
 
-bool ModulePhysX::loadPhysicsExplicitely()
-{
-	// load the dlls
 
-	foundationLibrary = LoadLibraryA(foundationLibraryPath);
-	if (!foundationLibrary)
-		return false;
-
-	commonLibrary = LoadLibraryA(commonLibraryPath);
-	if (!commonLibrary)
-	{
-		FreeLibrary(foundationLibrary);
-		return false;
-	}
-
-	physxLibrary = LoadLibraryA(physxLibraryPath);
-	if (!physxLibrary)
-	{
-		FreeLibrary(foundationLibrary);
-		FreeLibrary(commonLibrary);
-		return false;
-	}
-
-	cookingLibrary = LoadLibraryA(cookingLibraryPath);
-	if (!cookingLibrary)
-	{
-		FreeLibrary(foundationLibrary);
-		FreeLibrary(commonLibrary);
-		FreeLibrary(physxLibrary);
-		return false;
-	}
-
-	//// get the function pointers
-	//s_PxCreateFoundation_Func = (PxCreateFoundation_FUNC*)GetProcAddress(foundationLibrary, "PxCreateFoundation");
-	//s_PxCreatePhysics_Func = (PxCreatePhysics_FUNC*)GetProcAddress(physxLibrary, "PxCreateBasePhysics");
-	//s_PxSetPhysXDelayLoadHook_Func = (PxSetPhysXDelayLoadHook_FUNC*)GetProcAddress(physxLibrary, "PxSetPhysXDelayLoadHook");
-	//s_PxSetPhysXCommonDelayLoadHook_Func = (PxSetPhysXCommonDelayLoadHook_FUNC*)GetProcAddress(commonLibrary, "PxSetPhysXCommonDelayLoadHook");
-
-	//s_PxSetPhysXGpuLoadHook_Func = (PxSetPhysXGpuLoadHook_FUNC*)GetProcAddress(physxLibrary, "PxSetPhysXGpuLoadHook");
-	//s_PxGetSuggestedCudaDeviceOrdinal_Func = (PxGetSuggestedCudaDeviceOrdinal_FUNC*)GetProcAddress(physxLibrary, "PxGetSuggestedCudaDeviceOrdinal");
-	//s_PxCreateCudaContextManager_Func = (PxCreateCudaContextManager_FUNC*)GetProcAddress(physxLibrary, "PxCreateCudaContextManager");
-
-	//// check if we have all required function pointers
-	//if (s_PxCreateFoundation_Func == NULL || s_PxCreatePhysics_Func == NULL || s_PxSetPhysXDelayLoadHook_Func == NULL || s_PxSetPhysXCommonDelayLoadHook_Func == NULL)
-	//	return false;
-
-	//if (s_PxSetPhysXGpuLoadHook_Func == NULL || s_PxGetSuggestedCudaDeviceOrdinal_Func == NULL || s_PxCreateCudaContextManager_Func == NULL)
-	//	return false;
-	return true;
-}
 
 bool ModulePhysX::Init()
 {
@@ -90,48 +42,51 @@ bool ModulePhysX::Init()
 	bool ret = true;
 
 	// load the explictely named dlls
-	const bool isLoaded = loadPhysicsExplicitely(); // load debug or release dlls
+	const bool isLoaded = LoadPhysicsExplicitely(); // load debug or release dlls
 	if (!isLoaded)
 		return false;
 
-	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback); // TODO: implement custom error callback
+	px_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, px_allocator, px_error_callback);
 
 	// set PhysX and PhysXCommon delay load hook, this must be done before the create physics is called, before ----
 	// the PhysXFoundation, PhysXCommon delay load happens.
-	customDelayLoadHook delayLoadHook;
+	CustomDelayLoadHook delayLoadHook;
 	PxSetPhysXDelayLoadHook(&delayLoadHook);
 	PxSetPhysXCommonDelayLoadHook(&delayLoadHook);
 	PxSetPhysXCookingDelayLoadHook(&delayLoadHook);
 
 	// set PhysXGpu load hook
-	customGpuLoadHook gpuLoadHook;
+	CustomGpuLoadHook gpuLoadHook;
 	PxSetPhysXGpuLoadHook(&gpuLoadHook);
 	// --------------------------------------------------------------------------------------------------------------
 
-	gPvd = PxCreatePvd(*gFoundation);
+	px_pvd = PxCreatePvd(*px_foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	px_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+	px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *px_foundation, PxTolerancesScale(), true, px_pvd);
 
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	PxSceneDesc sceneDesc(px_physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
+	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = px_dispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-	gScene = gPhysics->createScene(sceneDesc);
+	px_scene = px_physics->createScene(sceneDesc);
+	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+	px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
 
-	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+	PxPvdSceneClient* pvdClient = px_scene->getScenePvdClient();
 	if (pvdClient)
 	{
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	px_default_material = px_physics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial);
-	gScene->addActor(*groundPlane);
+	PxRigidStatic* groundPlane = PxCreatePlane(*px_physics, PxPlane(0, 1, 0, 0), *px_default_material);
+
+	px_scene->addActor(*groundPlane);
 
 	for (PxU32 i = 0; i < 5; i++)
 		CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
@@ -156,8 +111,8 @@ update_status ModulePhysX::PreUpdate(float dt)
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	gScene->simulate(1.0f / 60.0f); // TODO, fixed time step / substeps
-	gScene->fetchResults(true);
+	px_scene->simulate(1.0f / 60.0f); // TODO, fixed time step / substeps
+	px_scene->fetchResults(true);
 
 	return UPDATE_CONTINUE;
 }
@@ -171,27 +126,103 @@ update_status ModulePhysX::PostUpdate(float dt)
 bool ModulePhysX::CleanUp()
 {
 
-	PX_RELEASE(gScene);
-	PX_RELEASE(gDispatcher);
-	PX_RELEASE(gPhysics);
-	if (gPvd)
+	PX_RELEASE(px_scene);
+	PX_RELEASE(px_dispatcher);
+	PX_RELEASE(px_physics);
+	if (px_pvd)
 	{
-		PxPvdTransport* transport = gPvd->getTransport();
-		gPvd->release();	gPvd = NULL;
+		PxPvdTransport* transport = px_pvd->getTransport();
+		px_pvd->release();	px_pvd = NULL;
 		PX_RELEASE(transport);
 	}
-	PX_RELEASE(gFoundation);
+	PX_RELEASE(px_foundation);
 
-	unloadPhysicsExplicitely();
+	UnloadPhysicsExplicitely();
 
 	return true;
 }
 
-// unload the dlls
-void ModulePhysX::unloadPhysicsExplicitely()
+
+
+bool ModulePhysX::LoadPhysicsExplicitely()
 {
-	FreeLibrary(physxLibrary);
-	FreeLibrary(commonLibrary);
-	FreeLibrary(foundationLibrary);
+	// load the dlls
+
+	foundation_lib = LoadLibraryA(foundation_lib_path);
+	if (!foundation_lib)
+		return false;
+
+	common_lib = LoadLibraryA(common_lib_path);
+	if (!common_lib)
+	{
+		FreeLibrary(foundation_lib);
+		return false;
+	}
+
+	physx_lib = LoadLibraryA(physx_lib_path);
+	if (!physx_lib)
+	{
+		FreeLibrary(foundation_lib);
+		FreeLibrary(common_lib);
+		return false;
+	}
+
+	cooking_lib = LoadLibraryA(cooking_lib_path);
+	if (!cooking_lib)
+	{
+		FreeLibrary(foundation_lib);
+		FreeLibrary(common_lib);
+		FreeLibrary(physx_lib);
+		return false;
+	}
+
+	//// get the function pointers
+	//s_PxCreateFoundation_Func = (PxCreateFoundation_FUNC*)GetProcAddress(foundation_lib, "PxCreateFoundation");
+	//s_PxCreatePhysics_Func = (PxCreatePhysics_FUNC*)GetProcAddress(physx_lib, "PxCreateBasePhysics");
+	//s_PxSetPhysXDelayLoadHook_Func = (PxSetPhysXDelayLoadHook_FUNC*)GetProcAddress(physx_lib, "PxSetPhysXDelayLoadHook");
+	//s_PxSetPhysXCommonDelayLoadHook_Func = (PxSetPhysXCommonDelayLoadHook_FUNC*)GetProcAddress(common_lib, "PxSetPhysXCommonDelayLoadHook");
+
+	//s_PxSetPhysXGpuLoadHook_Func = (PxSetPhysXGpuLoadHook_FUNC*)GetProcAddress(physx_lib, "PxSetPhysXGpuLoadHook");
+	//s_PxGetSuggestedCudaDeviceOrdinal_Func = (PxGetSuggestedCudaDeviceOrdinal_FUNC*)GetProcAddress(physx_lib, "PxGetSuggestedCudaDeviceOrdinal");
+	//s_PxCreateCudaContextManager_Func = (PxCreateCudaContextManager_FUNC*)GetProcAddress(physx_lib, "PxCreateCudaContextManager");
+
+	//// check if we have all required function pointers
+	//if (s_PxCreateFoundation_Func == NULL || s_PxCreatePhysics_Func == NULL || s_PxSetPhysXDelayLoadHook_Func == NULL || s_PxSetPhysXCommonDelayLoadHook_Func == NULL)
+	//	return false;
+
+	//if (s_PxSetPhysXGpuLoadHook_Func == NULL || s_PxGetSuggestedCudaDeviceOrdinal_Func == NULL || s_PxCreateCudaContextManager_Func == NULL)
+	//	return false;
+	return true;
 }
 
+void ModulePhysX::UnloadPhysicsExplicitely()
+{
+	FreeLibrary(physx_lib);
+	FreeLibrary(common_lib);
+	FreeLibrary(foundation_lib);
+}
+
+void ModulePhysX::DrawCollider(ComponentCollider* collider)
+{
+	
+}
+
+void ModulePhysX::DrawWorld()
+{
+	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
+
+	const PxRenderBuffer& rb = px_scene->getRenderBuffer();
+	PxU32 num_lines = rb.getNbLines();
+	const PxDebugLine* lines = rb.getLines();
+
+	glBegin(GL_LINES);
+
+	for (PxU32 i = 0; i < num_lines; i++)
+	{
+		glVertex3f(lines[i].pos0.x, lines[i].pos0.y, lines[i].pos0.z);
+		glVertex3f(lines[i].pos1.x, lines[i].pos1.y, lines[i].pos1.z);
+	}
+	glEnd();
+
+	ModuleRenderer3D::EndDebugDraw();
+}

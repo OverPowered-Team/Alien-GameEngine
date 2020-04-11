@@ -34,7 +34,7 @@
 #if !defined(PX_GENERATE_META_DATA)
 #include <ciso646>  
 #endif
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

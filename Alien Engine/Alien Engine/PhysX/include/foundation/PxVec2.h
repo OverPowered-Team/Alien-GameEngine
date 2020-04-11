@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXVEC2_H
 #define PXFOUNDATION_PXVEC2_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

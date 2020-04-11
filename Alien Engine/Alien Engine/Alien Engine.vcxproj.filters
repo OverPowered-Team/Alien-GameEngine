@@ -85,12 +85,6 @@
     <Filter Include="Tools\Bullet">
       <UniqueIdentifier>{25923948-fcd7-4088-a03a-517bd42a509e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Physiscs">
-      <UniqueIdentifier>{6572abce-96c9-48bc-afa3-8d55521c7817}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Physiscs\Colliders">
-      <UniqueIdentifier>{d333f66d-da68-46f3-adda-33d2d14d7bba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tools\Optik">
       <UniqueIdentifier>{c070bec9-09d4-4389-a812-f08ff60a9a71}</UniqueIdentifier>
     </Filter>
@@ -102,12 +96,6 @@
     </Filter>
     <Filter Include="Tools\Stb">
       <UniqueIdentifier>{f47e6cdd-1441-4790-9eda-58f25045718e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Physiscs\Constraints">
-      <UniqueIdentifier>{70f05f8c-bd98-4422-a1e5-e125d4dbfcb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Physiscs\Controllers">
-      <UniqueIdentifier>{1867fcbc-9bd2-48f6-bd5b-2dc3dba4f928}</UniqueIdentifier>
     </Filter>
     <Filter Include="Components\Animations">
       <UniqueIdentifier>{271dbc4b-b35f-4ebc-9e0c-1ea0e489399d}</UniqueIdentifier>
@@ -123,6 +111,21 @@
     </Filter>
     <Filter Include="Tools\PhysX">
       <UniqueIdentifier>{f18078d5-71e9-4ac4-afce-49d35e0fead5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Physics">
+      <UniqueIdentifier>{3d31ef2c-7bce-49bf-ba76-aa5f80c009a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics">
+      <UniqueIdentifier>{6572abce-96c9-48bc-afa3-8d55521c7817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics\Colliders">
+      <UniqueIdentifier>{d333f66d-da68-46f3-adda-33d2d14d7bba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics\Constraints">
+      <UniqueIdentifier>{70f05f8c-bd98-4422-a1e5-e125d4dbfcb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics\Controllers">
+      <UniqueIdentifier>{1867fcbc-9bd2-48f6-bd5b-2dc3dba4f928}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -607,13 +610,13 @@
       <Filter>Tools\Stb</Filter>
     </ClInclude>
     <ClInclude Include="ComponentPointConstraint.h">
-      <Filter>Components\Physiscs\Constraints</Filter>
+      <Filter>Components\Physics\Constraints</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCharacterController.h">
-      <Filter>Components\Physiscs\Controllers</Filter>
+      <Filter>Components\Physics\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="ComponentRigidBody.h">
-      <Filter>Components\Physiscs\Controllers</Filter>
+      <Filter>Components\Physics\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="ComponentAnimator.h">
       <Filter>Components\Animations</Filter>
@@ -657,8 +660,14 @@
     <ClInclude Include="ModuleFadeToBlack.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModulePhysX.h">
+    <ClInclude Include="ModulePhysics.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysX.h">
+      <Filter>Modules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilitiesPhysX.h">
+      <Filter>Modules\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2547,22 +2556,19 @@
       <Filter>Tools\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCollider.h">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentConvexHullCollider.h">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentBoxCollider.h">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCapsuleCollider.h">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSphereCollider.h">
-      <Filter>Components\Physiscs\Colliders</Filter>
-    </ClInclude>
-    <ClInclude Include="ModulePhysics.h">
-      <Filter>Modules</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="AnimTween.h">
       <Filter>Modules\Tween</Filter>
@@ -2589,13 +2595,13 @@
       <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="ComponentPointConstraint.cpp">
-      <Filter>Components\Physiscs\Constraints</Filter>
+      <Filter>Components\Physics\Constraints</Filter>
     </ClCompile>
     <ClCompile Include="ComponentCharacterController.cpp">
-      <Filter>Components\Physiscs\Controllers</Filter>
+      <Filter>Components\Physics\Controllers</Filter>
     </ClCompile>
     <ClCompile Include="ComponentRigidBody.cpp">
-      <Filter>Components\Physiscs\Controllers</Filter>
+      <Filter>Components\Physics\Controllers</Filter>
     </ClCompile>
     <ClCompile Include="ComponentAnimator.cpp">
       <Filter>Components\Animations</Filter>
@@ -2633,8 +2639,14 @@
     <ClCompile Include="ModuleFadeToBlack.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModulePhysX.cpp">
+    <ClCompile Include="ModulePhysics.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulePhysX.cpp">
+      <Filter>Modules\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilitiesPhysX.cpp">
+      <Filter>Modules\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3644,22 +3656,19 @@
       <Filter>Tools\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="ComponentCollider.cpp">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentConvexHullCollider.cpp">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentBoxCollider.cpp">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentCapsuleCollider.cpp">
-      <Filter>Components\Physiscs\Colliders</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="ComponentSphereCollider.cpp">
-      <Filter>Components\Physiscs\Colliders</Filter>
-    </ClCompile>
-    <ClCompile Include="ModulePhysics.cpp">
-      <Filter>Modules</Filter>
+      <Filter>Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="AnimTween.cpp">
       <Filter>Modules\Tween</Filter>

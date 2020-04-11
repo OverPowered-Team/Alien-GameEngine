@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXBOUNDS3_H
 #define PXFOUNDATION_PXBOUNDS3_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

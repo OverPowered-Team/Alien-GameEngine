@@ -29,7 +29,7 @@
 
 #ifndef PXFOUNDATION_PXMAT33_H
 #define PXFOUNDATION_PXMAT33_H
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

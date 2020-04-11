@@ -12,8 +12,7 @@
 class ParticleSystem;
 class ComponentCamera;
 
-#define DEGTORAD 0.0174532925199432957f // 1degree x (pi rads / 180 degrees) = 0.017 rads
-#define RADTODEG 57.295779513082320876f // 1rad x (180 degrees / pi rads) = 57 degrees
+
 #define ANGULAR_CAP 200 // angular velocity will be capped at 360 degrees x second
 
 struct ParticleInfo

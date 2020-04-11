@@ -32,7 +32,7 @@
 
 #include "foundation/Px.h"
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 #if !PX_DOXYGEN

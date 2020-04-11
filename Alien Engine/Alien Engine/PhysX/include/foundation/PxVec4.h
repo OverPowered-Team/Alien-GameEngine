@@ -29,7 +29,7 @@
 
 #ifndef PXFOUNDATION_PXVEC4_H
 #define PXFOUNDATION_PXVEC4_H
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 #include "foundation/PxMath.h"

@@ -317,7 +317,7 @@ public:
 
 	This function should be called to cleanly shut down the Cooking library before application exit.
 
-	\note This function is required to be called to release foundation usage.
+	\note This function is required to be called to release px_foundation usage.
 
 	*/
 	virtual void  release() = 0;
@@ -541,17 +541,17 @@ protected:
 /**
 \brief Create an instance of the cooking interface.
 
-Note that the foundation object is handled as an application-wide singleton in statically linked executables
+Note that the px_foundation object is handled as an application-wide singleton in statically linked executables
 and a DLL-wide singleton in dynamically linked executables. Therefore, if you are using the runtime SDK in the
-same executable as cooking, you should pass the Physics's copy of foundation (acquired with
+same executable as cooking, you should pass the Physics's copy of px_foundation (acquired with
 PxPhysics::getFoundation()) to the cooker. This will also ensure correct handling of memory for objects
 passed from the cooker to the SDK.
 
 To use cooking in standalone mode, create an instance of the Foundation object with PxCreateCookingFoundation.
-You should pass the same foundation object to all instances of the cooking interface.
+You should pass the same px_foundation object to all instances of the cooking interface.
 
 \param[in] version the SDK version number
-\param[in] foundation the foundation object associated with this instance of the cooking interface.
+\param[in] px_foundation the px_foundation object associated with this instance of the cooking interface.
 \param[in] params the parameters for this instance of the cooking interface
 \return true on success.
 */

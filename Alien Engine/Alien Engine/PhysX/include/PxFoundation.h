@@ -30,7 +30,7 @@
 #ifndef PX_FOUNDATION_PX_FOUNDATION_H
 #define PX_FOUNDATION_PX_FOUNDATION_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 
@@ -54,7 +54,7 @@ class PX_FOUNDATION_API PxFoundation
 	/**
 	\brief Destroys the instance it is called on.
 
-	The operation will fail, if there are still modules referencing the foundation object. Release all dependent modules
+	The operation will fail, if there are still modules referencing the px_foundation object. Release all dependent modules
 	prior
 	to calling this method.
 
@@ -104,9 +104,9 @@ class PX_FOUNDATION_API PxFoundation
 #endif
 
 /**
-\brief Creates an instance of the foundation class
+\brief Creates an instance of the px_foundation class
 
-The foundation class is needed to initialize higher level SDKs. There may be only one instance per process.
+The px_foundation class is needed to initialize higher level SDKs. There may be only one instance per process.
 Calling this method after an instance has been created already will result in an error message and NULL will be
 returned.
 
@@ -123,7 +123,7 @@ PxCreateFoundation(physx::PxU32 version, physx::PxAllocatorCallback& allocator, 
 /**
 \brief Retrieves the Foundation SDK after it has been created.
 
-\note The behavior of this method is undefined if the foundation instance has not been created already.
+\note The behavior of this method is undefined if the px_foundation instance has not been created already.
 
 @see PxCreateFoundation()
 */

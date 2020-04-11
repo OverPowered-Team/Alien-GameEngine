@@ -89,7 +89,7 @@ public:
 
 	\note This will release all associated controllers and obstacle contexts.
 
-	\note This function is required to be called to release foundation usage.
+	\note This function is required to be called to release px_foundation usage.
 
 	*/
 	virtual void				release() = 0;

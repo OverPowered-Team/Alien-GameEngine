@@ -83,7 +83,7 @@ PX_C_EXPORT PX_PHYSX_CORE_API int PX_CALL_CONV PxGetSuggestedCudaDeviceOrdinal(p
  * \brief Allocate a CUDA Context manager, complete with heaps.
  * You only need one CUDA context manager per GPU device you intend to use for
  * CUDA tasks. 
- \param[in] foundation PhysXFoundation instance.
+ \param[in] px_foundation PhysXFoundation instance.
  \param[in] desc Cuda context manager desc.
  \param[in] profilerCallback PhysX profiler callback instance.
 

@@ -166,7 +166,7 @@ class PxPvd : public physx::PxProfilerCallback
 
 /**
 	\brief Create a pvd instance. 	
-	\param foundation is the foundation instance that stores the allocator and error callbacks.
+	\param px_foundation is the px_foundation instance that stores the allocator and error callbacks.
 */
 PX_C_EXPORT PxPvd* PX_CALL_CONV PxCreatePvd(PxFoundation& foundation);
 

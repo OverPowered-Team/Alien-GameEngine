@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXASSERT_H
 #define PXFOUNDATION_PXASSERT_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{ */
 
 #include "foundation/Px.h"

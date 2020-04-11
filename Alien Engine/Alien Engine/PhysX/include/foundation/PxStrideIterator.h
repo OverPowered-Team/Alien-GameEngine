@@ -33,7 +33,7 @@
 #include "foundation/Px.h"
 #include "foundation/PxSharedAssert.h"
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 

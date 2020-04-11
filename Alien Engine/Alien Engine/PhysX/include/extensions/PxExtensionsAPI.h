@@ -77,7 +77,7 @@ PX_C_EXPORT bool PX_CALL_CONV PxInitExtensions(physx::PxPhysics& physics, physx:
 
 This function should be called to cleanly shut down the PhysXExtensions library before application exit. 
 
-\note This function is required to be called to release foundation usage.
+\note This function is required to be called to release px_foundation usage.
 
 @see PxInitExtensions
 */

@@ -29,7 +29,7 @@
 
 #ifndef PXFOUNDATION_PXERRORS_H
 #define PXFOUNDATION_PXERRORS_H
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

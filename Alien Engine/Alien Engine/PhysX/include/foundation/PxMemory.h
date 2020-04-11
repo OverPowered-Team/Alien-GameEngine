@@ -30,7 +30,7 @@
 #ifndef PXFOUNDATION_PXMEMORY_H
 #define PXFOUNDATION_PXMEMORY_H
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

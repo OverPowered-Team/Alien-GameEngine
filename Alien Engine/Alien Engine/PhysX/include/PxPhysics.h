@@ -92,7 +92,7 @@ public:
 	Releasing an SDK will also release any scenes, triangle meshes, convex meshes, heightfields and shapes
 	created through it, provided the user hasn't already done so.
 
-	\note This function is required to be called to release foundation usage.
+	\note This function is required to be called to release px_foundation usage.
 
 	@see PxCreatePhysics()
 	*/
@@ -646,7 +646,7 @@ There may be only one instance of this class per process. Calling this method af
 has been created already will result in an error message and NULL will be returned.
 
 \param version Version number we are expecting(should be #PX_PHYSICS_VERSION)
-\param foundation Foundation instance (see PxFoundation)
+\param px_foundation Foundation instance (see PxFoundation)
 \param scale values used to determine default tolerances for objects at creation time
 \param trackOutstandingAllocations true if you want to track memory allocations 
 			so a debugger connection partway through your physics simulation will get
@@ -677,7 +677,7 @@ If you do not need some of these modules, consider calling PxCreateBasePhysics()
 modules manually.
 
 \param version Version number we are expecting(should be #PX_PHYSICS_VERSION)
-\param foundation Foundation instance (see PxFoundation)
+\param px_foundation Foundation instance (see PxFoundation)
 \param scale values used to determine default tolerances for objects at creation time
 \param trackOutstandingAllocations true if you want to track memory allocations 
 			so a debugger connection partway through your physics simulation will get

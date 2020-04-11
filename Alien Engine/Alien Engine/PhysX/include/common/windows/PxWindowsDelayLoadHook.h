@@ -34,7 +34,7 @@
 #include "foundation/PxPreprocessor.h"
 #include "common/PxPhysXCommonConfig.h"
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
 @{
 */
 

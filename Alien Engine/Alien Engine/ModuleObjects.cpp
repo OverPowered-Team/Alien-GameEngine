@@ -272,6 +272,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			{
 				App->physics->DrawWorld();
 			}
+
+			App->physx->DrawWorld();
 		}
 
 		if (base_game_object->HasChildren()) {

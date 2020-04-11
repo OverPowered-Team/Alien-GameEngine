@@ -33,7 +33,7 @@
 #include "foundation/PxFoundationConfig.h"
 #include "foundation/Px.h"
 
-/** \addtogroup foundation
+/** \addtogroup px_foundation
   @{
 */
 
