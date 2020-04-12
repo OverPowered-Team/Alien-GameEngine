@@ -234,9 +234,16 @@ update_status ModuleObjects::PostUpdate(float dt)
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
+	float2 vg_size = App->camera->scene_viewport->GetSize();
+
 	ImGui::Begin("WReflection");
 	ImGui::Text("Test");
-	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(100.0f, 100.0f));
+	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
+	ImGui::End();
+
+	ImGui::Begin("WRefraction");
+	ImGui::Text("Test2");
+	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
 	ImGui::End();
 
 #ifndef GAME_VERSION
@@ -338,6 +345,62 @@ update_status ModuleObjects::PostUpdate(float dt)
 		viewport->EndViewport();
 
 		wfbos->BindReflectionFrameBuffer();
+		{
+			if (printing_scene)
+			{
+				if (App->physics->debug_physics)
+				{
+					App->physics->DrawWorld();
+				}
+			}
+
+			if (base_game_object->HasChildren()) {
+				if (isGameCamera) {
+					OnPreCull(viewport->GetCamera());
+				}
+
+				std::vector<std::pair<float, GameObject*>> to_draw;
+				std::vector<std::pair<float, GameObject*>> to_draw_ui;
+
+				ComponentCamera* frustum_camera = viewport->GetCamera();
+
+				if (check_culling_in_scene && App->renderer3D->actual_game_camera)
+				{
+					frustum_camera = App->renderer3D->actual_game_camera;
+				}
+
+				octree.SetStaticDrawList(&to_draw, frustum_camera);
+
+				std::vector<GameObject*>::iterator item = base_game_object->children.begin();
+				for (; item != base_game_object->children.end(); ++item) {
+					if (*item != nullptr && (*item)->IsEnabled()) {
+						(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					}
+				}
+
+				std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+				if (isGameCamera) {
+					OnPreRender(viewport->GetCamera());
+				}
+
+				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+				for (; it != to_draw.end(); ++it) {
+					if ((*it).second != nullptr) {
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
+					}
+				}
+
+				if (isGameCamera) {
+					OnPostRender(viewport->GetCamera());
+				}
+			}
+		}
+		wfbos->UnbindCurrentFrameBuffer();
+
+		wfbos->BindRefractionFrameBuffer();
 		{
 			if (printing_scene)
 			{
