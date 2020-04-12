@@ -1,0 +1,47 @@
+{
+    "Meta": {
+        "ID": "17221464566124563958",
+        "NumMeshes": 1,
+        "Name": "dungeon_test",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/3977053179656395410.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/5758276968260662409.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "dungeon:Mesh",
+            "parentName": "dungeon_test",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}

@@ -133,85 +133,90 @@ void PanelNavigation::ShowBakeTab()
 	ImGui::Text("Baked Agent Size");
 	ImGui::Separator();
 
-	ImVec2 draw_canvas_size((36 + 10) * 9.8f, (36 + 10) * 3);
+	
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 	const ImVec2 p = ImGui::GetCursorScreenPos();
 	const ImU32 light_blue = ImColor(0.13f, 0.72f, 1.0f, 1.0f);
 	const ImU32 mid_blue = ImColor(0.22f, 0.62f, 1.0f, 0.6f);
 	const ImU32 dark_blue = ImColor(0.02f, 0.46f, 1.0f, 1.0f);
-
-	float window_w = ImGui::GetWindowContentRegionWidth();
-	float window_center =  window_w * 0.5f;
+	const ImU32 white_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
+	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
+	
+	const float window_w = ImGui::GetWindowContentRegionWidth();
+	const float window_center = window_w * 0.5f;
+	float rect_max = 100.f; // max box projection size
 
 	float* agent_radius = &App->nav->agentRadius;
 	float* agent_height = &App->nav->agentHeight;
 
-	int bottom_line_length = 60;
-	const ImU32 line_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
-	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
+	// define the draw canvas and prints a dummy to let space for draw
+	const ImVec2 draw_canvas_size(135.f, 125.f);
+	ImGui::Dummy(draw_canvas_size);
 
-	const float fixed_bottom_agent_line = 160;
+	// agent calcs draw ---------------------------------
+	const float ellipse_relation = 0.3f; //Normally the lower radius is half the bigger one
 
-	//1
-	//const float ideal_proportion = 1.0f / 4.0f;//The width / height on the ideal cylinder
-	//float curr_proportion = *agent_radius / *agent_height;
-	//float proportion_diff = curr_proportion / ideal_proportion;
-
-	//float draw_radius = *agent_radius * proportion_diff;
-	//float draw_height = *agent_height / proportion_diff;
-
-	//float norm = std::sqrt(draw_radius * draw_radius + draw_height * draw_height);
-
-	//float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
-
-	//draw_radius = (draw_radius / norm) * square_min;
-	//draw_height = (draw_height / norm) * square_min;
-
-	//2
-	float elipse_relation = 0.3f;//Normally the lower radius is half the bigger one
-	
 	//Normalize the proportions
-	float norm = std::sqrt(*agent_radius * *agent_radius + *agent_height * *agent_height);
+	const float norm = std::sqrtf(*agent_radius * *agent_radius + *agent_height * *agent_height);
 	float draw_radius = (*agent_radius / norm);
 	float draw_height = (*agent_height / norm);
+	double ellip_radius = ((*agent_radius * ellipse_relation) / norm); // to clamp top ellipse border
 	
+	// search for the difference we have on bottom
+	ellip_radius *= rect_max;
+	rect_max -= ellip_radius;
+	ImGui::Text("rect_max: %f", rect_max);
 	//Scale it so it fits the maximum possible space available
-	float square_min = fmin(draw_canvas_size.x, draw_canvas_size.y);
-	draw_radius *= square_min;
-	draw_height *= square_min;
+	draw_radius *= rect_max;
+	draw_height *= rect_max;
+	// clamp minimal radius
+	draw_radius = fmax(2.0f, draw_radius);
+	// ---------------------------------------------------
 
 	// drawing shapes ------------------------------------
-	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * elipse_relation)); // Always "fixed"
-	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - draw_height);//(draw_radius * proportion_scale));
-	float center_height = bot_ellipse_c.y - top_ellipse_center.y;
-
-	// bottom "floor" line
-	draw_list->AddLine(ImVec2(p.x, bot_ellipse_c.y), ImVec2(p.x + window_w, bot_ellipse_c.y), line_col);
-	// bottom mid agent line
-	float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
-	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
-
+	// calc draw positions --------------
+	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ellipse_relation)); // Always "fixed"
+	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height)); // mantain the relation from bot to botom center diff
+	//ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height - draw_radius * elipse_relation)); // mantain the relation from bot to botom center diff | faked test
 	// body agent rect
 	ImVec2 p_min(top_ellipse_center.x - draw_radius, bot_ellipse_c.y);
 	ImVec2 p_max(top_ellipse_center.x + draw_radius, top_ellipse_center.y);
-
-	draw_list->AddRectFilled(p_min, p_max, mid_blue);
-
-	// bottom ellipse (only thing fixed on point)
-	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * elipse_relation, dark_blue, 0.0f, 24);
-
-	// top ellipse
-	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * elipse_relation, light_blue, 0.0f, 24);
+	// bottom mid agent line
+	float fixed_bottom_agent_line = 175.0f;
+	float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
 	
+	// finally draw the shapes ----------
+	// bottom "floor" line
+	draw_list->AddLine(ImVec2(p.x, bot_ellipse_c.y), ImVec2(p.x + window_w, bot_ellipse_c.y), white_col);
+	// bottom mid agent line (grey line)
+	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
+	// body agent rect
+	draw_list->AddRectFilled(p_min, p_max, mid_blue);
+	// bottom ellipse (only thing fixed on point)
+	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * ellipse_relation, dark_blue, 0.0f, 24);
+	// top ellipse
+	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ellipse_relation, light_blue, 0.0f, 24);
 
-	ImGui::Dummy(draw_canvas_size);
-
+	
+	// debug rect to show printable constrained box
+	//draw_list->AddRect(ImVec2(p.x + window_center + 40, bot_ellipse_c.y), ImVec2(p.x + window_center - 40, (bot_ellipse_c.y - rect_max)), grey_col); // dyn
+	//draw_list->AddRect(ImVec2(p.x + window_center + 40, bot_ellipse_c.y), ImVec2(p.x + window_center - 40, (bot_ellipse_c.y - 100) + (pmin.y - pmax.y)), white_col); // fixed
+	// left dif debug indicator box
+	/*ImVec2 pmin(p.x + 10, p.y + draw_canvas_size.y);
+	ImVec2 pmax(p.x + 20, bot_ellipse_c.y);
+	draw_list->AddRect(pmin, pmax, white_col);*/
+	
+	// menu input variables and widgets ------------------
 	ImGui::Separator();
 
-	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 500.0f);
-	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 500.0f);
-	
+	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 20.0f);
+	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 80.0f);
+	if (ImGui::SliderFloat("Max Slope", &App->nav->agentMaxSlope, 0.0f, 60.0f)) {
+		if (App->nav->agentMaxSlope > 60.0f)
+			App->nav->agentMaxSlope = 60.0f;
+	}
+	ImGui::SliderFloat("Step Height", &App->nav->agentMaxClimb, 0.0f, 20.0f);
 
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
 		App->nav->Bake();
