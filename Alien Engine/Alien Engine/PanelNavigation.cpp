@@ -133,7 +133,6 @@ void PanelNavigation::ShowBakeTab()
 	ImGui::Text("Baked Agent Size");
 	ImGui::Separator();
 
-	
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 	const ImVec2 p = ImGui::GetCursorScreenPos();
@@ -143,6 +142,7 @@ void PanelNavigation::ShowBakeTab()
 	const ImU32 white_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
 	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
 	
+	int geo_segments = 24;
 	const float window_w = ImGui::GetWindowContentRegionWidth();
 	const float window_center = window_w * 0.5f;
 	float rect_max = 100.f; // max box projection size
@@ -154,14 +154,14 @@ void PanelNavigation::ShowBakeTab()
 	const ImVec2 draw_canvas_size(135.f, 125.f);
 	ImGui::Dummy(draw_canvas_size);
 
-	// agent calcs draw ---------------------------------
+	// agent calcs draw ----------------------------------------------
 	const float ellipse_relation = 0.3f; //Normally the lower radius is half the bigger one
 
 	//Normalize the proportions
 	const float norm = std::sqrtf(*agent_radius * *agent_radius + *agent_height * *agent_height);
 	float draw_radius = (*agent_radius / norm);
 	float draw_height = (*agent_height / norm);
-	double ellip_radius = ((*agent_radius * ellipse_relation) / norm); // to clamp top ellipse border
+	float ellip_radius = ((*agent_radius * ellipse_relation) / norm); // to clamp top ellipse border
 	
 	// search for the difference we have on bottom
 	ellip_radius *= rect_max;
@@ -172,9 +172,9 @@ void PanelNavigation::ShowBakeTab()
 	draw_height *= rect_max;
 	// clamp minimal radius
 	draw_radius = fmax(2.0f, draw_radius);
-	// ---------------------------------------------------
+	// ----------------------------------------------------------------
 
-	// drawing shapes ------------------------------------
+	// drawing shapes --------------------------------------------------
 	// calc draw positions --------------
 	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ellipse_relation)); // Always "fixed"
 	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height)); // mantain the relation from bot to botom center diff
@@ -186,18 +186,49 @@ void PanelNavigation::ShowBakeTab()
 	float fixed_bottom_agent_line = 175.0f;
 	float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
 	
-	// finally draw the shapes ----------
-	// bottom "floor" line
-	draw_list->AddLine(ImVec2(p.x, bot_ellipse_c.y), ImVec2(p.x + window_w, bot_ellipse_c.y), white_col);
-	// bottom mid agent line (grey line)
-	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
-	// body agent rect
-	draw_list->AddRectFilled(p_min, p_max, mid_blue);
-	// bottom ellipse (only thing fixed on point)
-	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * ellipse_relation, dark_blue, 0.0f, 24);
-	// top ellipse
-	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ellipse_relation, light_blue, 0.0f, 24);
+	// finally draw the shapes --------------------
+	// bottom "floor" line ------------------------
+	draw_list->AddLine(ImVec2(p.x, bot_ellipse_c.y), ImVec2(p.x + window_w - 10.0f, bot_ellipse_c.y), white_col);
 
+	// bottom mid agent line (grey line) ----------
+	draw_list->AddLine(ImVec2(start_point_x, bot_ellipse_c.y), ImVec2(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y), grey_col, 2.0f);
+
+	// body agent rect ----------------------------
+	draw_list->AddRectFilled(p_min, p_max, mid_blue);
+
+	// bottom ellipse (only thing fixed on point) -
+	draw_list->AddEllipseFilled(bot_ellipse_c, draw_radius, draw_radius * ellipse_relation, dark_blue, 0.0f, geo_segments);
+
+	// step height ---------------------------------------
+	float* pstep_h = &App->nav->agentMaxClimb;
+	float step_h = *pstep_h;
+	float height = *agent_height;
+	// get real distance from bottom center
+	float step_factor = height / step_h; // qty steps fit on height
+	float draw_step_y = (draw_height / step_factor);
+	bool inner_circle = draw_step_y < draw_height; // not draw inner circle if out of height bounds
+	draw_step_y = bot_ellipse_c.y - draw_step_y;
+	// clamp to max height
+	draw_step_y = std::fmax(p.y + 10, draw_step_y);
+	
+	draw_list->AddLine(ImVec2(p.x, draw_step_y), ImVec2(start_point_x, draw_step_y), white_col, 1.0f); // horizontal line
+	draw_list->AddLine(ImVec2(start_point_x, draw_step_y), ImVec2(start_point_x, bot_ellipse_c.y), white_col, 1.0f); // vertical line
+	if(inner_circle)
+		draw_list->AddEllipse(ImVec2(bot_ellipse_c.x, draw_step_y), draw_radius, draw_radius * ellipse_relation, ImColor(1.0f, 1.0f, 1.0f, 0.5f), 0.0f, geo_segments);
+
+	// top ellipse --------------------------------
+	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ellipse_relation, light_blue, 0.0f, geo_segments);
+
+	// max slope line -----------------------------
+	float max_slope_length = 100.0f;
+	ImVec2 slope_vx(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y);
+	ImVec2 slope_vy((slope_vx.x + max_slope_length * cosf(DegToRad( App->nav->agentMaxSlope))), 
+					 bot_ellipse_c.y + max_slope_length * -sinf(DegToRad(App->nav->agentMaxSlope)));
+	
+	draw_list->AddLine(slope_vx, slope_vy, grey_col, 2.0f);
+	draw_list->AddText(slope_vx, white_col, std::to_string(App->nav->agentMaxSlope).c_str());
+	
+	// ----------------------------------------------------------------------------------------
 	
 	// debug rect to show printable constrained box
 	//draw_list->AddRect(ImVec2(p.x + window_center + 40, bot_ellipse_c.y), ImVec2(p.x + window_center - 40, (bot_ellipse_c.y - rect_max)), grey_col); // dyn
@@ -206,17 +237,21 @@ void PanelNavigation::ShowBakeTab()
 	/*ImVec2 pmin(p.x + 10, p.y + draw_canvas_size.y);
 	ImVec2 pmax(p.x + 20, bot_ellipse_c.y);
 	draw_list->AddRect(pmin, pmax, white_col);*/
+
+
 	
 	// menu input variables and widgets ------------------
 	ImGui::Separator();
-
-	ImGui::SliderFloat("Agent Radius", agent_radius, 0.01f, 20.0f);
-	ImGui::SliderFloat("Agent Height", agent_height, 0.01f, 80.0f);
+	float drag_speed = 0.02f;
+	ImGui::DragFloat("Agent Radius", agent_radius, drag_speed, 0.01f, floatMax, "%.2f");
+	ImGui::DragFloat("Agent Height", agent_height, drag_speed, 0.01f, floatMax, "%.2f");
 	if (ImGui::SliderFloat("Max Slope", &App->nav->agentMaxSlope, 0.0f, 60.0f)) {
 		if (App->nav->agentMaxSlope > 60.0f)
 			App->nav->agentMaxSlope = 60.0f;
+		else if(App->nav->agentMaxSlope < 0.0f)
+			App->nav->agentMaxSlope = 0.0f;
 	}
-	ImGui::SliderFloat("Step Height", &App->nav->agentMaxClimb, 0.0f, 20.0f);
+	ImGui::DragFloat("Step Height", pstep_h, drag_speed, 0.01f, floatMax, "%.2f");
 
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
 		App->nav->Bake();

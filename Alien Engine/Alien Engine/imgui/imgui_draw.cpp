@@ -1131,7 +1131,7 @@ void ImDrawList::PathEllipticalArcTo(const ImVec2& center, float radius_x, float
         point.x -= center.x;
         point.y -= center.y;
         
-            const float rel_x = (point.x * cosRot) - (point.y * sinRot);
+        const float rel_x = (point.x * cosRot) - (point.y * sinRot);
         const float rel_y = (point.x * sinRot) + (point.y * cosRot);
         point.x = rel_x + center.x;
         point.y = rel_y + center.y;
