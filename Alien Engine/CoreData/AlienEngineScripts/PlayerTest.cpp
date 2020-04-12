@@ -10,25 +10,13 @@ PlayerTest::~PlayerTest()
 
 void PlayerTest::Start()
 {
-}
+	ComponentCamera* camera = game_object->GetComponent<ComponentCamera>();
+	std::vector<ComponentCamera*> cameras = game_object->GetComponents<ComponentCamera>();
+	LOG("%s", camera->game_object_attached->GetName());
+	LOG("%s", cameras.back()->game_object_attached->GetTag());
+	int i = 0;
 
-void PlayerTest::Update()
-{
-	/*if (Input::GetKey(SDL_SCANCODE_W)) {
-		transform->SetGlobalPosition(transform->GetGlobalPosition() + float3::unitZ() * speed * Time::GetDT());
-	}
-	if (Input::GetKey(SDL_SCANCODE_S)) {
-		transform->SetGlobalPosition(transform->GetGlobalPosition() - float3::unitZ() * speed * Time::GetDT());
-	}
-	if (Input::GetKey(SDL_SCANCODE_A)) {
-		transform->SetGlobalPosition(transform->GetGlobalPosition() + float3::unitX() * speed * Time::GetDT());
-	}
-	if (Input::GetKey(SDL_SCANCODE_D)) {
-		transform->SetGlobalPosition(transform->GetGlobalPosition() - float3::unitX() * speed * Time::GetDT());
-	}*/
-}
+	PlayerTest* test = game_object->GetComponent<PlayerTest>();
+	LOG("%s", test->ToString());
 
-void PlayerTest::OnDrawGizmos()
-{
-	Gizmos::DrawCube(float3::zero(), { 3,3,3 }, Color::Blue());
 }

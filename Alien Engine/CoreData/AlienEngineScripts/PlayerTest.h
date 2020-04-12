@@ -11,18 +11,11 @@ public:
 	virtual ~PlayerTest();
 	
 	void Start();
-	void Update();
-
-	GameObject* speed = 0;
-
-	void OnDrawGizmos();
-
 };
 
 ALIEN_FACTORY PlayerTest* CreatePlayerTest() {
 	PlayerTest* alien = new PlayerTest();
 	// To show in inspector here
-	SHOW_IN_INSPECTOR_AS_GAMEOBJECT(alien->speed);
 
 	return alien;
 } 

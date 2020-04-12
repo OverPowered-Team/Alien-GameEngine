@@ -7,13 +7,14 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "JSONfilepack.h"
 #include <map>
+#include "ComponentScript.h"
+#include "Alien.h"
 
 enum class ResourceType;
 class Resource;
 class Prefab;
 class ComponentCanvas;
 class ComponentCamera;
-class Alien;
 
 class __declspec(dllexport) GameObject
 {
@@ -115,34 +116,23 @@ public:
 	// components
 	bool HasComponent(ComponentType component) const;
 	Component* GetComponent(const ComponentType& type);
-	const Component* GetComponent(const ComponentType& type) const;
-	ComponentTransform* GetComponentTransform() const; //sorry ori
+	ComponentTransform* GetComponentTransform(); //sorry ori
 	void* GetComponentScript(const char* script_class_name);
-	const void* GetComponentScript(const char* script_class_name) const;
 	Component* GetComponentInParent(const ComponentType& type);
-	const Component* GetComponentInParent(const ComponentType& type) const;
 	void* GetComponentScriptInParent(const char* script_class_name);
-	const void* GetComponentScriptInParent(const char* script_class_name) const;
 	Component* GetComponentInChildren(const ComponentType& type, bool recursive);
-	const Component* GetComponentInChildren(const ComponentType& type, bool recursive) const;
 	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponents(const ComponentType& type, Component*** comp_array);
-	const uint GetComponents(const ComponentType& type, Component*** comp_array) const;
 	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponentsInChildren(const ComponentType& type, Component*** comp_array, bool recursive);
-	const uint GetComponentsInChildren(const ComponentType& type, Component*** comp_array, bool recursive) const;
 	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponentsInParent(const ComponentType& type, Component*** comp_array);
-	const uint GetComponentsInParent(const ComponentType& type, Component*** comp_array) const;
 	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponentsScript(const char* script_class_name, void*** script_array);
-	const uint GetComponentsScript(const char* script_class_name, void*** script_array) const;
 	// return the sie of the array of components found, pass a ScriptClassToFind** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponentsScriptInChildren(const char* script_class_name, void*** script_array, bool recursive);
-	const uint GetComponentsScriptInChildren(const char* script_class_name, void*** script_array, bool recursive) const;
 	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
 	uint GetComponentsScriptInParent(const char* script_class_name, void*** script_array);
-	const uint GetComponentsScriptInParent(const char* script_class_name, void*** script_array) const;
 
 	uint GetAllComponentsScript(Alien*** aliens);
 
@@ -160,6 +150,11 @@ public:
 
 	// delete it at the begining of the next frame
 	void ToDelete(); 
+
+	template <class Comp>
+	Comp* GetComponent();
+	template <class Comp>
+	std::vector<Comp*> GetComponents();
 
 private:
 	// OnEnable/Disable
@@ -185,11 +180,6 @@ private:
 	void PreUpdate();
 	void Update();
 	void PostUpdate();
-
-	template <class Comp>
-	Comp* GetComponent();
-	template <class Comp>
-	std::vector<Comp*> GetComponents();
 
 	template <class Comp>
 	const Comp* GetComponent() const;
@@ -232,8 +222,8 @@ private:
 	bool Exists(GameObject* object) const;
 
 	// Bounding Boxes
-	AABB GetBB() const; // 0 = Local Bounding Box, 1 = Global Bounding Box
-	OBB GetGlobalOBB() const;
+	AABB GetBB(); // 0 = Local Bounding Box, 1 = Global Bounding Box
+	OBB GetGlobalOBB();
 	void SaveObject(JSONArraypack* to_save, const uint& family_number);
 	void LoadObject(JSONArraypack* to_save, GameObject* parent, bool force_no_selected = false);
 
@@ -300,9 +290,21 @@ template<class Comp>
 inline Comp* GameObject::GetComponent()
 {
 	for (uint i = 0; i < components.size(); ++i) {
-		Comp* component = dynamic_cast<Comp*>(components[i]);
-		if (component != nullptr) {
-			return component;
+		if (components[i]->GetType() != ComponentType::SCRIPT) {
+			Comp* component = dynamic_cast<Comp*>(components[i]);
+			if (component != nullptr) {
+				return component;
+			}
+		}
+		else {
+			ComponentScript* script = (ComponentScript*)components[i];
+			if (script->need_alien) {
+				Alien* alien = (Alien*)script->data_ptr;
+				Comp* component = dynamic_cast<Comp*>(alien);
+				if (component != nullptr) {
+					return component;
+				}
+			}
 		}
 	}
 	return nullptr;
@@ -313,10 +315,23 @@ inline std::vector<Comp*> GameObject::GetComponents()
 {
 	std::vector<Comp*> comps;
 	for (uint i = 0; i < components.size(); ++i) {
-		Comp* component = dynamic_cast<Comp*>(components[i]);
-		if (component != nullptr) {
-			comps.push_back(component);
+		if (components[i]->GetType() != ComponentType::SCRIPT) {
+			Comp* component = dynamic_cast<Comp*>(components[i]);
+			if (component != nullptr) {
+				comps.push_back(component);
+			}
 		}
+		else {
+			ComponentScript* script = (ComponentScript*)components[i];
+			if (script->need_alien) {
+				Alien* alien = (Alien*)script->data_ptr;
+				Comp* component = dynamic_cast<Comp*>(alien);
+				if (component != nullptr) {
+					comps.push_back(component);
+				}
+			}
+		}
+
 	}
 	return comps;
 }
