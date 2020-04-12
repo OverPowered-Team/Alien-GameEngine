@@ -9,12 +9,15 @@
 #include <map>
 #include "ComponentScript.h"
 #include "Alien.h"
+#include <stack>
 
 enum class ResourceType;
 class Resource;
 class Prefab;
 class ComponentCanvas;
 class ComponentCamera;
+class Alien;
+class ComponentTransform;
 
 class __declspec(dllexport) GameObject
 {
@@ -45,6 +48,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentUI;
 	friend class ComponentCanvas;
 	friend class ComponentCheckbox;
+	friend class Component;
 	friend class ComponentText;
 	friend class ComponentButton;
 	friend class ComponentBar;
@@ -61,6 +65,8 @@ class __declspec(dllexport) GameObject
 	friend class PanelHierarchy;
 	friend class PanelScene;
 	friend class ModuleRenderer3D;
+	friend class PanelAnimator;
+	friend class PanelParticleSystem;
 	friend class PanelCreateObject;
 	friend class PanelInspector;
 	friend class ResourceModel;
@@ -89,8 +95,7 @@ public:
 	static GameObject* FindWithName(const char* name);
 	static GameObject* FindWithTag(const char* tag_to_find);
 	// return the sie of the array of gameobjects found, pass a GameObject** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	static uint FindGameObjectsWithTag(const char* tag_to_find, GameObject*** objects);
-	static void FreeArrayMemory(void*** array_);
+	static std::vector<GameObject*> FindGameObjectsWithTag(const char* tag_to_find);
 	// parent = nullptr is root
 	static GameObject* Instantiate(const Prefab& prefab, const float3& position, bool check_child = false, GameObject* parent = nullptr);
 	static GameObject* CloneObject(GameObject* to_clone, GameObject* parent = nullptr);
@@ -101,6 +106,26 @@ public:
 		DontDestroyOnLoad();
 	*/
 
+	template <class Comp>
+	Comp* GetComponent();
+	template <class Comp>
+	std::vector<Comp*> GetComponents();
+
+	template <class Comp>
+	Comp* GetComponentInParent();
+	template <class Comp>
+	std::vector<Comp*> GetComponentsInParent();
+
+	template <class Comp>
+	Comp* GetComponentInChildren();
+	template <class Comp>
+	std::vector<Comp*> GetComponentsInChildren();
+
+	template <class Comp>
+	Comp* GetComponentInChildrenRecursive();
+	template <class Comp>
+	std::vector<Comp*> GetComponentsInChildrenRecursive();
+
 	GameObject* GetChild(const char* child_name);
 	GameObject* GetChild(const int& index);
 	// look for child of child of child bla bla
@@ -110,31 +135,13 @@ public:
 	void SetEnable(bool enable);
 	bool IsEnabled() const;
 
+	ComponentTransform* GetComponentTransform(); //sorry ori
+
 	// parent
 	void SetNewParent(GameObject* new_parent);
 
 	// components
 	bool HasComponent(ComponentType component) const;
-	Component* GetComponent(const ComponentType& type);
-	ComponentTransform* GetComponentTransform(); //sorry ori
-	void* GetComponentScript(const char* script_class_name);
-	Component* GetComponentInParent(const ComponentType& type);
-	void* GetComponentScriptInParent(const char* script_class_name);
-	Component* GetComponentInChildren(const ComponentType& type, bool recursive);
-	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponents(const ComponentType& type, Component*** comp_array);
-	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponentsInChildren(const ComponentType& type, Component*** comp_array, bool recursive);
-	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponentsInParent(const ComponentType& type, Component*** comp_array);
-	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponentsScript(const char* script_class_name, void*** script_array);
-	// return the sie of the array of components found, pass a ScriptClassToFind** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponentsScriptInChildren(const char* script_class_name, void*** script_array, bool recursive);
-	// return the sie of the array of components found, pass a Component** nullptr with &. Remember to delete it with GameObject::FreeArrayMemory!!!
-	uint GetComponentsScriptInParent(const char* script_class_name, void*** script_array);
-
-	uint GetAllComponentsScript(Alien*** aliens);
 
 	// children
 	bool HasChildren() const;
@@ -151,12 +158,9 @@ public:
 	// delete it at the begining of the next frame
 	void ToDelete(); 
 
-	template <class Comp>
-	Comp* GetComponent();
-	template <class Comp>
-	std::vector<Comp*> GetComponents();
-
 private:
+	Component* GetComponent(const ComponentType& type);
+
 	// OnEnable/Disable
 	void OnEnable();
 	void OnDisable();
@@ -180,16 +184,6 @@ private:
 	void PreUpdate();
 	void Update();
 	void PostUpdate();
-
-	template <class Comp>
-	const Comp* GetComponent() const;
-	template <class Comp>
-	const std::vector<Comp*> GetComponents() const;
-
-	void GetComponentsChildren(const ComponentType& type, std::vector<Component*>* to_fill, bool recursive);
-	void GetComponentsChildren(const ComponentType& type, std::vector<Component*>* to_fill, bool recursive) const;
-	void GetComponentsScriptChildren(const char* script_calss_name, std::vector<void*>* to_fill, bool recursive);
-	void GetComponentsScriptChildren(const char* script_calss_name, std::vector<void*>* to_fill, bool recursive) const;
 
 	void AddChild(GameObject* child);
 
@@ -257,7 +251,7 @@ private:
 
 	// parent selected
 	void SayChildrenParentIsSelected(const bool& selected);
-
+	void GetComponentsChildren(const ComponentType& type, std::vector<Component*>* to_fill, bool recursive);
 	void ReTag(const char* from, const char* to);
 
 public:
@@ -337,26 +331,145 @@ inline std::vector<Comp*> GameObject::GetComponents()
 }
 
 template<class Comp>
-inline const Comp* GameObject::GetComponent() const
+inline Comp* GameObject::GetComponentInParent()
 {
-	for (uint i = 0; i < components.size(); ++i) {
-		Comp* component = dynamic_cast<Comp*>(components[i]);
-		if (component != nullptr) {
-			return component;
+	return parent->GetComponent<Comp>();
+}
+
+template<class Comp>
+inline std::vector<Comp*> GameObject::GetComponentsInParent()
+{
+	return parent->GetComponents<Comp>();
+}
+
+template<class Comp>
+inline Comp* GameObject::GetComponentInChildren()
+{
+	for (auto item = children.begin(); item != children.end(); ++item) {
+		for (auto it = (*item)->components.begin(); it != (*item)->components.end(); ++it) {
+			if ((*it)->GetType() != ComponentType::SCRIPT) {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					return component;
+				}
+			}
+			else {
+				ComponentScript* script = (ComponentScript*)(*it);
+				if (script->need_alien) {
+					Alien* alien = (Alien*)script->data_ptr;
+					Comp* component = dynamic_cast<Comp*>(alien);
+					if (component != nullptr) {
+						return component;
+					}
+				}
+			}
 		}
 	}
 	return nullptr;
 }
 
 template<class Comp>
-inline const std::vector<Comp*> GameObject::GetComponents() const
+inline std::vector<Comp*> GameObject::GetComponentsInChildren()
 {
 	std::vector<Comp*> comps;
-	for (uint i = 0; i < components.size(); ++i) {
-		Comp* component = dynamic_cast<Comp*>(components[i]);
-		if (component != nullptr) {
-			comps.push_back(component);
+	for (auto item = children.begin(); item != children.end(); ++item) {
+		for (auto it = (*item)->components.begin(); it != (*item)->components.end(); ++it) {
+			if ((*it)->GetType() != ComponentType::SCRIPT) {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					comps.push_back(component);
+				}
+			}
+			else {
+				ComponentScript* script = (ComponentScript*)(*it);
+				if (script->need_alien) {
+					Alien* alien = (Alien*)script->data_ptr;
+					Comp* component = dynamic_cast<Comp*>(alien);
+					if (component != nullptr) {
+						comps.push_back(component);
+					}
+				}
+			}
 		}
 	}
 	return comps;
 }
+
+template<class Comp>
+inline Comp* GameObject::GetComponentInChildrenRecursive()
+{
+	std::stack<GameObject*> objects;
+	for (auto item = children.begin(); item != children.end(); ++item) {
+		objects.push(*item);
+	}
+	
+	while (!objects.empty()) {
+		GameObject* obj = objects.top();
+		objects.pop();
+
+		for (auto it = obj->components.begin(); it != obj->components.end(); ++it) {
+			if ((*it)->GetType() != ComponentType::SCRIPT) {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					return component;
+				}
+			}
+			else {
+				ComponentScript* script = (ComponentScript*)(*it);
+				if (script->need_alien) {
+					Alien* alien = (Alien*)script->data_ptr;
+					Comp* component = dynamic_cast<Comp*>(alien);
+					if (component != nullptr) {
+						return component;
+					}
+				}
+			}
+		}
+
+		for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+			objects.push(*item);
+		}
+	}
+	return nullptr;
+}
+
+template<class Comp>
+inline std::vector<Comp*> GameObject::GetComponentsInChildrenRecursive()
+{
+	std::vector<Comp*> comps;
+	std::stack<GameObject*> objects;
+	for (auto item = children.begin(); item != children.end(); ++item) {
+		objects.push(*item);
+	}
+
+	while (!objects.empty()) {
+		GameObject* obj = objects.top();
+		objects.pop();
+
+		for (auto it = obj->components.begin(); it != obj->components.end(); ++it) {
+			if ((*it)->GetType() != ComponentType::SCRIPT) {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					comps.push_back(component);
+				}
+			}
+			else {
+				ComponentScript* script = (ComponentScript*)(*it);
+				if (script->need_alien) {
+					Alien* alien = (Alien*)script->data_ptr;
+					Comp* component = dynamic_cast<Comp*>(alien);
+					if (component != nullptr) {
+						comps.push_back(component);
+					}
+				}
+			}
+		}
+
+		for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+			objects.push(*item);
+		}
+	}
+	return comps;
+}
+
+
