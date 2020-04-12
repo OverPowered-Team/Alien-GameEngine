@@ -17,6 +17,7 @@ private:
 	void ShowObjectTab();
 	void ShowAreaTab();
 	void ShowBakeTab();
+	const std::string GetFloatPrecisionString(const float value, const int precision = 2.0f) const;
 
 public:
 

@@ -5,6 +5,8 @@
 #include "ModuleObjects.h"
 #include "ModuleNavigation.h"
 
+#include <iomanip>
+
 
 PanelNavigation::PanelNavigation(const std::string& panel_name, const SDL_Scancode& key1_down, const SDL_Scancode& key2_repeat, const SDL_Scancode& key3_repeat_extra) :
 	Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
@@ -141,8 +143,10 @@ void PanelNavigation::ShowBakeTab()
 	const ImU32 dark_blue = ImColor(0.02f, 0.46f, 1.0f, 1.0f);
 	const ImU32 white_col = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
 	const ImU32 grey_col = ImColor(0.5f, 0.5f, 0.5f, 1.0f);
+	const ImU32 red_col = ImColor(0.9f, 0.2f, 0.2f, 1.0f);
+	const float text_height = 12.0f;
 	
-	int geo_segments = 24;
+	const int geo_segments = 24;
 	const float window_w = ImGui::GetWindowContentRegionWidth();
 	const float window_center = window_w * 0.5f;
 	float rect_max = 100.f; // max box projection size
@@ -166,7 +170,7 @@ void PanelNavigation::ShowBakeTab()
 	// search for the difference we have on bottom
 	ellip_radius *= rect_max;
 	rect_max -= ellip_radius;
-	ImGui::Text("rect_max: %f", rect_max);
+	//ImGui::Text("rect_max: %f", rect_max);
 	//Scale it so it fits the maximum possible space available
 	draw_radius *= rect_max;
 	draw_height *= rect_max;
@@ -174,17 +178,17 @@ void PanelNavigation::ShowBakeTab()
 	draw_radius = fmax(2.0f, draw_radius);
 	// ----------------------------------------------------------------
 
-	// drawing shapes --------------------------------------------------
+	// drawing shapes -------------------------------------------------
 	// calc draw positions --------------
-	ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ellipse_relation)); // Always "fixed"
-	ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height)); // mantain the relation from bot to botom center diff
+	const ImVec2 bot_ellipse_c(p.x + window_center, (p.y + draw_canvas_size.y) - (draw_radius * ellipse_relation)); // Always "fixed"
+	const ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height)); // mantain the relation from bot to botom center diff
 	//ImVec2 top_ellipse_center(p.x + window_center, bot_ellipse_c.y - (draw_height - draw_radius * elipse_relation)); // mantain the relation from bot to botom center diff | faked test
 	// body agent rect
-	ImVec2 p_min(top_ellipse_center.x - draw_radius, bot_ellipse_c.y);
-	ImVec2 p_max(top_ellipse_center.x + draw_radius, top_ellipse_center.y);
+	const ImVec2 p_min(bot_ellipse_c.x - draw_radius, bot_ellipse_c.y);
+	const ImVec2 p_max(top_ellipse_center.x + draw_radius, top_ellipse_center.y);
 	// bottom mid agent line
-	float fixed_bottom_agent_line = 175.0f;
-	float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
+	const float fixed_bottom_agent_line = 175.0f;
+	const float start_point_x = p.x + window_center - (fixed_bottom_agent_line * 0.5f);
 	
 	// finally draw the shapes --------------------
 	// bottom "floor" line ------------------------
@@ -201,35 +205,43 @@ void PanelNavigation::ShowBakeTab()
 
 	// step height ---------------------------------------
 	float* pstep_h = &App->nav->agentMaxClimb;
-	float step_h = *pstep_h;
-	float height = *agent_height;
+	const float step_h = *pstep_h;
+	const float height = *agent_height;
 	// get real distance from bottom center
-	float step_factor = height / step_h; // qty steps fit on height
+	const float step_factor = height / step_h; // qty steps fit on height
 	float draw_step_y = (draw_height / step_factor);
-	bool inner_circle = draw_step_y < draw_height; // not draw inner circle if out of height bounds
+	const bool inner_circle = draw_step_y < draw_height; // not draw inner circle if out of height bounds
 	draw_step_y = bot_ellipse_c.y - draw_step_y;
 	// clamp to max height
 	draw_step_y = std::fmax(p.y + 10, draw_step_y);
 	
-	draw_list->AddLine(ImVec2(p.x, draw_step_y), ImVec2(start_point_x, draw_step_y), white_col, 1.0f); // horizontal line
-	draw_list->AddLine(ImVec2(start_point_x, draw_step_y), ImVec2(start_point_x, bot_ellipse_c.y), white_col, 1.0f); // vertical line
+	draw_list->AddLine(ImVec2(p.x, draw_step_y), ImVec2(start_point_x + 1.0f, draw_step_y), inner_circle ? grey_col : red_col , 2.0f); // horizontal line
+	draw_list->AddLine(ImVec2(start_point_x, draw_step_y), ImVec2(start_point_x, bot_ellipse_c.y), inner_circle ? grey_col : red_col, 2.0f); // vertical line
+	draw_list->AddText(ImVec2(p.x + (start_point_x - p.x) * 0.5f, draw_step_y - text_height), white_col, GetFloatPrecisionString(step_h).c_str());
 	if(inner_circle)
 		draw_list->AddEllipse(ImVec2(bot_ellipse_c.x, draw_step_y), draw_radius, draw_radius * ellipse_relation, ImColor(1.0f, 1.0f, 1.0f, 0.5f), 0.0f, geo_segments);
 
 	// top ellipse --------------------------------
 	draw_list->AddEllipseFilled(top_ellipse_center, draw_radius, draw_radius * ellipse_relation, light_blue, 0.0f, geo_segments);
+	// draw radius text and line
+	draw_list->AddLine(top_ellipse_center, ImVec2(top_ellipse_center.x + draw_radius - 1.0f, top_ellipse_center.y), white_col);
+	draw_list->AddText(ImVec2(top_ellipse_center.x, (top_ellipse_center.y - draw_radius * ellipse_relation) - text_height), 
+							  white_col, std::string("R = " + GetFloatPrecisionString(*agent_radius)).c_str());
 
 	// max slope line -----------------------------
 	float max_slope_length = 100.0f;
-	ImVec2 slope_vx(start_point_x + fixed_bottom_agent_line, bot_ellipse_c.y);
+	ImVec2 slope_vx(start_point_x + fixed_bottom_agent_line - 1.0f, bot_ellipse_c.y); // 1 compensate line width
 	ImVec2 slope_vy((slope_vx.x + max_slope_length * cosf(DegToRad( App->nav->agentMaxSlope))), 
 					 bot_ellipse_c.y + max_slope_length * -sinf(DegToRad(App->nav->agentMaxSlope)));
 	
 	draw_list->AddLine(slope_vx, slope_vy, grey_col, 2.0f);
-	draw_list->AddText(slope_vx, white_col, std::to_string(App->nav->agentMaxSlope).c_str());
+	draw_list->AddText(ImVec2(slope_vx.x + text_height, slope_vx.y - text_height), white_col, GetFloatPrecisionString(App->nav->agentMaxSlope).c_str());
+
+	// height text
+	draw_list->AddText(ImVec2(bot_ellipse_c.x + draw_radius + 4.0f, (p_max.y - (p_max.y - p_min.y) * 0.5f) - text_height * 0.5f),
+		white_col, std::string("H = " + GetFloatPrecisionString(*agent_height)).c_str());
 	
 	// ----------------------------------------------------------------------------------------
-	
 	// debug rect to show printable constrained box
 	//draw_list->AddRect(ImVec2(p.x + window_center + 40, bot_ellipse_c.y), ImVec2(p.x + window_center - 40, (bot_ellipse_c.y - rect_max)), grey_col); // dyn
 	//draw_list->AddRect(ImVec2(p.x + window_center + 40, bot_ellipse_c.y), ImVec2(p.x + window_center - 40, (bot_ellipse_c.y - 100) + (pmin.y - pmax.y)), white_col); // fixed
@@ -237,9 +249,8 @@ void PanelNavigation::ShowBakeTab()
 	/*ImVec2 pmin(p.x + 10, p.y + draw_canvas_size.y);
 	ImVec2 pmax(p.x + 20, bot_ellipse_c.y);
 	draw_list->AddRect(pmin, pmax, white_col);*/
+	// ----------------------------------------------------------------------------------------
 
-
-	
 	// menu input variables and widgets ------------------
 	ImGui::Separator();
 	float drag_speed = 0.02f;
@@ -256,6 +267,13 @@ void PanelNavigation::ShowBakeTab()
 	if (ImGui::Button("Bake", ImVec2(100, 20))) {
 		App->nav->Bake();
 	}
+}
+
+const std::string PanelNavigation::GetFloatPrecisionString(float value, const int precision) const
+{
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(precision) << value;
+	return ss.str();
 }
 
 void PanelNavigation::OnPanelDesactive() // TODO: this call doesn't work if the window is NOT docked and is closed by the top right X icon
