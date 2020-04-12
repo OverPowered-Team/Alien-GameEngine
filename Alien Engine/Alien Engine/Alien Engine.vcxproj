@@ -719,6 +719,7 @@
     <ClInclude Include="ComponentLightSpot.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentPhysic.h" />
     <ClInclude Include="ComponentPointConstraint.h" />
     <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentRigidBody.h" />
@@ -1143,6 +1144,7 @@
     <ClCompile Include="ComponentLightSpot.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentPhysic.cpp" />
     <ClCompile Include="ComponentPointConstraint.cpp" />
     <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentRigidBody.cpp" />

@@ -24,6 +24,7 @@ class __declspec(dllexport) ComponentCollider : public Component
 
 	friend class ModuleObjects;
 	friend class ModulePhysics;
+	friend class ModulePhysX;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class MyDispatcher;

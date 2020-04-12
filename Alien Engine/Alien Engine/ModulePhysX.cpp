@@ -5,17 +5,18 @@
 #include "UtilitiesPhysX.h"
 #include "Optick/include/optick.h"
 
+#include "Component.h"
+#include "ComponentCollider.h"
 
 ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 {
-	
+
 }
 
 ModulePhysX::~ModulePhysX()
 {
 }
 
-// TODO: DELETE ME
 void ModulePhysX::CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
 	PxShape* shape = px_physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *px_default_material);
@@ -119,7 +120,7 @@ update_status ModulePhysX::PreUpdate(float dt)
 
 update_status ModulePhysX::PostUpdate(float dt)
 {
-	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -202,9 +203,24 @@ void ModulePhysX::UnloadPhysicsExplicitely()
 	FreeLibrary(foundation_lib);
 }
 
-void ModulePhysX::DrawCollider(ComponentCollider* collider)
+void ModulePhysX::DrawCollider(const ComponentCollider& collider)
 {
-	
+	collider.type;
+
+	switch (collider.type)
+	{
+	case ComponentType::BOX_COLLIDER:
+		break;
+	case ComponentType::SPHERE_COLLIDER:
+		break;
+	case ComponentType::CAPSULE_COLLIDER:
+		break;
+	case ComponentType::CONVEX_HULL_COLLIDER:
+		break;
+
+	default:
+		break;
+	}
 }
 
 void ModulePhysX::DrawWorld()
@@ -225,4 +241,22 @@ void ModulePhysX::DrawWorld()
 	glEnd();
 
 	ModuleRenderer3D::EndDebugDraw();
+}
+
+PxRigidActor* ModulePhysX::CreateBody(const float4x4& transform, bool is_dynamic)
+{
+	if (!transform.IsFinite()) return nullptr;
+
+	PxRigidActor* return_body = nullptr;
+	return_body = (is_dynamic)
+		? (PxRigidActor*)px_physics->createRigidDynamic(F4X4_TO_PXTRANS(transform))
+		: (PxRigidActor*)px_physics->createRigidStatic(F4X4_TO_PXTRANS(transform));
+
+	px_scene->addActor(*return_body);
+	return return_body;
+}
+
+ void ModulePhysX::RemoveBody(PxRigidActor* body)
+{
+	 px_scene->removeActor(*body, true);
 }

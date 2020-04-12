@@ -58,6 +58,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentCanvas;
 	friend class ComponentUI;
+	friend class ComponentPhysic;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class ComponentCollider;
@@ -70,6 +71,7 @@ class __declspec(dllexport) Component {
 	friend class CompZ;
 	friend class PanelInspector;
 	friend class ModuleObjects;
+	friend class ModulePhysX;
 	friend class ModuleUI;
 public:
 	Component(GameObject* attach);

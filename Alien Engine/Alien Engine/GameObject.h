@@ -20,11 +20,9 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentParticleSystem;
-	friend class PanelAnimTimeline;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
 	friend class ComponentLightPoint;
-	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
@@ -32,14 +30,6 @@ class __declspec(dllexport) GameObject
 	friend class ComponentBone;
 	friend class ComponentAnimator;
 	friend class ComponentMaterial;
-	friend class ComponentCollider;
-	friend class ComponentBoxCollider;
-	friend class ComponentSphereCollider;
-	friend class ComponentCapsuleCollider;
-	friend class ComponentConvexHullCollider;
-	friend class ComponentPointConstraint;
-	friend class ComponentRigidBody;
-	friend class ComponentCharacterController;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
@@ -48,32 +38,49 @@ class __declspec(dllexport) GameObject
 	friend class ComponentButton;
 	friend class ComponentBar;
 	friend class ComponentAnimatedImage;
-	friend class GameObject;
-	friend class ReturnZ;
-	friend class CompZ;
-	friend class ModuleCamera3D;
-	friend class Prefab;
-	friend class Octree;
-	friend class OctreeNode;
-	friend class FileNode;
-	friend class ModuleImporter;
+	friend class ComponentImage;
+	friend class ComponentSlider;
+
+	friend class ComponentPhysic;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
+	friend class ComponentPointConstraint;
+	friend class ComponentRigidBody;
+	friend class ComponentCharacterController;
+
 	friend class PanelHierarchy;
+	friend class PanelAnimTimeline;
 	friend class PanelScene;
-	friend class ModuleRenderer3D;
 	friend class PanelCreateObject;
 	friend class PanelInspector;
+
 	friend class ResourceModel;
 	friend class ResourceMesh;
 	friend class ResourcePrefab;
 	friend class ResourceTexture;
 	friend class ResourceAnimatorController;
+
+	friend class ModulePhysX;
+	friend class ModuleCamera3D;
 	friend class ModuleObjects;
-	friend class ComponentImage;
-	friend class ComponentSlider;
-	friend class ModuleUI;
 	friend class ModuleTween;
+	friend class ModuleImporter;
+	friend class ModuleRenderer3D;
+	friend class ModuleUI;
+
+	friend class GameObject;
+	friend class Prefab;
+	friend class Octree;
+	friend class OctreeNode;
+	friend class FileNode;
 	friend class AnimTween;
 	friend class FadeToBlack;
+	friend class Viewport;
+	friend class ReturnZ;
+	friend class CompZ;
 
 public:
 	GameObject(GameObject* parent, bool ignore_transform = false);
