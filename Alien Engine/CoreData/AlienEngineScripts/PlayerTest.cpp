@@ -19,4 +19,6 @@ void PlayerTest::Start()
 	PlayerTest* test = GetComponent<PlayerTest>();
 	LOG("%s", test->ToString());
 
+	LOG("%s", myString.data());
+
 }
