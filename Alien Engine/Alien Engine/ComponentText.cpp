@@ -31,7 +31,7 @@ ComponentText::ComponentText(GameObject* obj) : ComponentUI(obj)
 
 	ui_type = ComponentType::UI_TEXT;
 	tabbable = false;
-	text_background.color = Color::White();
+	//text_background.color = Color::White();
 
 	font->IncreaseReferences();
 }
@@ -469,89 +469,89 @@ void ComponentText::Draw(bool isGame)
 	}
 
 	font->text_shader->Unbind();
-	font->background_shader->Bind();
+	//font->background_shader->Bind();
 
 	//Render loop line
-	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
-		font->background_shader->SetUniform1i("isGame", isGame);
-		font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
-		font->background_shader->SetUniformMat4f("projection", proj_mat);
-	}
-	else
-	{
-		font->background_shader->SetUniform1i("isGame", isGame);
-		font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
-		font->background_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
-		font->background_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
-	}
+	//if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+	//	font->background_shader->SetUniform1i("isGame", isGame);
+	//	font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
+	//	font->background_shader->SetUniformMat4f("projection", proj_mat);
+	//}
+	//else
+	//{
+	//	font->background_shader->SetUniform1i("isGame", isGame);
+	//	font->background_shader->SetUniformFloat3("textColor", float3(text_background.color.r, text_background.color.g, text_background.color.b));
+	//	font->background_shader->SetUniformMat4f("projection", App->renderer3D->scene_fake_camera->GetProjectionMatrix4f4());
+	//	font->background_shader->SetUniformMat4f("view", App->renderer3D->scene_fake_camera->GetViewMatrix4x4());
+	//}
 
-	float2 initial_pos;
-	float2 back_size;
-	float3 back_vertex[4];
-	Character first_ch = font->fontData.charactersMap[text[0]];
+	//float2 initial_pos;
+	//float2 back_size;
+	//float3 back_vertex[4];
+	//Character first_ch = font->fontData.charactersMap[text[0]];
 
-	if (text_background.visible)
-	{
-		for (int i = 0; i < lines_current_size.size(); ++i)
-		{
-			switch (align)
-			{
-			case LEFT:
-			{
-				if (isGame && App->renderer3D->actual_game_camera != nullptr)
-				{
-					initial_pos.x = x + first_ch.bearing.x * scale.x * factor_x;
-					initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
-					back_size.x = lines_current_size[i] * scale.x * factor_x;
-					back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines * interlineal;
-				}
-				else
-				{
-					initial_pos.x = matrix[0][3] + first_ch.bearing.x * scale.x;
-					initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
-					back_size.x = lines_current_size[i];
-					back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
-				}
-			}
-			break;
-			case MIDDLE:
-				/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
-				{
-					initial_pos.x = x + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
-					initial_pos.y = y - (first_ch.size.y - first_ch.bearing.y) * scale.y * factor_y;
-					back_size.x = lines_current_size[i] * scale.x * factor_x;
-					back_size.y = -font->fontData.charactersMap['l'].size.y * scale.y * current_line * interlineal * factor_y;
-				}
-				else
-				{
-					initial_pos.x = matrix[0][3] + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
-					initial_pos.y = matrix[1][3] - (first_ch.size.y - first_ch.bearing.y ) * scale.y;
-					back_size.x = lines_current_size[i] * scale.x;
-					back_size.y = -font->fontData.charactersMap['l'].size.y  * scale.y * current_line * interlineal;
-				}*/
-				break;
-			case RIGHT:
-				break;
-			default:
-				break;
-			}
+	//if (text_background.visible)
+	//{
+	//	for (int i = 0; i < lines_current_size.size(); ++i)
+	//	{
+	//		switch (align)
+	//		{
+	//		case LEFT:
+	//		{
+	//			if (isGame && App->renderer3D->actual_game_camera != nullptr)
+	//			{
+	//				initial_pos.x = x + first_ch.bearing.x * scale.x * factor_x;
+	//				initial_pos.y = y + (first_ch.size.y + 25) * scale.y * factor_y;
+	//				back_size.x = lines_current_size[i] * scale.x * factor_x;
+	//				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * factor_y * max_lines * interlineal;
+	//			}
+	//			else
+	//			{
+	//				initial_pos.x = matrix[0][3] + first_ch.bearing.x * scale.x;
+	//				initial_pos.y = matrix[1][3] + (first_ch.size.y + 25) * scale.y;
+	//				back_size.x = lines_current_size[i];
+	//				back_size.y = -(font->fontData.charactersMap['l'].size.y + 50) * scale.y * max_lines;
+	//			}
+	//		}
+	//		break;
+	//		case MIDDLE:
+	//			/*if (isGame && App->renderer3D->actual_game_camera != nullptr)
+	//			{
+	//				initial_pos.x = x + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x * factor_x;
+	//				initial_pos.y = y - (first_ch.size.y - first_ch.bearing.y) * scale.y * factor_y;
+	//				back_size.x = lines_current_size[i] * scale.x * factor_x;
+	//				back_size.y = -font->fontData.charactersMap['l'].size.y * scale.y * current_line * interlineal * factor_y;
+	//			}
+	//			else
+	//			{
+	//				initial_pos.x = matrix[0][3] + (first_ch.bearing.x + (width - lines_current_size[current_line]) * 0.5) * scale.x;
+	//				initial_pos.y = matrix[1][3] - (first_ch.size.y - first_ch.bearing.y ) * scale.y;
+	//				back_size.x = lines_current_size[i] * scale.x;
+	//				back_size.y = -font->fontData.charactersMap['l'].size.y  * scale.y * current_line * interlineal;
+	//			}*/
+	//			break;
+	//		case RIGHT:
+	//			break;
+	//		default:
+	//			break;
+	//		}
 
-			back_vertex[0] = float3(initial_pos.x, initial_pos.y, matrix[2][3]);
-			back_vertex[1] = float3(initial_pos.x + back_size.x, initial_pos.y, matrix[2][3]);
-			back_vertex[2] = float3(initial_pos.x + back_size.x, initial_pos.y + back_size.y, matrix[2][3]);
-			back_vertex[3] = float3(initial_pos.x, initial_pos.y + back_size.y, matrix[2][3]);
+	//		back_vertex[0] = float3(initial_pos.x, initial_pos.y, matrix[2][3]);
+	//		back_vertex[1] = float3(initial_pos.x + back_size.x, initial_pos.y, matrix[2][3]);
+	//		back_vertex[2] = float3(initial_pos.x + back_size.x, initial_pos.y + back_size.y, matrix[2][3]);
+	//		back_vertex[3] = float3(initial_pos.x, initial_pos.y + back_size.y, matrix[2][3]);
 
-			glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
+	//		glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+	//		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(back_vertex), back_vertex);
 
-			// Render quad
-			glDrawArrays(GL_QUADS, 0, 4);
+	//		// Render quad
+	//		glDrawArrays(GL_QUADS, 0, 4);
 
-			first_ch = font->fontData.charactersMap[current_line_pos[i]];
-		}
-	}
+	//		first_ch = font->fontData.charactersMap[current_line_pos[i]];
+	//	}
+	//}
 
-	font->background_shader->Unbind();
+	//font->background_shader->Unbind();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 
@@ -642,8 +642,8 @@ void ComponentText::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Width", width);
 	to_save->SetNumber("Interlineal", interlineal);
 	to_save->SetNumber("Align", (int)align);
-	to_save->SetColor("BackgroundColor", text_background.color);
-	to_save->SetBoolean("BackgroundVisible", text_background.visible);
+	//to_save->SetColor("BackgroundColor", text_background.color);
+	//to_save->SetBoolean("BackgroundVisible", text_background.visible);
 }
 
 void ComponentText::LoadComponent(JSONArraypack* to_load)
@@ -655,8 +655,8 @@ void ComponentText::LoadComponent(JSONArraypack* to_load)
 	width = to_load->GetNumber("Width");
 	int aux_type = (int)to_load->GetNumber("Align");
 	align = (TextAlign)aux_type;
-	text_background.color = to_load->GetColor("BackgroundColor");
-	text_background.visible = to_load->GetBoolean("BackgroundVisible");
+	//text_background.color = to_load->GetColor("BackgroundColor");
+	//text_background.visible = to_load->GetBoolean("BackgroundVisible");
 
 	u64 fontID = std::stoull(to_load->GetString("FontID"));
 	if (fontID != 0) {
@@ -714,10 +714,10 @@ void ComponentText::GenerateVAOVBO()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
+	/*glBindBuffer(GL_ARRAY_BUFFER, text_background.id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 3, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);*/
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
