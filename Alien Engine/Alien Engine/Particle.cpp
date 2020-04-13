@@ -205,7 +205,7 @@ void Particle::Draw()
 	if (owner->material != nullptr && p_material != nullptr)
 	{
 
-		//owner->DeactivateLight();
+		owner->DeactivateLight();
 
 		// ---- TEXTCOORD BUFFER ----- //
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -231,8 +231,6 @@ void Particle::Draw()
 	}
 	owner->ActivateLight();
 	
-
-
 
 	// ----- DRAW QUAD ------ //
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -279,7 +277,7 @@ void Particle::Orientate(ComponentCamera* camera)
 		break;
 
 	case BillboardType::NONE:
-
+		particleInfo.rotation = Quat::identity();
 		break;
 
 	default:
@@ -303,10 +301,7 @@ void Particle::InterpolateValues(float dt)
 		t += rateToLerp * dt;
 
 		if (owner->material != nullptr && p_material != nullptr)
-		{
-			//float a = particleInfo.color.w;
 			p_material->color = float4::Lerp(startInfo.color, endInfo.color, t);
-		}
 		else
 			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 

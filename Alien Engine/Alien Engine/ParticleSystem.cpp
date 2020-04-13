@@ -227,7 +227,6 @@ void ParticleSystem::DrawParticles()
 	// Debugging drawing points in particles Position
 	//DrawPointsForParticles();
 
-	RenderLight();
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
 
@@ -241,6 +240,7 @@ void ParticleSystem::DrawParticles()
 
 	}
 	
+	RenderLight();
 
 }
 
