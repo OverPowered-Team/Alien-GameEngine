@@ -3,6 +3,8 @@
 #include "ComponentPhysics.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
+
+#include "ImGuizmos/ImGuizmo.h"
 #include "GameObject.h"
 #include "Event.h"
 #include "Time.h"
@@ -31,18 +33,46 @@ ComponentPhysics::~ComponentPhysics()
 
 void ComponentPhysics::Update()
 {
-	if (Time::IsPlaying())
+
+	if (!Time::IsPlaying() || ImGuizmo::IsUsing())
+	{
+		PxTransform trans(F4X4_TO_PXTRANS(transform->GetGlobalMatrix()));
+		actor->setGlobalPose(trans);
+	}
+	else
 	{
 		PxTransform trans = actor->getGlobalPose();
 		transform->SetGlobalPosition(PXVEC3_TO_F3(trans.p));
 		transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
 	}
-	else
+
+	if (is_dynamic)
 	{
-		PxTransform trans(F4X4_TO_PXTRANS(transform->GetGlobalMatrix()));
-		actor->setGlobalPose(trans);
+		bool is_using_gizmo = is_dynamic && ImGuizmo::IsUsing() && game_object_attached->IsSelected();
+		PxRigidDynamic* dyn = (PxRigidDynamic*)actor;
+
+		if (gizmo_selected)
+		{
+			if (!is_using_gizmo)
+			{
+				dyn->wakeUp();
+				gizmo_selected = false;
+			}
+			else
+			{
+				dyn->putToSleep();
+			}
+
+		}
+		else
+		{
+			if (is_using_gizmo)
+			{
+				gizmo_selected = true;
+			}
+		}
 	}
-	PxTransform trans;
+
 }
 
 void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
@@ -138,7 +168,8 @@ void ComponentPhysics::UpdateBody()
 		App->physx->RemoveBody(actor);
 	}
 
-	actor = App->physx->CreateBody(transform->GetGlobalMatrix(), (rigid_body != nullptr));
+	is_dynamic = (rigid_body != nullptr);
+	actor = App->physx->CreateBody(transform->GetGlobalMatrix(), is_dynamic);
 
 	for (ComponentCollider* collider : colliders)
 		actor->attachShape(*collider->shape);

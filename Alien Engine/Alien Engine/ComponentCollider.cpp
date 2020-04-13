@@ -8,11 +8,10 @@
 #include "ComponentPhysics.h"
 #include "ComponentScript.h"
 #include "ComponentMesh.h"
-#include "Time.h"
 #include "GameObject.h"
 #include "ReturnZ.h"
 #include "Alien.h"
-#include "mmgr/mmgr.h"
+#include "Time.h"
 
 ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 {

@@ -40,6 +40,8 @@ private:
 protected:
 
 	bool is_dynamic = false;
+	bool gizmo_selected = false;
+
 	ComponentTransform*			  transform = nullptr;
 	std::list<ComponentCollider*> colliders;
 	ComponentRigidBody*			  rigid_body = nullptr;
