@@ -27,6 +27,11 @@ PanelScene::PanelScene(const std::string& panel_name, const SDL_Scancode& key1_d
 	: Panel(panel_name, key1_down, key2_repeat, key3_repeat_extra)
 {
 	shortcut = App->shortcut_manager->AddShortCut("Panel Scene", key1_down, std::bind(&Panel::ChangeEnable, this), key2_repeat, key3_repeat_extra);
+	App->shortcut_manager->AddShortCut("Translate", SDL_SCANCODE_W, std::bind(&PanelScene::Translate, this));
+	App->shortcut_manager->AddShortCut("Rotate", SDL_SCANCODE_E, std::bind(&PanelScene::Rotate, this));
+	App->shortcut_manager->AddShortCut("Scale", SDL_SCANCODE_R, std::bind(&PanelScene::Scale, this));
+	App->shortcut_manager->AddShortCut("World Mode", SDL_SCANCODE_W, std::bind(&PanelScene::ChangeWorldMode, this), SDL_SCANCODE_LSHIFT);
+	App->shortcut_manager->AddShortCut("Local Mode", SDL_SCANCODE_L, std::bind(&PanelScene::ChangeLocalMode, this), SDL_SCANCODE_LSHIFT);
 }
 
 PanelScene::~PanelScene()
@@ -317,18 +322,6 @@ void PanelScene::GuizmosControls()
 		return;
 	}
 
-	if ((App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) && (App->input->GetMouseButton(SDL_BUTTON_RIGHT) != KEY_REPEAT)&& (App->input->GetKey(SDL_SCANCODE_LSHIFT) != KEY_REPEAT))
-	{
-		guizmo_operation = ImGuizmo::OPERATION::TRANSLATE;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
-	{
-		guizmo_operation = ImGuizmo::OPERATION::ROTATE;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		guizmo_operation = ImGuizmo::OPERATION::SCALE;
-	}
 	if ((App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT) && (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) && (App->input->GetMouseButton(SDL_BUTTON_RIGHT) != KEY_REPEAT))
 	{
 		guizmo_mode = ImGuizmo::MODE::WORLD;
@@ -339,4 +332,46 @@ void PanelScene::GuizmosControls()
 	}
 	
 
+}
+void PanelScene::ChangeWorldMode()
+{
+	if (ImGuizmo::IsUsing()) 
+	{
+		return;
+	}
+
+	if ((App->input->GetMouseButton(SDL_BUTTON_RIGHT) != KEY_REPEAT))
+	{
+		guizmo_mode = ImGuizmo::MODE::WORLD;
+	}
+}
+void PanelScene::ChangeLocalMode()
+{
+	if (ImGuizmo::IsUsing()) {
+		return;
+	}
+		guizmo_mode = ImGuizmo::MODE::LOCAL;
+}
+void PanelScene::Translate()
+{
+	if (ImGuizmo::IsUsing()) {
+		return;
+	}
+	if((App->input->GetMouseButton(SDL_BUTTON_RIGHT) != KEY_REPEAT) && (App->input->GetKey(SDL_SCANCODE_LSHIFT) != KEY_REPEAT))
+		guizmo_operation = ImGuizmo::OPERATION::TRANSLATE;
+}
+void PanelScene::Rotate()
+{
+	if (ImGuizmo::IsUsing()) {
+		return;
+	}
+		guizmo_operation = ImGuizmo::OPERATION::ROTATE;
+
+}
+void PanelScene::Scale()
+{
+	if (ImGuizmo::IsUsing()) {
+		return;
+	}
+	guizmo_operation = ImGuizmo::OPERATION::SCALE;
 }
