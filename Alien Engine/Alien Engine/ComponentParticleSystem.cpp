@@ -274,8 +274,11 @@ bool ComponentParticleSystem::DrawInspector()
 			// Initial State || Final State
 			if (ImGui::TreeNodeEx("Start State", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				if(particleSystem->material != nullptr)
-					ImGui::ColorPicker4("Color", (float*)&particleSystem->material->shaderInputs.particleShaderProperties.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
+				if (particleSystem->material != nullptr) {
+
+					if(ImGui::ColorPicker4("Color", (float*)&particleSystem->particleInfo.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview))
+						particleSystem->material->color = particleSystem->particleInfo.color;
+				}
 				else
 					ImGui::ColorPicker4("Color", (float*)&particleSystem->particleInfo.color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
 
@@ -308,7 +311,7 @@ bool ComponentParticleSystem::DrawInspector()
 				if (ImGui::TreeNodeEx("Final State", ImGuiTreeNodeFlags_DefaultOpen))
 				{
 					if (particleSystem->material != nullptr)
-						ImGui::ColorPicker4("Color", (float*)&particleSystem->material->shaderInputs.particleShaderProperties.end_color,
+						ImGui::ColorPicker4("Color", (float*)&particleSystem->endInfo.color,
 							ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview);
 					else
 						ImGui::ColorPicker4("Color", (float*)&particleSystem->endInfo.color,
@@ -912,6 +915,8 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Emmitter.Shape", (int)particleSystem->emmitter.GetShape());
 	//Zone
 	to_save->SetNumber("Emmitter.Zone", (int)particleSystem->emmitter.GetZone());
+	//Distance
+	to_save->SetNumber("Emmitter.Distance", particleSystem->emmitter.GetDistance());
 	// Radius
 	to_save->SetNumber("Emmitter.Radius", particleSystem->emmitter.GetRadius());
 	// OutterRadius
@@ -1055,6 +1060,8 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->emmitter.SetShape((Emmitter_Shape)(int)to_load->GetNumber("Emmitter.Shape"));
 	//Zone
 	particleSystem->emmitter.SetZone((Emmitter_Zone)(int)to_load->GetNumber("Emmitter.Zone"));
+	//Distance
+	particleSystem->emmitter.SetDistance(to_load->GetNumber("Emmitter.Distance"));
 	// Radius
 	particleSystem->emmitter.SetRadius(to_load->GetNumber("Emmitter.Radius"));
 	// OutterRadius

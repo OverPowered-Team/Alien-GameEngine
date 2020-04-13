@@ -24,9 +24,9 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
 
-		p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
+		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
-		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;
+		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
 	}
 
 }
@@ -302,8 +302,11 @@ void Particle::InterpolateValues(float dt)
 	{
 		t += rateToLerp * dt;
 
-		if(owner->material != nullptr && p_material != nullptr)
-			p_material->shaderInputs.particleShaderProperties.color = float3::Lerp(p_material->shaderInputs.particleShaderProperties.start_color, p_material->shaderInputs.particleShaderProperties.end_color, t);
+		if (owner->material != nullptr && p_material != nullptr)
+		{
+			//float a = particleInfo.color.w;
+			p_material->color = float4::Lerp(startInfo.color, endInfo.color, t);
+		}
 		else
 			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 
