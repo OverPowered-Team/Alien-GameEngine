@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "ReverbZone",
-            "UsesAlien": true
-        }
-    ]
-}
