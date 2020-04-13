@@ -57,7 +57,7 @@ update_status ModuleCamera3D::Update(float dt)
 
 	speed = camera_speed * dt;
 	zoom_speed = camera_zoom_speed * dt;
-	mouse_speed = camera_mouse_speed * dt;
+	
 
 	mouse_motion_x = -App->input->GetMouseXMotion();
 	mouse_motion_y = App->input->GetMouseYMotion();
@@ -222,7 +222,7 @@ void ModuleCamera3D::Zoom()
 
 void ModuleCamera3D::Rotation(float dt)
 {	
-	float rotation_speed = 15.f * dt;
+	float rotation_speed = camera_rotation_speed * dt;
 
 	final_yaw += mouse_motion_x * rotation_speed;
 	final_pitch += mouse_motion_y * rotation_speed;
@@ -434,7 +434,7 @@ void ModuleCamera3D::Rotate(float yaw, float pitch)
 
 void ModuleCamera3D::Orbit(float dt)
 {
-	float rotation_speed = 10.f * dt;
+	float rotation_speed =	camera_orbit_speed * dt;
 	float yaw = mouse_motion_x * rotation_speed;
 	float pitch = mouse_motion_y * rotation_speed;
 	float distance = (fake_camera->frustum.pos - reference).Length();

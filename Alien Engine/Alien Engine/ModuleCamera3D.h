@@ -39,7 +39,8 @@ public:
 	LineSegment ray;
 	float camera_speed = 30.0f;
 	float camera_zoom_speed = 100.0f;
-	float camera_mouse_speed = 10.0f;
+	float camera_orbit_speed = 10.0f;
+	float camera_rotation_speed = 15.0f;
 
 	ComponentCamera* fake_camera = nullptr;
 
@@ -57,7 +58,7 @@ private:
 
 	float speed = 0.f;
 	float zoom_speed = 0.f;
-	float mouse_speed = 0.f;
+	//float mouse_speed = 0.f;
 
 	GameObject* looking_at = nullptr;
 	
