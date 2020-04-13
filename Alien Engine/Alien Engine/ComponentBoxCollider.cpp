@@ -1,3 +1,5 @@
+#include "Application.h"
+#include "ComponentPhysics.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentRigidBody.h"
 #include "ComponentTransform.h"
@@ -11,74 +13,35 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 {
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
+	shape = App->physx->CreateShape(PxBoxGeometry( .5f ,.5f , .5f ));
 
-	// More useful if its called externaly
-	Init();
-}
-
-void ComponentBoxCollider::SetCenter(float3 value)
-{
-	center = value;
-	final_center = center.Mul(final_size);
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 }
 
 void ComponentBoxCollider::SetSize(const float3 value)
 {
-	if (!value.Equals(size))
-	{
-		size = value;
-		UpdateShape();
-	}
+	if (value.Equals(size)) return;
+	size = value;
+	PxBoxGeometry geo(F3_TO_PXVEC3(size * 0.5f));
+	physics->RemoveCollider(this);
+	shape->setGeometry(geo);
+	physics->AddCollider(this);
 }
+
 
 void ComponentBoxCollider::DrawSpecificInspector()
 {
 	float3 current_size = size;
 
-	ImGui::Title("Size", 1);			ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX);
+	ImGui::Title("Size", 1);		
+	if (ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
+		SetSize(current_size);
+	};
 
-	SetSize(current_size);
 }
-
-//float3 t = { transform->global_transformation[0][0], transform->global_transformation[1][1], transform->global_transformation[2][2] };
-//float3 final_size = CheckInvalidCollider(size.Mul(t)) * 0.5f;
 
 void ComponentBoxCollider::CreateDefaultShape()
 {
-	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
-
-	if (mesh != nullptr)
-	{
-		center = mesh->local_aabb.CenterPoint();
-		size = mesh->local_aabb.Size();
-	}
-	else
-	{
-		size = float3::one();
-		center = float3::zero();
-	}
-
-	UpdateShape();
-}
-
-void ComponentBoxCollider::UpdateShape()
-{
-	if (shape != nullptr)
-	{
-		delete shape;
-	}
-
-	final_size = size.Mul(transform->GetGlobalScale());
-	final_center = transform->GetGlobalMatrix().MulPos(center);
-
-	shape = new btBoxShape(ToBtVector3(final_size.Abs() * 0.5f));
-
-	if (aux_body) 
-		aux_body->setCollisionShape(shape);
-	if (detector) 
-		detector->setCollisionShape(shape);
-
-	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
 void ComponentBoxCollider::Clone(Component* clone)
@@ -86,7 +49,6 @@ void ComponentBoxCollider::Clone(Component* clone)
 	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
 	center = box_clone->GetCenter();
 	size = box_clone->GetSize();
-	UpdateShape();
 }
 
 void ComponentBoxCollider::Reset()
@@ -105,9 +67,4 @@ void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
 	SetSize(to_load->GetFloat3("Size"));
-}
-
-float3 ComponentBoxCollider::CheckInvalidCollider(float3 size)
-{
-	return size.Max(float3(0.01, 0.01, 0.01));
 }

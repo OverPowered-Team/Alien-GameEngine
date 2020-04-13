@@ -23,7 +23,6 @@ public:
 	};
 
 	ComponentCapsuleCollider(GameObject* go);
-	ComponentCapsuleCollider(GameObject* go, bool internal_collider);
 
 	void SetRadius(float radius);
 	float GetRadius() { return radius; }
@@ -43,8 +42,6 @@ private:
 
 private:
 
-	float final_radius = 0.5f;
-	float final_height = 1.f;
 	float radius = 0.5f;
 	float height = 1.f;
 

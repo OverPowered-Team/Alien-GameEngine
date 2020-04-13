@@ -285,10 +285,8 @@ void ModuleRenderer3D::RenderCircleAroundX(const float& x, const float& y, const
 	EndDebugDraw();
 }
 
-void ModuleRenderer3D::DebugDrawBox(const float4x4& transform, const float3& size, const float3& color) const
+void ModuleRenderer3D::DebugDrawBox(const float4x4& transform, const float3& half_size, const float3& color) const
 {
-	float3 half_size = size.Mul(0.5f);
-
 	glPushMatrix();
 	glMultMatrixf(transform.Transposed().ptr());
 	BeginDebugDraw(float4(color.x, color.y, color.z, 1.0f));
@@ -360,13 +358,12 @@ void ModuleRenderer3D::DebugDrawSphere(const float4x4& transform, float radius, 
 	glPopMatrix();
 }
 
-void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius, float height, const float3& color) const
+void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius, float half_height, const float3& color) const
 {
 	glPushMatrix();
 	glMultMatrixf(transform.Transposed().ptr());
 	BeginDebugDraw(float4(color.x, color.y, color.z, 1.0f));
 
-	float half_height = height * 0.5f;
 	float delta_amgle = 360.0f / CIRCLE_SIDES;
 	float half_delta_angle = 180.f / HALF_CIRCLE_SIDES;
 	float curr_angle = 0.f;
@@ -382,16 +379,16 @@ void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius,
 	glEnd();
 
 	// Circle X-Y 
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < (int)HALF_CIRCLE_SIDES; ++i) {
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i <= (int)HALF_CIRCLE_SIDES; ++i) {
 		curr_angle = half_delta_angle * i;
 		glVertex3f(radius * cosf(DEGTORAD * curr_angle), radius * sinf(DEGTORAD * curr_angle) + half_height, 0.0f);
 	}
 	glEnd();
 
 	// Circle Y-Z 
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < (int)HALF_CIRCLE_SIDES; ++i) {
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i <= (int)HALF_CIRCLE_SIDES; ++i) {
 		curr_angle = half_delta_angle * i;
 		glVertex3f(0.0f, radius * sinf(DEGTORAD * curr_angle) + half_height, radius * cosf(DEGTORAD * curr_angle));
 	}
@@ -409,16 +406,16 @@ void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius,
 	glEnd();
 
 	// Circle X-Y 
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < (int)HALF_CIRCLE_SIDES; ++i) {
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i <= (int)HALF_CIRCLE_SIDES; ++i) {
 		curr_angle = 180.F + half_delta_angle * i;
 		glVertex3f(radius * cosf(DEGTORAD * curr_angle), radius * sinf(DEGTORAD * curr_angle) - half_height, 0.0f);
 	}
 	glEnd();
 
 	// Circle Y-Z 
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < (int)HALF_CIRCLE_SIDES; ++i) {
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i <= (int)HALF_CIRCLE_SIDES; ++i) {
 		curr_angle = 180.F + half_delta_angle * i;
 		glVertex3f(0.0f, radius * sinf(DEGTORAD * curr_angle) - half_height, radius * cosf(DEGTORAD * curr_angle));
 	}
@@ -431,7 +428,7 @@ void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius,
 	glVertex3f(0.f, half_height, -radius);
 	glVertex3f(0.f, -half_height, -radius);
 	glVertex3f(0.f, half_height, radius);
-	glVertex3f(0.f, half_height, radius);
+	glVertex3f(0.f, -half_height, radius);
 	glVertex3f(-radius, half_height, 0.f);
 	glVertex3f(-radius, -half_height, 0.f);
 	glVertex3f(radius, half_height, 0.f);

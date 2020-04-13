@@ -17,26 +17,23 @@ public:
 
 	ComponentBoxCollider(GameObject* go);
 
-	void SetCenter(float3 center);
 	void SetSize(const float3 size);
 	float3 GetSize() { return size; }
 
 private:
 
-	float3 CheckInvalidCollider(float3 size);
-	void DrawSpecificInspector();
+	void CreateDefaultShape();
 
-	void Clone(Component* clone);
-	void Reset();
+	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
-	
-	void CreateDefaultShape();
-	void UpdateShape();
+	void Clone(Component* clone);
+	void Reset();
+
+
 
 private:
 
-	float3 final_size = float3::zero();
 	float3 size = float3::one();
 };
 

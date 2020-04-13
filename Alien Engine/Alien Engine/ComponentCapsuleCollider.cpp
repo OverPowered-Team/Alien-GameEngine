@@ -1,8 +1,7 @@
 #include "ComponentCapsuleCollider.h"
 #include "ComponentTransform.h"
 #include "ComponentRigidBody.h"
-#include "ComponentMesh.h"
-#include "GameObject.h"
+
 #include "imgui/imgui.h"
 #include "mmgr/mmgr.h"
 
@@ -11,27 +10,16 @@ ComponentCapsuleCollider::ComponentCapsuleCollider(GameObject* go) : ComponentCo
 	name.assign("Capsule Collider");
 	type = ComponentType::CAPSULE_COLLIDER;
 	capsule_type = CapsuleType::Y;
-
-	// More useful if its called externaly
-	Init();
 }
 
 void ComponentCapsuleCollider::SetRadius(float value)
 {
-	if (radius != value)
-	{
-		radius = value;
-		UpdateShape();
-	}
+
 }
 
 void ComponentCapsuleCollider::SetHeight(float value)
 {
-	if (height != value)
-	{
-		height = value;
-		UpdateShape();
-	}
+
 }
 
 void ComponentCapsuleCollider::DrawSpecificInspector()
@@ -89,95 +77,93 @@ void ComponentCapsuleCollider::LoadComponent(JSONArraypack* to_load)
 	radius = to_load->GetNumber("Radius");
 	height = to_load->GetNumber("Height");
 	capsule_type = (CapsuleType)(int)to_load->GetNumber("CapsuleType");
-
-	UpdateShape();
 }
 
 void ComponentCapsuleCollider::CreateDefaultShape()
 {
-	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+	//ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
 
-	if (mesh != nullptr)
-	{
-		float3 scale = transform->GetGlobalScale();
-		float3 size = mesh->local_aabb.Size();
+	//if (mesh != nullptr)
+	//{
+	//	float3 scale = transform->GetGlobalScale();
+	//	float3 size = mesh->local_aabb.Size();
 
-		switch (capsule_type)
-		{
-		case ComponentCapsuleCollider::CapsuleType::X:
-			height = size.x;
-			radius = math::Max(size.z, size.y) * 0.5f;
-			break;
-		case ComponentCapsuleCollider::CapsuleType::Y:
-			height = size.y;
-			radius = math::Max(size.z, size.x) * 0.5f;
-			break;
-		case ComponentCapsuleCollider::CapsuleType::Z:
-			height = size.z;
-			radius = math::Max(size.y, size.x) * 0.5f;
-			break;
-		}
+	//	switch (capsule_type)
+	//	{
+	//	case ComponentCapsuleCollider::CapsuleType::X:
+	//		height = size.x;
+	//		radius = math::Max(size.z, size.y) * 0.5f;
+	//		break;
+	//	case ComponentCapsuleCollider::CapsuleType::Y:
+	//		height = size.y;
+	//		radius = math::Max(size.z, size.x) * 0.5f;
+	//		break;
+	//	case ComponentCapsuleCollider::CapsuleType::Z:
+	//		height = size.z;
+	//		radius = math::Max(size.y, size.x) * 0.5f;
+	//		break;
+	//	}
 
-		center = mesh->local_aabb.CenterPoint();
-	}
-	else
-	{
-		center = float3::zero();
-		height = 1.f;
-		radius = 0.5f;
-	}
+	//	center = mesh->local_aabb.CenterPoint();
+	//}
+	//else
+	//{
+	//	center = float3::zero();
+	//	height = 1.f;
+	//	radius = 0.5f;
+	//}
 
-	UpdateShape();
+	//UpdateShape();
 }
 
 void ComponentCapsuleCollider::UpdateShape()
 {
-	if (shape != nullptr)
-	{
-		delete shape;
-	}
+	//if (shape != nullptr)
+	//{
+	//	delete shape;
+	//}
 
-	float3 scale = transform->GetGlobalScale();
+	//float3 scale = transform->GetGlobalScale();
 
-	final_height = height;
-	final_radius = radius;
-	final_center = center;
+	//final_height = height;
+	//final_radius = radius;
+	//final_center = center;
 
-	switch (capsule_type)
-	{
-	case ComponentCapsuleCollider::CapsuleType::X:
-		final_height *= scale.x;
-		final_radius *= math::Max(scale.z, scale.y);
-		break;
-	case ComponentCapsuleCollider::CapsuleType::Y:
-		final_height *= scale.y;
-		final_radius *= math::Max(scale.z, scale.x);
-		break;
-	case ComponentCapsuleCollider::CapsuleType::Z:
-		final_height *= scale.z;
-		final_radius *= math::Max(scale.x, scale.y);
-		break;
-	}
+	//switch (capsule_type)
+	//{
+	//case ComponentCapsuleCollider::CapsuleType::X:
+	//	final_height *= scale.x;
+	//	final_radius *= math::Max(scale.z, scale.y);
+	//	break;
+	//case ComponentCapsuleCollider::CapsuleType::Y:
+	//	final_height *= scale.y;
+	//	final_radius *= math::Max(scale.z, scale.x);
+	//	break;
+	//case ComponentCapsuleCollider::CapsuleType::Z:
+	//	final_height *= scale.z;
+	//	final_radius *= math::Max(scale.x, scale.y);
+	//	break;
+	//}
 
-	switch (capsule_type)
-	{
-	case ComponentCapsuleCollider::CapsuleType::X:
-		shape = new btCapsuleShapeX(final_radius, final_height);
-		break;
-	case ComponentCapsuleCollider::CapsuleType::Y:
-		shape = new btCapsuleShape(final_radius, final_height);
-		break;
-	case ComponentCapsuleCollider::CapsuleType::Z:
-		shape = new btCapsuleShapeZ(final_radius, final_height);
-		break;
-	}
+	//switch (capsule_type)
+	//{
+	//case ComponentCapsuleCollider::CapsuleType::X:
+	//	shape = new btCapsuleShapeX(final_radius, final_height);
+	//	break;
+	//case ComponentCapsuleCollider::CapsuleType::Y:
+	//	shape = new btCapsuleShape(final_radius, final_height);
+	//	break;
+	//case ComponentCapsuleCollider::CapsuleType::Z:
+	//	shape = new btCapsuleShapeZ(final_radius, final_height);
+	//	break;
+	//}
 
-	if (aux_body)
-		aux_body->setCollisionShape(shape);
-	if (detector)
-		detector->setCollisionShape(shape);
+	//if (aux_body)
+	//	aux_body->setCollisionShape(shape);
+	//if (detector)
+	//	detector->setCollisionShape(shape);
 
-	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
+	//if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }
 
 

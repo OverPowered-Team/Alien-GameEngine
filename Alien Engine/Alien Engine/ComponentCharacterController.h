@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include "ComponentBasePhysic.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
 
@@ -14,7 +14,7 @@ class btKinematicCharacterController;
 class btPairCachingGhostObject;
 class Alien;
 
-class __declspec(dllexport) ComponentCharacterController : public Component
+class __declspec(dllexport) ComponentCharacterController : public ComponentBasePhysic
 {
 	friend class GameObject;
 	friend class ModuleObjects;
@@ -61,10 +61,6 @@ protected:
 	bool DrawInspector();
 
 	void HandleAlienEvent(const AlienEvent& e);
-
-	void Reset();
-	void Clone(Component* clone) {}
-	void SetComponent(Component* component) {}
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 

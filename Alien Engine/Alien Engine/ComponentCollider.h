@@ -2,41 +2,43 @@
 
 #include <map>
 #include <list>
-#include "Component.h"
+#include "ComponentBasePhysic.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 #include "Event.h"
+#include <PxShape.h>
 
 class GameObject;
-class ModulePhysics;
-class ComponentMesh;
 class ComponentRigidBody;
 class ComponentVehicle;
 class ComponentTransform;
+class ComponentPhysics;
 class Alien;
 
-class __declspec(dllexport) ComponentCollider : public Component
-{
-	friend class GameObject;
-	friend class ReturnZ;
-	friend class CompZ;
+using namespace physx;
 
+class __declspec(dllexport) ComponentCollider : public ComponentBasePhysic
+{
 	friend class ModuleObjects;
-	friend class ModulePhysics;
 	friend class ModulePhysX;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
+	friend class ComponentPhysics;
+
+	friend class GameObject;
+	friend class ReturnZ;
+	friend class CompZ;
 	friend class MyDispatcher;
 public:
 
 	ComponentCollider(GameObject* go);
 	virtual ~ComponentCollider();
 
-	// Colliders values
 
-	virtual void SetCenter(float3 center);
+	// Colliders values
+	void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
+	void SetRotation(const float3& value);
+	float3 GetRotation() { return rotation; }
 	void SetIsTrigger(bool is_trigger);
 	bool GetIsTrigger() { return is_trigger; }
 	void SetBouncing(const float bouncing);
@@ -48,12 +50,6 @@ public:
 
 protected:
 
-	float3 GetWorldCenter();
-
-	void AddToWorld();
-	void RemoveFromWorld();
-
-	void Init();
 	void Update();
 	void OnEnable();
 	void OnDisable();
@@ -70,37 +66,24 @@ protected:
 	virtual void LoadComponent(JSONArraypack* to_load);
 
 	virtual void CreateDefaultShape() {};
-	virtual void UpdateShape() {} 	// Adjust shape to scale and other factors
-	virtual void SetScale(float3 scale);
 
 protected:
 
-	std::string name = "Collider";
-	ComponentTransform* transform = nullptr;
-	ComponentRigidBody* rigid_body = nullptr;
-
 	float3 center = float3::zero();
-	float3 final_center = float3::zero();
-	float3 last_scale = float3::zero();
+	float3 rotation = float3::zero();
 	bool is_trigger = false;
+
 	float bouncing = 0.f;
 	float friction = 0.f;
 	float angular_friction = 0.f;
 
-	// Collider shape used in collision simulation
-	btCollisionShape* shape = nullptr;
-	// Used when GameObject has notrigid body in run time
-	btRigidBody* aux_body = nullptr;
-	// Detection body 
-	btPairCachingGhostObject* detector = nullptr;
-
-	// Alien Script 
 	std::list<ComponentScript*> alien_scripts;
-	// Collisions
 	std::map<ComponentCollider*, bool> collisions;
 
-	bool first_frame = false;
-	bool internal_collider = false;
-	bool added_to_world = false;
 	int  layer = 0;
+
+	// ----------------------------------------------------------------
+
+	PxShape* shape = nullptr;
+
 };

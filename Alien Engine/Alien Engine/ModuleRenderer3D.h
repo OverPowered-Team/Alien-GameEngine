@@ -34,10 +34,10 @@ public:
 	void RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
 	void RenderCircleAroundX(const float& x, const float& y, const float& z, const float& radius, const float& line_width = 2.0f, const int& segments = 50);
 
-	void DebugDrawBox(const float4x4& transform, const float3& size, const float3& color = float3::zero()) const;
-	void DebugDrawSphere(const float4x4& transform, float radius, const float3& color = float3::zero()) const;
-	void DebugDrawCapsule(const float4x4& transform,  float radius, float height, const float3& color = float3::zero()) const;
-	void DebugDrawMesh(const float4x4& transform, float* vertices, uint num_vertices,  uint* indices, uint num_indices , const float3 & color = float3::zero()) const;
+	void DebugDrawBox(const float4x4& transform, const float3& size, const float3& color = float3::one()) const;
+	void DebugDrawSphere(const float4x4& transform, float radius, const float3& color = float3::one()) const;
+	void DebugDrawCapsule(const float4x4& transform,  float radius, float height, const float3& color = float3::one()) const;
+	void DebugDrawMesh(const float4x4& transform, float* vertices, uint num_vertices,  uint* indices, uint num_indices , const float3 & color = float3::one()) const;
 
 	ComponentCamera* GetCurrentMainCamera();
 	

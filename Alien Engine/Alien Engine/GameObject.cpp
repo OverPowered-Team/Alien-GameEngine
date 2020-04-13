@@ -1572,7 +1572,7 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item) {
-		if (*item != nullptr) {
+		if (*item != nullptr && (*item)->serialize) {
 			(*item)->SaveComponent(components_to_save);
 			if ((*item) != components.back())
 				components_to_save->SetAnotherNode();

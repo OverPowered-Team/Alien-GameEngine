@@ -23,16 +23,13 @@ public:
 
 private:
 
-	void DrawSpecificInspector();
-
-	void Reset();
+	void DrawSpecificInspector();;
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
 	void CreateDefaultShape();
-	void UpdateShape();
 
 private:
-	float final_radius = 0.5f;
+
 	float radius = 0.5f;
 };

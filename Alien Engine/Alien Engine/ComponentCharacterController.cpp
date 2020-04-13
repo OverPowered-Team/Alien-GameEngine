@@ -13,37 +13,14 @@
 #include "ModuleInput.h"
 #include "mmgr/mmgr.h"
 
-ComponentCharacterController::ComponentCharacterController(GameObject* go) : Component(go)
+ComponentCharacterController::ComponentCharacterController(GameObject* go) : ComponentBasePhysic(go)
 {
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
 	transform = go->GetComponent<ComponentTransform>();
 
-	shape = new btCapsuleShape(character_radius, character_height);
-
-	body = new btPairCachingGhostObject();
-	body->setCollisionShape(shape);
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CHARACTER_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
-	body->setActivationState(DISABLE_DEACTIVATION);
-	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
-
-	controller = new btKinematicCharacterController(body, (btConvexShape*)shape, 0.5);
-	controller->setUp(btVector3(0.f, 1.f, 0.f));
-	controller->setGravity(btVector3(0.f, -gravity, 0.f));
-	jump_speed = controller->getJumpSpeed();
-
-	App->physics->world->addCollisionObject(body, btBroadphaseProxy::CharacterFilter | btBroadphaseProxy::StaticFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::CharacterFilter | btBroadphaseProxy::DefaultFilter);
-	App->physics->AddAction(controller);
-
-	detector = new btPairCachingGhostObject();
-	detector->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
-	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	detector->setCollisionShape(shape);
-	App->physics->AddDetector(detector);
-
 	collider = new ComponentCollider(go);
-	collider->internal_collider = true;
-	collider->detector = detector;
+
 	detector->setUserPointer(collider);
 	body->setUserPointer(collider);
 }
@@ -264,12 +241,6 @@ void ComponentCharacterController::DrawScene()
 void ComponentCharacterController::HandleAlienEvent(const AlienEvent& e)
 {
 	collider->HandleAlienEvent(e);
-}
-
-
-void ComponentCharacterController::Reset()
-{
-
 }
 
 

@@ -58,7 +58,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentCanvas;
 	friend class ComponentUI;
-	friend class ComponentPhysic;
+	friend class ComponentPhysics;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class ComponentCollider;
@@ -124,4 +124,5 @@ protected:
 	u64 ID = 0;
 	bool not_destroy = true;
 	const char* name = "";
+	bool serialize = true;
 };

@@ -669,8 +669,11 @@
     <ClInclude Include="UtilitiesPhysX.h">
       <Filter>Modules\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentPhysic.h">
-      <Filter>Components\Physics\Controllers</Filter>
+    <ClInclude Include="ComponentBasePhysic.h">
+      <Filter>Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentPhysics.h">
+      <Filter>Components\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2651,8 +2654,11 @@
     <ClCompile Include="UtilitiesPhysX.cpp">
       <Filter>Modules\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentPhysic.cpp">
-      <Filter>Components\Physics\Controllers</Filter>
+    <ClCompile Include="ComponentBasePhysic.cpp">
+      <Filter>Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentPhysics.cpp">
+      <Filter>Components\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,13 @@ using namespace physx;
 class ModulePhysX : public Module
 {
 	friend class ModuleObjects;
-	friend class ComponentPhysic;
+	friend class ComponentPhysics;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
+	friend class ComponentBasePhysic;
 
 public:
 
@@ -31,11 +37,13 @@ private:
 
 private:
 
-	void DrawCollider(const ComponentCollider& collider);
+	void DrawCollider(ComponentCollider* collider);
 	void DrawWorld();
 
 	PxRigidActor* CreateBody(const float4x4& transform, bool is_dynamic);
 	void RemoveBody(PxRigidActor* body);
+
+	PxShape* CreateShape(const PxGeometry& geometry);
 
 	// Delay Libraries -----------------------------------------
 

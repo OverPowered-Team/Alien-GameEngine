@@ -4,19 +4,22 @@
 #include "PxPhysicsAPI.h"
 #include <list>
 
-class __declspec(dllexport) ComponentPhysic : public Component
+class __declspec(dllexport) ComponentPhysics : public Component
 {
 	friend class GameObject;
 	friend class ModuleObjects;
 	friend class ModulePhysics;
 	friend class ModulePhysX;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
+	friend class ComponentTransform;
 
 public:
 
-	ComponentPhysic(GameObject* go);
-	virtual ~ComponentPhysic();
+	ComponentPhysics(GameObject* go);
+	virtual ~ComponentPhysics();
 
 private:
 
@@ -37,7 +40,7 @@ private:
 protected:
 
 	bool is_dynamic = false;
-
+	ComponentTransform*			  transform = nullptr;
 	std::list<ComponentCollider*> colliders;
 	ComponentRigidBody*			  rigid_body = nullptr;
 	physx::PxRigidActor*		  actor = nullptr;

@@ -41,7 +41,8 @@ class __declspec(dllexport) GameObject
 	friend class ComponentImage;
 	friend class ComponentSlider;
 
-	friend class ComponentPhysic;
+	friend class ComponentBasePhysic;
+	friend class ComponentPhysics;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
@@ -197,7 +198,8 @@ private:
 	Comp* GetComponent();
 	template <class Comp>
 	std::vector<Comp*> GetComponents();
-
+	template <class Comp>
+	const bool HasComponent() const;
 	template <class Comp>
 	const Comp* GetComponent() const;
 	template <class Comp>
@@ -352,3 +354,16 @@ inline const std::vector<Comp*> GameObject::GetComponents() const
 	}
 	return comps;
 }
+
+template<class Comp>
+inline const bool GameObject::HasComponent() const
+{
+	for (uint i = 0; i < components.size(); ++i) {
+		Comp* component = dynamic_cast<Comp*>(components[i]);
+		if (component != nullptr) {
+			return true;
+		}
+	}
+	return false;
+}
+

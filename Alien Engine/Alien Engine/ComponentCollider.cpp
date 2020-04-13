@@ -1,9 +1,11 @@
+#include "Globals.h"
 #include "Application.h"
 #include "ModulePhysics.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentCollider.h"
 #include "ComponentTransform.h"
 #include "ComponentRigidBody.h"
+#include "ComponentPhysics.h"
 #include "ComponentScript.h"
 #include "ComponentMesh.h"
 #include "Time.h"
@@ -12,128 +14,70 @@
 #include "Alien.h"
 #include "mmgr/mmgr.h"
 
-ComponentCollider::ComponentCollider(GameObject* go) : Component(go)
+ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 {
-	// GameObject Components 
-	transform = (transform == nullptr) ? game_object_attached->GetComponent<ComponentTransform>() : transform;
-	if(transform)
-		last_scale = transform->GetGlobalScale();
-
-	std::vector<ComponentScript*> scripts = game_object_attached->GetComponents<ComponentScript>();
-
+	std::vector<ComponentScript*> scripts = go->GetComponents<ComponentScript>();
 	for (ComponentScript* script : scripts)
-	{
 		if (script->need_alien == true)
-		{
 			alien_scripts.push_back(script);
-		}
-	}
 
 	// Default values 
 	center = float3::zero();
+
+	SetIsTrigger(false);
+	SetBouncing(0.1f);
+	SetFriction(0.5f);
+	SetAngularFriction(0.1f);
 }
 
 ComponentCollider::~ComponentCollider()
 {
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
-
-	if (internal_collider == false)
-	{
-		if (enabled == true)
-		{
-			if (rigid_body)
-			{
-				rigid_body->RemoveCollider();
-			}
-
-			App->physics->RemoveBody(aux_body);
-			App->physics->RemoveDetector(detector);
-		}
-
-		delete detector;
-		delete aux_body;
-		delete shape;
-	}
 }
-
-void ComponentCollider::Init()
-{
-	btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation());
-
-	// Create elements
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.F, nullptr, nullptr);
-	aux_body = new btRigidBody(rbInfo);
-	aux_body->setUserPointer(this);
-	aux_body->setWorldTransform(go_bullet_transform);
-	detector = new btPairCachingGhostObject();
-	detector->setUserPointer(this);
-	detector->setWorldTransform(go_bullet_transform);
-	detector->setCollisionFlags(detector->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Create shape 
-	CreateDefaultShape();
-	aux_body->setCollisionShape(shape);
-	detector->setCollisionShape(shape);
-
-	// Add to world
-	App->physics->AddBody(aux_body);
-	App->physics->AddDetector(detector);
-
-	// Search Rigid Body 
-	ComponentRigidBody* rb_found = game_object_attached->GetComponent<ComponentRigidBody>();
-	if (rb_found != nullptr && rb_found->IsEnabled())
-		rb_found->AddCollider(this);
-
-	// Default settings
-	SetIsTrigger(false);
-	SetBouncing(0.1f);
-	SetFriction(0.5f);
-	SetAngularFriction(0.1f);
-
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
-}
-
 
 // Colliders Functions --------------------------------
 
-void ComponentCollider::SetCenter(float3 value)
+void ComponentCollider::SetCenter(const float3& value)
 {
+	if (center.Equals(value)) return;
 	center = value;
-	float3 current_scale = transform->GetGlobalScale();
-	final_center = center.Mul(current_scale);
+	PxTransform trans = shape->getLocalPose();
+	trans.p = F3_TO_PXVEC3(center);
+	physics->RemoveCollider(this);
+	shape->setLocalPose(trans);
+	physics->AddCollider(this);
+}
+
+void ComponentCollider::SetRotation(const float3& value)
+{
+	if (rotation.Equals(value)) return;
+	rotation = value;
+	PxTransform trans = shape->getLocalPose();
+	float3 rad_rotation = DEGTORAD * rotation;
+	trans.q = QUAT_TO_PXQUAT( Quat::FromEulerXYZ(rad_rotation.x , rad_rotation.y, rad_rotation.z));
+	physics->RemoveCollider(this);
+	shape->setLocalPose(trans);
+	physics->AddCollider(this);
 }
 
 void ComponentCollider::SetIsTrigger(bool value)
 {
-	btRigidBody* current_body = (rigid_body) ? rigid_body->body : aux_body;
-	is_trigger = value;
-	(is_trigger)
-		? current_body->setCollisionFlags(current_body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE)
-		: current_body->setCollisionFlags(current_body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 }
 
 void ComponentCollider::SetBouncing(const float value)
 {
-	bouncing = math::Clamp(value, 0.f, 1.f);
-	(rigid_body) 
-		? rigid_body->body->setRestitution(bouncing)
-		: aux_body->setRestitution(bouncing);
+
 }
 
 void ComponentCollider::SetFriction(const float value)
 {
-	friction = value;
-	(rigid_body) 
-		? rigid_body->body->setFriction(friction)
-		: aux_body->setFriction(friction);
+
 }
 
 void ComponentCollider::SetAngularFriction(const float value)
 {
-	angular_friction = value;
-	(rigid_body) 
-		? rigid_body->body->setRollingFriction(angular_friction)
-		: aux_body->setRollingFriction(angular_friction);
+
 }
 
 void ComponentCollider::SaveComponent(JSONArraypack* to_save)
@@ -142,6 +86,7 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Type", (int)type);
 
 	to_save->SetFloat3("Center", center);
+	to_save->SetFloat3("Rotation", rotation);
 	to_save->SetBoolean("IsTrigger", is_trigger);
 	to_save->SetNumber("Bouncing", bouncing);
 	to_save->SetNumber("Friction", friction);
@@ -151,184 +96,124 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 {
 	enabled = to_load->GetBoolean("Enabled");
+
 	if (enabled == false)
 	{
 		OnDisable();
 	}
 
 	SetCenter(to_load->GetFloat3("Center"));
+	SetRotation(to_load->GetFloat3("Rotation"));
 	SetIsTrigger(to_load->GetBoolean("IsTrigger"));
-	SetBouncing( to_load->GetNumber("Bouncing"));
+	SetBouncing(to_load->GetNumber("Bouncing"));
 	SetFriction(to_load->GetNumber("Friction"));
-	SetAngularFriction( to_load->GetNumber("AngularFriction"));
-
-	UpdateShape();
-}
-
-void ComponentCollider::SetScale(float3 scale)
-{
-	UpdateShape();
+	SetAngularFriction(to_load->GetNumber("AngularFriction"));
 }
 
 void ComponentCollider::Update()
 {
-	float3 pos = transform->GetGlobalMatrix().MulPos(GetWorldCenter());
-	btTransform go_bullet_transform = ToBtTransform(GetWorldCenter(), transform->GetGlobalMatrix().RotatePart().RemoveScale2()); // New Method
-	//btTransform go_bullet_transform = ToBtTransform(transform->GetGlobalPosition() + GetWorldCenter(), transform->GetGlobalRotation()); // Old Method
 
-	if (internal_collider == false)
-	{
-		float3 current_scale = transform->GetGlobalScale();
-		if (!last_scale.Equals(current_scale))
-		{
-			last_scale = current_scale;
-			SetScale(last_scale);
-		}
-		
-		if (rigid_body == nullptr)
-		{
-			aux_body->setWorldTransform(go_bullet_transform);
-		}
-	}
-
-	
-	detector->setWorldTransform(go_bullet_transform);
-	detector->setActivationState(DISABLE_DEACTIVATION);
 
 	if (!alien_scripts.empty() && Time::IsPlaying())
 	{
-		if (first_frame == false)
+		for (auto& x : collisions)
 		{
-			first_frame = true;
-			return;
+			x.second = false;
 		}
 
-		if (first_frame == true)
+		ComponentCollider* coll = nullptr;// TODO: Get the collider 
+		std::map<ComponentCollider*, bool>::iterator search = collisions.find(coll);
+		if (search != collisions.end() && coll != nullptr)
 		{
-			int num_obj_inside = 0;
-			int test = 0;
-			num_obj_inside = detector->getNumOverlappingObjects(); //num_obj_inside is set to 0xcdcdcdcd
+			collisions[coll] = true;
 
-			for (auto& x : collisions)
+			for (ComponentScript* script : alien_scripts)
 			{
-				x.second = false;
-			}
-
-			for (int i = 0; i < num_obj_inside; ++i)
-			{
-				btCollisionObject* obj = detector->getOverlappingObject(i);
-				btPairCachingGhostObject* ghost = dynamic_cast<btPairCachingGhostObject*>(obj);
-				if (ghost)
+				Alien* alien = (Alien*)script->data_ptr;
+				try {
+					alien->OnTrigger(coll);
+				}
+				catch (...)
 				{
-					ComponentCollider* coll = (ComponentCollider*)ghost->getUserPointer();
-					std::map<ComponentCollider*, bool>::iterator search = collisions.find(coll);
-					if (search != collisions.end() && coll != nullptr)
-					{
-						collisions[coll] = true;
-
-						for (ComponentScript* script : alien_scripts)
-						{
-							Alien* alien = (Alien*)script->data_ptr;
-							try {
-								alien->OnTrigger(coll);
-							}
-							catch (...)
-							{
-								try {
-									LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER", alien->data_name);
-								}
-								catch (...) {
-									LOG_ENGINE("UNKNOWN ERROR IN SCRIPT WHEN CALLING ON TRIGGER");
-								}
-							}
-						}
+					try {
+						LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER", alien->data_name);
 					}
-					else
-					{
-						collisions[coll] = true;
-
-						for (ComponentScript* script : alien_scripts)
-						{
-							Alien* alien = (Alien*)script->data_ptr;
-							try {
-								alien->OnTriggerEnter(coll);
-							}
-							catch (...)
-							{
-								try {
-									LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER ENTER", alien->data_name);
-								}
-								catch (...) {
-									LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER ENTER");
-								}
-							}
-						}
+					catch (...) {
+						LOG_ENGINE("UNKNOWN ERROR IN SCRIPT WHEN CALLING ON TRIGGER");
 					}
-
-					++test;
 				}
 			}
+		}
+		else
+		{
+			collisions[coll] = true;
 
-			std::map<ComponentCollider*, bool>::iterator itr = collisions.begin();
-
-			while (itr != collisions.end())
+			for (ComponentScript* script : alien_scripts)
 			{
-				if (itr->second == false) {
-
-					for (ComponentScript* script : alien_scripts)
-					{
-						Alien* alien = (Alien*)script->data_ptr;
-						try {
-							alien->OnTriggerExit(itr->first);
-						}
-						catch (...)
-						{
-							try {
-								LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER EXIT", alien->data_name);
-							}
-							catch (...) {
-								LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER EXIT");
-							}
-						}
-					}
-
-					itr = collisions.erase(itr);
+				Alien* alien = (Alien*)script->data_ptr;
+				try {
+					alien->OnTriggerEnter(coll);
 				}
-				else {
-					++itr;
+				catch (...)
+				{
+					try {
+						LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER ENTER", alien->data_name);
+					}
+					catch (...) {
+						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER ENTER");
+					}
 				}
 			}
+		}
+
+		std::map<ComponentCollider*, bool>::iterator itr = collisions.begin();
+
+		while (itr != collisions.end())
+		{
+			if (itr->second == false) {
+
+				for (ComponentScript* script : alien_scripts)
+				{
+					Alien* alien = (Alien*)script->data_ptr;
+					try {
+						alien->OnTriggerExit(itr->first);
+					}
+					catch (...)
+					{
+						try {
+							LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER EXIT", alien->data_name);
+						}
+						catch (...) {
+							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER EXIT");
+						}
+					}
+				}
+
+				itr = collisions.erase(itr);
+			}
+			else {
+				++itr;
+			}
+
 		}
 	}
 }
 
 void ComponentCollider::OnEnable()
 {
-	App->physics->AddBody(aux_body);
-	App->physics->AddDetector(detector);
 
-	// Search Rigid Body 
-	ComponentRigidBody* rb = game_object_attached->GetComponent<ComponentRigidBody>();
-	(rb != nullptr) ? rb->AddCollider(this) : rb = nullptr;
 }
 
 void ComponentCollider::OnDisable()
 {
-	if (rigid_body)
-	{
-		rigid_body->RemoveCollider();
-	}
 
-	App->physics->RemoveBody(aux_body);
-	App->physics->RemoveDetector(detector); 
-	
 }
 
 void ComponentCollider::DrawScene()
 {
 	if (enabled == true && game_object_attached->IsSelected() && App->physics->debug_physics == false)
 	{
-		App->physics->DrawCollider(this);
+		App->physx->DrawCollider(this);
 	}
 }
 
@@ -355,12 +240,6 @@ bool ComponentCollider::DrawInspector()
 		else
 			OnEnable();
 	}
-
-	float3 current_center = center;
-	bool current_is_trigger = is_trigger;
-	float current_bouncing = bouncing;
-	float current_friction = friction;
-	float current_angular_friction = angular_friction;
 
 	ImGui::SameLine();
 
@@ -390,7 +269,15 @@ bool ComponentCollider::DrawInspector()
 			ImGui::EndCombo();
 		}
 
+		float3 current_center = center;
+		float3 current_rotation = rotation;
+		bool current_is_trigger = is_trigger;
+		float current_bouncing = bouncing;
+		float current_friction = friction;
+		float current_angular_friction = angular_friction;
+
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.05f)) { SetCenter(current_center); }
+		ImGui::Title("Rotation", 1);			if (ImGui::DragFloat3("##rotation", current_rotation.ptr(), 0.2f)) { SetRotation(current_rotation); }
 
 		DrawSpecificInspector();
 
@@ -454,19 +341,5 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 	default:
 		break;
 	}
-}
-
-float3 ComponentCollider::GetWorldCenter()
-{
-	return transform->GetGlobalMatrix().MulPos(center);
-}
-
-void ComponentCollider::AddToWorld()
-{
-
-}
-
-void ComponentCollider::RemoveFromWorld()
-{
 }
 

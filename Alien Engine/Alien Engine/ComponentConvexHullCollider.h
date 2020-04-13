@@ -21,25 +21,19 @@ public:
 
 private:
 
-	float3 CheckInvalidCollider(float3 size);
 	void DrawSpecificInspector();
 
 	void DrawScene();
-	void Clone(Component* clone);
-	void Reset();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
 	void CreateDefaultShape();
 	void UpdateShape();
-	void SetCenter(float3 value);
-	void SetScale(const float3 scale);
 
 private:
 
 	ComponentMesh* mesh = nullptr;
-	float3 final_size = float3::zero();
 	float3 size = float3::zero();
-	btShapeHull* hull = nullptr;
+
 
 };

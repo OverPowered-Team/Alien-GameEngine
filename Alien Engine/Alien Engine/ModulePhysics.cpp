@@ -12,6 +12,7 @@
 #include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 #include "ModuleInput.h"
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 
 ModulePhysics::ModulePhysics(bool start_enabled) : Module(start_enabled)
 {
@@ -185,32 +186,32 @@ ComponentCollider* ModulePhysics::RayCastClosest(math::Ray ray)
 
 std::vector<ComponentCollider*> ModulePhysics::SphereCast(float3 position, float radius)
 {
-	btSphereShape* shape = new btSphereShape(radius);
-	btGhostObject* ghost = new btGhostObject();
+	//btSphereShape* shape = new btSphereShape(radius);
+	//btGhostObject* ghost = new btGhostObject();
 	CastResult result;
 
-	ghost->setWorldTransform(btTransform(btQuaternion::getIdentity(), ToBtVector3(position)));
-	ghost->setCollisionShape(shape);
-	world->contactTest(ghost, result);
+	//ghost->setWorldTransform(btTransform(btQuaternion::getIdentity(), ToBtVector3(position)));
+	//ghost->setCollisionShape(shape);
+	//world->contactTest(ghost, result);
 
-	delete ghost;
-	delete shape;
+	//delete ghost;
+	//delete shape;
 
 	return result.hit_colliders;
 }
 
 std::vector<ComponentCollider*> ModulePhysics::BoxCast(float3 size ,float3 position, Quat rotation)
 {
-	btBoxShape* shape = new btBoxShape(ToBtVector3(size * 0.5f));
-	btGhostObject* ghost = new btGhostObject();
+	//btBoxShape* shape = new btBoxShape(ToBtVector3(size * 0.5f));
+	//btGhostObject* ghost = new btGhostObject();
 	CastResult result;
 
-	ghost->setWorldTransform(btTransform(ToBtQuaternion(rotation), ToBtVector3(position)));
-	ghost->setCollisionShape(shape);
-	world->contactTest(ghost, result);
+	//ghost->setWorldTransform(btTransform(ToBtQuaternion(rotation), ToBtVector3(position)));
+	//ghost->setCollisionShape(shape);
+	//world->contactTest(ghost, result);
 
-	delete ghost;
-	delete shape;
+	//delete ghost;
+	//delete shape;
 
 	return result.hit_colliders;
 }
@@ -220,9 +221,9 @@ void ModulePhysics::DrawCollider(ComponentCollider* collider)
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_FastWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	world->debugDrawObject(
-		((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform()
-		, collider->shape, btVector3(0.f, 1.f, 0.f));
+	//world->debugDrawObject(
+	//	((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform()
+	//	, collider->shape, btVector3(0.f, 1.f, 0.f));
 
 	ModuleRenderer3D::EndDebugDraw();
 }
@@ -232,24 +233,24 @@ void ModulePhysics::DrawConvexCollider(ComponentCollider* collider)
 	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
-	btTransform worldTransform = ((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform();
-	btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
+	//btTransform worldTransform = ((collider->rigid_body) ? collider->rigid_body->body : collider->aux_body)->getWorldTransform();
+	//btShapeHull* hull = static_cast<btShapeHull*>(collider->shape->getUserPointer());
 
-	if (hull == nullptr) return;
+	//if (hull == nullptr) return;
 
-	int num_indices = hull->numIndices();
-	btVector3 localScale = collider->shape->getLocalScaling();
-	for (int i = 0; i < num_indices; i += 3)
-	{
-		btVector3 v0 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i]] * localScale);
-		btVector3 v1 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 1]] * localScale);
-		btVector3 v2 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 2]] * localScale);
+	//int num_indices = hull->numIndices();
+	//btVector3 localScale = collider->shape->getLocalScaling();
+	//for (int i = 0; i < num_indices; i += 3)
+	//{
+	//	btVector3 v0 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i]] * localScale);
+	//	btVector3 v1 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 1]] * localScale);
+	//	btVector3 v2 = worldTransform * (hull->getVertexPointer()[hull->getIndexPointer()[i + 2]] * localScale);
 
-		btVector3 color = btVector3(0.f, 1.f, 0.f);
-		debug_renderer->drawLine(v0, v1, color);
-		debug_renderer->drawLine(v1, v2, color);
-		debug_renderer->drawLine(v0, v2, color);
-	}
+	//	btVector3 color = btVector3(0.f, 1.f, 0.f);
+	//	debug_renderer->drawLine(v0, v1, color);
+	//	debug_renderer->drawLine(v1, v2, color);
+	//	debug_renderer->drawLine(v0, v2, color);
+	//}
 
 	ModuleRenderer3D::EndDebugDraw();
 }

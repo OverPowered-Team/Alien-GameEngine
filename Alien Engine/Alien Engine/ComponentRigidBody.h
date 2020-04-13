@@ -1,7 +1,7 @@
 #ifndef _C_RIGID_BODY_H__
 #define  _C_RIGID_BODY_H__
 
-#include "Component.h"
+#include "ComponentBasePhysic.h"
 #include "ModulePhysics.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
@@ -10,7 +10,7 @@ class GameObject;
 class ComponentCollider;
 class ComponentCapsuleCollider;
 
-class __declspec(dllexport) ComponentRigidBody : public Component
+class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
 	friend class GameObject;
 	friend class ModulePhysics;
@@ -61,26 +61,16 @@ private:
 	void OnEnable();
 	void OnDisable();
 	bool DrawInspector();
-	void Reset();
-	void Clone(Component* clone);
+
+	void Reset(){}
+	void Clone(Component* clone) {}
 	void SaveComponent(JSONArraypack* config);
 	void LoadComponent(JSONArraypack* config);
 
-	void AddCollider(ComponentCollider* collider);
-	void UpdateCollider();
-	void RemoveCollider();
-	void UpdateBodyInertia();
-
 	void HandleAlienEvent(const AlienEvent& e);
-
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 
 private:
-	ComponentTransform* transform = nullptr;
-	ComponentCollider* collider = nullptr;
-
-	float3 velocity;
-	btVector3 inertia;
 
 	float3 force_to_apply[(uint)ForceMode::MAX];
 	float3 torque_to_apply[(uint)ForceMode::MAX];
@@ -92,11 +82,6 @@ private:
 	bool is_kinematic = false;
 	bool freeze_position[3] = { false, false, false };
 	bool freeze_rotation[3] = { false, false, false };
-
-	// Body used in physics simulation
-	btRigidBody* body = nullptr;
-	// Used when GameObejct has not a collider
-	btBoxShape* aux_shape = nullptr;
 };
 
 #endif // !_C_RIGID_BODY_H__

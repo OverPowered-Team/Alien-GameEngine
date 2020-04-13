@@ -2,11 +2,15 @@
 #include "Application.h"
 #include "ModulePhysX.h"
 #include "ModuleRenderer3D.h"
-#include "UtilitiesPhysX.h"
-#include "Optick/include/optick.h"
 
 #include "Component.h"
+#include "ComponentPhysics.h"
 #include "ComponentCollider.h"
+#include "ComponentRigidBody.h"
+
+#include "Time.h"
+#include "UtilitiesPhysX.h"
+#include "Optick/include/optick.h"
 
 ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 {
@@ -89,11 +93,11 @@ bool ModulePhysX::Init()
 
 	px_scene->addActor(*groundPlane);
 
-	for (PxU32 i = 0; i < 5; i++)
-		CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
+	//for (PxU32 i = 0; i < 5; i++)
+	//	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
 
-	/*if (!interactive)
-		createDynamic(PxTransform(PxVec3(0, 40, 100)), PxSphereGeometry(10), PxVec3(0, -50, -100));*/
+	///*if (!interactive)
+	//	createDynamic(PxTransform(PxVec3(0, 40, 100)), PxSphereGeometry(10), PxVec3(0, -50, -100));*/
 
 	return ret;
 }
@@ -112,8 +116,14 @@ update_status ModulePhysX::PreUpdate(float dt)
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
-	px_scene->simulate(1.0f / 60.0f); // TODO, fixed time step / substeps
-	px_scene->fetchResults(true);
+	float fixed_dt = 1.0f / 60.0f;
+	float game_dt = Time::GetDT();
+
+	if (Time::IsPlaying())
+	{
+		px_scene->simulate(fixed_dt); // TODO, fixed time step / substeps
+		px_scene->fetchResults(true);
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -203,20 +213,31 @@ void ModulePhysX::UnloadPhysicsExplicitely()
 	FreeLibrary(foundation_lib);
 }
 
-void ModulePhysX::DrawCollider(const ComponentCollider& collider)
+void ModulePhysX::DrawCollider(ComponentCollider* collider)
 {
-	collider.type;
+	float4x4 trans(PXTRANS_TO_F4X4(collider->physics->actor->getGlobalPose()* collider->shape->getLocalPose()));
+	float3 color = float3(0.f, 1.f, 0.f);
 
-	switch (collider.type)
+	switch (collider->type)
 	{
-	case ComponentType::BOX_COLLIDER:
-		break;
-	case ComponentType::SPHERE_COLLIDER:
-		break;
-	case ComponentType::CAPSULE_COLLIDER:
-		break;
-	case ComponentType::CONVEX_HULL_COLLIDER:
-		break;
+	case ComponentType::BOX_COLLIDER: {
+		PxBoxGeometry geo; 
+		collider->shape->getBoxGeometry(geo);
+		App->renderer3D->DebugDrawBox(trans, PXVEC3_TO_F3(geo.halfExtents), color);
+		break; }
+	case ComponentType::SPHERE_COLLIDER: {
+		PxSphereGeometry geo;
+		collider->shape->getSphereGeometry(geo);
+		App->renderer3D->DebugDrawSphere(trans, geo.radius, color);
+		break; }
+	case ComponentType::CAPSULE_COLLIDER: {
+		PxCapsuleGeometry geo;
+		collider->shape->getCapsuleGeometry(geo);
+		App->renderer3D->DebugDrawCapsule(trans, geo.radius, geo.halfHeight, color);
+		break; }
+	//case ComponentType::CONVEX_HULL_COLLIDER: {
+	//	App->renderer3D->DebugDrawBox();
+	//	break; }
 
 	default:
 		break;
@@ -256,7 +277,13 @@ PxRigidActor* ModulePhysX::CreateBody(const float4x4& transform, bool is_dynamic
 	return return_body;
 }
 
- void ModulePhysX::RemoveBody(PxRigidActor* body)
+void ModulePhysX::RemoveBody(PxRigidActor* body)
 {
-	 px_scene->removeActor(*body, true);
+	px_scene->removeActor(*body, true);
+	body->release();
+}
+
+PxShape* ModulePhysX::CreateShape(const PxGeometry& geometry)
+{
+	return px_physics->createShape(geometry, *px_default_material);
 }
