@@ -223,15 +223,6 @@ update_status ModuleObjects::Update(float dt)
 	}
 	UpdateGamePadInput();
 	ScriptsUpdate();
-	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_P)==KEY_STATE::KEY_DOWN)
-	{
-		App->fade_to_black->StartFade(2.0f, FadeType::COMPLETE_FADE, FadeToBlackType::VERTICAL_CURTAIN, float3(0, 0, 0));
-	}
-
-	if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_I) == KEY_STATE::KEY_DOWN)
-	{
-		SceneManager::LoadScene("fade_testing", FadeToBlackType::VERTICAL_CURTAIN, 2.0f, float3(0, 0, 255));
-	}
 
 	return UPDATE_CONTINUE;
 }
