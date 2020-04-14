@@ -18,16 +18,14 @@ public:
 public:
 
 	ComponentSphereCollider(GameObject* go);
+
 	void SetRadius(float radius);
-	float GetRadius() { return radius; }
 
 private:
 
 	void DrawSpecificInspector();;
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
-
-	void CreateDefaultShape();
 
 private:
 

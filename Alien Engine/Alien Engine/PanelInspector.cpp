@@ -639,25 +639,16 @@ void PanelInspector::ButtonAddComponent()
 						LOG_ENGINE("The selected object already has Component UI!");
 					break; }
 				case ComponentType::BOX_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentBoxCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::SPHERE_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentSphereCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::CAPSULE_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentCapsuleCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::CONVEX_HULL_COLLIDER: {
 					if (selected->GetComponent<ComponentCollider>() == nullptr)

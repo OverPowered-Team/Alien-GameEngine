@@ -46,32 +46,7 @@ void ComponentPhysics::Update()
 		transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
 	}
 
-	if (is_dynamic)
-	{
-		bool is_using_gizmo = is_dynamic && ImGuizmo::IsUsing() && game_object_attached->IsSelected();
-		PxRigidDynamic* dyn = (PxRigidDynamic*)actor;
-
-		if (gizmo_selected)
-		{
-			if (!is_using_gizmo)
-			{
-				dyn->wakeUp();
-				gizmo_selected = false;
-			}
-			else
-			{
-				dyn->putToSleep();
-			}
-
-		}
-		else
-		{
-			if (is_using_gizmo)
-			{
-				gizmo_selected = true;
-			}
-		}
-	}
+	GizmoManipulation();
 
 }
 
@@ -173,4 +148,29 @@ void ComponentPhysics::UpdateBody()
 
 	for (ComponentCollider* collider : colliders)
 		actor->attachShape(*collider->shape);
+}
+
+void ComponentPhysics::GizmoManipulation()
+{
+	if (is_dynamic)
+	{
+		bool is_using_gizmo = is_dynamic && ImGuizmo::IsUsing() && game_object_attached->IsSelected();
+		PxRigidDynamic* dyn = (PxRigidDynamic*)actor;
+
+		if (gizmo_selected)
+		{
+			if (!is_using_gizmo)
+			{
+				dyn->wakeUp();
+				gizmo_selected = false;
+			}
+			else
+				dyn->putToSleep();
+		}
+		else
+		{
+			if (is_using_gizmo)
+				gizmo_selected = true;
+		}
+	}
 }

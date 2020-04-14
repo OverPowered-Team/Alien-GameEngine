@@ -1,20 +1,16 @@
 #include "Application.h"
 #include "ComponentPhysics.h"
 #include "ComponentBoxCollider.h"
-#include "ComponentRigidBody.h"
 #include "ComponentTransform.h"
-#include "ComponentMesh.h"
 #include "ModulePhysics.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
-#include "mmgr/mmgr.h"
 
 ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(go)
 {
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
 	shape = App->physx->CreateShape(PxBoxGeometry( .5f ,.5f , .5f ));
-
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 }
 
@@ -38,10 +34,6 @@ void ComponentBoxCollider::DrawSpecificInspector()
 		SetSize(current_size);
 	};
 
-}
-
-void ComponentBoxCollider::CreateDefaultShape()
-{
 }
 
 void ComponentBoxCollider::Clone(Component* clone)

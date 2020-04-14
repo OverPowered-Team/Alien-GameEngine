@@ -242,7 +242,7 @@ bool ComponentCollider::DrawInspector()
 
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name.c_str(), &not_destroy))
 	{
 		ImGui::Spacing();
 

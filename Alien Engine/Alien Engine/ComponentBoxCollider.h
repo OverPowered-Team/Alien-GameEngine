@@ -22,8 +22,6 @@ public:
 
 private:
 
-	void CreateDefaultShape();
-
 	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);

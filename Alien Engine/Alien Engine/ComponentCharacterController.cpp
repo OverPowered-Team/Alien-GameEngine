@@ -154,7 +154,7 @@ bool ComponentCharacterController::DrawInspector()
 
 	ImGui::PushID(this);
 
-	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy))
 	{
 		ImGui::Spacing();
 

@@ -6,8 +6,8 @@
 #include "ComponentCamera.h"
 
 #define MAX_LIGHTS 8
-#define CIRCLE_SIDES 26.F
-#define HALF_CIRCLE_SIDES 13.F
+#define CIRCLE_SIDES 50.F
+#define HALF_CIRCLE_SIDES 25.F
 #define FULL_CIRCLE 360.F
 #define HALF_CIRCLE 180.F
 

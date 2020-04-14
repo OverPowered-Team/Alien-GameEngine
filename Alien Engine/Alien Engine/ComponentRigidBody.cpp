@@ -123,7 +123,7 @@ bool ComponentRigidBody::DrawInspector()
 
 	// RigidBody Config --------------------------------------
 
-	if (ImGui::CollapsingHeader("Rigid Body", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Rigid Body", &not_destroy))
 	{
 		ImGui::Spacing();
 		ImGui::Title("Is Kinematic", 1);	if (ImGui::Checkbox("##is_kinematic", &current_is_kinematic)) { SetIsKinematic(current_is_kinematic); }

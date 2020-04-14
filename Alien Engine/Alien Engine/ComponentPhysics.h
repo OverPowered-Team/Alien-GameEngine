@@ -10,11 +10,14 @@ class __declspec(dllexport) ComponentPhysics : public Component
 	friend class ModuleObjects;
 	friend class ModulePhysics;
 	friend class ModulePhysX;
+	friend class ComponentTransform;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
-	friend class ComponentTransform;
 
 public:
 
@@ -36,6 +39,7 @@ private:
 	bool CheckCollider(ComponentCollider* collider);
 
 	void UpdateBody();
+	void GizmoManipulation();
 
 protected:
 

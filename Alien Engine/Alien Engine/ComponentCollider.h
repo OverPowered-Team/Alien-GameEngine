@@ -35,9 +35,9 @@ public:
 
 
 	// Colliders values
-	void SetCenter(const float3& value);
+	virtual void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
-	void SetRotation(const float3& value);
+	virtual void SetRotation(const float3& value);
 	float3 GetRotation() { return rotation; }
 	void SetIsTrigger(bool is_trigger);
 	bool GetIsTrigger() { return is_trigger; }
@@ -64,8 +64,6 @@ protected:
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
-
-	virtual void CreateDefaultShape() {};
 
 protected:
 

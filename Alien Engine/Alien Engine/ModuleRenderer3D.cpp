@@ -361,7 +361,9 @@ void ModuleRenderer3D::DebugDrawSphere(const float4x4& transform, float radius, 
 void ModuleRenderer3D::DebugDrawCapsule(const float4x4& transform, float radius, float half_height, const float3& color) const
 {
 	glPushMatrix();
-	glMultMatrixf(transform.Transposed().ptr());
+
+	float4x4 final_trams = transform * Quat::RotateZ( DEGTORAD* -90);
+	glMultMatrixf(final_trams.Transposed().ptr());
 	BeginDebugDraw(float4(color.x, color.y, color.z, 1.0f));
 
 	float delta_amgle = 360.0f / CIRCLE_SIDES;

@@ -113,6 +113,12 @@ bool ModulePhysX::Start()
 // ---------------------------------------------------------
 update_status ModulePhysX::PreUpdate(float dt)
 {
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModulePhysX::PostUpdate(float dt)
+{
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
@@ -124,12 +130,6 @@ update_status ModulePhysX::PreUpdate(float dt)
 		px_scene->simulate(fixed_dt); // TODO, fixed time step / substeps
 		px_scene->fetchResults(true);
 	}
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModulePhysX::PostUpdate(float dt)
-{
 
 	return UPDATE_CONTINUE;
 }
