@@ -525,7 +525,7 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -545,7 +545,7 @@ void GameObject::DrawScene(ComponentCamera* camera)
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon(camera);
+			mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position, true);
 		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
@@ -558,6 +558,49 @@ void GameObject::DrawScene(ComponentCamera* camera)
 			mesh->DrawGlobalAABB(camera);
 		if (mesh->draw_OBB)
 			mesh->DrawOBB(camera);
+	}
+
+
+	for (Component* component : components)
+	{
+		component->DrawScene();
+	}
+}
+
+
+void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	OPTICK_EVENT();
+	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	{
+		material->BindTexture();
+	}*/
+
+	if (mesh != nullptr && mesh->IsEnabled())
+	{
+		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
+			glColor3f(1, 1, 1);
+		if (!mesh->wireframe)
+			mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position, false);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		//if (mesh->view_mesh || mesh->wireframe)
+		//	mesh->DrawMesh();
+		//if (mesh->view_vertex_normals)
+		//	mesh->DrawVertexNormals();
+		//if (mesh->view_face_normals)
+		//	mesh->DrawFaceNormals();
+		//if (mesh->draw_AABB)
+		//	mesh->DrawGlobalAABB(camera);
+		//if (mesh->draw_OBB)
+		//	mesh->DrawOBB(camera);
 	}
 
 
@@ -586,7 +629,7 @@ void GameObject::DrawGame(ComponentCamera* camera)
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera);
+		mesh->DrawPolygon(camera,camera->ViewMatrix, camera->GetProjectionMatrix4f4(), camera->GetCameraPosition());
 	}
 }
 

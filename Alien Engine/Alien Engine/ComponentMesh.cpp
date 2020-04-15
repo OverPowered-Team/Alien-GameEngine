@@ -16,6 +16,9 @@
 #include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
+#include "Viewport.h"
+#include "ComponentCamera.h"
+
 #include "Optick/include/optick.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
@@ -45,7 +48,7 @@ void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 	RecalculateAABB_OBB();
 }
 
-void ComponentMesh::DrawPolygon(ComponentCamera* camera)
+void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position, bool draw_shadows)
 {
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
@@ -71,14 +74,14 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glFrontFace(GL_CW);
 
 	//Shadows------------------------------
-	if (material->recive_shadow)
+	if (draw_shadows)
 	{
 		// --------------------------------------------------------------------- 
 
 		material->ApplyShadows();
 		glBindVertexArray(mesh->vao);
 
-		SetUniformShadow(material, camera);
+		SetUniformShadow(material, camera, ViewMat, ProjMatrix, position);
 
 		// Uniforms --------------
 		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
@@ -95,13 +98,14 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		glBindVertexArray(mesh->vao);
 
 		// Uniforms --------------
-		SetUniform(material, camera);
+		SetUniform(material, ViewMat, ProjMatrix, position);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 
 		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 		// --------------------------------------------------------------------- 
+
 		material->recive_shadow = true;
 	}
 	glBindVertexArray(0);
@@ -191,22 +195,24 @@ void ComponentMesh::DrawMesh()
 
 }
 
-void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+void ComponentMesh::SetUniform(ResourceMaterial* resource_material, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
-	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("view", ViewMat);
 	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniformMat4f("projection", ProjMatrix);
+	resource_material->used_shader->SetUniformFloat3("view_pos", position);
 	resource_material->used_shader->SetUniform1i("animate", animate);
 
 }
 
-void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
+void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->shadow_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->shadow_shader->SetUniformFloat3("viewPos", camera->GetCameraPosition());
+	float4x4 lightSpaceMatrix = ProjMatrix * ViewMat;
+	resource_material->shadow_shader->SetUniformMat4f("lightSpaceMatrix", ViewMat);
 	//resource_material->shadow_shader->SetUniform1i("animate", animate);
 }
 

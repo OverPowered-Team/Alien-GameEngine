@@ -611,15 +611,13 @@ void ResourceShader::DrawShadows()
 
 	for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE3);
 
 		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
 
-		SetUniform1i("depthMap", 0);
+		SetUniform1i("depthMap", 3);
 
 		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
-
-		SetUniformMat4f("lightSpaceMatrix", (*iter)->light->game_object_attached->transform->GetGlobalMatrix());
 
 		SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
 		SetUniformFloat3("lightPos", (*iter)->position);

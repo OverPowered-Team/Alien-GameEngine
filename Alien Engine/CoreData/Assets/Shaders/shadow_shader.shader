@@ -27,7 +27,7 @@ void main()
     texCoords = vec2(uvs.x, uvs.y);
     norms = mat3(transpose(inverse(model))) * normals;
     FragPosLightSpace = lightSpaceMatrix * vec4(frag_pos, 1.0);
-    gl_Position = projection * view * vec4(frag_pos, 1.0); 
+    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
 };
 
 
@@ -101,7 +101,7 @@ vec3 DrawShadows(vec3 ObjectColor, vec3 normal, vec3 frag_pos, vec3 view_dir)
     vec3 ambient = 0.15 * ObjectColor;
     // diffuse
     vec3 lightDir = normalize(lightPos - frag_pos);
-    float diff = max(dot(lightDir, normal), 0.0);
+    float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
     // specular
     float spec = 0.0;

@@ -45,6 +45,9 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -251,34 +254,72 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
-			
+
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
+				glm::mat4 viewMatix = glm::lookAt(glm::vec3((*iter)->position.x, (*iter)->position.y, (*iter)->position.z),
+					glm::vec3((*iter)->position.x + (*iter)->direction.x, (*iter)->position.y + (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z),
+					glm::vec3(0, 1, 0));
+
+				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+					viewport->GetCamera()->frustum.nearPlaneDistance,
+					10.0f);
+
+
+				float4x4 viewMat,projMat;
+				for (uint i = 0; i < 4; ++i)
+				{
+					for (uint j = 0; j < 4; ++j)
+					{
+						viewMat[i][j] = viewMatix[i][j];
+						projMat[i][j] = projectionMatrix[i][j];
+					}
+				}
 				glViewport(0, 0, 1024, 1024);
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 				glClear(GL_DEPTH_BUFFER_BIT);
-
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera());
+							(*it).second->PreDrawScene(viewport->GetCamera(), viewMat, projMat, (*iter)->light->game_object_attached->transform->GetLocalPosition());
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
 				}
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
 			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
 			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
-
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera());
-					else
-						(*it).second->DrawGame(viewport->GetCamera());
+			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+			{
+				glm::mat4 viewMatix = glm::lookAt(glm::vec3((*iter)->position.x, (*iter)->position.y, (*iter)->position.z),
+					glm::vec3((*iter)->position.x + (*iter)->direction.x, (*iter)->position.y + (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z),
+					glm::vec3(0, 1, 0));
+
+				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+					viewport->GetCamera()->frustum.nearPlaneDistance,
+					10.0f);
+
+				float4x4 viewMat, projMat;
+				for (uint i = 0; i < 4; ++i)
+				{
+					for (uint j = 0; j < 4; ++j)
+					{
+						viewMat[i][j] = viewMatix[i][j];
+						projMat[i][j] = projectionMatrix[i][j];
+					}
+				}
+
+				for (; it != to_draw.end(); ++it) {
+					if ((*it).second != nullptr) {
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera(), viewMat.Transposed(),
+								projMat.Transposed(), (*iter)->light->game_object_attached->transform->GetLocalPosition());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
+					}
 				}
 			}
 			//glBindFramebuffer(GL_FRAMEBUFFER, 0);

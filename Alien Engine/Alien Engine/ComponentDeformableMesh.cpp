@@ -99,7 +99,7 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 }
 
 
-void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
+void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position, bool draw_shadows)
 {
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
@@ -107,13 +107,13 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	UpdateBonesMatrix();
 
-	ComponentMesh::DrawPolygon(camera);
+	ComponentMesh::DrawPolygon(camera, ViewMat, ProjMatrix, position,draw_shadows);
 
 }
 
-void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera)
+void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
-	ComponentMesh::SetUniform(material, camera);
+	ComponentMesh::SetUniform(material, ViewMat, ProjMatrix, position);
 	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 	material->shadow_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 

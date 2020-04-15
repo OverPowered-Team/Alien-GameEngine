@@ -23,8 +23,8 @@ public:
 protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateBonesMatrix();
-	void DrawPolygon(ComponentCamera* camera) override;
-	void SetUniform(ResourceMaterial*, ComponentCamera* camera) override;
+	void DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position, bool draw_shadows) override;
+	void SetUniform(ResourceMaterial*, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position) override;
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 	void SendWeightsAndID();
