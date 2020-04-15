@@ -31,6 +31,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
@@ -53,6 +54,8 @@
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleFadeToBlack.h"
+#include "SceneManager.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -113,8 +116,7 @@ bool ModuleObjects::Start()
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 
-	App->camera->fake_camera->frustum.pos = { 25,25,25 };
-	App->camera->fake_camera->Look(float3(0, 0, 0));
+	
 
 #else 
 	JSON_Value* value = json_parse_file(BUILD_SETTINGS_PATH);
@@ -225,6 +227,7 @@ update_status ModuleObjects::Update(float dt)
 	}
 	UpdateGamePadInput();
 	ScriptsUpdate();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -1235,6 +1238,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
 	OPTICK_EVENT();
+	App->audio->Stop();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
@@ -1796,7 +1800,7 @@ void ModuleObjects::UpdateGamePadInput()
 {
 	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation))
 	{
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) > 0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_UP) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
 			{
@@ -1812,7 +1816,7 @@ void ModuleObjects::UpdateGamePadInput()
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) < -0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) < -0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_DOWN) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
 			{
@@ -1828,7 +1832,7 @@ void ModuleObjects::UpdateGamePadInput()
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) < -0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || /*Input::GetControllerHoritzontalLeftAxis(1) < -0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_RIGHT) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
 			{
@@ -1844,7 +1848,7 @@ void ModuleObjects::UpdateGamePadInput()
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) > 0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || /*Input::GetControllerHoritzontalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_LEFT) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
 			{
@@ -2193,6 +2197,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	GameObject* object = CreateEmptyGameObject(nullptr);
 	Component* comp = nullptr;
 	Component* comp_emitter = nullptr;
+	Component* comp_text = nullptr;
 
 	switch (type)
 	{
@@ -2212,15 +2217,28 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 
 	case ComponentType::UI_BUTTON: {
+		GameObject* object_text = CreateEmptyGameObject(nullptr);
+
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
 		comp_emitter = new ComponentAudioEmitter(object);
+
+		comp_text = new ComponentText(object_text);
+
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		dynamic_cast<ComponentUI*>(comp_text)->SetCanvas(canvas);
+
 		object->SetName("Button");
 		object->AddComponent(comp);
 		object->AddComponent(comp_emitter);
+
+		object_text->SetName("Text");
+		object_text->AddComponent(comp_text);
+
+
 		
 		ReparentGameObject(object, canvas->game_object_attached, false);
+		ReparentGameObject(object_text, object, false);
 		break; }
 
 	case ComponentType::UI_TEXT: {

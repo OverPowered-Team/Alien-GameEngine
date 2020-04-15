@@ -24,9 +24,9 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
 
-		p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
+		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
-		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;
+		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
 	}
 
 }
@@ -205,7 +205,7 @@ void Particle::Draw()
 	if (owner->material != nullptr && p_material != nullptr)
 	{
 
-		//owner->DeactivateLight();
+		owner->DeactivateLight();
 
 		// ---- TEXTCOORD BUFFER ----- //
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -231,8 +231,6 @@ void Particle::Draw()
 	}
 	owner->ActivateLight();
 	
-
-
 
 	// ----- DRAW QUAD ------ //
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -279,7 +277,7 @@ void Particle::Orientate(ComponentCamera* camera)
 		break;
 
 	case BillboardType::NONE:
-
+		particleInfo.rotation = Quat::identity();
 		break;
 
 	default:
@@ -302,8 +300,8 @@ void Particle::InterpolateValues(float dt)
 	{
 		t += rateToLerp * dt;
 
-		if(owner->material != nullptr && p_material != nullptr)
-			p_material->shaderInputs.particleShaderProperties.color = float3::Lerp(p_material->shaderInputs.particleShaderProperties.start_color, p_material->shaderInputs.particleShaderProperties.end_color, t);
+		if (owner->material != nullptr && p_material != nullptr)
+			p_material->color = float4::Lerp(startInfo.color, endInfo.color, t);
 		else
 			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 

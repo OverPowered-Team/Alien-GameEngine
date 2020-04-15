@@ -18,7 +18,7 @@ ParticleSystem::ParticleSystem()
 	
 	default_material = new ResourceMaterial();
 	default_material->SetName("Particle Material");
-	default_material->color = float4(1.0f, 0.0f, 0.8f, 1.0f);
+	default_material->color = particleInfo.color;
 	SetMaterial(default_material);
 	material->SetShader(App->resources->default_particle_shader);
 	//material->color = float4(1.0f, 0.0f, 0.8f, 1.0f);
@@ -227,7 +227,6 @@ void ParticleSystem::DrawParticles()
 	// Debugging drawing points in particles Position
 	//DrawPointsForParticles();
 
-	RenderLight();
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
 
@@ -241,6 +240,7 @@ void ParticleSystem::DrawParticles()
 
 	}
 	
+	RenderLight();
 
 }
 

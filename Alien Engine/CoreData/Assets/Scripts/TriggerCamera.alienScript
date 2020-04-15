@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "TriggerCamera",
-            "UsesAlien": true
-        }
-    ]
-}
