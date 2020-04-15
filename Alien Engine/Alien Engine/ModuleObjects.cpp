@@ -263,7 +263,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
 					viewport->GetCamera()->frustum.nearPlaneDistance,
-					10.0f);
+					7.5f);
 
 
 				float4x4 viewMat,projMat;
@@ -282,7 +282,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->PreDrawScene(viewport->GetCamera(), viewMat, projMat, (*iter)->light->game_object_attached->transform->GetLocalPosition());
+							(*it).second->PreDrawScene(viewport->GetCamera(), viewMat, projMat, (*iter)->light->game_object_attached->transform->GetGlobalPosition());
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
@@ -300,7 +300,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
 					viewport->GetCamera()->frustum.nearPlaneDistance,
-					10.0f);
+					7.5f);
 
 				float4x4 viewMat, projMat;
 				for (uint i = 0; i < 4; ++i)
@@ -316,7 +316,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 					if ((*it).second != nullptr) {
 						if (printing_scene)
 							(*it).second->DrawScene(viewport->GetCamera(), viewMat.Transposed(),
-								projMat.Transposed(), (*iter)->light->game_object_attached->transform->GetLocalPosition());
+								projMat.Transposed(), (*iter)->light->game_object_attached->transform->GetGlobalPosition());
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
