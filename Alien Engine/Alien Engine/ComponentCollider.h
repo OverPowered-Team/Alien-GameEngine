@@ -5,7 +5,7 @@
 #include "ComponentBasePhysic.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "Event.h"
-#include <PxShape.h>
+#include "PxShape.h"
 
 class GameObject;
 class ComponentRigidBody;
@@ -50,9 +50,12 @@ public:
 
 protected:
 
-	void Update();
+	void BeginUpdateShape();
+	void EndUpdateShape();
+
 	void OnEnable();
 	void OnDisable();
+	void Update();
 
 	bool DrawInspector();
 	void HandleAlienEvent(const AlienEvent& e);

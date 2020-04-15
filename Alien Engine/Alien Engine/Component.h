@@ -79,6 +79,8 @@ public:
 
 	bool IsEnabled();
 	void SetEnable(bool enable);
+	void Destroy() { not_destroy = false; }
+
 public:
 	GameObject* game_object_attached = nullptr;
 

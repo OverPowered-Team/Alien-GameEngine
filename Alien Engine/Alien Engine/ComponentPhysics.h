@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Component.h"
-#include "PxPhysicsAPI.h"
+#include "PxShape.h"
 #include <list>
+
+using namespace physx;
 
 class __declspec(dllexport) ComponentPhysics : public Component
 {
@@ -31,25 +33,34 @@ private:
 
 	bool AddRigidBody(ComponentRigidBody* rb);
 	bool RemoveRigidBody(ComponentRigidBody* rb);
+	void AttachCollider(ComponentCollider* collider, bool to_update = false);    // To Update if is only a removement 
+	void DettachColldier(ComponentCollider* collider, bool to_update = false);	 // to update the shape
 	bool CheckRigidBody(ComponentRigidBody* rb);
 
-	bool AddCollider(ComponentCollider* collider);
-	bool RemoveCollider(ComponentCollider* collider);
-	bool FindCollider( ComponentCollider* collider);
+	bool AddCollider(ComponentCollider* collider);     
+	bool RemoveCollider(ComponentCollider* collider);	
+ 	bool FindCollider( ComponentCollider* collider);
 	bool CheckCollider(ComponentCollider* collider);
 
 	void UpdateBody();
+	bool CheckChangeState();
 	void GizmoManipulation();
+
+	bool HasEnabledColliders();
+	bool ShapeAttached(PxShape* shape);
+	bool IsDynamic() { return state == PhysicState::DYNAMIC;  }
 
 protected:
 
-	bool is_dynamic = false;
+	enum class PhysicState { STATIC = 0, DYNAMIC, KINEMATIC, CTRL_CHARACTER, CTRL_VEHICLE, DISABLED}
+	state = PhysicState::DISABLED;
+
 	bool gizmo_selected = false;
 
 	ComponentTransform*			  transform = nullptr;
 	std::list<ComponentCollider*> colliders;
 	ComponentRigidBody*			  rigid_body = nullptr;
-	physx::PxRigidActor*		  actor = nullptr;
+	PxRigidActor*				  actor = nullptr;
 
 };
 

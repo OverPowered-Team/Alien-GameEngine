@@ -14,6 +14,7 @@ class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
 	friend class GameObject;
 	friend class ModulePhysics;
+	friend class ComponentPhysics;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
@@ -38,7 +39,7 @@ public:
 	Quat GetRotation();
 
 	void SetIsKinematic(const bool value);
-
+	bool GetIsKinematic() { return is_kinematic;}
 	void SetMass(const float mass);
 	float GetMass() { return mass; }
 	void SetDrag(const float drag);
@@ -57,9 +58,9 @@ public:
 
 private:
 
-	void Update();
 	void OnEnable();
 	void OnDisable();
+	void Update();
 	bool DrawInspector();
 
 	void Reset(){}

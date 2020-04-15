@@ -92,10 +92,12 @@ void ComponentRigidBody::Update()
 
 void ComponentRigidBody::OnEnable()
 {
+	App->SendAlienEvent(this, AlienEventType::RIGIDBODY_ENABLED);
 }
 
 void ComponentRigidBody::OnDisable()
 {
+	App->SendAlienEvent(this, AlienEventType::RIGIDBODY_DISABLED);
 }
 
 bool ComponentRigidBody::DrawInspector()

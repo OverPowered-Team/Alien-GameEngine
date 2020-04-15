@@ -19,9 +19,9 @@ void ComponentBoxCollider::SetSize(const float3 value)
 	if (value.Equals(size)) return;
 	size = value;
 	PxBoxGeometry geo(F3_TO_PXVEC3(size * 0.5f));
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setGeometry(geo);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 

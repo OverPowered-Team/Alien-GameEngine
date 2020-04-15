@@ -22,9 +22,9 @@ void ComponentCapsuleCollider::SetRotation(const float3& value)
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * GetOrientationRotation();
 	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rotation.x, rad_rotation.y, rad_rotation.z));
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setLocalPose(trans);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCapsuleCollider::SetRadius(float value)
@@ -32,9 +32,9 @@ void ComponentCapsuleCollider::SetRadius(float value)
 	if (value == radius) return;
 	radius = value;
 	PxCapsuleGeometry geo(radius , height * 0.5f);
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setGeometry(geo);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCapsuleCollider::SetHeight(float value)
@@ -42,9 +42,9 @@ void ComponentCapsuleCollider::SetHeight(float value)
 	if (value == height) return;
 	height = value;
 	PxCapsuleGeometry geo(radius, height * 0.5f);
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setGeometry(geo);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCapsuleCollider::SetOrientation(Orientation value)
@@ -54,9 +54,9 @@ void ComponentCapsuleCollider::SetOrientation(Orientation value)
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * GetOrientationRotation();
 	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rotation.x, rad_rotation.y, rad_rotation.z));
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setLocalPose(trans);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCapsuleCollider::DrawSpecificInspector()
@@ -84,8 +84,6 @@ void ComponentCapsuleCollider::DrawSpecificInspector()
 				if (current_item == "X")		SetOrientation(Orientation::X);
 				else if (current_item == "Y")	SetOrientation(Orientation::Y);
 				else if (current_item == "Z")	SetOrientation(Orientation::Z);
-
-				//UpdateShape();
 			}
 
 			if (is_selected)
@@ -93,7 +91,6 @@ void ComponentCapsuleCollider::DrawSpecificInspector()
 				ImGui::SetItemDefaultFocus();
 			}
 		}
-
 		ImGui::EndCombo();
 	}
 }

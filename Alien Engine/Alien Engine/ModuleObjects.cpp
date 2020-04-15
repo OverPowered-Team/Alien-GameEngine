@@ -268,12 +268,16 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glEnable(GL_LIGHT0);
 			}
 			
+			// TODO : DELETE ------------------------
+
 			if (App->physics->debug_physics)
 			{
 				App->physics->DrawWorld();
 			}
 
 			App->physx->DrawWorld();
+
+			// -------------------------------------
 		}
 
 		if (base_game_object->HasChildren()) {

@@ -22,11 +22,7 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 
 	// Default values 
 	center = float3::zero();
-
-	SetIsTrigger(false);
-	SetBouncing(0.1f);
-	SetFriction(0.5f);
-	SetAngularFriction(0.1f);
+	rotation = float3::zero();
 }
 
 ComponentCollider::~ComponentCollider()
@@ -42,9 +38,9 @@ void ComponentCollider::SetCenter(const float3& value)
 	center = value;
 	PxTransform trans = shape->getLocalPose();
 	trans.p = F3_TO_PXVEC3(center);
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setLocalPose(trans);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCollider::SetRotation(const float3& value)
@@ -54,14 +50,23 @@ void ComponentCollider::SetRotation(const float3& value)
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * rotation;
 	trans.q = QUAT_TO_PXQUAT( Quat::FromEulerXYZ(rad_rotation.x , rad_rotation.y, rad_rotation.z));
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setLocalPose(trans);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentCollider::SetIsTrigger(bool value)
 {
+	is_trigger = value;
 
+	BeginUpdateShape();
+	if (is_trigger) {
+		shape->setFlag(physx::PxShapeFlag::Enum::eSIMULATION_SHAPE, false);
+		shape->setFlag(physx::PxShapeFlag::Enum::eTRIGGER_SHAPE, true); }
+	else {
+		shape->setFlag(physx::PxShapeFlag::Enum::eTRIGGER_SHAPE, false);
+		shape->setFlag(physx::PxShapeFlag::Enum::eSIMULATION_SHAPE, true); }
+	EndUpdateShape();
 }
 
 void ComponentCollider::SetBouncing(const float value)
@@ -111,8 +116,6 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCollider::Update()
 {
-
-
 	if (!alien_scripts.empty() && Time::IsPlaying())
 	{
 		for (auto& x : collisions)
@@ -200,12 +203,12 @@ void ComponentCollider::Update()
 
 void ComponentCollider::OnEnable()
 {
-
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_ENABLED);
 }
 
 void ComponentCollider::OnDisable()
 {
-
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_DISABLED);
 }
 
 void ComponentCollider::DrawScene()
@@ -303,22 +306,17 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
 	switch (e.type)
 	{
-	case AlienEventType::SCRIPT_ADDED:
-	{
+	case AlienEventType::SCRIPT_ADDED: {
 		ComponentScript* script = (ComponentScript*)e.object;
 		if (script->game_object_attached == game_object_attached && script->need_alien == true)
 			alien_scripts.push_back(script);
-		break;
-	}
-	case AlienEventType::SCRIPT_DELETED:
-	{
+		break; }
+	case AlienEventType::SCRIPT_DELETED: {
 		ComponentScript* script = (ComponentScript*)e.object;
 		if (script->game_object_attached == game_object_attached)
 			alien_scripts.remove(script);
-		break;
-	}
-	case AlienEventType::COLLIDER_DELETED:
-	{
+		break; }
+	case AlienEventType::COLLIDER_DELETED: {
 		ComponentCollider* collider = (ComponentCollider*)e.object;
 
 		if (!alien_scripts.empty() && Time::IsPlaying())
@@ -330,15 +328,19 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 					Alien* alien = (Alien*)script->data_ptr;
 					alien->OnTriggerExit(collider);
 				}
-
 				collisions.erase(collider);
 			}
 		}
-
-		break;
-	}
-	default:
-		break;
+		break; }
 	}
 }
 
+void ComponentCollider::BeginUpdateShape()
+{
+	physics->DettachColldier(this, true);
+}
+
+void ComponentCollider::EndUpdateShape()
+{
+	physics->AttachCollider(this, true);
+}

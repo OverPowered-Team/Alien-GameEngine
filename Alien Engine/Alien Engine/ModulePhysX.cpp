@@ -7,7 +7,7 @@
 #include "ComponentPhysics.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
-
+#include "PxPhysicsAPI.h"
 #include "Time.h"
 #include "UtilitiesPhysX.h"
 #include "Optick/include/optick.h"

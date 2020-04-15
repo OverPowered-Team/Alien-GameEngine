@@ -19,9 +19,9 @@ void ComponentSphereCollider::SetRadius(float value)
 	if (value == radius) return;
 	radius = value;
 	PxSphereGeometry geo(radius);
-	physics->RemoveCollider(this);
+	BeginUpdateShape();
 	shape->setGeometry(geo);
-	physics->AddCollider(this);
+	EndUpdateShape();
 }
 
 void ComponentSphereCollider::DrawSpecificInspector()
