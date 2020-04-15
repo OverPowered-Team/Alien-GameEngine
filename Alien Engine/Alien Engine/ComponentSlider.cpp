@@ -867,7 +867,7 @@ void ComponentSlider::UILogicGamePad()
 		//not necessary to do anything
 		break; }
 	case Hover: {
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		{
 			state = Click;
 		}
@@ -876,7 +876,7 @@ void ComponentSlider::UILogicGamePad()
 		state = Pressed;
 		break; }
 	case Pressed: {
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		{
 			state = Hover;
 		}
