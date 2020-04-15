@@ -807,7 +807,38 @@ bool ComponentCheckbox::DrawInspector()
 			ImGui::TreePop();
 		}
 
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::TreeNode("Audio Events"))
+		{
+			ImGui::Text("Move Event");
+			ImGui::SameLine(120);
+
+			static char move_name[30];
+			memcpy(move_name, move_event.c_str(), 30);
+
+			if (ImGui::InputText("##MoveEventName", move_name, 30, ImGuiInputTextFlags_AutoSelectAll))
+			{
+				move_event = move_name;
+			}
+			ImGui::Spacing();
+
+			ImGui::Text("Click Event");
+			ImGui::SameLine(120);
+
+			static char click_name[30];
+			memcpy(click_name, click_event.c_str(), 30);
+
+			if (ImGui::InputText("##ClickEventName", click_name, 30, ImGuiInputTextFlags_AutoSelectAll))
+			{
+				click_event = click_name;
+			}
+			ImGui::Spacing(); ImGui::Spacing();
+
+
+
+			ImGui::TreePop();
+		}
 
 
 		ImGui::Separator();
@@ -971,7 +1002,7 @@ bool ComponentCheckbox::OnClick()
 		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
 		if (emitter != nullptr)
 		{
-			emitter->StartSound("CLICK");
+			emitter->StartSound(click_event.c_str());
 		}
 
 		current_color = clicked_color;
@@ -1021,7 +1052,7 @@ bool ComponentCheckbox::OnEnter()
 		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
 		if (emitter != nullptr)
 		{
-			emitter->StartSound("ENTER");
+			emitter->StartSound(move_event.c_str());
 		}
 
 		CallListeners(&listenersOnEnter);

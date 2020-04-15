@@ -13,6 +13,7 @@
 #include "PanelProject.h"
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+#include "ComponentAudioEmitter.h"
 #include "ModuleResources.h"
 #include "ModuleUI.h"
 #include "StaticInput.h"
@@ -449,7 +450,38 @@ bool ComponentSlider::DrawInspector()
 			ImGui::TreePop();
 		}
 
-		ImGui::Spacing();
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::TreeNode("Audio Events"))
+		{
+			ImGui::Text("Move Event");
+			ImGui::SameLine(120);
+
+			static char move_name[30];
+			memcpy(move_name, move_event.c_str(), 30);
+
+			if (ImGui::InputText("##MoveEventName", move_name, 30, ImGuiInputTextFlags_AutoSelectAll))
+			{
+				move_event = move_name;
+			}
+			ImGui::Spacing();
+
+			ImGui::Text("Click Event");
+			ImGui::SameLine(120);
+
+			static char click_name[30];
+			memcpy(click_name, click_event.c_str(), 30);
+
+			if (ImGui::InputText("##ClickEventName", click_name, 30, ImGuiInputTextFlags_AutoSelectAll))
+			{
+				click_event = click_name;
+			}
+			ImGui::Spacing(); ImGui::Spacing();
+
+
+
+			ImGui::TreePop();
+		}
 
 
 		ImGui::Separator();
@@ -766,6 +798,12 @@ bool ComponentSlider::OnHover()
 
 bool ComponentSlider::OnClick()
 {
+	ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+	if (emitter != nullptr)
+	{
+		emitter->StartSound(click_event.c_str());
+	}
+
 	current_color = clicked_color;
 	slider_current_color = slider_clicked_color;
 	return true;
@@ -834,6 +872,16 @@ bool ComponentSlider::OnExit()
 
 bool ComponentSlider::OnEnter()
 {
+
+	if (active)
+	{
+		//baina loka
+		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
+		if (emitter != nullptr)
+		{
+			emitter->StartSound(move_event.c_str());
+		}
+	}
 	return true;
 }
 

@@ -108,7 +108,9 @@ protected:
 	u64 select_on_left		= -1;
 	u64 select_on_right		= -1;
 
-
+	// AUDIO EVENTS
+	std::string click_event = "CLICK";
+	std::string move_event = "ENTER";
 
 };
 
