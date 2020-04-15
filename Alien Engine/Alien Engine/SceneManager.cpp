@@ -23,7 +23,7 @@ void SceneManager::LoadScene(const char* scene_name, FadeToBlackType ftb_type, f
 }
 static int TestThread(void* ptr)
 {
-	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->thread_context);
 	App->objects->LoadSceneParalel("minions");
 	SDL_GL_MakeCurrent(App->window->window, NULL);
 	//wglMakeCurrent(NULL, NULL);
@@ -36,8 +36,6 @@ void SceneManager::LoadParalelScene(const char* scene_name)
 		SDL_Thread* thread;
 		int         threadReturnValue;
 
-		printf("Simple SDL_CreateThread test:\n");
-		SDL_GL_MakeCurrent(App->window->window, NULL);
 		//wglMakeCurrent(NULL, NULL);
 		/* Simply create a thread */
 		thread = SDL_CreateThread(TestThread, "TestThread", (void*)NULL);

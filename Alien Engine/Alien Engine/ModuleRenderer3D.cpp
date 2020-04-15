@@ -39,6 +39,7 @@ bool ModuleRenderer3D::Init()
 	bool ret = true;
 	
 	//Create context
+	thread_context = SDL_GL_CreateContext(App->window->window);
 	context = SDL_GL_CreateContext(App->window->window);
 	if(context == NULL)
 	{

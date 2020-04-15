@@ -42,6 +42,7 @@ public:
 public:
 
 	SDL_GLContext context;
+	SDL_GLContext thread_context;
 
 public:
 

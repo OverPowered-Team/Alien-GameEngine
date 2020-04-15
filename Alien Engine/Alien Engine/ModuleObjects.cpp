@@ -1610,6 +1610,10 @@ void ModuleObjects::ChangeSceneToParalel()
 		objects.clear();
 
 		current_scene = paralel_scene;
+
+		/*SDL_GL_MakeCurrent(App->window->window, NULL);
+		SDL_GL_MakeCurrent(App->window->window, App->renderer3D->thread_context);*/
+		
 	}
 }
 
