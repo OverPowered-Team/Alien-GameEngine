@@ -347,117 +347,120 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		viewport->EndViewport();
 
-		wfbos->BindReflectionFrameBuffer();
+		if (isGameCamera)
 		{
-			if (printing_scene)
+			wfbos->BindReflectionFrameBuffer();
 			{
-				if (App->physics->debug_physics)
+				if (printing_scene)
 				{
-					App->physics->DrawWorld();
-				}
-			}
-
-			if (base_game_object->HasChildren()) {
-				if (isGameCamera) {
-					OnPreCull(viewport->GetCamera());
-				}
-
-				std::vector<std::pair<float, GameObject*>> to_draw;
-				std::vector<std::pair<float, GameObject*>> to_draw_ui;
-
-				ComponentCamera* frustum_camera = viewport->GetCamera();
-
-				if (check_culling_in_scene && App->renderer3D->actual_game_camera)
-				{
-					frustum_camera = App->renderer3D->actual_game_camera;
-				}
-
-				octree.SetStaticDrawList(&to_draw, frustum_camera);
-
-				std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-				for (; item != base_game_object->children.end(); ++item) {
-					if (*item != nullptr && (*item)->IsEnabled()) {
-						(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					if (App->physics->debug_physics)
+					{
+						App->physics->DrawWorld();
 					}
 				}
 
-				std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-				if (isGameCamera) {
-					OnPreRender(viewport->GetCamera());
-				}
+				if (base_game_object->HasChildren()) {
+					if (isGameCamera) {
+						OnPreCull(viewport->GetCamera());
+					}
 
-				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
-						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera());
-						else
-							(*it).second->DrawGame(viewport->GetCamera());
+					std::vector<std::pair<float, GameObject*>> to_draw;
+					std::vector<std::pair<float, GameObject*>> to_draw_ui;
+
+					ComponentCamera* frustum_camera = viewport->GetCamera();
+
+					if (check_culling_in_scene && App->renderer3D->actual_game_camera)
+					{
+						frustum_camera = App->renderer3D->actual_game_camera;
+					}
+
+					octree.SetStaticDrawList(&to_draw, frustum_camera);
+
+					std::vector<GameObject*>::iterator item = base_game_object->children.begin();
+					for (; item != base_game_object->children.end(); ++item) {
+						if (*item != nullptr && (*item)->IsEnabled()) {
+							(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+						}
+					}
+
+					std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+					if (isGameCamera) {
+						OnPreRender(viewport->GetCamera());
+					}
+
+					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+					for (; it != to_draw.end(); ++it) {
+						if ((*it).second != nullptr) {
+							if (printing_scene)
+								(*it).second->DrawScene(viewport->GetCamera());
+							else
+								(*it).second->DrawGame(viewport->GetCamera());
+						}
+					}
+
+					if (isGameCamera) {
+						OnPostRender(viewport->GetCamera());
 					}
 				}
-
-				if (isGameCamera) {
-					OnPostRender(viewport->GetCamera());
-				}
 			}
-		}
-		wfbos->UnbindCurrentFrameBuffer();
+			wfbos->UnbindCurrentFrameBuffer();
 
-		wfbos->BindRefractionFrameBuffer();
-		{
-			if (printing_scene)
+			wfbos->BindRefractionFrameBuffer();
 			{
-				if (App->physics->debug_physics)
+				if (printing_scene)
 				{
-					App->physics->DrawWorld();
-				}
-			}
-
-			if (base_game_object->HasChildren()) {
-				if (isGameCamera) {
-					OnPreCull(viewport->GetCamera());
-				}
-
-				std::vector<std::pair<float, GameObject*>> to_draw;
-				std::vector<std::pair<float, GameObject*>> to_draw_ui;
-
-				ComponentCamera* frustum_camera = viewport->GetCamera();
-
-				if (check_culling_in_scene && App->renderer3D->actual_game_camera)
-				{
-					frustum_camera = App->renderer3D->actual_game_camera;
-				}
-
-				octree.SetStaticDrawList(&to_draw, frustum_camera);
-
-				std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-				for (; item != base_game_object->children.end(); ++item) {
-					if (*item != nullptr && (*item)->IsEnabled()) {
-						(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					if (App->physics->debug_physics)
+					{
+						App->physics->DrawWorld();
 					}
 				}
 
-				std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-				if (isGameCamera) {
-					OnPreRender(viewport->GetCamera());
-				}
+				if (base_game_object->HasChildren()) {
+					if (isGameCamera) {
+						OnPreCull(viewport->GetCamera());
+					}
 
-				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
-						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera());
-						else
-							(*it).second->DrawGame(viewport->GetCamera());
+					std::vector<std::pair<float, GameObject*>> to_draw;
+					std::vector<std::pair<float, GameObject*>> to_draw_ui;
+
+					ComponentCamera* frustum_camera = viewport->GetCamera();
+
+					if (check_culling_in_scene && App->renderer3D->actual_game_camera)
+					{
+						frustum_camera = App->renderer3D->actual_game_camera;
+					}
+
+					octree.SetStaticDrawList(&to_draw, frustum_camera);
+
+					std::vector<GameObject*>::iterator item = base_game_object->children.begin();
+					for (; item != base_game_object->children.end(); ++item) {
+						if (*item != nullptr && (*item)->IsEnabled()) {
+							(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+						}
+					}
+
+					std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+					if (isGameCamera) {
+						OnPreRender(viewport->GetCamera());
+					}
+
+					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+					for (; it != to_draw.end(); ++it) {
+						if ((*it).second != nullptr) {
+							if (printing_scene)
+								(*it).second->DrawScene(viewport->GetCamera());
+							else
+								(*it).second->DrawGame(viewport->GetCamera());
+						}
+					}
+
+					if (isGameCamera) {
+						OnPostRender(viewport->GetCamera());
 					}
 				}
-
-				if (isGameCamera) {
-					OnPostRender(viewport->GetCamera());
-				}
 			}
+			wfbos->UnbindCurrentFrameBuffer();
 		}
-		wfbos->UnbindCurrentFrameBuffer();
 	}
 
 #else
