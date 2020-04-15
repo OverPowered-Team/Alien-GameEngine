@@ -4,6 +4,8 @@
 #include "PxPhysicsAPI.h"
 #include "UtilitiesPhysX.h"
 
+#include <wtypes.h>
+
 using namespace physx;
 
 class ModulePhysX : public Module
@@ -76,6 +78,7 @@ private:
 	PxScene*					px_scene = nullptr;
 	PxMaterial*					px_default_material = nullptr;
 	PxPvd*						px_pvd = nullptr;
+	PxControllerManager*		controllers_manager = nullptr;
 
 	PxReal stackZ = 10.0f;
 	

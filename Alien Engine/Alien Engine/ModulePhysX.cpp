@@ -51,6 +51,8 @@ bool ModulePhysX::Init()
 	if (!isLoaded)
 		return false;
 
+	// TODO: make init blindings if any stage goes wrong
+
 	px_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, px_allocator, px_error_callback);
 
 	// set PhysX and PhysXCommon delay load hook, this must be done before the create physics is called, before ----
@@ -92,6 +94,10 @@ bool ModulePhysX::Init()
 	PxRigidStatic* groundPlane = PxCreatePlane(*px_physics, PxPlane(0, 1, 0, 0), *px_default_material);
 
 	px_scene->addActor(*groundPlane);
+
+	// create characters controller manager
+	if(px_scene)
+		controllers_manager = PxCreateControllerManager(*px_scene);
 
 	//for (PxU32 i = 0; i < 5; i++)
 	//	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);

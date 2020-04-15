@@ -1,24 +1,20 @@
 #pragma once
 
-#include "ComponentBasePhysic.h"
+#include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
-class ModulePhysics;
+class ModulePhysX;
 class ComponentMesh;
-class ComponentRigidBody;
-class ComponentVehicle;
 class ComponentTransform;
-class btKinematicCharacterController;
-class btPairCachingGhostObject;
+
 class Alien;
 
-class __declspec(dllexport) ComponentCharacterController : public ComponentBasePhysic
+class __declspec(dllexport) ComponentCharacterController : public ComponentCollider
 {
 	friend class GameObject;
 	friend class ModuleObjects;
-	friend class ModulePhysics;
+	friend class ModulePhysX;
 	friend class ReturnZ;
 	friend class CompZ;
 	friend class ComponentRigidBody;
@@ -28,35 +24,35 @@ public:
 	ComponentCharacterController(GameObject* go);
 	virtual ~ComponentCharacterController();
 
-	void Jump(float3 direction= float3::zero());
-	bool CanJump();
-	bool OnGround();
+	//void Jump(float3 direction= float3::zero());
+	//bool CanJump();
+	//bool OnGround();
 
-	float GetJumpSpeed() { return jump_speed; }
-	void SetJumpSpeed(const float jump_speed);
-	float GetGravity() { return gravity; }
-	void SetGravity(const float fall_speed);
+	//float GetJumpSpeed() { return jump_speed; }
+	//void SetJumpSpeed(const float jump_speed);
+	//float GetGravity() { return gravity; }
+	//void SetGravity(const float fall_speed);
 
-	void ApplyImpulse(float3 direction = float3::zero());
-	void SetWalkDirection(float3 direction);
+	//void ApplyImpulse(float3 direction = float3::zero());
+	//void SetWalkDirection(float3 direction);
 
-	void SetRotation(const Quat rotation);
-	Quat GetRotation() const;
+	//void SetRotation(const Quat rotation);
+	//Quat GetRotation() const;
 
-	void SetPosition(const float3 pos);
-	float3 GetPosition() const;
+	//void SetPosition(const float3 pos);
+	//float3 GetPosition() const;
 
-	void SetCharacterOffset(const float3 offset);
-	float GetCharacterHeight() { return character_height; }
-	void SetCharacterHeight(const float height);
-	float GetCharacterRadius() { return character_radius; }
-	void SetCharacterRadius(const float radius);
+	//void SetCharacterOffset(const float3 offset);
+	//float GetCharacterHeight() { return character_height; }
+	//void SetCharacterHeight(const float height);
+	//float GetCharacterRadius() { return character_radius; }
+	//void SetCharacterRadius(const float radius);
 
 protected:
 
-	void RecreateCapusle();
+	/*void RecreateCapusle();
 
-	void Reset() {}
+	void Reset() {}*/
 	void Clone(Component* clone) {}
 	void Update();
 	void DrawScene();
@@ -68,7 +64,7 @@ protected:
 
 protected:
 	ComponentTransform* transform = nullptr;
-	ComponentCollider* collider = nullptr;
+	/*ComponentCollider* collider = nullptr;
 	btKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
 	btPairCachingGhostObject* detector = nullptr;
@@ -81,5 +77,5 @@ protected:
 	float jump_speed = 0.f;
 	float gravity = 80.f;
 
-	bool test = false;
+	bool test = false;*/
 };

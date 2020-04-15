@@ -1,7 +1,5 @@
 #include "Application.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
-#include <BulletDynamics\Character\btKinematicCharacterController.h>
-#include "ModulePhysics.h"
+#include "ModulePhysX.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentCharacterController.h"
 #include "ComponentCollider.h"
@@ -13,140 +11,133 @@
 #include "ModuleInput.h"
 #include "mmgr/mmgr.h"
 
-ComponentCharacterController::ComponentCharacterController(GameObject* go) : ComponentBasePhysic(go)
+ComponentCharacterController::ComponentCharacterController(GameObject* go) : ComponentCollider(go)
 {
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
 	transform = go->GetComponent<ComponentTransform>();
 
-	collider = new ComponentCollider(go);
+	/*collider = new ComponentCollider(go);
 
 	detector->setUserPointer(collider);
-	body->setUserPointer(collider);
+	body->setUserPointer(collider);*/
 }
 
 ComponentCharacterController::~ComponentCharacterController()
 {
-	App->physics->RemoveAction(controller);
-	App->physics->RemoveDetector(body);
-	App->physics->RemoveDetector(detector);
-
-	delete shape;
-	delete body;
-	delete detector;
-	delete collider;
+	
 }
 
 // Movement Functions -----------------------------------------
 
-void ComponentCharacterController::SetWalkDirection(float3 direction)
-{
-	controller->setWalkDirection(ToBtVector3(direction));
-}
-
-
-void ComponentCharacterController::SetJumpSpeed(const float jump_speed)
-{
-	this->jump_speed = jump_speed;
-	controller->setJumpSpeed(jump_speed);
-}
-
-void ComponentCharacterController::SetGravity(const float gravity)
-{
-	this->gravity = gravity;
-	controller->setGravity(ToBtVector3(float3(0.f, -gravity, 0.f)));
-}
-
-void ComponentCharacterController::ApplyImpulse(float3 direction)
-{
-	controller->applyImpulse({ direction.x, direction.y, direction.z });
-}
-
-void ComponentCharacterController::Jump(float3 direction)
-{
-	controller->jump(ToBtVector3(direction));
-}
-
-bool ComponentCharacterController::CanJump()
-{
-	return controller->canJump();
-}
-
-bool ComponentCharacterController::OnGround()
-{
-	return controller->onGround();
-}
-
-void ComponentCharacterController::SetRotation(const Quat rotation)
-{
-	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, rotation));
-	transform->SetGlobalRotation(math::Quat(rotation));
-}
-
-Quat ComponentCharacterController::GetRotation() const
-{
-	return transform->GetGlobalRotation();
-}
-
-void ComponentCharacterController::SetPosition(const float3 pos)
-{
-	body->setWorldTransform(ToBtTransform(pos + character_offset, transform->GetGlobalRotation()));
-	transform->SetGlobalPosition(pos);
-}
-
-float3 ComponentCharacterController::GetPosition() const
-{
-	return transform->GetGlobalPosition();
-}
-
-void ComponentCharacterController::SetCharacterOffset(const float3 offset)
-{
-	character_offset = offset;
-}
-
-void ComponentCharacterController::SetCharacterHeight(const float height)
-{
-	float max = FLOAT_INF, min = 0.1f;
-	character_height = Clamp(height, min, max);
-	RecreateCapusle();
-}
-
-void ComponentCharacterController::SetCharacterRadius(const float radius)
-{
-	float max = FLOAT_INF, min = 0.1f;
-	character_radius = Clamp(radius, min, max);
-	RecreateCapusle();
-}
-// -------------------------------------------------------------
-
-void ComponentCharacterController::RecreateCapusle()
-{
-	shape->setLocalScaling(btVector3(character_radius * 2, character_height, character_radius * 2));
-}
+//void ComponentCharacterController::SetWalkDirection(float3 direction)
+//{
+//	controller->setWalkDirection(ToBtVector3(direction));
+//}
+//
+//
+//void ComponentCharacterController::SetJumpSpeed(const float jump_speed)
+//{
+//	this->jump_speed = jump_speed;
+//	controller->setJumpSpeed(jump_speed);
+//}
+//
+//void ComponentCharacterController::SetGravity(const float gravity)
+//{
+//	this->gravity = gravity;
+//	controller->setGravity(ToBtVector3(float3(0.f, -gravity, 0.f)));
+//}
+//
+//void ComponentCharacterController::ApplyImpulse(float3 direction)
+//{
+//	controller->applyImpulse({ direction.x, direction.y, direction.z });
+//}
+//
+//void ComponentCharacterController::Jump(float3 direction)
+//{
+//	controller->jump(ToBtVector3(direction));
+//}
+//
+//bool ComponentCharacterController::CanJump()
+//{
+//	return controller->canJump();
+//}
+//
+//bool ComponentCharacterController::OnGround()
+//{
+//	return controller->onGround();
+//}
+//
+//void ComponentCharacterController::SetRotation(const Quat rotation)
+//{
+//	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, rotation));
+//	transform->SetGlobalRotation(math::Quat(rotation));
+//}
+//
+//Quat ComponentCharacterController::GetRotation() const
+//{
+//	return transform->GetGlobalRotation();
+//}
+//
+//void ComponentCharacterController::SetPosition(const float3 pos)
+//{
+//	body->setWorldTransform(ToBtTransform(pos + character_offset, transform->GetGlobalRotation()));
+//	transform->SetGlobalPosition(pos);
+//}
+//
+//float3 ComponentCharacterController::GetPosition() const
+//{
+//	return transform->GetGlobalPosition();
+//}
+//
+//void ComponentCharacterController::SetCharacterOffset(const float3 offset)
+//{
+//	character_offset = offset;
+//}
+//
+//void ComponentCharacterController::SetCharacterHeight(const float height)
+//{
+//	float max = FLOAT_INF, min = 0.1f;
+//	character_height = Clamp(height, min, max);
+//	RecreateCapusle();
+//}
+//
+//void ComponentCharacterController::SetCharacterRadius(const float radius)
+//{
+//	float max = FLOAT_INF, min = 0.1f;
+//	character_radius = Clamp(radius, min, max);
+//	RecreateCapusle();
+//}
+//// -------------------------------------------------------------
+//
+//void ComponentCharacterController::RecreateCapusle()
+//{
+//	shape->setLocalScaling(btVector3(character_radius * 2, character_height, character_radius * 2));
+//}
 
 void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 {
-	to_save->SetNumber("Type", (int)type);
+	/*to_save->SetNumber("Type", (int)type);
 
 	to_save->SetFloat3("CharacterOffset", character_offset);
 	to_save->SetNumber("CharacterRadius", character_radius);
 	to_save->SetNumber("CharacterHeight", character_height);
 	to_save->SetNumber("JumpSpeed", jump_speed);
-	to_save->SetNumber("Gravity", gravity);
+	to_save->SetNumber("Gravity", gravity);*/
 }
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 {
-	SetCharacterOffset(to_load->GetFloat3("CharacterOffset"));
+	/*SetCharacterOffset(to_load->GetFloat3("CharacterOffset"));
 	SetCharacterRadius(to_load->GetNumber("CharacterRadius"));
 	SetCharacterHeight(to_load->GetNumber("CharacterHeight"));
 	SetJumpSpeed(to_load->GetNumber("JumpSpeed"));
-	SetGravity(to_load->GetNumber("Gravity"));
+	SetGravity(to_load->GetNumber("Gravity"));*/
 }
 
 bool ComponentCharacterController::DrawInspector()
 {
-	float3 current_character_offset = character_offset;
+	/*float3 current_character_offset = character_offset;
 	float current_character_radius = character_radius;
 	float current_character_height = character_height;
 	float current_jump_speed = jump_speed;
@@ -187,60 +178,60 @@ bool ComponentCharacterController::DrawInspector()
 		ImGui::Spacing();
 	}
 
-	ImGui::PopID();
+	ImGui::PopID();*/
 
 	return true;
 }
 
 void ComponentCharacterController::Update()
 {
-	collider->Update();
+	//collider->Update();
 
-	if (Time::IsPlaying())
-	{
-	/*	float3 movement = float3::zero();
+	//if (Time::IsPlaying())
+	//{
+	///*	float3 movement = float3::zero();
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-			movement.x -= 1;
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-			movement.x += 1;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-			movement.z += 1;
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-			movement.z -= 1;
+	//	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+	//		movement.x -= 1;
+	//	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+	//		movement.x += 1;
+	//	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+	//		movement.z += 1;
+	//	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+	//		movement.z -= 1;
 
-		float speed = (movement.Equals(float3::zero())) ? 0.f : 10.f;
-		controller->setWalkDirection(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));
+	//	float speed = (movement.Equals(float3::zero())) ? 0.f : 10.f;
+	//	controller->setWalkDirection(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));
 
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
-			Jump();*/
+	//	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
+	//		Jump();*/
 
-		btTransform bt_transform = body->getWorldTransform();
-		btQuaternion rotation = bt_transform.getRotation();
-		btVector3 position = bt_transform.getOrigin() - ToBtVector3(character_offset);
+	//	btTransform bt_transform = body->getWorldTransform();
+	//	btQuaternion rotation = bt_transform.getRotation();
+	//	btVector3 position = bt_transform.getOrigin() - ToBtVector3(character_offset);
 
-		transform->SetGlobalPosition(float3(position));
-		transform->SetGlobalRotation(math::Quat(rotation));
-	}
-	else
-	{
-		body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
-	}
+	//	transform->SetGlobalPosition(float3(position));
+	//	transform->SetGlobalRotation(math::Quat(rotation));
+	//}
+	//else
+	//{
+	//	body->setWorldTransform(ToBtTransform(transform->GetGlobalPosition() + character_offset, transform->GetGlobalRotation()));
+	//}
 }
 
 void ComponentCharacterController::DrawScene()
 {
-	if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
+	/*if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
 	{
 		App->physics->DrawCharacterController(this);
-	}
+	}*/
 }
 
 
 
 void ComponentCharacterController::HandleAlienEvent(const AlienEvent& e)
 {
-	collider->HandleAlienEvent(e);
+	//collider->HandleAlienEvent(e);
 }
 
 
