@@ -56,6 +56,8 @@ protected:
 
 	void RecreateCapusle();
 
+	void Reset() {}
+	void Clone(Component* clone) {}
 	void Update();
 	void DrawScene();
 	bool DrawInspector();

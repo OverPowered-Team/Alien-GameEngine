@@ -15,9 +15,10 @@ enum class Space
 
 enum class ForceMode : uint
 {
-	FORCE ,
-	VELOCITY,
+	FORCE,
 	IMPULSE,
+	ACCELERATION,
+	VELOCITY_CHANGE,
 	MAX
 };
 

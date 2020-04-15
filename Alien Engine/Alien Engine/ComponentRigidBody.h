@@ -1,14 +1,14 @@
-#ifndef _C_RIGID_BODY_H__
-#define  _C_RIGID_BODY_H__
+#pragma once
 
 #include "ComponentBasePhysic.h"
 #include "ModulePhysics.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
 class ComponentCollider;
 class ComponentCapsuleCollider;
+
+using namespace physx;
 
 class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
@@ -33,24 +33,26 @@ public:
 	void AddTorque(const float3 force, ForceMode mode = ForceMode::IMPULSE, Space space = Space::Global);
 
 	// Rigid Body Values 
+	void SetPosition(const float3 pos);
 	void SetRotation(const Quat rotation);
-	void SetTransform(const float3 position, const Quat rotation);
 	float3 GetPosition();
 	Quat GetRotation();
+	void SetTransform(const float3 position, const Quat rotation);
 
 	void SetIsKinematic(const bool value);
-	bool GetIsKinematic() { return is_kinematic;}
+	bool GetIsKinematic() { return is_kinematic; }
 	void SetMass(const float mass);
 	float GetMass() { return mass; }
 	void SetDrag(const float drag);
 	float GetDrag() { return drag; }
 	void SetAngularDrag(const float angular_drag);
+	float GetAngularDrag() { return angular_drag; }
 
-	void SetPosition(const float3 pos);
-	float3 GetPosition() const;
-
-	Quat GetRotation() const;
-
+	void SetFreezePosition(bool x, bool y, bool z);
+	void GetFreezePosition(bool values[3]);
+	void SetFreezeRotation(bool x, bool y, bool z);
+	void GetFreezeRotation(bool values[3]);
+				
 	float3 GetVelocity();
 	void SetVelocity(const float3 velocity);
 	float3 GetAngularVelocity();
@@ -68,13 +70,9 @@ private:
 	void SaveComponent(JSONArraypack* config);
 	void LoadComponent(JSONArraypack* config);
 
-	void HandleAlienEvent(const AlienEvent& e);
-	void SetBodyTranform(const float3& pos, const Quat& rot);
+	bool CanUseRigidBody();
 
 private:
-
-	float3 force_to_apply[(uint)ForceMode::MAX];
-	float3 torque_to_apply[(uint)ForceMode::MAX];
 
 	float mass = 0.0f;
 	float drag = 0.f;
@@ -83,12 +81,7 @@ private:
 	bool is_kinematic = false;
 	bool freeze_position[3] = { false, false, false };
 	bool freeze_rotation[3] = { false, false, false };
+	
+	PxRigidDynamic* body = nullptr;
 };
 
-#endif // !_C_RIGID_BODY_H__
-
-
-//bool GetFreezePostion(int coordinate);
-//void SetFreezePosition(int coordinate, bool value);	
-//bool GetFreezeRotation(int coordinate);
-//void SetFreezeRotation(int coordinate, bool value);
