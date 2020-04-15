@@ -56,6 +56,17 @@ public:
 	void SetCameraPosition(const float3& position);
 	float3 GetCameraPosition() const;
 
+	void EnableFog();
+	void DisableFog();
+
+	void SetFogDensity(const float& density);
+	void SetFogGradient(const float& gradient);
+	float GetFogDensity() const;
+	float GetFogGradient() const;
+
+	void SetBackgroundColor(const float3& color);
+	float3 GetBackgroundColor() const;
+
 	void DrawSkybox();
 
 private:
@@ -103,4 +114,8 @@ public:
 	Cubemap* cubemap = nullptr;
 	ResourceShader* skybox_shader = nullptr;
 	uint skybox_texture_id = 0u;
+	
+	bool activeFog = false;
+	float fogDensity = 0.035;
+	float fogGradient = 1.35;
 };

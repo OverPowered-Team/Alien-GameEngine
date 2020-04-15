@@ -9,42 +9,65 @@ uniform mat4 view;
 uniform mat4 model;
 uniform mat4 projection;
 
+uniform float density = 0;
+uniform float gradient = 0;
 
 out vec3 frag_pos;
 out vec2 texCoords;
+out float visibility; 
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+    vec4 pos = vec4(position, 1.0);
+    frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
+    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
+    
+    vec4 worldPos = model * pos;
+    vec4 positionRelativeToCam = view * worldPos;
+    float distance = length(positionRelativeToCam.xyz);
+    visibility = exp(-pow((distance * density), gradient));
+    visibility = clamp(visibility, 0.0, 1.0);
 };
 
 #shader fragment
 #version 330 core
+struct Material {
+    vec4 diffuse_color;
 
-uniform sampler2D tex;
-uniform vec4 diffuse_color;
+    sampler2D diffuseTexture;
+    bool hasDiffuseTexture;
+
+    
+};
+uniform Material objectMaterial;
+
+uniform bool activeFog;
+uniform vec3 backgroundColor;
+
 // Ins
 in vec2 texCoords;
+in float visibility;
+
 // Outs
 out vec4 FragColor;
 
 void main()
 {
-    vec4 textureColor = texture(tex, texCoords);
-    
+    vec4 objectColor = objectMaterial.diffuse_color;
 
-    if(textureColor.a < 0.001)
-         discard;
+    if(objectMaterial.hasDiffuseTexture == true)
+    {
+        objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords));
 
-     if(textureColor == vec4(0,0,0,1))
-     {
-        FragColor = diffuse_color;
-     }
-    else
-     {
-        FragColor = textureColor * diffuse_color;
-     }
-   
-    
+        if (objectColor.w < 0.0001)
+            discard;
+    }
+
+    FragColor = objectColor;
+     
+    if(activeFog)
+    {
+        FragColor = mix(vec4(backgroundColor, 1.0), FragColor, visibility);
+    }
 }

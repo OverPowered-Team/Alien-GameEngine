@@ -193,6 +193,18 @@ update_status ModuleInput::PreUpdate(float dt)
 		else {
 			(*item).second->joystick_left.valueY = (value - ((value > 0) ? DEAD_ZONE : -DEAD_ZONE)) / (32767 - 3 * DEAD_ZONE);
 		}
+
+		SetJoystickState((*item).second->joystick_left.valueX, &(*item).second->joystick_left.joystick_state_right, Input::JOYSTICK_BUTTONS::JOYSTICK_RIGHT);
+		SetJoystickState((*item).second->joystick_left.valueX, &(*item).second->joystick_left.joystick_state_left, Input::JOYSTICK_BUTTONS::JOYSTICK_LEFT);
+		SetJoystickState((*item).second->joystick_left.valueY, &(*item).second->joystick_left.joystick_state_up, Input::JOYSTICK_BUTTONS::JOYSTICK_UP);
+		SetJoystickState((*item).second->joystick_left.valueY, &(*item).second->joystick_left.joystick_state_down, Input::JOYSTICK_BUTTONS::JOYSTICK_DOWN);
+
+		SetJoystickState((*item).second->joystick_right.valueX, &(*item).second->joystick_right.joystick_state_right, Input::JOYSTICK_BUTTONS::JOYSTICK_RIGHT);
+		SetJoystickState((*item).second->joystick_right.valueX, &(*item).second->joystick_right.joystick_state_left, Input::JOYSTICK_BUTTONS::JOYSTICK_LEFT);
+		SetJoystickState((*item).second->joystick_right.valueY, &(*item).second->joystick_right.joystick_state_up, Input::JOYSTICK_BUTTONS::JOYSTICK_UP);
+		SetJoystickState((*item).second->joystick_right.valueY, &(*item).second->joystick_right.joystick_state_down, Input::JOYSTICK_BUTTONS::JOYSTICK_DOWN);
+
+
 	}
 
 	mouse_x_motion = mouse_y_motion = 0;
@@ -249,7 +261,7 @@ update_status ModuleInput::PreUpdate(float dt)
 
 					if (haptic != nullptr)
 					{
-						if (SDL_HapticRumbleInit(haptic) < 0) 
+						if (SDL_HapticRumbleInit(haptic) < 0)
 						{
 							LOG_ENGINE("Warning: Unable to initialize rumble! SDL Error: %s\n", SDL_GetError());
 						}
@@ -263,7 +275,7 @@ update_status ModuleInput::PreUpdate(float dt)
 					pad->controller = controller;
 					pad->haptic = haptic;
 					pad->number = e.cdevice.which + 1;
-					memset(pad->controller_buttons, KEY_IDLE, sizeof(KEY_STATE)* SDL_CONTROLLER_BUTTON_MAX);
+					memset(pad->controller_buttons, KEY_IDLE, sizeof(KEY_STATE) * SDL_CONTROLLER_BUTTON_MAX);
 					game_pads.emplace(pad->number, pad);
 					LOG_ENGINE("Controller %i loaded correctly", pad->number);
 				}
@@ -364,4 +376,75 @@ void ModuleInput::AddInputBuff(const uint& key, const uint& state, const bool& i
 		input.appendf(text);
 
 	strcpy(repeat, text);
+}
+
+void ModuleInput::SetJoystickState(float value, KEY_STATE* state, Input::JOYSTICK_BUTTONS joystick)
+{
+
+	switch (joystick)
+	{
+	case Input::JOYSTICK_UP: {
+
+		if (*state == KEY_IDLE && value < 0)
+			*state = KEY_DOWN;
+
+		else if (*state == KEY_DOWN && value < 0)
+			*state = KEY_REPEAT;
+
+		else if (*state == KEY_DOWN && value == 0)
+			*state = KEY_IDLE;
+
+		else if (*state == KEY_REPEAT && value == 0)
+			*state = KEY_IDLE;
+		break; }
+
+	case Input::JOYSTICK_DOWN: {
+
+		if (*state == KEY_IDLE && value > 0)
+			*state = KEY_DOWN;
+
+		else if (*state == KEY_DOWN && value > 0)
+			*state = KEY_REPEAT;
+
+		else if (*state == KEY_DOWN && value == 0)
+			*state = KEY_IDLE;
+
+		else if (*state == KEY_REPEAT && value == 0)
+			*state = KEY_IDLE;
+		break; }
+
+	case Input::JOYSTICK_RIGHT: {
+
+		if (*state == KEY_IDLE && value > 0)
+			*state = KEY_DOWN;
+
+		else if (*state == KEY_DOWN && value > 0)
+			*state = KEY_REPEAT;
+
+		else if (*state == KEY_DOWN && value == 0)
+			*state = KEY_IDLE;
+
+		else if (*state == KEY_REPEAT && value == 0)
+			*state = KEY_IDLE;
+		break; }
+
+	case Input::JOYSTICK_LEFT: {
+
+		if (*state == KEY_IDLE && value < 0)
+			*state = KEY_DOWN;
+
+		else if (*state == KEY_DOWN && value < 0)
+			*state = KEY_REPEAT;
+
+		else if (*state == KEY_DOWN && value == 0)
+			*state = KEY_IDLE;
+
+		else if (*state == KEY_REPEAT && value == 0)
+			*state = KEY_IDLE;
+		break; }
+
+	default: {
+		break; }
+	}
+	
 }

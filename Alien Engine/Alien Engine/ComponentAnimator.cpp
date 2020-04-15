@@ -59,6 +59,24 @@ bool ComponentAnimator::IsPlaying(const char* name)
 	return ret;
 }
 
+void ComponentAnimator::IncreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() * value);
+	}
+}
+
+void ComponentAnimator::DecreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() / value);
+	}
+}
+
 void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 {
 	float3 position, scale;
@@ -81,6 +99,7 @@ void ComponentAnimator::OnPlay()
 	{
 		source_animator_controller->SaveAsset(source_animator_controller->GetID());
 		animator_controller = new ResourceAnimatorController(source_animator_controller);
+		animator_controller->mycomponent = this;
 		source_animator_controller->DecreaseReferences();
 		animator_controller->Play();
 	}
@@ -143,7 +162,22 @@ void ComponentAnimator::SetInt(const char* parameter_name, int parameter_value)
 
 float ComponentAnimator::GetCurrentStateDuration()
 {
-	return animator_controller->GetCurrentNode()->GetClip()->GetDuration() * animator_controller->GetCurrentNode()->GetSpeed();
+	return animator_controller->GetCurrentNode()->GetClip()->GetDuration() / animator_controller->GetCurrentNode()->GetSpeed();
+}
+
+float ComponentAnimator::GetCurrentStateSpeed()
+{
+	return animator_controller->GetCurrentNode()->GetSpeed();
+}
+
+float ComponentAnimator::GetCurrentStateTime()
+{
+	return animator_controller->GetCurrentNode()->time;
+}
+
+uint ComponentAnimator::GetCurrentAnimTPS()
+{
+	return animator_controller->GetCurrentNode()->GetClip()->ticks_per_second;
 }
 
 bool ComponentAnimator::DrawInspector()

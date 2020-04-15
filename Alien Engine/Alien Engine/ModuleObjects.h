@@ -130,7 +130,7 @@ public:
 	void DeleteAllObjects();
 
 	// select/disselect objects
-	void SetNewSelectedObject(GameObject* selected);
+	void SetNewSelectedObject(GameObject* selected, bool select_children);
 	const std::list<GameObject*>& GetSelectedObjects();
 	void DeselectObjects();
 	void DeselectObject(GameObject* obj);
@@ -180,6 +180,8 @@ public:
 
 	static bool SortGameObjectToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last);
 
+	static bool SortUIToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last);
+
 	void AddScriptObject(const u64& ID, GameObject** object);
 
 	void DuplicateObjects();
@@ -190,6 +192,8 @@ public:
 	/*bool IsInvoking(std::function<void()> void_no_params_function);*/
 
 	void ReAttachUIScriptEvents();
+
+	void ResetUIFocus();
 
 private:
 
@@ -218,6 +222,10 @@ public:
 	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
+
+	std::vector<std::function<void()>> functions_to_call;
+
+	bool is_saving_prefab = false;
 
 	// Frustum
 	bool draw_frustum = true;
@@ -303,6 +311,8 @@ public:
 	std::list<PointLightProperties*> point_light_properites;
 	std::list<SpotLightProperties*> spot_light_properites;
 	std::vector<std::pair<u64, GameObject**>> to_add;
+
+	std::string sceneNameToChange;
 
 private:
 	// root

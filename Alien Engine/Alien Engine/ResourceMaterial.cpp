@@ -77,6 +77,23 @@ void ResourceMaterial::OnDeselected()
 	FreeMemory();
 }
 
+void ResourceMaterial::SaveResource()
+{
+	remove(path.c_str());
+
+	JSON_Value* alien_value = json_value_init_object();
+	JSON_Object* alien_object = json_value_get_object(alien_value);
+	json_serialize_to_file_pretty(alien_value, path.data());
+
+	if (alien_value != nullptr && alien_object != nullptr) {
+		JSONfilepack* alien = new JSONfilepack(path.data(), alien_object, alien_value);
+		SaveMaterialValues(alien);
+		delete alien;
+	}
+
+	CreateMetaData(ID);
+}
+
 bool ResourceMaterial::CreateMetaData(const u64& force_id)
 {
 	if (force_id == 0) {
@@ -117,8 +134,7 @@ bool ResourceMaterial::CreateMetaData(const u64& force_id)
 		// ...?
 	}
 
-	if(!App->IsQuiting())
-		App->resources->AddResource(this);
+	App->resources->AddResource(this);
 	return true;
 }
 
@@ -208,23 +224,6 @@ bool ResourceMaterial::DeleteMetaData()
 	return true;
 }
 
-void ResourceMaterial::SaveMaterialFiles()
-{
-	remove(path.c_str());
-
-	JSON_Value* alien_value = json_value_init_object();
-	JSON_Object* alien_object = json_value_get_object(alien_value);
-	json_serialize_to_file_pretty(alien_value, path.data());
-
-	if (alien_value != nullptr && alien_object != nullptr) {
-		JSONfilepack* alien = new JSONfilepack(path.data(), alien_object, alien_value);
-		SaveMaterialValues(alien);
-		delete alien;
-	}
-
-	CreateMetaData(ID);
-}
-
 void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 {
 	file->StartSave();
@@ -296,8 +295,19 @@ void ResourceMaterial::ApplyMaterial()
 	else	
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
+		used_shader->SetUniform1i("objectMaterial.normalMap", 2);
+		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
+	}
+	else
+		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
+
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shaderInputs.particleShaderProperties.color = color;
 	used_shader->UpdateUniforms(shaderInputs);
 }
 
@@ -312,6 +322,27 @@ void ResourceMaterial::ApplyShadows()
 	shadow_shader->SetUniformFloat3("diffuse_color", shaderInputs.standardShaderProperties.diffuse_color);
 }
 
+void ResourceMaterial::UnbindMaterial()
+{
+	used_shader->Unbind();
+	
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
+	{	
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	// Leave active texture 0 by default, unbinded
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+}
 
 void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 {
@@ -391,6 +422,13 @@ void ResourceMaterial::DisplayMaterialOnInspector()
 
 		TexturesSegment();
 
+		if (ImGui::Button("Save Material"))
+			SaveResource(); 
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
 		if (this == App->resources->default_material)
 		{
 			ImGui::PopItemFlag();
@@ -409,7 +447,7 @@ void ResourceMaterial::MaterialHeader()
 	{
 		ImGui::BeginTooltip();
 		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references - 1)).c_str());
+		ImGui::TextUnformatted(std::string("Material References: " + std::to_string(references)).c_str());
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
@@ -505,7 +543,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		ImGui::SameLine(120,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-		ImGui::ColorEdit3("Albedo", shaderInputs.particleShaderProperties.start_color.ptr(), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Albedo",color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
 	default:
@@ -531,19 +569,26 @@ void ResourceMaterial::InputTexture(TextureType texType)
 					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 					if (texture != nullptr) {
 						SetTexture(texture, texType);
+
+						// Save files when modifying material's textures
+						SaveResource();
 					}
 				}
 			}
 		}
 		ImGui::EndDragDropTarget();
-	}
+	}	
 
 	ImGui::SameLine();
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
 	ImGui::PushID((int)texType);
-	if (ImGui::RadioButton("", false))
+	if (ImGui::RadioButton("###", false))
 	{
 		RemoveTexture(texType);
+
+		// Save files when modifying material's textures
+		SaveResource();
+
 		// On hold to revise references
 		/*change_texture_menu = true;
 		selectedType = texType;*/

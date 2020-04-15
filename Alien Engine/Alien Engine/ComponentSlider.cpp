@@ -487,7 +487,7 @@ void ComponentSlider::Draw(bool isGame)
 void ComponentSlider::Update()
 {
 	if (Time::IsPlaying()) {
-		if (!App->objects->first_assigned_selected || !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)
+		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 		//UILogicMouse();
 		
@@ -496,6 +496,7 @@ void ComponentSlider::Update()
 		switch (state)
 		{
 		case Idle:
+			OnIdle();
 			break;
 		case Hover:
 			OnHover();
@@ -509,10 +510,17 @@ void ComponentSlider::Update()
 		case Release:
 			OnRelease();
 			break;
+		case Exit:
+			OnExit();
+			break;
+		case Enter:
+			OnEnter();
+			break;
 		default:
 			break;
 		}
-		UILogicGamePad();
+		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
+			UILogicGamePad();
 	}
 }
 
@@ -595,10 +603,14 @@ void ComponentSlider::DrawTexture(bool isGame, ResourceTexture* tex, bool backgr
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-	glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -739,6 +751,12 @@ void ComponentSlider::LoadComponent(JSONArraypack* to_load)
 	}
 	App->objects->first_assigned_selected = false;
 }
+bool ComponentSlider::OnIdle()
+{
+	current_color = idle_color;
+	slider_current_color = slider_idle_color;
+	return true;
+}
 bool ComponentSlider::OnHover()
 {
 	current_color = hover_color;
@@ -778,11 +796,11 @@ bool ComponentSlider::OnPressed()
 		factor = 0.0f;
 	}*/
 
-	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || Input::GetControllerHoritzontalLeftAxis(1) < -0.2f)
+	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || /*Input::GetControllerHoritzontalLeftAxis(1) < -0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_RIGHT) == KEY_REPEAT)
 	{
 		factor += (0.01f);
 	}
-	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || Input::GetControllerHoritzontalLeftAxis(1) > 0.2f)
+	if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || /*Input::GetControllerHoritzontalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_LEFT) == KEY_REPEAT)
 	{
 		factor -= (0.01f);
 	}
@@ -804,8 +822,18 @@ bool ComponentSlider::OnPressed()
 
 bool ComponentSlider::OnRelease()
 {
-	current_color = idle_color;
-	slider_current_color = slider_idle_color;
+	current_color = hover_color;
+	slider_current_color = slider_hover_color;
+	return true;
+}
+
+bool ComponentSlider::OnExit()
+{
+	return true;
+}
+
+bool ComponentSlider::OnEnter()
+{
 	return true;
 }
 
@@ -855,6 +883,14 @@ void ComponentSlider::UILogicGamePad()
 		break; }
 	case Release: {
 		state = Idle;
+		break; }
+
+	case Exit: {
+		state = Idle;
+		break; }
+
+	case Enter: {
+		state = Hover;
 		break; }
 	}
 }

@@ -29,7 +29,7 @@ struct ParticleInfo
 	float3 force = float3(0.f, 0.0f, 0.f); // float3::zero;
 	float speed = 1.0f;
 
-	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 color = float4(1.0f, 0.0f, 0.8f, 1.0f); // default pink
 	float size = 1.f;
 	float4 lightColor = float4::zero;
 

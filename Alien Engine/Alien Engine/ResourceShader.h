@@ -64,12 +64,11 @@ public:
 	bool ChangeTemplate();
 	SHADER_TEMPLATE GetShaderType() const;
 
-
-	void HierarchyUniforms();
 	void UpdateUniforms(ShaderInputs inputs);
 	void ApplyLightsUniforms();
 	void Bind() const;
 	void Unbind() const;
+
 	
 	void SetUniform1i(const std::string& name, const int& value);
 	void SetUniform1ui(const std::string& name, const uint& value);

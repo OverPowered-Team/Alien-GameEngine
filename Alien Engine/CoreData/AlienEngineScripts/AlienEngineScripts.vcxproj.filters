@@ -4,67 +4,13 @@
     <ClCompile Include="Macros\dllmain.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="MoreEventsClass.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="TestEvents.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="PolScriptSushi.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Testanimator.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerTest.cpp" />
-    <ClCompile Include="ReverbZone.cpp" />
-    <ClCompile Include="TerrainSwitch.cpp" />
-    <ClCompile Include="TestSwitches.cpp" />
-    <ClCompile Include="TriggerCamera.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="UI_Char_Frame.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="UltiBar.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="MoreEventsClass.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="TestEvents.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="PolScriptSushi.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Testanimator.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerTest.h" />
-    <ClInclude Include="ReverbZone.h" />
-    <ClInclude Include="TerrainSwitch.h" />
-    <ClInclude Include="TestSwitches.h" />
-    <ClInclude Include="TriggerCamera.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_Char_Frame.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="UltiBar.h">
-      <Filter>Core</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
