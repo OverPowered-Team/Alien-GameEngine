@@ -9,7 +9,7 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include <map>
 
-#define DEAD_ZONE 1000 // 0 - 32767
+#define DEAD_ZONE 8000 // 0 - 32767
 #define MAX_MOUSE_BUTTONS 5
 
 enum KEY_STATE
@@ -150,7 +150,7 @@ public:
 private:
 
 	void AddInputBuff(const uint& key, const uint& state, const bool& is_mouse = false);
-	void SetJoystickState(float value, KEY_STATE* state);
+	void SetJoystickState(float value, KEY_STATE* state, Input::JOYSTICK_BUTTONS joystick);
 
 private:
 	KEY_STATE* keyboard;
