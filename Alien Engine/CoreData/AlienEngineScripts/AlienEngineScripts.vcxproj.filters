@@ -5,12 +5,14 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="PlayerTest.cpp" />
+    <ClCompile Include="CameraShake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="PlayerTest.h" />
+    <ClInclude Include="CameraShake.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

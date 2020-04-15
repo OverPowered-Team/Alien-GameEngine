@@ -1,5 +1,7 @@
 #include "Maths.h"
 #include "MathGeoLib/include/Math/MathFunc.h"
+#include "Perlin_Noise/PerlinNoise.h"
+#include "RandomHelper.h"
 
 float Maths::Abs(const float& value)
 {
@@ -125,6 +127,11 @@ float Maths::Max(const float& value1, const float& value2)
 double Maths::Max(const double& value1, const double& value2)
 {
 	return (value1 < value2) ? value2 : value1;
+}
+
+float Maths::PerlinNoise(const unsigned int& seed)
+{
+	return Random::GetRandomFloatBetweenTwo(-1.f,1.f);
 }
 
 double Maths::PI()

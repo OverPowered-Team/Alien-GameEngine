@@ -121,6 +121,9 @@
     <Filter Include="Tools\FreeImage">
       <UniqueIdentifier>{78bf3428-1a09-4931-84fd-d3b902f84b5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\PerlinNoise">
+      <UniqueIdentifier>{b23c707a-44fe-4bcd-8cdf-027088b7e211}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -653,6 +656,9 @@
     </ClInclude>
     <ClInclude Include="ModuleFadeToBlack.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Perlin_Noise\PerlinNoise.h">
+      <Filter>Tools\PerlinNoise</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2626,6 +2632,9 @@
     </ClCompile>
     <ClCompile Include="ModuleFadeToBlack.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Perlin_Noise\PerlinNoise.cpp">
+      <Filter>Tools\PerlinNoise</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

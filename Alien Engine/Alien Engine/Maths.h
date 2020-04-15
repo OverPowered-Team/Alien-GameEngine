@@ -32,6 +32,8 @@ public:
 	static float Max(const float& value1, const float& value2);
 	static double Max(const double& value1, const double& value2);
 
+	static float PerlinNoise(const unsigned int& seed);
+
 	// TODO: Lerp(); :D
 
 	static double PI();
