@@ -23,13 +23,7 @@ ComponentScript::~ComponentScript()
 	if (data_ptr != nullptr) {
 		if (need_alien) {
 			Alien* alien = (Alien*)data_ptr;
-			std::list<Alien*>::iterator item = App->objects->current_scripts.begin();
-			for (; item != App->objects->current_scripts.end(); ++item) {
-				if (*item != nullptr && *item == alien) {
-					App->objects->current_scripts.erase(item);
-					break;
-				}
-			}
+			App->objects->RemoveScript(alien);
 			if (alien != nullptr) {
 				if (!App->IsQuiting()) {
 					alien->CleanUp();
@@ -859,7 +853,7 @@ void ComponentScript::LoadData(const char* name, bool is_alien)
 		try {
 			alien->IsAlien();
 			need_alien = true;
-			App->objects->current_scripts.push_back(alien);
+			App->objects->AddScript(alien);
 			alien->game_object = game_object_attached;
 			alien->transform = game_object_attached->transform;
 			alien->enabled = &enabled;

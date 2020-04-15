@@ -4,6 +4,9 @@
 #include "ResourceScene.h"
 #include "ModuleFadeToBlack.h"
 
+#include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
+
 int SceneManager::scenes_loaded = 0;
 
 void SceneManager::LoadScene(const char* scene_name, FadeToBlackType ftb_type, float fade_seconds, float3 color)
@@ -18,7 +21,38 @@ void SceneManager::LoadScene(const char* scene_name, FadeToBlackType ftb_type, f
 
 	}
 }
+static int TestThread(void* ptr)
+{
+	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+	App->objects->LoadSceneParalel("minions");
+	SDL_GL_MakeCurrent(App->window->window, NULL);
+	//wglMakeCurrent(NULL, NULL);
+	return 234567;
+}
+void SceneManager::LoadParalelScene(const char* scene_name)
+{
+	if (!App->objects->is_loading_scene_paralel) {
+		//App->objects->paralel_thread = std::thread(std::bind(&ModuleObjects::LoadSceneParalel, App->objects, scene_name));
+		SDL_Thread* thread;
+		int         threadReturnValue;
 
+		printf("Simple SDL_CreateThread test:\n");
+		SDL_GL_MakeCurrent(App->window->window, NULL);
+		//wglMakeCurrent(NULL, NULL);
+		/* Simply create a thread */
+		thread = SDL_CreateThread(TestThread, "TestThread", (void*)NULL);
+
+		if (NULL == thread) {
+			printf("SDL_CreateThread failed: %s\n", SDL_GetError());
+		}
+		else {
+			//SDL_WaitThread(thread, &threadReturnValue);
+			//LOG_ENGINE("LAST");
+			//SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+		}
+
+	}
+}
 
 int SceneManager::ScenesLoaded()
 {

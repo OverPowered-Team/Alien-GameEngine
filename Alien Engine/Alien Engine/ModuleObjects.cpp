@@ -224,6 +224,37 @@ update_status ModuleObjects::Update(float dt)
 	UpdateGamePadInput();
 	ScriptsUpdate();
 
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+		SceneManager::LoadParalelScene("minions");
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) {
+		ChangeSceneToParalel();
+		/*SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+		glEnable(GL_LINE_SMOOTH);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_COLOR_MATERIAL);
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_NORMALIZE);
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);*/
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
+		SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+	}
+
+	if (paralel_thread.joinable()) {
+		LOG_ENGINE("AAAAAAAAAAAAAAAA");
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -1473,6 +1504,115 @@ void ModuleObjects::ResetUIFocus()
 	first_assigned_selected = false;
 }
 
+void ModuleObjects::LoadSceneParalel(const char* scene_name)
+{
+	if (!is_loading_scene_paralel) {
+		is_loading_scene_paralel = true;
+
+		paralel_scene = App->resources->GetSceneByName(scene_name);
+		if (paralel_scene != nullptr) {
+			JSON_Value* value = json_parse_file(paralel_scene->GetLibraryPath());
+			JSON_Object* object = json_value_get_object(value);
+
+			if (value != nullptr && object != nullptr)
+			{
+				paralel_scene_root = new GameObject();
+				paralel_scene_root->ID = 0;
+				paralel_scene_root->is_static = true;
+
+				JSONfilepack* scene = new JSONfilepack(paralel_scene->GetLibraryPath(), object, value);
+
+				JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
+
+				if (game_objects != nullptr) {
+					std::vector<std::tuple<uint, u64, uint>> objects_to_create;
+
+					for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
+						GameObject* obj = new GameObject(true);
+						u64 parentID = std::stoull(game_objects->GetString("ParentID"));
+						if (parentID != 0) {
+							std::vector<GameObject*>::iterator object = objects.begin();
+							for (; object != objects.end(); ++object) {
+								if ((*object)->ID == parentID) {
+									obj->LoadObject(game_objects, *object);
+									break;
+								}
+							}
+						}
+						else {
+							obj->LoadObject(game_objects, paralel_scene_root);
+						}
+						objects.push_back(obj);
+						game_objects->GetAnotherNode();
+					}
+					for each (GameObject * obj in objects) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+					{
+						ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
+						if (def_mesh)
+							def_mesh->AttachSkeleton();
+					}
+					ReAttachUIScriptEvents();
+					delete scene;
+
+					if (!to_add.empty()) {
+						auto item = to_add.begin();
+						for (; item != to_add.end(); ++item) {
+							GameObject* found = paralel_scene_root->GetGameObjectByID((*item).first);
+							if (found != nullptr) {
+								*(*item).second = found;
+							}
+						}
+					}
+				}
+			}
+		}
+		is_loading_scene_paralel = false;
+		/*wglMakeCurrent(NULL, NULL);
+		paralel_thread.detach();*/
+
+		LOG_ENGINE("FINISHEEEEEEEEEEEEEEEEEEEEEEED");
+	}
+}
+
+void ModuleObjects::ChangeSceneToParalel()
+{
+	if (paralel_scene_root != nullptr) {
+		if (Time::IsInGameState()) {
+			CleanUpScriptsOnStop();
+		}
+		App->CastEvent(EventType::ON_UNLOAD_SCENE);
+		octree.Clear();
+		Gizmos::ClearAllCurrentGizmos();
+		delete base_game_object;
+		game_objects_selected.clear();
+		base_game_object = new GameObject();
+		base_game_object->ID = 0;
+		base_game_object->is_static = true;
+
+		current_scripts.clear();
+
+		paralel_scene_root->parent = base_game_object;
+		base_game_object->AddChild(paralel_scene_root);
+
+
+		current_scripts = paralel_scripts;
+		paralel_scripts.clear();
+		if (!current_scripts.empty() && Time::IsInGameState()) {
+			OnPlay();
+			for each (GameObject * obj in objects) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+			{
+				ComponentAnimator* anim = obj->GetComponent<ComponentAnimator>();
+				if (anim != nullptr) {
+					anim->OnPlay();
+				}
+			}
+		}
+		objects.clear();
+
+		current_scene = paralel_scene;
+	}
+}
+
 
 //bool ModuleObjects::IsInvoking(std::function<void()> void_no_params_function)
 //{
@@ -1993,6 +2133,26 @@ void ModuleObjects::HandleEvent(EventType eventType)
 	}
 	
 
+}
+
+void ModuleObjects::AddScript(Alien* alien)
+{
+	if (!is_loading_scene_paralel) {
+		current_scripts.push_back(alien);
+	}
+	else {
+		paralel_scripts.push_back(alien);
+	}
+}
+
+void ModuleObjects::RemoveScript(Alien* alien)
+{
+	if (!is_loading_scene_paralel) {
+		current_scripts.remove(alien);
+	}
+	else {
+		paralel_scripts.remove(alien);
+	}
 }
 
 void ModuleObjects::CreateBasePrimitive(PrimitiveType type)

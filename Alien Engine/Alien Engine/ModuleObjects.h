@@ -14,6 +14,7 @@
 #include <stack>
 #include <functional>
 #include <map>
+#include <thread>
 #include <string>
 
 class ReturnZ;
@@ -89,7 +90,8 @@ public:
 	void HandleAlienEvent(const AlienEvent& alien_event);
 	void HandleEvent(EventType eventType) override;
 
-
+	void AddScript(Alien* alien);
+	void RemoveScript(Alien* alien);
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
@@ -195,6 +197,9 @@ public:
 
 	void ResetUIFocus();
 
+	void LoadSceneParalel(const char* scene_name);
+	void ChangeSceneToParalel();
+
 private:
 
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
@@ -207,6 +212,14 @@ private:
 	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
 
 public:
+
+	bool is_loading_scene_paralel = false;
+	std::list<Alien*> paralel_scripts;
+	GameObject* paralel_scene_root = nullptr;
+	ResourceScene* paralel_scene = nullptr;
+	std::thread paralel_thread;
+	std::vector<GameObject*> objects;
+
 	//Focus
 	u64 selected_ui = -1;
 

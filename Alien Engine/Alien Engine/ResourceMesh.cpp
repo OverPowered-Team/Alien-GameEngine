@@ -10,6 +10,9 @@
 #include "ResourceBone.h"
 #include "mmgr/mmgr.h"
 
+#include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
+
 ResourceMesh::ResourceMesh() : Resource()
 {
 	type = ResourceType::RESOURCE_MESH;
@@ -404,10 +407,24 @@ bool ResourceMesh::DeleteMetaData()
 }
 
 void ResourceMesh::InitBuffers()
-{
+{	
+	/*SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_NORMALIZE);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);*/
 	// VAO
 	glGenVertexArrays(1, &vao);
-
 
 	glBindVertexArray(vao);
 

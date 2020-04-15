@@ -1105,11 +1105,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 	ID = std::stoull(to_load->GetString("ID"));
 	enabled = to_load->GetBoolean("Enabled");
 	parent_enabled = to_load->GetBoolean("ParentEnabled");
-	if (!force_no_selected && to_load->GetBoolean("Selected")) {
+	if (!force_no_selected && to_load->GetBoolean("Selected") && !App->objects->is_loading_scene_paralel) {
 		App->objects->SetNewSelectedObject(this, false);
 	}
 	prefab_locked = to_load->GetBoolean("PrefabLocked");
-	parent_selected = to_load->GetBoolean("ParentSelected");
+	parent_selected = to_load->GetBoolean("ParentSelected") && !App->objects->is_loading_scene_paralel;
 	is_static = to_load->GetBoolean("IsStatic");
 	std::string tag_ = to_load->GetString("Tag");
 	if (std::find(App->objects->tags.begin(), App->objects->tags.end(), tag_) != App->objects->tags.end()) {
