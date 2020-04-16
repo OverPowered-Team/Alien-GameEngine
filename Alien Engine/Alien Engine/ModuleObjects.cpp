@@ -249,6 +249,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
 	ImGui::End();
 
+	glEnable(GL_CLIP_DISTANCE0);
+
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
 		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
