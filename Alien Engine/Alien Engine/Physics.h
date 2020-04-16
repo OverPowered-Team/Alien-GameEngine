@@ -4,6 +4,7 @@
 #include "MathGeoLib/include/Geometry/Ray.h"
 
 class ComponentCollider;
+typedef unsigned int uint;
 
 class __declspec(dllexport) Physics {
 public:

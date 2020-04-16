@@ -98,6 +98,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>..\..\Alien Engine\Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,6 +139,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>..\..\Alien Engine\Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,40 +173,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Instatiate.h" />
-    <ClInclude Include="NilfgaardSoldier.h" />
-    <ClInclude Include="PolScriptSushi.h" />
     <ClInclude Include="PlayerTest.h" />
-    <ClInclude Include="ReverbZone.h" />
-    <ClInclude Include="TerrainSwitch.h" />
-    <ClInclude Include="PlayerController.h" />
-    <ClInclude Include="Testanimator.h" />
-    <ClInclude Include="TestEvents.h" />
     <ClInclude Include="Macros\AlienScripts.h" />
-    <ClInclude Include="MoreEventsClass.h" />
-    <ClInclude Include="TestSwitches.h" />
-    <ClInclude Include="TriggerCamera.h" />
-    <ClInclude Include="UI_Char_Frame.h" />
-    <ClInclude Include="UltiBar.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Instatiate.cpp" />
-    <ClCompile Include="NilfgaardSoldier.cpp" />
-    <ClCompile Include="PolScriptSushi.cpp" />
     <ClCompile Include="PlayerTest.cpp" />
-    <ClCompile Include="ReverbZone.cpp" />
-    <ClCompile Include="TerrainSwitch.cpp" />
-    <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="Testanimator.cpp" />
-    <ClCompile Include="TestEvents.cpp" />
     <ClCompile Include="Macros\dllmain.cpp" />
-    <ClCompile Include="MoreEventsClass.cpp" />
-    <ClCompile Include="TestSwitches.cpp" />
-    <ClCompile Include="TriggerCamera.cpp" />
-    <ClCompile Include="UI_Char_Frame.cpp" />
-    <ClCompile Include="UltiBar.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

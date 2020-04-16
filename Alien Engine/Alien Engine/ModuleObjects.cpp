@@ -26,10 +26,12 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentAudioEmitter.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
 #include "Time.h"
@@ -46,11 +48,14 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "ComponentAnimator.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "ModuleFadeToBlack.h"
+#include "SceneManager.h"
 
 ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 {
@@ -114,8 +119,7 @@ bool ModuleObjects::Start()
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 
-	App->camera->fake_camera->frustum.pos = { 25,25,25 };
-	App->camera->fake_camera->Look(float3(0, 0, 0));
+	
 
 #else 
 	JSON_Value* value = json_parse_file(BUILD_SETTINGS_PATH);
@@ -226,6 +230,7 @@ update_status ModuleObjects::Update(float dt)
 	}
 	UpdateGamePadInput();
 	ScriptsUpdate();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -508,7 +513,7 @@ void ModuleObjects::ChangeEnableOBB()
 	base_game_object->ChangeOBB(draw_all_OBB);
 }
 
-void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
+void ModuleObjects::SetNewSelectedObject(GameObject* object_selected, bool select_children)
 {
 	bool exists = std::find(game_objects_selected.begin(), game_objects_selected.end(), object_selected) != game_objects_selected.end();
 
@@ -516,6 +521,25 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		object_selected->ChangeSelected(!exists);
 		if (!exists) {
 			game_objects_selected.push_back(object_selected);
+			if (select_children) {
+				object_selected->open_node = true;
+				std::stack<GameObject*> objects;
+				for (auto item = object_selected->children.begin(); item != object_selected->children.end(); ++item) {
+					objects.push(*item);
+				}
+				while (!objects.empty()) {
+					GameObject* obj = objects.top();
+					objects.pop();
+
+					obj->ChangeSelected(true);
+					obj->open_node = true;
+					game_objects_selected.push_back(obj);
+					for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+						objects.push(*item);
+					}
+
+				}
+			}
 		}
 		else {
 			game_objects_selected.remove(object_selected);
@@ -532,6 +556,25 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected)
 		game_objects_selected.push_back(object_selected);
 		if (!exists) {
 			object_selected->ChangeSelected(true);
+		}
+		if (select_children) {
+			object_selected->open_node = true;
+			std::stack<GameObject*> objects;
+			for (auto item = object_selected->children.begin(); item != object_selected->children.end(); ++item) {
+				objects.push(*item);
+			}
+			while (!objects.empty()) {
+				GameObject* obj = objects.top();
+				objects.pop();
+
+				obj->ChangeSelected(true);
+				obj->open_node = true;
+				game_objects_selected.push_back(obj);
+				for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+					objects.push(*item);
+				}
+
+			}
 		}
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
@@ -887,7 +930,7 @@ GameObject* ModuleObjects::CreateEmptyGameObject(GameObject* parent, bool set_se
 	}
 	
 	if (set_selected)
-		SetNewSelectedObject(object);
+		SetNewSelectedObject(object, false);
 
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 
@@ -1093,6 +1136,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 void ModuleObjects::LoadScene(const char * name, bool change_scene)
 {
 	OPTICK_EVENT();
+	App->audio->Stop();
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr || !change_scene) {
 
@@ -1187,6 +1231,13 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
 					OnPlay();
+					for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+					{
+						ComponentAnimator* anim = obj->GetComponent<ComponentAnimator>();
+						if (anim != nullptr) {
+							anim->OnPlay();
+						}
+					}
 				}
 			}
 			if (change_scene) {
@@ -1505,6 +1556,8 @@ void ModuleObjects::ReAttachUIScriptEvents()
 				CompareName(&button->listenersOnClickRepeat, scriptsVec);
 				CompareName(&button->listenersOnHover, scriptsVec);
 				CompareName(&button->listenersOnRelease, scriptsVec);
+				CompareName(&button->listenersOnExit, scriptsVec);
+				CompareName(&button->listenersOnEnter, scriptsVec);
 			}
 			else {
 				ComponentCheckbox* checkbox = obj->GetComponent<ComponentCheckbox>();
@@ -1513,6 +1566,9 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnClickRepeat, scriptsVec);
 					CompareName(&checkbox->listenersOnHover, scriptsVec);
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
+					CompareName(&checkbox->listenersOnExit, scriptsVec);
+					CompareName(&checkbox->listenersOnEnter, scriptsVec);
+					
 				}
 			}
 		}
@@ -1585,7 +1641,7 @@ void ModuleObjects::CreateJsonScript(GameObject* obj, JSONArraypack* to_save)
 										inspector->SetNumber("enumInt", (*(int*)((*script)->inspector_variables[i].ptr)));
 										break; }
 									case InspectorScriptData::DataType::STRING: {
-										inspector->SetString("string", ((char*)((*script)->inspector_variables[i].ptr)));
+										inspector->SetString("string", ((std::string*)((*script)->inspector_variables[i].ptr))->data());
 										break; }
 									case InspectorScriptData::DataType::FLOAT: {
 										inspector->SetNumber("float", (*(float*)((*script)->inspector_variables[i].ptr)));
@@ -1665,8 +1721,9 @@ void ModuleObjects::ReAssignScripts(JSONArraypack* to_load)
 										*(float*)(*item).ptr = inspector->GetNumber("float");
 										break; }
 									case InspectorScriptData::DataType::STRING: {
-										char* data = (char*)(*item).ptr;
-										strcpy(data, inspector->GetString("string"));
+										std::string* data = (std::string*)(*item).ptr;
+										void (*Add)(std::string*, const char*) = (void (*)(std::string*, const char*))GetProcAddress(App->scripts_dll, std::string("ChangeString").data());
+										Add(data, inspector->GetString("string"));
 										break; }
 									case InspectorScriptData::DataType::BOOL: {
 										*(bool*)(*item).ptr = inspector->GetNumber("bool");
@@ -1729,7 +1786,7 @@ void ModuleObjects::UpdateGamePadInput()
 {
 	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation))
 	{
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) > 0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_UP) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up != -1)
 			{
@@ -1741,11 +1798,11 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("up", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_up);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || Input::GetControllerVerticalLeftAxis(1) < -0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_DOWN) || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) < -0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_DOWN) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down != -1)
 			{
@@ -1757,11 +1814,11 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("down", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_down);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) < -0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_RIGHT) || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || /*Input::GetControllerHoritzontalLeftAxis(1) < -0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_RIGHT) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right != -1)
 			{
@@ -1773,11 +1830,11 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("right", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_right);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || Input::GetControllerHoritzontalLeftAxis(1) > 0.2f)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_LEFT) || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || /*Input::GetControllerHoritzontalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_LEFT) == KEY_DOWN)
 		{
 			if (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left != -1)
 			{
@@ -1789,7 +1846,7 @@ void ModuleObjects::UpdateGamePadInput()
 					selected_ui = SetNewSelected("left", GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->select_on_left);
 					if (selected_ui == -1)
 						selected_ui = safe_selected;
-					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Hover;
+					GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state = Enter;
 				}
 			}
 		}
@@ -2117,7 +2174,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	// ---------------------------------------------------------
 
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
@@ -2125,6 +2182,9 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 {
 	GameObject* object = CreateEmptyGameObject(nullptr, false);
 	Component* comp = nullptr;
+	Component* comp_emitter = nullptr;
+	Component* comp_text = nullptr;
+
 	switch (type)
 	{
 	case ComponentType::CANVAS: {
@@ -2143,12 +2203,28 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 
 	case ComponentType::UI_BUTTON: {
+		GameObject* object_text = CreateEmptyGameObject(nullptr);
+
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentButton(object);
+		comp_emitter = new ComponentAudioEmitter(object);
+
+		comp_text = new ComponentText(object_text);
+
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
+		dynamic_cast<ComponentUI*>(comp_text)->SetCanvas(canvas);
+
 		object->SetName("Button");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
+
+		object_text->SetName("Text");
+		object_text->AddComponent(comp_text);
+
+
+		
 		ReparentGameObject(object, canvas->game_object_attached, false);
+		ReparentGameObject(object_text, object, false);
 		break; }
 
 	case ComponentType::UI_TEXT: {
@@ -2163,18 +2239,22 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 	case ComponentType::UI_CHECKBOX: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentCheckbox(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Checkbox");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
 	case ComponentType::UI_SLIDER: {
 		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentSlider(object);
+		comp_emitter = new ComponentAudioEmitter(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Slider");
 		object->AddComponent(comp);
+		object->AddComponent(comp_emitter);
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		break; }
 
@@ -2235,7 +2315,7 @@ void ModuleObjects::CreateLight(LightTypeObj type)
 		break;
 	}
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
@@ -2257,7 +2337,7 @@ void ModuleObjects::CreateEffect(ComponentType type)
 		break;
 	}
 
-	SetNewSelectedObject(object);
+	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
