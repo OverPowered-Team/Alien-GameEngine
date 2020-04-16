@@ -98,7 +98,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>PhysX\libx86\_debug\PhysXExtensions_static_32.lib;PhysX\libx86\_debug\PhysX_32.lib;PhysX\libx86\_debug\PhysXPvdSDK_static_32.lib;PhysX\libx86\_debug\PhysXVehicle_static_32.lib;PhysX\libx86\_debug\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_debug\PhysXCooking_32.lib;PhysX\libx86\_debug\PhysXCommon_32.lib;PhysX\libx86\_debug\SnippetUtils_static_32.lib;PhysX\libx86\_debug\SnippetRender_static_32.lib;PhysX\libx86\_debug\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX\libx86\_debug\PhysXExtensions_static_32.lib;PhysX\libx86\_debug\PhysX_32.lib;PhysX\libx86\_debug\PhysXPvdSDK_static_32.lib;PhysX\libx86\_debug\PhysXVehicle_static_32.lib;PhysX\libx86\_debug\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_debug\PhysXCooking_32.lib;PhysX\libx86\_debug\PhysXCommon_32.lib;PhysX\libx86\_debug\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Debug;glm;PhysX\libx86\_debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>
       </ImportLibrary>
@@ -142,7 +142,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>PhysX\libx86\_release\PhysXExtensions_static_32.lib;PhysX\libx86\_release\PhysX_32.lib;PhysX\libx86\_release\PhysXPvdSDK_static_32.lib;PhysX\libx86\_release\PhysXVehicle_static_32.lib;PhysX\libx86\_release\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_release\PhysXCooking_32.lib;PhysX\libx86\_release\PhysXCommon_32.lib;PhysX\libx86\_release\SnippetUtils_static_32.lib;PhysX\libx86\_release\SnippetRender_static_32.lib;PhysX\libx86\_release\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX\libx86\_release\PhysXExtensions_static_32.lib;PhysX\libx86\_release\PhysX_32.lib;PhysX\libx86\_release\PhysXPvdSDK_static_32.lib;PhysX\libx86\_release\PhysXVehicle_static_32.lib;PhysX\libx86\_release\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_release\PhysXCooking_32.lib;PhysX\libx86\_release\PhysXCommon_32.lib;PhysX\libx86\_release\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;PhysX\lib86\_release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>PhysX_32.dll;PhysXFoundation_32.dll;PhysXCommon_32.dll;PhysXCooking_32.dll; PhysXGpu_32.dll</DelayLoadDLLs>
     </Link>
