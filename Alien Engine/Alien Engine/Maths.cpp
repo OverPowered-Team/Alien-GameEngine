@@ -129,9 +129,9 @@ double Maths::Max(const double& value1, const double& value2)
 	return (value1 < value2) ? value2 : value1;
 }
 
-float Maths::PerlinNoise(const unsigned int& seed)
+float Maths::PerlinNoise(const unsigned int& seed, const double& x, const double& y, const double& z)
 {
-	return Random::GetRandomFloatBetweenTwo(-1.f,1.f);
+	return PerlinNoise::PerlinNoise(seed).noise(x,y,z);
 }
 
 double Maths::PI()

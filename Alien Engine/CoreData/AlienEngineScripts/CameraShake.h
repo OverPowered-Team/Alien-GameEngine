@@ -22,12 +22,14 @@ public:
 	float maxYaw = 1.f;
 	float maxPitch = 1.f;
 	float maxRoll = 1.f;
+	float off_set = 0.f;
 
 private:
 	float trauma = 0.f;
 	float traumaDecay = 0.9f;
-
 	Quat preQuat = Quat::identity();
+	float shake_offset = 0.f;
+	float pre_off_set = 0.f;
 };
 
 ALIEN_FACTORY CameraShake* CreateCameraShake() {
@@ -37,7 +39,7 @@ ALIEN_FACTORY CameraShake* CreateCameraShake() {
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxYaw);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxPitch);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxRoll);
-	
+	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->off_set);
 
 	return alien;
 } 

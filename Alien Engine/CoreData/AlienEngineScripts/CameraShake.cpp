@@ -23,19 +23,22 @@ void CameraShake::Update()
 	}
 
 	if (trauma > 0) {
+		pre_off_set = off_set*Time::GetDT();
+		shake_offset += pre_off_set;
 		transform->SetGlobalRotation(preQuat);
 		float3 rot = transform->GetGlobalRotation().ToEulerXYZ();
+		float p = (Maths::PerlinNoise(0, shake_offset, shake_offset, 0.8) * 2 - 1);
+		float yaw = rot.x + maxYaw * trauma * trauma * p;
+		float pitch = rot.y + maxPitch * trauma * trauma * (Maths::PerlinNoise(1, shake_offset, shake_offset, 0.8) * 2 - 1);
+		float roll = rot.z + maxRoll * trauma * trauma * (Maths::PerlinNoise(2, shake_offset, shake_offset, 0.8) * 2 - 1);
 
-		float yaw = rot.x + maxYaw * trauma * trauma * Maths::PerlinNoise(0);
-		float pitch = rot.y + maxPitch * trauma * trauma * Maths::PerlinNoise(0);
-		float roll = rot.z + maxRoll * trauma * trauma * Maths::PerlinNoise(0);
-		
 		transform->SetGlobalRotation(Quat::FromEulerXYZ(yaw,pitch,roll));
 
 		trauma -= Time::GetDT() * traumaDecay * (trauma + 0.3f);
 	}
 	else {
 		preQuat = transform->GetGlobalRotation();
+		pre_off_set = off_set;
 		traumaDecay = traumaDecayDef;
 	}
 }
