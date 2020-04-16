@@ -516,7 +516,7 @@ void ModuleUI::MainMenuBar()
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_SCENE);
 		}	
-		if (ImGui::MenuItem("Save Scene As", shortcut_save_scene_as_new->GetNameScancodes(), nullptr, App->objects->current_scenes.size() < 2))
+		if (ImGui::MenuItem("Save Scene As", shortcut_save_scene_as_new->GetNameScancodes(), nullptr, App->objects->GetGlobalRoot()->children.size() < 2))
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
 		}

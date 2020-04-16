@@ -2279,7 +2279,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 	}
 	if (object != nullptr) {
-		SetNewSelectedObject(object);
+		SetNewSelectedObject(object, false);
 	}
 }
 

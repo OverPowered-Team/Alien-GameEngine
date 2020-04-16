@@ -80,6 +80,10 @@ void PanelSceneSelector::LoadSceneWithPath(const char* path)
 
 void PanelSceneSelector::SaveSceneAsNew()
 {
+	if (App->objects->GetGlobalRoot()->GetChildren().size() >= 2) {
+		return;
+	}
+
 	OPENFILENAME to_save;
 
 	static char filename[MAX_PATH];
