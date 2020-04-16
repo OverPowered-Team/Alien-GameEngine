@@ -24,6 +24,15 @@ public:
 	ModulePhysX(bool start_enabled = true);
 	~ModulePhysX();
 
+public:
+	// character controller
+	PxController* CreateCharacterController(PxControllerDesc& desc);
+	uint GetNbControllers() const;
+	PxController* GetController(uint index) const;
+
+	// material
+	PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution) const;
+
 private:
 
 	// TODO DELETE ME, PVD purposes

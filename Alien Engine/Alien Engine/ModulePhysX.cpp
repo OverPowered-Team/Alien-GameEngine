@@ -99,6 +99,7 @@ bool ModulePhysX::Init()
 	if(px_scene)
 		controllers_manager = PxCreateControllerManager(*px_scene);
 
+
 	//for (PxU32 i = 0; i < 5; i++)
 	//	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
 
@@ -293,3 +294,31 @@ PxShape* ModulePhysX::CreateShape(const PxGeometry& geometry)
 {
 	return px_physics->createShape(geometry, *px_default_material);
 }
+
+PxMaterial* ModulePhysX::CreateMaterial(float staticFriction, float dynamicFriction, float restitution) const
+{
+	return px_physics->createMaterial(staticFriction, dynamicFriction, restitution);
+}
+
+// character controller ---------------------------------------------------------------
+
+PxController* ModulePhysX::CreateCharacterController(PxControllerDesc& desc)
+{
+	//return controllers_manager ? controllers_manager->createController(desc) : nullptr;
+	PxController* ret = nullptr;
+	ret = controllers_manager->createController(desc);
+
+	return ret;
+}
+
+uint ModulePhysX::GetNbControllers() const
+{
+	return controllers_manager ? controllers_manager->getNbControllers() : 0;
+}
+
+PxController* ModulePhysX::GetController(uint index) const
+{
+	return controllers_manager ? controllers_manager->getController(index) : nullptr;
+}
+
+// -------------------------------------------------------------------------------------

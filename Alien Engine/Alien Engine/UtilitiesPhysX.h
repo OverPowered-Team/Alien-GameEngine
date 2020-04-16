@@ -4,6 +4,7 @@
 #include "foundation/PxTransform.h"
 #include "foundation/PxVec3.h"
 #include "foundation/PxQuat.h"
+#include "PhysX/include/characterkinematic/PxExtended.h"
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/Quat.h"
@@ -31,12 +32,14 @@
 
 using namespace physx;
 
-inline PxVec3		F3_TO_PXVEC3(const float3 & vec) { return  PxVec3(vec.x, vec.y, vec.z); }
-inline float3		PXVEC3_TO_F3(const PxVec3 & vec) { return  float3(vec.x, vec.y, vec.z); }
-inline PxQuat		QUAT_TO_PXQUAT(const Quat & quat) { return  PxQuat(quat.x, quat.y, quat.z, quat.w); }
-inline Quat			PXQUAT_TO_QUAT(const PxQuat & quat) { return  Quat(quat.x, quat.y, quat.z, quat.w); }
-inline PxTransform	F4X4_TO_PXTRANS(const float4x4 & trans) { return PxTransform(F3_TO_PXVEC3(trans.TranslatePart()), QUAT_TO_PXQUAT(trans.RotatePart().RemoveScale2().ToQuat())); }
-inline float4x4		PXTRANS_TO_F4X4(const PxTransform & trans) { return float4x4(PXQUAT_TO_QUAT(trans.q), PXVEC3_TO_F3(trans.p)); }
+inline float3			PXVEC3EXT_TO_F3(const PxExtendedVec3 & vec) { return  float3(vec.x, vec.y, vec.z); }
+inline PxExtendedVec3	F3_TO_PXVEC3EXT(const float3 & vec) { return  PxExtendedVec3(vec.x, vec.y, vec.z); }
+inline PxVec3			F3_TO_PXVEC3(const float3 & vec) { return  PxVec3(vec.x, vec.y, vec.z); }
+inline float3			PXVEC3_TO_F3(const PxVec3 & vec) { return  float3(vec.x, vec.y, vec.z); }
+inline PxQuat			QUAT_TO_PXQUAT(const Quat & quat) { return  PxQuat(quat.x, quat.y, quat.z, quat.w); }
+inline Quat				PXQUAT_TO_QUAT(const PxQuat & quat) { return  Quat(quat.x, quat.y, quat.z, quat.w); }
+inline PxTransform		F4X4_TO_PXTRANS(const float4x4 & trans) { return PxTransform(F3_TO_PXVEC3(trans.TranslatePart()), QUAT_TO_PXQUAT(trans.RotatePart().RemoveScale2().ToQuat())); }
+inline float4x4			PXTRANS_TO_F4X4(const PxTransform & trans) { return float4x4(PXQUAT_TO_QUAT(trans.q), PXVEC3_TO_F3(trans.p)); }
 
 class CustomDelayLoadHook : public PxDelayLoadHook
 {

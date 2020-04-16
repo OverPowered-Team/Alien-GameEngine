@@ -3,6 +3,8 @@
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 
+#include "PhysX/include/characterkinematic/PxController.h"
+
 class GameObject;
 class ModulePhysX;
 class ComponentMesh;
@@ -10,7 +12,7 @@ class ComponentTransform;
 
 class Alien;
 
-class __declspec(dllexport) ComponentCharacterController : public ComponentCollider
+class __declspec(dllexport) ComponentCharacterController : public Component//ComponentCollider
 {
 	friend class GameObject;
 	friend class ModuleObjects;
@@ -44,9 +46,12 @@ public:
 
 	//void SetCharacterOffset(const float3 offset);
 	//float GetCharacterHeight() { return character_height; }
-	//void SetCharacterHeight(const float height);
+	void SetCharacterHeight(const float height);
 	//float GetCharacterRadius() { return character_radius; }
-	//void SetCharacterRadius(const float radius);
+	void SetCharacterRadius(const float radius);
+
+private:
+	void SetDefaultConf();
 
 protected:
 
@@ -78,4 +83,14 @@ protected:
 	float gravity = 80.f;
 
 	bool test = false;*/
+	float gravity = 9.8f;
+	bool isGrounded = false;
+
+private:
+	PxCapsuleControllerDesc desc;
+	PxController* controller = nullptr;
+
+	float dynamic_friction = 0.5f;
+	float static_friction = 0.5f;
+	float restitution = 0.6f;
 };
