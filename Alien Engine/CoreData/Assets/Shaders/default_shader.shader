@@ -25,7 +25,7 @@ out vec3 norms;
 out mat3 TBN; 
 out float visibility;
 
-uniform vec4 plane;
+uniform vec4 clip_plane;
 
 void main()
 {
@@ -36,13 +36,12 @@ void main()
 
     // --------- Fog ----------
     vec4 worldPos = model * pos;
-    gl_ClipDistance[0] = dot(worldPos, plane);
     vec4 positionRelativeToCam = view * worldPos;
     float distance = length(positionRelativeToCam.xyz);
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
     // ------------------------
-
+    gl_ClipDistance[0] = dot(worldPos, clip_plane);
     // --------------------------------------- 
 
     // --------------- Animation -------------

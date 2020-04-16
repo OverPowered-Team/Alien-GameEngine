@@ -168,7 +168,7 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -177,6 +177,9 @@ void GameObject::DrawScene(ComponentCamera* camera)
 	
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+	
+	if(material)
+		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
 	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
@@ -215,14 +218,17 @@ void GameObject::DrawScene(ComponentCamera* camera)
 }
 
 
-void GameObject::DrawGame(ComponentCamera* camera)
+void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-	
+
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	if(mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	if(material)
+		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
 	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{

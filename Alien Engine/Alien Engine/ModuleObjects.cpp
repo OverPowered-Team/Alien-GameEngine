@@ -315,9 +315,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
 					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera());
+						(*it).second->DrawScene(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 					else
-						(*it).second->DrawGame(viewport->GetCamera());
+						(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 				}
 			}
 
@@ -350,6 +350,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 		if (isGameCamera)
 		{
 			glEnable(GL_CLIP_DISTANCE0);
+
+			/* Reflection */
 			wfbos->BindReflectionFrameBuffer();
 			{
 				if (printing_scene)
@@ -393,9 +395,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							if (printing_scene)
-								(*it).second->DrawScene(viewport->GetCamera());
+								(*it).second->DrawScene(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 							else
-								(*it).second->DrawGame(viewport->GetCamera());
+								(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 						}
 					}
 
@@ -406,6 +408,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 			wfbos->UnbindCurrentFrameBuffer();
 
+			/* Refraction */
 			wfbos->BindRefractionFrameBuffer();
 			{
 				if (printing_scene)
@@ -449,9 +452,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							if (printing_scene)
-								(*it).second->DrawScene(viewport->GetCamera());
+								(*it).second->DrawScene(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 							else
-								(*it).second->DrawGame(viewport->GetCamera());
+								(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 						}
 					}
 
