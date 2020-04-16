@@ -103,6 +103,7 @@ void PanelHierarchy::PanelLogic()
 	}
 	RightClickMenu();
 	right_click_scene = false;
+
 	// drop a node in the window, parent is base_game_object
 	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
 	ImVec2 max_space = ImGui::GetWindowContentRegionMax();
@@ -649,8 +650,8 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 		if (ImGui::MenuItem("Save Scene As")) {
 
 		}
-		if (ImGui::MenuItem("Remove Scene")) {
-			if (obj->parent->children.size() > 1) {
+		if (ImGui::BeginMenu("Remove", obj->parent->children.size() > 1)) {
+			if (ImGui::MenuItem("Remove Scene")) {
 				GameObject::Destroy(obj);
 				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
 					if ((*item)->GetID() == obj->ID) {
@@ -659,6 +660,7 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 					}
 				}
 			}
+			ImGui::EndMenu();
 		}
 
 		ImGui::EndPopup();
