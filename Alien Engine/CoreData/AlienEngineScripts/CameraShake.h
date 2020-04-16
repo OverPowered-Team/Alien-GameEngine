@@ -17,6 +17,9 @@ public:
 	void Shake(float strength);
 	void Shake(float strength, const float& traumaDecay);
 
+	void RepeatShake(float strength, float seconds_to_first_invoke, 
+		float seconds_between_invokes, float time_to_stop);
+
 	float traumaDecayDef = 0.9f;
 
 	float maxYaw = 1.f;
@@ -26,6 +29,9 @@ public:
 private:
 	float trauma = 0.f;
 	float traumaDecay = 0.9f;
+
+	float time_to_stop = 0.f;
+	float invoke_timer = 0.f;
 
 	Quat preQuat = Quat::identity();
 };
@@ -37,7 +43,6 @@ ALIEN_FACTORY CameraShake* CreateCameraShake() {
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxYaw);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxPitch);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxRoll);
-	
 
 	return alien;
 } 
