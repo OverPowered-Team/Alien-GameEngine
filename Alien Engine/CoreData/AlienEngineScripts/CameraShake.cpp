@@ -10,6 +10,7 @@ CameraShake::~CameraShake()
 
 void CameraShake::Start()
 {
+	preQuat = transform->GetGlobalRotation();
 }
 
 void CameraShake::Update()
@@ -22,6 +23,16 @@ void CameraShake::Update()
 		Shake(0.13f, 0.1f);
 	}
 
+	if (Input::GetKeyDown(SDL_SCANCODE_A)) {
+		RepeatShake(0.13f, 0.f, .5f, 50.f);
+	}
+
+	if(time_to_stop >= 0.0)
+		if (Time::GetGameTime() - invoke_timer >= time_to_stop) {
+			CancelInvoke();
+			time_to_stop = 0.0f;
+		}
+
 	if (trauma > 0) {
 		pre_off_set = off_set*Time::GetDT();
 		shake_offset += pre_off_set;
@@ -32,8 +43,7 @@ void CameraShake::Update()
 		float pitch = rot.y + maxPitch * trauma * trauma * (Maths::PerlinNoise(1, shake_offset, shake_offset, 0.8) * 2 - 1);
 		float roll = rot.z + maxRoll * trauma * trauma * (Maths::PerlinNoise(2, shake_offset, shake_offset, 0.8) * 2 - 1);
 
-		transform->SetGlobalRotation(Quat::FromEulerXYZ(yaw,pitch,roll));
-
+		transform->SetGlobalRotation(Quat::FromEulerXYZ(yaw, pitch, roll));
 		trauma -= Time::GetDT() * traumaDecay * (trauma + 0.3f);
 	}
 	else {
@@ -55,4 +65,11 @@ void CameraShake::Shake(float strength, const float& traumaDecay)
 void CameraShake::Shake(float strength)
 {
 	Shake(strength, traumaDecayDef);
+}
+
+void CameraShake::RepeatShake(float strength, float seconds_to_first_invoke, float seconds_between_invokes, float time_to_stop)
+{
+	this->time_to_stop = time_to_stop;
+	invoke_timer = Time::GetGameTime();
+	InvokeRepeating([strength, this]() -> void {this->Shake(strength); }, seconds_to_first_invoke, seconds_between_invokes);
 }
