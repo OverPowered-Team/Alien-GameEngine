@@ -78,28 +78,31 @@ void PanelHierarchy::PanelLogic()
 		if (ImGui::Button("Return Scene")) {
 			popup_leave_prefab_view = true;
 		}
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
-	else {
-		ImGui::Text("AAAAAAAAAAAAAAAA");
-	}
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
 
 	object_hovered = nullptr;
 	if (!App->objects->GetGlobalRoot()->children.empty()) {
 		std::vector<GameObject*>::iterator item = App->objects->GetGlobalRoot()->children.begin();
 		for (; item != App->objects->GetGlobalRoot()->children.end(); ++item)
 		{
-			if (*item != nullptr)
-			{
-				PrintNode(*item);
+			ImGui::PushID(*item);
+			if (ImGui::CollapsingHeader((*item)->name, ImGuiTreeNodeFlags_DefaultOpen)) {
+				RightClickSceneNode(*item);
+				for (auto it = (*item)->children.begin(); it != (*item)->children.end(); ++it) {
+					PrintNode(*it);
+				}
 			}
+			else {
+				RightClickSceneNode(*item);
+			}
+			ImGui::PopID();
 		}
 	}
 	RightClickMenu();
-
+	right_click_scene = false;
 	// drop a node in the window, parent is base_game_object
 	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
 	ImVec2 max_space = ImGui::GetWindowContentRegionMax();
@@ -362,7 +365,7 @@ void PanelHierarchy::PrintNode(GameObject* node)
 }
 void PanelHierarchy::RightClickMenu()
 {
-	if (ImGui::BeginPopupContextWindow()) {
+	if (!right_click_scene && ImGui::BeginPopupContextWindow()) {
 
 		if (!in_menu) {
 			in_menu = true;
@@ -633,4 +636,23 @@ void PanelHierarchy::RightClickMenu()
 		object_menu = nullptr;
 	}
 
+}
+
+void PanelHierarchy::RightClickSceneNode(GameObject* obj)
+{
+	if (ImGui::BeginPopupContextItem("##SceneClickNode")) {
+		right_click_scene = true;
+
+		if (ImGui::MenuItem("Save Scene")) {
+
+		}
+		if (ImGui::MenuItem("Save Scene As")) {
+
+		}
+		if (ImGui::MenuItem("Remove Scene")) {
+
+		}
+
+		ImGui::EndPopup();
+	}
 }

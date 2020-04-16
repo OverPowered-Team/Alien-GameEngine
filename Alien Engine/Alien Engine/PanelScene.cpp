@@ -184,7 +184,7 @@ void PanelScene::PanelLogic()
 			}
 
 			// drop scene
-			if (node != nullptr && node->type == FileDropType::SCENE) {
+			if (node != nullptr && node->type == FileDropType::SCENE && !App->objects->prefab_scene) {
 				static char curr_dir[MAX_PATH];
 				GetCurrentDirectoryA(MAX_PATH, curr_dir);
 				std::string full_scene_path = curr_dir + std::string("/") + node->path + node->name;

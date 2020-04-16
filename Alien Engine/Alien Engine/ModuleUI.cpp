@@ -520,7 +520,7 @@ void ModuleUI::MainMenuBar()
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
 		}
-		if (ImGui::MenuItem("Load Scene", shortcut_load_scene->GetNameScancodes()))
+		if (ImGui::MenuItem("Load Scene", shortcut_load_scene->GetNameScancodes(), nullptr, !App->objects->prefab_scene))
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::LOAD_SCENE);
 		}

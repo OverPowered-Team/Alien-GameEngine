@@ -106,7 +106,7 @@ bool ModuleObjects::Start()
 	GameObject* scene_root = new GameObject();
 	scene_root->ID = App->resources->GetRandomID();
 	scene_root->is_static = true;
-	scene_root->SetName("Untitled");
+	scene_root->SetName("Untitled*");
 	scene_root->scene_root = scene_root;
 	base_game_object->children.push_back(scene_root);
 
@@ -1086,10 +1086,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 
 		// get scene root
 		GameObject* scene_root = nullptr;
-		if (current_scenes.empty()) {
-			scene_root = base_game_object->children[0];
-		}
-		else if (to_load_scene == nullptr) {
+		if (to_load_scene == nullptr) {
 			scene_root = base_game_object;
 		}
 		else {
@@ -1102,9 +1099,14 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		}
 
 		if (current_scenes.empty()) {
-			scene_root->SetName(to_load_scene->GetName());
-			scene_root->ID = to_load_scene->GetID();
-			current_scenes.push_back(to_load_scene);
+			if (to_load_scene != nullptr) {
+				scene_root->SetName(to_load_scene->GetName());
+				scene_root->ID = to_load_scene->GetID();
+				current_scenes.push_back(to_load_scene);
+			}
+			else {
+				scene_root->SetName("Untitled*");
+			}
 		}
 
 		if (!scene_root->children.empty()) { // if scene_root has children, save them
