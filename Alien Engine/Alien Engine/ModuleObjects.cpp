@@ -251,6 +251,19 @@ update_status ModuleObjects::Update(float dt)
 		SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
+		SDL_GL_MakeCurrent(App->window->window, App->renderer3D->thread_context);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+		wglMakeCurrent(wglGetCurrentDC(), (HGLRC)App->renderer3D->context);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN) {
+		wglMakeCurrent(wglGetCurrentDC(), (HGLRC)App->renderer3D->thread_context);
+	}
+
+	
+
 	if (paralel_thread.joinable()) {
 		LOG_ENGINE("AAAAAAAAAAAAAAAA");
 	}

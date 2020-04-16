@@ -38,9 +38,8 @@ bool ModuleRenderer3D::Init()
 	LOG_ENGINE("Creating 3D Renderer context");
 	bool ret = true;
 	
-	//Create context
-	thread_context = SDL_GL_CreateContext(App->window->window);
 	context = SDL_GL_CreateContext(App->window->window);
+
 	if(context == NULL)
 	{
 		LOG_ENGINE("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -113,6 +112,10 @@ bool ModuleRenderer3D::Init()
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+		/*wglShareLists((HGLRC)context, (HGLRC)thread_context);
+		wglShareLists((HGLRC)thread_context, (HGLRC)context);*/
+
 	}
 	return ret;
 }

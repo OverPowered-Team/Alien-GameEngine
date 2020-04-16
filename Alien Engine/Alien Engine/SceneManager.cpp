@@ -23,10 +23,14 @@ void SceneManager::LoadScene(const char* scene_name, FadeToBlackType ftb_type, f
 }
 static int TestThread(void* ptr)
 {
-	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->thread_context);
+	App->renderer3D->thread_context = SDL_GL_CreateContext(App->window->window);
+	wglMakeCurrent(wglGetCurrentDC(), (HGLRC)App->renderer3D->thread_context);
+	wglShareLists((HGLRC)App->renderer3D->context, (HGLRC)App->renderer3D->thread_context);
+	//SDL_GL_MakeCurrent(App->window->window, App->renderer3D->thread_context);
 	App->objects->LoadSceneParalel("minions");
-	SDL_GL_MakeCurrent(App->window->window, NULL);
-	//wglMakeCurrent(NULL, NULL);
+	
+	//SDL_GL_MakeCurrent(App->window->window, NULL);
+	wglMakeCurrent(NULL, NULL);
 	return 234567;
 }
 void SceneManager::LoadParalelScene(const char* scene_name)
@@ -38,6 +42,7 @@ void SceneManager::LoadParalelScene(const char* scene_name)
 
 		//wglMakeCurrent(NULL, NULL);
 		/* Simply create a thread */
+
 		thread = SDL_CreateThread(TestThread, "TestThread", (void*)NULL);
 
 		if (NULL == thread) {

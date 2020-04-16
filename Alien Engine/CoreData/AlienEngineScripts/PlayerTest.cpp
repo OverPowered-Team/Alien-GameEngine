@@ -6,6 +6,7 @@ PlayerTest::PlayerTest() : Alien()
 
 PlayerTest::~PlayerTest()
 {
+	
 }
 
 void PlayerTest::Start()
