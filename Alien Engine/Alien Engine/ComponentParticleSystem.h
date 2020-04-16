@@ -87,4 +87,6 @@ private:
 	float animSpeed = 0.1f;
 	int texRows = 1;
 	int texColumns = 1;
+	int startFrame = 0;
+	int endFrame = (texRows * texColumns) - 1;
 };

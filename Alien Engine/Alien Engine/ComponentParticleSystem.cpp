@@ -568,18 +568,25 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Rows: "); ImGui::SameLine(200, 15);
-				ImGui::SliderInt("##Rows", &texRows, 0, 10);
+				if (ImGui::SliderInt("##Rows", &texRows, 0, 10)) { endFrame = (texRows * texColumns) - 1; }
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Columns: "); ImGui::SameLine(200, 15);
-				ImGui::SliderInt("##Columns", &texColumns, 0, 10);
+				if (ImGui::SliderInt("##Columns", &texColumns, 0, 10)) { endFrame = (texRows * texColumns) - 1; }
+				
 				ImGui::Spacing();
-				ImGui::Spacing(); 
 				ImGui::Spacing();
+				ImGui::Text("Start Frame: "); ImGui::SameLine(200, 15);
+				ImGui::InputInt("##startf", &startFrame, 1,1);
+				ImGui::Text("End Frame: "); ImGui::SameLine(200, 15);
+				ImGui::InputInt("##endf", &endFrame, 1, 1);
 				//ImGui::SameLine(535, 15);
+				ImGui::Spacing();
+				ImGui::Spacing();
+
 				if (ImGui::Button("Calculate UV", { 120,20 }))
 				{
-					particleSystem->CalculateParticleUV(texRows, texColumns, animSpeed);
+					particleSystem->CalculateParticleUV(texRows, texColumns, animSpeed, startFrame, endFrame);
 				}
 				ImGui::SameLine();
 
@@ -587,8 +594,17 @@ bool ComponentParticleSystem::DrawInspector()
 				if (ImGui::Button("Reset", { 120,20 })  ||  !enable_anim)
 				{
 					particleSystem->ResetParticleUV();
+					texRows = 1;
+					texColumns = 1;
+					startFrame = 0;
+					endFrame = (texRows * texColumns) - 1;
 				}
-				
+				ImGui::SameLine();
+				ImGui::Text("Texture UV Frames: "); ImGui::SameLine();
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%i", particleSystem->particleInfo.frames.size());
+
+				ImGui::Spacing();
+				ImGui::Spacing();
 
 				if (!enable_anim)
 				{
