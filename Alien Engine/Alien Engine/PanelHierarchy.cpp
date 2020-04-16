@@ -650,7 +650,15 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 
 		}
 		if (ImGui::MenuItem("Remove Scene")) {
-
+			if (obj->parent->children.size() > 1) {
+				GameObject::Destroy(obj);
+				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+					if ((*item)->GetID() == obj->ID) {
+						App->objects->current_scenes.erase(item);
+						break;
+					}
+				}
+			}
 		}
 
 		ImGui::EndPopup();

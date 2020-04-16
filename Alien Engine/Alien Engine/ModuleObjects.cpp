@@ -108,6 +108,7 @@ bool ModuleObjects::Start()
 	scene_root->is_static = true;
 	scene_root->SetName("Untitled*");
 	scene_root->scene_root = scene_root;
+	scene_root->parent = base_game_object;
 	base_game_object->children.push_back(scene_root);
 
 	GameObject* camera = new GameObject(scene_root);
@@ -1174,6 +1175,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				scene_root->is_static = true;
 				scene_root->SetName(name);
 				scene_root->scene_root = scene_root;
+				scene_root->parent = base_game_object;
 				base_game_object->children.push_back(scene_root);
 			}
 
@@ -1259,15 +1261,13 @@ void ModuleObjects::OpenCoScene(const char* name)
 	ResourceScene* to_load = App->resources->GetSceneByName(name);
 	if (to_load != nullptr) {
 
-		std::string path;
-		if (to_load != nullptr) {
-			path = to_load->GetLibraryPath();
-		}
-		else {
-			path = name;
+		for (auto item = App->objects->GetGlobalRoot()->children.begin(); item != App->objects->GetGlobalRoot()->children.end(); ++item) {
+			if ((*item)->ID == to_load->GetID()) {
+				return;
+			}
 		}
 
-		JSON_Value* value = json_parse_file(path.data());
+		JSON_Value* value = json_parse_file(to_load->GetLibraryPath());
 		JSON_Object* object = json_value_get_object(value);
 
 		if (value != nullptr && object != nullptr) {
@@ -1277,10 +1277,11 @@ void ModuleObjects::OpenCoScene(const char* name)
 			scene_root->is_static = true;
 			scene_root->SetName(name);
 			scene_root->scene_root = scene_root;
+			scene_root->parent = base_game_object;
 			base_game_object->children.push_back(scene_root);
 
 
-			JSONfilepack* scene = new JSONfilepack(path.data(), object, value);
+			JSONfilepack* scene = new JSONfilepack(to_load->GetLibraryPath(), object, value);
 
 			JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
 
