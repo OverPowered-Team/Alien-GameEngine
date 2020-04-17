@@ -51,6 +51,9 @@ public:
 	void SetCharacterRadius(const float radius);
 	// Auto resize from the bottom (moving position pivot automatly)
 	void Resize(const float new_height);
+	void SetSlopeLimit(const float slopeLimit);
+	void SetStepOffset(const float stepOffset);
+	void SetContactOffset(const float contactOffset);
 
 	// TODO: make own copy of collision flag to not work with physx data outside.
 	// Move by motion, this function doesn't apply any gravity,
@@ -79,6 +82,7 @@ public:
 	// The velocity returned is simply the difference in distance 
 	// for the current timestep before and after a call to CharacterController.Move
 	PxExtendedVec3 velocity;
+	bool isGrounded = false;
 
 protected:
 	ComponentTransform* transform = nullptr;
@@ -97,7 +101,7 @@ protected:
 
 	bool test = false;*/
 	float gravity = 20.0f;//9.8f;
-	bool isGrounded = false;
+	
 
 	// advanced options -------------
 	// Forces move with zero vector when controller is idle, 
