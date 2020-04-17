@@ -224,7 +224,7 @@ void CollisionLayers::RemoveLayer(std::string to_remove)
 	if (std::find(layers.begin(), layers.end(), to_remove) == layers.end())
 		return;
 
-	layers.remove(to_remove);
+	std::remove(layers.begin(), layers.end(), to_remove);
 	data.erase(to_remove);
 
 	for (auto pair : data)
@@ -238,16 +238,21 @@ void CollisionLayers::GenerateFastData()
 		DeleteFastData();
 	}
 
-	int size = layers.size();
+	uint size = fast_data_size = layers.size();
 
-	fast_data = new bool* [size];
-	for (int i = 0; i < size; i++)
-		fast_data[i] = new bool[size];
+	fast_data = new bool* [fast_data_size];
+	for (int i = 0; i < fast_data_size; i++)
+		fast_data[i] = new bool[fast_data_size];
 
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
+	for (int i = 0; i < fast_data_size; i++)
+		for (int j = 0; j < fast_data_size; j++)
 			fast_data[i][j] = true;
 
+	for (int i = 0; i < size; ++i)
+	{
+		 data[layers[i]];
+
+	}
 
 }
 

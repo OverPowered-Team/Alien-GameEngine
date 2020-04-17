@@ -103,7 +103,7 @@ class CollisionLayers
 
 	void DeleteFastData();
 
-	std::list<std::string> layers;
+	std::vector<std::string> layers;
 	std::map<std::string, std::map<std::string, bool>> data;
 	bool** fast_data = nullptr;
 	uint  fast_data_size = 0;

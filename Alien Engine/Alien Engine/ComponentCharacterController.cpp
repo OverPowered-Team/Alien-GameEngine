@@ -351,7 +351,7 @@ PxControllerCollisionFlags ComponentCharacterController::Move(float3 motion)
 	collisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN) ? isGrounded = true : isGrounded = false;
 
 	// substract the difference from current pos to velocity before move
-	velocity = PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);//isGrounded ? F3_TO_PXVEC3EXT(float3::zero()) : PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);
+	velocity = isGrounded ? F3_TO_PXVEC3EXT(float3::zero()) : PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);
 
 	return collisionFlags;
 }

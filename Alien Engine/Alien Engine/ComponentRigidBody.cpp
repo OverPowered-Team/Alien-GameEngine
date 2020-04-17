@@ -39,17 +39,6 @@ void ComponentRigidBody::OnDisable()
 
 void ComponentRigidBody::Update()
 {
-	float3 force = float3(0.f, 1.f, 1.f);
-	force = force.Normalized() * 4.f;
-
-	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_Z) == KEY_DOWN)
-	//	AddForce(force, ForceMode::ACCELERATION);
-	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_X) == KEY_DOWN)
-	//	AddForce(force, ForceMode::FORCE);
-	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_C) == KEY_DOWN)
-	//	AddForce(force, ForceMode::IMPULSE);
-	//if (App->input->GetKey(SDL_Scancode::SDL_SCANCODE_V) == KEY_DOWN)
-	//	AddForce(force, ForceMode::VELOCITY_CHANGE);
 
 }
 
