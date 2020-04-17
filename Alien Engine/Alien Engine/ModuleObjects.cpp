@@ -357,8 +357,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera(), viewMat.Transposed(),
-								projMat.Transposed(), (*iter)->light->game_object_attached->transform->GetGlobalPosition());
+							(*it).second->DrawScene(viewport->GetCamera(), viewMat,
+								projMat, (*iter)->light->game_object_attached->transform->GetGlobalPosition());
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}

@@ -112,9 +112,9 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera, const float4x
 
 }
 
-void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
-	ComponentMesh::SetUniform(material, ViewMat, ProjMatrix, position);
+	ComponentMesh::SetUniform(material, camera, ViewMat, ProjMatrix, position);
 	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 	material->shadow_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 

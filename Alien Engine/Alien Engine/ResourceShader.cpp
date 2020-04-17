@@ -597,7 +597,7 @@ void ResourceShader::DrawShadows()
 
 		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
 
-		SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
+		//SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
 		SetUniformFloat3("lightPos", (*iter)->position);
 
 

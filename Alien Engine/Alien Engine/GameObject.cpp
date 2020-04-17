@@ -247,10 +247,10 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 
 
-	for (Component* component : components)
+	/*for (Component* component : components)
 	{
 		component->DrawScene();
-	}
+	}*/
 }
 
 

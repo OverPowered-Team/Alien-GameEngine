@@ -88,19 +88,17 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat
 
 		material->shadow_shader->Unbind();
 
-		material->recive_shadow = false;
 	}
 	else
 	{
 		// -------------------------- Actual Drawing -------------------------- 
 		material->ApplyMaterial();
-
 		glBindVertexArray(mesh->vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+		glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 		// Uniforms --------------
-		SetUniform(material, ViewMat, ProjMatrix, position);
+		SetUniform(material, camera, ViewMat, ProjMatrix, position);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 
@@ -108,7 +106,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat
 
 		// --------------------------------------------------------------------- 
 
-		material->recive_shadow = true;
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -200,7 +197,7 @@ void ComponentMesh::DrawMesh()
 
 }
 
-void ComponentMesh::SetUniform(ResourceMaterial* resource_material, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	resource_material->used_shader->SetUniformMat4f("view", ViewMat);
 	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
@@ -224,7 +221,7 @@ void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, Compon
 	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->shadow_shader->SetUniformFloat3("viewPos", camera->GetCameraPosition());
 	float4x4 lightSpaceMatrix = ProjMatrix * ViewMat;
-	resource_material->shadow_shader->SetUniformMat4f("lightSpaceMatrix", ViewMat);
+	resource_material->shadow_shader->SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 	//resource_material->shadow_shader->SetUniform1i("animate", animate);
 }
 
