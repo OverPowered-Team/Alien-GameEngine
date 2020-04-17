@@ -133,12 +133,12 @@ private:
 
 	float currentLifeTime = 0.f;
 	float animationTime = 0.f;
-	
+	int currentFrame = 0;
 	
 	// -------- Lerping -------------
 
 	float rateToLerp = 0.f;
 	float t = 0.0f;
-	float sheetWidth, sheetHeight = 0.f;
+	//float sheetWidth, sheetHeight = 0.f;
 
 };

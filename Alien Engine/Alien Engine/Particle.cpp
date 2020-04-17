@@ -15,7 +15,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 {
 	owner->sourceFactor = GL_SRC_ALPHA;
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
-
+	currentFrame = owner->currentFrame;
 
 	if (owner->material != nullptr) 
 	{
@@ -27,13 +27,14 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(p_material->texturesID[int(TextureType::DIFFUSE)]);
+
+		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(p_material->texturesID[int(TextureType::DIFFUSE)]);
 
 		if (tex != nullptr)
 		{
 			sheetWidth = tex->width;
 			sheetHeight = tex->height;
-		}
+		}*/
 
 	}
 
@@ -46,6 +47,7 @@ Particle::~Particle()
 	if (owner->material != nullptr)
 		delete p_material;
 
+	currentFrame = 0;
 }
 
 void Particle::PreUpdate(float dt)
@@ -90,20 +92,20 @@ void Particle::Update(float dt)
 
 		if (animationTime > particleInfo.animSpeed)
 		{
-			if (owner->currentFrame > particleInfo.currentAnimation.endFrame) {
+			if (currentFrame > particleInfo.currentAnimation.endFrame) {
 
 				if (owner->emmitter.GetLoop())
 				{
-					owner->currentFrame -= particleInfo.currentAnimation.endFrame - particleInfo.currentAnimation.startFrame;
+					currentFrame = particleInfo.currentAnimation.startFrame;
 				}
 				else
-					owner->currentFrame = particleInfo.currentAnimation.endFrame;
+					currentFrame = particleInfo.currentAnimation.endFrame;
 
 			}
 
-			PlayFrame(owner->currentFrame);
+			PlayFrame(currentFrame);
+			currentFrame++;
 
-			owner->currentFrame++;
 			animationTime = 0.f;
 
 		}
@@ -407,14 +409,14 @@ void Particle::UpdateUVs()
 
 void Particle::PlayFrame(int frame)
 {
-	particleInfo.UVs[0].U = particleInfo.frames[frame].x0 / sheetWidth;
-	particleInfo.UVs[0].V = particleInfo.frames[frame].y1 / sheetHeight;//up left
-	particleInfo.UVs[1].U = particleInfo.frames[frame].x1 / sheetWidth;
-	particleInfo.UVs[1].V = particleInfo.frames[frame].y1 / sheetHeight;//up right
-	particleInfo.UVs[2].U = particleInfo.frames[frame].x0 / sheetWidth;
-	particleInfo.UVs[2].V = particleInfo.frames[frame].y0 / sheetHeight;//down left
-	particleInfo.UVs[3].U = particleInfo.frames[frame].x1 / sheetWidth;
-	particleInfo.UVs[3].V = particleInfo.frames[frame].y0 / sheetHeight;//down right
+	particleInfo.UVs[0].U = particleInfo.frames[frame].x0 / owner->sheetWidth;
+	particleInfo.UVs[0].V = particleInfo.frames[frame].y1 / owner->sheetHeight;//up left
+	particleInfo.UVs[1].U = particleInfo.frames[frame].x1 / owner->sheetWidth;
+	particleInfo.UVs[1].V = particleInfo.frames[frame].y1 / owner->sheetHeight;//up right
+	particleInfo.UVs[2].U = particleInfo.frames[frame].x0 / owner->sheetWidth;
+	particleInfo.UVs[2].V = particleInfo.frames[frame].y0 / owner->sheetHeight;//down left
+	particleInfo.UVs[3].U = particleInfo.frames[frame].x1 / owner->sheetWidth;
+	particleInfo.UVs[3].V = particleInfo.frames[frame].y0 / owner->sheetHeight;//down right
 
 	UpdateUVs();
 }

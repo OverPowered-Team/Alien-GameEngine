@@ -650,14 +650,15 @@ void ParticleSystem::ResetParticleUV()
 	particleInfo.animated = false;
 	particleInfo.frames.clear();
 	currentFrame = 0;
+	sheetWidth = 0;
+	sheetHeight = 0;
 
 }
 
 void ParticleSystem::LoadUVs(int numRows, int numCols, ResourceTexture* tex)
 {
-	int sheetWidth, sheetHeight;
+	//int sheetWidth, sheetHeight;
 
-	
 	sheetWidth = tex->width;
 	sheetHeight = tex->height;
 
