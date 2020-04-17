@@ -354,19 +354,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			/* Reflection */
 			wfbos->BindReflectionFrameBuffer();
 			{
-				if (printing_scene)
-				{
-					if (App->physics->debug_physics)
-					{
-						App->physics->DrawWorld();
-					}
-				}
-
 				if (base_game_object->HasChildren()) {
-					if (isGameCamera) {
-						OnPreCull(viewport->GetCamera());
-					}
-
 					std::vector<std::pair<float, GameObject*>> to_draw;
 					std::vector<std::pair<float, GameObject*>> to_draw_ui;
 
@@ -387,9 +375,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 					}
 
 					std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-					if (isGameCamera) {
-						OnPreRender(viewport->GetCamera());
-					}
 
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
@@ -399,10 +384,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 							else
 								(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 15.0f));
 						}
-					}
-
-					if (isGameCamera) {
-						OnPostRender(viewport->GetCamera());
 					}
 				}
 			}

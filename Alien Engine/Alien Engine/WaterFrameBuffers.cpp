@@ -24,16 +24,50 @@ WaterFrameBuffers::~WaterFrameBuffers()
 
 void WaterFrameBuffers::BindReflectionFrameBuffer()
 {
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_LIGHTING);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+
+	glShadeModel(GL_SMOOTH);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+	glStencilFunc(GL_ALWAYS, 1, 0);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	glDepthMask(true);
+	glDepthRange(0.f, 1.f);
 	BindFrameBuffer(reflection_frame_buffer, WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 }
 
 void WaterFrameBuffers::BindRefractionFrameBuffer()
 {
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_LIGHTING);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+
+	glShadeModel(GL_SMOOTH);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+	glStencilFunc(GL_ALWAYS, 1, 0);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	glDepthMask(true);
+	glDepthRange(0.f, 1.f);
 	BindFrameBuffer(refraction_frame_buffer, WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 }
 
 void WaterFrameBuffers::UnbindCurrentFrameBuffer()
 {
+	glDisable(GL_LIGHTING);
+	glDisable(GL_POLYGON_SMOOTH);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_STENCIL_TEST);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glViewport(0, 0, width, height);
 }
