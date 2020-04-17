@@ -3,15 +3,13 @@
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 #include "PhysX/include/characterkinematic/PxController.h"
+#include "PhysX/include/characterkinematic/PxCapsuleController.h"
 
 class GameObject;
-class ModulePhysX;
 class ComponentMesh;
 class ComponentTransform;
 
-class Alien;
-
-class __declspec(dllexport) ComponentCharacterController : public Component//ComponentCollider
+class __declspec(dllexport) ComponentCharacterController : public ComponentCollider
 {
 	friend class GameObject;
 	friend class ModuleObjects;

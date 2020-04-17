@@ -13,7 +13,7 @@
 #include "ModuleInput.h"
 #include "mmgr/mmgr.h"
 
-ComponentCharacterController::ComponentCharacterController(GameObject* go) : Component(go)//ComponentCollider(go)
+ComponentCharacterController::ComponentCharacterController(GameObject* go) : ComponentCollider(go)
 {
 	type = ComponentType::CHARACTER_CONTROLLER;
 	// GameObject Components 
