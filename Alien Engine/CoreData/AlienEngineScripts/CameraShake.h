@@ -36,7 +36,7 @@ private:
 
 	Quat preQuat = Quat::identity();
 	float shake_offset = 0.f;
-	float pre_off_set = 0.f;
+	float post_off_set = 0.f;
 };
 
 ALIEN_FACTORY CameraShake* CreateCameraShake() {

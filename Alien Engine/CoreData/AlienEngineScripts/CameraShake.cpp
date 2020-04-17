@@ -15,16 +15,19 @@ void CameraShake::Start()
 
 void CameraShake::Update()
 {
+	static float jiji = 1.f;
 	if (Input::GetKeyDown(SDL_SCANCODE_RETURN)) {
-		Shake(0.13f);
+		jiji -= 0.08f;
+		Time::SetScaleTime(jiji);
 	}
-
+	if (Input::GetKeyDown(SDL_SCANCODE_P))
+		jiji = 1.f;
 	if (Input::GetKeyDown(SDL_SCANCODE_S)) {
 		Shake(0.13f, 0.1f);
 	}
 
 	if (Input::GetKeyDown(SDL_SCANCODE_A)) {
-		RepeatShake(0.13f, 0.f, .5f, 50.f);
+		RepeatShake(0.13f, 0.f, 0.2f, 50.f);
 	}
 
 	if(time_to_stop >= 0.0)
@@ -34,21 +37,23 @@ void CameraShake::Update()
 		}
 
 	if (trauma > 0) {
-		pre_off_set = off_set*Time::GetDT();
-		shake_offset += pre_off_set;
+		float p = off_set * Time::GetDT();
+		post_off_set += p;
+
 		transform->SetGlobalRotation(preQuat);
 		float3 rot = transform->GetGlobalRotation().ToEulerXYZ();
-		float p = (Maths::PerlinNoise(0, shake_offset, shake_offset, 0.8) * 2 - 1);
-		float yaw = rot.x + maxYaw * trauma * trauma * p;
-		float pitch = rot.y + maxPitch * trauma * trauma * (Maths::PerlinNoise(1, shake_offset, shake_offset, 0.8) * 2 - 1);
-		float roll = rot.z + maxRoll * trauma * trauma * (Maths::PerlinNoise(2, shake_offset, shake_offset, 0.8) * 2 - 1);
+		float yaw = rot.x + maxYaw * Time::GetDT() * trauma *(Maths::PerlinNoise(0, post_off_set, 0.8f, 0.8f) * 2 - 1);
+		float pitch = rot.y + maxPitch* Time::GetDT() * trauma * (Maths::PerlinNoise(1, 0.8f, post_off_set, 0.8f) * 2 - 1);
+		float roll = rot.z + maxRoll* Time::GetDT() * trauma * (Maths::PerlinNoise(2, 0.8, 0.8f, post_off_set) * 2 - 1);
 
 		transform->SetGlobalRotation(Quat::FromEulerXYZ(yaw, pitch, roll));
 		trauma -= Time::GetDT() * traumaDecay * (trauma + 0.3f);
+		LOG("POST OFFSET: %f", post_off_set);
+		LOG("OFFSET: %f", off_set*Time::GetDT());
 	}
 	else {
 		preQuat = transform->GetGlobalRotation();
-		pre_off_set = off_set;
+		post_off_set = off_set;
 		traumaDecay = traumaDecayDef;
 	}
 }
