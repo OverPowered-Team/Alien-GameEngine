@@ -34,7 +34,8 @@ public:
 
 	static float PerlinNoise(const unsigned int& seed, const double& x, const double& y, const double& z);
 
-	// TODO: Lerp(); :D
+	static float Lerp(const float& start, const float& end, const float& t);
+	static int   Lerp(const int& start, const int& end, const float& t);
 
 	static double PI();
 	static double Deg2Rad();

@@ -134,6 +134,16 @@ float Maths::PerlinNoise(const unsigned int& seed, const double& x, const double
 	return PerlinNoise::PerlinNoise(seed).noise(x,y,z);
 }
 
+float Maths::Lerp(const float& start, const float& end, const float& t)
+{
+	return start + t * (end - start);
+}
+
+int Maths::Lerp(const int& start, const int& end, const float& t)
+{
+	return start + int(t * (end - start));
+}
+
 double Maths::PI()
 {
 	return 3.14159265358979f;
