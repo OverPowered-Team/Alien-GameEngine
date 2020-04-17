@@ -214,81 +214,82 @@ void PanelSceneSelector::LoadScene()
 
 void PanelSceneSelector::CreateNewScene()
 {
-	OPENFILENAME to_save;
+	App->objects->CreateEmptyScene();
+	//OPENFILENAME to_save;
 
-	static char filename[MAX_PATH];
+	//static char filename[MAX_PATH];
 
-	// get the current game directory
-	static char curr_dir[MAX_PATH];
-	GetCurrentDirectoryA(MAX_PATH, curr_dir);
+	//// get the current game directory
+	//static char curr_dir[MAX_PATH];
+	//GetCurrentDirectoryA(MAX_PATH, curr_dir);
 
-	// add the local path of the scenes folder
-	std::string dir = std::string(curr_dir + std::string("\\") + std::string("Assets\\Scenes")).data();
+	//// add the local path of the scenes folder
+	//std::string dir = std::string(curr_dir + std::string("\\") + std::string("Assets\\Scenes")).data();
 
-	// fill eveything with 0  in order to avoid problems
-	ZeroMemory(&filename, sizeof(filename));
-	ZeroMemory(&to_save, sizeof(to_save));
+	//// fill eveything with 0  in order to avoid problems
+	//ZeroMemory(&filename, sizeof(filename));
+	//ZeroMemory(&to_save, sizeof(to_save));
 
-	to_save.lStructSize = sizeof(to_save);
-	to_save.hwndOwner = NULL;
-	to_save.lpstrFilter = "alienScene\0*.alienScene";
-	to_save.lpstrFile = filename;
-	to_save.nMaxFile = MAX_PATH;
-	to_save.lpstrTitle = "Create a new .alienScene";
-	to_save.lpstrInitialDir = dir.data();
-	to_save.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_EXPLORER | OFN_OVERWRITEPROMPT;
-	if (GetSaveFileNameA(&to_save))
-	{
-		SetCurrentDirectoryA(curr_dir);
+	//to_save.lStructSize = sizeof(to_save);
+	//to_save.hwndOwner = NULL;
+	//to_save.lpstrFilter = "alienScene\0*.alienScene";
+	//to_save.lpstrFile = filename;
+	//to_save.nMaxFile = MAX_PATH;
+	//to_save.lpstrTitle = "Create a new .alienScene";
+	//to_save.lpstrInitialDir = dir.data();
+	//to_save.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_EXPLORER | OFN_OVERWRITEPROMPT;
+	//if (GetSaveFileNameA(&to_save))
+	//{
+	//	SetCurrentDirectoryA(curr_dir);
 
-		std::string extension;
-		App->file_system->SplitFilePath(filename, nullptr, nullptr, &extension);
+	//	std::string extension;
+	//	App->file_system->SplitFilePath(filename, nullptr, nullptr, &extension);
 
-		std::string path;
-		if (!App->StringCmp("alienScene", extension.data())) {
-			path = std::string(filename + std::string(".alienScene")).data();
-		}
-		else {
-			path = filename;
-		}
-		std::string curr(curr_dir);
-		App->file_system->NormalizePath(curr);
-		App->file_system->NormalizePath(path);
-		for (uint i = 0; i < curr.size(); ++i) {
-			path.erase(path.begin());
-		}
-		path.erase(path.begin());
-		
-		if (App->file_system->Exists(path.data())) {
-			ResourceScene* scene = App->resources->GetSceneByName(App->file_system->GetBaseFileName(path.data()).data());
-			if (scene != nullptr) {
-				scene->DeleteMetaData();
-				remove(scene->GetAssetsPath());
-				remove(std::string(App->file_system->GetPathWithoutExtension(scene->GetAssetsPath()) + "_meta.lazy").data());
-				auto item = App->resources->resources.begin();
-				for (; item != App->resources->resources.end(); ++item) {
-					if (*item == scene) {
-						delete* item;
-						*item = nullptr;
-						App->resources->resources.erase(item);
-						break;
-					}
-				}
-			}
-		}
+	//	std::string path;
+	//	if (!App->StringCmp("alienScene", extension.data())) {
+	//		path = std::string(filename + std::string(".alienScene")).data();
+	//	}
+	//	else {
+	//		path = filename;
+	//	}
+	//	std::string curr(curr_dir);
+	//	App->file_system->NormalizePath(curr);
+	//	App->file_system->NormalizePath(path);
+	//	for (uint i = 0; i < curr.size(); ++i) {
+	//		path.erase(path.begin());
+	//	}
+	//	path.erase(path.begin());
+	//	
+	//	if (App->file_system->Exists(path.data())) {
+	//		ResourceScene* scene = App->resources->GetSceneByName(App->file_system->GetBaseFileName(path.data()).data());
+	//		if (scene != nullptr) {
+	//			scene->DeleteMetaData();
+	//			remove(scene->GetAssetsPath());
+	//			remove(std::string(App->file_system->GetPathWithoutExtension(scene->GetAssetsPath()) + "_meta.lazy").data());
+	//			auto item = App->resources->resources.begin();
+	//			for (; item != App->resources->resources.end(); ++item) {
+	//				if (*item == scene) {
+	//					delete* item;
+	//					*item = nullptr;
+	//					App->resources->resources.erase(item);
+	//					break;
+	//				}
+	//			}
+	//		}
+	//	}
 
-		ResourceScene* scene = new ResourceScene();
-		scene->SetAssetsPath(path.data());
-		scene->CreateMetaData();
-		App->objects->CreateEmptyScene(scene);
-		App->objects->SaveScene(scene);
+	//	ResourceScene* scene = new ResourceScene();
+	//	scene->SetAssetsPath(path.data());
+	//	scene->CreateMetaData();
+	//	App->objects->CreateEmptyScene(scene);
+	//	App->objects->SaveScene(scene);
 
-		// last of all, refresh nodes because I have no idea if the user has created folders or moved things in the explorer. Users are bad people creating folders without using the alien engine explorer :(
-		App->ui->panel_project->RefreshAllNodes();
-	}
-	else {
-		SetCurrentDirectoryA(curr_dir);
-	}
+	//	// last of all, refresh nodes because I have no idea if the user has created folders or moved things in the explorer. Users are bad people creating folders without using the alien engine explorer :(
+	//	App->ui->panel_project->RefreshAllNodes();
+	//}
+	//else {
+	//	SetCurrentDirectoryA(curr_dir);
+	//}
 }
 
 void PanelSceneSelector::MenuSaveCurrentScene()

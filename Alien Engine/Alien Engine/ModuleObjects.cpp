@@ -1321,18 +1321,32 @@ void ModuleObjects::OpenCoScene(const char* name)
 	}
 }
 
-void ModuleObjects::CreateEmptyScene(ResourceScene* scene)
+void ModuleObjects::CreateEmptyScene()
 {
-	if (scene != nullptr) {
-		delete base_game_object;
-		game_objects_selected.clear();
-		base_game_object = new GameObject();
-		base_game_object->ID = 0;
-		base_game_object->is_static = true;
+	current_scenes.clear();
 
-		current_scenes.clear();
-		current_scenes.push_back(scene);
-	}
+	delete base_game_object;
+	game_objects_selected.clear();
+	base_game_object = new GameObject();
+	base_game_object->ID = 0;
+	base_game_object->is_static = true;
+
+	GameObject* scene_root = new GameObject();
+	scene_root->ID = App->resources->GetRandomID();
+	scene_root->is_static = true;
+	scene_root->SetName("Untitled*");
+	scene_root->scene_root = scene_root;
+	scene_root->parent = base_game_object;
+	base_game_object->children.push_back(scene_root);
+
+	GameObject* camera = new GameObject(scene_root);
+	camera->SetName("Main Camera");
+	camera->AddComponent(new ComponentCamera(camera));
+
+	GameObject* light = new GameObject(scene_root);
+	light->SetName("Directional Light");
+	light->AddComponent(new ComponentLightDirectional(light));
+	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 }
 
 void ModuleObjects::SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number)
