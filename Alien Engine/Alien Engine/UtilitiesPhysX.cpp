@@ -187,10 +187,6 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 		!(filterData0.word0 & filterData1.word1 || filterData1.word0 & filterData0.word1))
 		return physx::PxFilterFlag::eSUPPRESS;
 
-
-
-
-
 	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 	else
@@ -207,7 +203,7 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 
 void CollisionLayers::AddLayer(std::string to_add)
 {
-	if (std::find(to_add.begin(), to_add.end(), to_add) != to_add.end())
+	if (std::find(layers.begin(), layers.end(), to_add) != layers.end())
 		return;
 
 	layers.push_back(to_add);
@@ -225,7 +221,7 @@ void CollisionLayers::AddLayer(std::string to_add)
 
 void CollisionLayers::RemoveLayer(std::string to_remove)
 {
-	if (std::find(to_remove.begin(), to_remove.end(), to_remove) == to_remove.end())
+	if (std::find(layers.begin(), layers.end(), to_remove) == layers.end())
 		return;
 
 	layers.remove(to_remove);

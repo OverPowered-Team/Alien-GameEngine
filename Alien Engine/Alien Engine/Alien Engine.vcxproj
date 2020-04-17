@@ -88,7 +88,7 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;PhysX\include;PhysX/include/characterkinematic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PX_DEBUG=1;PX_CHECKED=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
