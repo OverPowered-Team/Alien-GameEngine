@@ -2,6 +2,8 @@
 
 #include "Panel.h"
 
+class GameObject;
+
 class PanelSceneSelector : public Panel {
 
 public:
@@ -37,7 +39,7 @@ private:
 	void OrganizeLoad();
 
 private:
-
+	GameObject* force_save = nullptr;
 	bool menu_save_current = false;
 	bool create_new = false;
 	bool load = false;

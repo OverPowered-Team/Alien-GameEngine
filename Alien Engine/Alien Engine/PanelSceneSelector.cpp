@@ -8,6 +8,7 @@
 #include "PanelProject.h"
 #include "ShortCutManager.h"
 #include "ModuleResources.h"
+#include "GameObject.h"
 #include "ModuleObjects.h"
 #include "ModuleUI.h"
 #include "mmgr/mmgr.h"
@@ -57,6 +58,14 @@ void PanelSceneSelector::OrganizeSaveScene()
 		for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
 			App->objects->SaveScene(*item);
 		}
+		GameObject* root = App->objects->GetGlobalRoot();
+		for (auto item = root->children.begin(); item != root->children.end(); ++item) {
+			if (strcmp((*item)->GetName(), "Untitled*") == 0) {
+				force_save = *item;
+				OrganizeSave(SceneSelectorState::SAVE_AS_NEW);
+				break;
+			}
+		}
 	}
 }
 
@@ -80,10 +89,6 @@ void PanelSceneSelector::LoadSceneWithPath(const char* path)
 
 void PanelSceneSelector::SaveSceneAsNew()
 {
-	if (App->objects->GetGlobalRoot()->GetChildren().size() >= 2) {
-		return;
-	}
-
 	OPENFILENAME to_save;
 
 	static char filename[MAX_PATH];
@@ -150,6 +155,11 @@ void PanelSceneSelector::SaveSceneAsNew()
 		ResourceScene* scene = new ResourceScene();
 		scene->SetAssetsPath(path.data());
 		scene->CreateMetaData();
+		if (force_save != nullptr) {
+			force_save->ID = scene->GetID();
+			force_save->SetName(scene->GetName());
+			force_save = nullptr;
+		}
 		App->objects->SaveScene(scene);
 
 		// last of all, refresh nodes because I have no idea if the user has created folders or moved things in the explorer. Users are bad people creating folders without using the alien engine explorer :(
