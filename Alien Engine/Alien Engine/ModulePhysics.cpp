@@ -263,13 +263,13 @@ void ModulePhysics::DrawConstraint(btTypedConstraint* constraint)
 	ModuleRenderer3D::EndDebugDraw();
 }
 
-void ModulePhysics::DrawCharacterController(ComponentCharacterController* controller)
-{
-	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
-	world->debugDrawObject(controller->body->getWorldTransform(), controller->shape, btVector3(0.f, 1.f, 0.f));
-	ModuleRenderer3D::EndDebugDraw();
-}
+//void ModulePhysics::DrawCharacterController(ComponentCharacterController* controller)
+//{
+//	debug_renderer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+//	ModuleRenderer3D::BeginDebugDraw(float4(1.f, 1.f, 0.f, 1.f));
+//	world->debugDrawObject(controller->body->getWorldTransform(), controller->shape, btVector3(0.f, 1.f, 0.f));
+//	ModuleRenderer3D::EndDebugDraw();
+//}
 
 void ModulePhysics::DrawWorld()
 {

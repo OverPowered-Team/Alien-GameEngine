@@ -315,9 +315,10 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		if (rb)
 			rb->SetPosition(pos);
 
-		ComponentCharacterController* character_controller = (ComponentCharacterController*)(obj)->GetComponent(ComponentType::CHARACTER_CONTROLLER);
+		// TODO: check this
+		/*ComponentCharacterController* character_controller = (ComponentCharacterController*)(obj)->GetComponent(ComponentType::CHARACTER_CONTROLLER);
 		if (character_controller)
-			character_controller->SetPosition(pos);
+			character_controller->SetPosition(pos);*/
 
 		if (check_childrens)
 		{
@@ -350,7 +351,8 @@ void ResourcePrefab::CheckChildren(GameObject* game_object, float3 pos)
 		return;
 	}
 
-	ComponentCharacterController* character_controller = (ComponentCharacterController*)(game_object)->GetComponent(ComponentType::CHARACTER_CONTROLLER);
+	// TODO: check this
+	/*ComponentCharacterController* character_controller = (ComponentCharacterController*)(game_object)->GetComponent(ComponentType::CHARACTER_CONTROLLER);
 	if (character_controller)
 	{
 		character_controller->SetPosition(pos);
@@ -359,7 +361,7 @@ void ResourcePrefab::CheckChildren(GameObject* game_object, float3 pos)
 			CheckChildren(*it_child, character_controller->GetPosition());
 		}
 		return;
-	}
+	}*/
 
 	for (auto it_child = game_object->children.begin(); it_child != game_object->children.end(); ++it_child)
 	{

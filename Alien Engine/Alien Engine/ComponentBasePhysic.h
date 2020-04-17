@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+class ComponentPhysics;
+
 class __declspec(dllexport) ComponentBasePhysic : public Component
 {
 	friend class ComponentBoxCollider;

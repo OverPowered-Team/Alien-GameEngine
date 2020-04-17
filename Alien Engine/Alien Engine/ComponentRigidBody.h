@@ -28,7 +28,7 @@ enum class ForceMode : uint
 class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
 	friend class GameObject;
-	friend class ModulePhysics;
+	friend class ModulePhysX;
 	friend class ComponentPhysics;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;

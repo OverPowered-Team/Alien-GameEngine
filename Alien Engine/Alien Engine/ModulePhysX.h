@@ -4,7 +4,25 @@
 #include "PxPhysicsAPI.h"
 #include "UtilitiesPhysX.h"
 
+#include <wtypes.h>
+
 using namespace physx;
+
+// TODO: check if we still need this enum
+enum class Space
+{
+	Global,
+	Local
+};
+
+enum class ForceMode : uint
+{
+	FORCE,
+	IMPULSE,
+	ACCELERATION,
+	VELOCITY_CHANGE,
+	MAX
+};
 
 class ModulePhysX : public Module
 {
@@ -21,6 +39,15 @@ public:
 
 	ModulePhysX(bool start_enabled = true);
 	~ModulePhysX();
+
+public:
+	// character controller
+	PxController* CreateCharacterController(PxControllerDesc& desc);
+	uint GetNbControllers() const;
+	PxController* GetController(uint index) const;
+
+	// material
+	PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution) const;
 
 private:
 
@@ -76,6 +103,7 @@ private:
 	PxScene*					px_scene = nullptr;
 	PxMaterial*					px_default_material = nullptr;
 	PxPvd*						px_pvd = nullptr;
+	PxControllerManager*		controllers_manager = nullptr;
 
 	PxReal stackZ = 10.0f;
 	

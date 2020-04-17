@@ -16,9 +16,6 @@
     <ClCompile Include="Testanimator.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ReverbZone.cpp" />
     <ClCompile Include="TerrainSwitch.cpp" />
@@ -35,6 +32,7 @@
     <ClCompile Include="NilfgaardSoldier.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Instatiate.cpp" />
+    <ClCompile Include="player_controller_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -50,9 +48,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Testanimator.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="PlayerTest.h" />
@@ -71,6 +66,7 @@
     <ClInclude Include="NilfgaardSoldier.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Instatiate.h" />
+    <ClInclude Include="player_controller_test.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
