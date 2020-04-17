@@ -7,20 +7,20 @@
 #include <list>
 #include <vector>
 
-enum class Space
-{
-	Global,
-	Local
-};
+//enum class Space
+//{
+//	Global,
+//	Local
+//};
 
-enum class ForceMode : uint
-{
-	FORCE,
-	IMPULSE,
-	ACCELERATION,
-	VELOCITY_CHANGE,
-	MAX
-};
+//enum class ForceMode : uint
+//{
+//	FORCE,
+//	IMPULSE,
+//	ACCELERATION,
+//	VELOCITY_CHANGE,
+//	MAX
+//};
 
 
 class ComponentCollider;

@@ -8,6 +8,22 @@
 
 using namespace physx;
 
+// TODO: check if we still need this enum
+enum class Space
+{
+	Global,
+	Local
+};
+
+enum class ForceMode : uint
+{
+	FORCE,
+	IMPULSE,
+	ACCELERATION,
+	VELOCITY_CHANGE,
+	MAX
+};
+
 class ModulePhysX : public Module
 {
 	friend class ModuleObjects;

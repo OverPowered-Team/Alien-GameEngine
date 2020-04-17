@@ -24,6 +24,8 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	controller = App->physx->CreateCharacterController(desc);
 
+	moveDirection = float3::zero();
+
 	//controller->setUserData(this); // TODO: adapt component collider
 }
 
@@ -205,7 +207,11 @@ bool ComponentCharacterController::DrawInspector()
 		ImGui::Title("Height", 1);				if (ImGui::DragFloat("##height", &desc.height, 0.05f, 0.0f, FLT_MAX)) { SetCharacterHeight(desc.height); }
 		//ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX)) { SetJumpSpeed(current_jump_speed); }
 		//ImGui::Title("Gravity", 1);				if (ImGui::DragFloat("##gravity", &current_gravity, 0.01f, 0.00f, FLT_MAX)) { SetGravity(current_gravity); }
+		ImGui::Title("Min Move Distance", 1);	ImGui::DragFloat("##minDist", &min_distance, 0.03f, 0.f, FLT_MAX);
 		ImGui::Checkbox("isGrounded", &isGrounded); // debug test
+
+		ImGui::Separator();
+		ImGui::Text("velocity: %f,%f,%f", velocity.x, velocity.y, velocity.z);
 		ImGui::Spacing();
 	}
 
@@ -220,42 +226,67 @@ void ComponentCharacterController::Update()
 
 	if (Time::IsPlaying())
 	{
-		static float3 movement = float3::zero();
-
+		// TODO DELETE hardcoded test 1 -----------------------------------------------------------------------
+		moveDirection.x = moveDirection.z = 0.0f;
+		float speed = 10.0f;
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-			movement.x -= 1;
+			moveDirection.x -= 1.0f;
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-			movement.x += 1;
+			moveDirection.x += 1;
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-			movement.z += 1;
+			moveDirection.z += 1;
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-			movement.z -= 1;
+			moveDirection.z -= 1;
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_DOWN)
+			moveDirection.y = 8.0f;
 
-		float speed = (movement.Equals(float3::zero())) ? 0.f : 10.f;
-		/*controller->setWalkDirection(ToBtVector3(movement.Normalized() * speed * Time::GetDT()));*/
+		moveDirection = float3(moveDirection.x * speed, moveDirection.y, moveDirection.z * speed) ; // SPEED
+		// ----------------------------------------------------------------------------------------------------
 
-		/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_REPEAT && CanJump())
-			Jump();*/
-
-		movement.y -= gravity * Time::GetDT();
-
-		PxControllerFilters filters;
-		PxControllerCollisionFlags collision_flags;
-
-		collision_flags = controller->move(F3_TO_PXVEC3(movement.Normalized() * speed * Time::GetDT()), 0.1f, Time::GetDT(), filters);
-
-		PxTransform trans = controller->getActor()->getGlobalPose();
-		float3 position = PXVEC3EXT_TO_F3(controller->getPosition());//bt_transform.getOrigin() - ToBtVector3(character_offset);
-
-		collision_flags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN) ? isGrounded = true : isGrounded = false;
-
-		transform->SetGlobalPosition(position);
-		//transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
+		if (force_move && isGrounded && velocity.isZero())
+		{
+			// always force downwards to mantain collision state 
+			// (cct solver puts on top of skin and not returns collision state when performs a 0y)
+			//Move(float3(0.0f, -controller->getContactOffset(), 0.0f)); 
+			Move(float3::zero());
+		}
+		
+		if (force_gravity && !isGrounded)
+		{
+			moveDirection.y -= gravity * Time::GetDT();
+			Move(moveDirection * Time::GetDT());
+			isGrounded ? moveDirection.y = 0.0f : 0;
+		}
+		else // TODO: DELETE HARDCODED TEST from 1
+		{
+			Move(float3(moveDirection.x, moveDirection.y - controller->getContactOffset(), moveDirection.z) * Time::GetDT());
+		}
+		
+		transform->SetGlobalPosition(PXVEC3EXT_TO_F3(controller->getPosition()));
 	}
 	else
 	{
 		controller->setPosition(F3_TO_PXVEC3EXT(transform->GetGlobalPosition()));
 	}
+}
+
+PxControllerCollisionFlags ComponentCharacterController::Move(float3 motion)
+{
+
+	// set velocity on current position before move
+	velocity = controller->getPosition();
+
+	// perform the move
+	PxControllerFilters filters; // TODO: implement filters callback when needed
+	collisionFlags = controller->move(F3_TO_PXVEC3(motion), min_distance, Time::GetDT(), filters);
+
+	// set grounded internal state
+	collisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN) ? isGrounded = true : isGrounded = false;
+
+	// substract the difference from current pos to velocity before move
+	velocity = PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);//isGrounded ? F3_TO_PXVEC3EXT(float3::zero()) : PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);
+
+	return collisionFlags;
 }
 
 void ComponentCharacterController::DrawScene()
@@ -267,18 +298,20 @@ void ComponentCharacterController::DrawScene()
 		case PxControllerShapeType::eCAPSULE:
 		{
 			PxCapsuleController* capsule = (PxCapsuleController*)controller;
-			//float skin_offset = capsule->getContactOffset();
+			float skin_offset = capsule->getContactOffset();
 
 			//float4x4 transform = PXTRANS_TO_F4X4(capsule->getActor()->getGlobalPose());
 
-			float radius = capsule->getRadius();
-			float height = capsule->getHeight(); //
+			float radius = capsule->getRadius() + skin_offset;
+			float height = capsule->getHeight()+ skin_offset; //
+
 			
+			float3 oriblue(0.15f, 0.3f, 0.95f);
 			PxExtendedVec3 pos = capsule->getPosition();
 			PxTransform trans;
 			trans.p = PxVec3(pos.x, pos.y, pos.z);
 			trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0.0f, 0.0f, DEGTORAD * 90.0f));
-			App->renderer3D->DebugDrawCapsule(PXTRANS_TO_F4X4(trans), radius, height * 0.5f);
+			App->renderer3D->DebugDrawCapsule(PXTRANS_TO_F4X4(trans), radius, height * 0.5f, oriblue);
 			
 			break;
 		}
@@ -306,5 +339,7 @@ void ComponentCharacterController::SetDefaultConf()
 	desc.height = 2.0f;
 	desc.material = App->physx->CreateMaterial(static_friction, dynamic_friction, restitution);
 	desc.position = F3_TO_PXVEC3EXT(game_object_attached->transform->GetGlobalPosition());
-	//desc.upDirection = 
+	//desc.upDirection = // up direction can be changed to simulate planetoids or surfaces with other gravity dir vector
+
+	min_distance = 0.001f;
 }

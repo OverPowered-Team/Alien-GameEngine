@@ -55,7 +55,7 @@ typedef	double	PxExtended;
 
 struct PxExtendedVec3
 {
-	PX_INLINE	PxExtendedVec3()																	{}
+	PX_INLINE	PxExtendedVec3() : x(0.0f), y(0.0f), z(0.0f)										{}
 	PX_INLINE	PxExtendedVec3(PxExtended _x, PxExtended _y, PxExtended _z) : x(_x), y(_y), z(_z)	{}
 
 	PX_INLINE	bool isZero()	const

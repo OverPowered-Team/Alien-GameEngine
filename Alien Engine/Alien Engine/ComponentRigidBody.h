@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ComponentBasePhysic.h"
-#include "ModulePhysics.h"
+#include "ModulePhysX.h"
 #include "MathGeoLib/include/Math/MathAll.h"
 
 class GameObject;
@@ -13,7 +13,7 @@ using namespace physx;
 class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
 	friend class GameObject;
-	friend class ModulePhysics;
+	friend class ModulePhysX;
 	friend class ComponentPhysics;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;

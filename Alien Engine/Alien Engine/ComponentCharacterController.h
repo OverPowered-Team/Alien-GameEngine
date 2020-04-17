@@ -49,6 +49,13 @@ public:
 	void SetCharacterHeight(const float height);
 	//float GetCharacterRadius() { return character_radius; }
 	void SetCharacterRadius(const float radius);
+	// Auto resize from the bottom (moving position pivot automatly)
+	void Resize(const float new_height);
+
+	// TODO: make own copy of collision flag to not work with physx data outside.
+	// Move by motion, this function doesn't apply any gravity,
+	// (user implementation, or active force gravity in character controller component)
+	PxControllerCollisionFlags Move(float3 motion);
 
 private:
 	void SetDefaultConf();
@@ -67,6 +74,12 @@ protected:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+public:
+	PxControllerCollisionFlags collisionFlags;
+	// The velocity returned is simply the difference in distance 
+	// for the current timestep before and after a call to CharacterController.Move
+	PxExtendedVec3 velocity;
+
 protected:
 	ComponentTransform* transform = nullptr;
 	/*ComponentCollider* collider = nullptr;
@@ -83,14 +96,28 @@ protected:
 	float gravity = 80.f;
 
 	bool test = false;*/
-	float gravity = 9.8f;
+	float gravity = 20.0f;//9.8f;
 	bool isGrounded = false;
+
+	// advanced options -------------
+	// Forces move with zero vector when controller is idle, 
+	// this forces messages from OnControllerColliderHit in any situation,
+	// if off, messages from this callback only happen when a move is performed.
+	bool force_move = true;
+	// if off, any gravity needs to be implemented by the user
+	// if on, forces gravity defined on gravity field always
+	// that isGrounded is false
+	bool force_gravity = true;
 
 private:
 	PxCapsuleControllerDesc desc;
+	float min_distance;
 	PxController* controller = nullptr;
 
 	float dynamic_friction = 0.5f;
 	float static_friction = 0.5f;
 	float restitution = 0.6f;
+
+	// internal extra functionality
+	float3 moveDirection;
 };
