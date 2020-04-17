@@ -33,8 +33,8 @@ void player_controller_test::Update()
 			moveDirection.y = 10.0f;
 	}
 
-	// if force_gravity are unchecked on character controller (recommended)
-	// but works correctly though
+	//* if force_gravity are unchecked on character controller (recommended) *//
+	//* but works correctly though*//
 	//moveDirection.y -= gravity * Time::GetDT();
 	
 	ccontroller->Move(moveDirection * Time::GetDT());

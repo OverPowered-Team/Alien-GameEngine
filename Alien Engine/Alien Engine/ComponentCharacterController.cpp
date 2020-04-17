@@ -24,9 +24,9 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	controller = App->physx->CreateCharacterController(desc);
 
-	moveDirection = float3::zero();
+	moveDirection = controller_offset = float3::zero();
 
-	//controller->setUserData(this); // TODO: adapt component collider
+	controller->setUserData(this); // TODO: adapt component collider ?
 }
 
 ComponentCharacterController::~ComponentCharacterController()
@@ -36,6 +36,7 @@ ComponentCharacterController::~ComponentCharacterController()
 
 // Movement Functions -----------------------------------------
 
+//* OBSOLETE ------------------------------------------------------------------------------------------------- */
 //void ComponentCharacterController::SetWalkDirection(float3 direction)
 //{
 //	controller->setWalkDirection(ToBtVector3(direction));
@@ -64,11 +65,6 @@ ComponentCharacterController::~ComponentCharacterController()
 //	controller->jump(ToBtVector3(direction));
 //}
 //
-//bool ComponentCharacterController::CanJump()
-//{
-//	return controller->canJump();
-//}
-//
 //bool ComponentCharacterController::OnGround()
 //{
 //	return controller->onGround();
@@ -85,22 +81,8 @@ ComponentCharacterController::~ComponentCharacterController()
 //	return transform->GetGlobalRotation();
 //}
 //
-//void ComponentCharacterController::SetPosition(const float3 pos)
-//{
-//	body->setWorldTransform(ToBtTransform(pos + character_offset, transform->GetGlobalRotation()));
-//	transform->SetGlobalPosition(pos);
-//}
-//
-//float3 ComponentCharacterController::GetPosition() const
-//{
-//	return transform->GetGlobalPosition();
-//}
-//
-//void ComponentCharacterController::SetCharacterOffset(const float3 offset)
-//{
-//	character_offset = offset;
-//}
-//
+//*------------------------------------------------------------------------------------------------------------*/
+
 
 void ComponentCharacterController::SetContactOffset(const float contactOffset)
 {
@@ -122,15 +104,15 @@ void ComponentCharacterController::SetContactOffset(const float contactOffset)
 
 void ComponentCharacterController::SetStepOffset(const float stepOffset)
 {
-	float max = 180.0f, min = 0.0f;
-	desc.slopeLimit = Clamp(stepOffset, min, max);
+	float max = FLT_MAX, min = 0.0f;
+	desc.stepOffset = Clamp(stepOffset, min, max);
 
 	switch (desc.getType())
 	{
 	case PxControllerShapeType::eCAPSULE:
 	{
 		PxCapsuleController* capsule_c = (PxCapsuleController*)controller;
-		capsule_c->setSlopeLimit(desc.slopeLimit);
+		capsule_c->setStepOffset(desc.stepOffset);
 		break;
 	}
 	default:
@@ -141,14 +123,15 @@ void ComponentCharacterController::SetStepOffset(const float stepOffset)
 void ComponentCharacterController::SetSlopeLimit(const float slopeLimit)
 {
 	float max = 180.0f, min = 0.0f;
-	desc.slopeLimit = Clamp(slopeLimit, min, max);
+	float _slopeLimit = Clamp(slopeLimit, min, max);
+	desc.slopeLimit = cosf(DegToRad(_slopeLimit));
 
 	switch (desc.getType())
 	{
 	case PxControllerShapeType::eCAPSULE:
 	{
 		PxCapsuleController* capsule_c = (PxCapsuleController*)controller;
-		capsule_c->setSlopeLimit(cosf(DegToRad(desc.slopeLimit)));
+		capsule_c->setSlopeLimit(desc.slopeLimit);
 		break;
 	}
 	default:
@@ -172,8 +155,6 @@ void ComponentCharacterController::SetCharacterHeight(const float height)
 	default:
 		break;
 	}
-
-	//RecreateCapusle();
 }
 
 void ComponentCharacterController::SetCharacterRadius(const float radius)
@@ -193,43 +174,41 @@ void ComponentCharacterController::SetCharacterRadius(const float radius)
 		break;
 	}
 
-	//RecreateCapusle();
 }
-//// -------------------------------------------------------------
-//
-//void ComponentCharacterController::RecreateCapusle()
-//{
-//	shape->setLocalScaling(btVector3(character_radius * 2, character_height, character_radius * 2));
-//}
+
+void ComponentCharacterController::SetCharacterOffset(float3 offset)
+{
+	controller_offset = offset;
+	controller->setPosition(F3_TO_PXVEC3EXT(transform->GetGlobalPosition() + controller_offset));
+}
+// -------------------------------------------------------------
 
 void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
 
-	//to_save->SetFloat3("CharacterOffset", character_offset);
+	to_save->SetNumber("SlopeLimit", RadToDeg(acosf(desc.slopeLimit)));
+	to_save->SetNumber("StepOffset", desc.stepOffset);
+	to_save->SetNumber("SkinWidth", desc.contactOffset);
+	to_save->SetNumber("MinMoveDistance", min_distance);
+	to_save->SetFloat3("Center", controller_offset);
 	to_save->SetNumber("CharacterRadius", desc.radius);
 	to_save->SetNumber("CharacterHeight", desc.height);
-	//to_save->SetNumber("JumpSpeed", jump_speed);
-	//to_save->SetNumber("Gravity", gravity);
 }
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 {
-	//SetCharacterOffset(to_load->GetFloat3("CharacterOffset"));
+	SetSlopeLimit(to_load->GetNumber("SlopeLimit"));
+	SetStepOffset(to_load->GetNumber("StepOffset"));
+	SetContactOffset(to_load->GetNumber("SkinWidth"));
+	min_distance = to_load->GetNumber("MinMoveDistance");
+	SetCharacterOffset(to_load->GetFloat3("Center"));
 	SetCharacterRadius(to_load->GetNumber("CharacterRadius"));
 	SetCharacterHeight(to_load->GetNumber("CharacterHeight"));
-	//SetJumpSpeed(to_load->GetNumber("JumpSpeed"));
-	//SetGravity(to_load->GetNumber("Gravity"));
 }
 
 bool ComponentCharacterController::DrawInspector()
 {
-	/*float3 current_character_offset = character_offset;
-	float current_character_radius = character_radius;
-	float current_character_height = character_height;
-	float current_jump_speed = jump_speed;
-	float current_gravity = gravity;*/
-
 	ImGui::PushID(this);
 
 	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy))
@@ -257,29 +236,27 @@ bool ComponentCharacterController::DrawInspector()
 
 			ImGui::EndCombo();
 		}*/
-		//ImGui::Title("Offset", 1);				if (ImGui::DragFloat3("##center", current_character_offset.ptr(), 0.05f)) { SetCharacterOffset(current_character_offset); }
-		ImGui::Title("Slope Limit", 1);				if (ImGui::DragFloat("##slopeLimit", &desc.slopeLimit, 0.03f, 0.0f, 180.0f))		{ SetSlopeLimit(desc.slopeLimit); }
-		ImGui::Title("Step Offset", 1);				if (ImGui::DragFloat("##stepOffset", &desc.stepOffset, 0.03f, 0.0f, FLT_MAX))		{ SetStepOffset(desc.stepOffset); }
-		ImGui::Title("Skin Width", 1);				if (ImGui::DragFloat("##skinWidth", &desc.contactOffset, 0.03f, 0.0001f, FLT_MAX))	{ SetContactOffset(desc.contactOffset); }
-		ImGui::Title("Min Move Distance", 1);	ImGui::DragFloat("##minDist", &min_distance, 0.03f, 0.f, FLT_MAX);
-
-		ImGui::Title("Radius", 1);					if (ImGui::DragFloat("##radius", &desc.radius, 0.05f, 0.1f, FLT_MAX))				{ SetCharacterRadius(desc.radius); }
-		ImGui::Title("Height", 1);					if (ImGui::DragFloat("##height", &desc.height, 0.05f, 0.0f, FLT_MAX))				{ SetCharacterHeight(desc.height); }
+		float slopeLimitDeg = RadToDeg(acosf((float)desc.slopeLimit));
+		ImGui::Title("Slope Limit", 1);				if (ImGui::DragFloat("##slopeLimit", &slopeLimitDeg, 0.03f, 0.0f, 180.0f))					{ SetSlopeLimit(slopeLimitDeg); }
+		ImGui::Title("Step Offset", 1);				if (ImGui::DragFloat("##stepOffset", &desc.stepOffset, 0.03f, 0.0f, FLT_MAX))				{ SetStepOffset(desc.stepOffset); }
+		ImGui::Title("Skin Width", 1);				if (ImGui::DragFloat("##skinWidth", &desc.contactOffset, 0.03f, 0.0001f, FLT_MAX))			{ SetContactOffset(desc.contactOffset); }
+		ImGui::Title("Min Move Distance", 1);		ImGui::DragFloat("##minDist", &min_distance, 0.03f, 0.f, FLT_MAX);
+		ImGui::Title("Center", 1);					if (ImGui::DragFloat3("##center", controller_offset.ptr(), 0.03f, -math::inf, math::inf))	{ SetCharacterOffset(controller_offset); }
+		ImGui::Title("Radius", 1);					if (ImGui::DragFloat("##radius", &desc.radius, 0.05f, 0.1f, FLT_MAX))						{ SetCharacterRadius(desc.radius); }
+		ImGui::Title("Height", 1);					if (ImGui::DragFloat("##height", &desc.height, 0.05f, 0.0f, FLT_MAX))						{ SetCharacterHeight(desc.height); }
 		
 		ImGui::Separator();
-		ImGui::Title("Experimental features");
+		ImGui::Title("Experimental features",0);
 		ImGui::Separator();
-
 		ImGui::Title("Gravity", 1);					ImGui::DragFloat("##gravity", &gravity, 0.01f, 0.00f, FLT_MAX);
 		ImGui::Title("Force gravity", 1);			ImGui::Checkbox("##forceGravity", &force_gravity);
 		ImGui::Title("Force move", 1);				ImGui::Checkbox("##forceMove", &force_move);
-		//ImGui::Title("Jump Speed", 1);			if (ImGui::DragFloat("##jump_speed", &current_jump_speed, 0.01f, 0.00f, FLT_MAX)) { SetJumpSpeed(current_jump_speed); }
 		
 		
 		//ImGui::Checkbox("isGrounded", &isGrounded); // debug test
 
-		ImGui::Separator();
-		ImGui::Text("velocity: %f,%f,%f", velocity.x, velocity.y, velocity.z);
+		/*ImGui::Separator();
+		ImGui::Text("velocity: %f,%f,%f", velocity.x, velocity.y, velocity.z);*/
 		ImGui::Spacing();
 	}
 
@@ -329,11 +306,11 @@ void ComponentCharacterController::Update()
 		//	Move(float3(moveDirection.x, moveDirection.y - controller->getContactOffset(), moveDirection.z) * Time::GetDT());
 		//}
 
-		transform->SetGlobalPosition(PXVEC3EXT_TO_F3(controller->getPosition()));
+		transform->SetGlobalPosition(PXVEC3EXT_TO_F3(controller->getPosition()) - controller_offset);
 	}
 	else
 	{
-		controller->setPosition(F3_TO_PXVEC3EXT(transform->GetGlobalPosition()));
+		controller->setPosition(F3_TO_PXVEC3EXT(transform->GetGlobalPosition() + controller_offset));
 	}
 }
 
@@ -394,7 +371,6 @@ void ComponentCharacterController::DrawScene()
 }
 
 
-
 void ComponentCharacterController::HandleAlienEvent(const AlienEvent& e)
 {
 	//collider->HandleAlienEvent(e);
@@ -407,6 +383,10 @@ void ComponentCharacterController::SetDefaultConf()
 	desc.material = App->physx->CreateMaterial(static_friction, dynamic_friction, restitution);
 	desc.position = F3_TO_PXVEC3EXT(game_object_attached->transform->GetGlobalPosition());
 	desc.slopeLimit = cosf(DegToRad(45.0f));
+	desc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+
+	//desc.invisibleWallHeight = 100.0f;// TODO: implement if needed automatic invisible walls
+	//desc.maxJumpHeight = 1.0f;
 	//desc.upDirection = // up direction can be changed to simulate planetoids or surfaces with other gravity dir vector
 
 	min_distance = 0.001f;

@@ -41,7 +41,7 @@ public:
 	//void SetPosition(const float3 pos);
 	//float3 GetPosition() const;
 
-	//void SetCharacterOffset(const float3 offset);
+	void SetCharacterOffset(float3 offset);
 	//float GetCharacterHeight() { return character_height; }
 	void SetCharacterHeight(const float height);
 	//float GetCharacterRadius() { return character_radius; }
@@ -121,4 +121,5 @@ private:
 
 	// internal extra functionality
 	float3 moveDirection;
+	float3 controller_offset;
 };
