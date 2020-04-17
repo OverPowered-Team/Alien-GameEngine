@@ -70,15 +70,17 @@ bool ModulePhysX::Init()
 	px_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 	px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *px_foundation, PxTolerancesScale(), true, px_pvd);
-
+	px_simulation_callback = new SimulationEventCallback();
 	PxSceneDesc sceneDesc(px_physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = px_dispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = FilterShader;
 	px_scene = px_physics->createScene(sceneDesc);
+	px_scene->setSimulationEventCallback(px_simulation_callback);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+
 
 	PxPvdSceneClient* pvdClient = px_scene->getScenePvdClient();
 	if (pvdClient)

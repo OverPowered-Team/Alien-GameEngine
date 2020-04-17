@@ -5,6 +5,8 @@
 class ComponentTransform;
 class ComponentCharacterController;
 class ComponentCollider;
+class Collision;
+class ContactPoint;
 class GameObject;
 enum class ComponentType;
 class Component;
@@ -16,6 +18,7 @@ class __declspec(dllexport) Alien {
 	friend class ModuleObjects;
 	friend class ComponentTransform;
 	friend class ResourceAnimatorController;
+	friend class SimulationEventCallback;
 public:
 	Alien();
 	virtual ~Alien();
@@ -42,10 +45,21 @@ public:
 
 	virtual void CleanUp() {}
 
-	//void OnCollision(ComponentCollider* collider) {}
-	virtual void OnTrigger(ComponentCollider* collider) {}
+
+	// Physics ------------------------------------------------
+
+	virtual void OnCollisionEnter(const Collision& collision) {}
+	virtual void OnCollisionStay(const Collision& collision) {}
+	virtual void OnCollisionExit(const Collision& collision) {}
+
 	virtual void OnTriggerEnter(ComponentCollider* collider) {}
+	virtual void OnTriggerStay(ComponentCollider* collider) {}
 	virtual void OnTriggerExit(ComponentCollider* collider) {}
+
+	// Deprecated , use OnTriggerStay()
+	virtual void OnTrigger(ComponentCollider* collider) {}  // TODO:  Delete after change al code
+	// --------------------------------------------------------
+
 	virtual void OnAnimationEnd(const char* name) {}
 
 

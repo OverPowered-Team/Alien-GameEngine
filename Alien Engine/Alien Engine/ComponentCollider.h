@@ -20,19 +20,19 @@ class __declspec(dllexport) ComponentCollider : public ComponentBasePhysic
 {
 	friend class ModuleObjects;
 	friend class ModulePhysX;
+
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class ComponentPhysics;
 
+	friend class SimulationEventCallback;
 	friend class GameObject;
-	friend class ReturnZ;
-	friend class CompZ;
 	friend class MyDispatcher;
+
 public:
 
 	ComponentCollider(GameObject* go);
 	virtual ~ComponentCollider();
-
 
 	// Colliders values
 	virtual void SetCenter(const float3& value);
@@ -50,8 +50,10 @@ public:
 
 protected:
 
-	void BeginUpdateShape();
-	void EndUpdateShape();
+	void InitCollider();
+	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER ); }
+	inline void BeginUpdateShape();
+	inline void EndUpdateShape();
 
 	void OnEnable();
 	void OnDisable();
@@ -70,6 +72,8 @@ protected:
 
 protected:
 
+	int  layer = 0;
+	PxShape* shape = nullptr;
 	float3 center = float3::zero();
 	float3 rotation = float3::zero();
 	bool is_trigger = false;
@@ -77,14 +81,34 @@ protected:
 	float bouncing = 0.f;
 	float friction = 0.f;
 	float angular_friction = 0.f;
+};
 
-	std::list<ComponentScript*> alien_scripts;
-	std::map<ComponentCollider*, bool> collisions;
+class ContactPoint
+{
+public:
 
-	int  layer = 0;
+	ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider);
 
-	// ----------------------------------------------------------------
+	float3				normal = float3(0.f, 0.f, 0.f);
+	float3				point = float3(0.f, 0.f, 0.f);
+	float				separation = 0.f;
+	ComponentCollider* this_collider = nullptr;
+	ComponentCollider* other_collider = nullptr;
+};
 
-	PxShape* shape = nullptr;
+class Collision
+{
+public:
+
+	Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body,ComponentTransform* transform, const std::vector<ContactPoint>& contancts, uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity);
+
+	ComponentCollider*			collider = nullptr;
+	ComponentRigidBody*			rigid_body = nullptr;
+	ComponentTransform*			transform = nullptr;
+	std::vector<ContactPoint>	contancts;
+	uint						num_contact = 0u;
+	GameObject*					game_object = nullptr;
+	float3                      impulse = float3(0.f, 0.f, 0.f);
+	float3                      relative_velocity = float3(0.f, 0.f, 0.f);
 
 };

@@ -106,7 +106,7 @@ void PanelInspector::PanelLogic()
 			if (*item != nullptr)
 			{
 				if ((*item)->DrawInspector()) {
-					if (!(*item)->not_destroy) {
+					if (!(*item)->not_destroy && (*item)->serialize) {
 						to_destroy = (*item);
 						delete_panel = &(*item)->not_destroy;
 						*delete_panel = !(*delete_panel);

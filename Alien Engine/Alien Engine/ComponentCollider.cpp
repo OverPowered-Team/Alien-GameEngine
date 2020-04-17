@@ -6,20 +6,20 @@
 #include "ComponentTransform.h"
 #include "ComponentRigidBody.h"
 #include "ComponentPhysics.h"
-#include "ComponentScript.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "ReturnZ.h"
-#include "Alien.h"
 #include "Time.h"
+
+ContactPoint::ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider) :
+	normal(normal), point(point), separation(separation), this_collider(this_collider), other_collider(other_collider) {}
+
+Collision::Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts, 
+	uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity) :
+	collider(collider), rigid_body(rigid_body), transform(transform), contancts(contancts), num_contact(num_contact), game_object(game_object), impulse(impulse) , relative_velocity(relative_velocity){}
 
 ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 {
-	std::vector<ComponentScript*> scripts = go->GetComponents<ComponentScript>();
-	for (ComponentScript* script : scripts)
-		if (script->need_alien == true)
-			alien_scripts.push_back(script);
-
 	// Default values 
 	center = float3::zero();
 	rotation = float3::zero();
@@ -27,7 +27,11 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 
 ComponentCollider::~ComponentCollider()
 {
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
+	if (!IsController()) {
+		App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
+		shape->release();
+		shape = nullptr;
+	}
 }
 
 // Colliders Functions --------------------------------
@@ -49,7 +53,7 @@ void ComponentCollider::SetRotation(const float3& value)
 	rotation = value;
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * rotation;
-	trans.q = QUAT_TO_PXQUAT( Quat::FromEulerXYZ(rad_rotation.x , rad_rotation.y, rad_rotation.z));
+	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rotation.x, rad_rotation.y, rad_rotation.z));
 	BeginUpdateShape();
 	shape->setLocalPose(trans);
 	EndUpdateShape();
@@ -62,10 +66,12 @@ void ComponentCollider::SetIsTrigger(bool value)
 	BeginUpdateShape();
 	if (is_trigger) {
 		shape->setFlag(physx::PxShapeFlag::Enum::eSIMULATION_SHAPE, false);
-		shape->setFlag(physx::PxShapeFlag::Enum::eTRIGGER_SHAPE, true); }
+		shape->setFlag(physx::PxShapeFlag::Enum::eTRIGGER_SHAPE, true);
+	}
 	else {
 		shape->setFlag(physx::PxShapeFlag::Enum::eTRIGGER_SHAPE, false);
-		shape->setFlag(physx::PxShapeFlag::Enum::eSIMULATION_SHAPE, true); }
+		shape->setFlag(physx::PxShapeFlag::Enum::eSIMULATION_SHAPE, true);
+	}
 	EndUpdateShape();
 }
 
@@ -116,89 +122,6 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCollider::Update()
 {
-	if (!alien_scripts.empty() && Time::IsPlaying())
-	{
-		for (auto& x : collisions)
-		{
-			x.second = false;
-		}
-
-		ComponentCollider* coll = nullptr;// TODO: Get the collider 
-		std::map<ComponentCollider*, bool>::iterator search = collisions.find(coll);
-		if (search != collisions.end() && coll != nullptr)
-		{
-			collisions[coll] = true;
-
-			for (ComponentScript* script : alien_scripts)
-			{
-				Alien* alien = (Alien*)script->data_ptr;
-				try {
-					alien->OnTrigger(coll);
-				}
-				catch (...)
-				{
-					try {
-						LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER", alien->data_name);
-					}
-					catch (...) {
-						LOG_ENGINE("UNKNOWN ERROR IN SCRIPT WHEN CALLING ON TRIGGER");
-					}
-				}
-			}
-		}
-		else
-		{
-			collisions[coll] = true;
-
-			for (ComponentScript* script : alien_scripts)
-			{
-				Alien* alien = (Alien*)script->data_ptr;
-				try {
-					alien->OnTriggerEnter(coll);
-				}
-				catch (...)
-				{
-					try {
-						LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER ENTER", alien->data_name);
-					}
-					catch (...) {
-						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER ENTER");
-					}
-				}
-			}
-		}
-
-		std::map<ComponentCollider*, bool>::iterator itr = collisions.begin();
-
-		while (itr != collisions.end())
-		{
-			if (itr->second == false) {
-
-				for (ComponentScript* script : alien_scripts)
-				{
-					Alien* alien = (Alien*)script->data_ptr;
-					try {
-						alien->OnTriggerExit(itr->first);
-					}
-					catch (...)
-					{
-						try {
-							LOG_ENGINE("ERROR IN THE SCRIPT %s WHEN CALLING ON TRIGGER EXIT", alien->data_name);
-						}
-						catch (...) {
-							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING ON TRIGGER EXIT");
-						}
-					}
-				}
-
-				itr = collisions.erase(itr);
-			}
-			else {
-				++itr;
-			}
-
-		}
-	}
 }
 
 void ComponentCollider::OnEnable()
@@ -304,35 +227,11 @@ bool ComponentCollider::DrawInspector()
 
 void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
-	switch (e.type)
-	{
-	case AlienEventType::SCRIPT_ADDED: {
-		ComponentScript* script = (ComponentScript*)e.object;
-		if (script->game_object_attached == game_object_attached && script->need_alien == true)
-			alien_scripts.push_back(script);
-		break; }
-	case AlienEventType::SCRIPT_DELETED: {
-		ComponentScript* script = (ComponentScript*)e.object;
-		if (script->game_object_attached == game_object_attached)
-			alien_scripts.remove(script);
-		break; }
-	case AlienEventType::COLLIDER_DELETED: {
-		ComponentCollider* collider = (ComponentCollider*)e.object;
+}
 
-		if (!alien_scripts.empty() && Time::IsPlaying())
-		{
-			if (!collisions.empty() && collisions.find(collider) != collisions.end())
-			{
-				for (ComponentScript* script : alien_scripts)
-				{
-					Alien* alien = (Alien*)script->data_ptr;
-					alien->OnTriggerExit(collider);
-				}
-				collisions.erase(collider);
-			}
-		}
-		break; }
-	}
+void ComponentCollider::InitCollider()
+{
+	shape->userData = this;
 }
 
 void ComponentCollider::BeginUpdateShape()

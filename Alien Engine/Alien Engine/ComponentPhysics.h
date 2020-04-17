@@ -9,6 +9,8 @@ using namespace physx;
 class __declspec(dllexport) ComponentPhysics : public Component
 {
 	friend class GameObject;
+	friend class SimulationEventCallback;
+
 	friend class ModuleObjects;
 	friend class ModulePhysics;
 	friend class ModulePhysX;
@@ -33,6 +35,7 @@ private:
 
 	bool AddRigidBody(ComponentRigidBody* rb);
 	bool RemoveRigidBody(ComponentRigidBody* rb);
+	void SwitchedRigidBody(ComponentRigidBody* rb);
 	void AttachCollider(ComponentCollider* collider, bool to_update = false);    // To Update if is only a removement 
 	void DettachColldier(ComponentCollider* collider, bool to_update = false);	 // to update the shape
 	bool CheckRigidBody(ComponentRigidBody* rb);
@@ -41,24 +44,28 @@ private:
 	bool RemoveCollider(ComponentCollider* collider);	
  	bool FindCollider( ComponentCollider* collider);
 	bool CheckCollider(ComponentCollider* collider);
+	
+	void GizmoManipulation();
+	void UpdatePositioning();
 
 	void UpdateBody();
 	bool CheckChangeState();
-	void GizmoManipulation();
 
 	bool HasEnabledColliders();
 	bool ShapeAttached(PxShape* shape);
-	bool IsDynamic() { return state == PhysicState::DYNAMIC;  }
+	bool IsDynamic();
+	bool IsKinematic();
 
 protected:
 
-	enum class PhysicState { STATIC = 0, DYNAMIC, KINEMATIC, CTRL_CHARACTER, CTRL_VEHICLE, DISABLED}
+	enum class PhysicState { STATIC = 0, DYNAMIC, CTRL_CHARACTER, CTRL_VEHICLE, DISABLED}
 	state = PhysicState::DISABLED;
 
 	bool gizmo_selected = false;
 
 	ComponentTransform*			  transform = nullptr;
 	std::list<ComponentCollider*> colliders;
+	std::list<ComponentScript*>   scripts;
 	ComponentRigidBody*			  rigid_body = nullptr;
 	PxRigidActor*				  actor = nullptr;
 

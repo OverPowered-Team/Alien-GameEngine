@@ -3,9 +3,10 @@
 #include "ComponentPhysics.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
-
+#include "ComponentScript.h"
 #include "ImGuizmos/ImGuizmo.h"
 #include "GameObject.h"
+#include "Alien.h"
 #include "Event.h"
 #include "Time.h"
 
@@ -13,48 +14,46 @@ ComponentPhysics::ComponentPhysics(GameObject* go) : Component(go)
 {
 	serialize = false;  // Not save & load 
 	transform = go->GetComponent<ComponentTransform>();
+	state = PhysicState::DISABLED;
 
-	ComponentRigidBody* found_rigid_body = go->GetComponent<ComponentRigidBody>();
-	AddRigidBody(found_rigid_body);
-
-	std::vector<ComponentCollider*> found_colliders = go->GetComponents<ComponentCollider>();
-	for (ComponentCollider* collider : found_colliders)
-		AddCollider(collider);
-
-	state = PhysicState::STATIC;
-	UpdateBody();
+	std::vector<ComponentScript*> found_script = go->GetComponents<ComponentScript>();
+	for (ComponentScript* script : found_script)
+		if (script->need_alien == true)
+			scripts.push_back(script);
 }
 
 ComponentPhysics::~ComponentPhysics()
 {
-	App->physx->RemoveBody(actor);
-	actor = nullptr;
+	if (state != PhysicState::DISABLED) {
+		App->physx->RemoveBody(actor);
+		actor = nullptr;
+	}
+
 	rigid_body = nullptr;
 }
 
 void ComponentPhysics::Update()
 {
-	if (!actor) return;
+	if (state == PhysicState::DISABLED) return;
 
-	if (!Time::IsPlaying() || gizmo_selected)
-	{
-		PxTransform trans(F4X4_TO_PXTRANS(transform->GetGlobalMatrix()));
-		actor->setGlobalPose(trans);
-	}
-	else
-	{
-		PxTransform trans = actor->getGlobalPose();
-		transform->SetGlobalPosition(PXVEC3_TO_F3(trans.p));
-		transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
-	}
-
-	GizmoManipulation();
+	GizmoManipulation();  // Check if gizmo is selected
+	UpdatePositioning();  // Move body or gameobject
 
 }
 
 void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 {
 	switch (e.type) {
+	case AlienEventType::SCRIPT_ADDED: {
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached && script->need_alien == true)
+			scripts.push_back(script);
+		break; }
+	case AlienEventType::SCRIPT_DELETED: {
+		ComponentScript* script = (ComponentScript*)e.object;
+		if (script->game_object_attached == game_object_attached && script->need_alien == true)
+			scripts.remove(script);
+		break; }
 	case AlienEventType::COLLIDER_ADDED: {
 		ComponentCollider* object = (ComponentCollider*)e.object;
 		AddCollider(object);
@@ -71,15 +70,19 @@ void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 		ComponentCollider* object = (ComponentCollider*)e.object;
 		DettachColldier(object);
 		break; }
-	case AlienEventType::RIGIDBODY_ADDED:
-	case AlienEventType::RIGIDBODY_ENABLED: {
+	case AlienEventType::RIGIDBODY_ADDED: {
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
 		AddRigidBody(object);
 		break; }
-	case AlienEventType::RIGIDBODY_DELETED:
-	case AlienEventType::RIGIDBODY_DISABLED: {
+	case AlienEventType::RIGIDBODY_DELETED: {
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
 		RemoveRigidBody(object);
+		break; }
+
+	case AlienEventType::RIGIDBODY_ENABLED:
+	case AlienEventType::RIGIDBODY_DISABLED: {
+		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
+		SwitchedRigidBody(object);
 		break; }
 	}
 }
@@ -108,12 +111,17 @@ bool ComponentPhysics::RemoveRigidBody(ComponentRigidBody* rb)
 	return true;
 }
 
+void ComponentPhysics::SwitchedRigidBody(ComponentRigidBody* rb)
+{
+	if (rb == rigid_body)
+		if (CheckChangeState()) UpdateBody();
+}
 
 void ComponentPhysics::AttachCollider(ComponentCollider* collider, bool only_update)
 {
 	bool do_attach = false;
 
-	if (!only_update &&  CheckCollider(collider) && collider->IsEnabled())
+	if (!only_update && CheckCollider(collider) && collider->IsEnabled())
 	{
 		if (CheckChangeState())
 			UpdateBody();
@@ -121,11 +129,11 @@ void ComponentPhysics::AttachCollider(ComponentCollider* collider, bool only_upd
 			do_attach = true;
 	}
 
-	if (actor && (do_attach || only_update ))
+	if (actor && (do_attach || only_update))
 	{
-		if (!ShapeAttached(collider->shape))	
+		if (!ShapeAttached(collider->shape))
 			actor->attachShape(*collider->shape);
-		if (IsDynamic())						
+		if (IsDynamic())
 			actor->is<PxRigidDynamic>()->wakeUp();
 	}
 }
@@ -144,9 +152,9 @@ void ComponentPhysics::DettachColldier(ComponentCollider* collider, bool only_up
 
 	if (actor && (do_dettach || only_update))
 	{
-		if (ShapeAttached(collider->shape))	     
+		if (ShapeAttached(collider->shape))
 			actor->detachShape(*collider->shape);
-		if (IsDynamic())						 
+		if (IsDynamic())
 			actor->is<PxRigidDynamic>()->wakeUp();
 	}
 }
@@ -157,9 +165,9 @@ bool ComponentPhysics::AddCollider(ComponentCollider* collider)
 	if (CheckCollider(collider))
 	{
 		if (!FindCollider(collider))			// Add Collider if is not found
-			colliders.push_back(collider);		
+			colliders.push_back(collider);
 		if (CheckChangeState())					// Check if added collider change state
-			UpdateBody();	
+			UpdateBody();
 		else									// Else only attach 
 		{
 			AttachCollider(collider, true);
@@ -197,7 +205,39 @@ bool ComponentPhysics::CheckCollider(ComponentCollider* collider)
 
 bool ComponentPhysics::CheckRigidBody(ComponentRigidBody* rb)
 {
-	return (rb != nullptr && rb->game_object_attached == game_object_attached && !rigid_body && rb != rigid_body);
+	return (rb != nullptr && rb->game_object_attached == game_object_attached);
+}
+
+bool ComponentPhysics::CheckChangeState()
+{
+	if (rigid_body == nullptr && colliders.empty()) // Delete if not has physic components
+	{
+		Destroy();
+		state = PhysicState::DISABLED;
+		return true;
+	}
+
+	PhysicState new_state = PhysicState::DISABLED;
+
+	if (rigid_body != nullptr && rigid_body->IsEnabled())
+	{
+		new_state = PhysicState::DYNAMIC;
+	}
+	else
+	{
+		if (HasEnabledColliders())
+			new_state = PhysicState::STATIC;
+		else
+			new_state = PhysicState::DISABLED;
+	}
+
+	if (new_state != state)
+	{
+		state = new_state;
+		return true;
+	}
+
+	return false;
 }
 
 void ComponentPhysics::UpdateBody()
@@ -217,77 +257,60 @@ void ComponentPhysics::UpdateBody()
 		actor = nullptr;
 	}
 
-	if (state == PhysicState::STATIC || state == PhysicState::DYNAMIC || state == PhysicState::KINEMATIC)
+	if (state == PhysicState::STATIC || state == PhysicState::DYNAMIC)
 	{
 		actor = App->physx->CreateBody(transform->GetGlobalMatrix(), IsDynamic());
 
 		for (ComponentCollider* collider : colliders)
 			if (collider->enabled)
 				actor->attachShape(*collider->shape);
-	}
-}
 
-bool ComponentPhysics::CheckChangeState()
-{
-	if (rigid_body == nullptr && colliders.empty()) // Delete if not has physic components
-	{
-		Destroy();
-		state = PhysicState::DISABLED;
-		return false;
+		if (IsDynamic())
+			rigid_body->SetBodyProperties();
 	}
-
-	PhysicState new_state = PhysicState::DISABLED;
-
-	if (rigid_body != nullptr && rigid_body->IsEnabled())
-	{
-		if (rigid_body->is_kinematic)
-			new_state = PhysicState::KINEMATIC;
-		else
-			new_state = PhysicState::DYNAMIC;
-	}
-	else
-	{
-		if (HasEnabledColliders())
-			new_state = PhysicState::STATIC;
-		else
-			new_state = PhysicState::DISABLED;
-	}
-
-	if (new_state != state)
-	{
-		state = new_state;
-		return true;
-	}
-
-	return false;
 }
 
 void ComponentPhysics::GizmoManipulation()
 {
+	bool is_using_gizmo = ImGuizmo::IsUsing() && game_object_attached->IsSelected();
+	PxRigidDynamic* dyn = actor->is<PxRigidDynamic>();
+	bool need_sleep_wakeup = IsDynamic() && !IsKinematic();
 
-	if (IsDynamic())
+	if (gizmo_selected)
 	{
-		bool is_using_gizmo = ImGuizmo::IsUsing() && game_object_attached->IsSelected();
-		PxRigidDynamic* dyn = actor->is<PxRigidDynamic>();
-
-		if (gizmo_selected)
+		if (!is_using_gizmo)
 		{
-			if (!is_using_gizmo)
-			{
+			gizmo_selected = false;
+			if (need_sleep_wakeup)
 				dyn->wakeUp();
-				gizmo_selected = false;
-			}
-			else
-				dyn->putToSleep();
 		}
 		else
-			if (is_using_gizmo)
-				gizmo_selected = true;
+			if (need_sleep_wakeup)
+				dyn->putToSleep();
 	}
 	else
-		gizmo_selected = false;
+		if (is_using_gizmo)
+			gizmo_selected = true;
 }
 
+void ComponentPhysics::UpdatePositioning()
+{
+	if (!Time::IsPlaying() || gizmo_selected)
+	{
+		PxTransform trans(F4X4_TO_PXTRANS(transform->GetGlobalMatrix()));
+
+		if (IsKinematic() && Time::IsPlaying())
+			actor->is<PxRigidDynamic>()->setKinematicTarget(trans);
+		else
+			actor->setGlobalPose(trans);
+	}
+	else
+	{
+		PxTransform trans = actor->getGlobalPose(); // Get Controller Position
+		transform->SetGlobalPosition(PXVEC3_TO_F3(trans.p));
+		transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
+	}
+}
 
 bool ComponentPhysics::HasEnabledColliders()
 {
@@ -315,3 +338,6 @@ bool ComponentPhysics::ShapeAttached(PxShape* shape)
 	delete[]shapes;
 	return ret;
 }
+
+bool ComponentPhysics::IsDynamic() { return state == PhysicState::DYNAMIC; }
+bool ComponentPhysics::IsKinematic() { return state == PhysicState::DYNAMIC && rigid_body->is_kinematic; }

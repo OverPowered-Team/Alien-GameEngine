@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ModulePhysics.h"
 #include "ComponentPhysics.h"
 #include "ComponentRigidBody.h"
 #include "ComponentTransform.h"
@@ -8,7 +9,7 @@
 #include "ModuleInput.h"
 #include "Event.h"
 #include "mmgr/mmgr.h"
-#include "PxRigidDynamic.h"
+
 
 ComponentRigidBody::ComponentRigidBody(GameObject* go) : ComponentBasePhysic(go)
 {
@@ -257,8 +258,8 @@ void ComponentRigidBody::SetIsKinematic(const bool value)
 
 	if (CanUseRigidBody())
 		(is_kinematic)
-			? body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true)
-			: body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+		? body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true)
+		: body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 }
 
 void ComponentRigidBody::SetMass(const float value)
@@ -284,17 +285,17 @@ void ComponentRigidBody::SetAngularDrag(const float value)
 		body->setAngularDamping(value);
 }
 
-void ComponentRigidBody::SetFreezePosition(bool x, bool y, bool z)
+void ComponentRigidBody::SetFreezePosition(bool values[3])
 {
-	freeze_position[0] = x, freeze_position[1] = y, freeze_position[2] = z;
-	
+	freeze_position[0] = values[0], freeze_position[1] = values[1], freeze_position[2] == values[2];
+
 	if (CanUseRigidBody())
 	{
 		body->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, freeze_position[0]);
 		body->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, freeze_position[1]);
 		body->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, freeze_position[2]);
 	}
-		
+
 }
 
 void ComponentRigidBody::GetFreezePosition(bool values[3])
@@ -302,9 +303,9 @@ void ComponentRigidBody::GetFreezePosition(bool values[3])
 	values = freeze_position;
 }
 
-void ComponentRigidBody::SetFreezeRotation(bool x, bool y, bool z)
+void ComponentRigidBody::SetFreezeRotation(bool values[3])
 {
-	freeze_rotation[0] = x, freeze_rotation[1] = y, freeze_rotation[2] = z;
+	freeze_rotation[0] = values[0], freeze_rotation[1] = values[1], freeze_rotation[2] = values[2];
 
 	if (CanUseRigidBody())
 	{
@@ -347,6 +348,19 @@ float3 ComponentRigidBody::GetAngularVelocity()
 
 bool ComponentRigidBody::CanUseRigidBody()
 {
-	body = physics->actor->is<PxRigidDynamic>();
+	(physics->actor)
+		? body = physics->actor->is<PxRigidDynamic>()
+		: body = nullptr;
+
 	return (body && enabled);
+}
+
+void ComponentRigidBody::SetBodyProperties()
+{
+	SetIsKinematic(is_kinematic);
+	SetMass(mass);
+	SetDrag(drag);
+	SetAngularDrag(angular_drag);
+	SetFreezePosition(freeze_position);
+	SetFreezeRotation(freeze_rotation);
 }

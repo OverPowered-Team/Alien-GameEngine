@@ -1,14 +1,29 @@
 #pragma once
 
 #include "ComponentBasePhysic.h"
-#include "ModulePhysics.h"
 #include "MathGeoLib/include/Math/MathAll.h"
+#include "PxRigidDynamic.h"
+
+using namespace physx;
 
 class GameObject;
 class ComponentCollider;
 class ComponentCapsuleCollider;
 
-using namespace physx;
+enum class Space
+{
+	Global,
+	Local
+};
+
+enum class ForceMode : uint
+{
+	FORCE,
+	IMPULSE,
+	ACCELERATION,
+	VELOCITY_CHANGE,
+	MAX
+};
 
 class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 {
@@ -20,6 +35,7 @@ class __declspec(dllexport) ComponentRigidBody : public ComponentBasePhysic
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
 	friend class ComponentConvexHullCollider;
+	friend class SimulationEventCallback;
 	friend class ResourcePrefab;
 
 public:
@@ -48,9 +64,9 @@ public:
 	void SetAngularDrag(const float angular_drag);
 	float GetAngularDrag() { return angular_drag; }
 
-	void SetFreezePosition(bool x, bool y, bool z);
+	void SetFreezePosition(bool values[3]);
 	void GetFreezePosition(bool values[3]);
-	void SetFreezeRotation(bool x, bool y, bool z);
+	void SetFreezeRotation(bool values[3]);
 	void GetFreezeRotation(bool values[3]);
 				
 	float3 GetVelocity();
@@ -71,6 +87,7 @@ private:
 	void LoadComponent(JSONArraypack* config);
 
 	bool CanUseRigidBody();
+	void SetBodyProperties();
 
 private:
 

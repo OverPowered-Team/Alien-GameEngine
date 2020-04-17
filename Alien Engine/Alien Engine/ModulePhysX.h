@@ -69,7 +69,7 @@ private:
 	
 	PxDefaultAllocator			px_allocator;
 	CustomErrorCallback			px_error_callback;
-
+	SimulationEventCallback*    px_simulation_callback = nullptr;
 	PxFoundation*				px_foundation = nullptr;
 	PxPhysics*					px_physics = nullptr;
 	PxDefaultCpuDispatcher*		px_dispatcher = nullptr;

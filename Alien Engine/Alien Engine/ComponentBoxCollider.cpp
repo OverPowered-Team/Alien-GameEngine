@@ -12,6 +12,7 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	type = ComponentType::BOX_COLLIDER;
 	shape = App->physx->CreateShape(PxBoxGeometry( .5f ,.5f , .5f ));
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
+	InitCollider();
 }
 
 void ComponentBoxCollider::SetSize(const float3 value)
