@@ -25,7 +25,7 @@ public:
 	float maxYaw = 1.f;
 	float maxPitch = 1.f;
 	float maxRoll = 1.f;
-	float off_set = 0.f;
+	float off_set = 5.f;
 
 private:
 	float trauma = 0.f;
@@ -47,7 +47,6 @@ ALIEN_FACTORY CameraShake* CreateCameraShake() {
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxPitch);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->maxRoll);
 	SHOW_IN_INSPECTOR_AS_DRAGABLE_FLOAT(alien->off_set);
-
 
 	return alien;
 } 
