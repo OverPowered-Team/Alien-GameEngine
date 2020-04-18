@@ -89,8 +89,17 @@ void PanelHierarchy::PanelLogic()
 		std::vector<GameObject*>::iterator item = App->objects->GetGlobalRoot()->children.begin();
 		for (; item != App->objects->GetGlobalRoot()->children.end(); ++item)
 		{
+			if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Header, ImGui::GetColorU32(ImGuiCol_HeaderActive));
+			}
+
 			ImGui::PushID(*item);
 			if (ImGui::CollapsingHeader((*item)->name, ImGuiTreeNodeFlags_DefaultOpen)) {
+
+				if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+					ImGui::PopStyleColor();
+				}
+
 				RightClickSceneNode(*item);
 				
 				if (ImGui::BeginDragDropTarget()) {
@@ -127,9 +136,13 @@ void PanelHierarchy::PanelLogic()
 				}
 			}
 			else {
+				if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+					ImGui::PopStyleColor();
+				}
 				RightClickSceneNode(*item);
 			}
 			ImGui::PopID();
+
 		}
 	}
 	RightClickMenu();
