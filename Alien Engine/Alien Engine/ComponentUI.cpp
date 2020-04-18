@@ -122,6 +122,7 @@ void ComponentUI::Draw(bool isGame)
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
 
+
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
@@ -163,6 +164,20 @@ void ComponentUI::Draw(bool isGame)
 		matrix[2][3] = 0.0f;
 	}
 
+	if (canvas->isWorld)
+	{
+		float4x4 view_matrix = App->renderer3D->actual_game_camera->GetViewMatrix4x4();
+		matrix[0][0] = view_matrix[0][0];
+		matrix[0][1] = view_matrix[1][0];
+		matrix[0][2] = view_matrix[2][0];
+		matrix[1][0] = view_matrix[0][1];
+		matrix[1][1] = view_matrix[1][1];
+		matrix[1][2] = view_matrix[2][1];
+		matrix[2][0] = view_matrix[0][2];
+		matrix[2][2] = view_matrix[2][2];
+
+	}
+
 	if (texture != nullptr) {
 		//glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -174,8 +189,16 @@ void ComponentUI::Draw(bool isGame)
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	glPushMatrix();
-	glMultMatrixf(matrix.Transposed().ptr());
+	if (!canvas->isWorld)
+	{
+		glPushMatrix();
+		glMultMatrixf(matrix.Transposed().ptr());
+	}
+	else
+	{
+		glPushMatrix();
+		glMultMatrixf(matrix.ptr());
+	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
