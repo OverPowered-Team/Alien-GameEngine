@@ -82,6 +82,7 @@ bool ModulePhysX::Init()
 	px_scene->setSimulationEventCallback(px_simulation_callback);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+	//px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 1.0f);
 
 
 	PxPvdSceneClient* pvdClient = px_scene->getScenePvdClient();
@@ -149,6 +150,9 @@ bool ModulePhysX::CleanUp()
 	PX_RELEASE(px_scene);
 	PX_RELEASE(px_dispatcher);
 	PX_RELEASE(px_physics);
+	delete px_simulation_callback;
+	px_simulation_callback = nullptr;
+	
 	if (px_pvd)
 	{
 		PxPvdTransport* transport = px_pvd->getTransport();

@@ -8,6 +8,9 @@
 #include "ReturnZ.h"
 
 #include "UtilitiesPhysX.h"
+#include "ComponentPhysics.h"
+#include "ComponentScript.h"
+#include "Alien.h"
 
 #include "Time.h"
 #include "ModuleInput.h"
@@ -26,12 +29,13 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	moveDirection = controller_offset = float3::zero();
 
-	controller->setUserData(this); // TODO: adapt component collider ?
+	controller->setUserData(this);
 }
 
 ComponentCharacterController::~ComponentCharacterController()
 {
 	controller->release();
+	delete report;
 }
 
 // Movement Functions -----------------------------------------
@@ -373,21 +377,87 @@ void ComponentCharacterController::DrawScene()
 
 void ComponentCharacterController::HandleAlienEvent(const AlienEvent& e)
 {
-	//collider->HandleAlienEvent(e);
 }
 
 void ComponentCharacterController::SetDefaultConf()
 {
 	desc.radius = 1.0f;
 	desc.height = 2.0f;
+	if (desc.material) desc.material->release();
 	desc.material = App->physx->CreateMaterial(static_friction, dynamic_friction, restitution);
 	desc.position = F3_TO_PXVEC3EXT(game_object_attached->transform->GetGlobalPosition());
 	desc.slopeLimit = cosf(DegToRad(45.0f));
 	desc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	// hit report callback
+	if (report) delete report;
+	desc.reportCallback = report = new UserControllerHitReport();
+	report->controller = this;
+	// 
 
 	//desc.invisibleWallHeight = 100.0f;// TODO: implement if needed automatic invisible walls
 	//desc.maxJumpHeight = 1.0f;
 	//desc.upDirection = // up direction can be changed to simulate planetoids or surfaces with other gravity dir vector
 
 	min_distance = 0.001f;
+}
+
+void ComponentCharacterController::OnControllerColliderHit(ControllerColliderHit hit)
+{
+	Alien* alien = nullptr;
+	for (ComponentScript* script : physics->scripts)
+	{
+		try {
+			alien = (Alien*)script->data_ptr;
+			alien->OnControllerColliderHit(hit);
+		}
+		catch (...) {
+			LOG_ENGINE("Error on script \"%s\" when calling \"%s\"", alien->data_name, hit.gameObject->GetName());
+		}
+	}
+}
+
+//* -------------------------- User hit callbacks
+void UserControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
+{
+	ControllerColliderHit _hit;
+	
+	ComponentCollider* col = (ComponentCollider*)hit.shape->userData;
+	_hit.collider = col;
+	if (_hit.collider)
+	{
+		//_hit.controller = (ComponentCharacterController*)col; // only onControllerHit
+		_hit.gameObject = (GameObject*)col->game_object_attached;
+		_hit.rigidbody = col->physics->rigid_body;
+		_hit.transform = _hit.gameObject->transform;
+	}
+
+	_hit.moveDirection = PXVEC3_TO_F3(hit.dir);
+	_hit.moveLength = hit.length;
+	_hit.normal = PXVEC3_TO_F3(hit.worldNormal);
+	_hit.point = PXVEC3EXT_TO_F3(hit.worldPos);
+	
+	controller->OnControllerColliderHit(_hit);
+}
+
+void UserControllerHitReport::onControllerHit(const PxControllersHit& hit)
+{
+	ControllerColliderHit _hit;
+
+	_hit.controller = (ComponentCharacterController*)hit.other->getUserData();
+	_hit.collider = (ComponentCollider*)_hit.controller;
+	_hit.gameObject = _hit.controller->game_object_attached;
+	_hit.rigidbody = _hit.collider->physics->rigid_body;
+	_hit.transform = _hit.gameObject->transform;
+	
+	_hit.moveDirection = PXVEC3_TO_F3(hit.dir);
+	_hit.moveLength = hit.length;
+	_hit.normal = PXVEC3_TO_F3(hit.worldNormal);
+	_hit.point = PXVEC3EXT_TO_F3(hit.worldPos);
+
+	controller->OnControllerColliderHit(_hit);
+}
+
+void UserControllerHitReport::onObstacleHit(const PxControllerObstacleHit& hit)
+{
+	LOG_ENGINE("OBSTACLE HIT");
 }

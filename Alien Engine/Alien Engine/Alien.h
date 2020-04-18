@@ -4,6 +4,7 @@
 
 class ComponentTransform;
 class ComponentCharacterController;
+class ControllerColliderHit;
 class ComponentCollider;
 class Collision;
 class ContactPoint;
@@ -19,6 +20,7 @@ class __declspec(dllexport) Alien {
 	friend class ComponentTransform;
 	friend class ResourceAnimatorController;
 	friend class SimulationEventCallback;
+	friend class ComponentCharacterController;
 public:
 	Alien();
 	virtual ~Alien();
@@ -55,6 +57,8 @@ public:
 	virtual void OnTriggerEnter(ComponentCollider* collider) {}
 	virtual void OnTriggerStay(ComponentCollider* collider) {}
 	virtual void OnTriggerExit(ComponentCollider* collider) {}
+
+	virtual void OnControllerColliderHit(const ControllerColliderHit& hit) {}
 
 	// Deprecated , use OnTriggerStay()
 	virtual void OnTrigger(ComponentCollider* collider) {}  // TODO:  Delete after change al code

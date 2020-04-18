@@ -22,6 +22,7 @@ class __declspec(dllexport) ComponentPhysics : public Component
 	friend class ComponentConvexHullCollider;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
+	friend class UserControllerHitReport;
 
 public:
 

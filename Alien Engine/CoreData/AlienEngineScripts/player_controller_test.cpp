@@ -39,3 +39,9 @@ void player_controller_test::Update()
 	
 	ccontroller->Move(moveDirection * Time::GetDT());
 }
+
+void player_controller_test::OnControllerColliderHit(const ControllerColliderHit& hit)
+{
+	if (hit.collider)
+		LOG_ENGINE("Hit with object %s", hit.collider->game_object_attached->GetName());
+}

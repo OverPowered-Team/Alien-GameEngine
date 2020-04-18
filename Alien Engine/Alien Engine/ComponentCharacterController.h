@@ -9,6 +9,34 @@ class GameObject;
 class ComponentMesh;
 class ComponentTransform;
 
+struct ControllerColliderHit
+{
+	ComponentCollider* collider = nullptr;
+	ComponentCharacterController* controller = nullptr;
+	GameObject* gameObject = nullptr;
+	float3 moveDirection = float3::zero();
+	float moveLength = 0.0f;
+	float3 normal = float3::zero();
+	float3 point = float3::zero();
+	ComponentRigidBody* rigidbody = nullptr;
+	ComponentTransform* transform = nullptr;
+};
+//
+class UserControllerHitReport : public PxUserControllerHitReport
+{
+	friend class ComponentCharacterController;
+private:
+
+	virtual void onShapeHit(const PxControllerShapeHit& hit);
+
+	virtual void onControllerHit(const PxControllersHit& hit);
+
+	virtual void onObstacleHit(const PxControllerObstacleHit& hit);
+
+private:
+	ComponentCharacterController* controller = nullptr;
+};
+
 class __declspec(dllexport) ComponentCharacterController : public ComponentCollider
 {
 	friend class GameObject;
@@ -17,6 +45,7 @@ class __declspec(dllexport) ComponentCharacterController : public ComponentColli
 	friend class ReturnZ;
 	friend class CompZ;
 	friend class ComponentRigidBody;
+	friend class UserControllerHitReport;
 
 public:
 
@@ -53,12 +82,15 @@ public:
 	void SetContactOffset(const float contactOffset);
 
 	// TODO: make own copy of collision flag to not work with physx data outside.
+
 	// Move by motion, this function doesn't apply any gravity,
 	// (user implementation, or active force gravity in character controller component)
 	PxControllerCollisionFlags Move(float3 motion);
 
 private:
 	void SetDefaultConf();
+
+	void OnControllerColliderHit(ControllerColliderHit hit);
 
 protected:
 
@@ -83,23 +115,8 @@ public:
 
 protected:
 	ComponentTransform* transform = nullptr;
-	/*ComponentCollider* collider = nullptr;
-	btKinematicCharacterController* controller = nullptr;
-	btPairCachingGhostObject* body = nullptr;
-	btPairCachingGhostObject* detector = nullptr;
-	btCapsuleShape* shape = nullptr;
-
-	float3 character_offset = float3::zero();
-	float character_height = 1.f;
-	float character_radius = 0.5f;
-
-	float jump_speed = 0.f;
-	float gravity = 80.f;
-
-	bool test = false;*/
 	float gravity = 20.0f;//9.8f;
 	
-
 	// advanced options -------------
 	// Forces move with zero vector when controller is idle, 
 	// this forces messages from OnControllerColliderHit in any situation,
@@ -114,6 +131,8 @@ private:
 	PxCapsuleControllerDesc desc;
 	float min_distance;
 	PxController* controller = nullptr;
+	// callbacks
+	UserControllerHitReport* report = nullptr;
 
 	float dynamic_friction = 0.5f;
 	float static_friction = 0.5f;
