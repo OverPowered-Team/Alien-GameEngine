@@ -17,6 +17,9 @@ class __declspec(dllexport) ComponentRigidBody : public Component
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
+	friend class ResourcePrefab;
 
 public:
 
@@ -29,6 +32,10 @@ public:
 	void AddTorque(const float3 force, ForceMode mode = ForceMode::IMPULSE, Space space = Space::Global);
 
 	// Rigid Body Values 
+	void SetRotation(const Quat rotation);
+	void SetTransform(const float3 position, const Quat rotation);
+	float3 GetPosition();
+	Quat GetRotation();
 
 	void SetIsKinematic(const bool value);
 
@@ -38,6 +45,11 @@ public:
 	float GetDrag() { return drag; }
 	void SetAngularDrag(const float angular_drag);
 
+	void SetPosition(const float3 pos);
+	float3 GetPosition() const;
+
+	Quat GetRotation() const;
+
 	float3 GetVelocity();
 	void SetVelocity(const float3 velocity);
 	float3 GetAngularVelocity();
@@ -46,6 +58,8 @@ public:
 private:
 
 	void Update();
+	void OnEnable();
+	void OnDisable();
 	bool DrawInspector();
 	void Reset();
 	void Clone(Component* clone);
@@ -56,6 +70,8 @@ private:
 	void UpdateCollider();
 	void RemoveCollider();
 	void UpdateBodyInertia();
+
+	void HandleAlienEvent(const AlienEvent& e);
 
 	void SetBodyTranform(const float3& pos, const Quat& rot);
 

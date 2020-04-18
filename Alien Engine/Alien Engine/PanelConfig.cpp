@@ -199,14 +199,17 @@ void PanelConfig::PanelLogic()
 		}
 		ImGui::EndChild();
 	}
+	if (ImGui::CollapsingHeader("Camera"))
+	{
+		ImGui::InputFloat("Camera Speed", &App->camera->camera_speed, 1, 5, 2);
+		ImGui::InputFloat("Camera Zoom Speed", &App->camera->camera_zoom_speed, 1, 5, 2);
+		ImGui::InputFloat("Camera Rotation Speed", &App->camera->camera_rotation_speed, 1, 5, 2);
+		ImGui::InputFloat("Camera Orbit Speed", &App->camera->camera_orbit_speed, 1, 5, 2);
+	}
 	if (ImGui::CollapsingHeader("Input")) 
 	{
 		ImGui::Spacing();
 		ImGui::Spacing();
-
-		ImGui::InputFloat("Camera Speed", &App->camera->camera_speed, 1, 5, 2);
-		ImGui::InputFloat("Camera Zoom Speed", &App->camera->camera_zoom_speed, 1, 5, 2);
-		ImGui::InputFloat("Camera Mouse Speed", &App->camera->camera_mouse_speed, 1, 5, 2);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -273,6 +276,10 @@ void PanelConfig::PanelLogic()
 
 		ImGui::Spacing();
 	}
+	if (ImGui::CollapsingHeader("View"))
+	{
+		App->camera->PanelConfigOption();
+	}
 	ImGui::Spacing();
 	if (ImGui::Button("Save Configuration", { 150,30 })) {
 		App->SaveCustomConfig();
@@ -281,6 +288,7 @@ void PanelConfig::PanelLogic()
 	if (ImGui::Button("Load Default Configuration", { 200,30 })) {
 		App->LoadDefaultConfig();
 	}
+
 	ImGui::End();
 }
 

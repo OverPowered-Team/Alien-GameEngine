@@ -8,6 +8,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "GL/gl.h"
+#include "mmgr/mmgr.h"
 
 ParticleSystem::ParticleSystem()
 {
@@ -15,10 +16,12 @@ ParticleSystem::ParticleSystem()
 	emmitter.particleSystem = this;
 
 	
-	material = App->resources->default_material;
-	material->IncreaseReferences();
+	default_material = new ResourceMaterial();
+	default_material->SetName("Particle Material");
+	default_material->color = particleInfo.color;
+	SetMaterial(default_material);
 	material->SetShader(App->resources->default_particle_shader);
-
+	//material->color = float4(1.0f, 0.0f, 0.8f, 1.0f);
 	
 	float vertex[] =
 	{
@@ -35,13 +38,22 @@ ParticleSystem::ParticleSystem()
 	float uv[] =
 	{
 		// 0
-		0.0f, 0.0f, 
-		// 1
-		1.0f, 0.0f,
-		// 2
 		0.0f, 1.0f,
-		// 3
+		// 1
 		1.0f, 1.0f,
+		// 2
+		0.0f, 0.0f,
+		// 3
+		1.0f, 0.0f,
+
+		//// 0
+		//0.0f, 0.0f,
+		//// 1
+		//1.0f, 0.0f,
+		//// 2
+		//0.0f, 1.0f,
+		//// 3
+		//1.0f, 1.0f,
 	};
 
 	uint index[] =
@@ -90,6 +102,7 @@ ParticleSystem::ParticleSystem()
 
 ParticleSystem::~ParticleSystem()
 {
+
 	// Delete all particles
 	for (std::vector<Particle*>::iterator iter = particles.begin(); iter != particles.end(); ++iter)
 	{
@@ -97,16 +110,27 @@ ParticleSystem::~ParticleSystem()
 		(*iter) = nullptr;
 	}
 
+	
 	glDeleteVertexArrays(1, &vao);
 
 	glDeleteBuffers(1, &id_vertex);
-	glDeleteBuffers(1, &id_vertex);
+	glDeleteBuffers(1, &id_index);
 	glDeleteBuffers(1, &id_uv);
+
 
 	particles.clear();
 
-	if (material != nullptr)
+	if (material != nullptr) {
+
+		material->DecreaseReferences();
 		material = nullptr;
+	}
+
+	if (default_material) {
+		default_material->DecreaseReferences();
+		delete default_material;
+		default_material = nullptr;
+	}
 
 	DeactivateLight();
 }
@@ -191,8 +215,8 @@ void ParticleSystem::CreateParticle(ParticleInfo info, ParticleMutableInfo endIn
 
 	Particle* particle = new Particle(this, info, endInfo);
 
-	if(std::get<0>(animation_uvs).size() > 0)
-		particle->SetAnimation(std::get<0>(animation_uvs), std::get<1>(animation_uvs));
+	/*if(!std::get<0>(animation_uvs).empty())*/
+	//particle->SetAnimation(std::get<0>(animation_uvs), std::get<1>(animation_uvs));
 
 	particles.push_back(particle);
 	totalParticles++;
@@ -212,7 +236,6 @@ void ParticleSystem::DrawParticles()
 	// Debugging drawing points in particles Position
 	//DrawPointsForParticles();
 
-	RenderLight();
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
 
@@ -226,6 +249,7 @@ void ParticleSystem::DrawParticles()
 
 	}
 	
+	RenderLight();
 
 }
 
@@ -409,6 +433,7 @@ void ParticleSystem::SetMaterial(ResourceMaterial* mat)
 		//material = nullptr;
 	}
 
+
 	material = mat;
 	material->IncreaseReferences();
 }
@@ -419,21 +444,81 @@ void ParticleSystem::RemoveMaterial()
 	material = nullptr;
 }
 
-void ParticleSystem::CalculateParticleUV(int rows, int columns, float speed)
-{
-	std::vector<uint> textureUV = LoadTextureUV(rows, columns);
-	animation_uvs = std::make_tuple(textureUV, speed);
-}
 
-std::vector<uint> ParticleSystem::LoadTextureUV(int rows, int columns)
-{
 
-	std::vector<uint> ret;
+//
+//std::vector<uint> ParticleSystem::LoadTextureUV(int rows, int columns)
+//{
+//
+//	
+//
+//	std::vector<uint> ret;
+//	ret.clear();
+//	int currentFrame = 0;
+//	if (rows > 0 && columns > 0)
+//	{
+//
+//		uint id_animUV = 0;
+//		int currentRow = 0, currentColumn =0 ;
+//		
+//
+//		for (int i = 0; i < rows; ++i)
+//		{
+//			for (int j = 0; j < columns; ++j)
+//			{
+//				
+//
+//
+//				if (currentFrame >= rows * columns) {
+//					currentFrame = 0;
+//				}
+//				else {
+//					if (currentFrame >= columns)
+//					{
+//						currentRow = (int)(currentFrame / columns);
+//					}
+//					currentColumn = currentFrame % columns;
+//				}
+//
+//				currentRow = (rows - 1) - currentRow;
+//
+//				float uv[] = {
+//				  currentColumn / columns,       (currentRow + 1) / rows, //left top
+//				  currentColumn / columns,       currentRow / rows,       //left bottom
+//				  (currentColumn + 1) / columns, (currentRow + 1) / rows, //right top
+//				  (currentColumn + 1) / columns, currentRow / rows,       //right bottom
+//				};
+//
+//
+//				LOG_ENGINE("Texture UV: \n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n", uv[0], uv[1], uv[2], uv[3], uv[4], uv[5], uv[6], uv[7])
+//
+//
+//				glGenBuffers(1, (GLuint*)&id_animUV);
+//				glBindBuffer(GL_ARRAY_BUFFER, id_animUV);
+//				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+//
+//
+//				ret.push_back(id_animUV);
+//				currentFrame++;
+//
+//				glBindBuffer(GL_ARRAY_BUFFER, 0);
+//
+//			}
+//		}
+//	}
+//
+//	return ret;
+//
+//}
 
-	if (rows > 0 && rows > 0)
+
+	/*std::vector<uint> ret;
+	ret.clear();
+
+	if (rows > 0 && columns > 0)
 	{
 
-		uint texID = 0;
+		 uint id_animUV = 0;
 
 		float r_scale = 1.0f / rows;
 		float c_scale = 1.0f / columns;
@@ -447,30 +532,31 @@ std::vector<uint> ParticleSystem::LoadTextureUV(int rows, int columns)
 				{
 					j * c_scale,					1.0f - (i * r_scale + r_scale),
 					j * c_scale + c_scale,			1.0f - (i * r_scale + r_scale),
-					j * c_scale,					1.0f - i * r_scale,
-					j * c_scale + c_scale,			1.0f - i * r_scale,
+					j * c_scale,					1.0f -  i * r_scale,
+					j * c_scale + c_scale,			1.0f -  i * r_scale,
 				};
 
-
+			
 				LOG_ENGINE("Texture UV: \n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n%.2f %.2f\n", uv[0], uv[1], uv[2], uv[3], uv[4], uv[5], uv[6], uv[7])
 				
 			
-
-				glGenBuffers(1, &texID);
-				glBindBuffer(GL_ARRAY_BUFFER, texID);
+				glGenBuffers(1, (GLuint*)&id_animUV);
+				glBindBuffer(GL_ARRAY_BUFFER, id_animUV);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
 			
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-				ret.push_back(texID);
+				ret.push_back(id_animUV);
 			}
 		}
 
 	}
+	else
+	{
+		ResetParticleUV();
+	}*/
 
-	return ret;
-
-}
+	
 
 // ------------------------------ PARTICLE LIGHT ------------------------------
 
@@ -494,4 +580,124 @@ void ParticleSystem::ActivateLight()
 void ParticleSystem::DeactivateLight()
 {
 	glDisable(light_id);
+}
+
+
+// ------------------------------ PARTICLE ANIMATION ------------------------------
+
+void ParticleSystem::CalculateParticleUV(int rows, int columns, float speed, int startFrame, int endFrame)
+{
+	
+	if (!particleInfo.frames.empty())
+	{
+		particleInfo.frames.clear();
+		currentFrame = 0;
+	}
+
+	ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[(int)TextureType::DIFFUSE]);
+	if (tex != nullptr)
+	{
+		LoadUVs(rows, columns, tex);
+		SetAnimation(0, startFrame, endFrame);
+		PlayAnimation(0);
+		particleInfo.animSpeed = speed;
+		particleInfo.animated = true;
+	}
+	else
+	{
+		LOG_ENGINE("Texture not found in particle material");
+		particleInfo.animated = false;
+	}
+
+
+	// ------ Animation (Deprecated) --------- //
+
+	/*if (textureUV.size() > 0)
+	{
+		for (int i = 0; i < textureUV.size(); ++i)
+			glDeleteBuffers(1, &textureUV.at(i));
+
+		textureUV.clear();
+	}
+	textureUV = LoadTextureUV(rows, columns);
+
+	particleInfo.animation = &textureUV;
+	particleInfo.animSpeed = speed;*/
+
+	//animation_uvs = std::make_tuple(textureUV, speed);
+
+}
+
+void ParticleSystem::ResetParticleUV()
+{
+
+	for (uint i = 0; i < particles.size(); ++i)
+	{
+		particles[i]->ResetFrame();
+	}
+
+
+	// Update Configuration
+	particleInfo.UVs[0].U = 0;
+	particleInfo.UVs[0].V = 1;
+	particleInfo.UVs[1].U = 1;
+	particleInfo.UVs[1].V = 1;
+	particleInfo.UVs[2].U = 0;
+	particleInfo.UVs[2].V = 0;
+	particleInfo.UVs[3].U = 1;
+	particleInfo.UVs[3].V = 0;
+
+	particleInfo.animated = false;
+	particleInfo.frames.clear();
+	currentFrame = 0;
+	sheetWidth = 0;
+	sheetHeight = 0;
+
+}
+
+void ParticleSystem::LoadUVs(int numRows, int numCols, ResourceTexture* tex)
+{
+	//int sheetWidth, sheetHeight;
+
+	sheetWidth = tex->width;
+	sheetHeight = tex->height;
+
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			
+			Frame newFrame;
+
+			newFrame.x0 = (sheetWidth / numCols) * j;
+			newFrame.x1 = (sheetWidth / numCols) * j + (sheetWidth / numCols);
+			newFrame.y0 = (sheetHeight / numRows) * i;
+			newFrame.y1 = (sheetHeight / numRows) * i + (sheetHeight / numRows);
+			
+			particleInfo.frames.push_back(newFrame);
+			
+
+			/*particleInfo.frames.at((i * numCols) + j).x0 = (sheetWidth / numCols) * j;
+			particleInfo.frames.at((i * numCols) + j).x1 = (sheetHeight / numRows) * i;
+			particleInfo.frames.at((i * numCols) + j).y0 = (sheetWidth / numCols) * j + (sheetWidth / numCols);
+			particleInfo.frames.at((i * numCols) + j).y1 = (sheetHeight / numRows) * i + (sheetHeight / numRows);*/
+
+			
+		}
+	}
+		
+
+
+
+}
+
+void ParticleSystem::SetAnimation(int anim, int start, int end)
+{
+	particleInfo.animations[anim].startFrame = start;
+	particleInfo.animations[anim].endFrame = end;
+
+}
+
+void ParticleSystem::PlayAnimation(int anim)
+{
+	particleInfo.currentAnimation = particleInfo.animations[anim];
+	currentFrame = particleInfo.currentAnimation.startFrame;
 }

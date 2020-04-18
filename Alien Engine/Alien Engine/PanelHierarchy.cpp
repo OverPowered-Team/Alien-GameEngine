@@ -5,6 +5,8 @@
 #include "ResourceScene.h"
 #include "ResourcePrefab.h"
 #include "imgui/imgui_internal.h"
+#include "ComponentScript.h"
+#include "PanelSceneSelector.h"
 #include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ComponentTransform.h"
@@ -77,28 +79,74 @@ void PanelHierarchy::PanelLogic()
 		if (ImGui::Button("Return Scene")) {
 			popup_leave_prefab_view = true;
 		}
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
-	else {
-		std::string scene_name = "Current Scene: " + std::string((App->objects->current_scene != nullptr) ? App->objects->current_scene->GetName() : "Untitled*");
-		ImGui::Text(scene_name.data());
-	}
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
 
 	object_hovered = nullptr;
-	if (!App->objects->GetRoot(true)->children.empty()) {
-		std::vector<GameObject*>::iterator item = App->objects->GetRoot(true)->children.begin();
-		for (; item != App->objects->GetRoot(true)->children.end(); ++item)
+	if (!App->objects->GetGlobalRoot()->children.empty()) {
+		std::vector<GameObject*>::iterator item = App->objects->GetGlobalRoot()->children.begin();
+		for (; item != App->objects->GetGlobalRoot()->children.end(); ++item)
 		{
-			if (*item != nullptr)
-			{
-				PrintNode(*item);
+			if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Header, ImGui::GetColorU32(ImGuiCol_HeaderActive));
 			}
+
+			ImGui::PushID(*item);
+			if (ImGui::CollapsingHeader((*item)->name, ImGuiTreeNodeFlags_DefaultOpen)) {
+
+				if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+					ImGui::PopStyleColor();
+				}
+
+				RightClickSceneNode(*item);
+				
+				if (ImGui::BeginDragDropTarget()) {
+					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+					if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
+						GameObject* obj = *(GameObject**)payload->Data;
+						std::vector<GameObject*> objects;
+						if (!obj->IsSelected()) {
+							objects.push_back(obj);
+						}
+						else {
+							objects.assign(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end());
+						}
+						for (auto it = objects.begin(); it != objects.end(); ++it) {
+							if ((*it)->parent != *item) {
+								if ((*it)->IsPrefab() && (*it)->FindPrefabRoot() != (*it) && !App->objects->prefab_scene) {
+									popup_move_child_outof_root_prefab_scene = true;
+								}
+								else if (!(*it)->is_static) {
+									App->objects->ReparentGameObject((*it),*item);
+								}
+								else {
+									LOG_ENGINE("Objects static can not be reparented");
+								}
+							}
+						}
+						ImGui::ClearDragDrop();
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				for (auto it = (*item)->children.begin(); it != (*item)->children.end(); ++it) {
+					PrintNode(*it);
+				}
+			}
+			else {
+				if (App->objects->GetGlobalRoot()->children.size() > 1 && (*item)->ID == App->objects->scene_active) {
+					ImGui::PopStyleColor();
+				}
+				RightClickSceneNode(*item);
+			}
+			ImGui::PopID();
+
 		}
 	}
 	RightClickMenu();
+	right_click_scene = false;
 
 	// drop a node in the window, parent is base_game_object
 	ImVec2 min_space = ImGui::GetWindowContentRegionMin();
@@ -109,28 +157,6 @@ void PanelHierarchy::PanelLogic()
 	max_space.x += ImGui::GetWindowPos().x;
 	max_space.y += ImGui::GetWindowPos().y;
 
-	if (ImGui::BeginDragDropTargetCustom({ min_space.x,min_space.y, max_space.x,max_space.y }, ImGui::GetID(panel_name.data()))) {
-		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-		if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
-			GameObject* obj = *(GameObject**)payload->Data;
-			if (obj != nullptr) {
-				if (obj->IsPrefab() && obj->FindPrefabRoot() != obj) {
-					if (!App->objects->prefab_scene) {
-						popup_prefab_restructurate = true;
-					}
-					else {
-						popup_move_child_outof_root_prefab_scene = true;
-					}
-				}
-				else if (!obj->is_static)
-					App->objects->ReparentGameObject(obj, App->objects->GetRoot(false));
-				else
-					LOG_ENGINE("Objects static can not be reparented");
-			}
-			ImGui::ClearDragDrop();
-		}
-		ImGui::EndDragDropTarget();
-	}
 	if (popup_prefab_restructurate) {
 		ImGui::OpenPopup("Can not change prefab instance");
 		ImGui::SetNextWindowSize({ 240,130 });
@@ -294,7 +320,7 @@ void PanelHierarchy::PrintNode(GameObject* node)
 	if (node->IsPrefab() && node->FindPrefabRoot() != node)
 		ImGui::PopStyleColor();
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
-		App->objects->SetNewSelectedObject(node);
+		App->objects->SetNewSelectedObject(node, App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT);
 	}
 	if (ImGui::IsItemHovered()) {
 		object_hovered = node;
@@ -304,13 +330,26 @@ void PanelHierarchy::PrintNode(GameObject* node)
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
 			GameObject* obj = *(GameObject**)payload->Data;
-			if (obj != nullptr) {
-				if (!App->objects->prefab_scene && obj->IsPrefab() && obj->FindPrefabRoot() != obj)
-					popup_prefab_restructurate = true;
-				else if (!obj->is_static)
-					App->objects->ReparentGameObject(obj, node);
-				else
-					LOG_ENGINE("Objects static can not be reparented");
+			std::vector<GameObject*> objects;
+			if (!obj->IsSelected()) {
+				objects.push_back(obj);
+			}
+			else {
+				objects.assign(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end());
+			}
+			for (auto item = objects.begin(); item != objects.end(); ++item) {
+				if ((*item) != nullptr) {
+					if (!App->objects->prefab_scene && (*item)->IsPrefab() && (*item)->FindPrefabRoot() != (*item)) {
+						popup_prefab_restructurate = true;
+					}
+					else if (!(*item)->is_static) {
+						App->objects->ReparentGameObject((*item), node);
+						node->open_node = true;
+					}
+					else {
+						LOG_ENGINE("Objects static can not be reparented");
+					}
+				}
 			}
 			ImGui::ClearDragDrop();
 		}
@@ -338,13 +377,13 @@ void PanelHierarchy::PrintNode(GameObject* node)
 }
 void PanelHierarchy::RightClickMenu()
 {
-	if (ImGui::BeginPopupContextWindow()) {
+	if (!right_click_scene && ImGui::BeginPopupContextWindow()) {
 
 		if (!in_menu) {
 			in_menu = true;
 			object_menu = object_hovered;
 			if (object_menu != nullptr) {
-				App->objects->SetNewSelectedObject(object_menu);
+				App->objects->SetNewSelectedObject(object_menu, false);
 			}
 		}
 		if (ImGui::MenuItem("Create New Script")) {
@@ -391,7 +430,7 @@ void PanelHierarchy::RightClickMenu()
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Select Prefab Root")) {
-					App->objects->SetNewSelectedObject(object_menu->FindPrefabRoot());
+					App->objects->SetNewSelectedObject(object_menu->FindPrefabRoot(), false);
 					App->camera->Focus();
 				}
 
@@ -426,8 +465,40 @@ void PanelHierarchy::RightClickMenu()
 							if (*item != nullptr && *item == obj) {
 								ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(obj->GetPrefabID());
 								if (prefab != nullptr) {
+									std::vector<ComponentScript*> current_scripts;
+									App->objects->GetRoot(true)->GetComponentsChildren(ComponentType::SCRIPT, (std::vector<Component*>*) & current_scripts, true);
+									std::vector<std::pair<GameObject**, std::string>> objectsToAssign;
+									for (auto scripts = current_scripts.begin(); scripts != current_scripts.end(); ++scripts) {
+										if (!(*item)->Exists((*scripts)->game_object_attached)) {
+											for (auto variables = (*scripts)->inspector_variables.begin(); variables != (*scripts)->inspector_variables.end(); ++variables) {
+												if ((*variables).variable_type == InspectorScriptData::DataType::GAMEOBJECT && (*variables).obj != nullptr && (*item)->Exists(*(*variables).obj)) {
+													GameObject* nameObj = *(*variables).obj;
+													objectsToAssign.push_back({ (*variables).obj, nameObj->GetName() });
+													*(*variables).obj = nullptr;
+												}
+											}
+										}
+									}
+
 									(*item)->ToDelete();
-									prefab->ConvertToGameObjects(obj->parent, item - obj->parent->children.begin(), obj->GetComponent<ComponentTransform>()->GetGlobalPosition());
+									GameObject* newObj = prefab->ConvertToGameObjects(obj->parent, item - obj->parent->children.begin(), obj->GetComponent<ComponentTransform>()->GetGlobalPosition());
+								
+									if (!objectsToAssign.empty()) {
+										std::stack<GameObject*> objects;
+										objects.push(newObj);
+										while (!objects.empty()) {
+											GameObject* toCheck = objects.top();
+											objects.pop();
+											for (auto it = objectsToAssign.begin(); it != objectsToAssign.end(); ++it) {
+												if (strcmp((*it).second.data(), toCheck->GetName()) == 0) {
+													*(*it).first = toCheck;
+												}
+											}
+											for (auto child = toCheck->children.begin(); child != toCheck->children.end(); ++child) {
+												objects.push(*child);
+											}
+										}
+									}
 								}
 								break;
 							}
@@ -439,7 +510,7 @@ void PanelHierarchy::RightClickMenu()
 					ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(object_menu->GetPrefabID());
 					if (prefab != nullptr) {
 						prefab->Save(object_menu->FindPrefabRoot());
-						App->objects->SetNewSelectedObject(object_menu);
+						App->objects->SetNewSelectedObject(object_menu, false);
 					}
 				}
 
@@ -577,4 +648,48 @@ void PanelHierarchy::RightClickMenu()
 		object_menu = nullptr;
 	}
 
+}
+
+void PanelHierarchy::RightClickSceneNode(GameObject* obj)
+{
+	if (ImGui::BeginPopupContextItem("##SceneClickNode")) {
+		right_click_scene = true;
+
+		if (ImGui::MenuItem("Set Scene Active", nullptr, nullptr, obj->ID != App->objects->scene_active)) {
+			App->objects->scene_active = obj->ID;
+		}
+
+		if (ImGui::MenuItem("Save Scene")) {
+			if (strcmp("Untitled*", obj->GetName()) == 0) {
+				App->ui->panel_scene_selector->force_save = obj;
+				App->ui->panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
+			}
+			else {
+				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+					if ((*item)->GetID() == obj->ID) {
+						App->objects->SaveScene(*item);
+						break;
+					}
+				}
+			}
+		}
+		if (ImGui::MenuItem("Save Scene As")) {
+			App->ui->panel_scene_selector->force_save = obj;
+			App->ui->panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
+		}
+		if (ImGui::BeginMenu("Remove", obj->parent->children.size() > 1)) {
+			if (ImGui::MenuItem("Remove Scene")) {
+				GameObject::Destroy(obj);
+				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+					if ((*item)->GetID() == obj->ID) {
+						App->objects->current_scenes.erase(item);
+						break;
+					}
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndPopup();
+	}
 }

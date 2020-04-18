@@ -72,7 +72,7 @@ bool ModuleUI::Start()
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.MaxColumnSeparation= 10;
-	style.TitleSeparation = 10;
+	style.TitleSeparation = 20;
 	style.SubTitleSeparation = 3;
 	style.SeparationType = ImGuiSeparationType::ImGui_WindowSeparation;
 
@@ -260,7 +260,7 @@ void ModuleUI::LoadLayouts()
 		std::vector<Panel*>::iterator panel = panels.begin();
 		for (; panel != panels.end(); ++panel) {
 			if (*panel != nullptr) {
-				layout->panels_enabled.push_back(arr_layouts->GetBoolean((*panel)->GetPanelName()));
+				layout->panels_enabled.push_back(arr_layouts->GetBoolean((*panel)->GetPanelName().data()));
 			}
 		}
 
@@ -274,9 +274,6 @@ void ModuleUI::LoadLayouts()
 		}
 		arr_layouts->GetAnotherNode();
 	}
-
-	delete arr_layouts;
-	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveAllLayouts()
@@ -294,21 +291,19 @@ void ModuleUI::SaveAllLayouts()
 		if (*item != nullptr) {
 			arr_layouts->SetAnotherNode();
 			arr_layouts->SetBoolean("Active", (*item)->active);
-			arr_layouts->SetString("Name", (*item)->name);
-			arr_layouts->SetString("Path", (*item)->path);
+			arr_layouts->SetString("Name", (*item)->name.data());
+			arr_layouts->SetString("Path", (*item)->path.data());
 
 			std::vector<Panel*>::iterator panel = panels.begin();
 			for (; panel != panels.end(); ++panel) {
 				if (*panel != nullptr) {
 					bool enabled = (*panel)->IsEnabled();
-					arr_layouts->SetBoolean((*panel)->GetPanelName(), enabled);
+					arr_layouts->SetBoolean((*panel)->GetPanelName().data(), enabled);
 				}
 			}
 		}
 	}
-	delete arr_layouts;
 	json_layout->FinishSave();
-	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveLayout(Layout* layout, bool is_new)
@@ -331,24 +326,22 @@ void ModuleUI::SaveLayout(Layout* layout, bool is_new)
 	}
 
 	arr_layout->SetBoolean("Active", layout->active);
-	arr_layout->SetString("Name", layout->name);
-	arr_layout->SetString("Path", layout->path);
+	arr_layout->SetString("Name", layout->name.data());
+	arr_layout->SetString("Path", layout->path.data());
 	layout->panels_enabled.clear();
 	std::vector<Panel*>::iterator panel = panels.begin();
 	for (; panel != panels.end(); ++panel) {
 		if (*panel != nullptr) {
 			bool enabled = (*panel)->IsEnabled();
-			arr_layout->SetBoolean((*panel)->GetPanelName(), enabled);
+			arr_layout->SetBoolean((*panel)->GetPanelName().data(), enabled);
 			layout->panels_enabled.push_back(enabled);
 		}
 	}
 
 	json_layout->FinishSave();
-	delete arr_layout;
 	if (!is_new) {
 		ImGui::SaveIniSettingsToDisk(layout->path.data());
 	}
-	json_layout->ClearArrays();
 }
 
 void ModuleUI::SaveLayoutsActive()
@@ -368,9 +361,7 @@ void ModuleUI::SaveLayoutsActive()
 			arr_layout->GetAnotherNode();
 		}
 	}
-	delete arr_layout;
 	json_layout->FinishSave();
-	json_layout->ClearArrays();
 }
 
 void ModuleUI::CreateScriptFile(const int& type, bool to_export, const char* name)
@@ -525,11 +516,11 @@ void ModuleUI::MainMenuBar()
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_SCENE);
 		}	
-		if (ImGui::MenuItem("Save Scene As", shortcut_save_scene_as_new->GetNameScancodes()))
+		if (ImGui::MenuItem("Save Scene As", shortcut_save_scene_as_new->GetNameScancodes(), nullptr, App->objects->GetGlobalRoot()->children.size() < 2))
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
 		}
-		if (ImGui::MenuItem("Load Scene", shortcut_load_scene->GetNameScancodes()))
+		if (ImGui::MenuItem("Load Scene", shortcut_load_scene->GetNameScancodes(), nullptr, !App->objects->prefab_scene))
 		{
 			panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::LOAD_SCENE);
 		}

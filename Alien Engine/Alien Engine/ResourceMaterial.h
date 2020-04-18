@@ -7,6 +7,9 @@
 
 #define NO_TEXTURE_ID 0
 
+#define DEFAULT_SMOOTHNESS 32.f
+#define DEFAULT_METALNESS 0.5f
+
 enum class TextureType {
 	NONE = -1,
 	DIFFUSE = 0,
@@ -32,7 +35,8 @@ struct ShaderInputs
 	struct StandardShaderProperties
 	{
 		float3 diffuse_color = float3::one();
-		float shininess = 0.5f;
+		float smoothness = DEFAULT_SMOOTHNESS;
+		float metalness = DEFAULT_METALNESS;
 	} standardShaderProperties;
 
 	struct WaveShaderProperties
@@ -46,9 +50,9 @@ struct ShaderInputs
 	} iluminatedShaderProperties;
 
 	struct ParticleShaderProperties {
-		float4 color = float4(1.f, 0.f, 0.8f, 1.f);
-		float4 start_color = float4(1.f, 0.f, 0.8f, 1.f);
-		float4 end_color = float4(1.f, 1.f, 1.f, 1.f);
+		float4 color = float4(1.f, 0.f, 0.8f, 1.0f);
+		//float3 start_color = float3(1.f, 0.f, 0.8f);
+		//float3 end_color = float3(1.f, 1.f, 1.f);
 	} particleShaderProperties;
 };
 
@@ -69,18 +73,20 @@ public:
 	void OnSelected() override; 
 	void OnDeselected() override;
 
+	void SaveResource() override; 
+
 	// meta data
 	bool CreateMetaData(const u64& force_id = 0);
 	bool ReadBaseInfo(const char* assets_file_path);
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
-	void SaveMaterialFiles();
 	void SaveMaterialValues(JSONfilepack* file);
 	void ReadMaterialValues(JSONfilepack* file);
 
 	// Functionality
 	void ApplyMaterial();
+	void UnbindMaterial();
 
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
 	const ResourceTexture* GetTexture(TextureType texType = TextureType::DIFFUSE) const;
@@ -103,7 +109,7 @@ public:
 
 public:
 
-	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 color = float4::one;
 
 	bool textureActivated = true;
 	u64 texturesID[(uint)TextureType::MAX];

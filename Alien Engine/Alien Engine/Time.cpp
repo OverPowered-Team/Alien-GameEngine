@@ -17,6 +17,7 @@ float Time::time_since_start = 0.0F;
 float Time::game_time = 0.0F;
 float Time::delta_time = 0.0F;
 float Time::engine_dt = 0.0F;
+bool Time::is_paused = false;
 float Time::scale_time = 1.0F;
 Timer* Time::start_timer = new Timer();
 Timer* Time::game_timer = new Timer();
@@ -40,9 +41,17 @@ void Time::Update()
 void Time::Play()
 {
 	static std::string actual_scene_name;
+	static std::vector<std::string> actual_scene_names;
 	if (state == GameState::NONE) {
 #ifndef GAME_VERSION
-		actual_scene_name = (App->objects->current_scene != nullptr) ? App->objects->current_scene->GetName() : std::string();
+		if (!App->objects->current_scenes.empty()) {
+			for each (ResourceScene * scene in App->objects->current_scenes) {
+				actual_scene_names.push_back(scene->GetName());
+			}
+		}
+		else {
+			actual_scene_names.clear();
+		}
 		App->objects->SaveScene(nullptr, "Library/play_scene.alienScene");
 		App->objects->ignore_cntrlZ = true;
 		if (App->ui->panel_console->clear_on_play) {
@@ -65,6 +74,7 @@ void Time::Play()
 	}
 	else if (state == GameState::PLAY) {
 		App->objects->CleanUpScriptsOnStop();
+		is_paused = false;
 		state = GameState::NONE;
 		App->CastEvent(EventType::ON_STOP);
 		game_time = 0.0F;
@@ -73,10 +83,13 @@ void Time::Play()
 		remove("Library/play_scene.alienScene");
 #ifndef GAME_VERSION
 		App->objects->errors = false;
-		if (!actual_scene_name.empty()) {
-			ResourceScene* scene = App->resources->GetSceneByName(actual_scene_name.data());
-			if (scene != nullptr) {
-				App->objects->current_scene = scene;
+		if (!actual_scene_names.empty()) {
+			App->objects->current_scenes.clear();
+			for (auto item = actual_scene_names.begin(); item != actual_scene_names.end(); ++item) {
+				ResourceScene* scene = App->resources->GetSceneByName((*item).data());
+				if (scene != nullptr) {
+					App->objects->current_scenes.push_back(scene);
+				}
 			}
 		}
 		App->ui->panel_console->game_console = false;
@@ -157,6 +170,16 @@ float Time::GetGameTime()
 float Time::GetScaleTime()
 {
 	return scale_time;
+}
+
+void Time::SetPause(bool is_pause)
+{
+	is_paused = is_pause;
+}
+
+bool Time::IsGamePaused()
+{
+	return is_paused;
 }
 
 bool Time::IsPlaying()

@@ -21,6 +21,10 @@ struct __declspec(dllexport) InspectorScriptData {
 		BOOL, // DONE
 		PREFAB, // DONE
 		GAMEOBJECT, // DONE
+		TOOL_TIP,
+		TEXT,
+		SEPARATOR,
+		SPACING,
 		ENUM,
 	};
 
@@ -62,11 +66,13 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class CompZ;
 	friend class PanelInspector;
 	friend class Prefab;
+	friend class PanelHierarchy;
 	friend class PanelAnimTimeline;
 	friend class ResourceAnimatorController;
 	friend class ComponentButton;
 	friend class ComponentCheckbox;
 	friend class ModuleObjects;
+	friend class ComponentTransform;
 	friend class ModulePhysics;
 	friend class ComponentCollider;
 	friend class GameObject;
@@ -107,11 +113,19 @@ public:
 	/*--------------------BOOL-----------------------*/
 	static void InspectorBool(bool* ptr, const char* ptr_name);
 	/*--------------------STRING-----------------------*/
-	static void InspectorString(const char* ptr, const char* ptr_name);
+	static void InspectorString(std::string* ptr, const char* ptr_name);
 	/*--------------------ENUM-----------------------*/
 	static void InspectorEnum(int* ptr, const char* ptr_name, const char* enumAllString);
 	/*--------------------PREFAB-----------------------*/
 	static void InspectorPrefab(Prefab* ptr, const char* ptr_name);
+	/*--------------------TEXT--------------------------*/
+	static void InspectorText(const char* textToSHow);
+	/*--------------------SEPARATOR--------------------------*/
+	static void InspectorSeparator();
+	/*--------------------TOOLTIP--------------------------*/
+	static void InspectorToolTip(const char* textToSHow);
+	/*--------------------SPACING--------------------------*/
+	static void InspectorSpacing();
 	/*--------------------GAMEOBJECT-----------------------*/
 	static void InspectorGameObject(GameObject** ptr, const char* ptr_name);
 	/*--------------------FUNCTION-----------------------*/

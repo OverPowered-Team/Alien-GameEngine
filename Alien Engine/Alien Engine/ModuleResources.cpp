@@ -33,6 +33,32 @@ ModuleResources::ModuleResources(bool start_enabled) : Module(start_enabled)
 
 ModuleResources::~ModuleResources()
 {
+
+	std::vector<Resource*>::iterator item = resources.begin();
+	for (; item != resources.end(); ++item) {
+		if (*item != nullptr) {
+			if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
+				static_cast<ResourceModel*>(*item)->meshes_attached.clear();
+
+			delete* item;
+			*item = nullptr;
+		}
+	}
+
+	resources.clear();
+
+	delete cube;
+	delete sphere;
+	delete rock;
+	delete torus;
+	delete dodecahedron;
+	delete icosahedron;
+	delete octahedron;
+
+	delete default_material;
+
+	delete light_mesh;
+	delete camera_mesh;
 }
 
 bool ModuleResources::Start()
@@ -112,36 +138,6 @@ update_status ModuleResources::Update(float dt)
 bool ModuleResources::CleanUp()
 {
 	OPTICK_EVENT();
-	try {
-		std::vector<Resource*>::iterator item = resources.begin();
-		for (; item != resources.end(); ++item) {
-			if (*item != nullptr) {
-				if ((*item)->GetType() == ResourceType::RESOURCE_MODEL)
-					static_cast<ResourceModel*>(*item)->meshes_attached.clear();
-				#ifndef GAME_VERSION
-				if ((*item)->GetType() == ResourceType::RESOURCE_MATERIAL)
-					static_cast<ResourceMaterial*>(*item)->SaveMaterialFiles();
-				#endif
-				delete* item;
-				*item = nullptr;
-			}
-		}
-	}
-	catch (...) {}
-	resources.clear();
-
-	delete cube;
-	delete sphere;
-	delete rock;
-	delete torus;
-	delete dodecahedron;
-	delete icosahedron;
-	delete octahedron;
-
-	delete default_material;
-
-	delete light_mesh;
-	delete camera_mesh;
 
 	return true;
 }
@@ -406,6 +402,12 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 	case PrimitiveType::CUBE: {
 		par_mesh = par_shapes_create_cube();
 		(*ret)->SetName("Cube");
+		for (uint i = 0; i < par_mesh->npoints; i++)
+		{
+			par_mesh->points[i*3] -= 0.5;
+			par_mesh->points[i*3+1] -= 0.5;
+			par_mesh->points[i*3+2] -= 0.5;
+		}
 		break; }
 	case PrimitiveType::SPHERE_ALIEN: {
 		par_mesh = par_shapes_create_subdivided_sphere(1);
@@ -1089,15 +1091,16 @@ void ModuleResources::ReadScripts()
 
 void ModuleResources::GetAllScriptsPath(std::vector<std::string> directories, std::vector<std::string> files, std::string current_folder, std::vector<std::string>* scripts)
 {
-	if (!files.empty())
-		scripts->assign(files.begin(), files.end());
+	if (!files.empty()) {
+		scripts->insert(scripts->end(), files.begin(), files.end());
+	}
 	if (!directories.empty()) {
 		std::vector<std::string> new_files;
 		std::vector<std::string> new_directories;
 
 		for (uint i = 0; i < directories.size(); ++i) {
 			std::string dir = current_folder + directories[i] + "/";
-			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories);
+			App->file_system->DiscoverFiles(dir.data(), new_files, new_directories, true);
 			GetAllScriptsPath(new_directories, new_files, dir, scripts);
 		}
 	}
@@ -1128,6 +1131,21 @@ void ModuleResources::CreateAnimatorController()
 	new_controller->SaveAsset();
 }
 
+void ModuleResources::HandleEvent(EventType eventType)
+{
+	switch (eventType)
+	{
+	case EventType::ON_SAVE:
+		for (std::vector<Resource*>::iterator iter = resources.begin(); iter != resources.end(); ++iter) {
+			(*iter)->SaveResource();
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
 void ModuleResources::HandleAlienEvent(const AlienEvent& alienEvent)
 {
 
@@ -1152,15 +1170,18 @@ void ModuleResources::HandleAlienEvent(const AlienEvent& alienEvent)
 	}
 }
 
-ResourceMaterial* ModuleResources::CreateMaterial(const char* name)
+ResourceMaterial* ModuleResources::CreateMaterial(const char* name, const char* folderPath)
 {
+	if (!App->file_system->IsPathInsideOtherPath(folderPath, MATERIALS_FOLDER))
+		folderPath = MATERIALS_FOLDER;
+
 	std::string materialName = name;
-	App->ui->panel_project->GetUniqueFileName(materialName, MATERIALS_FOLDER);
+	App->ui->panel_project->GetUniqueFileName(materialName, folderPath);
 	
 	ResourceMaterial* new_material = new ResourceMaterial();
 	new_material->SetName(materialName.c_str());
-	new_material->SetAssetsPath(std::string(MATERIALS_FOLDER + materialName + ".material").data());
-	new_material->SaveMaterialFiles();
+	new_material->SetAssetsPath(std::string(folderPath + materialName + ".material").data());
+	new_material->SaveResource();
 	App->ui->panel_project->RefreshAllNodes();
 
 	return new_material;

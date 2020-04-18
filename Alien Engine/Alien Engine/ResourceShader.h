@@ -63,12 +63,11 @@ public:
 	bool ChangeTemplate();
 	SHADER_TEMPLATE GetShaderType() const;
 
-
-	void HierarchyUniforms();
 	void UpdateUniforms(ShaderInputs inputs);
 	void ApplyLightsUniforms();
 	void Bind() const;
 	void Unbind() const;
+
 	
 	void SetUniform1i(const std::string& name, const int& value);
 	void SetUniform1ui(const std::string& name, const uint& value);
@@ -77,6 +76,8 @@ public:
 	void SetUniform3i(const std::string& name, const int& v0, const int& v1, const int& v2);
 
 	void SetUniformFloat3(const std::string& name, const float3& vec3);
+
+	void SetUniformFloat3v(const std::string& name, const float3* vec, uint count);
 
 	void SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3);
 	void SetUniform4f(const std::string& name, const float4& vec);

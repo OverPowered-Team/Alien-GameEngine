@@ -59,6 +59,24 @@ bool ComponentAnimator::IsPlaying(const char* name)
 	return ret;
 }
 
+void ComponentAnimator::IncreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() * value);
+	}
+}
+
+void ComponentAnimator::DecreaseAllStateSpeeds(float value)
+{
+	std::vector<State*> states = animator_controller->GetStates();
+	for (auto it = states.begin(); it != states.end(); ++it)
+	{
+		(*it)->SetSpeed((*it)->GetSpeed() / value);
+	}
+}
+
 void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 {
 	float3 position, scale;
@@ -66,9 +84,7 @@ void ComponentAnimator::UpdateAnimation(GameObject* go_to_update)
 
 	if (animator_controller->GetTransform(go_to_update->GetName(), position, rotation, scale))
 	{
-		go_to_update->transform->SetLocalPosition(position);
-		go_to_update->transform->SetLocalRotation(rotation);
-		go_to_update->transform->SetLocalScale(scale);
+		go_to_update->transform->SetLocalTransform(position, rotation, scale);
 	}
 
 	for (int i = 0; i < go_to_update->GetChildren().size(); i++)
@@ -83,6 +99,7 @@ void ComponentAnimator::OnPlay()
 	{
 		source_animator_controller->SaveAsset(source_animator_controller->GetID());
 		animator_controller = new ResourceAnimatorController(source_animator_controller);
+		animator_controller->mycomponent = this;
 		source_animator_controller->DecreaseReferences();
 		animator_controller->Play();
 	}
@@ -110,8 +127,8 @@ void ComponentAnimator::SetAnimatorController(ResourceAnimatorController* contro
 void ComponentAnimator::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
-	to_save->SetString("ID", std::to_string(ID));
-	to_save->SetString("ControllerID", source_animator_controller ? std::to_string(source_animator_controller->GetID()) : std::to_string(0));
+	to_save->SetString("ID", std::to_string(ID).data());
+	to_save->SetString("ControllerID", source_animator_controller ? std::to_string(source_animator_controller->GetID()).data() : std::to_string(0).data());
 	to_save->SetBoolean("Enabled", enabled);
 }
 
@@ -141,6 +158,31 @@ void ComponentAnimator::SetFloat(const char* parameter_name, float parameter_val
 void ComponentAnimator::SetInt(const char* parameter_name, int parameter_value)
 {
 	animator_controller->SetInt(parameter_name, parameter_value);
+}
+
+void ComponentAnimator::SetCurrentStateSpeed(float speed)
+{
+	animator_controller->GetCurrentNode()->SetSpeed(speed);
+}
+
+float ComponentAnimator::GetCurrentStateDuration()
+{
+	return animator_controller->GetCurrentNode()->GetClip()->GetDuration() / animator_controller->GetCurrentNode()->GetSpeed();
+}
+
+float ComponentAnimator::GetCurrentStateSpeed()
+{
+	return animator_controller->GetCurrentNode()->GetSpeed();
+}
+
+float ComponentAnimator::GetCurrentStateTime()
+{
+	return animator_controller->GetCurrentNode()->time;
+}
+
+uint ComponentAnimator::GetCurrentAnimTPS()
+{
+	return animator_controller->GetCurrentNode()->GetClip()->ticks_per_second;
 }
 
 bool ComponentAnimator::DrawInspector()

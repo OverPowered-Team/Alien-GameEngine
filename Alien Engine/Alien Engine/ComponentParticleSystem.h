@@ -21,12 +21,6 @@ public:
 
 private:
 
-	void OnPlay() override; 
-	void OnPause() override;
-	void OnStop() override;
-	void OnEmitterPlay();
-	void OnEmitterStop();
-
 	void PreUpdate() override; 
 	void Update() override;
 	void PostUpdate() override;
@@ -61,6 +55,12 @@ public:
 	void Pause();
 	void Restart(); 
 
+	void OnPlay() override;
+	void OnPause() override;
+	void OnStop() override;
+	void OnEmitterPlay();
+	void OnEmitterStop();
+
 private:
 
 	bool drawEmmitter = false;
@@ -84,7 +84,10 @@ private:
 	//bool texture_activated = true;
 
 	bool enable_render = false;
+	bool enable_anim = false;
 	float animSpeed = 0.1f;
 	int texRows = 1;
 	int texColumns = 1;
+	int startFrame = 0;
+	int endFrame = (texRows * texColumns) - 1;
 };

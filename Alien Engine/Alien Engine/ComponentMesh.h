@@ -25,6 +25,7 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
 	friend class GameObject;
 	friend class ModuleCamera3D;
 	friend class ModuleObjects;
@@ -38,6 +39,9 @@ class __declspec(dllexport) ComponentMesh : public Component {
 public:
 	ComponentMesh(GameObject* attach);
 	virtual ~ComponentMesh();
+
+	const AABB GetGlobalAABB() const;
+	const AABB GetLocalAABB() const;
 
 protected:
 
@@ -62,7 +66,6 @@ protected:
 	void GenerateLocalAABB();
 	void RecalculateAABB_OBB();
 
-	const AABB GetGlobalAABB() const;
 	const OBB GetOBB() const;
 
 	void SaveComponent(JSONArraypack* to_save);

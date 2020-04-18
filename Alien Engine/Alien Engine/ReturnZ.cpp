@@ -498,7 +498,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 		new_obj->ID = obj->object->ID;
 		new_obj->SetName(obj->object->name.data());
 		if (obj->object->selected) {
-			App->objects->SetNewSelectedObject(new_obj);
+			App->objects->SetNewSelectedObject(new_obj, false);
 		}
 		new_obj->parent_enabled = obj->object->parent_enabled;
 		new_obj->parent_selected = obj->object->parent_selected;
@@ -507,7 +507,7 @@ void ReturnZ::CreateObject(ActionDeleteObject* obj)
 			std::vector<CompZ*>::iterator item = obj->object->comps.begin();
 			for (; item != obj->object->comps.end(); ++item) {
 				if (*item != nullptr) {
-					SDL_assert((uint)ComponentType::UNKNOWN == 26); // add new type to switch
+					SDL_assert((uint)ComponentType::MAX == 26); // add new type to switch
 					switch ((*item)->type)
 					{
 					case ComponentType::TRANSFORM: {

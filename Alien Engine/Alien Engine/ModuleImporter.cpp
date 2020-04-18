@@ -6,6 +6,11 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 
+#include "stb_image.h"
+#include "FreeImage/src/FreeImage.h"
+
+#pragma comment ( lib, "FreeImage/lib/FreeImage.lib ")
+
 #include "ModuleUI.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
@@ -331,6 +336,15 @@ void ModuleImporter::LoadMesh(const aiMesh *mesh)
 		memcpy(ret->uv_cords, (float *)mesh->mTextureCoords[0], sizeof(float) * mesh->mNumVertices * 3);
 	}
 
+	if (mesh->HasTangentsAndBitangents())
+	{
+		ret->tangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->tangents, (float*)mesh->mTangents, sizeof(float) * mesh->mNumVertices * 3);
+
+		ret->biTangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->biTangents, (float*)mesh->mBitangents, sizeof(float) * mesh->mNumVertices * 3);
+	}
+
 	ret->name = std::string(mesh->mName.C_Str());
 	ret->InitBuffers();
 	App->resources->AddResource(ret);
@@ -416,6 +430,9 @@ void ModuleImporter::LoadMaterials(aiMaterial *material, const char *extern_path
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_SPECULAR, TextureType::SPECULAR, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_NORMALS, TextureType::NORMALS, extern_path);
+
 	model->materials_attached.push_back(mat);
 }
 
@@ -434,97 +451,26 @@ void ModuleImporter::LoadModelTexture(const aiMaterial *material, ResourceMateri
 		}
 		else if (extern_path != nullptr)
 		{
-			std::string aiPath;
-			int dots = 0;
-			int under = 0;
-			std::string hole_name(name);
-			std::string::iterator item = hole_name.begin();
-			bool ignore = false;
-			for (; item != hole_name.end(); ++item)
-			{
-				if (*item == '.' && !ignore)
-				{
-					++dots;
-					if (dots == 2)
-					{
-						++under;
-						dots = 0;
-					}
-				}
-				else
-				{
-					ignore = true;
-					aiPath.push_back(*item);
-				}
+			std::string normExtern(extern_path);
+			App->file_system->NormalizePath(normExtern);
+			std::string textureName = App->file_system->GetBaseFileNameWithExtension(name.data());
+			App->file_system->NormalizePath(textureName);
+			std::string texturePath = App->file_system->GetCurrentHolePathFolder(normExtern) + textureName;
+
+			while (texturePath[0] == '.' || texturePath[1] == '/') {
+				texturePath.erase(texturePath.begin());
 			}
 
-			std::string copy;
-			if (under != 0)
+			if (std::experimental::filesystem::exists(texturePath))
 			{
-				std::string normal(extern_path);
-				App->file_system->NormalizePath(normal);
-				std::string exterString = App->file_system->GetCurrentHolePathFolder(normal);
-				std::string::reverse_iterator it = exterString.rbegin();
-				bool start_copy = false;
-				bool start_cpoy2 = false;
-				for (; it != exterString.rend(); ++it)
-				{
-					if (!start_copy)
-					{
-						if (*it == '/')
-						{
-							--under;
-							if (under == 0)
-							{
-								start_copy = true;
-							}
-						}
-					}
-					else
-					{
-						if (!start_cpoy2)
-						{
-							if (*it == '/')
-							{
-								start_cpoy2 = true;
-							}
-						}
-						else
-						{
-							copy = *it + copy;
-						}
-					}
-				}
-			}
-			else
-			{
-				copy = extern_path;
-				App->file_system->NormalizePath(copy);
-			}
-
-			std::string path;
-
-			if (ai_path.data[0] == '.')
-			{
-				path = copy + "/" + aiPath;
-			}
-			else
-			{
-				std::string normal(extern_path);
-				App->file_system->NormalizePath(normal);
-				path = App->file_system->GetCurrentHolePathFolder(normal) + ai_path.C_Str();
-			}
-
-			if (std::experimental::filesystem::exists(path))
-			{
-				std::string assets_path = TEXTURES_FOLDER + App->file_system->GetBaseFileNameWithExtension(hole_name.data());
-				App->file_system->CopyFromOutsideFS(path.data(), assets_path.data());
+				std::string assets_path = TEXTURES_FOLDER + textureName;
+				App->file_system->CopyFromOutsideFS(texturePath.data(), assets_path.data());
 				tex = new ResourceTexture(assets_path.data());
 
 				tex->CreateMetaData();
 				App->resources->AddNewFileNode(assets_path, true);
 
-				mat->texturesID[(uint)TextureType::DIFFUSE] = tex->GetID();
+				mat->texturesID[(uint)type] = tex->GetID();
 			}
 		}
 	}
@@ -633,7 +579,7 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 
 	ilutRenderer(ILUT_OPENGL);
 
-	if (ilLoadImage(path))
+	if (ilutGLLoadImage((char*)path))
 	{
 		iluFlipImage();
 
@@ -650,11 +596,19 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
+		ilBindImage(0);
 
 		LOG_ENGINE("Texture successfully loaded: %s", path);
 	}
 	else
 	{
+		ILenum Error;
+		while ((Error = ilGetError()) != IL_NO_ERROR)
+		{
+			const char* txt = iluErrorString(Error);
+			LOG_ENGINE("%d: %s", Error, txt);
+		}
+
 		LOG_ENGINE("Error while loading image in %s", path);
 		LOG_ENGINE("Error: %s", ilGetString(ilGetError()));
 	}
@@ -823,7 +777,6 @@ void ModuleImporter::ApplyParticleSystemToSelectedObject(std::string path)
 		}
 	}
 }
-
 
 void ModuleImporter::LoadParShapesMesh(par_shapes_mesh *shape, ResourceMesh *mesh)
 {
@@ -1009,6 +962,7 @@ bool ModuleImporter::ReImportModel(ResourceModel *model)
 		if (model->CreateMetaData(model->ID))
 		{
 			App->resources->AddResource(model);
+			model->FreeMemory();
 		}
 
 		this->model = nullptr;

@@ -20,6 +20,8 @@ private:
 	friend class ModuleUI;
 	friend class ReturnZ;
 	friend class ComponentCollider;
+	friend class ComponentRigidBody;
+	friend class ComponentCharacterController;
 	friend class ModuleObjects;
 	friend class PanelScene;
 	friend class PanelInspector;
@@ -65,7 +67,7 @@ private:
 	static float time_since_start;
 	static float game_time;
 	static float scale_time;
-
+	static bool is_paused;
 
 public:
 
@@ -75,6 +77,9 @@ public:
 	static float GetTimeSinceStart();
 	static float GetGameTime();
 	static float GetScaleTime();
+	static void SetPause(bool is_pause);
+	static bool IsGamePaused();
+
 };
 
 #endif

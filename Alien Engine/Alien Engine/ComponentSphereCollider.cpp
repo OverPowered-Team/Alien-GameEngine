@@ -4,7 +4,7 @@
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
-
+#include "mmgr/mmgr.h"
 
 ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentCollider(go)
 {
@@ -45,7 +45,7 @@ void ComponentSphereCollider::CreateDefaultShape()
 
 void ComponentSphereCollider::UpdateShape()
 {
-	if (shape == nullptr)
+	if (shape != nullptr)
 	{
 		delete shape;
 	}
@@ -54,8 +54,11 @@ void ComponentSphereCollider::UpdateShape()
 	final_center = center.Mul(final_radius);
 
 	shape = new btSphereShape(final_radius);
-	shape->setMargin(3.f);
-	aux_body->setCollisionShape(shape);
+
+	if (aux_body)
+		aux_body->setCollisionShape(shape);
+	if (detector)
+		detector->setCollisionShape(shape);
 
 	if (rigid_body != nullptr)  rigid_body->UpdateCollider();
 }

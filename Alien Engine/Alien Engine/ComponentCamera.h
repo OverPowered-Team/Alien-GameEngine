@@ -8,6 +8,7 @@
 
 class Skybox;
 class ResourceShader;
+struct Cubemap;
 
 class __declspec(dllexport) ComponentCamera : public Component {
 	friend class GameObject;
@@ -54,6 +55,17 @@ public:
 	void SetCameraPosition(const float3& position);
 	float3 GetCameraPosition() const;
 
+	void EnableFog();
+	void DisableFog();
+
+	void SetFogDensity(const float& density);
+	void SetFogGradient(const float& gradient);
+	float GetFogDensity() const;
+	float GetFogGradient() const;
+
+	void SetBackgroundColor(const float3& color);
+	float3 GetBackgroundColor() const;
+
 	void DrawSkybox();
 
 private:
@@ -98,6 +110,11 @@ public:
 	Color camera_color_background{ 0.05f, 0.05f, 0.05f, 1.0f };
 
 	Skybox* skybox = nullptr;
+	Cubemap* cubemap = nullptr;
 	ResourceShader* skybox_shader = nullptr;
 	uint skybox_texture_id = 0u;
+	
+	bool activeFog = false;
+	float fogDensity = 0.035;
+	float fogGradient = 1.35;
 };

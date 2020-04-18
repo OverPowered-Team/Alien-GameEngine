@@ -11,6 +11,7 @@ class ComponentRigidBody;
 class ComponentVehicle;
 class ComponentTransform;
 class btKinematicCharacterController;
+class btPairCachingGhostObject;
 class Alien;
 
 class __declspec(dllexport) ComponentCharacterController : public Component
@@ -27,21 +28,60 @@ public:
 	ComponentCharacterController(GameObject* go);
 	virtual ~ComponentCharacterController();
 
+	void Jump(float3 direction= float3::zero());
+	bool CanJump();
+	bool OnGround();
+
+	float GetJumpSpeed() { return jump_speed; }
+	void SetJumpSpeed(const float jump_speed);
+	float GetGravity() { return gravity; }
+	void SetGravity(const float fall_speed);
+
+	void ApplyImpulse(float3 direction = float3::zero());
+	void SetWalkDirection(float3 direction);
+
+	void SetRotation(const Quat rotation);
+	Quat GetRotation() const;
+
+	void SetPosition(const float3 pos);
+	float3 GetPosition() const;
+
+	void SetCharacterOffset(const float3 offset);
+	float GetCharacterHeight() { return character_height; }
+	void SetCharacterHeight(const float height);
+	float GetCharacterRadius() { return character_radius; }
+	void SetCharacterRadius(const float radius);
+
 protected:
+
+	void RecreateCapusle();
 
 	void Update();
 	void DrawScene();
 	bool DrawInspector();
 
-	virtual void Reset();
-	virtual void Clone(Component* clone) {}
-	virtual void SetComponent(Component* component) {}
-	virtual void SaveComponent(JSONArraypack* to_save);
-	virtual void LoadComponent(JSONArraypack* to_load);
+	void HandleAlienEvent(const AlienEvent& e);
+
+	void Reset();
+	void Clone(Component* clone) {}
+	void SetComponent(Component* component) {}
+	void SaveComponent(JSONArraypack* to_save);
+	void LoadComponent(JSONArraypack* to_load);
 
 protected:
 	ComponentTransform* transform = nullptr;
+	ComponentCollider* collider = nullptr;
 	btKinematicCharacterController* controller = nullptr;
 	btPairCachingGhostObject* body = nullptr;
+	btPairCachingGhostObject* detector = nullptr;
 	btCapsuleShape* shape = nullptr;
+
+	float3 character_offset = float3::zero();
+	float character_height = 1.f;
+	float character_radius = 0.5f;
+
+	float jump_speed = 0.f;
+	float gravity = 80.f;
+
+	bool test = false;
 };

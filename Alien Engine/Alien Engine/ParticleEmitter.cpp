@@ -4,6 +4,7 @@
 
 #include "MathGeoLib/include/Geometry/Circle.h"
 #include "GL/gl.h"
+#include "mmgr/mmgr.h"
 
 ParticleEmmitter::ParticleEmmitter() : particleSystem()
 {
@@ -554,3 +555,7 @@ void ParticleEmmitter::Play()
 	playing = true;
 }
 
+void ParticleEmmitter::SetCubeSize(float3 size)
+{
+	this->cubeSize = size;
+}

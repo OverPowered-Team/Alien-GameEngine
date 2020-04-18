@@ -119,7 +119,7 @@ bool ComponentBar::DrawInspector()
 			ImGui::PopStyleColor(3);
 		}
 
-		/*----------SLIDER TEXTURE------------------*/
+		/*----------BAR TEXTURE------------------*/
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::Text("Bar Texture");
 
@@ -148,13 +148,7 @@ bool ComponentBar::DrawInspector()
 						ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(ID);
 						if (tex != nullptr) {
 							ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
-							if (tex != nullptr && tex != barTexture) {
-								tex->IncreaseReferences();
-								if (barTexture != nullptr) {
-									barTexture->DecreaseReferences();
-								}
-								barTexture = tex;
-							}
+							SetTextureBar(tex);
 						}
 					}
 				}
@@ -167,7 +161,7 @@ bool ComponentBar::DrawInspector()
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0.65F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonHovered, { 0.8F,0,0,1 });
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.95F,0,0,1 });
-			if (ImGui::Button("X") && barTexture != nullptr) {
+			if (ImGui::Button("X##BarTextureID") && barTexture != nullptr) {
 				ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 				if (barTexture != nullptr) {
 					barTexture->DecreaseReferences();
@@ -176,7 +170,7 @@ bool ComponentBar::DrawInspector()
 			}
 			ImGui::PopStyleColor(3);
 		}
-		/*----------SLIDER TEXTURE------------------*/
+		/*----------BAR TEXTURE------------------*/
 
 		ImGui::Spacing();
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
@@ -242,7 +236,7 @@ void ComponentBar::Draw(bool isGame)
 	float4x4 matrix = transform->global_transformation;
 	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor * barScaleX; //w
 	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY; //h
-	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] + offsetX; //x
+	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] /*+ offsetX*/; //x
 	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY; //y
 	DrawTexture(isGame, barTexture);
 
@@ -322,10 +316,13 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
-	glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -350,8 +347,8 @@ void ComponentBar::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("UIType", (int)ui_type);
-	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()) : "0");
-	to_save->SetString("sliderTexture", (barTexture != nullptr) ? std::to_string(barTexture->GetID()) : "0");
+	to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()).data() : "0");
+	to_save->SetString("sliderTexture", (barTexture != nullptr) ? std::to_string(barTexture->GetID()).data() : "0");
 	to_save->SetColor("Color", current_color);
 	to_save->SetColor("BarColor", bar_color);
 
@@ -441,6 +438,11 @@ float ComponentBar::GetBarValue()
 
 void ComponentBar::SetBarValue(float factor)
 {
+	if (factor < 0)
+		factor = 0;
+	else if (factor > 1)
+		factor = 1;
+
 	this->factor = factor;
 	currentValue = (factor * (maxValue - minValue)) + minValue;
 }
@@ -449,3 +451,16 @@ void ComponentBar::SetBarColor(float r, float g, float b, float a)
 {
 	bar_color = { r,g,b,a };
 }
+
+void ComponentBar::SetTextureBar(ResourceTexture* tex)
+{
+	if (tex != nullptr && tex != barTexture) {
+		tex->IncreaseReferences();
+		if (barTexture != nullptr) {
+			barTexture->DecreaseReferences();
+		}
+		barTexture = tex;
+		//SetSize(tex->width, tex->height);
+	}
+}
+

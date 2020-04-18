@@ -111,8 +111,14 @@ public:
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
 	
-	void CalculateParticleUV(int rows, int columns, float speed);
-	std::vector<uint> LoadTextureUV(int rows, int columns);
+	void CalculateParticleUV(int rows, int columns, float speed, int startFrame, int endFrame);
+	void ResetParticleUV();
+	
+
+	void LoadUVs(int numRows, int numCols, ResourceTexture* tex);
+	void SetAnimation(int anim, int start, int end);
+	void PlayAnimation(int anim);
+	
 public: 
 
 	ParticleEmmitter emmitter;
@@ -132,6 +138,7 @@ private:
 public:
 	ResourceTexture* texture = nullptr;
 	ResourceMaterial* material = nullptr;
+	ResourceMaterial* default_material = nullptr;
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;
 	FunctionBlendType funcBlendDest = FunctionBlendType::ONE_MINUS_SRC_ALPHA;
@@ -153,7 +160,7 @@ public:
 	Color diffuse{ 1.f, 1.f, 1.f, 1.0f };
 	uint light_id = 0;
 
-	// UV Buffer ids
-	std::tuple<std::vector<uint>, float> animation_uvs;
-
+	// Animation
+	int currentFrame = 0;
+	int sheetWidth, sheetHeight;
 };

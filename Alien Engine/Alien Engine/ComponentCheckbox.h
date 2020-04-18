@@ -3,6 +3,7 @@
 
 #include "ComponentUI.h"
 #include "Color.h"
+#include "Event.h"
 #include <functional>
 
 class ResourceTexture;
@@ -23,10 +24,13 @@ public:
 	void Draw(bool isGame) override;
 	void DrawTexture(bool isGame, ResourceTexture* tex, bool background = true);
 
+	bool OnIdle();
 	bool OnHover();
 	bool OnClick();
 	bool OnPressed();
 	bool OnRelease();
+	bool OnExit();
+	bool OnEnter();
 
 	Color idle_color = { 0.8f,0.8f,0.8f,1.0f };
 	Color hover_color = { 1.0f,1.0f,1.0f,1.0f };
@@ -47,13 +51,19 @@ public:
 	void AddListenerOnClick(std::string name, std::function<void()> funct);
 	void AddListenerOnClickRepeat(std::string name, std::function<void()> funct);
 	void AddListenerOnRelease(std::string name, std::function<void()> funct);
+	void AddListenerOnExit(std::string name, std::function<void()> funct);
+	void AddListenerOnEnter(std::string name, std::function<void()> funct);
+
 	bool CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::string& name);
 
 	//bool CheckMouseInsideCheckbox(float3 mouse_pos);
 
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
+	bool GetStatus();
 
+protected:
+	void HandleAlienEvent(const AlienEvent& e);
 private:
 	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
 
@@ -70,6 +80,8 @@ private:
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClick;
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnClickRepeat;
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnRelease;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnExit;
+	std::vector<std::pair<std::string, std::function<void()>>> listenersOnEnter;
 
 	ComponentCanvas* GetCanvas();
 

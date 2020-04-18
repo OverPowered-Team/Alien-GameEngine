@@ -40,15 +40,18 @@ void ComponentLightPoint::LightLogic()
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	
 #ifndef GAME_VERSION
-	if(this->game_object_attached->IsSelected())
+	if (App->objects->printing_scene)
 	{
-		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
-		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
-	}
-	else
-	{
-		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
-		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+		if (this->game_object_attached->IsSelected())
+		{
+			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
+			App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
+		}
+		else
+		{
+			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+			App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+		}
 	}
 #endif
 }
@@ -135,12 +138,11 @@ void ComponentLightPoint::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetBoolean("Enabled", enabled);
-	to_save->SetString("ID", std::to_string(ID));
+	to_save->SetString("ID", std::to_string(ID).data());
 	to_save->SetBoolean("PrintIcon", print_icon);
 
 	to_save->SetNumber("Intensity", float(light_props.intensity));
 	to_save->SetFloat3("Position", float3(light_props.position));
-	to_save->SetFloat3("Direction", float3(light_props.direction));
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
 	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
 	to_save->SetFloat3("Specular", float3(light_props.specular));
@@ -156,7 +158,6 @@ void ComponentLightPoint::LoadComponent(JSONArraypack* to_load)
 	print_icon = to_load->GetBoolean("PrintIcon");
 
 	light_props.intensity = (float)to_load->GetNumber("Intensity");
-	light_props.direction = to_load->GetFloat3("Direction");
 	light_props.ambient = to_load->GetFloat3("Ambient");
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
 	light_props.specular = to_load->GetFloat3("Specular");
