@@ -38,8 +38,12 @@ private:
 	void OrganizeCreateNewScene();
 	void OrganizeLoad();
 
-private:
+public:
+
 	GameObject* force_save = nullptr;
+
+private:
+
 	bool menu_save_current = false;
 	bool create_new = false;
 	bool load = false;

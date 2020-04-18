@@ -6,6 +6,7 @@
 #include "ResourcePrefab.h"
 #include "imgui/imgui_internal.h"
 #include "ComponentScript.h"
+#include "PanelSceneSelector.h"
 #include "PanelProject.h"
 #include "ResourceTexture.h"
 #include "ComponentTransform.h"
@@ -648,7 +649,8 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 
 		}
 		if (ImGui::MenuItem("Save Scene As")) {
-
+			App->ui->panel_scene_selector->force_save = obj;
+			App->ui->panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
 		}
 		if (ImGui::BeginMenu("Remove", obj->parent->children.size() > 1)) {
 			if (ImGui::MenuItem("Remove Scene")) {
