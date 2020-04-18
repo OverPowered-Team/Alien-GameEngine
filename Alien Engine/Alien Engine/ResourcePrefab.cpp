@@ -233,7 +233,7 @@ void ResourcePrefab::OpenPrefabScene()
 	App->objects->SaveScene(nullptr, "Library/save_prefab_scene.alienScene");
 	App->objects->DeselectObjects();
 	App->objects->CreateRoot();
-	ConvertToGameObjects(App->objects->GetRoot(true));
+	ConvertToGameObjects(App->objects->GetGlobalRoot());
 }
 
 GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_num, float3 pos, bool check_childrens, bool set_selected)

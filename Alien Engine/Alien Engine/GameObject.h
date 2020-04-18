@@ -38,6 +38,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentMaterial;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
+	friend class PanelSceneSelector;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
 	friend class ComponentConvexHullCollider;
@@ -72,6 +73,7 @@ class __declspec(dllexport) GameObject
 	friend class ResourceModel;
 	friend class ResourceMesh;
 	friend class ResourcePrefab;
+	friend class PanelSceneSelector;
 	friend class ResourceTexture;
 	friend class ResourceAnimatorController;
 	friend class ModuleObjects;
