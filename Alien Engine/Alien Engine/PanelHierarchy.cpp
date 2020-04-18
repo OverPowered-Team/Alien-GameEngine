@@ -106,13 +106,8 @@ void PanelHierarchy::PanelLogic()
 						}
 						for (auto it = objects.begin(); it != objects.end(); ++it) {
 							if ((*it)->parent != *item) {
-								if ((*it)->IsPrefab() && (*it)->FindPrefabRoot() != (*it)) {
-									if (!App->objects->prefab_scene) {
-										popup_prefab_restructurate = true;
-									}
-									else {
-										popup_move_child_outof_root_prefab_scene = true;
-									}
+								if ((*it)->IsPrefab() && (*it)->FindPrefabRoot() != (*it) && !App->objects->prefab_scene) {
+									popup_move_child_outof_root_prefab_scene = true;
 								}
 								else if (!(*it)->is_static) {
 									App->objects->ReparentGameObject((*it),*item);
