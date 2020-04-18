@@ -642,6 +642,10 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 	if (ImGui::BeginPopupContextItem("##SceneClickNode")) {
 		right_click_scene = true;
 
+		if (ImGui::MenuItem("Set Scene Active", nullptr, nullptr, obj->ID != App->objects->scene_active)) {
+			App->objects->scene_active = obj->ID;
+		}
+
 		if (ImGui::MenuItem("Save Scene")) {
 			if (strcmp("Untitled*", obj->GetName()) == 0) {
 				App->ui->panel_scene_selector->force_save = obj;

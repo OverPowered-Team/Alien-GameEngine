@@ -209,6 +209,9 @@ private:
 	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
 
 public:
+
+	u64 scene_active = 0;
+
 	//Focus
 	u64 selected_ui = -1;
 

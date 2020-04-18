@@ -110,7 +110,7 @@ bool ModuleObjects::Start()
 	scene_root->scene_root = scene_root;
 	scene_root->parent = base_game_object;
 	base_game_object->children.push_back(scene_root);
-
+	scene_active = scene_root->ID;
 	GameObject* camera = new GameObject(scene_root);
 	camera->SetName("Main Camera");
 	camera->AddComponent(new ComponentCamera(camera));
@@ -1179,6 +1179,10 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				base_game_object->children.push_back(scene_root);
 			}
 
+			if (to_load != nullptr) {
+				scene_active = to_load->GetID();
+			}
+
 			if (Time::IsInGameState()) {
 				CleanUpScriptsOnStop();
 			}
@@ -1337,6 +1341,7 @@ void ModuleObjects::CreateEmptyScene()
 	scene_root->SetName("Untitled*");
 	scene_root->scene_root = scene_root;
 	scene_root->parent = base_game_object;
+	scene_active = scene_root->ID;
 	base_game_object->children.push_back(scene_root);
 
 	GameObject* camera = new GameObject(scene_root);
