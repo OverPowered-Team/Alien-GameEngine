@@ -646,7 +646,18 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 		right_click_scene = true;
 
 		if (ImGui::MenuItem("Save Scene")) {
-
+			if (strcmp("Untitled*", obj->GetName()) == 0) {
+				App->ui->panel_scene_selector->force_save = obj;
+				App->ui->panel_scene_selector->OrganizeSave(PanelSceneSelector::SceneSelectorState::SAVE_AS_NEW);
+			}
+			else {
+				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
+					if ((*item)->GetID() == obj->ID) {
+						App->objects->SaveScene(*item);
+						break;
+					}
+				}
+			}
 		}
 		if (ImGui::MenuItem("Save Scene As")) {
 			App->ui->panel_scene_selector->force_save = obj;
