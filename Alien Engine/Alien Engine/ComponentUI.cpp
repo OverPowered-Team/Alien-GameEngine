@@ -13,6 +13,7 @@
 #include "ModuleInput.h"
 #include "ModuleObjects.h"
 #include "ModuleRenderer3D.h"
+#include "Billboard.h"
 #include "StaticInput.h"
 #include "mmgr/mmgr.h"
 
@@ -110,6 +111,8 @@ void ComponentUI::Update()
 
 		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
 			UILogicGamePad();
+
+
 	}
 }
 
@@ -164,19 +167,7 @@ void ComponentUI::Draw(bool isGame)
 		matrix[2][3] = 0.0f;
 	}
 
-	if (canvas->isWorld)
-	{
-		float4x4 view_matrix = App->renderer3D->actual_game_camera->GetViewMatrix4x4();
-		matrix[0][0] = view_matrix[0][0];
-		matrix[0][1] = view_matrix[1][0];
-		matrix[0][2] = view_matrix[2][0];
-		matrix[1][0] = view_matrix[0][1];
-		matrix[1][1] = view_matrix[1][1];
-		matrix[1][2] = view_matrix[2][1];
-		matrix[2][0] = view_matrix[0][2];
-		matrix[2][2] = view_matrix[2][2];
-
-	}
+	
 
 	if (texture != nullptr) {
 		//glAlphaFunc(GL_GREATER, 0.0f);
@@ -196,9 +187,38 @@ void ComponentUI::Draw(bool isGame)
 	}
 	else
 	{
+		/*float4x4 view_matrix = App->renderer3D->actual_game_camera->GetViewMatrix4x4();
+		matrix[0][0] = view_matrix[0][0];
+		matrix[0][1] = view_matrix[1][0];
+		matrix[0][2] = view_matrix[2][0];
+		matrix[1][0] = view_matrix[0][1];
+		matrix[1][1] = view_matrix[1][1];
+		matrix[1][2] = view_matrix[2][1];
+		matrix[2][0] = view_matrix[0][2];
+		matrix[2][2] = view_matrix[2][2];*/
+		position.x = matrix[0][3];
+		position.y = matrix[1][3];
+		position.z = matrix[2][3];
+
+		scale.x = matrix[0][0];
+		scale.y = matrix[1][1];
+		scale.z = 1.0f;
+
+
+		float4x4 uiLocal = float4x4::FromTRS(position, rotation, scale);
+		float4x4 uiGlobal = uiLocal;
+
+		/*	if (!particleInfo.globalTransform)
+			{
+				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
+				particleGlobal = parentGlobal * particleLocal;
+			}*/
+
 		glPushMatrix();
-		glMultMatrixf(matrix.ptr());
+		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
+
 	}
+	
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -323,6 +343,22 @@ void ComponentUI::CheckFirstSelected()
 		App->objects->GetGameObjectByID(App->objects->selected_ui)->GetComponent<ComponentUI>()->state = Hover;
 		App->objects->first_assigned_selected = true;
 	}
+}
+
+void ComponentUI::Orientate(ComponentCamera* camera)
+{
+	if (camera == nullptr)
+		return;
+
+	rotation = Billboard::AlignToScreen(camera);
+	
+}
+
+void ComponentUI::Rotate()
+{
+	rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
+	rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
+	rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
 }
 
 void ComponentUI::SetSize(float width, float height)
