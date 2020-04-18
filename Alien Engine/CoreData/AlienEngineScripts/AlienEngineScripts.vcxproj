@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="col_test.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Instatiate.h" />
     <ClInclude Include="NilfgaardSoldier.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="UltiBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="col_test.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Instatiate.cpp" />
     <ClCompile Include="NilfgaardSoldier.cpp" />

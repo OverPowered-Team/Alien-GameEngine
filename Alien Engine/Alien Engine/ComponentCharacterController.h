@@ -121,7 +121,7 @@ protected:
 	// Forces move with zero vector when controller is idle, 
 	// this forces messages from OnControllerColliderHit in any situation,
 	// if off, messages from this callback only happen when a move is performed.
-	bool force_move = true;
+	bool force_move = false;
 	// if off, any gravity needs to be implemented by the user
 	// if on, forces gravity defined on gravity field always
 	// that isGrounded is false

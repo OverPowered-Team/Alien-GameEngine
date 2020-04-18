@@ -58,6 +58,7 @@ public:
 	virtual void OnTriggerStay(ComponentCollider* collider) {}
 	virtual void OnTriggerExit(ComponentCollider* collider) {}
 
+	// OnControllerColliderHit is called when the controller hits a collider while performing a Move.
 	virtual void OnControllerColliderHit(const ControllerColliderHit& hit) {}
 
 	// Deprecated , use OnTriggerStay()

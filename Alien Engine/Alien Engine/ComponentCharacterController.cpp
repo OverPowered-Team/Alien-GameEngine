@@ -24,10 +24,17 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 
 	// load default settings
 	SetDefaultConf();
-
 	controller = App->physx->CreateCharacterController(desc);
 
 	moveDirection = controller_offset = float3::zero();
+
+	// links hidden kinematic actor shapes with user data
+	// contacts callback method currently needs user data on shape ptr
+	Uint32 ns = controller->getActor()->getNbShapes();
+	PxShape* all_shapes;
+	controller->getActor()->getShapes(&all_shapes, ns);
+	for (uint i = 0; i < ns; ++i)
+		all_shapes[i].userData = this;
 
 	controller->setUserData(this);
 }
@@ -198,6 +205,10 @@ void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Center", controller_offset);
 	to_save->SetNumber("CharacterRadius", desc.radius);
 	to_save->SetNumber("CharacterHeight", desc.height);
+
+	to_save->SetNumber("Gravity", gravity);
+	to_save->SetBoolean("ForceGravity", force_gravity);
+	to_save->SetBoolean("ForceMove", force_move);
 }
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
@@ -209,6 +220,10 @@ void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 	SetCharacterOffset(to_load->GetFloat3("Center"));
 	SetCharacterRadius(to_load->GetNumber("CharacterRadius"));
 	SetCharacterHeight(to_load->GetNumber("CharacterHeight"));
+
+	gravity = to_load->GetNumber("Gravity");
+	force_gravity = to_load->GetBoolean("ForceGravity");
+	force_move = to_load->GetBoolean("ForceMove");
 }
 
 bool ComponentCharacterController::DrawInspector()
