@@ -265,11 +265,13 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		light_dir->LightLogic();
 	}
+
 	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
 	if (light_spot != nullptr && light_spot->IsEnabled())
 	{
 		light_spot->LightLogic();
 	}
+
 	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
 	if (light_point != nullptr && light_point->IsEnabled())
 	{
@@ -298,15 +300,24 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			//camera_->DrawIconCamera();
+			camera_->DrawIconCamera();
 		}
 
-		/* TOFIX / DO. Light does not exist anymore here
-		if (light != nullptr && light->IsEnabled())
+		//TOFIX / DO. Light does not exist anymore here
+		if (light_dir != nullptr && light_dir->IsEnabled())
 		{
-			//light->DrawIconLight();
+			light_dir->DrawIconLight();
 		}
-		*/
+
+		if (light_spot != nullptr && light_spot->IsEnabled())
+		{
+			light_spot->DrawIconLight();
+		}
+		
+		if (light_point != nullptr && light_point->IsEnabled())
+		{
+			light_point->DrawIconLight();
+		}
 
 		if (partSystem != nullptr)
 		{

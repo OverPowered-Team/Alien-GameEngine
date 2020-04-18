@@ -34,7 +34,7 @@ struct ShaderInputs
 {
 	struct StandardShaderProperties
 	{
-		float3 diffuse_color = float3::one();
+		float4 diffuse_color = float4::one;
 		float smoothness = DEFAULT_SMOOTHNESS;
 		float metalness = DEFAULT_METALNESS;
 	} standardShaderProperties;

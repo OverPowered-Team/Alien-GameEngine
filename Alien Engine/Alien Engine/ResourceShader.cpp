@@ -15,6 +15,8 @@
 #include "ComponentLightPoint.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
 ResourceShader::ResourceShader()
 {
 	type = ResourceType::RESOURCE_SHADER;
@@ -177,9 +179,11 @@ SHADER_TEMPLATE ResourceShader::GetShaderType() const
 
 void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
+	OPTICK_EVENT();
+
 	switch (shaderType) {
 	case SHADER_TEMPLATE::DEFAULT: { 
-		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
 		ApplyLightsUniforms();
@@ -207,6 +211,8 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 void ResourceShader::ApplyLightsUniforms()
 {
+	OPTICK_EVENT();
+
 	// Light uniforms set from here
 	SetUniform3i("max_lights", App->objects->GetNumOfDirLights(), App->objects->GetNumOfPointLights(), App->objects->GetNumOfSpotLights());
 
@@ -220,16 +226,22 @@ void ResourceShader::ApplyLightsUniforms()
 
 void ResourceShader::Bind() const
 {
+	OPTICK_EVENT();
+
 	glUseProgram(shader_id);
 }
 
 void ResourceShader::Unbind() const
 {
+	OPTICK_EVENT();
+
 	glUseProgram(NULL);
 }
 
 void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform1i(location, value);
@@ -237,6 +249,8 @@ void ResourceShader::SetUniform1i(const std::string& name, const int& value)
 
 void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if(location != -1)
 		glUniform1ui(GetUniformLocation(name), value);
@@ -244,6 +258,8 @@ void ResourceShader::SetUniform1ui(const std::string& name, const uint& value)
 
 void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform1f(location, value);
@@ -251,6 +267,8 @@ void ResourceShader::SetUniform1f(const std::string& name, const float& value)
 
 void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const int& v1, const int& v2)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform3i(GetUniformLocation(name), v0, v1, v2);
@@ -258,6 +276,8 @@ void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const 
 
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform3f(location, vec.x, vec.y, vec.z);
@@ -265,6 +285,8 @@ void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec
 
 void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* vec, uint count)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform3fv(location, count, vec[0].ptr());
@@ -272,6 +294,8 @@ void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* ve
 
 void ResourceShader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform4f(location, v0, v1, v2, v3);
@@ -279,6 +303,8 @@ void ResourceShader::SetUniform4f(const std::string& name, const float& v0, cons
 
 void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
@@ -286,6 +312,8 @@ void ResourceShader::SetUniform4f(const std::string& name, const float4& vec)
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4& matrix)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniformMatrix4fv(location, 1, GL_FALSE, matrix.ptr());
@@ -293,6 +321,8 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4x4* matrix, uint count)
 {
+	OPTICK_EVENT();
+
 	int location = GetUniformLocation(name);
 	if (location != -1)
 		glUniformMatrix4fv(location, count, GL_TRUE, matrix[0].ptr());
@@ -300,6 +330,8 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
 {
+	OPTICK_EVENT();
+
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
@@ -324,6 +356,8 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 void ResourceShader::SetPointLights(const std::string& name, const std::list<PointLightProperties*>& pointLights)
 {
+	OPTICK_EVENT();
+
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
@@ -357,6 +391,8 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 void ResourceShader::SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& spotLights)
 {
+	OPTICK_EVENT();
+
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");

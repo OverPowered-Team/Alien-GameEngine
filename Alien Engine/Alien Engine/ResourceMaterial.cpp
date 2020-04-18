@@ -8,6 +8,7 @@
 #include "FileNode.h"
 #include "JSONfilepack.h"
 
+#include "Optick/include/optick.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
 
@@ -253,6 +254,8 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 
 void ResourceMaterial::ApplyMaterial()
 {
+	OPTICK_EVENT();
+
 	// Bind the actual shader
 	used_shader->Bind();
 
@@ -288,7 +291,7 @@ void ResourceMaterial::ApplyMaterial()
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
 
 	// Update uniforms
-	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
 	used_shader->UpdateUniforms(shaderInputs);
 
@@ -469,7 +472,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Diffuse:");
 		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine();
-		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
+		ImGui::ColorEdit4("Albedo", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
 
 		// Specular 
 		ImGui::Text("Specular:");
