@@ -299,6 +299,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 						}
 					}
 				}
+
+				c_pos_y = c_cam->GetCameraPosition().y;
+				c_pos_y += distance;
+				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
+				c_cam->InvertPitch();
 			}
 			wfbos->UnbindCurrentFrameBuffer();
 
