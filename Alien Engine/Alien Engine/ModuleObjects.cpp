@@ -262,15 +262,14 @@ update_status ModuleObjects::PostUpdate(float dt)
 			glEnable(GL_CLIP_DISTANCE0);
 
 			/* Reflection */
-
-			float distance = 2 * (viewport->GetCamera()->GetCameraPosition().y - 0.0f);
-			ComponentCamera* c_cam = viewport->GetCamera();
-			float c_pos_y = c_cam->GetCameraPosition().y;
-			c_pos_y -= distance;
-			c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
-
 			wfbos->BindReflectionFrameBuffer();
 			{
+				float distance = 2 * (viewport->GetCamera()->GetCameraPosition().y - 0.0f);
+				ComponentCamera* c_cam = viewport->GetCamera();
+				float c_pos_y = c_cam->GetCameraPosition().y;
+				c_pos_y -= distance;
+				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
+				c_cam->InvertPitch();
 				if (base_game_object->HasChildren()) {
 					std::vector<std::pair<float, GameObject*>> to_draw;
 					std::vector<std::pair<float, GameObject*>> to_draw_ui;

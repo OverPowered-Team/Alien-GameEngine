@@ -620,6 +620,13 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 	return float4x4(frustum.ViewMatrix()).Transposed();
 }
 
+void ComponentCamera::InvertPitch()
+{
+	ViewMatrix[1][2] *= -1.0f;
+	ViewMatrix[0][3] *= -1.0f;
+	ViewMatrix[2][3] *= -1.0f;
+}
+
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
 {
 	this->vertical_fov = vertical_fov;
