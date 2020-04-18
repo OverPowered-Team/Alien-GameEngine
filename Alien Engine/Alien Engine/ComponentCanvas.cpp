@@ -41,8 +41,12 @@ bool ComponentCanvas::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Canvas", &not_destroy))
+	if (ImGui::CollapsingHeader("Canvas", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::Spacing();
+		ImGui::Text("Canvas World");
+		ImGui::SameLine();
+		ImGui::Checkbox("##isWorld", &isWorld);
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
