@@ -38,6 +38,7 @@ void WaterFrameBuffers::BindReflectionFrameBuffer()
 
 	glDepthMask(true);
 	glDepthRange(0.f, 1.f);
+
 	BindFrameBuffer(reflection_frame_buffer, WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 }
 
@@ -57,6 +58,7 @@ void WaterFrameBuffers::BindRefractionFrameBuffer()
 
 	glDepthMask(true);
 	glDepthRange(0.f, 1.f);
+
 	BindFrameBuffer(refraction_frame_buffer, WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 }
 
@@ -69,7 +71,7 @@ void WaterFrameBuffers::UnbindCurrentFrameBuffer()
 	glDisable(GL_STENCIL_TEST);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glViewport(0, 0, width, height);
+	//glViewport(0, 0, width, height); glClear ?
 }
 
 uint WaterFrameBuffers::GetReflectionTexture()

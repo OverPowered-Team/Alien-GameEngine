@@ -42,6 +42,7 @@ void main()
     visibility = clamp(visibility, 0.0, 1.0);
     // ------------------------
     gl_ClipDistance[0] = dot(worldPos, clip_plane);
+    //gl_ClipDistance[0] = -1;
     // --------------------------------------- 
 
     // --------------- Animation -------------
