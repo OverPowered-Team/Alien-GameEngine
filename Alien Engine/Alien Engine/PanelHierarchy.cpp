@@ -686,6 +686,15 @@ void PanelHierarchy::RightClickSceneNode(GameObject* obj)
 						break;
 					}
 				}
+				if (obj->ID == App->objects->scene_active) {
+					GameObject* root = App->objects->GetGlobalRoot();
+					for (auto item = root->children.begin(); item != root->children.end(); ++item) {
+						if ((*item)->ID != obj->ID) {
+							App->objects->scene_active = (*item)->ID;
+							break;
+						}
+					}
+				}
 			}
 			ImGui::EndMenu();
 		}
