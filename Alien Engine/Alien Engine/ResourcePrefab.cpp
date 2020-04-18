@@ -251,7 +251,6 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		bool is_first = true;
 		for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 			GameObject* obj = new GameObject(true);
-			obj->scene_root = parent->scene_root;
 			u64 parentID = std::stoull(game_objects->GetString("ParentID"));
 			if (!is_first) {
 				std::vector<GameObject*>::iterator objects = objects_created.begin();

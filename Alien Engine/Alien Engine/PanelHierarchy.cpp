@@ -92,7 +92,7 @@ void PanelHierarchy::PanelLogic()
 			ImGui::PushID(*item);
 			if (ImGui::CollapsingHeader((*item)->name, ImGuiTreeNodeFlags_DefaultOpen)) {
 				RightClickSceneNode(*item);
-
+				
 				if (ImGui::BeginDragDropTarget()) {
 					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 					if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {

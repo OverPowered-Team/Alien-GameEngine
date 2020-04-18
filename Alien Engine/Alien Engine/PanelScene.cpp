@@ -154,7 +154,7 @@ void PanelScene::PanelLogic()
 						}
 					}
 					else {
-						prefab_parent = App->objects->GetSelectedObjects().front()->scene_root;
+						prefab_parent = App->objects->GetRoot(false);
 					}
 					prefab_parent = App->objects->GetRoot(false);
 					prefab->ConvertToGameObjects(prefab_parent);

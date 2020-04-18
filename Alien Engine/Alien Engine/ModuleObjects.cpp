@@ -107,7 +107,6 @@ bool ModuleObjects::Start()
 	scene_root->ID = App->resources->GetRandomID();
 	scene_root->is_static = true;
 	scene_root->SetName("Untitled*");
-	scene_root->scene_root = scene_root;
 	scene_root->parent = base_game_object;
 	base_game_object->children.push_back(scene_root);
 	scene_active = scene_root->ID;
@@ -1174,7 +1173,6 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 				scene_root->ID = to_load->GetID();
 				scene_root->is_static = true;
 				scene_root->SetName(name);
-				scene_root->scene_root = scene_root;
 				scene_root->parent = base_game_object;
 				base_game_object->children.push_back(scene_root);
 			}
@@ -1197,7 +1195,6 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 
 				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 					GameObject* obj = new GameObject(true);
-					obj->scene_root = scene_root;
 					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
 					if (parentID != scene_root->ID) {
 						std::vector<GameObject*>::iterator objects = objects_created.begin();
@@ -1280,7 +1277,6 @@ void ModuleObjects::OpenCoScene(const char* name)
 			scene_root->ID = to_load->GetID();
 			scene_root->is_static = true;
 			scene_root->SetName(name);
-			scene_root->scene_root = scene_root;
 			scene_root->parent = base_game_object;
 			base_game_object->children.push_back(scene_root);
 
@@ -1294,7 +1290,6 @@ void ModuleObjects::OpenCoScene(const char* name)
 
 				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
 					GameObject* obj = new GameObject(true);
-					obj->scene_root = scene_root;
 					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
 					if (parentID != scene_root->ID) {
 						std::vector<GameObject*>::iterator objects = objects_created.begin();
@@ -1339,7 +1334,6 @@ void ModuleObjects::CreateEmptyScene()
 	scene_root->ID = App->resources->GetRandomID();
 	scene_root->is_static = true;
 	scene_root->SetName("Untitled*");
-	scene_root->scene_root = scene_root;
 	scene_root->parent = base_game_object;
 	scene_active = scene_root->ID;
 	base_game_object->children.push_back(scene_root);
@@ -1376,7 +1370,12 @@ GameObject* ModuleObjects::GetRoot(bool ignore_prefab)
 			return base_game_object->children.back();
 	}
 	else {
-		return (game_objects_selected.empty()) ? base_game_object->children[0] : game_objects_selected.back()->scene_root;
+		for (auto item = base_game_object->children.begin(); item != base_game_object->children.end(); ++item) {
+			if ((*item)->ID == scene_active) {
+				return *item;
+			}
+		}
+		return nullptr;
 	}
 }
 

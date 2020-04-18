@@ -261,8 +261,6 @@ public:
 	GameObject* parent = nullptr;
 	ComponentTransform* transform = nullptr;
 
-	GameObject* scene_root = nullptr;
-
 private:
 	bool to_delete = false; 
 	u64 prefabID = 0;
