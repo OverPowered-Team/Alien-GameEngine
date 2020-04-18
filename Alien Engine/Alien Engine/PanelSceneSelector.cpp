@@ -52,6 +52,8 @@ void PanelSceneSelector::OrganizeSave(const SceneSelectorState& state)
 void PanelSceneSelector::OrganizeSaveScene()
 {
 	if (App->objects->current_scenes.empty()) {
+		GameObject* root = App->objects->GetGlobalRoot();
+		force_save = root->children.back();
 		OrganizeSave(SceneSelectorState::SAVE_AS_NEW);
 	}
 	else {
@@ -324,14 +326,7 @@ void PanelSceneSelector::MenuSaveCurrentScene()
 		ImGui::Spacing();
 
 		if (ImGui::Button("Save", { 65,20 })) {
-			if (App->objects->current_scenes.empty()) {
-				SaveSceneAsNew();
-			}
-			else {
-				for (auto item = App->objects->current_scenes.begin(); item != App->objects->current_scenes.end(); ++item) {
-					App->objects->SaveScene(*item);
-				}
-			}
+			OrganizeSave(SceneSelectorState::SAVE_SCENE);
 			menu_save_current = false;
 		}
 		
