@@ -262,7 +262,7 @@ void ComponentPhysics::UpdateBody()
 		actor = App->physx->CreateBody(transform->GetGlobalMatrix(), IsDynamic());
 
 		for (ComponentCollider* collider : colliders)
-			if (collider->enabled)
+			if (collider->enabled && collider->shape) // TODO: check this
 				actor->attachShape(*collider->shape);
 
 		if (IsDynamic())

@@ -82,12 +82,16 @@ private:
 	const char* cooking_lib_path = APP_BIN_DIR DLL_DIR "PhysXCooking_" DLL_NAME_BITS ".dll";
 
 private:
+	// delay load hooks
+	CustomDelayLoadHook			delayLoadHook;
+	CustomGpuLoadHook			gpuLoadHook;
 	
 	PxDefaultAllocator			px_allocator;
 	CustomErrorCallback			px_error_callback;
 	SimulationEventCallback*    px_simulation_callback = nullptr;
 	PxFoundation*				px_foundation = nullptr;
 	PxPhysics*					px_physics = nullptr;
+	PxCooking*					px_cooking = nullptr;
 	PxDefaultCpuDispatcher*		px_dispatcher = nullptr;
 	PxScene*					px_scene = nullptr;
 	PxMaterial*					px_default_material = nullptr;

@@ -30,6 +30,8 @@ private:
 	void CreateDefaultShape();
 	void UpdateShape();
 
+	PxShape* CreateConvexMesh(const GameObject* go);
+
 private:
 
 	ComponentMesh* mesh = nullptr;

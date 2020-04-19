@@ -57,13 +57,11 @@ bool ModulePhysX::Init()
 
 	// set PhysX and PhysXCommon delay load hook, this must be done before the create physics is called, before ----
 	// the PhysXFoundation, PhysXCommon delay load happens.
-	CustomDelayLoadHook delayLoadHook;
 	PxSetPhysXDelayLoadHook(&delayLoadHook);
 	PxSetPhysXCommonDelayLoadHook(&delayLoadHook);
 	PxSetPhysXCookingDelayLoadHook(&delayLoadHook);
 
 	// set PhysXGpu load hook
-	CustomGpuLoadHook gpuLoadHook;
 	PxSetPhysXGpuLoadHook(&gpuLoadHook);
 	// --------------------------------------------------------------------------------------------------------------
 
@@ -73,6 +71,11 @@ bool ModulePhysX::Init()
 
 	px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *px_foundation, PxTolerancesScale(), true, px_pvd);
 	px_simulation_callback = new SimulationEventCallback();
+
+	px_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *px_foundation, PxCookingParams(PxTolerancesScale()));
+	if (!px_cooking)
+		LOG_ENGINE("PxCreateCooking failed!");
+
 	PxSceneDesc sceneDesc(px_physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
