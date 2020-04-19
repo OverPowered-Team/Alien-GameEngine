@@ -187,15 +187,6 @@ void ComponentUI::Draw(bool isGame)
 	}
 	else
 	{
-		/*float4x4 view_matrix = App->renderer3D->actual_game_camera->GetViewMatrix4x4();
-		matrix[0][0] = view_matrix[0][0];
-		matrix[0][1] = view_matrix[1][0];
-		matrix[0][2] = view_matrix[2][0];
-		matrix[1][0] = view_matrix[0][1];
-		matrix[1][1] = view_matrix[1][1];
-		matrix[1][2] = view_matrix[2][1];
-		matrix[2][0] = view_matrix[0][2];
-		matrix[2][2] = view_matrix[2][2];*/
 		position.x = matrix[0][3];
 		position.y = matrix[1][3];
 		position.z = matrix[2][3];
@@ -350,7 +341,28 @@ void ComponentUI::Orientate(ComponentCamera* camera)
 	if (camera == nullptr)
 		return;
 
-	rotation = Billboard::AlignToScreen(camera);
+	switch (canvas->bbtype)
+	{
+	case BillboardType::SCREEN:
+		rotation = Billboard::AlignToScreen(camera);
+		break;
+
+	case BillboardType::WORLD:
+		rotation = Billboard::AlignToWorld(camera, position);
+		break;
+
+	case BillboardType::AXIS:
+		rotation = Billboard::AlignToAxis(camera, position);
+
+		break;
+
+	case BillboardType::NONE:
+		rotation = Quat::identity();
+		break;
+
+	default:
+		break;
+	}
 	
 }
 
