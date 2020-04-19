@@ -17,6 +17,7 @@ public:
 
 	ComponentBoxCollider(GameObject* go);
 
+	void QueryMesh(ComponentMesh* mesh);
 	void SetSize(const float3 size);
 	float3 GetSize() { return size; }
 

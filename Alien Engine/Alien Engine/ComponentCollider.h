@@ -9,6 +9,7 @@
 
 class GameObject;
 class ComponentRigidBody;
+class ComponentMesh;
 class ComponentVehicle;
 class ComponentTransform;
 class ComponentPhysics;
@@ -35,6 +36,8 @@ public:
 	virtual ~ComponentCollider();
 
 	// Colliders values
+
+	virtual void QueryMesh(ComponentMesh* mesh) {}
 	virtual void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
 	virtual void SetRotation(const float3& value);
@@ -48,6 +51,9 @@ public:
 	void SetAngularFriction(const float v);
 	float GetAngularFriction() { return angular_friction; }
 
+	void SetCollisionLayer(std::string layer);
+	std::string GetCollisionLayer();
+
 protected:
 
 	void InitCollider();
@@ -60,6 +66,7 @@ protected:
 	void Update();
 
 	bool DrawInspector();
+	void DrawLayersCombo();
 	void HandleAlienEvent(const AlienEvent& e);
 
 	virtual void DrawSpecificInspector() {}
@@ -72,7 +79,9 @@ protected:
 
 protected:
 
-	int  layer = 0;
+	std::string layer_name = "Default";
+	int layer_num = 0;
+
 	PxShape* shape = nullptr;
 	float3 center = float3::zero();
 	float3 rotation = float3::zero();

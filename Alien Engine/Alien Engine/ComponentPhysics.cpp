@@ -5,6 +5,7 @@
 #include "ComponentRigidBody.h"
 #include "ComponentScript.h"
 #include "ImGuizmos/ImGuizmo.h"
+#include "CollisionLayers.h"
 #include "GameObject.h"
 #include "Alien.h"
 #include "Event.h"
@@ -15,6 +16,7 @@ ComponentPhysics::ComponentPhysics(GameObject* go) : Component(go)
 	serialize = false;  // Not save & load 
 	transform = go->GetComponent<ComponentTransform>();
 	state = PhysicState::DISABLED;
+	layers = &App->physx->layers;
 
 	std::vector<ComponentScript*> found_script = go->GetComponents<ComponentScript>();
 	for (ComponentScript* script : found_script)
@@ -312,6 +314,19 @@ void ComponentPhysics::UpdatePositioning()
 	}
 }
 
+void ComponentPhysics::WakeUp()
+{
+	if (IsDynamic())
+		actor->is<PxRigidDynamic>()->wakeUp();
+}
+
+void ComponentPhysics::PutToSleep()
+{
+	if (IsDynamic())
+		actor->is<PxRigidDynamic>()->putToSleep();
+}
+
+
 bool ComponentPhysics::HasEnabledColliders()
 {
 	for (ComponentCollider* collider : colliders)
@@ -341,3 +356,4 @@ bool ComponentPhysics::ShapeAttached(PxShape* shape)
 
 bool ComponentPhysics::IsDynamic() { return state == PhysicState::DYNAMIC; }
 bool ComponentPhysics::IsKinematic() { return state == PhysicState::DYNAMIC && rigid_body->is_kinematic; }
+

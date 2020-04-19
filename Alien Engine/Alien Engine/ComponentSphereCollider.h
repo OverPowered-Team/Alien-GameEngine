@@ -6,7 +6,7 @@
 
 class GameObject;
 class ModulePhysics;
-class C_Mesh;
+class ComponentMesh;
 
 class ComponentSphereCollider : public ComponentCollider
 {
@@ -19,6 +19,7 @@ public:
 
 	ComponentSphereCollider(GameObject* go);
 
+	void QueryMesh(ComponentMesh* mesh);
 	void SetRadius(float radius);
 
 private:

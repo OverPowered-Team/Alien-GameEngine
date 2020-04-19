@@ -428,6 +428,6 @@ bool MyDispatcher::needsCollision(const btCollisionObject* obj_0, const btCollis
 	if (coll_0 == nullptr || coll_1 == nullptr)
 		return true;
 
-	return ModulePhysics::CanCollide(coll_0->layer, coll_1->layer);
+	return ModulePhysics::CanCollide(coll_0->layer_num, coll_1->layer_num);
 
 }

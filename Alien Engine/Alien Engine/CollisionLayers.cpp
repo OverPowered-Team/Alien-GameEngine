@@ -3,6 +3,24 @@
 #include "ModuleFileSystem.h"
 #include "Assimp/include/types.h"
 
+bool CollisionLayers::GetIndexByName(string layer, int& index)
+{
+	for (int i = 0; i < names.size(); ++i) {
+		if (names[i] == layer) {
+			index = i;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CollisionLayers::GetNameByIndex(int index, string& name)
+{
+	if (index >= names.size() || index < 0) return false;
+	name = names[index];
+	return true;;
+}
+
 void CollisionLayers::AddLayer(std::string to_add)
 {
 	if (std::find(names.begin(), names.end(), to_add) != names.end())
@@ -89,8 +107,11 @@ void CollisionLayers::SetLayers(int index_0, int index_1, bool to_change)
 {
 	bool value = !to_change;
 	Layer* layer_0 = GetLayer(names[index_0]);
+	//Layer* layer_1 = GetLayer(names[index_1]);
 	layer_0->Set(names[index_1], value);
+	//layer_1->Set(names[index_0], value);
 	data[index_0][index_1] = value;
+	//data[index_1][index_0] = value;
 }
 
 void CollisionLayers::LoadLayers()

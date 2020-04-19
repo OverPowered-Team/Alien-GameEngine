@@ -1,10 +1,11 @@
 #pragma once
-
 #include "Component.h"
 #include "PxShape.h"
 #include <list>
 
 using namespace physx;
+
+class CollisionLayers;
 
 class __declspec(dllexport) ComponentPhysics : public Component
 {
@@ -48,6 +49,8 @@ private:
 	
 	void GizmoManipulation();
 	void UpdatePositioning();
+	void WakeUp();
+	void PutToSleep();
 
 	void UpdateBody();
 	bool CheckChangeState();
@@ -56,6 +59,8 @@ private:
 	bool ShapeAttached(PxShape* shape);
 	bool IsDynamic();
 	bool IsKinematic();
+
+
 
 protected:
 
@@ -69,6 +74,7 @@ protected:
 	std::list<ComponentScript*>   scripts;
 	ComponentRigidBody*			  rigid_body = nullptr;
 	PxRigidActor*				  actor = nullptr;
+	CollisionLayers*			  layers = nullptr;
 
 };
 
