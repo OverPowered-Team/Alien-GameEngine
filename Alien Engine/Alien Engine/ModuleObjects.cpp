@@ -315,12 +315,15 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (!printing_scene) {
 				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
 			}
+			ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
 			for (; it_ui != to_draw_ui.end(); ++it_ui) {
 				if ((*it_ui).second != nullptr) {
 					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{			
+						ui->Orientate(mainCamera);
+						ui->Rotate();
 						ui->Draw(!printing_scene);
 
 					}
