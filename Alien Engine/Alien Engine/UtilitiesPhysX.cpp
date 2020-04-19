@@ -183,7 +183,7 @@ void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 num_pairs)
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if (!App->physx->layers.data[filterData0.word0][ filterData1.word0])
+	if (!App->physx->layers.data[filterData0.word0][ filterData1.word0] || filterData0.word1 == filterData1.word1)
 		return physx::PxFilterFlag::eSUPPRESS;
 
 	if (attributes0 & PxFilterObjectFlag::eTRIGGER || attributes1 & PxFilterObjectFlag::eTRIGGER)

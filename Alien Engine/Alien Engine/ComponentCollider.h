@@ -47,6 +47,8 @@ public:
 	float GetFriction() { return friction; }
 	void SetAngularFriction(const float v);
 	float GetAngularFriction() { return angular_friction; }
+	void SetCollisionLayer(std::string layer);
+	std::string GetCollisionLayer();
 
 protected:
 
@@ -60,6 +62,7 @@ protected:
 	void Update();
 
 	bool DrawInspector();
+	void DrawLayersCombo();
 	void HandleAlienEvent(const AlienEvent& e);
 
 	virtual void DrawSpecificInspector() {}
@@ -72,7 +75,9 @@ protected:
 
 protected:
 
-	int  layer = 0;
+	std::string layer_name = "Default";
+	int layer_num = 0;
+
 	PxShape* shape = nullptr;
 	float3 center = float3::zero();
 	float3 rotation = float3::zero();

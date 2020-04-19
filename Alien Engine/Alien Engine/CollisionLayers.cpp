@@ -3,6 +3,24 @@
 #include "ModuleFileSystem.h"
 #include "Assimp/include/types.h"
 
+bool CollisionLayers::GetIndexByName(string layer, int& index)
+{
+	for (int i = 0; i < names.size(); ++i) {
+		if (names[i] == layer) {
+			index = i;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CollisionLayers::GetNameByIndex(int index, string& name)
+{
+	if (index >= names.size() || index < 0) return false;
+	name = names[index];
+	return true;;
+}
+
 void CollisionLayers::AddLayer(std::string to_add)
 {
 	if (std::find(names.begin(), names.end(), to_add) != names.end())

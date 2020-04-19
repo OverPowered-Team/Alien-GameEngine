@@ -1,10 +1,11 @@
 #pragma once
-
 #include "Component.h"
 #include "PxShape.h"
 #include <list>
 
 using namespace physx;
+
+class CollisionLayers;
 
 class __declspec(dllexport) ComponentPhysics : public Component
 {
@@ -69,6 +70,7 @@ protected:
 	std::list<ComponentScript*>   scripts;
 	ComponentRigidBody*			  rigid_body = nullptr;
 	PxRigidActor*				  actor = nullptr;
+	CollisionLayers*			  layers = nullptr;
 
 };
 

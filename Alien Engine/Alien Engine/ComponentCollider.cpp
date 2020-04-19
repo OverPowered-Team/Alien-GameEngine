@@ -90,6 +90,24 @@ void ComponentCollider::SetAngularFriction(const float value)
 
 }
 
+void ComponentCollider::SetCollisionLayer(std::string layer)
+{
+	int index = 0;
+	if (!physics->layers->GetIndexByName(layer, index)) return;
+
+	BeginUpdateShape();
+	PxFilterData filter_data;
+	filter_data.word0 = index;
+	filter_data.word1 = game_object_attached->ID;
+	shape->setSimulationFilterData(filter_data);
+	EndUpdateShape();
+}
+
+std::string ComponentCollider::GetCollisionLayer()
+{
+	return layer_name;
+}
+
 void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetBoolean("Enabled", enabled);
@@ -101,6 +119,7 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Bouncing", bouncing);
 	to_save->SetNumber("Friction", friction);
 	to_save->SetNumber("AngularFriction", angular_friction);
+	to_save->SetString("CollisionLayer", layer_name.c_str());
 }
 
 void ComponentCollider::LoadComponent(JSONArraypack* to_load)
@@ -118,6 +137,7 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 	SetBouncing(to_load->GetNumber("Bouncing"));
 	SetFriction(to_load->GetNumber("Friction"));
 	SetAngularFriction(to_load->GetNumber("AngularFriction"));
+	SetCollisionLayer(to_load->GetString("CollisionLayer"));
 }
 
 void ComponentCollider::Update()
@@ -172,27 +192,7 @@ bool ComponentCollider::DrawInspector()
 	{
 		ImGui::Spacing();
 
-		ImGui::Title("Layer");
-
-		if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + App->physics->layers.at(layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
-		{
-			for (int n = 0; n < App->physics->layers.size(); ++n)
-			{
-				bool is_selected = (layer == n);
-
-				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
-				{
-					layer = n;
-				}
-
-				if (is_selected)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}
+		DrawLayersCombo();
 
 		float3 current_center = center;
 		float3 current_rotation = rotation;
@@ -225,6 +225,29 @@ bool ComponentCollider::DrawInspector()
 	return true;
 }
 
+void ComponentCollider::DrawLayersCombo()
+{
+	ImGui::Title("Layer");
+
+	if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + physics->layers->names[layer_num]).c_str(), 200, ImGuiComboFlags_NoArrowButton))
+	{
+		for (int n = 0; n < physics->layers->names.size(); ++n)
+		{
+			bool is_selected = (layer_num == n);
+
+			if (ImGui::Selectable(std::string("   " + physics->layers->names[n]).c_str(), is_selected))
+			{
+				SetCollisionLayer(physics->layers->names[n]);
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+
 void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
 }
@@ -232,6 +255,7 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 void ComponentCollider::InitCollider()
 {
 	shape->userData = this;
+	SetCollisionLayer("Default");
 }
 
 void ComponentCollider::BeginUpdateShape()

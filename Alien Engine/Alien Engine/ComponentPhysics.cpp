@@ -5,6 +5,7 @@
 #include "ComponentRigidBody.h"
 #include "ComponentScript.h"
 #include "ImGuizmos/ImGuizmo.h"
+#include "CollisionLayers.h"
 #include "GameObject.h"
 #include "Alien.h"
 #include "Event.h"
@@ -15,6 +16,7 @@ ComponentPhysics::ComponentPhysics(GameObject* go) : Component(go)
 	serialize = false;  // Not save & load 
 	transform = go->GetComponent<ComponentTransform>();
 	state = PhysicState::DISABLED;
+	layers = &App->physx->layers;
 
 	std::vector<ComponentScript*> found_script = go->GetComponents<ComponentScript>();
 	for (ComponentScript* script : found_script)
