@@ -1184,6 +1184,9 @@ void ComponentCheckbox::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("SelectOnRight", std::to_string(select_on_right).data());
 	to_save->SetString("SelectOnLeft", std::to_string(select_on_left).data());
 
+	to_save->SetString("ClickEvent", click_event.data());
+	to_save->SetString("MoveEvent", move_event.data());
+
 	//---------------------------------------------------------
 	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
 	if (!listenersOnClick.empty()) {
@@ -1279,6 +1282,9 @@ void ComponentCheckbox::LoadComponent(JSONArraypack* to_load)
 	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
+
+	click_event = to_load->GetString("ClickEvent");
+	move_event = to_load->GetString("MoveEvent");
 
 	//-------------------------------------------------------------
 	if (to_load->GetBoolean("HasListenersOnClick")) {

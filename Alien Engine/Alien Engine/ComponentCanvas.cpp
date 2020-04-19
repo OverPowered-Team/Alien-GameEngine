@@ -58,6 +58,7 @@ bool ComponentCanvas::DrawInspector()
 void ComponentCanvas::SaveComponent(JSONArraypack* to_save)
 {
 	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetBoolean("isWorld", isWorld);
 	to_save->SetNumber("Type", (int)type);
 	
 }
@@ -65,6 +66,7 @@ void ComponentCanvas::SaveComponent(JSONArraypack* to_save)
 void ComponentCanvas::LoadComponent(JSONArraypack* to_load)
 {
 	enabled = to_load->GetBoolean("Enabled");
+	isWorld = to_load->GetBoolean("isWorld");
 }
 
 void ComponentCanvas::Draw()
