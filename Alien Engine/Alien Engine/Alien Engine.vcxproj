@@ -856,6 +856,7 @@
     <ClInclude Include="PanelRender.h" />
     <ClInclude Include="PanelScene.h" />
     <ClInclude Include="PanelSceneSelector.h" />
+    <ClInclude Include="PanelTerrainEditor.h" />
     <ClInclude Include="PanelTextEditor.h" />
     <ClInclude Include="PanelAnimTimeline.h" />
     <ClInclude Include="Parson\parson.h" />
@@ -1227,6 +1228,7 @@
     <ClCompile Include="PanelRender.cpp" />
     <ClCompile Include="PanelScene.cpp" />
     <ClCompile Include="PanelSceneSelector.cpp" />
+    <ClCompile Include="PanelTerrainEditor.cpp" />
     <ClCompile Include="PanelTextEditor.cpp" />
     <ClCompile Include="PanelAnimTimeline.cpp" />
     <ClCompile Include="Parson\parson.c" />

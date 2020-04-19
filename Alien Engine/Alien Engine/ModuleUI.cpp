@@ -33,6 +33,7 @@
 #include "Event.h"
 #include "PanelTextEditor.h"
 #include "PanelParticleSystem.h"
+#include "PanelTerrainEditor.h"
 #include "ModuleObjects.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
@@ -1169,6 +1170,7 @@ void ModuleUI::InitPanels()
 	panel_animator = new PanelAnimator("Animator", panel_animator_codes[0], panel_animator_codes[1], panel_animator_codes[2]);
 	panel_particles = new PanelParticleSystem("Particle System", panel_particles_codes[0], panel_particles_codes[1], panel_particles_codes[2]);
 	panel_physics = new PanelPhysics("Physics", panel_physics_codes[0], panel_physics_codes[1], panel_physics_codes[2]);
+	panel_terrain = new PanelTerrainEditor("Terrain Editor", panel_terrain_codes[0], panel_terrain_codes[1], panel_terrain_codes[2]);
 
 	panels.push_back(panel_about);
 	panels.push_back(panel_config);
@@ -1188,6 +1190,7 @@ void ModuleUI::InitPanels()
 	panels.push_back(panel_build);
 	panels.push_back(panel_particles);
 	panels.push_back(panel_physics);
+	panels.push_back(panel_terrain);
 }
 
 void ModuleUI::UpdatePanels()

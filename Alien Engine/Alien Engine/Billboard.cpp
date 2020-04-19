@@ -56,7 +56,7 @@ Quat Billboard::AlignToVelocity(ComponentCamera* camera, float3 position, float3
 
 	float3 x = y.Cross(z);
 
-	//y = z.Cross(x);
+	y = z.Cross(x);
 
 	float3x3 rot = float3x3(x, y, z);
 	return rot.ToQuat();

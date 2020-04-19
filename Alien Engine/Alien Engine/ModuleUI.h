@@ -30,6 +30,7 @@ class PanelAnimTimeline;
 class PanelAnimator;
 class PanelParticleSystem;
 class PanelPhysics;
+class PanelTerrainEditor;
 struct ShortCut;
 
 struct Layout {
@@ -170,6 +171,7 @@ private:
 	SDL_Scancode panel_animator_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_particles_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode panel_physics_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
+	SDL_Scancode panel_terrain_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 
 	SDL_Scancode shortcut_demo_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
 	SDL_Scancode shortcut_report_bug_codes[3] = { SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN };
@@ -205,6 +207,7 @@ public:
 	PanelAnimTimeline* panel_animtimeline = nullptr;
 	PanelAnimator* panel_animator = nullptr;
 	PanelPhysics* panel_physics = nullptr;
+	PanelTerrainEditor* panel_terrain = nullptr;
 	bool update_shortcut = true;
 
 
