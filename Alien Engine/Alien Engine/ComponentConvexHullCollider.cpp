@@ -14,26 +14,27 @@ ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : Compo
 {
 	name.assign("Convex Hull Collider");
 	type = ComponentType::CONVEX_HULL_COLLIDER;
-	prev_scale = transform->GetGlobalScale();
+	// stores current gameobject scale
+	//prev_scale = float3(transform->GetGlobalScale());
 
 	shape = CreateConvexMesh(go);
-	if(!shape)	// if convex mesh cook fail, create default cube
-		shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f)); 
+	if (!shape) {	// if convex mesh cook fail, create default cube
+		shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f));
+	}
 
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 	
 	InitCollider();
-
-	// stores current gameobject scale
-	prev_scale = float3(transform->GetGlobalScale());
 }
 
 PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 {
 	// try to get mesh from gameobject
 	const ComponentMesh* mesh = go->GetComponent<ComponentMesh>();
-	if (!mesh)
+	if (!mesh) {
+		valid = false;
 		return nullptr;
+	}
 
 	if (shape) // if we are re-creating actual shape
 		BeginUpdateShape();
@@ -58,6 +59,7 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 	PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
 	PxConvexMesh* convexMesh = App->physx->px_physics->createConvexMesh(input);
 
+	valid = true;
 	if (shape)	// if we are re-creating actual shape
 	{
 		shape->setGeometry(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
@@ -65,14 +67,13 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 		return shape;
 	}
 	else
-		return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh));
+		return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
 }
 
 
 void ComponentConvexHullCollider::SaveComponent(JSONArraypack* to_save)
 {
 	ComponentCollider::SaveComponent(to_save);
-	to_save->SetFloat3("Size", size);
 	to_save->SetNumber("VertexLimit", vertex_limit);
 
 }
@@ -112,9 +113,12 @@ void ComponentConvexHullCollider::DrawScene()
 void ComponentConvexHullCollider::DrawSpecificInspector()
 {
 	ImGui::Title("Vertex Limit", 1);
-	if (ImGui::SliderInt("##vertexLimit", &vertex_limit, 4, 255))
+	if (ImGui::SliderInt("##vertexLimit", &vertex_limit, 8, 255))
 	{
-		Clamp(vertex_limit, 4, 255);
+		Clamp(vertex_limit, 8, 255);
 		CreateConvexMesh(game_object_attached);
 	}
+
+	if(!valid)
+		ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2, 1.0f), "ERROR: gameobject without mesh, convex collider NOT created");
 }

@@ -38,5 +38,6 @@ private:
 
 	int vertex_limit = 64.0f; // default vertex limit
 	float3 prev_scale;
+	bool valid = false;
 
 };
