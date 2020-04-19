@@ -99,6 +99,11 @@ void ComponentConvexHullCollider::Update()
 	}*/
 }
 
+void ComponentConvexHullCollider::ScaleChanged()
+{
+	CreateConvexMesh(game_object_attached);
+}
+
 
 void ComponentConvexHullCollider::DrawScene()
 {

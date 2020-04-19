@@ -257,7 +257,7 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 	switch (e.type)
 	{
 	case AlienEventType::SCALE_CHANGED: {
-		e;
+		ScaleChanged();
 		break;} 
 	case AlienEventType::COLLISION_LAYER_STATE_CHANGED: {
 

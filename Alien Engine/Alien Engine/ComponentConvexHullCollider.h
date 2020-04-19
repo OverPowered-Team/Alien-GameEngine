@@ -28,6 +28,8 @@ private:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void ScaleChanged();
+
 
 	PxShape* CreateConvexMesh(const GameObject* go);
 

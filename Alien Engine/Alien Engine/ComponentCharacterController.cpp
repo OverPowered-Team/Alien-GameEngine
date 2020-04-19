@@ -396,7 +396,7 @@ void ComponentCharacterController::HandleAlienEvent(const AlienEvent& e)
 
 void ComponentCharacterController::SetDefaultConf()
 {
-	desc.radius = 1.0f;
+	desc.radius = 0.5f;
 	desc.height = 2.0f;
 	if (desc.material) desc.material->release();
 	desc.material = App->physx->CreateMaterial(static_friction, dynamic_friction, restitution);

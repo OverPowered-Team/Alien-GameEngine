@@ -77,6 +77,8 @@ protected:
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
 
+	virtual void ScaleChanged() {};
+
 protected:
 
 	std::string layer_name = "Default";
