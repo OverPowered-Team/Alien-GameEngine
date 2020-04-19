@@ -675,6 +675,9 @@
     <ClInclude Include="ComponentPhysics.h">
       <Filter>Components\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionLayers.h">
+      <Filter>Modules\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2659,6 +2662,9 @@
     </ClCompile>
     <ClCompile Include="ComponentPhysics.cpp">
       <Filter>Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionLayers.cpp">
+      <Filter>Modules\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

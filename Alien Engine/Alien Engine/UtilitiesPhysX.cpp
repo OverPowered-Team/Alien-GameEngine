@@ -1,10 +1,11 @@
+#include "Application.h"
+#include "ModulePhysX.h"
 #include "UtilitiesPhysX.h"
 #include "ComponentScript.h"
 #include "ComponentPhysics.h"
 #include "ComponentRigidBody.h"
 #include "GameObject.h"
 #include "Alien.h"
-#include "Globals.h"
 
 void CustomErrorCallback::reportError(PxErrorCode::Enum code, const char* message, const char* file, int line)
 {
@@ -181,13 +182,11 @@ void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 num_pairs)
 }
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
-
 {
-	if ((filterData0.word0 != 0 || filterData1.word0 != 0) &&
-		!(filterData0.word0 & filterData1.word1 || filterData1.word0 & filterData0.word1))
+	if (!App->physx->layers.data[filterData0.word0][ filterData1.word0])
 		return physx::PxFilterFlag::eSUPPRESS;
 
-	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+	if (attributes0 & PxFilterObjectFlag::eTRIGGER || attributes1 & PxFilterObjectFlag::eTRIGGER)
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 	else
 	{
@@ -199,67 +198,4 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	}
 
 	return physx::PxFilterFlags();
-}
-
-void CollisionLayers::AddLayer(std::string to_add)
-{
-	if (std::find(layers.begin(), layers.end(), to_add) != layers.end())
-		return;
-
-	layers.push_back(to_add);
-
-	for (auto pair : data)
-		pair.second[to_add] = true;
-
-	std::map<std::string, bool> map_layer;
-
-	for (auto layer : layers)
-		map_layer[layer] = true;
-
-	data[to_add] = map_layer;
-}
-
-void CollisionLayers::RemoveLayer(std::string to_remove)
-{
-	if (std::find(layers.begin(), layers.end(), to_remove) == layers.end())
-		return;
-
-	std::remove(layers.begin(), layers.end(), to_remove);
-	data.erase(to_remove);
-
-	for (auto pair : data)
-		pair.second.erase(to_remove);
-}
-
-void CollisionLayers::GenerateFastData()
-{
-	if (fast_data)
-	{
-		DeleteFastData();
-	}
-
-	uint size = fast_data_size = layers.size();
-
-	fast_data = new bool* [fast_data_size];
-	for (int i = 0; i < fast_data_size; i++)
-		fast_data[i] = new bool[fast_data_size];
-
-	for (int i = 0; i < fast_data_size; i++)
-		for (int j = 0; j < fast_data_size; j++)
-			fast_data[i][j] = true;
-
-	for (int i = 0; i < size; ++i)
-	{
-		 data[layers[i]];
-
-	}
-
-}
-
-void CollisionLayers::DeleteFastData()
-{
-	for (int i = 0; i < fast_data_size; i++)
-		delete[] fast_data[i];
-
-	delete[] fast_data;
 }

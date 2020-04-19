@@ -95,16 +95,3 @@ public:
 	const char* ontrigger_names[3] = { "OnTriggerEnter()", "OnTriggerStay()", "OnTriggerExit()" };
 };
 
-class CollisionLayers
-{
-	void AddLayer(std::string layer);
-	void RemoveLayer(std::string layer);
-	void GenerateFastData();
-
-	void DeleteFastData();
-
-	std::vector<std::string> layers;
-	std::map<std::string, std::map<std::string, bool>> data;
-	bool** fast_data = nullptr;
-	uint  fast_data_size = 0;
-};

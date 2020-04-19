@@ -25,7 +25,6 @@ void ComponentBoxCollider::SetSize(const float3 value)
 	EndUpdateShape();
 }
 
-
 void ComponentBoxCollider::DrawSpecificInspector()
 {
 	float3 current_size = size;
@@ -34,7 +33,6 @@ void ComponentBoxCollider::DrawSpecificInspector()
 	if (ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
 		SetSize(current_size);
 	};
-
 }
 
 void ComponentBoxCollider::Clone(Component* clone)

@@ -59,7 +59,7 @@ public:
 	ModuleResources*	resources = nullptr;
 	ModuleAudio*		audio = nullptr;
 	ModulePhysics* 		physics = nullptr;
-	ModulePhysX* physx = nullptr;
+	ModulePhysX*		physx = nullptr;
 	AnimTween*			tween = nullptr;
 	FadeToBlack*		fade_to_black = nullptr;
 

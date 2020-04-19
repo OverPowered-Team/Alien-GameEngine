@@ -3,13 +3,14 @@
 #include "Module.h"
 //#include "PxPhysicsAPI.h"
 #include "UtilitiesPhysX.h"
-
 #include <wtypes.h>
+#include "CollisionLayers.h"
 
 using namespace physx;
 
 class ModulePhysX : public Module
 {
+	friend class PanelPhysics;
 	friend class ModuleObjects;
 	friend class ComponentPhysics;
 	friend class ComponentCollider;
@@ -40,16 +41,14 @@ public:
 
 private:
 
-	// TODO DELETE ME, PVD purposes
-	void CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
-	/*void LoadConfig(JSONfilepack*& config);
-	void SaveConfig(JSONfilepack*& config);*/
-
 	bool Init();
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+	
+	void SetGravity(float3 gravity);
+	float3 GetGravity();
 
 private:
 
@@ -66,9 +65,14 @@ private:
 	bool LoadPhysicsExplicitely();
 	void UnloadPhysicsExplicitely();
 
+public:
 
+	CollisionLayers	layers;
+	bool debug_physics = false;
 
 private:
+
+	float3 gravity = float3(0.f, -9.81, 0.f);
 
 	HMODULE foundation_lib = nullptr;
 	HMODULE common_lib = nullptr;
@@ -96,28 +100,7 @@ private:
 	PxScene*					px_scene = nullptr;
 	PxMaterial*					px_default_material = nullptr;
 	PxPvd*						px_pvd = nullptr;
+
 	PxControllerManager*		controllers_manager = nullptr;
 
-	PxReal stackZ = 10.0f;
-	
-public:
 };
-
-// TODO: move this block to another header (and defines up there) ---------------------------------------------------------------
-// typedef the PhysX entry points
-//typedef PxFoundation* (PxCreateFoundation_FUNC)(PxU32, PxAllocatorCallback&, PxErrorCallback&);
-//typedef PxPhysics* (PxCreatePhysics_FUNC)(PxU32, PxFoundation&, const PxTolerancesScale& scale, bool, PxPvd*);
-//typedef void (PxSetPhysXDelayLoadHook_FUNC)(const PxDelayLoadHook* hook);
-//typedef void (PxSetPhysXCommonDelayLoadHook_FUNC)(const PxDelayLoadHook* hook);
-//typedef void (PxSetPhysXGpuLoadHook_FUNC)(const PxGpuLoadHook* hook);
-//typedef int (PxGetSuggestedCudaDeviceOrdinal_FUNC)(PxErrorCallback& errc);
-//typedef PxCudaContextManager* (PxCreateCudaContextManager_FUNC)(PxFoundation& px_foundation, const PxCudaContextManagerDesc& desc, physx::PxProfilerCallback* profilerCallback);
-
-//// set the function pointers to NULL
-//PxCreateFoundation_FUNC* s_PxCreateFoundation_Func = NULL;
-//PxCreatePhysics_FUNC* s_PxCreatePhysics_Func = NULL;
-//PxSetPhysXDelayLoadHook_FUNC* s_PxSetPhysXDelayLoadHook_Func = NULL;
-//PxSetPhysXCommonDelayLoadHook_FUNC* s_PxSetPhysXCommonDelayLoadHook_Func = NULL;
-//PxSetPhysXGpuLoadHook_FUNC* s_PxSetPhysXGpuLoadHook_Func = NULL;
-//PxGetSuggestedCudaDeviceOrdinal_FUNC* s_PxGetSuggestedCudaDeviceOrdinal_Func = NULL;
-//PxCreateCudaContextManager_FUNC* s_PxCreateCudaContextManager_Func = NULL;
