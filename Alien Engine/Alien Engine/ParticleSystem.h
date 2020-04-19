@@ -162,5 +162,5 @@ public:
 
 	// Animation
 	int currentFrame = 0;
-	
+	int sheetWidth, sheetHeight;
 };
