@@ -7,9 +7,11 @@ bool Physics::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycas
 	return App->physx->Raycast(origin, unitDir, maxDistance, hit);
 }
 
-const std::vector<PxRaycastHit> Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
+const std::vector<PxRaycastHit>& Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
 {
-	return App->physx->RaycastAll(origin, unitDir, maxDistance);
+	static std::vector<PxRaycastHit> hits;
+	hits = App->physx->RaycastAll(origin, unitDir, maxDistance);
+	return hits;
 }
 
 uint Physics::OverlapSphere(float3 center, float radius, ComponentCollider*** colliders)
@@ -27,10 +29,12 @@ uint Physics::OverlapSphere(float3 center, float radius, ComponentCollider*** co
 }
 
 // TODO: uncomment this when we have heap change integred
-//const std::vector<ComponentCollider*> Physics::OverlapSphere(float3 center, float radius)
-//{
-//	return App->physx->OverlapSphere(center, radius);
-//}
+const std::vector<ComponentCollider*>& Physics::OverlapSphere(float3 center, float radius)
+{
+	static std::vector<ComponentCollider*> colliders;
+	colliders = App->physx->OverlapSphere(center, radius);
+	return colliders;
+}
 
 //void Physics::SetGravity(const float3 gravity)
 //{
