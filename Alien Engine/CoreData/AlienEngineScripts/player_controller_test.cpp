@@ -35,6 +35,7 @@ void player_controller_test::Update()
 	//* -------------------------------------------------------------------* //
 
 	// * ------------------------- RAYCAST --------------------------------* //
+	// FIRST CONTACT
 	//PxRaycastBuffer hit;
 	//float3 raypos = transform->GetGlobalPosition();
 	//bool anyHit = Physics::Raycast(float3(raypos.x, raypos.y, raypos.z + 3.0f), transform->forward.Normalized(), 5.0f, hit);
@@ -45,6 +46,13 @@ void player_controller_test::Update()
 	//	if (col)
 	//		LOG_ENGINE("raycast hit with %s", col->game_object_attached->GetName());
 	//}
+	
+	// ALL CONTACTS
+	// TODO: TEST WHEN WE UPGRADE THIS BRANCH
+	//Physics::RaycastAll(transform->GetGlobalPosition(), transform->forward.Normalized(), 10.0f);
+
+	//* -------------------------------------------------------------------* //
+
 
 
 	if (!ccontroller)

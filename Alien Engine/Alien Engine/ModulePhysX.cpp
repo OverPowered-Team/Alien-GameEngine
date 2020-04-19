@@ -308,7 +308,7 @@ PxMaterial* ModulePhysX::CreateMaterial(float staticFriction, float dynamicFrict
 
 // * --------------------- SCENE QUERIES ----------------------- * //
 
-bool ModulePhysX::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit)
+bool ModulePhysX::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit) const
 {
 	PxVec3 _origin = F3_TO_PXVEC3(origin);
 	PxVec3 _unitDir = F3_TO_PXVEC3(unitDir);
@@ -319,7 +319,28 @@ bool ModulePhysX::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRa
 	return px_scene->raycast(_origin, _unitDir, maxDistance, hit);  // TODO: implement filtering (layermask | queryTriggerInteraction)
 }
 
-const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, float radius)
+const std::vector<PxRaycastHit> ModulePhysX::RaycastAll(float3 origin, float3 unitDir, float maxDistance) const
+{
+	PxVec3 _origin = F3_TO_PXVEC3(origin);
+	PxVec3 _unitDir = F3_TO_PXVEC3(unitDir);
+
+	const PxU32 bufferSize = 256;
+	PxRaycastHit hitBuffer[bufferSize];
+	PxRaycastBuffer hit(hitBuffer, bufferSize);
+	std::vector<PxRaycastHit> return_hits;;
+	if (px_scene->raycast(_origin, _unitDir, maxDistance, hit))
+	{
+		for (uint i = 0; i < hit.getNbAnyHits(); ++i)
+		{
+			return_hits.push_back(hit.getAnyHit(i));
+		}
+	}
+
+	return return_hits;
+}
+
+
+const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, float radius) const
 {
 	PxVec3 _center = F3_TO_PXVEC3(center);
 
@@ -345,6 +366,8 @@ const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, 
 
 	return colliders;
 }
+
+// * ----------------------------------------------------------- * //
 
 // character controller ---------------------------------------------------------------
 

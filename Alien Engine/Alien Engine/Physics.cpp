@@ -7,6 +7,11 @@ bool Physics::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycas
 	return App->physx->Raycast(origin, unitDir, maxDistance, hit);
 }
 
+const std::vector<PxRaycastHit> Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
+{
+	return App->physx->RaycastAll(origin, unitDir, maxDistance);
+}
+
 uint Physics::OverlapSphere(float3 center, float radius, ComponentCollider*** colliders)
 {
 	std::vector<ComponentCollider*> _colliders = App->physx->OverlapSphere(center, radius);
