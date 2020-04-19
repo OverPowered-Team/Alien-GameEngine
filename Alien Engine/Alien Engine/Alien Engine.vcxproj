@@ -696,6 +696,7 @@
     <ClInclude Include="Bullet\include\LinearMath\btVector3.h" />
     <ClInclude Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportInterface.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionLayers.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentAnimatedImage.h" />
@@ -1121,6 +1122,7 @@
     <ClCompile Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportPosix.cpp" />
     <ClCompile Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportWin32.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionLayers.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentAnimatedImage.cpp" />

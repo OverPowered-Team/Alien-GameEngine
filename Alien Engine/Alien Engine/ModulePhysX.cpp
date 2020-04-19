@@ -7,10 +7,12 @@
 #include "ComponentPhysics.h"
 #include "ComponentCollider.h"
 #include "ComponentRigidBody.h"
+
 #include "PxPhysicsAPI.h"
 #include "Time.h"
 #include "UtilitiesPhysX.h"
 #include "Optick/include/optick.h"
+#include "CollisionLayers.h"
 
 ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 {
@@ -20,25 +22,6 @@ ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 ModulePhysX::~ModulePhysX()
 {
 }
-
-void ModulePhysX::CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
-{
-	PxShape* shape = px_physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *px_default_material);
-	for (PxU32 i = 0; i < size; i++)
-	{
-		for (PxU32 j = 0; j < size - i; j++)
-		{
-			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-			PxRigidDynamic* body = px_physics->createRigidDynamic(t.transform(localTm));
-			body->attachShape(*shape);
-			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			px_scene->addActor(*body);
-		}
-	}
-	shape->release();
-}
-
-
 
 bool ModulePhysX::Init()
 {
@@ -101,12 +84,7 @@ bool ModulePhysX::Init()
 	if(px_scene)
 		controllers_manager = PxCreateControllerManager(*px_scene);
 
-
-	//for (PxU32 i = 0; i < 5; i++)
-	//	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
-
-	///*if (!interactive)
-	//	createDynamic(PxTransform(PxVec3(0, 40, 100)), PxSphereGeometry(10), PxVec3(0, -50, -100));*/
+	layers.LoadLayers();
 
 	return ret;
 }
@@ -145,7 +123,6 @@ update_status ModulePhysX::PostUpdate(float dt)
 
 bool ModulePhysX::CleanUp()
 {
-
 	PX_RELEASE(px_scene);
 	PX_RELEASE(px_dispatcher);
 	PX_RELEASE(px_physics);
@@ -158,8 +135,18 @@ bool ModulePhysX::CleanUp()
 	PX_RELEASE(px_foundation);
 
 	UnloadPhysicsExplicitely();
+	layers.SaveLayers();
 
 	return true;
+}
+
+void ModulePhysX::SetGravity(float3 gravity)
+{
+}
+
+float3 ModulePhysX::GetGravity()
+{
+	return float3();
 }
 
 
@@ -195,23 +182,6 @@ bool ModulePhysX::LoadPhysicsExplicitely()
 		FreeLibrary(physx_lib);
 		return false;
 	}
-
-	//// get the function pointers
-	//s_PxCreateFoundation_Func = (PxCreateFoundation_FUNC*)GetProcAddress(foundation_lib, "PxCreateFoundation");
-	//s_PxCreatePhysics_Func = (PxCreatePhysics_FUNC*)GetProcAddress(physx_lib, "PxCreateBasePhysics");
-	//s_PxSetPhysXDelayLoadHook_Func = (PxSetPhysXDelayLoadHook_FUNC*)GetProcAddress(physx_lib, "PxSetPhysXDelayLoadHook");
-	//s_PxSetPhysXCommonDelayLoadHook_Func = (PxSetPhysXCommonDelayLoadHook_FUNC*)GetProcAddress(common_lib, "PxSetPhysXCommonDelayLoadHook");
-
-	//s_PxSetPhysXGpuLoadHook_Func = (PxSetPhysXGpuLoadHook_FUNC*)GetProcAddress(physx_lib, "PxSetPhysXGpuLoadHook");
-	//s_PxGetSuggestedCudaDeviceOrdinal_Func = (PxGetSuggestedCudaDeviceOrdinal_FUNC*)GetProcAddress(physx_lib, "PxGetSuggestedCudaDeviceOrdinal");
-	//s_PxCreateCudaContextManager_Func = (PxCreateCudaContextManager_FUNC*)GetProcAddress(physx_lib, "PxCreateCudaContextManager");
-
-	//// check if we have all required function pointers
-	//if (s_PxCreateFoundation_Func == NULL || s_PxCreatePhysics_Func == NULL || s_PxSetPhysXDelayLoadHook_Func == NULL || s_PxSetPhysXCommonDelayLoadHook_Func == NULL)
-	//	return false;
-
-	//if (s_PxSetPhysXGpuLoadHook_Func == NULL || s_PxGetSuggestedCudaDeviceOrdinal_Func == NULL || s_PxCreateCudaContextManager_Func == NULL)
-	//	return false;
 	return true;
 }
 

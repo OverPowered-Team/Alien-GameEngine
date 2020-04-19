@@ -1,0 +1,40 @@
+{
+    "Layers": [
+        {
+            "Layer": "Default"
+        },
+        {
+            "Layer": "Wall"
+        },
+        {
+            "Layer": "Ground"
+        },
+        {
+            "Layer": "Player"
+        }
+    ],
+    "Default": {
+        "Default": true,
+        "Wall": true,
+        "Ground": true,
+        "Player": true
+    },
+    "Wall": {
+        "Default": true,
+        "Wall": true,
+        "Ground": true,
+        "Player": true
+    },
+    "Ground": {
+        "Default": true,
+        "Wall": true,
+        "Ground": true,
+        "Player": true
+    },
+    "Player": {
+        "Default": true,
+        "Wall": true,
+        "Ground": true,
+        "Player": true
+    }
+}

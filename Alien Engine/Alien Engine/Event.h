@@ -19,6 +19,7 @@ enum class EventType
 
 enum class AlienEventType
 {
+	COLLISION_LAYER_REMOVED,
 	SCRIPT_ADDED,
 	SCRIPT_DELETED,
 	RIGIDBODY_ADDED,	
