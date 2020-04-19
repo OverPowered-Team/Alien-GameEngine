@@ -17,9 +17,10 @@ class __declspec(dllexport)  ComponentConvexHullCollider : public ComponentColli
 public:
 
 	ComponentConvexHullCollider(GameObject* go);
-	void SetSize(float3 size);
 
 private:
+
+	void Update();
 
 	void DrawSpecificInspector();
 
@@ -27,8 +28,6 @@ private:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
-	void CreateDefaultShape();
-	void UpdateShape();
 
 	PxShape* CreateConvexMesh(const GameObject* go);
 
@@ -37,5 +36,8 @@ private:
 	ComponentMesh* mesh = nullptr;
 	float3 size = float3::zero();
 
+	int vertex_limit = 64.0f; // default vertex limit
+	float3 prev_scale;
+	bool valid = false;
 
 };
