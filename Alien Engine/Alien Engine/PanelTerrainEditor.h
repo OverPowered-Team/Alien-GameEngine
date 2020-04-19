@@ -2,7 +2,7 @@
 
 
 #include "Panel.h"
-
+#include "ResourceTexture.h"
 
 class PanelTerrainEditor : public Panel {
 
@@ -12,7 +12,7 @@ public:
 	virtual ~PanelTerrainEditor();
 
 	void PanelLogic();
-
+	void SetHeigthMapTexture(ResourceTexture* tex);
 	
 
 private:
@@ -25,6 +25,6 @@ public:
 
 private:
 
-
+	ResourceTexture* heigthmapTexture = nullptr;
 	bool is_focused = false;
 };
