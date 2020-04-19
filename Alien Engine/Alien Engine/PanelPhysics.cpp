@@ -82,11 +82,10 @@ void PanelPhysics::PanelLogic()
 			ImGui::Text(std::string(std::to_string(i) + ".").c_str());
 			separation += 24;
 		}
-		ImGui::NewLine();
+
 		for (int i = 0; i < size; i++)
 		{
-			//ImGui::Title(std::string(std::to_string(i) + ". " + names[i]).c_str());
-		
+			ImGui::Title(std::string(std::to_string(i) + ". " + names[i]).c_str());
 			separation = 150;
 
 			for (int j = size - 1 - i; j >= 0; j--)
@@ -102,7 +101,6 @@ void PanelPhysics::PanelLogic()
 				ImGui::PopID();
 				separation += 24;
 			}
-			ImGui::NewLine();
 		}
 
 	}
