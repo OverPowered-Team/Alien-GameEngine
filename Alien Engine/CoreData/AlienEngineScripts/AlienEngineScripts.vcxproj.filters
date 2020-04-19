@@ -4,13 +4,13 @@
     <ClCompile Include="Macros\dllmain.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerTest.cpp" />
+    <ClCompile Include="TestScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerTest.h" />
+    <ClInclude Include="TestScript.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

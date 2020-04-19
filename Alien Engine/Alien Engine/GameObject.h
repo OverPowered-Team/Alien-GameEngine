@@ -293,6 +293,10 @@ inline Comp* GameObject::GetComponent()
 			}
 		}
 		else {
+			Comp* component = dynamic_cast<Comp*>(components[i]);
+			if (component != nullptr) {
+				return component;
+			}
 			ComponentScript* script = (ComponentScript*)components[i];
 			if (script->need_alien) {
 				Alien* alien = (Alien*)script->data_ptr;
@@ -318,6 +322,10 @@ inline std::vector<Comp*> GameObject::GetComponents()
 			}
 		}
 		else {
+			Comp* component = dynamic_cast<Comp*>(components[i]);
+			if (component != nullptr) {
+				comps.push_back(component);
+			}
 			ComponentScript* script = (ComponentScript*)components[i];
 			if (script->need_alien) {
 				Alien* alien = (Alien*)script->data_ptr;
@@ -356,6 +364,10 @@ inline Comp* GameObject::GetComponentInChildren()
 				}
 			}
 			else {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					return component;
+				}
 				ComponentScript* script = (ComponentScript*)(*it);
 				if (script->need_alien) {
 					Alien* alien = (Alien*)script->data_ptr;
@@ -383,6 +395,10 @@ inline std::vector<Comp*> GameObject::GetComponentsInChildren()
 				}
 			}
 			else {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					comps.push_back(component);
+				}
 				ComponentScript* script = (ComponentScript*)(*it);
 				if (script->need_alien) {
 					Alien* alien = (Alien*)script->data_ptr;
@@ -417,6 +433,10 @@ inline Comp* GameObject::GetComponentInChildrenRecursive()
 				}
 			}
 			else {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					return component;
+				}
 				ComponentScript* script = (ComponentScript*)(*it);
 				if (script->need_alien) {
 					Alien* alien = (Alien*)script->data_ptr;
@@ -456,6 +476,10 @@ inline std::vector<Comp*> GameObject::GetComponentsInChildrenRecursive()
 				}
 			}
 			else {
+				Comp* component = dynamic_cast<Comp*>((*it));
+				if (component != nullptr) {
+					comps.push_back(component);
+				}
 				ComponentScript* script = (ComponentScript*)(*it);
 				if (script->need_alien) {
 					Alien* alien = (Alien*)script->data_ptr;
