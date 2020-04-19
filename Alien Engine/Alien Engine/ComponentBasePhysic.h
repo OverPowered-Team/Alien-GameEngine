@@ -10,6 +10,7 @@ class __declspec(dllexport) ComponentBasePhysic : public Component
 	friend class ModuleObjects;
 	friend class ModulePhysX;
 	friend class GameObject;
+	friend class UserControllerHitReport;
 
 public:
 

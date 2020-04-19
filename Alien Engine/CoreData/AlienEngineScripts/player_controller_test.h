@@ -13,6 +13,11 @@ public:
 	void Start();
 	void Update();
 
+	void OnControllerColliderHit(const ControllerColliderHit& hit);
+
+	void OnCollisionEnter(const Collision& collision);
+	void OnTriggerEnter(ComponentCollider* collider);
+
 public:
 	ComponentCharacterController* ccontroller = nullptr;
 

@@ -65,6 +65,7 @@ bool ModulePhysX::Init()
 	px_scene->setSimulationEventCallback(px_simulation_callback);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+	//px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 1.0f);
 
 
 	PxPvdSceneClient* pvdClient = px_scene->getScenePvdClient();
@@ -126,6 +127,9 @@ bool ModulePhysX::CleanUp()
 	PX_RELEASE(px_scene);
 	PX_RELEASE(px_dispatcher);
 	PX_RELEASE(px_physics);
+	delete px_simulation_callback;
+	px_simulation_callback = nullptr;
+	
 	if (px_pvd)
 	{
 		PxPvdTransport* transport = px_pvd->getTransport();
@@ -272,15 +276,74 @@ PxMaterial* ModulePhysX::CreateMaterial(float staticFriction, float dynamicFrict
 	return px_physics->createMaterial(staticFriction, dynamicFriction, restitution);
 }
 
+// * --------------------- SCENE QUERIES ----------------------- * //
+
+bool ModulePhysX::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit) const
+{
+	PxVec3 _origin = F3_TO_PXVEC3(origin);
+	PxVec3 _unitDir = F3_TO_PXVEC3(unitDir);
+	
+	//PxQueryFilterData _filterData = PxQueryFilterData(PxQueryFlag::eANY_HIT);
+	//return px_scene->raycast(_origin, _unitDir, maxDistance, hit, PxHitFlag::eDEFAULT, _filterData);  // TODO: implement filtering (layermask | queryTriggerInteraction)
+	
+	return px_scene->raycast(_origin, _unitDir, maxDistance, hit);  // TODO: implement filtering (layermask | queryTriggerInteraction)
+}
+
+const std::vector<PxRaycastHit> ModulePhysX::RaycastAll(float3 origin, float3 unitDir, float maxDistance) const
+{
+	PxVec3 _origin = F3_TO_PXVEC3(origin);
+	PxVec3 _unitDir = F3_TO_PXVEC3(unitDir);
+
+	const PxU32 bufferSize = 256;
+	PxRaycastHit hitBuffer[bufferSize];
+	PxRaycastBuffer hit(hitBuffer, bufferSize);
+	std::vector<PxRaycastHit> return_hits;;
+	if (px_scene->raycast(_origin, _unitDir, maxDistance, hit))
+	{
+		for (uint i = 0; i < hit.getNbAnyHits(); ++i)
+		{
+			return_hits.push_back(hit.getAnyHit(i));
+		}
+	}
+
+	return return_hits;
+}
+
+
+const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, float radius) const
+{
+	PxVec3 _center = F3_TO_PXVEC3(center);
+
+	PxSphereGeometry sphere = PxSphereGeometry(radius);
+	PxTransform shapePose = PxTransform(F3_TO_PXVEC3(center));
+
+	std::vector<ComponentCollider*> colliders;
+	
+	const PxU32 bufferSize = 256;
+	PxOverlapHit hitBuffer[bufferSize];
+	PxOverlapBuffer hit(hitBuffer, bufferSize);
+	// filter data any  (without user buffer)
+	//PxQueryFilterData filterData = PxQueryFilterData(PxQueryFlag::eNO_BLOCK);
+	if (px_scene->overlap(PxSphereGeometry(radius), shapePose, hit)) // TODO: implement filtering (layermask | queryTriggerInteraction)
+	{
+		for (uint i = 0; i < hit.getNbAnyHits(); ++i) // TODO: change this to get only touched shapes by explicit filtering | any if no filtering
+		{
+			ComponentCollider* col = (ComponentCollider*)hit.getAnyHit(i).shape->userData; // user data must be set to component colliders in any shape that physx create
+			if (col) 
+				colliders.push_back(col);
+		}
+	}
+
+	return colliders;
+}
+
+// * ----------------------------------------------------------- * //
+
 // character controller ---------------------------------------------------------------
 
 PxController* ModulePhysX::CreateCharacterController(PxControllerDesc& desc)
 {
-	//return controllers_manager ? controllers_manager->createController(desc) : nullptr;
-	PxController* ret = nullptr;
-	ret = controllers_manager->createController(desc);
-
-	return ret;
+	return controllers_manager ? controllers_manager->createController(desc) : nullptr;
 }
 
 uint ModulePhysX::GetNbControllers() const

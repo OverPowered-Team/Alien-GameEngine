@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="col_test.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Instatiate.h" />
     <ClInclude Include="NilfgaardSoldier.h" />
@@ -185,10 +186,12 @@
     <ClInclude Include="MoreEventsClass.h" />
     <ClInclude Include="TestSwitches.h" />
     <ClInclude Include="TriggerCamera.h" />
+    <ClInclude Include="trigTest.h" />
     <ClInclude Include="UI_Char_Frame.h" />
     <ClInclude Include="UltiBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="col_test.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Instatiate.cpp" />
     <ClCompile Include="NilfgaardSoldier.cpp" />
@@ -203,6 +206,7 @@
     <ClCompile Include="MoreEventsClass.cpp" />
     <ClCompile Include="TestSwitches.cpp" />
     <ClCompile Include="TriggerCamera.cpp" />
+    <ClCompile Include="trigTest.cpp" />
     <ClCompile Include="UI_Char_Frame.cpp" />
     <ClCompile Include="UltiBar.cpp" />
   </ItemGroup>

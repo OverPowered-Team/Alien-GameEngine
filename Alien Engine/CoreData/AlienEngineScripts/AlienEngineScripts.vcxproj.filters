@@ -33,6 +33,8 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Instatiate.cpp" />
     <ClCompile Include="player_controller_test.cpp" />
+    <ClCompile Include="col_test.cpp" />
+    <ClCompile Include="trigTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -67,6 +69,8 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Instatiate.h" />
     <ClInclude Include="player_controller_test.h" />
+    <ClInclude Include="col_test.h" />
+    <ClInclude Include="trigTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

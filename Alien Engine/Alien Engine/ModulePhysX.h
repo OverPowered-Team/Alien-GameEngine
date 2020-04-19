@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Module.h"
-#include "PxPhysicsAPI.h"
+//#include "PxPhysicsAPI.h"
 #include "UtilitiesPhysX.h"
 #include <wtypes.h>
 #include "CollisionLayers.h"
@@ -33,6 +33,11 @@ public:
 
 	// material
 	PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution) const;
+
+	//* ---------- SCENE QUERIES ------------*//
+	bool Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit) const; // TODO: make own pxraycastbuffer data to abstract from physx
+	const std::vector<PxRaycastHit> RaycastAll(float3 origin, float3 unitDir, float maxDistance) const;
+	const std::vector<ComponentCollider*> OverlapSphere(float3 center, float radius) const;
 
 private:
 

@@ -78,6 +78,7 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class ModulePhysics;
 	friend class ComponentCollider;
 	friend class GameObject;
+	friend class ComponentCharacterController;
 public:
 	ComponentScript(GameObject* attach);
 	virtual ~ComponentScript();

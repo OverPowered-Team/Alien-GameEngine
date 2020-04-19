@@ -91,7 +91,7 @@ public:
 	void onWake(physx::PxActor** actors, physx::PxU32 count) {}
 	void onSleep(physx::PxActor** actors, physx::PxU32 count) {}
 
-	char* oncollision_names[3] = { "OnCollisionEnter()", "OnCollisionStay()", "OnCollisonExit()" };
-	char* ontrigger_names[3] = { "OnTriggerEnter()", "OnTriggerStay()", "OnTriggerExit()" };
+	const char* oncollision_names[3] = { "OnCollisionEnter()", "OnCollisionStay()", "OnCollisonExit()" };
+	const char* ontrigger_names[3] = { "OnTriggerEnter()", "OnTriggerStay()", "OnTriggerExit()" };
 };
 
