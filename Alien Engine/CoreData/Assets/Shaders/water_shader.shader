@@ -140,6 +140,9 @@ uniform DirectionalLight dir_light[MAX_LIGHTS_PER_TYPE];
 uniform PointLight point_light[MAX_LIGHTS_PER_TYPE];
 uniform SpotLight spot_light[MAX_LIGHTS_PER_TYPE];
 
+uniform sampler2D reflection_texture;
+uniform sampler2D refraction_texture;
+
 // Ins
 in vec2 texCoords;
 in vec3 frag_pos;
@@ -192,13 +195,20 @@ void main()
     for(int i = 0; i < max_lights.z; i++)
         result += CalculateSpotLight(spot_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);   
 
+    // Reflection and refraction
+
+    vec4 reflection_colour = texture(reflection_texture, texCoords);
+    vec4 refraction_colour = texture(refraction_texture, texCoords);
+
+    FragColor = mix(reflection_colour, refraction_colour, 0.5);
+
     // ----------------------------------------------------------
 
-    FragColor = vec4(result, 1.0) * objectColor;
+    //FragColor = vec4(result, 1.0) * objectColor;
 
     if(activeFog == true)
     {
-        FragColor = mix(vec4(backgroundColor, 1.0), FragColor, visibility);
+        //FragColor = mix(vec4(backgroundColor, 1.0), FragColor, visibility);
     }
 }
 

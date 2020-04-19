@@ -264,8 +264,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			/* Reflection */
 			wfbos->BindReflectionFrameBuffer();
 			{
-				float distance = 2 * (viewport->GetCamera()->GetCameraPosition().y - 0.0f);
-				ComponentCamera* c_cam = viewport->GetCamera();
+				float distance = 2 * (App->renderer3D->actual_game_camera->GetCameraPosition().y - 0.0f);
+				ComponentCamera* c_cam = App->renderer3D->actual_game_camera;
 				float c_pos_y = c_cam->GetCameraPosition().y;
 				c_pos_y -= distance;
 				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
