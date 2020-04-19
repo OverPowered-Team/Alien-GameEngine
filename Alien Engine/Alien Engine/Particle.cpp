@@ -320,6 +320,11 @@ void Particle::Orientate(ComponentCamera* camera)
 
 		break;
 
+	case BillboardType::VELOCITY:
+		particleInfo.rotation = Billboard::AlignToVelocity(camera, particleInfo.position, particleInfo.velocity);
+
+		break;
+
 	case BillboardType::NONE:
 		particleInfo.rotation = Quat::identity();
 		break;
