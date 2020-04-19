@@ -23,12 +23,28 @@ Quat Billboard::AlignToAxis(ComponentCamera* camera, float3 position, float3 axi
 {
 	// TODO:: Maybe find another way to handle this && take other axis into account
 	float3 front = (camera->GetCameraPosition() - position).Normalized();
-
 	float3 up = float3::unitY();
 	float3 right = up.Cross(front);
 	front = right.Cross(up);
 
 	float3x3 rot = float3x3(right, up, front);
+	return rot.ToQuat();
+}
+
+Quat Billboard::AlignToVelocity(ComponentCamera* camera, float3 position, float3 velocity)
+{
+	float3 vz = (camera->GetCameraPosition() - position).Normalized();
+	//vz.Normalized();
+
+	velocity.Normalized();
+	float3 vx = velocity.Cross(vz);
+	vx.Normalized();
+
+	float3 vy = vz.Cross(vx);
+
+	//float4x4 rot2 = float4x4(float4(vy, 0.0f), float4(vx, 0.0f), float4(vz, 0.0f), float4(position, 1.0f));
+	float3x3 rot = float3x3(vx, vy, vz);
+	
 	return rot.ToQuat();
 }
 

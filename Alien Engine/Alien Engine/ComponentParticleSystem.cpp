@@ -425,7 +425,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 			ImGui::Text("Orientation Mode ");
 			ImGui::SameLine(200, 15);
-			if (ImGui::Combo("Billboard", &bbTypeSelected, "Screen Aligned\0World Aligned\0Axially Aligned\0None\0\0"))
+			if (ImGui::Combo("Billboard", &bbTypeSelected, "Screen Aligned\0World Aligned\0Axially Aligned\0Velocity Aligned\0None\0\0"))
 			{
 				particleSystem->SetBillboardType((BillboardType)bbTypeSelected);
 			}
