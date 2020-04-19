@@ -107,11 +107,11 @@ void CollisionLayers::SetLayers(int index_0, int index_1, bool to_change)
 {
 	bool value = !to_change;
 	Layer* layer_0 = GetLayer(names[index_0]);
-	//Layer* layer_1 = GetLayer(names[index_1]);
+	Layer* layer_1 = GetLayer(names[index_1]);
 	layer_0->Set(names[index_1], value);
-	//layer_1->Set(names[index_0], value);
+	layer_1->Set(names[index_0], value);
 	data[index_0][index_1] = value;
-	//data[index_1][index_0] = value;
+	data[index_1][index_0] = value;
 }
 
 void CollisionLayers::LoadLayers()

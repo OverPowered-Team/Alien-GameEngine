@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "ReturnZ.h"
 #include "Time.h"
+#include "Event.h"
 
 ContactPoint::ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider) :
 	normal(normal), point(point), separation(separation), this_collider(this_collider), other_collider(other_collider) {}
@@ -253,6 +254,18 @@ void ComponentCollider::DrawLayersCombo()
 
 void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
+	switch (e.type)
+	{
+	case AlienEventType::SCALE_CHANGED: {
+		e;
+		break;} 
+	case AlienEventType::COLLISION_LAYER_STATE_CHANGED: {
+
+		break; }
+	case AlienEventType::COLLISION_LAYER_REMOVED: {
+
+		break; }
+	}
 }
 
 void ComponentCollider::InitCollider()

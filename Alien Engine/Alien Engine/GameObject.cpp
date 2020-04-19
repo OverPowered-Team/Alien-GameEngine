@@ -1399,6 +1399,41 @@ void GameObject::ReTag(const char* from, const char* to)
 	}
 }
 
+void GameObject::SendAlienEventHierarchy(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+	std::stack<GameObject*> go_stack;
+	go_stack.push(this);
+
+	while (!go_stack.empty())
+	{
+		GameObject* go = go_stack.top();
+		go_stack.pop();
+
+		for (Component* component : go->components)
+		{
+			if (component)
+				component->HandleAlienEvent(alien_event);
+		}
+
+		for (GameObject* child : go->children)
+		{
+			go_stack.push(child);
+		}
+	}
+}
+
+void GameObject::SendAlienEventAll(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+	App->objects->HandleAlienEvent(alien_event);
+}
+
+
 GameObject* GameObject::GetGameObjectByID(const u64 & id)
 {
 	GameObject* ret = nullptr;

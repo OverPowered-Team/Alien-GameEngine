@@ -7,6 +7,7 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "JSONfilepack.h"
 #include <map>
+#include "Event.h"
 
 enum class ResourceType;
 class Resource;
@@ -278,6 +279,12 @@ private:
 	void SayChildrenParentIsSelected(const bool& selected);
 
 	void ReTag(const char* from, const char* to);
+
+
+	// Events 
+
+	void SendAlienEventHierarchy(void* object, AlienEventType type);
+	void SendAlienEventAll(void* object, AlienEventType type);
 
 public:
 
