@@ -112,7 +112,7 @@ public:
 	float4 color = float4::one;
 
 	bool textureActivated = true;
-	u64 texturesID[(uint)TextureType::MAX];
+	std::pair<u64, ResourceTexture*> textures[(uint)TextureType::MAX];
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;
