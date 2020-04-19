@@ -94,13 +94,16 @@ void ComponentCollider::SetCollisionLayer(std::string layer)
 {
 	int index = 0;
 	if (!physics->layers->GetIndexByName(layer, index)) return;
-
+	layer_num = index;
+	layer_name = layer;
 	BeginUpdateShape();
 	PxFilterData filter_data;
 	filter_data.word0 = index;
 	filter_data.word1 = game_object_attached->ID;
 	shape->setSimulationFilterData(filter_data);
 	EndUpdateShape();
+
+	physics->WakeUp();
 }
 
 std::string ComponentCollider::GetCollisionLayer()
@@ -156,7 +159,7 @@ void ComponentCollider::OnDisable()
 
 void ComponentCollider::DrawScene()
 {
-	if (enabled == true && game_object_attached->IsSelected() && App->physics->debug_physics == false)
+	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics ))
 	{
 		App->physx->DrawCollider(this);
 	}

@@ -82,22 +82,27 @@ void PanelPhysics::PanelLogic()
 			ImGui::Text(std::string(std::to_string(i) + ".").c_str());
 			separation += 24;
 		}
-
-		for (int i = 0; i < size; ++i)
+		ImGui::NewLine();
+		for (int i = 0; i < size; i++)
 		{
-			ImGui::Title(std::string(std::to_string(i) + ". " + names[i]).c_str());
+			//ImGui::Title(std::string(std::to_string(i) + ". " + names[i]).c_str());
+		
 			separation = 150;
 
-			for (int j = size - 1 - i; j >= 0; --j)
+			for (int j = size - 1 - i; j >= 0; j--)
 			{
 				bool value = collision_layers.data[i][j];
 				ImGui::SameLine(separation);
-
-				if (ImGui::Checkbox(("##" + std::to_string(i) + std::to_string(j)).c_str() , &value))
+				ImGui::PushID(&collision_layers.data[i][j]);
+				if (ImGui::Checkbox(("##" + std::to_string(i) + std::to_string(j)).c_str(), &value))
+				{
 					collision_layers.SetLayers(i, j, collision_layers.data[i][j]);
-
+				}
+					
+				ImGui::PopID();
 				separation += 24;
 			}
+			ImGui::NewLine();
 		}
 
 	}

@@ -2,6 +2,7 @@
 #include "ComponentPhysics.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentTransform.h"
+#include "ComponentMesh.h"
 #include "ModulePhysics.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
@@ -23,6 +24,13 @@ void ComponentBoxCollider::SetSize(const float3 value)
 	BeginUpdateShape();
 	shape->setGeometry(geo);
 	EndUpdateShape();
+}
+
+void ComponentBoxCollider::QueryMesh(ComponentMesh* mesh)
+{
+	if (mesh == nullptr) return;
+	SetSize(mesh->local_aabb.Size());
+	SetCenter(mesh->local_aabb.CenterPoint());
 }
 
 void ComponentBoxCollider::DrawSpecificInspector()

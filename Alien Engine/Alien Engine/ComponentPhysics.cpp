@@ -314,6 +314,19 @@ void ComponentPhysics::UpdatePositioning()
 	}
 }
 
+void ComponentPhysics::WakeUp()
+{
+	if (IsDynamic())
+		actor->is<PxRigidDynamic>()->wakeUp();
+}
+
+void ComponentPhysics::PutToSleep()
+{
+	if (IsDynamic())
+		actor->is<PxRigidDynamic>()->putToSleep();
+}
+
+
 bool ComponentPhysics::HasEnabledColliders()
 {
 	for (ComponentCollider* collider : colliders)
@@ -343,3 +356,4 @@ bool ComponentPhysics::ShapeAttached(PxShape* shape)
 
 bool ComponentPhysics::IsDynamic() { return state == PhysicState::DYNAMIC; }
 bool ComponentPhysics::IsKinematic() { return state == PhysicState::DYNAMIC && rigid_body->is_kinematic; }
+

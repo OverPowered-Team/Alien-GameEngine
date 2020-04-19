@@ -9,6 +9,7 @@
 
 class GameObject;
 class ComponentRigidBody;
+class ComponentMesh;
 class ComponentVehicle;
 class ComponentTransform;
 class ComponentPhysics;
@@ -35,6 +36,8 @@ public:
 	virtual ~ComponentCollider();
 
 	// Colliders values
+
+	virtual void QueryMesh(ComponentMesh* mesh) {}
 	virtual void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
 	virtual void SetRotation(const float3& value);
@@ -47,6 +50,7 @@ public:
 	float GetFriction() { return friction; }
 	void SetAngularFriction(const float v);
 	float GetAngularFriction() { return angular_friction; }
+
 	void SetCollisionLayer(std::string layer);
 	std::string GetCollisionLayer();
 

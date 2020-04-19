@@ -49,6 +49,8 @@ private:
 	
 	void GizmoManipulation();
 	void UpdatePositioning();
+	void WakeUp();
+	void PutToSleep();
 
 	void UpdateBody();
 	bool CheckChangeState();
@@ -57,6 +59,8 @@ private:
 	bool ShapeAttached(PxShape* shape);
 	bool IsDynamic();
 	bool IsKinematic();
+
+
 
 protected:
 

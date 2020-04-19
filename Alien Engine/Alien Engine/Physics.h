@@ -19,7 +19,7 @@ public:
 	//static void FreeArray(ComponentCollider*** comp_array);
 
 	static bool Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit); // TODO: make own pxraycastbuffer data to abstract from physx
-	static const std::vector<PxRaycastHit> RaycastAll(float3 origin, float3 unitDir, float maxDistance);
+	static const std::vector<PxRaycastHit>& RaycastAll(float3 origin, float3 unitDir, float maxDistance);
 	static uint OverlapSphere(float3 center, float radius, ComponentCollider*** colliders);
-	//static const std::vector<ComponentCollider*> OverlapSphere(float3 center, float radius);
+	static const std::vector<ComponentCollider*>& OverlapSphere(float3 center, float radius);
 };

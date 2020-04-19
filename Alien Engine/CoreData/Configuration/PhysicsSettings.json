@@ -17,7 +17,7 @@
         "Default": true,
         "Wall": true,
         "Ground": true,
-        "Player": false
+        "Player": true
     },
     "Wall": {
         "Default": true,
