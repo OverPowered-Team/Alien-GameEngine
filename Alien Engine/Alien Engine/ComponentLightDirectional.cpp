@@ -34,7 +34,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	glGenTextures(1, &light_props.depthMap);
 	glBindTexture(GL_TEXTURE_2D, light_props.depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		1024,1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -64,7 +64,7 @@ ComponentLightDirectional::~ComponentLightDirectional()
 void ComponentLightDirectional::PostUpdate()
 {
 	glm::mat4 viewMatix = glm::lookAt(glm::vec3(light_props.position.x, light_props.position.y, light_props.position.z),
-		glm::vec3(light_props.position.x + light_props.direction.x, light_props.position.y + light_props.direction.y, light_props.position.z + light_props.direction.z),
+		glm::vec3(light_props.position.x - light_props.direction.x, light_props.position.y - light_props.direction.y, light_props.position.z - light_props.direction.z),
 		glm::vec3(0, 1, 0));
 
 	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
@@ -236,15 +236,15 @@ void ComponentLightDirectional::DrawLightFrustrum()
 	if (this->game_object_attached->IsSelected())
 	{
 		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, sizefrustrum, 0), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, sizefrustrum, 0), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane/2), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
 
-		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
-		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane / 2), Color::Green(), 2.0);
 
 		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0)), (light_props.position + float3(sizefrustrum, sizefrustrum, 0)), Color::Green(), 2.0);
 		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0)), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0)), Color::Green(), 2.0);

@@ -318,25 +318,23 @@ update_status ModuleObjects::PostUpdate(float dt)
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
 				}
-				//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
 			if (!light_view)
 			{
 				glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
 				glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-				for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
-				{			
-					for (; it != to_draw.end(); ++it) {
-						if ((*it).second != nullptr) {
-							if (printing_scene)
-								(*it).second->DrawScene(viewport->GetCamera(), viewport->GetCamera()->GetViewMatrix4x4(),
-									viewport->GetCamera()->GetProjectionMatrix4f4(), (*iter)->position);
-							else
-								(*it).second->DrawGame(viewport->GetCamera());
-						}
+							
+				for (; it != to_draw.end(); ++it) {
+					if ((*it).second != nullptr) {
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera(), viewport->GetCamera()->GetViewMatrix4x4(),
+								viewport->GetCamera()->GetProjectionMatrix4f4(), viewport->GetCamera()->GetCameraPosition());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
 					}
 				}
+			
 			}
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
 			if (!printing_scene) {
