@@ -12,6 +12,7 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
 	
+	size = GetLocalMeshAabb();
 	float3 dimensions = CalculateSize();
 	shape = App->physx->CreateShape(PxBoxGeometry(dimensions.x, dimensions.y, dimensions.z));
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
@@ -41,13 +42,11 @@ PxShape* ComponentBoxCollider::ReCreateBoxShape()
 
 const float3 ComponentBoxCollider::CalculateSize()
 {
-	// get mesh
-	ComponentMesh* mesh = game_object_attached->GetComponent<ComponentMesh>();
+	const ComponentMesh* mesh = GetMesh();
 	if (!mesh)
 		return float3::one();
 
-	// set current scale
-	return (mesh->GetGlobalAABB().Size() * 0.5f).Mul(size);
+	return size.Mul(transform->GetGlobalScale()) * 0.5f;
 }
 
 void ComponentBoxCollider::DrawSpecificInspector()
@@ -72,7 +71,7 @@ void ComponentBoxCollider::Clone(Component* clone)
 void ComponentBoxCollider::Reset()
 {
 	ComponentCollider::Reset();
-	size = float3::one();
+	size = GetLocalMeshAabb();
 	ReCreateBoxShape();
 }
 
@@ -86,5 +85,13 @@ void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
 	size = to_load->GetFloat3("Size");
+	ReCreateBoxShape();
+}
+
+// * --------- ACCESS THROUGH SCRIPTING ----------* //
+
+void ComponentBoxCollider::SetSize(float3 size)
+{
+	this->size = size;
 	ReCreateBoxShape();
 }

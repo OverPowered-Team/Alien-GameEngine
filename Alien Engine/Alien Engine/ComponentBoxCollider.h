@@ -18,14 +18,13 @@ public:
 	ComponentBoxCollider(GameObject* go);
 
 	//void QueryMesh(ComponentMesh* mesh);
-	//void SetSize(const float3 size);
-	//float3 GetSize() { return size; }
+	void SetSize(const float3 size);
+	const float3 GetSize() const { return size; }
 
-	PxShape* ReCreateBoxShape();
 
+protected:
 	// virtual call
 	void ScaleChanged();
-
 private:
 
 	void DrawSpecificInspector();
@@ -35,6 +34,7 @@ private:
 	void Reset();
 
 	const float3 CalculateSize();
+	PxShape* ReCreateBoxShape();
 
 private:
 

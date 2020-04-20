@@ -169,6 +169,7 @@ void ComponentCollider::DrawScene()
 void ComponentCollider::Reset()
 {
 	SetCenter(float3::zero());
+	SetRotation(float3::zero());
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
@@ -282,4 +283,18 @@ void ComponentCollider::BeginUpdateShape()
 void ComponentCollider::EndUpdateShape()
 {
 	physics->AttachCollider(this, true);
+}
+
+const float3 ComponentCollider::GetLocalMeshAabb() const
+{
+	const ComponentMesh* mesh = GetMesh();
+	if (!mesh)
+		return float3::one();
+
+	return mesh->GetLocalAABB().Size();
+}
+
+const ComponentMesh* ComponentCollider::GetMesh() const
+{
+	return game_object_attached->GetComponent<ComponentMesh>();
 }

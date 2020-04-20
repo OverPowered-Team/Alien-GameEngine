@@ -60,6 +60,10 @@ protected:
 	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER ); }
 	inline void BeginUpdateShape();
 	inline void EndUpdateShape();
+
+	const float3 GetLocalMeshAabb() const;
+	const ComponentMesh* GetMesh() const;
+
 	
 
 	void OnEnable();
