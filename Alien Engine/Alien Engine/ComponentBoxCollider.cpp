@@ -56,8 +56,9 @@ void ComponentBoxCollider::DrawSpecificInspector()
 void ComponentBoxCollider::Clone(Component* clone)
 {
 	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
-	center = box_clone->GetCenter();
-	size = box_clone->CalculateSize();
+	box_clone->center = center;
+	box_clone->size = size;
+	box_clone->ReCreateBoxShape();
 }
 
 void ComponentBoxCollider::Reset()

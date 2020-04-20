@@ -2,7 +2,6 @@
 
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
 class ModulePhysics;
@@ -20,12 +19,9 @@ public:
 	void SetSize(const float3 size);
 	const float3 GetSize() const { return size; }
 
+private :
 
-protected:
-	// virtual call
 	void ScaleChanged();
-private:
-
 	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);

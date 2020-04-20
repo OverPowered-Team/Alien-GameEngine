@@ -58,18 +58,16 @@ protected:
 
 	void InitCollider();
 	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER); }
-	inline void BeginUpdateShape();
-	inline void EndUpdateShape();
+	inline void BeginUpdateShape(bool force_update = false);
+	inline void EndUpdateShape(bool force_update = false);
 
 	const float3 GetLocalMeshAabbSize() const;
 	const AABB GetLocalMeshAabb() const;
 	const ComponentMesh* GetMesh() const;
 
-
-
 	void OnEnable();
 	void OnDisable();
-	void Update();
+	virtual void Update();
 
 	bool DrawInspector();
 	void DrawLayersCombo();
@@ -82,11 +80,10 @@ protected:
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
-
 	virtual void ScaleChanged() {};
 
 protected:
-
+	bool force_update = false;
 	std::string layer_name = "Default";
 	int layer_num = 0;
 
@@ -119,7 +116,7 @@ public:
 
 	Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts, uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity);
 
-	ComponentCollider* collider = nullptr;
+	ComponentCollider*	collider = nullptr;
 	ComponentRigidBody* rigid_body = nullptr;
 	ComponentTransform* transform = nullptr;
 	std::vector<ContactPoint>	contancts;

@@ -37,7 +37,7 @@ private:
 	void HandleAlienEvent(const AlienEvent& e);
 
 	void AttachCollider(ComponentCollider* collider, bool to_update = false);    // To Update if is only a removement 
-	void DettachColldier(ComponentCollider* collider, bool to_update = false);	 // to update the shape
+	void DettachCollider(ComponentCollider* collider, bool to_update = false);	 // to update the shape
 	bool AddCollider(ComponentCollider* collider);     
 	bool RemoveCollider(ComponentCollider* collider);	
  	bool FindCollider( ComponentCollider* collider);

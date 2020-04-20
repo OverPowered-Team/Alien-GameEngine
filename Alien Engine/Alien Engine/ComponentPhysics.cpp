@@ -48,6 +48,7 @@ void ComponentPhysics::Update()
 void ComponentPhysics::PostUpdate()
 {
 	float3 current_scale = GetValidPhysicScale();
+
 	if (!scale.Equals(current_scale)) {
 		scale = current_scale;
 		go->SendAlientEventThis(this, AlienEventType::PHYSICS_SCALE_CHANGED);
@@ -81,7 +82,7 @@ void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 		break; }
 	case AlienEventType::COLLIDER_DISABLED: {
 		ComponentCollider* object = (ComponentCollider*)e.object;
-		DettachColldier(object);
+		DettachCollider(object);
 		break; }
 	case AlienEventType::RIGIDBODY_ADDED: {
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
@@ -163,7 +164,7 @@ void ComponentPhysics::AttachCollider(ComponentCollider* collider, bool only_upd
 	}
 }
 
-void ComponentPhysics::DettachColldier(ComponentCollider* collider, bool only_update)
+void ComponentPhysics::DettachCollider(ComponentCollider* collider, bool only_update)
 {
 	bool do_dettach = false;
 
@@ -211,7 +212,7 @@ bool ComponentPhysics::RemoveCollider(ComponentCollider* collider)
 		if (CheckChangeState()) UpdateBody();
 		else
 		{
-			DettachColldier(collider, true);
+			DettachCollider(collider, true);
 		}
 		return true;
 	}

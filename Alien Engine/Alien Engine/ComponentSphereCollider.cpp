@@ -50,11 +50,9 @@ void ComponentSphereCollider::ScaleChanged()
 	RecreateSphereShape();
 }
 
-
 void ComponentSphereCollider::DrawSpecificInspector()
 {
 	ImGui::Title("Radius", 1);	if (ImGui::DragFloat("##radius", &radius, 0.01f, 0.01f, FLT_MAX)) { RecreateSphereShape(); }
-
 }
 
 void ComponentSphereCollider::Reset()

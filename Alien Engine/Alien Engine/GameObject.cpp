@@ -1958,7 +1958,26 @@ void GameObject::CloningGameObject(GameObject* clone)
 						break; }
 					}
 					break; }
-
+				case ComponentType::BOX_COLLIDER: {
+					ComponentBoxCollider* collider = new ComponentBoxCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::SPHERE_COLLIDER: {
+					ComponentSphereCollider* collider = new ComponentSphereCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::CAPSULE_COLLIDER: {
+					ComponentCapsuleCollider* collider = new ComponentCapsuleCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::CONVEX_HULL_COLLIDER: {
+					ComponentConvexHullCollider* collider = new ComponentConvexHullCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;

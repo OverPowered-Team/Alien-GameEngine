@@ -85,7 +85,7 @@ void player_controller_test::OnControllerColliderHit(const ControllerColliderHit
 	{
 		// this script pushes all rigidbodies that the character touches
 
-		LOG_ENGINE("Hit with object %s", hit.collider->game_object_attached->GetName());
+		//LOG_ENGINE("Hit with object %s", hit.collider->game_object_attached->GetName());
 
 		ComponentRigidBody* body = hit.rigidbody;
 		float pushPower = 20.0f;
@@ -101,7 +101,17 @@ void player_controller_test::OnControllerColliderHit(const ControllerColliderHit
 
 void player_controller_test::OnCollisionEnter(const Collision& collision)
 {
-	LOG_ENGINE("OnCollisionEnter with object %s", collision.game_object->GetName());
+	LOG_ENGINE("ENTER with object %s", collision.game_object->GetName());
+}
+
+void player_controller_test::OnCollisionStay(const Collision& collision)
+{
+	LOG_ENGINE("STAY with object %s", collision.game_object->GetName());
+}
+
+void player_controller_test::OnCollisionExit(const Collision& collision)
+{
+	LOG_ENGINE("EXIT with object %s", collision.game_object->GetName());
 }
 
 void player_controller_test::OnTriggerEnter(ComponentCollider* collider)
