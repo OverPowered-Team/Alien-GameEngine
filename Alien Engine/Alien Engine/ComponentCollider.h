@@ -37,7 +37,7 @@ public:
 
 	// Colliders values
 
-	virtual void QueryMesh(ComponentMesh* mesh) {};
+	//virtual void QueryMesh(ComponentMesh* mesh) {};
 	virtual void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
 	virtual void SetRotation(const float3& value);
@@ -57,14 +57,19 @@ public:
 protected:
 
 	void InitCollider();
-	void BeginUpdateShape(bool force_update = false);
-	void EndUpdateShape(bool force_update = false);
-	bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER); }
+	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER); }
+	inline void BeginUpdateShape();
+	inline void EndUpdateShape();
+
+	const float3 GetLocalMeshAabbSize() const;
+	const AABB GetLocalMeshAabb() const;
+	const ComponentMesh* GetMesh() const;
+
+
 
 	void OnEnable();
 	void OnDisable();
-	virtual void Update() {}
-	virtual void PostUpdate() {}
+	void Update();
 
 	bool DrawInspector();
 	void DrawLayersCombo();
@@ -77,11 +82,11 @@ protected:
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
+
 	virtual void ScaleChanged() {};
 
 protected:
 
-	bool force_update = false;
 	std::string layer_name = "Default";
 	int layer_num = 0;
 
@@ -112,14 +117,14 @@ class Collision
 {
 public:
 
-	Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body,ComponentTransform* transform, const std::vector<ContactPoint>& contancts, uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity);
+	Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts, uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity);
 
-	ComponentCollider*			collider = nullptr;
-	ComponentRigidBody*			rigid_body = nullptr;
-	ComponentTransform*			transform = nullptr;
+	ComponentCollider* collider = nullptr;
+	ComponentRigidBody* rigid_body = nullptr;
+	ComponentTransform* transform = nullptr;
 	std::vector<ContactPoint>	contancts;
 	uint						num_contact = 0u;
-	GameObject*					game_object = nullptr;
+	GameObject* game_object = nullptr;
 	float3                      impulse = float3(0.f, 0.f, 0.f);
 	float3                      relative_velocity = float3(0.f, 0.f, 0.f);
 
