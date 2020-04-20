@@ -61,7 +61,8 @@ protected:
 	inline void BeginUpdateShape();
 	inline void EndUpdateShape();
 
-	const float3 GetLocalMeshAabb() const;
+	const float3 GetLocalMeshAabbSize() const;
+	const AABB GetLocalMeshAabb() const;
 	const ComponentMesh* GetMesh() const;
 
 	

@@ -12,7 +12,7 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
 	
-	size = GetLocalMeshAabb();
+	size = GetLocalMeshAabbSize();
 	float3 dimensions = CalculateSize();
 	shape = App->physx->CreateShape(PxBoxGeometry(dimensions.x, dimensions.y, dimensions.z));
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
@@ -42,10 +42,6 @@ PxShape* ComponentBoxCollider::ReCreateBoxShape()
 
 const float3 ComponentBoxCollider::CalculateSize()
 {
-	const ComponentMesh* mesh = GetMesh();
-	if (!mesh)
-		return float3::one();
-
 	return size.Mul(transform->GetGlobalScale()) * 0.5f;
 }
 
@@ -55,10 +51,6 @@ void ComponentBoxCollider::DrawSpecificInspector()
 	if (ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
 		ReCreateBoxShape();
 	};
-	if (ImGui::Button("Fit"))
-	{
-		Reset();
-	}
 }
 
 void ComponentBoxCollider::Clone(Component* clone)
@@ -71,7 +63,7 @@ void ComponentBoxCollider::Clone(Component* clone)
 void ComponentBoxCollider::Reset()
 {
 	ComponentCollider::Reset();
-	size = GetLocalMeshAabb();
+	size = GetLocalMeshAabbSize();
 	ReCreateBoxShape();
 }
 

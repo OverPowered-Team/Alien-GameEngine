@@ -22,11 +22,20 @@ public:
 	/*virtual void QueryMesh(ComponentMesh* mesh) override;*/
 	void SetRadius(float radius);
 
+protected:
+
+	void ScaleChanged();
+
 private:
 
-	void DrawSpecificInspector();;
+	void InitializeRadius();
+	const float CalculateRadius();
+	PxShape* RecreateSphereShape();
+
+	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
+	void Reset();
 
 private:
 

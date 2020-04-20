@@ -211,6 +211,13 @@ bool ComponentCollider::DrawInspector()
 
 		DrawSpecificInspector();
 
+		//ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() * 0.5f - 30);
+		ImGui::SetCursorPosX(12.0f);
+		if(ImGui::Button("fit", ImVec2(60.0f, 22.0f)))
+		{
+			Reset();
+		}
+
 		ImGui::Spacing();
 		ImGui::Spacing();
 		ImGui::Title("Is Trigger", 1);		if (ImGui::Checkbox("##is_trigger", &current_is_trigger)) { SetIsTrigger(current_is_trigger); }
@@ -285,13 +292,22 @@ void ComponentCollider::EndUpdateShape()
 	physics->AttachCollider(this, true);
 }
 
-const float3 ComponentCollider::GetLocalMeshAabb() const
+const float3 ComponentCollider::GetLocalMeshAabbSize() const
 {
 	const ComponentMesh* mesh = GetMesh();
 	if (!mesh)
 		return float3::one();
 
 	return mesh->GetLocalAABB().Size();
+}
+
+const AABB ComponentCollider::GetLocalMeshAabb() const
+{
+	const ComponentMesh* mesh = GetMesh();
+	if (!mesh)
+		AABB(Sphere(float3::zero(), 0.5f));
+
+	return mesh->GetLocalAABB();
 }
 
 const ComponentMesh* ComponentCollider::GetMesh() const
