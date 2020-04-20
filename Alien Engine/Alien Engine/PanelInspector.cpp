@@ -642,22 +642,22 @@ void PanelInspector::ButtonAddComponent()
 				case ComponentType::BOX_COLLIDER: {
 						comp = new ComponentBoxCollider(selected);
 						selected->AddComponent(comp);
-						//((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
+						((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
 					break; }
 				case ComponentType::SPHERE_COLLIDER: {
 						comp = new ComponentSphereCollider(selected);
 						selected->AddComponent(comp);
-						//((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
+						((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
 					break; }
 				case ComponentType::CAPSULE_COLLIDER: {
 						comp = new ComponentCapsuleCollider(selected);
 						selected->AddComponent(comp);
-						//((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
+						((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
 					break; }
 				case ComponentType::CONVEX_HULL_COLLIDER: {
 						comp = new ComponentConvexHullCollider(selected);
 						selected->AddComponent(comp);
-						//((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
+						((ComponentBoxCollider*)comp)->QueryMesh(selected->GetComponent<ComponentMesh>());
 					break; }
 				case ComponentType::RIGID_BODY: {
 					if (!selected->HasComponent(ComponentType::RIGID_BODY))

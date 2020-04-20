@@ -2,7 +2,6 @@
 
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
 class ModulePhysics;
@@ -17,14 +16,10 @@ public:
 
 	ComponentBoxCollider(GameObject* go);
 
-	//void QueryMesh(ComponentMesh* mesh);
+	void QueryMesh(ComponentMesh* mesh);
 	void SetSize(const float3 size);
-	const float3 GetSize() const { return size; }
+	float3 GetSize() { return size; }
 
-
-protected:
-	// virtual call
-	void ScaleChanged();
 private:
 
 	void ScaleChanged();
@@ -34,11 +29,7 @@ private:
 	void Clone(Component* clone);
 	void Reset();
 
-	const float3 CalculateSize();
-	PxShape* ReCreateBoxShape();
-
 private:
 
 	float3 size = float3::one();
 };
-

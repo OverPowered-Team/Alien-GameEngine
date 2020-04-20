@@ -2070,7 +2070,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	if (collider != nullptr)
 	{
 		object->AddComponent(collider);
-		//collider->QueryMesh(mesh);
+		collider->QueryMesh(mesh);
 	}
 	// ---------------------------------------------------------
 

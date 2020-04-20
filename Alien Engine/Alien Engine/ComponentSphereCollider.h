@@ -19,19 +19,12 @@ public:
 
 	ComponentSphereCollider(GameObject* go);
 
-	/*virtual void QueryMesh(ComponentMesh* mesh) override;*/
+	void QueryMesh(ComponentMesh* mesh);
 	void SetRadius(float radius);
 
 protected:
 
 	void ScaleChanged();
-
-private:
-
-	void InitializeRadius();
-	const float CalculateRadius();
-	PxShape* RecreateSphereShape();
-
 	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);

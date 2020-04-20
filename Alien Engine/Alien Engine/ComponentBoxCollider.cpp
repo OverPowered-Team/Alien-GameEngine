@@ -11,13 +11,26 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 {
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
-	shape = App->physx->CreateShape(PxBoxGeometry( .5f ,.5f , .5f ));
+	shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f));
 	InitCollider();
 }
 
-const float3 ComponentBoxCollider::CalculateSize()
+void ComponentBoxCollider::SetSize(const float3 value)
 {
-	return size.Mul(transform->GetGlobalScale()) * 0.5f;
+	size = value;
+	PxBoxGeometry geo(F3_TO_PXVEC3(size.Mul(physics->scale) * 0.5f));
+	BeginUpdateShape();
+	shape->setGeometry(geo);
+	EndUpdateShape();
+}
+
+void ComponentBoxCollider::QueryMesh(ComponentMesh* mesh)
+{
+	if (mesh == nullptr) return;
+	BeginUpdateShape(true);
+	SetSize(mesh->local_aabb.Size());
+	SetCenter(mesh->local_aabb.CenterPoint());
+	BeginUpdateShape(true);
 }
 
 void ComponentBoxCollider::ScaleChanged()
@@ -31,24 +44,12 @@ void ComponentBoxCollider::ScaleChanged()
 
 void ComponentBoxCollider::DrawSpecificInspector()
 {
-	ImGui::Title("Size", 1);		
-	if (ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
-		ReCreateBoxShape();
+	float3 current_size = size;
+
+	ImGui::Title("Size", 1);
+	if (ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
+		SetSize(current_size);
 	};
-}
-
-void ComponentBoxCollider::Clone(Component* clone)
-{
-	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
-	center = box_clone->GetCenter();
-	size = box_clone->CalculateSize();
-}
-
-void ComponentBoxCollider::Reset()
-{
-	ComponentCollider::Reset();
-	size = GetLocalMeshAabbSize();
-	ReCreateBoxShape();
 }
 
 void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
@@ -60,14 +61,22 @@ void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	size = to_load->GetFloat3("Size");
-	ReCreateBoxShape();
+	SetSize(to_load->GetFloat3("Size"));
 }
 
-// * --------- ACCESS THROUGH SCRIPTING ----------* //
-
-void ComponentBoxCollider::SetSize(float3 size)
+void ComponentBoxCollider::Clone(Component* clone)
 {
-	this->size = size;
-	ReCreateBoxShape();
+	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
+	BeginUpdateShape(true);
+	SetCenter(box_clone->center);
+	SetSize(box_clone->size);
+	EndUpdateShape(true);
+}
+
+void ComponentBoxCollider::Reset()
+{
+	BeginUpdateShape(true);
+	SetCenter(float3::zero());
+	SetSize(float3::one());
+	EndUpdateShape(true);
 }
