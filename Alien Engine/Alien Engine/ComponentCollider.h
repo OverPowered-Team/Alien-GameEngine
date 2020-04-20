@@ -51,7 +51,7 @@ public:
 	void SetAngularFriction(const float v);
 	float GetAngularFriction() { return angular_friction; }
 
-	void SetCollisionLayer(std::string layer);
+	virtual void SetCollisionLayer(std::string layer);
 	std::string GetCollisionLayer();
 
 protected:

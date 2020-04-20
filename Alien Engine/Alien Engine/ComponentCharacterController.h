@@ -86,6 +86,7 @@ public:
 	// Move by motion, this function doesn't apply any gravity,
 	// (user implementation, or active force gravity in character controller component)
 	PxControllerCollisionFlags Move(float3 motion);
+	void SetCollisionLayer(std::string layer);
 
 private:
 	void SetDefaultConf();

@@ -67,8 +67,8 @@ bool ModulePhysX::Init()
 	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = px_dispatcher;
 	sceneDesc.filterShader = FilterShader;
-	//sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP ;
-	//sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
+	sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP ;
+	sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 	px_scene = px_physics->createScene(sceneDesc);
 	px_scene->setSimulationEventCallback(px_simulation_callback);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);

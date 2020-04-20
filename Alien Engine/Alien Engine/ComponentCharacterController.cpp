@@ -98,6 +98,7 @@ ComponentCharacterController::~ComponentCharacterController()
 //*------------------------------------------------------------------------------------------------------------*/
 
 
+
 void ComponentCharacterController::SetContactOffset(const float contactOffset)
 {
 	float max = FLT_MAX, min = 0.0001f;
@@ -212,6 +213,8 @@ void ComponentCharacterController::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Gravity", gravity);
 	to_save->SetBoolean("ForceGravity", force_gravity);
 	to_save->SetBoolean("ForceMove", force_move);
+
+	to_save->SetString("CollisionLayer", layer_name.c_str());
 }
 
 void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
@@ -227,6 +230,8 @@ void ComponentCharacterController::LoadComponent(JSONArraypack* to_load)
 	gravity = to_load->GetNumber("Gravity");
 	force_gravity = to_load->GetBoolean("ForceGravity");
 	force_move = to_load->GetBoolean("ForceMove");
+
+	SetCollisionLayer(to_load->GetString("CollisionLayer"));
 }
 
 bool ComponentCharacterController::DrawInspector()
@@ -330,11 +335,26 @@ PxControllerCollisionFlags ComponentCharacterController::Move(float3 motion)
 
 	// set grounded internal state
 	collisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN) ? isGrounded = true : isGrounded = false;
-
 	// substract the difference from current pos to velocity before move
 	velocity = isGrounded ? F3_TO_PXVEC3EXT(float3::zero()) : PXVEC3_TO_VEC3EXT(controller->getPosition() - velocity);
 
 	return collisionFlags;
+}
+
+void ComponentCharacterController::SetCollisionLayer(std::string layer)
+{
+	int index = 0;
+	if (!physics->layers->GetIndexByName(layer, index)) return;
+	layer_num = index;
+	layer_name = layer;
+
+	Uint32 ns = controller->getActor()->getNbShapes();
+	PxShape* all_shapes;
+	controller->getActor()->getShapes(&all_shapes, ns);
+	for (uint i = 0; i < ns; ++i) {
+		all_shapes[i].setSimulationFilterData(PxFilterData(layer_num, game_object_attached->ID, 0, 0));
+		all_shapes[i].setQueryFilterData(PxFilterData(layer_num, game_object_attached->ID, 0, 0));
+	}
 }
 
 void ComponentCharacterController::DrawScene()

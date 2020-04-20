@@ -96,8 +96,6 @@ void ComponentCollider::SetCollisionLayer(std::string layer)
 	if (!physics->layers->GetIndexByName(layer, index)) return;
 	layer_num = index;
 	layer_name = layer;
-	if (IsController()) return;
-
 	BeginUpdateShape();
 	PxFilterData filter_data;
 	filter_data.word0 = index;
