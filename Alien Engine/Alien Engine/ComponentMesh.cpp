@@ -78,9 +78,9 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	SetUniform(material, camera);
 
 	// Reflection / Refraction --------------
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
 	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetRefractionTexture());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
