@@ -157,11 +157,6 @@ void PanelSceneSelector::SaveSceneAsNew()
 		ResourceScene* scene = new ResourceScene();
 		scene->SetAssetsPath(path.data());
 		scene->CreateMetaData();
-
-		if (force_save == nullptr && App->objects->GetGlobalRoot()->children.size() == 1) {
-			force_save = App->objects->GetGlobalRoot()->children.front();
-		}
-
 		if (force_save != nullptr) {
 			force_save->ID = scene->GetID();
 			force_save->SetName(scene->GetName());
