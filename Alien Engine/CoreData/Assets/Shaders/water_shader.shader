@@ -24,6 +24,7 @@ out vec2 texCoords;
 out vec3 norms;
 out mat3 TBN; 
 out float visibility; 
+out vec4 clip_space;
 
 void main()
 {
@@ -31,6 +32,7 @@ void main()
     vec4 pos = vec4(position, 1.0);
     frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
+    clip_space = projection * view * model * vec4(position.x, 0.0, position.y, 1.0);
 
     // --------- Fog ----------
     vec4 worldPos = model * pos;
@@ -63,7 +65,7 @@ void main()
     TBN = mat3(T,B,N);
     // ---------------------------------------
 
-    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
+    gl_Position = clip_space; 
 };
 
 
@@ -149,6 +151,7 @@ in vec3 frag_pos;
 in vec3 norms;
 in mat3 TBN;
 in float visibility;
+in vec4 clip_space;
 
 // Outs
 out vec4 FragColor;
@@ -197,8 +200,13 @@ void main()
 
     // Reflection and refraction
 
-    vec4 reflection_colour = texture(reflection_texture, texCoords);
-    vec4 refraction_colour = texture(refraction_texture, texCoords);
+    vec2 ndc = (clip_space.xy / clip_space.w) / 2.0 + 0.5;
+    
+    vec2 refraction_coords = vec2(ndc.x, -ndc.y);
+    vec2 reflection_coords = vec2(ndc.x, ndc.y);
+
+    vec4 reflection_colour = texture(reflection_texture, reflection_coords);
+    vec4 refraction_colour = texture(refraction_texture, refraction_coords);
 
     FragColor = mix(reflection_colour, refraction_colour, 0.5);
 
