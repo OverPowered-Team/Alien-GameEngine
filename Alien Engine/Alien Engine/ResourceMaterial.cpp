@@ -261,50 +261,53 @@ void ResourceMaterial::ApplyMaterial()
 	// Bind the actual shader
 	used_shader->Bind();
 
-	if (recive_shadow)
+	if (!recive_shadow)
 	{
 		used_shader->has_shadow = true;
 	}
 	// Bind textures
-	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
+	std::string depth_shader("simple_depth_shader");
+	if (depth_shader.compare(used_shader->GetName()) != 0)
 	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
-		used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
-		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
-		//shadows
-		if (recive_shadow)
+		if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 		{
-			shadow_shader->SetUniform1i("diffuseTexture", 0);
-			shadow_shader->SetUniform1i("hasDiffuseTexture", 1);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+			used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
+			used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
+			//shadows
+			if (recive_shadow)
+			{
+				shadow_shader->SetUniform1i("diffuseTexture", 0);
+				shadow_shader->SetUniform1i("hasDiffuseTexture", 1);
+			}
 		}
-	}
-	else
-	{
-		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
-		if (recive_shadow)
-			shadow_shader->SetUniform1i("hasDiffuseTexture", 0);
-	}
-	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
-	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
-		used_shader->SetUniform1i("objectMaterial.specularMap", 1);
-		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
-	}
-	else	
-		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
+		else
+		{
+			used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
+			if (recive_shadow)
+				shadow_shader->SetUniform1i("hasDiffuseTexture", 0);
+		}
+		if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
+		{
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
+			used_shader->SetUniform1i("objectMaterial.specularMap", 1);
+			used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
+		}
+		else
+			used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
-	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
-	{
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
-		used_shader->SetUniform1i("objectMaterial.normalMap", 2);
-		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
+		if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+		{
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
+			used_shader->SetUniform1i("objectMaterial.normalMap", 2);
+			used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
+		}
+		else
+			used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
 	}
-	else
-		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
-
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	shaderInputs.particleShaderProperties.color = color;

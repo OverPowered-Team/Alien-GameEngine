@@ -13,6 +13,10 @@
 #include "Gizmos.h"
 #include "mmgr/mmgr.h"
 
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+
 ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::LIGHT_DIRECTIONAL;
@@ -33,8 +37,10 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 		1024,1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, light_props.depthMapFBO);
@@ -57,7 +63,23 @@ ComponentLightDirectional::~ComponentLightDirectional()
 
 void ComponentLightDirectional::PostUpdate()
 {
+	glm::mat4 viewMatix = glm::lookAt(glm::vec3(light_props.position.x, light_props.position.y, light_props.position.z),
+		glm::vec3(light_props.position.x + light_props.direction.x, light_props.position.y + light_props.direction.y, light_props.position.z + light_props.direction.z),
+		glm::vec3(0, 1, 0));
 
+	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
+		1.0f,
+		distance_far_plane);
+
+	float4x4 viewMat, projMat;
+	for (uint i = 0; i < 4; ++i)
+	{
+		for (uint j = 0; j < 4; ++j)
+		{
+			light_props.viewMat[i][j] = viewMatix[i][j];
+			light_props.projMat[i][j] = projectionMatrix[i][j];
+		}
+	}
 }
 
 
@@ -81,6 +103,7 @@ void ComponentLightDirectional::LightLogic()
 			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
 			App->renderer3D->EndDebugDraw();
 		}
+		DrawLightFrustrum();
 	}
 #endif
 }
@@ -125,6 +148,10 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500));
+		sizefrustrum /= 2;
+		ImGui::DragFloat("size", &sizefrustrum);
+		sizefrustrum *= 2;
+		ImGui::DragFloat("distance far plane", &distance_far_plane);
 	}
 	else
 		RightClickMenu("Light Directional");
@@ -201,5 +228,28 @@ void ComponentLightDirectional::DrawIconLight()
 		glDisable(GL_LIGHTING);
 		Gizmos::DrawPoly(bulb->mesh, matrix, Color(0.0f, 255.0f, 0.0f));
 		glEnable(GL_LIGHTING);
+	}
+}
+
+void ComponentLightDirectional::DrawLightFrustrum()
+{
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, sizefrustrum, 0), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine(light_props.position + float3(-sizefrustrum, -sizefrustrum, 0), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(sizefrustrum, sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0) + light_props.direction * distance_far_plane), Color::Green(), 2.0);
+
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0)), (light_props.position + float3(sizefrustrum, sizefrustrum, 0)), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(-sizefrustrum, sizefrustrum, 0)), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0)), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0)), (light_props.position + float3(sizefrustrum, sizefrustrum, 0)), Color::Green(), 2.0);
+		Gizmos::DrawLine((light_props.position + float3(sizefrustrum, -sizefrustrum, 0)), (light_props.position + float3(-sizefrustrum, -sizefrustrum, 0)), Color::Green(), 2.0);
+		App->renderer3D->EndDebugDraw();
 	}
 }

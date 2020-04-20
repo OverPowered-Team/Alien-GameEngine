@@ -221,10 +221,6 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -247,10 +243,10 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 
 
-	/*for (Component* component : components)
+	for (Component* component : components)
 	{
 		component->DrawScene();
-	}*/
+	}
 }
 
 

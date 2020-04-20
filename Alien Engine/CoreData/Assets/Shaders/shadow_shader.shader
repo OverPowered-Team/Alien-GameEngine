@@ -25,9 +25,9 @@ void main()
     vec4 pos = vec4(position, 1.0);
     frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
-    norms = mat3(transpose(inverse(model))) * normals;
+    norms = transpose(inverse(mat3(model))) * normals;
     FragPosLightSpace = lightSpaceMatrix * vec4(frag_pos, 1.0);
-    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
+    gl_Position = projection * view * vec4(frag_pos, 1.0); 
 };
 
 
@@ -35,7 +35,7 @@ void main()
 #version 330 core
 
 //functions
-float ShadowCalculation(vec4 fragPosLightSpace);
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 vec3 DrawShadows(vec3 ObjectColor, vec3 normal, vec3 frag_pos, vec3 view_dir);
 
 //uniforms
@@ -80,7 +80,7 @@ void main()
 
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
 {
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -91,8 +91,12 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
 
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
+        
     return shadow;
 }
 
@@ -111,7 +115,7 @@ vec3 DrawShadows(vec3 ObjectColor, vec3 normal, vec3 frag_pos, vec3 view_dir)
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 specular = spec * lightColor;    
     // calculate shadow
-    float shadow = ShadowCalculation(FragPosLightSpace);       
+    float shadow = ShadowCalculation(FragPosLightSpace, normal, lightDir);       
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * ObjectColor;    
     
     return lighting;

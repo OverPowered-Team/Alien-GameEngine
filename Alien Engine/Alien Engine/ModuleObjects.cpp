@@ -237,6 +237,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ScriptsPostUpdate();
 
 #ifndef GAME_VERSION
+
+	static bool light_view = false;
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		light_view = !light_view;
 	for (Viewport* viewport : viewports) {
 		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
 			continue;
@@ -299,72 +303,41 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
-				glm::mat4 viewMatix = glm::lookAt(glm::vec3((*iter)->position.x, (*iter)->position.y, (*iter)->position.z),
-					glm::vec3((*iter)->position.x + (*iter)->direction.x, (*iter)->position.y + (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z),
-					glm::vec3(0, 1, 0));
-
-				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
-					viewport->GetCamera()->frustum.nearPlaneDistance,
-					7.5f);
-
-
-				float4x4 viewMat,projMat;
-				for (uint i = 0; i < 4; ++i)
+				if (!light_view)
 				{
-					for (uint j = 0; j < 4; ++j)
-					{
-						viewMat[i][j] = viewMatix[i][j];
-						projMat[i][j] = projectionMatrix[i][j];
-					}
+					glViewport(0, 0, 1024, 1024);
+					glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
+					glClear(GL_DEPTH_BUFFER_BIT);
 				}
-				glViewport(0, 0, 1024, 1024);
-				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
-				glClear(GL_DEPTH_BUFFER_BIT);
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->PreDrawScene(viewport->GetCamera(), viewMat, projMat, (*iter)->light->game_object_attached->transform->GetGlobalPosition());
+							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
 				}
 				//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
-			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
-			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+			if (!light_view)
 			{
-				glm::mat4 viewMatix = glm::lookAt(glm::vec3((*iter)->position.x, (*iter)->position.y, (*iter)->position.z),
-					glm::vec3((*iter)->position.x + (*iter)->direction.x, (*iter)->position.y + (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z),
-					glm::vec3(0, 1, 0));
-
-				glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
-					viewport->GetCamera()->frustum.nearPlaneDistance,
-					7.5f);
-
-				float4x4 viewMat, projMat;
-				for (uint i = 0; i < 4; ++i)
-				{
-					for (uint j = 0; j < 4; ++j)
-					{
-						viewMat[i][j] = viewMatix[i][j];
-						projMat[i][j] = projectionMatrix[i][j];
-					}
-				}
-
-				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
-						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera(), viewMat,
-								projMat, (*iter)->light->game_object_attached->transform->GetGlobalPosition());
-						else
-							(*it).second->DrawGame(viewport->GetCamera());
+				glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
+				glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
+				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+				for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+				{			
+					for (; it != to_draw.end(); ++it) {
+						if ((*it).second != nullptr) {
+							if (printing_scene)
+								(*it).second->DrawScene(viewport->GetCamera(), viewport->GetCamera()->GetViewMatrix4x4(),
+									viewport->GetCamera()->GetProjectionMatrix4f4(), (*iter)->position);
+							else
+								(*it).second->DrawGame(viewport->GetCamera());
+						}
 					}
 				}
 			}
-			
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
 			if (!printing_scene) {
 				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);

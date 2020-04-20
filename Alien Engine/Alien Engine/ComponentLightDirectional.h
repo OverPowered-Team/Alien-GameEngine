@@ -17,6 +17,8 @@ struct __declspec(dllexport) DirLightProperties
 	ComponentLightDirectional* light = nullptr;
 	uint depthMap = 0;
 	uint depthMapFBO;
+	float4x4 viewMat;
+	float4x4 projMat;
 };
 
 class __declspec(dllexport) ComponentLightDirectional : public Component {
@@ -42,11 +44,14 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void DrawIconLight();
+	void DrawLightFrustrum();
 
 private:
 	ComponentMesh* bulb = nullptr;
 	bool print_icon = true;
 
+	float sizefrustrum = 10.f;
+	float distance_far_plane = 10.f;
 	uint renderer_id = 0;
 
 	DirLightProperties light_props;

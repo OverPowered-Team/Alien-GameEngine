@@ -160,7 +160,7 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
-	else if (std::strcmp(name.c_str(), "shadow_shader") == 0)
+	else if (std::strcmp(name.c_str(), "simple_depth_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHADOW;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
@@ -598,6 +598,7 @@ void ResourceShader::DrawShadows()
 		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
 
 		//SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
+		SetUniformMat4f("lightSpaceMatrix", (*iter)->projMat * (*iter)->viewMat);
 		SetUniformFloat3("lightPos", (*iter)->position);
 
 
