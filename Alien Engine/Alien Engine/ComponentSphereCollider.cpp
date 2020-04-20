@@ -79,7 +79,8 @@ void ComponentSphereCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentSphereCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	//SetRadius(to_load->GetNumber("Radius"));
+	radius = (to_load->GetNumber("Radius"));
+	RecreateSphereShape();
 }
 
 //void ComponentSphereCollider::QueryMesh(ComponentMesh* mesh)
