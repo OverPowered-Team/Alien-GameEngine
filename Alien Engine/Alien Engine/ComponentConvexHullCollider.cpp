@@ -23,6 +23,8 @@ ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : Compo
 		shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f));
 	}
 
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
+
 	InitCollider();
 }
 
