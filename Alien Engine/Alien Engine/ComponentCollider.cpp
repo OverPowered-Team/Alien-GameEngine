@@ -9,9 +9,8 @@
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "ReturnZ.h"
-#include "Event.h"
 #include "Time.h"
-
+#include "Event.h"
 
 ContactPoint::ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider) :
 	normal(normal), point(point), separation(separation), this_collider(this_collider), other_collider(other_collider) {}
@@ -30,7 +29,7 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 ComponentCollider::~ComponentCollider()
 {
 	if (!IsController()) {
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DELETED);
+		App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
 		shape->release();
 		shape = nullptr;
 	}
@@ -40,9 +39,10 @@ ComponentCollider::~ComponentCollider()
 
 void ComponentCollider::SetCenter(const float3& value)
 {
+	if (center.Equals(value)) return;
 	center = value;
 	PxTransform trans = shape->getLocalPose();
-	trans.p = F3_TO_PXVEC3(center.Mul(physics->scale.Abs()));
+	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
 	BeginUpdateShape();
 	shape->setLocalPose(trans);
 	EndUpdateShape();
@@ -50,6 +50,7 @@ void ComponentCollider::SetCenter(const float3& value)
 
 void ComponentCollider::SetRotation(const float3& value)
 {
+	if (rotation.Equals(value)) return;
 	rotation = value;
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * rotation;
@@ -101,8 +102,8 @@ void ComponentCollider::SetCollisionLayer(std::string layer)
 	filter_data.word0 = index;
 	filter_data.word1 = game_object_attached->ID;
 	shape->setSimulationFilterData(filter_data);
-	shape->setQueryFilterData(filter_data);
 	EndUpdateShape();
+
 	physics->WakeUp();
 }
 
@@ -143,20 +144,18 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 	SetCollisionLayer(to_load->GetString("CollisionLayer"));
 }
 
+void ComponentCollider::Update()
+{
+}
+
 void ComponentCollider::OnEnable()
 {
-	if (!IsController())
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_ENABLED);
-	else
-		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ENABLED);
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_ENABLED);
 }
 
 void ComponentCollider::OnDisable()
 {
-	if (!IsController())
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DISABLED);
-	else
-		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DISABLED);
+	App->SendAlienEvent(this, AlienEventType::COLLIDER_DISABLED);
 }
 
 void ComponentCollider::DrawScene()
@@ -214,7 +213,7 @@ bool ComponentCollider::DrawInspector()
 
 		//ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() * 0.5f - 30);
 		ImGui::SetCursorPosX(12.0f);
-		if(ImGui::Button("fit", ImVec2(60.0f, 22.0f)))
+		if (ImGui::Button("fit", ImVec2(60.0f, 22.0f)))
 		{
 			Reset();
 		}
@@ -281,23 +280,37 @@ void ComponentCollider::InitCollider()
 {
 	shape->userData = this;
 	SetCollisionLayer("Default");
-	go->SendAlientEventThis(this, AlienEventType::COLLIDER_ADDED);
 }
 
-void ComponentCollider::BeginUpdateShape(bool force_update)
+void ComponentCollider::BeginUpdateShape()
 {
-	if (!this->force_update)
-		physics->DettachColldier(this, true);
-
-	if (force_update)
-		this->force_update = true;
+	physics->DettachColldier(this, true);
 }
 
-void ComponentCollider::EndUpdateShape(bool force_update)
+void ComponentCollider::EndUpdateShape()
 {
-	if (force_update)
-		this->force_update = false;
+	physics->AttachCollider(this, true);
+}
 
-	if (!this->force_update)
-		physics->AttachCollider(this, true);
+const float3 ComponentCollider::GetLocalMeshAabbSize() const
+{
+	const ComponentMesh* mesh = GetMesh();
+	if (!mesh)
+		return float3::one();
+
+	return mesh->GetLocalAABB().Size();
+}
+
+const AABB ComponentCollider::GetLocalMeshAabb() const
+{
+	const ComponentMesh* mesh = GetMesh();
+	if (!mesh)
+		AABB(Sphere(float3::zero(), 0.5f));
+
+	return mesh->GetLocalAABB();
+}
+
+const ComponentMesh* ComponentCollider::GetMesh() const
+{
+	return game_object_attached->GetComponent<ComponentMesh>();
 }
