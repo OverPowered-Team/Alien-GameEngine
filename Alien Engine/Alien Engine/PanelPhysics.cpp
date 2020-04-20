@@ -88,7 +88,7 @@ void PanelPhysics::PanelLogic()
 			ImGui::Title(std::string(std::to_string(i) + ". " + names[i]).c_str());
 			separation = 150;
 
-			for (int j = 3; j >= i; j--)
+			for (int j = size - 1; j >= i; j--)
 			{
 				bool value = collision_layers.data[i][j];
 				ImGui::SameLine(separation);

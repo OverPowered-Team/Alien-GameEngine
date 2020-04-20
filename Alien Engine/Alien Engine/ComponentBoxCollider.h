@@ -23,6 +23,7 @@ public:
 
 private:
 
+	void ScaleChanged();
 	void DrawSpecificInspector();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);

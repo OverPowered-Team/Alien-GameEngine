@@ -57,13 +57,14 @@ public:
 protected:
 
 	void InitCollider();
-	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER ); }
-	inline void BeginUpdateShape();
-	inline void EndUpdateShape();
+	void BeginUpdateShape(bool force_update = false);
+	void EndUpdateShape(bool force_update = false);
+	bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER); }
 
 	void OnEnable();
 	void OnDisable();
-	void Update();
+	virtual void Update() {}
+	virtual void PostUpdate() {}
 
 	bool DrawInspector();
 	void DrawLayersCombo();
@@ -76,11 +77,11 @@ protected:
 	virtual void SetComponent(Component* component) {}
 	virtual void SaveComponent(JSONArraypack* to_save);
 	virtual void LoadComponent(JSONArraypack* to_load);
-
 	virtual void ScaleChanged() {};
 
 protected:
 
+	bool force_update = false;
 	std::string layer_name = "Default";
 	int layer_num = 0;
 

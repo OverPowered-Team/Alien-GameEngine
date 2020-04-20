@@ -12,7 +12,7 @@ ComponentCapsuleCollider::ComponentCapsuleCollider(GameObject* go) : ComponentCo
 	type = ComponentType::CAPSULE_COLLIDER;
 	shape = App->physx->CreateShape(PxCapsuleGeometry( .5f, .5f));
 	SetOrientation(Orientation::Y);
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
+	InitCollider();
 }
 
 void ComponentCapsuleCollider::SetRotation(const float3& value)

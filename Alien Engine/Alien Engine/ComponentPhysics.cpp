@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ComponentCharacterController.h"
 #include "ComponentTransform.h"
 #include "ComponentPhysics.h"
 #include "ComponentCollider.h"
@@ -14,9 +15,11 @@
 ComponentPhysics::ComponentPhysics(GameObject* go) : Component(go)
 {
 	serialize = false;  // Not save & load 
+	this->go = go;
 	transform = go->GetComponent<ComponentTransform>();
 	state = PhysicState::DISABLED;
 	layers = &App->physx->layers;
+	scale = GetValidPhysicScale();
 
 	std::vector<ComponentScript*> found_script = go->GetComponents<ComponentScript>();
 	for (ComponentScript* script : found_script)
@@ -40,7 +43,15 @@ void ComponentPhysics::Update()
 
 	GizmoManipulation();  // Check if gizmo is selected
 	UpdatePositioning();  // Move body or gameobject
+}
 
+void ComponentPhysics::PostUpdate()
+{
+	float3 current_scale = GetValidPhysicScale();
+	if (!scale.Equals(current_scale)) {
+		scale = current_scale;
+		go->SendAlientEventThis(this, AlienEventType::PHYSICS_SCALE_CHANGED);
+	}
 }
 
 void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
@@ -80,11 +91,23 @@ void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
 		RemoveRigidBody(object);
 		break; }
-
 	case AlienEventType::RIGIDBODY_ENABLED:
 	case AlienEventType::RIGIDBODY_DISABLED: {
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
 		SwitchedRigidBody(object);
+		break; }
+	case AlienEventType::CHARACTER_CTRL_ADDED: {
+		ComponentCharacterController* object = (ComponentCharacterController*)e.object;
+		AddController(object);
+		break; }
+	case AlienEventType::CHARACTER_CTRL_DELETED: {
+		ComponentCharacterController* object = (ComponentCharacterController*)e.object;
+		RemoveController(object);
+		break; }
+	case AlienEventType::CHARACTER_CTRL_ENABLED:
+	case AlienEventType::CHARACTER_CTRL_DISABLED: {
+		ComponentCharacterController* object = (ComponentCharacterController*)e.object;
+		SwitchedController(object);
 		break; }
 	}
 }
@@ -210,9 +233,43 @@ bool ComponentPhysics::CheckRigidBody(ComponentRigidBody* rb)
 	return (rb != nullptr && rb->game_object_attached == game_object_attached);
 }
 
+// Controller Logic -------------------------------
+
+bool ComponentPhysics::AddController(ComponentCharacterController* ctrl)
+{
+	if (CheckController(ctrl))
+	{
+		controller = ctrl;
+		if (CheckChangeState()) UpdateBody();
+		return true;
+	}
+	return false;
+}
+
+bool ComponentPhysics::RemoveController(ComponentCharacterController* ctrl)
+{
+	if (ctrl == controller)
+	{
+		controller = nullptr;
+		if (CheckChangeState()) UpdateBody();
+		return true;
+	}
+}
+
+void ComponentPhysics::SwitchedController(ComponentCharacterController* ctrl)
+{
+	if (ctrl == controller)
+		if (CheckChangeState()) UpdateBody();
+}
+
+bool ComponentPhysics::CheckController(ComponentCharacterController* ctrl)
+{
+	return (ctrl != nullptr && ctrl->game_object_attached == game_object_attached);
+}
+
 bool ComponentPhysics::CheckChangeState()
 {
-	if (rigid_body == nullptr && colliders.empty()) // Delete if not has physic components
+	if (!controller && !rigid_body && colliders.empty()) // Delete if not has physic components
 	{
 		Destroy();
 		state = PhysicState::DISABLED;
@@ -221,20 +278,20 @@ bool ComponentPhysics::CheckChangeState()
 
 	PhysicState new_state = PhysicState::DISABLED;
 
-	if (rigid_body != nullptr && rigid_body->IsEnabled())
+	//if (controller && controller->IsEnabled())
+	//{
+	//	new_state = PhysicState::CTRL_CHARACTER;
+	//}
+	/*else*/ if (rigid_body  && rigid_body->IsEnabled())
 	{
 		new_state = PhysicState::DYNAMIC;
 	}
-	else
+	else if (HasEnabledColliders())
 	{
-		if (HasEnabledColliders())
-			new_state = PhysicState::STATIC;
-		else
-			new_state = PhysicState::DISABLED;
+		new_state = PhysicState::STATIC;
 	}
 
-	if (new_state != state)
-	{
+	if (new_state != state) {
 		state = new_state;
 		return true;
 	}
@@ -263,6 +320,12 @@ void ComponentPhysics::UpdateBody()
 	{
 		actor = App->physx->CreateBody(transform->GetGlobalMatrix(), IsDynamic());
 
+		if (actor == nullptr) {
+			LOG_ENGINE("PhyX Rigid Actor Created at Infinite Transform (Scale x,y,z = 0 ? )");
+			state == PhysicState::INVALID_TRANS;
+			return;
+		}
+
 		for (ComponentCollider* collider : colliders)
 			if (collider->enabled && collider->shape) // TODO: check this
 				actor->attachShape(*collider->shape);
@@ -270,6 +333,17 @@ void ComponentPhysics::UpdateBody()
 		if (IsDynamic())
 			rigid_body->SetBodyProperties();
 	}
+}
+
+float3 ComponentPhysics::GetValidPhysicScale()
+{
+	float3 scale = transform->GetGlobalScale();
+
+	for (int i = 0; i < 3; ++i)
+		if (scale[i] == 0.f)
+			scale[i] = 0.01f;
+
+	return scale;
 }
 
 void ComponentPhysics::GizmoManipulation()
@@ -299,7 +373,11 @@ void ComponentPhysics::UpdatePositioning()
 {
 	if (!Time::IsPlaying() || gizmo_selected)
 	{
-		PxTransform trans(F4X4_TO_PXTRANS(transform->GetGlobalMatrix()));
+		PxTransform trans;
+		if (!F4X4_TO_PXTRANS(transform->GetGlobalMatrix(), trans)) {
+			LOG_ENGINE("Error! GameObject %s transform is NaN or Infinite -> Physics Can't be updated ");
+			return;
+		}
 
 		if (IsKinematic() && Time::IsPlaying())
 			actor->is<PxRigidDynamic>()->setKinematicTarget(trans);
@@ -308,9 +386,21 @@ void ComponentPhysics::UpdatePositioning()
 	}
 	else
 	{
-		PxTransform trans = actor->getGlobalPose(); // Get Controller Position
-		transform->SetGlobalPosition(PXVEC3_TO_F3(trans.p));
-		transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
+		if (IsDynamic())
+		{
+			PxTransform trans = actor->getGlobalPose(); // Get Controller Position
+			transform->SetGlobalPosition(PXVEC3_TO_F3(trans.p));
+			transform->SetGlobalRotation(PXQUAT_TO_QUAT(trans.q));
+		}
+		else
+		{
+			PxTransform trans;
+			if (!F4X4_TO_PXTRANS(transform->GetGlobalMatrix(), trans)) {
+				LOG_ENGINE("Error! GameObject %s transform is NaN or Infinite -> Physics Can't be updated ");
+				return;
+			}
+			actor->setGlobalPose(trans);
+		}
 	}
 }
 

@@ -33,27 +33,34 @@ public:
 private:
 
 	void Update();
+	void PostUpdate();
 	void HandleAlienEvent(const AlienEvent& e);
 
-	bool AddRigidBody(ComponentRigidBody* rb);
-	bool RemoveRigidBody(ComponentRigidBody* rb);
-	void SwitchedRigidBody(ComponentRigidBody* rb);
 	void AttachCollider(ComponentCollider* collider, bool to_update = false);    // To Update if is only a removement 
 	void DettachColldier(ComponentCollider* collider, bool to_update = false);	 // to update the shape
-	bool CheckRigidBody(ComponentRigidBody* rb);
-
 	bool AddCollider(ComponentCollider* collider);     
 	bool RemoveCollider(ComponentCollider* collider);	
  	bool FindCollider( ComponentCollider* collider);
 	bool CheckCollider(ComponentCollider* collider);
 	
+	bool AddRigidBody(ComponentRigidBody* rb);
+	bool RemoveRigidBody(ComponentRigidBody* rb);
+	void SwitchedRigidBody(ComponentRigidBody* rb);
+	bool CheckRigidBody(ComponentRigidBody* rb);
+
+	bool AddController(ComponentCharacterController* ctrl);
+	bool RemoveController(ComponentCharacterController* ctrl);
+	void SwitchedController(ComponentCharacterController* ctrl);
+	bool CheckController(ComponentCharacterController* ctrl);
+
 	void GizmoManipulation();
 	void UpdatePositioning();
 	void WakeUp();
 	void PutToSleep();
 
-	void UpdateBody();
 	bool CheckChangeState();
+	void UpdateBody();
+	float3 GetValidPhysicScale();
 
 	bool HasEnabledColliders();
 	bool ShapeAttached(PxShape* shape);
@@ -64,17 +71,19 @@ private:
 
 protected:
 
-	enum class PhysicState { STATIC = 0, DYNAMIC, CTRL_CHARACTER, CTRL_VEHICLE, DISABLED}
+	enum class PhysicState { STATIC = 0, DYNAMIC, CTRL_CHARACTER, CTRL_VEHICLE, INVALID_TRANS, DISABLED}
 	state = PhysicState::DISABLED;
 
 	bool gizmo_selected = false;
 
-	ComponentTransform*			  transform = nullptr;
-	std::list<ComponentCollider*> colliders;
-	std::list<ComponentScript*>   scripts;
-	ComponentRigidBody*			  rigid_body = nullptr;
-	PxRigidActor*				  actor = nullptr;
-	CollisionLayers*			  layers = nullptr;
-
+	GameObject*						go = nullptr;
+	ComponentTransform*				transform = nullptr;
+	std::list<ComponentCollider*>	colliders;
+	std::list<ComponentScript*>		scripts;
+	ComponentCharacterController*	controller = nullptr;
+	ComponentRigidBody*				rigid_body = nullptr;
+	PxRigidActor*					actor = nullptr;
+	CollisionLayers*				layers = nullptr;
+	float3							scale = float3::one();
 };
 

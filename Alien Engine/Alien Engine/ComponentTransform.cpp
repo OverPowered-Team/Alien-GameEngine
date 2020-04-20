@@ -254,7 +254,12 @@ void ComponentTransform::RecalculateTransform()
 	if (game_object_attached == nullptr)
 		return;
 
-	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);
+	float3 final_scale = float3(
+		(local_scale.x != 0.f) ? local_scale.x : 0.001f,
+		(local_scale.y != 0.f) ? local_scale.y : 0.001f,
+		(local_scale.z != 0.f) ? local_scale.z : 0.001f);
+
+	local_transformation = float4x4::FromTRS(local_position, local_rotation, final_scale);
 
 	if (game_object_attached->parent != nullptr) 
 	{
@@ -609,7 +614,6 @@ bool ComponentTransform::DrawInspector()
 			local_scale = view_scale;
 			LookScale();
 			RecalculateTransform();
-			game_object_attached->SendAlienEventHierarchy(this, AlienEventType::SCALE_CHANGED);
 		}
 		else if (!set_cntrl_Z && ImGui::IsMouseReleased(0)) {
 			set_cntrl_Z = true;
@@ -625,7 +629,6 @@ bool ComponentTransform::DrawInspector()
 			local_scale = view_scale;
 			LookScale();
 			RecalculateTransform();
-			game_object_attached->SendAlienEventHierarchy(this, AlienEventType::SCALE_CHANGED);
 		}
 		else if (!set_cntrl_Z && ImGui::IsMouseReleased(0)) {
 			set_cntrl_Z = true;
@@ -641,7 +644,6 @@ bool ComponentTransform::DrawInspector()
 			local_scale = view_scale;
 			LookScale();
 			RecalculateTransform();
-			game_object_attached->SendAlienEventHierarchy(this, AlienEventType::SCALE_CHANGED);
 		}
 		else if (!set_cntrl_Z && ImGui::IsMouseReleased(0)) {
 			set_cntrl_Z = true;
@@ -901,7 +903,6 @@ void ComponentTransform::Reset()
 	is_scale_negative = false;
 
 	RecalculateTransform();
-	game_object_attached->SendAlienEventHierarchy(this, AlienEventType::SCALE_CHANGED);
 }
 
 void ComponentTransform::SetComponent(Component* component)

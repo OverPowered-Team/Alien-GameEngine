@@ -21,7 +21,7 @@ struct ControllerColliderHit
 	ComponentRigidBody* rigidbody = nullptr;
 	ComponentTransform* transform = nullptr;
 };
-//
+
 class UserControllerHitReport : public PxUserControllerHitReport
 {
 	friend class ComponentCharacterController;

@@ -38,7 +38,19 @@ inline float3			PXVEC3EXT_TO_F3(const PxExtendedVec3 & vec) { return  float3(vec
 inline float3			PXVEC3_TO_F3(const PxVec3 & vec) { return  float3(vec.x, vec.y, vec.z); }
 inline PxQuat			QUAT_TO_PXQUAT(const Quat & quat) { return  PxQuat(quat.x, quat.y, quat.z, quat.w); }
 inline Quat				PXQUAT_TO_QUAT(const PxQuat & quat) { return  Quat(quat.x, quat.y, quat.z, quat.w); }
-inline PxTransform		F4X4_TO_PXTRANS(const float4x4 & trans) { return PxTransform(F3_TO_PXVEC3(trans.TranslatePart()), QUAT_TO_PXQUAT(trans.RotatePart().RemoveScale2().ToQuat())); }
+
+inline bool F4X4_TO_PXTRANS(const float4x4 & input, PxTransform & output ) {
+	Quat rot; float3 pos;
+	pos = input.TranslatePart();
+	rot = rot.LookAt(float3(0, 0, 1), input.WorldZ(), float3(0, 1, 0), input.WorldY());
+	if (!pos.IsFinite() || !rot.IsFinite()) return false;
+	output = PxTransform(F3_TO_PXVEC3(pos), QUAT_TO_PXQUAT(rot));
+	return true;
+}
+//return PxTransform(F3_TO_PXVEC3(trans.TranslatePart()), QUAT_TO_PXQUAT(trans.RotatePart().RemoveScale2().ToQuat())); 
+//rot = input.RotatePart().RemoveScale2().ToQuat();
+//rot = Quat::FromEulerXYZ(input.ToEulerXYZ().x, input.ToEulerXYZ().y, input.ToEulerXYZ().z);
+
 inline float4x4			PXTRANS_TO_F4X4(const PxTransform & trans) { return float4x4(PXQUAT_TO_QUAT(trans.q), PXVEC3_TO_F3(trans.p)); }
 
 class CustomDelayLoadHook : public PxDelayLoadHook
@@ -71,6 +83,14 @@ public:
 
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
+
+class ControllerFilterCallback : public  PxQueryFilterCallback
+{
+public:
+	virtual PxQueryHitType::Enum preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags);
+	virtual PxQueryHitType::Enum postFilter(const PxFilterData& filterData, const PxQueryHit& hit);
+};
+
 
 enum class CallbackType { ENTER = 0, STAY = 1, EXIT = 2, UNKNOWN = 3 };
 

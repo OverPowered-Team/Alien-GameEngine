@@ -283,8 +283,9 @@ private:
 
 	// Events 
 
-	void SendAlienEventHierarchy(void* object, AlienEventType type);
-	void SendAlienEventAll(void* object, AlienEventType type);
+	void SendAlienEventHierarchy(void* object, AlienEventType type); // Only hierarchy component
+	void SendAlienEventAll(void* object, AlienEventType type);   // All scene components
+	void SendAlientEventThis(void* object, AlienEventType type); // Itself components
 
 public:
 

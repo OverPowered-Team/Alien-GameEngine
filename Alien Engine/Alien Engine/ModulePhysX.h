@@ -18,6 +18,7 @@ class ModulePhysX : public Module
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
 	friend class ComponentConvexHullCollider;
+	friend class ComponentCharacterController;
 	friend class ComponentBasePhysic;
 
 public:
@@ -93,6 +94,7 @@ private:
 	PxDefaultAllocator			px_allocator;
 	CustomErrorCallback			px_error_callback;
 	SimulationEventCallback*    px_simulation_callback = nullptr;
+	ControllerFilterCallback*	px_controller_filter_callback = nullptr;
 	PxFoundation*				px_foundation = nullptr;
 	PxPhysics*					px_physics = nullptr;
 	PxCooking*					px_cooking = nullptr;

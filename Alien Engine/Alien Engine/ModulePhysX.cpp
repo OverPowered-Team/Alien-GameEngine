@@ -34,6 +34,9 @@ bool ModulePhysX::Init()
 	if (!isLoaded)
 		return false;
 
+	px_simulation_callback = new SimulationEventCallback();
+	px_controller_filter_callback = new ControllerFilterCallback();
+
 	// TODO: make init blindings if any stage goes wrong
 
 	px_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, px_allocator, px_error_callback);
@@ -53,7 +56,7 @@ bool ModulePhysX::Init()
 	px_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 	px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *px_foundation, PxTolerancesScale(), true, px_pvd);
-	px_simulation_callback = new SimulationEventCallback();
+
 
 	px_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *px_foundation, PxCookingParams(PxTolerancesScale()));
 	if (!px_cooking)
@@ -64,6 +67,8 @@ bool ModulePhysX::Init()
 	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = px_dispatcher;
 	sceneDesc.filterShader = FilterShader;
+	//sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP ;
+	//sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 	px_scene = px_physics->createScene(sceneDesc);
 	px_scene->setSimulationEventCallback(px_simulation_callback);
 	px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
@@ -80,13 +85,19 @@ bool ModulePhysX::Init()
 	}
 	px_default_material = px_physics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxRigidStatic* groundPlane = PxCreatePlane(*px_physics, PxPlane(0, 1, 0, 0), *px_default_material);
-
-	px_scene->addActor(*groundPlane);
+	PxShape* s = px_physics->createShape(PxPlaneGeometry(), *px_default_material);
+	PxRigidActor* a = px_physics->createRigidStatic(PxTransform(QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0,0, 90 * DEGTORAD))));
+	a->attachShape(*s);
+	PxFilterData data(0, 3, 0, 0);
+	s->setQueryFilterData(data);
+	s->setSimulationFilterData(data);
+	px_scene->addActor(*a);
 
 	// create characters controller manager
 	if(px_scene)
 		controllers_manager = PxCreateControllerManager(*px_scene);
+
+
 
 	layers.LoadLayers();
 
@@ -132,7 +143,9 @@ bool ModulePhysX::CleanUp()
 	PX_RELEASE(px_physics);
 	delete px_simulation_callback;
 	px_simulation_callback = nullptr;
-	
+	delete px_controller_filter_callback;
+	px_controller_filter_callback = nullptr;
+
 	if (px_pvd)
 	{
 		PxPvdTransport* transport = px_pvd->getTransport();
@@ -252,12 +265,17 @@ void ModulePhysX::DrawWorld()
 
 PxRigidActor* ModulePhysX::CreateBody(const float4x4& transform, bool is_dynamic)
 {
-	if (!transform.IsFinite()) return nullptr;
+	PxTransform trans;
+
+	if (!F4X4_TO_PXTRANS(transform, trans))
+	{
+		return nullptr;
+	}
 
 	PxRigidActor* return_body = nullptr;
 	return_body = (is_dynamic)
-		? (PxRigidActor*)px_physics->createRigidDynamic(F4X4_TO_PXTRANS(transform))
-		: (PxRigidActor*)px_physics->createRigidStatic(F4X4_TO_PXTRANS(transform));
+		? (PxRigidActor*)px_physics->createRigidDynamic(trans)
+		: (PxRigidActor*)px_physics->createRigidStatic(trans);
 
 	px_scene->addActor(*return_body);
 	return return_body;

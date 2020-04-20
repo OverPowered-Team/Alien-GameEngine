@@ -9,15 +9,16 @@
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "ReturnZ.h"
-#include "Time.h"
 #include "Event.h"
+#include "Time.h"
+
 
 ContactPoint::ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider) :
 	normal(normal), point(point), separation(separation), this_collider(this_collider), other_collider(other_collider) {}
 
-Collision::Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts, 
+Collision::Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts,
 	uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity) :
-	collider(collider), rigid_body(rigid_body), transform(transform), contancts(contancts), num_contact(num_contact), game_object(game_object), impulse(impulse) , relative_velocity(relative_velocity){}
+	collider(collider), rigid_body(rigid_body), transform(transform), contancts(contancts), num_contact(num_contact), game_object(game_object), impulse(impulse), relative_velocity(relative_velocity) {}
 
 ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 {
@@ -29,7 +30,7 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 ComponentCollider::~ComponentCollider()
 {
 	if (!IsController()) {
-		App->SendAlienEvent(this, AlienEventType::COLLIDER_DELETED);
+		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DELETED);
 		shape->release();
 		shape = nullptr;
 	}
@@ -39,10 +40,9 @@ ComponentCollider::~ComponentCollider()
 
 void ComponentCollider::SetCenter(const float3& value)
 {
-	if (center.Equals(value)) return;
 	center = value;
 	PxTransform trans = shape->getLocalPose();
-	trans.p = F3_TO_PXVEC3(center);
+	trans.p = F3_TO_PXVEC3(center.Mul(physics->scale.Abs()));
 	BeginUpdateShape();
 	shape->setLocalPose(trans);
 	EndUpdateShape();
@@ -50,7 +50,6 @@ void ComponentCollider::SetCenter(const float3& value)
 
 void ComponentCollider::SetRotation(const float3& value)
 {
-	if (rotation.Equals(value)) return;
 	rotation = value;
 	PxTransform trans = shape->getLocalPose();
 	float3 rad_rotation = DEGTORAD * rotation;
@@ -102,8 +101,8 @@ void ComponentCollider::SetCollisionLayer(std::string layer)
 	filter_data.word0 = index;
 	filter_data.word1 = game_object_attached->ID;
 	shape->setSimulationFilterData(filter_data);
+	shape->setQueryFilterData(filter_data);
 	EndUpdateShape();
-
 	physics->WakeUp();
 }
 
@@ -144,23 +143,25 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 	SetCollisionLayer(to_load->GetString("CollisionLayer"));
 }
 
-void ComponentCollider::Update()
-{
-}
-
 void ComponentCollider::OnEnable()
 {
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_ENABLED);
+	if (!IsController())
+		go->SendAlientEventThis(this, AlienEventType::COLLIDER_ENABLED);
+	else
+		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ENABLED);
 }
 
 void ComponentCollider::OnDisable()
 {
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_DISABLED);
+	if (!IsController())
+		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DISABLED);
+	else
+		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DISABLED);
 }
 
 void ComponentCollider::DrawScene()
 {
-	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics ))
+	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics))
 	{
 		App->physx->DrawCollider(this);
 	}
@@ -256,9 +257,9 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
 	switch (e.type)
 	{
-	case AlienEventType::SCALE_CHANGED: {
+	case AlienEventType::PHYSICS_SCALE_CHANGED: {
 		ScaleChanged();
-		break;} 
+		break; }
 	case AlienEventType::COLLISION_LAYER_STATE_CHANGED: {
 
 		break; }
@@ -272,14 +273,23 @@ void ComponentCollider::InitCollider()
 {
 	shape->userData = this;
 	SetCollisionLayer("Default");
+	go->SendAlientEventThis(this, AlienEventType::COLLIDER_ADDED);
 }
 
-void ComponentCollider::BeginUpdateShape()
+void ComponentCollider::BeginUpdateShape(bool force_update)
 {
-	physics->DettachColldier(this, true);
+	if (!this->force_update)
+		physics->DettachColldier(this, true);
+
+	if (force_update)
+		this->force_update = true;
 }
 
-void ComponentCollider::EndUpdateShape()
+void ComponentCollider::EndUpdateShape(bool force_update)
 {
-	physics->AttachCollider(this, true);
+	if (force_update)
+		this->force_update = false;
+
+	if (!this->force_update)
+		physics->AttachCollider(this, true);
 }

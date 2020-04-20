@@ -23,6 +23,8 @@ public:
 protected:
 
 	virtual void Update(){}
+	virtual void PostUpdate(){}
+
 	virtual void OnEnable(){}
 	virtual void OnDisable(){}
 	virtual bool DrawInspector() { return true; }
@@ -38,4 +40,5 @@ protected:
 	std::string name = "Collider";
 	ComponentTransform* transform = nullptr;
 	ComponentPhysics* physics = nullptr;
+	GameObject* go = nullptr;
 };

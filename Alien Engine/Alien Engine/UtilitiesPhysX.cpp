@@ -201,3 +201,21 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 
 	return physx::PxFilterFlags();
 }
+
+PxQueryHitType::Enum ControllerFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
+{
+	PxFilterData filterData0 = filterData;
+	PxFilterData filterData1 = shape->getSimulationFilterData();
+
+	if (!App->physx->layers.data[filterData0.word0][filterData1.word0] ||  // Check Collision Layers a-b
+		!App->physx->layers.data[filterData1.word0][filterData0.word0] ||  // Check Collision Layers b-a
+		filterData0.word1 == filterData1.word1)                             // Check Game Object ID
+		return PxQueryHitType::Enum::eNONE;
+	else
+		return  PxQueryHitType::Enum::eTOUCH;
+}
+
+PxQueryHitType::Enum ControllerFilterCallback::postFilter(const PxFilterData& filterData, const PxQueryHit& hit)
+{
+	return PxQueryHitType::Enum::eTOUCH;
+}

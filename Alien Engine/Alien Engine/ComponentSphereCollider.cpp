@@ -14,8 +14,8 @@ ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentColli
 	name.assign("Sphere Collider");
 	type = ComponentType::SPHERE_COLLIDER;
 	shape = App->physx->CreateShape(PxSphereGeometry(.5f));
+	radius = 0.5F;
 	InitCollider();
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 }
 
 

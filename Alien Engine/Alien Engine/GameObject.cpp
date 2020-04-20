@@ -1433,6 +1433,19 @@ void GameObject::SendAlienEventAll(void* object, AlienEventType type)
 	App->objects->HandleAlienEvent(alien_event);
 }
 
+void GameObject::SendAlientEventThis(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+
+	for (Component* component : components)
+	{
+		if (component)
+			component->HandleAlienEvent(alien_event);
+	}
+}
+
 
 GameObject* GameObject::GetGameObjectByID(const u64 & id)
 {

@@ -12,15 +12,13 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	name.assign("Box Collider");
 	type = ComponentType::BOX_COLLIDER;
 	shape = App->physx->CreateShape(PxBoxGeometry( .5f ,.5f , .5f ));
-	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 	InitCollider();
 }
 
 void ComponentBoxCollider::SetSize(const float3 value)
 {
-	if (value.Equals(size)) return;
 	size = value;
-	PxBoxGeometry geo(F3_TO_PXVEC3(size * 0.5f));
+	PxBoxGeometry geo(F3_TO_PXVEC3( size.Mul(physics->scale) * 0.5f));
 	BeginUpdateShape();
 	shape->setGeometry(geo);
 	EndUpdateShape();
@@ -31,6 +29,15 @@ void ComponentBoxCollider::QueryMesh(ComponentMesh* mesh)
 	if (mesh == nullptr) return;
 	SetSize(mesh->local_aabb.Size());
 	SetCenter(mesh->local_aabb.CenterPoint());
+}
+
+void ComponentBoxCollider::ScaleChanged()
+{
+	bool update_forced = true;
+	BeginUpdateShape(update_forced); // Force Update to no attach and deattach too times
+	SetSize(size);
+	SetCenter(center);
+	EndUpdateShape(update_forced);
 }
 
 void ComponentBoxCollider::DrawSpecificInspector()

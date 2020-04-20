@@ -37,10 +37,13 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 		all_shapes[i].userData = this;
 
 	controller->setUserData(this);
+
+	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ADDED);
 }
 
 ComponentCharacterController::~ComponentCharacterController()
 {
+	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DELETED);
 	controller->release();
 	delete report;
 }
@@ -233,28 +236,8 @@ bool ComponentCharacterController::DrawInspector()
 	if (ImGui::CollapsingHeader(" Character Controller", &not_destroy))
 	{
 		ImGui::Spacing();
-
-		//ImGui::Title("Layer");
-
-		/*if (ImGui::BeginComboEx(std::string("##layers").c_str(), std::string(" " + App->physics->layers.at(collider->layer)).c_str(), 200, ImGuiComboFlags_NoArrowButton))
-		{
-			for (int n = 0; n < App->physics->layers.size(); ++n)
-			{
-				bool is_selected = (collider->layer == n);
-
-				if (ImGui::Selectable(std::string("   " + App->physics->layers.at(n)).c_str(), is_selected))
-				{
-					collider->layer = n;
-				}
-
-				if (is_selected)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}*/
+	
+		DrawLayersCombo();
 		float slopeLimitDeg = RadToDeg(acosf((float)desc.slopeLimit));
 		ImGui::Title("Slope Limit", 1);				if (ImGui::DragFloat("##slopeLimit", &slopeLimitDeg, 0.03f, 0.0f, 180.0f))					{ SetSlopeLimit(slopeLimitDeg); }
 		ImGui::Title("Step Offset", 1);				if (ImGui::DragFloat("##stepOffset", &desc.stepOffset, 0.03f, 0.0f, FLT_MAX))				{ SetStepOffset(desc.stepOffset); }
@@ -340,7 +323,9 @@ PxControllerCollisionFlags ComponentCharacterController::Move(float3 motion)
 	velocity = controller->getPosition();
 
 	// perform the move
-	PxControllerFilters filters; // TODO: implement filters callback when needed
+	PxFilterData filter_data( layer_num, game_object_attached->ID , 0, 0);
+	PxControllerFilters filters(&filter_data, App->physx->px_controller_filter_callback); // TODO: implement filters callback when needed
+	filters.mFilterFlags |= PxQueryFlag::ePOSTFILTER;
 	collisionFlags = controller->move(F3_TO_PXVEC3(motion), min_distance, Time::GetDT(), filters);
 
 	// set grounded internal state
