@@ -15,20 +15,9 @@ ComponentBoxCollider::ComponentBoxCollider(GameObject* go) : ComponentCollider(g
 	InitCollider();
 }
 
-void ComponentBoxCollider::SetSize(const float3 value)
+const float3 ComponentBoxCollider::CalculateSize()
 {
-	size = value;
-	PxBoxGeometry geo(F3_TO_PXVEC3( size.Mul(physics->scale) * 0.5f));
-	BeginUpdateShape();
-	shape->setGeometry(geo);
-	EndUpdateShape();
-}
-
-void ComponentBoxCollider::QueryMesh(ComponentMesh* mesh)
-{
-	if (mesh == nullptr) return;
-	SetSize(mesh->local_aabb.Size());
-	SetCenter(mesh->local_aabb.CenterPoint());
+	return size.Mul(transform->GetGlobalScale()) * 0.5f;
 }
 
 void ComponentBoxCollider::ScaleChanged()
@@ -42,11 +31,9 @@ void ComponentBoxCollider::ScaleChanged()
 
 void ComponentBoxCollider::DrawSpecificInspector()
 {
-	float3 current_size = size;
-
 	ImGui::Title("Size", 1);		
-	if (ImGui::DragFloat3("##size", current_size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
-		SetSize(current_size);
+	if (ImGui::DragFloat3("##size", size.ptr(), 0.1f, 0.01f, FLT_MAX)) {
+		ReCreateBoxShape();
 	};
 }
 
@@ -54,13 +41,14 @@ void ComponentBoxCollider::Clone(Component* clone)
 {
 	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
 	center = box_clone->GetCenter();
-	size = box_clone->GetSize();
+	size = box_clone->CalculateSize();
 }
 
 void ComponentBoxCollider::Reset()
 {
 	ComponentCollider::Reset();
-	SetSize(float3::one());
+	size = GetLocalMeshAabbSize();
+	ReCreateBoxShape();
 }
 
 void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
@@ -72,5 +60,14 @@ void ComponentBoxCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentBoxCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	SetSize(to_load->GetFloat3("Size"));
+	size = to_load->GetFloat3("Size");
+	ReCreateBoxShape();
+}
+
+// * --------- ACCESS THROUGH SCRIPTING ----------* //
+
+void ComponentBoxCollider::SetSize(float3 size)
+{
+	this->size = size;
+	ReCreateBoxShape();
 }

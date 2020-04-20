@@ -170,6 +170,7 @@ void ComponentCollider::DrawScene()
 void ComponentCollider::Reset()
 {
 	SetCenter(float3::zero());
+	SetRotation(float3::zero());
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
 	SetFriction(0.5f);
@@ -210,6 +211,13 @@ bool ComponentCollider::DrawInspector()
 		ImGui::Title("Rotation", 1);			if (ImGui::DragFloat3("##rotation", current_rotation.ptr(), 0.2f)) { SetRotation(current_rotation); }
 
 		DrawSpecificInspector();
+
+		//ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() * 0.5f - 30);
+		ImGui::SetCursorPosX(12.0f);
+		if(ImGui::Button("fit", ImVec2(60.0f, 22.0f)))
+		{
+			Reset();
+		}
 
 		ImGui::Spacing();
 		ImGui::Spacing();

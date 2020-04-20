@@ -18,42 +18,50 @@ ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentColli
 	InitCollider();
 }
 
-
-void ComponentSphereCollider::QueryMesh(ComponentMesh* mesh)
+const float ComponentSphereCollider::CalculateRadius()
 {
-	if (mesh == nullptr) return;
-
-	ResourceMesh* data =  mesh->mesh;
-	float* vertices = data->vertex;
-	
-	float3* points = new float3[data->num_vertex];
-	for (int i = 0; i < data->num_vertex; ++i)
-	{
-		int pos = i * 3;
-		points[i] = float3(vertices[pos], vertices[pos + 1], vertices[pos + 2]);
-	}
-
-	Sphere sphere = Sphere::FastEnclosingSphere(points, data->num_vertex);
-	delete[]points;
-
-	SetRadius(sphere.Diameter() * 0.5f );
-	SetCenter(sphere.Centroid());
+	return transform->GetGlobalScale().MaxElement() * radius;
 }
 
-void ComponentSphereCollider::SetRadius(float value)
+PxShape* ComponentSphereCollider::RecreateSphereShape()
 {
-	if (value == radius) return;
-	radius = value;
-	PxSphereGeometry geo(radius);
+	if (!shape)
+		return nullptr;
+
 	BeginUpdateShape();
-	shape->setGeometry(geo);
+	PxTransform trans = shape->getLocalPose();
+	float _radius = CalculateRadius();
+	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+	shape->setLocalPose(trans);
+	shape->setGeometry(PxSphereGeometry(_radius));
 	EndUpdateShape();
+
+	return shape;
 }
+
+void ComponentSphereCollider::ScaleChanged()
+{
+	RecreateSphereShape();
+}
+
 
 void ComponentSphereCollider::DrawSpecificInspector()
 {
-	float current_radius = radius;
-	ImGui::Title("Radius", 1);	if (ImGui::DragFloat("##radius", &current_radius, 0.01f, 0.01f, FLT_MAX) ){ SetRadius(current_radius); }
+	ImGui::Title("Radius", 1);	if (ImGui::DragFloat("##radius", &radius, 0.01f, 0.01f, FLT_MAX)) { RecreateSphereShape(); }
+
+}
+
+void ComponentSphereCollider::Reset()
+{
+	ComponentCollider::Reset();
+	InitializeRadius();
+	RecreateSphereShape();
+}
+
+void ComponentSphereCollider::SetRadius(float radius)
+{
+	this->radius = radius;
+	RecreateSphereShape();
 }
 
 void ComponentSphereCollider::SaveComponent(JSONArraypack* to_save)
@@ -65,6 +73,27 @@ void ComponentSphereCollider::SaveComponent(JSONArraypack* to_save)
 void ComponentSphereCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
-	SetRadius(to_load->GetNumber("Radius"));
+	radius = (to_load->GetNumber("Radius"));
+	RecreateSphereShape();
 }
 
+//void ComponentSphereCollider::QueryMesh(ComponentMesh* mesh)
+//{
+//	if (mesh == nullptr) return;
+//
+//	ResourceMesh* data =  mesh->mesh;
+//	float* vertices = data->vertex;
+//	
+//	float3* points = new float3[data->num_vertex];
+//	for (int i = 0; i < data->num_vertex; ++i)
+//	{
+//		int pos = i * 3;
+//		points[i] = float3(vertices[pos], vertices[pos + 1], vertices[pos + 2]);
+//	}
+//
+//	Sphere sphere = Sphere::FastEnclosingSphere(points, data->num_vertex);
+//	delete[]points;
+//
+//	SetRadius(sphere.Diameter() * 0.5f );
+//	SetCenter(sphere.Centroid());
+//}

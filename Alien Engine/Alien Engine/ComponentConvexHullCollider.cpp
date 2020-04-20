@@ -9,6 +9,7 @@
 #include "mmgr/mmgr.h"
 
 #include "ComponentPhysics.h"
+//#include "ModuleRenderer3D.h"
 
 ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : ComponentCollider(go)
 {
@@ -64,8 +65,8 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 		EndUpdateShape();
 		return shape;
 	}
-	else
-		return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
+	
+	return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
 }
 
 
@@ -84,17 +85,6 @@ void ComponentConvexHullCollider::LoadComponent(JSONArraypack* to_load)
 
 void ComponentConvexHullCollider::Update()
 {
-	/*float3 current_scale = transform->GetGlobalScale();
-
-	float l1 = current_scale.LengthSq();
-	float l2 = prev_scale.LengthSq();
-
-	if(l1 != l2)
-	{
-		LOG_ENGINE("SCALE CHANGED");
-		prev_scale = current_scale;
-		CreateConvexMesh(game_object_attached);
-	}*/
 }
 
 void ComponentConvexHullCollider::ScaleChanged()
@@ -105,7 +95,10 @@ void ComponentConvexHullCollider::ScaleChanged()
 
 void ComponentConvexHullCollider::DrawScene()
 {
+	
 	//shape->getGeometry().convexMesh().convexMesh.ge
+
+	App->physx->DrawCollider(this);
 
 	/*if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
 	{
