@@ -65,6 +65,11 @@ struct ParticleInfo
 	float animSpeed = 0.f;
 	bool animated = false;
 	//int currentFrame = 0;
+
+	//Stretch billboard
+	float lengthScale = 1.0f;
+	float speedScale = 0.0f;
+	float velocityScale = 0.0f;
 };
 
 struct ParticleMutableInfo

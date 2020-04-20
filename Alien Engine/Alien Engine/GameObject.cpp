@@ -144,7 +144,7 @@ GameObject* GameObject::GetChildRecursive(const char* child_name)
 	}
 }
 
-std::vector<GameObject*> GameObject::GetChildren()
+std::vector<GameObject*>& GameObject::GetChildren()
 {
 	return children;
 }
@@ -756,9 +756,10 @@ GameObject* GameObject::FindWithTag(const char* tag_to_find)
 	return App->objects->GetRoot(true)->FindTag(tag_to_find);
 }
 
-std::vector<GameObject*> GameObject::FindGameObjectsWithTag(const char* tag_to_find)
+std::vector<GameObject*>& GameObject::FindGameObjectsWithTag(const char* tag_to_find)
 {
-	std::vector<GameObject*> found;
+	static std::vector<GameObject*> found;
+	found.clear();
 	App->objects->GetRoot(true)->FindTags(tag_to_find, &found);
 	return found;
 }
@@ -1071,6 +1072,7 @@ OBB GameObject::GetGlobalOBB()
 
 void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 {
+	OPTICK_EVENT();
 	to_save->SetString("Name", name);
 	to_save->SetNumber("FamilyNumber", family_number);
 	to_save->SetString("ID", std::to_string(ID).data());

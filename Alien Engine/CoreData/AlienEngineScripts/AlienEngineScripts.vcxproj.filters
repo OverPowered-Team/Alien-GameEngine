@@ -7,6 +7,7 @@
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="CameraShake.cpp" />
     <ClCompile Include="CameraUltiMode.cpp" />
+    <ClCompile Include="TestScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
@@ -15,6 +16,7 @@
     <ClInclude Include="PlayerTest.h" />
     <ClInclude Include="CameraShake.h" />
     <ClInclude Include="CameraUltiMode.h" />
+    <ClInclude Include="TestScript.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
