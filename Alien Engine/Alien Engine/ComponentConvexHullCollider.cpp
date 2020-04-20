@@ -83,6 +83,7 @@ void ComponentConvexHullCollider::LoadComponent(JSONArraypack* to_load)
 {
 	ComponentCollider::LoadComponent(to_load);
 	vertex_limit = to_load->GetNumber("VertexLimit");
+	CreateConvexMesh(game_object_attached);
 }
 
 void ComponentConvexHullCollider::Update()
