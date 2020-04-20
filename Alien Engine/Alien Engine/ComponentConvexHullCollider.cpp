@@ -64,7 +64,9 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 	if (shape)	// if we are re-creating actual shape
 	{
 		PxTransform trans = shape->getLocalPose();
+		float3 rad_rot = float3(rotation.x, rotation.y, rotation.z) * DEGTORAD;
 		trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+		trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rot.x, rad_rot.y, rad_rot.z));
 		shape->setLocalPose(trans);
 		shape->setGeometry(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
 		EndUpdateShape();
@@ -98,7 +100,7 @@ void ComponentConvexHullCollider::Clone(Component* clone)
 	ComponentConvexHullCollider* hull_clone = (ComponentConvexHullCollider*)clone;
 	hull_clone->vertex_limit = vertex_limit;
 	hull_clone->center = center;
-	//hull_clone->rotation = rotation;
+	hull_clone->rotation = rotation;
 	hull_clone->CreateConvexMesh(clone->game_object_attached);
 }
 
