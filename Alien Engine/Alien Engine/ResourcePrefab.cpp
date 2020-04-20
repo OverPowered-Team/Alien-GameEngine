@@ -307,8 +307,8 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		obj->transform->SetLocalPosition(pos);
 		if (set_selected) {
 			App->objects->SetNewSelectedObject(obj, false);
-			App->camera->fake_camera->Look(parent->children.back()->GetBB().CenterPoint());
-			App->camera->reference = parent->children.back()->GetBB().CenterPoint();
+			/*App->camera->fake_camera->Look(parent->children.back()->GetBB().CenterPoint());
+			App->camera->reference = parent->children.back()->GetBB().CenterPoint();*/
 		}
 
 		ComponentRigidBody* rb = (ComponentRigidBody*)(obj)->GetComponent(ComponentType::RIGID_BODY);
