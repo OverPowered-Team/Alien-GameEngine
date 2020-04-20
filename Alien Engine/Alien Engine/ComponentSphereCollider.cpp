@@ -37,7 +37,9 @@ PxShape* ComponentSphereCollider::RecreateSphereShape()
 	BeginUpdateShape();
 	PxTransform trans = shape->getLocalPose();
 	float _radius = CalculateRadius();
+	float3 rad_rot = float3(rotation.x, rotation.y, rotation.z) * DEGTORAD;
 	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rot.x, rad_rot.y, rad_rot.z));
 	shape->setLocalPose(trans);
 	shape->setGeometry(PxSphereGeometry(_radius));
 	EndUpdateShape();
@@ -86,5 +88,6 @@ void ComponentSphereCollider::Clone(Component* clone)
 	ComponentSphereCollider* sphere_clone = (ComponentSphereCollider*)clone;
 	sphere_clone->radius = radius;
 	sphere_clone->center = center;
+	sphere_clone->rotation = rotation;
 	sphere_clone->RecreateSphereShape();
 }

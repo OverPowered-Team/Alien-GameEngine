@@ -32,7 +32,9 @@ PxShape* ComponentBoxCollider::ReCreateBoxShape()
 	BeginUpdateShape();
 	PxTransform trans = shape->getLocalPose();
 	float3 dimensions = CalculateSize();
+	float3 rad_rot = float3(rotation.x, rotation.y, rotation.z) * DEGTORAD;
 	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rot.x, rad_rot.y, rad_rot.z));
 	shape->setLocalPose(trans);
 	shape->setGeometry(PxBoxGeometry(dimensions.x, dimensions.y, dimensions.z));
 	EndUpdateShape();
@@ -58,6 +60,7 @@ void ComponentBoxCollider::Clone(Component* clone)
 	ComponentBoxCollider* box_clone = (ComponentBoxCollider*)clone;
 	box_clone->center = center;
 	box_clone->size = size;
+	box_clone->rotation = rotation;
 	box_clone->ReCreateBoxShape();
 }
 
