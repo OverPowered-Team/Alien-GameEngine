@@ -37,6 +37,8 @@ private:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void Clone(Component* clone);
+
 private:
 
 	float radius = 0.5f;

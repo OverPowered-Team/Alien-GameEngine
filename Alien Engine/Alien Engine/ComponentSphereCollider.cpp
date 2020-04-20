@@ -81,23 +81,10 @@ void ComponentSphereCollider::LoadComponent(JSONArraypack* to_load)
 	RecreateSphereShape();
 }
 
-//void ComponentSphereCollider::QueryMesh(ComponentMesh* mesh)
-//{
-//	if (mesh == nullptr) return;
-//
-//	ResourceMesh* data =  mesh->mesh;
-//	float* vertices = data->vertex;
-//	
-//	float3* points = new float3[data->num_vertex];
-//	for (int i = 0; i < data->num_vertex; ++i)
-//	{
-//		int pos = i * 3;
-//		points[i] = float3(vertices[pos], vertices[pos + 1], vertices[pos + 2]);
-//	}
-//
-//	Sphere sphere = Sphere::FastEnclosingSphere(points, data->num_vertex);
-//	delete[]points;
-//
-//	SetRadius(sphere.Diameter() * 0.5f );
-//	SetCenter(sphere.Centroid());
-//}
+void ComponentSphereCollider::Clone(Component* clone)
+{
+	ComponentSphereCollider* sphere_clone = (ComponentSphereCollider*)clone;
+	sphere_clone->radius = radius;
+	sphere_clone->center = center;
+	sphere_clone->RecreateSphereShape();
+}

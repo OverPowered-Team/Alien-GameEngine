@@ -116,6 +116,16 @@ void ComponentCapsuleCollider::Reset()
 {
 }
 
+void ComponentCapsuleCollider::Clone(Component* clone)
+{
+	// TODO: REWORK this clone
+	ComponentCapsuleCollider* capsule_clone = (ComponentCapsuleCollider*)clone;
+	capsule_clone->SetHeight(height);
+	capsule_clone->SetRotation(rotation);
+	capsule_clone->SetRadius(radius);
+	capsule_clone->SetCenter(center);
+}
+
 void ComponentCapsuleCollider::SaveComponent(JSONArraypack* to_save)
 {
 	ComponentCollider::SaveComponent(to_save);

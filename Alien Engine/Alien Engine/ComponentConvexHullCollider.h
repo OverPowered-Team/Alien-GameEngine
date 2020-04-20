@@ -28,6 +28,8 @@ private:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void Clone(Component* component);
+
 	void ScaleChanged();
 
 
@@ -40,6 +42,6 @@ private:
 
 	int vertex_limit = 64.0f; // default vertex limit
 	float3 prev_scale;
-	bool valid = false;
+	bool valid = false; // used only to avoid getting on each frame the mesh to print error message on panel
 
 };

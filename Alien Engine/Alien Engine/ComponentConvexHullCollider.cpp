@@ -31,7 +31,7 @@ ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : Compo
 PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 {
 	// try to get mesh from gameobject
-	const ComponentMesh* mesh = go->GetComponent<ComponentMesh>();
+	const ComponentMesh* mesh = GetMesh();
 	if (!mesh) {
 		valid = false;
 		return nullptr;
@@ -63,6 +63,9 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 	valid = true;
 	if (shape)	// if we are re-creating actual shape
 	{
+		PxTransform trans = shape->getLocalPose();
+		trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+		shape->setLocalPose(trans);
 		shape->setGeometry(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
 		EndUpdateShape();
 		return shape;
@@ -88,6 +91,15 @@ void ComponentConvexHullCollider::LoadComponent(JSONArraypack* to_load)
 
 void ComponentConvexHullCollider::Update()
 {
+}
+
+void ComponentConvexHullCollider::Clone(Component* clone)
+{
+	ComponentConvexHullCollider* hull_clone = (ComponentConvexHullCollider*)clone;
+	hull_clone->vertex_limit = vertex_limit;
+	hull_clone->center = center;
+	//hull_clone->rotation = rotation;
+	hull_clone->CreateConvexMesh(clone->game_object_attached);
 }
 
 void ComponentConvexHullCollider::ScaleChanged()
