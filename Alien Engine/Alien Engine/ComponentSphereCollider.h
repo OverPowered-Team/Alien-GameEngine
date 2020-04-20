@@ -19,7 +19,7 @@ public:
 
 	ComponentSphereCollider(GameObject* go);
 
-	void QueryMesh(ComponentMesh* mesh);
+	/*virtual void QueryMesh(ComponentMesh* mesh) override;*/
 	void SetRadius(float radius);
 
 private:

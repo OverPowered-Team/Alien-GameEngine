@@ -37,7 +37,7 @@ public:
 
 	// Colliders values
 
-	virtual void QueryMesh(ComponentMesh* mesh) {}
+	//virtual void QueryMesh(ComponentMesh* mesh) {};
 	virtual void SetCenter(const float3& value);
 	float3 GetCenter() { return center; }
 	virtual void SetRotation(const float3& value);
@@ -60,6 +60,7 @@ protected:
 	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER ); }
 	inline void BeginUpdateShape();
 	inline void EndUpdateShape();
+	
 
 	void OnEnable();
 	void OnDisable();

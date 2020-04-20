@@ -15,9 +15,9 @@
 ContactPoint::ContactPoint(const float3& normal, const float3& point, float separation, ComponentCollider* this_collider, ComponentCollider* other_collider) :
 	normal(normal), point(point), separation(separation), this_collider(this_collider), other_collider(other_collider) {}
 
-Collision::Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts, 
+Collision::Collision(ComponentCollider* collider, ComponentRigidBody* rigid_body, ComponentTransform* transform, const std::vector<ContactPoint>& contancts,
 	uint num_contact, GameObject* game_object, const float3& impulse, const float3& relative_velocity) :
-	collider(collider), rigid_body(rigid_body), transform(transform), contancts(contancts), num_contact(num_contact), game_object(game_object), impulse(impulse) , relative_velocity(relative_velocity){}
+	collider(collider), rigid_body(rigid_body), transform(transform), contancts(contancts), num_contact(num_contact), game_object(game_object), impulse(impulse), relative_velocity(relative_velocity) {}
 
 ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 {
@@ -42,7 +42,7 @@ void ComponentCollider::SetCenter(const float3& value)
 	if (center.Equals(value)) return;
 	center = value;
 	PxTransform trans = shape->getLocalPose();
-	trans.p = F3_TO_PXVEC3(center);
+	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
 	BeginUpdateShape();
 	shape->setLocalPose(trans);
 	EndUpdateShape();
@@ -160,7 +160,7 @@ void ComponentCollider::OnDisable()
 
 void ComponentCollider::DrawScene()
 {
-	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics ))
+	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics))
 	{
 		App->physx->DrawCollider(this);
 	}
@@ -258,7 +258,7 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 	{
 	case AlienEventType::SCALE_CHANGED: {
 		ScaleChanged();
-		break;} 
+		break; }
 	case AlienEventType::COLLISION_LAYER_STATE_CHANGED: {
 
 		break; }
