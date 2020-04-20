@@ -865,6 +865,7 @@
     <ClInclude Include="PCG\pcg_extras.hpp" />
     <ClInclude Include="PCG\pcg_random.hpp" />
     <ClInclude Include="PCG\pcg_uint128.hpp" />
+    <ClInclude Include="Perlin_Noise\PerlinNoise.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Prefab.h" />
     <ClInclude Include="RandomHelper.h" />
@@ -1234,6 +1235,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Perlin_Noise\PerlinNoise.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="RayCreator.cpp" />
