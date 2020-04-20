@@ -1353,6 +1353,7 @@ void ModuleObjects::CreateEmptyScene()
 
 void ModuleObjects::SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number)
 {
+	OPTICK_EVENT();
 	obj->SaveObject(to_save, family_number);
 
 	std::vector<GameObject*>::iterator item = obj->children.begin();

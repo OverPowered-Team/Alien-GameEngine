@@ -26,6 +26,8 @@
 #include "mmgr/mmgr.h"
 #include "Viewport.h"
 
+#include "Optick/include/optick.h"
+
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {
 	type = ComponentType::CAMERA;
@@ -741,6 +743,7 @@ float3 ComponentCamera::GetBackgroundColor() const
 
 void ComponentCamera::DrawSkybox()
 {
+	OPTICK_EVENT();
 	if (App->renderer3D->render_skybox && !activeFog)
 	{
 		glDepthFunc(GL_LEQUAL);
@@ -856,6 +859,7 @@ void ComponentCamera::Clone(Component* clone)
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 {
+	OPTICK_EVENT();
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("VerticalFov", vertical_fov);
@@ -895,6 +899,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 {
+	OPTICK_EVENT();
 	enabled = to_load->GetBoolean("Enabled");
 	vertical_fov = to_load->GetNumber("VerticalFov");
 	horizontal_fov = to_load->GetNumber("HoritzontalFov");
