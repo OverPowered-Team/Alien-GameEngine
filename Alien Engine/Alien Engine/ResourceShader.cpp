@@ -208,7 +208,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1i("reflection_texture", 1);
 		SetUniform1i("refraction_texture", 2);
 		SetUniform1i("dudv_map", 3);
-		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.1f);
+		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.075f);
 		ApplyLightsUniforms();
 		break; }
 
