@@ -30,7 +30,6 @@
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
-#include "ModulePhysics.h"
 #include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"

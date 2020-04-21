@@ -75,7 +75,6 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class ComponentTransform;
 	friend class ComponentPhysics;
 	friend class SimulationEventCallback;
-	friend class ModulePhysics;
 	friend class ComponentCollider;
 	friend class GameObject;
 	friend class ComponentCharacterController;

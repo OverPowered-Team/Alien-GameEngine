@@ -3,7 +3,6 @@
 #include "ComponentBoxCollider.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
-#include "ModulePhysics.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
 

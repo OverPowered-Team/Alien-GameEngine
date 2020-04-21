@@ -13,7 +13,6 @@ class __declspec(dllexport) ComponentPhysics : public Component
 	friend class SimulationEventCallback;
 
 	friend class ModuleObjects;
-	friend class ModulePhysics;
 	friend class ModulePhysX;
 	friend class ComponentTransform;
 	friend class ComponentCollider;

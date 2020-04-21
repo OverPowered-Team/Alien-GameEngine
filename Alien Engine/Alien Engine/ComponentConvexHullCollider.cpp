@@ -1,7 +1,6 @@
 #include "Application.h"
 #include "ComponentTransform.h"
 #include "ComponentConvexHullCollider.h"
-#include "Bullet/include/BulletCollision/CollisionShapes/btShapeHull.h"
 #include "ComponentRigidBody.h"
 #include "ComponentMesh.h"
 #include "ResourceMesh.h"

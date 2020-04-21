@@ -2,10 +2,8 @@
 
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
-class ModulePhysics;
 class ComponentMesh;
 
 class ComponentSphereCollider : public ComponentCollider
@@ -13,7 +11,6 @@ class ComponentSphereCollider : public ComponentCollider
 public:
 
 	friend class GameObject;
-	friend class ModulePhysics;
 
 public:
 

@@ -4,12 +4,10 @@
 #include "MathGeoLib/include/Math/MathAll.h"
 
 class GameObject;
-class ModulePhysics;
 
 
 class __declspec(dllexport) ComponentBoxCollider : public ComponentCollider
 {
-	friend class ModulePhysics;
 	friend class GameObject;
 
 public:

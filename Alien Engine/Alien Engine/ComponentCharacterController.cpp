@@ -358,7 +358,7 @@ void ComponentCharacterController::SetCollisionLayer(std::string layer)
 
 void ComponentCharacterController::DrawScene()
 {
-	if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
+	if (game_object_attached->IsSelected() && App->physx->debug_physics == false)
 	{
 		switch (desc.getType())
 		{

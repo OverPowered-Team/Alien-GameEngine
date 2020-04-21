@@ -2,16 +2,13 @@
 
 #include "ComponentCollider.h"
 #include "MathGeoLib/include/Math/MathAll.h"
-#include "Bullet/include/btBulletDynamicsCommon.h"
 
 class GameObject;
-class ModulePhysics;
 class ComponentMesh;
 class btShapeHull;
 
 class __declspec(dllexport)  ComponentConvexHullCollider : public ComponentCollider
 {
-	friend class ModulePhysics;
 	friend class GameObject;
 
 public:

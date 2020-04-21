@@ -2,7 +2,6 @@
 #include "ComponentPhysics.h"
 #include "ComponentCapsuleCollider.h"
 #include "ComponentTransform.h"
-#include "ModulePhysics.h"
 #include "GameObject.h"
 #include "imgui/imgui.h"
 

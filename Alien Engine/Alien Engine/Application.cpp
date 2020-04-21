@@ -5,7 +5,6 @@
 #include "ModuleCamera3D.h"
 #include "ModuleUI.h"
 #include "AnimTween.h"
-#include "ModulePhysics.h"
 #include "ModulePhysX.h"
 #include "ModuleObjects.h"
 #include "ModuleFileSystem.h"
@@ -36,7 +35,6 @@ Application::Application()
 	fade_to_black = new FadeToBlack();
 	objects = new ModuleObjects();
 	physx = new ModulePhysX();
-	physics = new ModulePhysics();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
 	audio = new ModuleAudio();
@@ -56,7 +54,6 @@ Application::Application()
 	AddModule(audio);
 	// Scenes
 	AddModule(physx);
-	AddModule(physics);
 	AddModule(fade_to_black);
 	AddModule(objects);
 	AddModule(tween);

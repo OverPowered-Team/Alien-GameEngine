@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "ModulePhysics.h"
 #include "ComponentPhysics.h"
 #include "ComponentRigidBody.h"
 #include "ComponentTransform.h"

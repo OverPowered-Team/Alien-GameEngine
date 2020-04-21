@@ -1,6 +1,5 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModulePhysics.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentCollider.h"
 #include "ComponentTransform.h"
