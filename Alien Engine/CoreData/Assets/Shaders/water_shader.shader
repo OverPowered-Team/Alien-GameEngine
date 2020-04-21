@@ -150,6 +150,8 @@ uniform sampler2D reflection_texture;
 uniform sampler2D refraction_texture;
 uniform sampler2D dudv_map;
 
+uniform float move_factor;
+
 const float wave_strength = 0.02;
 
 // Ins
@@ -213,10 +215,14 @@ void main()
     vec2 refraction_coords = vec2(ndc.x, -ndc.y);
     vec2 reflection_coords = vec2(ndc.x, ndc.y);
 
-    vec2 distortion01 = (texture(dudv_map, vec2(texCoordsD.x, texCoordsD.y)).rg * 2.0 - 1.0) * wave_strength;
+    vec2 distortion01 = (texture(dudv_map, vec2(texCoordsD.x + move_factor, texCoordsD.y)).rg * 2.0 - 1.0) * wave_strength;
 
     refraction_coords += distortion01;
+    //refraction_coords = clamp(refraction_coords, 0.001, 0.999);
+
     reflection_coords += distortion01;
+    //reflection_coords.x = clamp(reflection_coords.x, 0.001, 0.999);
+    //reflection_coords.y = clamp(reflection_coords.y, -0.999, -0.001);
 
     vec4 reflection_colour = texture(reflection_texture, reflection_coords);
     vec4 refraction_colour = texture(refraction_texture, refraction_coords);
