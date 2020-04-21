@@ -21,10 +21,13 @@ uniform float gradient = 0;
 
 out vec3 frag_pos;
 out vec2 texCoords;
+out vec2 texCoordsD;
 out vec3 norms;
 out mat3 TBN; 
 out float visibility; 
 out vec4 clip_space;
+
+const float tiling = 6.0;
 
 void main()
 {
@@ -33,6 +36,7 @@ void main()
     frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
     clip_space = projection * view * model * vec4(position.x, 0.0, position.y, 1.0);
+    texCoordsD = vec2(position.x / 2.0 + 0.5, position.y / 2.0 + 0.5) * tiling;
 
     // --------- Fog ----------
     vec4 worldPos = model * pos;
@@ -144,6 +148,7 @@ uniform SpotLight spot_light[MAX_LIGHTS_PER_TYPE];
 
 uniform sampler2D reflection_texture;
 uniform sampler2D refraction_texture;
+uniform sampler2D dudv_map;
 
 // Ins
 in vec2 texCoords;
@@ -152,6 +157,7 @@ in vec3 norms;
 in mat3 TBN;
 in float visibility;
 in vec4 clip_space;
+in vec2 texCoordsD;
 
 // Outs
 out vec4 FragColor;
@@ -204,6 +210,11 @@ void main()
     
     vec2 refraction_coords = vec2(ndc.x, -ndc.y);
     vec2 reflection_coords = vec2(ndc.x, ndc.y);
+
+    vec2 distortion01 = texture(dudv_map, vec2(texCoordsD.x, texCoordsD.y)).rg * 2.0 - 1.0;
+
+    refraction_coords += distortion01;
+    reflection_coords += distortion01;
 
     vec4 reflection_colour = texture(reflection_texture, reflection_coords);
     vec4 refraction_colour = texture(refraction_texture, refraction_coords);

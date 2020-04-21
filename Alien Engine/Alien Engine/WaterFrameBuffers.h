@@ -5,6 +5,8 @@
 
 #include "Globals.h"
 
+class ResourceTexture;
+
 class WaterFrameBuffers
 {
 public:
@@ -37,6 +39,8 @@ public:
 
 	static int refraction_width;
 	static int refraction_height;
+
+	ResourceTexture* dvud_tex = nullptr;
 
 private:
 	uint reflection_frame_buffer;

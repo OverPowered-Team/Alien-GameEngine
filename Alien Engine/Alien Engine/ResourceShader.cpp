@@ -206,6 +206,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
 		SetUniform1i("reflection_texture", 1);
 		SetUniform1i("refraction_texture", 2);
+		SetUniform1i("dudv_map", 3);
 		ApplyLightsUniforms();
 		break; }
 
