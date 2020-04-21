@@ -186,6 +186,12 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 		material->BindTexture();
 	}*/
 
+	// Skybox Drawn before anything ---
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
+
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
@@ -205,11 +211,6 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 		if (mesh->draw_OBB)
 			mesh->DrawOBB(camera);
 	}
-
-	// This will draw the editor skybox too.
-	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
-	// component camera it will have no effect on the editor skybox.
-	camera->DrawSkybox();
 
 	for (Component* component : components)
 	{
@@ -235,17 +236,18 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 		material->BindTexture();
 	}*/
 
+	// Skybox Drawn before anything ---
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
+
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		mesh->DrawPolygon(camera);
 	}
-
-	// This will draw the editor skybox too.
-	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
-	// component camera it will have no effect on the editor skybox.
-	camera->DrawSkybox();
 }
 
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
