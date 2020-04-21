@@ -1,0 +1,780 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "aaaa",
+                "FamilyNumber": 1,
+                "ID": "11439720886853326512",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -8.0535202026367188,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7533416916279053482"
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "10866733560165582585",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            8.1528415679931641,
+                            -6.1146903038024902
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7717858219722886824"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "5794239562045404946",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "2949376144983816512",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "10445449764205582015",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            3.0498313903808594,
+                            -7.4039821624755859
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12621000063810925380"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "12591115819819616694",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "2500866757323213583",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "10420658084342992863",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            5.1254677772521973,
+                            -2.6952707767486572
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9433922952836813000"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "119563305232023835",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "3899103461112512705",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "11491457643171622595",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            7.4505805969238281e-09,
+                            4.4425821304321289,
+                            0.023079987615346909
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6788428767149193093"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "1787436889262034672",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "14656877024889019864",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "2852439096671749119",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            9.0371646881103516,
+                            -1.6734036207199097
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16923263439714092048"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "6401684304152045498",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "17173923562757387629",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "8364011848818394304",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -8.228382974984072e-10,
+                            9.1620798110961914,
+                            -4.1104650497436523
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18059508920789690080"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "11997697833480126",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "7748947335367529757",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "17480646983758801026",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            6.8412299156188965,
+                            -2.529515266418457
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11538431880280100874"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "6327320127715010386",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "17341205698820082071",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            },
+            {
+                "Name": "Sphere",
+                "FamilyNumber": 2,
+                "ID": "424998376543304872",
+                "ParentID": "11439720886853326512",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "254722067645923271",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            5.3900251388549805,
+                            -5.6672425270080566
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.49111530184745789,
+                            0.5056958794593811,
+                            0.46685653924942017
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1392295873692648521"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "16274044338490595718",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 1,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "10892089787818418142",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 8,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0,
+                        "Friction": 0,
+                        "AngularFriction": 0,
+                        "Radius": 0.5
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 11,
+                        "IsKinematic": 0,
+                        "Mass": 0,
+                        "Drag": 0,
+                        "AngularDrag": 0,
+                        "FreezePosX": false,
+                        "FreezePosY": false,
+                        "FreezePosZ": false,
+                        "FreezeRotX": false,
+                        "FreezeRotY": false,
+                        "FreezeRotZ": false
+                    }
+                ]
+            }
+        ]
+    }
+}

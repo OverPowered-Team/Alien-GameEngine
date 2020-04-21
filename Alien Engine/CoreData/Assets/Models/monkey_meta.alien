@@ -1,0 +1,47 @@
+{
+    "Meta": {
+        "ID": "7504204333191706490",
+        "NumMeshes": 1,
+        "Name": "monkey",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/798519391425565370.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/12777781345559444999.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rot": [
+                -0.7071068286895752,
+                0,
+                0,
+                0.70710670948028564
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Suzanne",
+            "parentName": "monkey",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}
