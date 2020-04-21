@@ -919,8 +919,7 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceModel* model = new ResourceModel();
 		if (!model->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
-			model->DeleteMetaData();
-			App->importer->LoadModelFile(std::string(current_folder + files[i]).data(), std::string(current_folder + files[i]).data());
+			App->importer->ReImportModel(model);
 		}
 	}
 	if (!directories.empty()) {

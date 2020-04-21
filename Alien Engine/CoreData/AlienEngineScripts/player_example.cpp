@@ -22,7 +22,7 @@ void player_example::Update()
 
     for (uint i = 0; i < colliders.size(); ++i)
     {
-        LOG("Overlapping sphere on r: %f gameobject: %s", overlap_r, colliders[i]->game_object_attached->GetName());
+        //LOG("Overlapping sphere on r: %f gameobject: %s", overlap_r, colliders[i]->game_object_attached->GetName());
     }
 
 	// * ------------------------- RAYCAST --------------------------------* //
@@ -52,7 +52,7 @@ void player_example::Update()
 	float joystick_threshold = 0.2f;
 	float x_axis = Input::GetControllerHoritzontalLeftAxis(1);
 	float y_axis = Input::GetControllerVerticalLeftAxis(1);
-	bool jump = Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A);
+	bool jump = Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) ||Input::GetKeyDown(SDL_SCANCODE_A);
 
 	if (ccontroller->isGrounded)
 	{

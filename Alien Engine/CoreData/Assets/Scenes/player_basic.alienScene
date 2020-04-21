@@ -9,7 +9,7 @@
                 "ParentID": "12931508060670575766",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -20,14 +20,14 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            0,
-                            0
+                            4.403954029083252,
+                            -19.648262023925781
                         ],
                         "Rotation": [
+                            0.19758452475070953,
                             0,
                             0,
-                            0,
-                            0
+                            0.9802858829498291
                         ],
                         "Scale": [
                             1,
@@ -41,7 +41,7 @@
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 86.511734008789063,
+                        "HoritzontalFov": 91.492843627929688,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -53,7 +53,7 @@
                         "isFovHori": 0,
                         "ID": "10475761051264739894",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": false,
+                        "IsSelectedCamera": true,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -149,7 +149,7 @@
                 "ParentID": "12931508060670575766",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
