@@ -239,7 +239,7 @@ void ModulePhysX::DrawCollider(ComponentCollider* collider)
 	case ComponentType::CONVEX_HULL_COLLIDER: {
 		PxConvexMeshGeometry geo;
 		collider->shape->getConvexMeshGeometry(geo);
-		DebugDrawConvex(trans, geo.convexMesh, color);
+		DebugDrawConvex(trans, PXVEC3_TO_F3(geo.scale.scale), geo.convexMesh, color);
 		break; }
 
 	default:
@@ -247,10 +247,11 @@ void ModulePhysX::DrawCollider(ComponentCollider* collider)
 	}
 }
 
-void ModulePhysX::DebugDrawConvex(const float4x4& transform, const PxConvexMesh* mesh, const float3& color) const
+void ModulePhysX::DebugDrawConvex(const float4x4& transform, const float3& scale,const PxConvexMesh* mesh, const float3& color) const
 {
 	glPushMatrix();
-	glMultMatrixf(transform.Transposed().ptr());
+	float4x4 trans = (transform * trans.Scale(scale)).Transposed();
+	glMultMatrixf(trans.ptr());
 	ModuleRenderer3D::BeginDebugDraw(float4(color.x, color.y, color.z, 1.0f));
 
 	const PxU32 npolys = mesh->getNbPolygons();
