@@ -24,7 +24,6 @@ private:
 
 	void DrawSpecificInspector();
 
-	void DrawScene();
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 

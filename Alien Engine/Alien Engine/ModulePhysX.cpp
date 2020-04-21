@@ -14,6 +14,8 @@
 #include "Optick/include/optick.h"
 #include "CollisionLayers.h"
 
+
+
 ModulePhysX::ModulePhysX(bool start_enabled) : Module(start_enabled)
 {
 
@@ -67,7 +69,7 @@ bool ModulePhysX::Init()
 	px_dispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = px_dispatcher;
 	sceneDesc.filterShader = FilterShader;
-	sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP ;
+	sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP;
 	sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 	px_scene = px_physics->createScene(sceneDesc);
 	px_scene->setSimulationEventCallback(px_simulation_callback);
@@ -86,7 +88,7 @@ bool ModulePhysX::Init()
 	px_default_material = px_physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	PxShape* s = px_physics->createShape(PxPlaneGeometry(), *px_default_material);
-	PxRigidActor* a = px_physics->createRigidStatic(PxTransform(QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0,0, 90 * DEGTORAD))));
+	PxRigidActor* a = px_physics->createRigidStatic(PxTransform(QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0, 0, 90 * DEGTORAD))));
 	a->attachShape(*s);
 	PxFilterData data(0, 3, 0, 0);
 	s->setQueryFilterData(data);
@@ -94,7 +96,7 @@ bool ModulePhysX::Init()
 	px_scene->addActor(*a);
 
 	// create characters controller manager
-	if(px_scene)
+	if (px_scene)
 		controllers_manager = PxCreateControllerManager(*px_scene);
 
 
@@ -214,13 +216,13 @@ void ModulePhysX::UnloadPhysicsExplicitely()
 
 void ModulePhysX::DrawCollider(ComponentCollider* collider)
 {
-	float4x4 trans(PXTRANS_TO_F4X4(collider->physics->actor->getGlobalPose()* collider->shape->getLocalPose()));
+	float4x4 trans(PXTRANS_TO_F4X4(collider->physics->actor->getGlobalPose() * collider->shape->getLocalPose()));
 	float3 color = float3(0.f, 1.f, 0.f);
 
 	switch (collider->type)
 	{
 	case ComponentType::BOX_COLLIDER: {
-		PxBoxGeometry geo; 
+		PxBoxGeometry geo;
 		collider->shape->getBoxGeometry(geo);
 		App->renderer3D->DebugDrawBox(trans, PXVEC3_TO_F3(geo.halfExtents), color);
 		break; }
@@ -234,20 +236,51 @@ void ModulePhysX::DrawCollider(ComponentCollider* collider)
 		collider->shape->getCapsuleGeometry(geo);
 		App->renderer3D->DebugDrawCapsule(trans, geo.radius, geo.halfHeight, color);
 		break; }
-	//case ComponentType::CONVEX_HULL_COLLIDER: {
-	//	App->renderer3D->DebugDrawBox();
-	//	break; }
+	case ComponentType::CONVEX_HULL_COLLIDER: {
+		PxConvexMeshGeometry geo;
+		collider->shape->getConvexMeshGeometry(geo);
+		DebugDrawConvex(trans, geo.convexMesh, color);
+		break; }
 
 	default:
 		break;
 	}
 }
 
+void ModulePhysX::DebugDrawConvex(const float4x4& transform, const PxConvexMesh* mesh, const float3& color) const
+{
+	glPushMatrix();
+	glMultMatrixf(transform.Transposed().ptr());
+	ModuleRenderer3D::BeginDebugDraw(float4(color.x, color.y, color.z, 1.0f));
+
+	const PxU32 npolys = mesh->getNbPolygons();
+	const PxU8* indices = mesh->getIndexBuffer();
+	const PxVec3* vertices = mesh->getVertices();
+
+	for (uint i = 0; i < npolys; ++i) {
+		PxHullPolygon poly;
+		if (!mesh->getPolygonData(i, poly))
+			continue;
+		
+		glBegin(GL_LINE_LOOP);
+		PxU16 idx_offset = poly.mIndexBase;
+		for (uint j = 0; j < poly.mNbVerts; ++j) {
+			glVertex3f(vertices[indices[idx_offset + j]].x, vertices[indices[idx_offset + j]].y, vertices[indices[idx_offset + j]].z);
+		}
+		glEnd();
+	}
+	
+	ModuleRenderer3D::EndDebugDraw();
+	glPopMatrix();
+}
+
+
 void ModulePhysX::DrawWorld()
 {
 	ModuleRenderer3D::BeginDebugDraw(float4(0.f, 1.f, 0.f, 1.f));
 
 	const PxRenderBuffer& rb = px_scene->getRenderBuffer();
+
 	PxU32 num_lines = rb.getNbLines();
 	const PxDebugLine* lines = rb.getLines();
 
@@ -303,10 +336,10 @@ bool ModulePhysX::Raycast(float3 origin, float3 unitDir, float maxDistance, PxRa
 {
 	PxVec3 _origin = F3_TO_PXVEC3(origin);
 	PxVec3 _unitDir = F3_TO_PXVEC3(unitDir);
-	
+
 	//PxQueryFilterData _filterData = PxQueryFilterData(PxQueryFlag::eANY_HIT);
 	//return px_scene->raycast(_origin, _unitDir, maxDistance, hit, PxHitFlag::eDEFAULT, _filterData);  // TODO: implement filtering (layermask | queryTriggerInteraction)
-	
+
 	return px_scene->raycast(_origin, _unitDir, maxDistance, hit);  // TODO: implement filtering (layermask | queryTriggerInteraction)
 }
 
@@ -339,7 +372,7 @@ const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, 
 	PxTransform shapePose = PxTransform(F3_TO_PXVEC3(center));
 
 	std::vector<ComponentCollider*> colliders;
-	
+
 	const PxU32 bufferSize = 256;
 	PxOverlapHit hitBuffer[bufferSize];
 	PxOverlapBuffer hit(hitBuffer, bufferSize);
@@ -350,7 +383,7 @@ const std::vector<ComponentCollider*> ModulePhysX::OverlapSphere(float3 center, 
 		for (uint i = 0; i < hit.getNbAnyHits(); ++i) // TODO: change this to get only touched shapes by explicit filtering | any if no filtering
 		{
 			ComponentCollider* col = (ComponentCollider*)hit.getAnyHit(i).shape->userData; // user data must be set to component colliders in any shape that physx create
-			if (col) 
+			if (col)
 				colliders.push_back(col);
 		}
 	}

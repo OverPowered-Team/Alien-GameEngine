@@ -53,6 +53,7 @@ private:
 
 private:
 
+	void DebugDrawConvex(const float4x4& transform, const PxConvexMesh* mesh, const float3& color = float3::one()) const;
 	void DrawCollider(ComponentCollider* collider);
 	void DrawWorld();
 
