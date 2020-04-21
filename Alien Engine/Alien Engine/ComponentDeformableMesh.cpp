@@ -87,6 +87,8 @@ void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 
 void ComponentDeformableMesh::UpdateBonesMatrix()
 {
+	OPTICK_EVENT(); 
+
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{

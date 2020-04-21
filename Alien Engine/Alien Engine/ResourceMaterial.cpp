@@ -34,7 +34,18 @@ ResourceMaterial::~ResourceMaterial()
 {
 	for (uint texType = 0; texType < (uint)TextureType::MAX; ++texType)
 	{
-		RemoveTexture((TextureType)texType);
+		textures[texType].first = NO_TEXTURE_ID; 
+		
+		if (!App->IsQuiting())
+		{
+			if (textures[texType].second != nullptr)
+			{
+				textures[texType].second->DecreaseReferences(); 
+			}
+		}
+
+		textures[texType].second = nullptr;
+
 	}
 }
 
