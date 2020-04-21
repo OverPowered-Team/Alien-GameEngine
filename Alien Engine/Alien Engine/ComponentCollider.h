@@ -15,6 +15,16 @@ class ComponentTransform;
 class ComponentPhysics;
 class Alien;
 
+enum class CombineMode
+{
+	Average =0,
+	Minimum,
+	Multiply,
+	Maximum,
+	Unknown
+};
+
+
 using namespace physx;
 
 class __declspec(dllexport) ComponentCollider : public ComponentBasePhysic
@@ -46,10 +56,15 @@ public:
 	bool GetIsTrigger() { return is_trigger; }
 	void SetBouncing(const float bouncing);
 	float GetBouncing() { return bouncing; }
-	void SetFriction(const float v);
-	float GetFriction() { return friction; }
-	void SetAngularFriction(const float v);
-	float GetAngularFriction() { return angular_friction; }
+
+	void SetStaticFriction(const float v);
+	float GetStaticFriction() { return static_friction; }
+	void SetDynamicFriction(const float v);
+	float GetDynamicFriction() { return dynamic_friction; }
+	void SetFrictionCombineMode(CombineMode mode);
+	CombineMode GetFrictionCombineMode() { return friction_combine; }
+	void SetBouncingCombineMode(CombineMode mode);
+	CombineMode GetBouncingCombineMode() { return friction_combine; }
 
 	virtual void SetCollisionLayer(std::string layer);
 	std::string GetCollisionLayer();
@@ -57,6 +72,7 @@ public:
 protected:
 
 	void InitCollider();
+	void InitMaterial();
 	inline bool IsController() { return (type == ComponentType::CHARACTER_CONTROLLER); }
 	inline void BeginUpdateShape(bool force_update = false);
 	inline void EndUpdateShape(bool force_update = false);
@@ -71,6 +87,7 @@ protected:
 
 	bool DrawInspector();
 	void DrawLayersCombo();
+	void DrawCombineModeCombo(CombineMode& current_mode, int mode); // 0- friction 1- bouncing
 	void HandleAlienEvent(const AlienEvent& e);
 
 	virtual void DrawSpecificInspector() {}
@@ -83,18 +100,24 @@ protected:
 	virtual void ScaleChanged() {};
 
 protected:
+
 	bool force_update = false;
 	std::string layer_name = "Default";
 	int layer_num = 0;
 
-	PxShape* shape = nullptr;
-	float3 center = float3::zero();
-	float3 rotation = float3::zero();
-	bool is_trigger = false;
+	PxShape*    shape = nullptr;
+	float3		center = float3::zero();
+	float3	    rotation = float3::zero();
+	bool		is_trigger = false;
 
-	float bouncing = 0.f;
-	float friction = 0.f;
-	float angular_friction = 0.f;
+	CombineMode friction_combine = CombineMode::Average;
+	CombineMode bouncing_combine = CombineMode::Average;
+	PxMaterial* material = nullptr;
+	float		bouncing = 0.f;
+	float		static_friction = 0.f;
+	float		dynamic_friction = 0.f;
+
+	const char* mode_names[4] = { "Average","Minimum","Multiply","Maximum" };
 };
 
 class ContactPoint

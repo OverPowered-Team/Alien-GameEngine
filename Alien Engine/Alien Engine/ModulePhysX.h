@@ -26,14 +26,8 @@ public:
 	ModulePhysX(bool start_enabled = true);
 	~ModulePhysX();
 
-public:
-	// character controller
-	PxController* CreateCharacterController(PxControllerDesc& desc);
-	uint GetNbControllers() const;
-	PxController* GetController(uint index) const;
-
-	// material
-	PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution) const;
+	void SetGravity(float3 gravity);
+	float3 GetGravity();
 
 	//* ---------- SCENE QUERIES ------------*//
 	bool Raycast(float3 origin, float3 unitDir, float maxDistance, PxRaycastBuffer& hit) const; // TODO: make own pxraycastbuffer data to abstract from physx
@@ -47,9 +41,6 @@ private:
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
-	
-	void SetGravity(float3 gravity);
-	float3 GetGravity();
 
 private:
 
@@ -59,8 +50,11 @@ private:
 
 	PxRigidActor* CreateBody(const float4x4& transform, bool is_dynamic);
 	void RemoveBody(PxRigidActor* body);
-
-	PxShape* CreateShape(const PxGeometry& geometry);
+	PxShape* CreateShape(const PxGeometry& geometry, const PxMaterial& material);
+	PxController* CreateCharacterController(PxControllerDesc& desc);
+	PxController* GetController(uint index) const;
+	uint GetNbControllers() const;
+	PxMaterial* CreateMaterial(float staticFriction = 0.5f, float dynamicFriction = 0.5f, float restitution = 0.5f) const;
 
 	// Delay Libraries -----------------------------------------
 
@@ -101,7 +95,6 @@ private:
 	PxCooking*					px_cooking = nullptr;
 	PxDefaultCpuDispatcher*		px_dispatcher = nullptr;
 	PxScene*					px_scene = nullptr;
-	PxMaterial*					px_default_material = nullptr;
 	PxPvd*						px_pvd = nullptr;
 
 	PxControllerManager*		controllers_manager = nullptr;

@@ -15,7 +15,7 @@ ComponentSphereCollider::ComponentSphereCollider(GameObject* go) :ComponentColli
 	type = ComponentType::SPHERE_COLLIDER;
 
 	InitializeRadius();
-	shape = App->physx->CreateShape(PxSphereGeometry(CalculateRadius()));
+	shape = App->physx->CreateShape(PxSphereGeometry(CalculateRadius()), *material);
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
 	InitCollider();
 }
@@ -38,7 +38,7 @@ PxShape* ComponentSphereCollider::RecreateSphereShape()
 	PxTransform trans = shape->getLocalPose();
 	float _radius = CalculateRadius();
 	float3 rad_rot = float3(rotation.x, rotation.y, rotation.z) * DEGTORAD;
-	trans.p = F3_TO_PXVEC3(center.Mul(transform->GetGlobalScale()));
+	trans.p = F3_TO_PXVEC3(center.Mul(physics->scale));
 	trans.q = QUAT_TO_PXQUAT(Quat::FromEulerXYZ(rad_rot.x, rad_rot.y, rad_rot.z));
 	shape->setLocalPose(trans);
 	shape->setGeometry(PxSphereGeometry(_radius));

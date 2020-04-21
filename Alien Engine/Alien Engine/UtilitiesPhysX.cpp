@@ -221,3 +221,5 @@ PxQueryHitType::Enum ControllerFilterCallback::postFilter(const PxFilterData& fi
 {
 	return PxQueryHitType::Enum::eTOUCH;
 }
+
+LayerChangedData::LayerChangedData(int layer_0, int layer_1) : layer_0(layer_0), layer_1(layer_1) {}

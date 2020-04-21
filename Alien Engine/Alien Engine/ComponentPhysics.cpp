@@ -408,7 +408,11 @@ void ComponentPhysics::UpdatePositioning()
 void ComponentPhysics::WakeUp()
 {
 	if (IsDynamic())
+	{
 		actor->is<PxRigidDynamic>()->wakeUp();
+	}
+	actor->setGlobalPose(actor->getGlobalPose());
+	
 }
 
 void ComponentPhysics::PutToSleep()
