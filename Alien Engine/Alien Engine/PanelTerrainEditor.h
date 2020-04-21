@@ -13,9 +13,16 @@ public:
 
 	void PanelLogic();
 	void SetHeigthMapTexture(ResourceTexture* tex);
-	
+
+	uint GetHeightMapID();
+	float2 GetHeightMapSize();
 
 private:
+
+	void GenerateHeightMap(const char* path, int gaussian);
+	void SetPixelData(const char* path);
+	void GenerateHeightMapBuffer();
+	void GaussianBlur(int iterations);
 
 	
 
@@ -25,6 +32,11 @@ public:
 
 private:
 
+	int m_Width;
+	int m_Height;
+	std::vector <float3> m_data;
+
 	ResourceTexture* heigthmapTexture = nullptr;
 	bool is_focused = false;
+	uint heightmap_id = 0;
 };
