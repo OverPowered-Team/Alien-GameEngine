@@ -67,7 +67,7 @@ private:
 
 	ResourceTexture* ClearTextureArray(ResourceTexture* item);
 	ResourceTexture* SetTextureArray(ResourceTexture* tex, ResourceTexture* item);
-	void SetCurrentTexArray(AnimationInfo new_tex, AnimationInfo &current);
+	void SetCurrentTexArray(AnimationInfo* new_tex);
 
 	ResourceTexture* GetCurrentFrame(float dt);
 	bool Finished() const;

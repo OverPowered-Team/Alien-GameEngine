@@ -1588,7 +1588,7 @@ bool ComponentButton::OnIdle()
 
 		if (!idle_info.tex_array.empty())
 		{
-			SetCurrentTexArray(idle_info, *current_tex_array);
+			SetCurrentTexArray(&idle_info);
 		}
 	}
 	return true;
@@ -1601,7 +1601,7 @@ bool ComponentButton::OnHover()
 		current_color = hover_color;
 		if (!hover_info.tex_array.empty())
 		{
-			SetCurrentTexArray(hover_info, *current_tex_array);
+			SetCurrentTexArray(&hover_info);
 		}
 		CallListeners(&listenersOnHover);
 	}
@@ -1621,7 +1621,7 @@ bool ComponentButton::OnClick()
 		current_color = clicked_color;
 		if (!clicked_info.tex_array.empty())
 		{
-			SetCurrentTexArray(clicked_info, *current_tex_array);
+			SetCurrentTexArray(&clicked_info);
 		}
 		CallListeners(&listenersOnClick);
 	}
@@ -1635,7 +1635,7 @@ bool ComponentButton::OnPressed()
 		current_color = pressed_color;
 		if (!pressed_info.tex_array.empty())
 		{
-			SetCurrentTexArray(pressed_info, *current_tex_array);
+			SetCurrentTexArray(&pressed_info);
 		}
 		CallListeners(&listenersOnClickRepeat);
 	}
@@ -1806,18 +1806,17 @@ ResourceTexture* ComponentButton::SetTextureArray(ResourceTexture* tex, Resource
 	return nullptr;
 }
 
-void ComponentButton::SetCurrentTexArray(AnimationInfo new_tex, AnimationInfo& current)
+void ComponentButton::SetCurrentTexArray(AnimationInfo* new_tex)
 {
-	for (auto item = current.tex_array.begin(); item != current.tex_array.end(); ++item)
+	for (auto item = current_tex_array->tex_array.begin(); item != current_tex_array->tex_array.end(); ++item)
 	{
 		if ((*item) != nullptr) {
 			(*item)->DecreaseReferences();
 		}
 	}
 
-
-	current = new_tex;
-	for (auto item = current.tex_array.begin(); item != current.tex_array.end(); ++item)
+	current_tex_array = new_tex;
+	for (auto item = current_tex_array->tex_array.begin(); item != current_tex_array->tex_array.end(); ++item)
 	{
 		if ((*item) != nullptr) {
 			(*item)->IncreaseReferences();
@@ -1863,14 +1862,14 @@ void ComponentButton::SetActive(bool active)
 
 		if (!idle_info.tex_array.empty())
 		{
-			SetCurrentTexArray(idle_info, *current_tex_array);
+			SetCurrentTexArray(&idle_info);
 		}
 	}
 	else {
 		current_color = disabled_color;
 		if (!disabled_info.tex_array.empty())
 		{
-			SetCurrentTexArray(disabled_info, *current_tex_array);
+			SetCurrentTexArray(&disabled_info);
 		}
 	}
 }
