@@ -85,16 +85,16 @@ bool ModulePhysX::Init()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	PxMaterial* m = px_physics->createMaterial(0.5f, 0.5f, 0.6f);
+	//PxMaterial* m = px_physics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxShape* s = px_physics->createShape(PxPlaneGeometry(), *m);
-	PxRigidDynamic* a = px_physics->createRigidDynamic(PxTransform(QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0,0, 90 * DEGTORAD))));
-	a->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-	a->attachShape(*s);
-	PxFilterData data(0, 3, 0, 0);
-	s->setQueryFilterData(data);
-	s->setSimulationFilterData(data);
-	px_scene->addActor(*a);
+	//PxShape* s = px_physics->createShape(PxPlaneGeometry(), *m);
+	//PxRigidDynamic* a = px_physics->createRigidDynamic(PxTransform(QUAT_TO_PXQUAT(Quat::FromEulerXYZ(0,0, 90 * DEGTORAD))));
+	//a->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+	//a->attachShape(*s);
+	//PxFilterData data(0, 3, 0, 0);
+	//s->setQueryFilterData(data);
+	//s->setSimulationFilterData(data);
+	//px_scene->addActor(*a);
 
 	// create characters controller manager
 	if (px_scene)
@@ -118,12 +118,6 @@ bool ModulePhysX::Start()
 // ---------------------------------------------------------
 update_status ModulePhysX::PreUpdate(float dt)
 {
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModulePhysX::PostUpdate(float dt)
-{
 	static bool first_frame_playing = true;
 	OPTICK_EVENT();
 
@@ -135,6 +129,12 @@ update_status ModulePhysX::PostUpdate(float dt)
 		px_scene->simulate(fixed_dt); // TODO, fixed time step / substeps
 		px_scene->fetchResults(true);
 	}
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModulePhysX::PostUpdate(float dt)
+{
 
 	return UPDATE_CONTINUE;
 }
