@@ -49,15 +49,13 @@ void player_example::Update()
 	if (!ccontroller)
 		return;
 
-	float joystick_threshold = 0.2f;
 	float x_axis = Input::GetControllerHoritzontalLeftAxis(1);
 	float y_axis = Input::GetControllerVerticalLeftAxis(1);
 	bool jump = Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) ||Input::GetKeyDown(SDL_SCANCODE_A);
 
 	if (ccontroller->isGrounded)
 	{
-		// TODO: rework this shit, joystick values must be received already thresholded correctly, anybody says deadzone?
-		moveDirection = float3(abs(x_axis) >= joystick_threshold ? -x_axis : 0.f, 0.f, abs(y_axis) >= joystick_threshold ? -y_axis : 0.f);
+		moveDirection = float3(-x_axis, 0.0f, -y_axis);
 		moveDirection *= speed;
 
 		if (jump)
@@ -66,11 +64,15 @@ void player_example::Update()
 
 	//* if force_gravity are unchecked on character controller (recommended) *//
 	//* but works correctly though*//
-	//moveDirection.y -= gravity * Time::GetDT();
+	moveDirection.y -= gravity * Time::GetDT();
 
 	ccontroller->Move(moveDirection * Time::GetDT());
 
 	//* -------------------------------------------------------------------* //
+
+	LOG("x axis: %f", x_axis);
+	LOG("y axis: %f", y_axis);
+
 
 
 }
