@@ -317,19 +317,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			/* Refraction */
 			wfbos->BindRefractionFrameBuffer();
 			{
-				if (printing_scene)
+				if (base_game_object->HasChildren())
 				{
-					if (App->physics->debug_physics)
-					{
-						App->physics->DrawWorld();
-					}
-				}
-
-				if (base_game_object->HasChildren()) {
-					if (isGameCamera) {
-						OnPreCull(viewport->GetCamera());
-					}
-
 					std::vector<std::pair<float, GameObject*>> to_draw;
 					std::vector<std::pair<float, GameObject*>> to_draw_ui;
 
@@ -350,19 +339,12 @@ update_status ModuleObjects::PostUpdate(float dt)
 					}
 
 					std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-					if (isGameCamera) {
-						OnPreRender(viewport->GetCamera());
-					}
 
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
 						}
-					}
-
-					if (isGameCamera) {
-						OnPostRender(viewport->GetCamera());
 					}
 				}
 			}
@@ -467,6 +449,94 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
+
+	/*
+	glEnable(GL_CLIP_DISTANCE0);
+
+	// Reflection 
+	wfbos->BindReflectionFrameBuffer();
+	{
+		float distance = 2 * (App->renderer3D->actual_game_camera->GetCameraPosition().y - 0.0f);
+		ComponentCamera* c_cam = App->renderer3D->actual_game_camera;
+		float c_pos_y = c_cam->GetCameraPosition().y;
+		c_pos_y -= distance;
+		c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
+		c_cam->InvertPitch();
+		if (base_game_object->HasChildren()) {
+			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> to_draw_ui;
+
+			ComponentCamera* frustum_camera = game_viewport->GetCamera();
+
+			if (check_culling_in_scene && App->renderer3D->actual_game_camera)
+			{
+				frustum_camera = App->renderer3D->actual_game_camera;
+			}
+
+			octree.SetStaticDrawList(&to_draw, frustum_camera);
+
+			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
+			for (; item != base_game_object->children.end(); ++item) {
+				if (*item != nullptr && (*item)->IsEnabled()) {
+					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+				}
+			}
+
+			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+
+			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+			for (; it != to_draw.end(); ++it) {
+				if ((*it).second != nullptr) {
+					(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
+				}
+			}
+		}
+
+		c_pos_y = c_cam->GetCameraPosition().y;
+		c_pos_y += distance;
+		c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
+		c_cam->InvertPitch();
+	}
+	wfbos->UnbindCurrentFrameBuffer();
+
+	// efraction
+	wfbos->BindRefractionFrameBuffer();
+	{
+		if (base_game_object->HasChildren())
+		{
+			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> to_draw_ui;
+
+			ComponentCamera* frustum_camera = game_viewport->GetCamera();
+
+			if (check_culling_in_scene && App->renderer3D->actual_game_camera)
+			{
+				frustum_camera = App->renderer3D->actual_game_camera;
+			}
+
+			octree.SetStaticDrawList(&to_draw, frustum_camera);
+
+			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
+			for (; item != base_game_object->children.end(); ++item) {
+				if (*item != nullptr && (*item)->IsEnabled()) {
+					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+				}
+			}
+
+			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+
+			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+			for (; it != to_draw.end(); ++it) {
+				if ((*it).second != nullptr) {
+					(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
+				}
+			}
+		}
+	}
+	wfbos->UnbindCurrentFrameBuffer();
+
+	glDisable(GL_CLIP_DISTANCE0);
+	*/
 
 	game_viewport->BeginViewport();
 
