@@ -174,9 +174,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h" />
+    <ClInclude Include="player_example.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Macros\dllmain.cpp" />
+    <ClCompile Include="player_example.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
