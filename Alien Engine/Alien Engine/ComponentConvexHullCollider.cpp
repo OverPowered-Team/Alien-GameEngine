@@ -20,7 +20,7 @@ ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : Compo
 
 	shape = CreateConvexMesh(go);
 	if (!shape) {	// if convex mesh cook fail, create default cube
-		shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f));
+		shape = App->physx->CreateShape(PxBoxGeometry(.5f, .5f, .5f), *material);
 	}
 
 	App->SendAlienEvent(this, AlienEventType::COLLIDER_ADDED);
@@ -73,7 +73,7 @@ PxShape* ComponentConvexHullCollider::CreateConvexMesh(const GameObject* go)
 		return shape;
 	}
 	
-	return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS));
+	return App->physx->CreateShape(PxConvexMeshGeometry(convexMesh, PxMeshScale(F3_TO_PXVEC3(transform->GetGlobalScale())), PxConvexMeshGeometryFlag::eTIGHT_BOUNDS), *material);
 }
 
 

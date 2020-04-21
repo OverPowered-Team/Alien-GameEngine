@@ -80,7 +80,6 @@ bool ModulePhysics::Init()
 	world->setDebugDrawer(debug_renderer);
 	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
 
-
 	//btOverlapFilterCallback* filterCallback = new MyOwnFilterCallback();
 	//world->getPairCache()->setOverlapFilterCallback(filterCallback);
 

@@ -24,6 +24,8 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 	// Default values 
 	center = float3::zero();
 	rotation = float3::zero();
+	material = App->physx->CreateMaterial();
+	InitMaterial();
 }
 
 ComponentCollider::~ComponentCollider()
@@ -34,6 +36,8 @@ ComponentCollider::~ComponentCollider()
 		shape = nullptr;
 	}
 
+	material->release();
+	material = nullptr;
 }
 
 // Colliders Functions --------------------------------
@@ -77,17 +81,35 @@ void ComponentCollider::SetIsTrigger(bool value)
 
 void ComponentCollider::SetBouncing(const float value)
 {
-
+	bouncing = value;
+	bouncing = Clamp<float>(bouncing, 0.f, 1.f);
+	material->setRestitution(bouncing);
 }
 
-void ComponentCollider::SetFriction(const float value)
+void ComponentCollider::SetStaticFriction(const float value)
 {
-
+	static_friction = value;
+	static_friction = Clamp<float>(static_friction, 0.f, PX_MAX_F32);
+	material->setStaticFriction(static_friction);
 }
 
-void ComponentCollider::SetAngularFriction(const float value)
+void ComponentCollider::SetDynamicFriction(const float value)
 {
+	dynamic_friction = value;
+	dynamic_friction = Clamp<float>(dynamic_friction, 0.f, PX_MAX_F32);
+	material->setDynamicFriction(dynamic_friction);
+}
 
+void ComponentCollider::SetFrictionCombineMode(CombineMode mode)
+{
+	friction_combine = mode;
+	material->setFrictionCombineMode((PxCombineMode::Enum)(int)friction_combine);
+}
+
+void ComponentCollider::SetBouncingCombineMode(CombineMode mode)
+{
+	bouncing_combine = mode;
+	material->setRestitutionCombineMode((PxCombineMode::Enum)(int)bouncing_combine);
 }
 
 void ComponentCollider::SetCollisionLayer(std::string layer)
@@ -121,8 +143,8 @@ void ComponentCollider::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Rotation", rotation);
 	to_save->SetBoolean("IsTrigger", is_trigger);
 	to_save->SetNumber("Bouncing", bouncing);
-	to_save->SetNumber("Friction", friction);
-	to_save->SetNumber("AngularFriction", angular_friction);
+	to_save->SetNumber("StaticFriction", static_friction);
+	to_save->SetNumber("DynamicFriction", dynamic_friction);
 	to_save->SetString("CollisionLayer", layer_name.c_str());
 }
 
@@ -135,13 +157,15 @@ void ComponentCollider::LoadComponent(JSONArraypack* to_load)
 		OnDisable();
 	}
 
+	BeginUpdateShape(true);
 	SetCenter(to_load->GetFloat3("Center"));
 	SetRotation(to_load->GetFloat3("Rotation"));
 	SetIsTrigger(to_load->GetBoolean("IsTrigger"));
 	SetBouncing(to_load->GetNumber("Bouncing"));
-	SetFriction(to_load->GetNumber("Friction"));
-	SetAngularFriction(to_load->GetNumber("AngularFriction"));
+	SetStaticFriction(to_load->GetNumber("StaticFriction"));
+	SetDynamicFriction(to_load->GetNumber("DynamicFriction"));
 	SetCollisionLayer(to_load->GetString("CollisionLayer"));
+	EndUpdateShape(true);
 }
 
 void ComponentCollider::Update()
@@ -179,8 +203,8 @@ void ComponentCollider::Reset()
 	SetRotation(float3::zero());
 	SetIsTrigger(false);
 	SetBouncing(0.1f);
-	SetFriction(0.5f);
-	SetAngularFriction(0.1f);
+	SetStaticFriction(0.5f);
+	SetDynamicFriction(0.1f);
 	EndUpdateShape(true);
 }
 
@@ -205,26 +229,24 @@ bool ComponentCollider::DrawInspector()
 	{
 		ImGui::Spacing();
 
+		ImGui::SetCursorPosX(12.0f);
+		ImGui::Title("");		 if (ImGui::Button("Fit Collider")) { Reset(); }
+
 		DrawLayersCombo();
 
 		float3 current_center = center;
 		float3 current_rotation = rotation;
 		bool current_is_trigger = is_trigger;
 		float current_bouncing = bouncing;
-		float current_friction = friction;
-		float current_angular_friction = angular_friction;
+		float current_static_friction = static_friction;
+		float current_dynamic_friction = dynamic_friction;
+		CombineMode current_f_mode = friction_combine;
+		CombineMode current_b_mode = bouncing_combine;
 
 		ImGui::Title("Center", 1);			if (ImGui::DragFloat3("##center", current_center.ptr(), 0.05f)) { SetCenter(current_center); }
-		ImGui::Title("Rotation", 1);			if (ImGui::DragFloat3("##rotation", current_rotation.ptr(), 0.2f)) { SetRotation(current_rotation); }
+		ImGui::Title("Rotation", 1);		if (ImGui::DragFloat3("##rotation", current_rotation.ptr(), 0.2f)) { SetRotation(current_rotation); }
 
 		DrawSpecificInspector();
-
-		//ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() * 0.5f - 30);
-		ImGui::SetCursorPosX(12.0f);
-		if (ImGui::Button("fit", ImVec2(60.0f, 22.0f)))
-		{
-			Reset();
-		}
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -234,8 +256,10 @@ bool ComponentCollider::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Spacing();
 		ImGui::Title("Bouncing", 2);	    if (ImGui::DragFloat("##bouncing", &current_bouncing, 0.01f, 0.00f, 1.f)) { SetBouncing(current_bouncing); }
-		ImGui::Title("Linear Fric.", 2);	if (ImGui::DragFloat("##friction", &current_friction, 0.01f, 0.00f, FLT_MAX)) { SetFriction(current_friction); }
-		ImGui::Title("Angular Fric.", 2);	if (ImGui::DragFloat("##angular_friction", &current_angular_friction, 0.01f, 0.00f, FLT_MAX)) { SetAngularFriction(current_angular_friction); }
+		ImGui::Title("Static Fric.", 2);	if (ImGui::DragFloat("##static_friction", &current_static_friction, 0.01f, 0.00f, FLT_MAX)) { SetStaticFriction(current_static_friction); }
+		ImGui::Title("Dynamic Fric.", 2);	if (ImGui::DragFloat("##dynamic_friction", &current_dynamic_friction, 0.01f, 0.00f, FLT_MAX)) { SetDynamicFriction(current_dynamic_friction); }
+		DrawCombineModeCombo(current_f_mode, 0);
+		DrawCombineModeCombo(current_b_mode, 1);
 		ImGui::Spacing();
 
 	}
@@ -267,6 +291,34 @@ void ComponentCollider::DrawLayersCombo()
 	}
 }
 
+void ComponentCollider::DrawCombineModeCombo(CombineMode& current_mode, int mode)
+{
+	const char* name = (mode == 0) ? "Friction Combine" : "Bouncing Combine";
+	ImGui::PushID(name);
+	ImGui::Title(name, 2);
+
+	if (ImGui::BeginComboEx(std::string("##" + std::string(name)).c_str(), (std::string(" ") + mode_names[(int)current_mode]).c_str(), 200, ImGuiComboFlags_NoArrowButton))
+	{
+		for (int n = 0; n < (int)CombineMode::Unknown ; ++n)
+		{
+			bool is_selected = ((int)current_mode == n);
+
+			if (ImGui::Selectable((std::string("   ") + mode_names[n]).c_str(), is_selected))
+			{
+				if (mode == 0)
+					SetFrictionCombineMode((CombineMode)n);
+				else
+					SetBouncingCombineMode((CombineMode)n);
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+}
+
 
 void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 {
@@ -276,10 +328,14 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 		ScaleChanged();
 		break; }
 	case AlienEventType::COLLISION_LAYER_STATE_CHANGED: {
-
+		LayerChangedData* data = (LayerChangedData*)e.object;
+		if (data->LayerIsChanged(layer_num))
+			physics->WakeUp();
 		break; }
 	case AlienEventType::COLLISION_LAYER_REMOVED: {
-
+		int* layer_num = (int*)e.object;
+		if (layer_num)
+			SetCollisionLayer("Default");
 		break; }
 	}
 }
@@ -289,6 +345,14 @@ void ComponentCollider::InitCollider()
 	shape->userData = this;
 	go->SendAlientEventThis(this, AlienEventType::COLLIDER_ADDED);
 	SetCollisionLayer("Default");
+}
+
+void ComponentCollider::InitMaterial()
+{
+	SetStaticFriction(0.5f);
+	SetDynamicFriction(0.5f);
+	SetFrictionCombineMode(CombineMode::Average);
+	SetBouncingCombineMode(CombineMode::Average);
 }
 
 void ComponentCollider::BeginUpdateShape(bool force_update)

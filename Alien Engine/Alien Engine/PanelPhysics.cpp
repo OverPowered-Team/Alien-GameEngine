@@ -93,9 +93,11 @@ void PanelPhysics::PanelLogic()
 				bool value = collision_layers.data[i][j];
 				ImGui::SameLine(separation);
 				ImGui::PushID(&collision_layers.data[i][j]);
+
 				if (ImGui::Checkbox(("##" + std::to_string(i) + std::to_string(j)).c_str(), &value))
 				{
 					collision_layers.SetLayers(i, j, collision_layers.data[i][j]);
+					App->SendAlienEvent(&LayerChangedData(i, j), AlienEventType::COLLISION_LAYER_STATE_CHANGED);
 				}
 					
 				ImGui::PopID();
@@ -166,6 +168,7 @@ void PanelPhysics::PopUpRemoveLayer()
 			ImGui::SetCursorPosX(160);
 			if (ImGui::Button("Acept")) {
 				App->physx->layers.RemoveLayer(App->physx->layers.names[current_layer]);
+				App->SendAlienEvent( &App->physx->layers.names[current_layer], AlienEventType::COLLISION_LAYER_STATE_CHANGED);
 				current_layer = 0;
 				open_remove_popup = false;
 			}

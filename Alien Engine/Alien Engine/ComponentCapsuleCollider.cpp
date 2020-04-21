@@ -10,7 +10,7 @@ ComponentCapsuleCollider::ComponentCapsuleCollider(GameObject* go) : ComponentCo
 {
 	name.assign("Capsule Collider");
 	type = ComponentType::CAPSULE_COLLIDER;
-	shape = App->physx->CreateShape(PxCapsuleGeometry( .5f, .5f));
+	shape = App->physx->CreateShape(PxCapsuleGeometry( .5f, .5f), *material);
 	SetOrientation(Orientation::Y);
 	InitCollider();
 }

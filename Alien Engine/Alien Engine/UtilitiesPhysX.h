@@ -38,8 +38,8 @@ inline float3			PXVEC3EXT_TO_F3(const PxExtendedVec3 & vec) { return  float3(vec
 inline float3			PXVEC3_TO_F3(const PxVec3 & vec) { return  float3(vec.x, vec.y, vec.z); }
 inline PxQuat			QUAT_TO_PXQUAT(const Quat & quat) { return  PxQuat(quat.x, quat.y, quat.z, quat.w); }
 inline Quat				PXQUAT_TO_QUAT(const PxQuat & quat) { return  Quat(quat.x, quat.y, quat.z, quat.w); }
-
-inline bool F4X4_TO_PXTRANS(const float4x4 & input, PxTransform & output ) {
+inline float4x4			PXTRANS_TO_F4X4(const PxTransform& trans) { return float4x4(PXQUAT_TO_QUAT(trans.q), PXVEC3_TO_F3(trans.p)); }
+inline bool				F4X4_TO_PXTRANS(const float4x4 & input, PxTransform & output ) {
 	Quat rot; float3 pos;
 	pos = input.TranslatePart();
 	rot = rot.LookAt(float3(0, 0, 1), input.WorldZ(), float3(0, 1, 0), input.WorldY());
@@ -47,32 +47,27 @@ inline bool F4X4_TO_PXTRANS(const float4x4 & input, PxTransform & output ) {
 	output = PxTransform(F3_TO_PXVEC3(pos), QUAT_TO_PXQUAT(rot));
 	return true;
 }
-//return PxTransform(F3_TO_PXVEC3(trans.TranslatePart()), QUAT_TO_PXQUAT(trans.RotatePart().RemoveScale2().ToQuat())); 
-//rot = input.RotatePart().RemoveScale2().ToQuat();
-//rot = Quat::FromEulerXYZ(input.ToEulerXYZ().x, input.ToEulerXYZ().y, input.ToEulerXYZ().z);
 
-inline float4x4			PXTRANS_TO_F4X4(const PxTransform & trans) { return float4x4(PXQUAT_TO_QUAT(trans.q), PXVEC3_TO_F3(trans.p)); }
+struct LayerChangedData
+{
+	LayerChangedData(int layer_0, int layer_1);
+	bool LayerIsChanged(int layer) { return (layer == layer_0 || layer == layer_1); }
+	int layer_0 = 0;
+	int layer_1 = 0;
+};
 
 class CustomDelayLoadHook : public PxDelayLoadHook
 {
-
-	virtual const char* getPhysXCommonDllName() const
-	{
-		return "TODO";//DLLs\\physx\\debug\\PhysXCommon_32.dll";
-	}
-
-	virtual const char* getPhysXFoundationDllName() const
-	{
-		return "TODO";//DLLs\\physx\\debug\\PhysXFoundation_32.dll";
-	}
+	//DLLs\\physx\\debug\\PhysXCommon_32.dll";
+	virtual const char* getPhysXCommonDllName() const { return "TODO"; }
+	//DLLs\\physx\\debug\\PhysXFoundation_32.dll";
+	virtual const char* getPhysXFoundationDllName() const { return "TODO"; }
 };
 
 class CustomGpuLoadHook : public PxGpuLoadHook
 {
-	virtual const char* getPhysXGpuDllName() const
-	{
-		return "TODO";//DLLs\\physx\\debug\\PhysXGpu_32.dll";;
-	}
+	//DLLs\\physx\\debug\\PhysXGpu_32.dll";
+	virtual const char* getPhysXGpuDllName() const { return "TODO";}
 };
 
 class CustomErrorCallback : public PxErrorCallback
