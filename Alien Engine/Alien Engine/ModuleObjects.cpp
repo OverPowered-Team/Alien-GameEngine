@@ -303,6 +303,20 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
+				float3 frustum_center = viewport->GetCamera()->frustum.CenterPoint();
+				float3 cam_pos = frustum_center + (*iter)->direction * 100;
+				glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)cam_pos.x, (float)cam_pos.y, (float)cam_pos.z),
+					glm::vec3((float)frustum_center.x, (float)frustum_center.y, (float)frustum_center.z),
+					glm::vec3(0.0, 1.0, 0.0));
+
+				//--------------------------------------------------------------------
+				App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+				Gizmos::DrawWireSphere(frustum_center, 100, Color::Red());
+				Gizmos::DrawCube(cam_pos,float3(50,50,50),Color::Blue());
+				App->renderer3D->EndDebugDraw();
+
+				(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
 				if (!light_view)
 				{
 					glViewport(0, 0, 1024, 1024);
@@ -313,9 +327,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, cam_pos);
 						else
-							(*it).second->DrawGame(viewport->GetCamera());
+							(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, cam_pos);
 					}
 				}
 			}
@@ -328,8 +342,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera(), viewport->GetCamera()->GetViewMatrix4x4(),
-								viewport->GetCamera()->GetProjectionMatrix4f4(), viewport->GetCamera()->GetCameraPosition());
+							(*it).second->DrawScene(viewport->GetCamera());
 						else
 							(*it).second->DrawGame(viewport->GetCamera());
 					}
@@ -390,10 +403,32 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		OnPreRender(game_viewport->GetCamera());
 
+		for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+		{
+			glViewport(0, 0, 1024, 1024);
+			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
+			glClear(GL_DEPTH_BUFFER_BIT);	
+			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+			for (; it != to_draw.end(); ++it) {
+				if ((*it).second != nullptr) {
+					if (printing_scene)
+						(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+					else
+						(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+				}
+			}
+		}
+		
+		glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
+		glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
+				if (printing_scene)
+					(*it).second->DrawScene(viewport->GetCamera());
+				else
+					(*it).second->DrawGame(viewport->GetCamera());
 			}
 		}
 

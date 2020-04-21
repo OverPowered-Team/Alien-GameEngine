@@ -23,9 +23,9 @@ void main()
 #shader fragment
 #version 330 core
 
-
+out vec4 FragColor;
 void main()
 {
     // ----------------------- Object Color ---------------------
-  
+  FragColor = vec4(1.0f);
 }

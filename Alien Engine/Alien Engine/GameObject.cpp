@@ -200,13 +200,9 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 
 
-	for (Component* component : components)
-	{
-		component->DrawScene();
-	}
 }
 
-void GameObject::DrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+void GameObject::DrawScene(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -248,6 +244,28 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4x4& ViewMat, con
 	}
 }
 
+void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	OPTICK_EVENT();
+	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+
+	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	{
+		material->BindTexture();
+	}*/
+
+	if (mesh != nullptr && mesh->IsEnabled())
+	{
+		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
+			glColor3f(1, 1, 1);
+		mesh->DrawPolygon(camera, camera->ViewMatrix, camera->GetProjectionMatrix4f4(), camera->GetCameraPosition());
+
+	}
+}
 
 void GameObject::DrawGame(ComponentCamera* camera)
 {
@@ -267,7 +285,8 @@ void GameObject::DrawGame(ComponentCamera* camera)
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera,camera->ViewMatrix, camera->GetProjectionMatrix4f4(), camera->GetCameraPosition());
+		mesh->DrawPolygonWithShadows(camera);
+
 	}
 }
 
