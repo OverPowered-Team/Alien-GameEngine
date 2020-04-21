@@ -9,7 +9,6 @@
 #include "mmgr/mmgr.h"
 
 #include "ComponentPhysics.h"
-//#include "ModuleRenderer3D.h"
 
 ComponentConvexHullCollider::ComponentConvexHullCollider(GameObject* go) : ComponentCollider(go)
 {
@@ -107,20 +106,6 @@ void ComponentConvexHullCollider::Clone(Component* clone)
 void ComponentConvexHullCollider::ScaleChanged()
 {
 	CreateConvexMesh(game_object_attached);
-}
-
-
-void ComponentConvexHullCollider::DrawScene()
-{
-	
-	//shape->getGeometry().convexMesh().convexMesh.ge
-
-	App->physx->DrawCollider(this);
-
-	/*if (game_object_attached->IsSelected() && App->physics->debug_physics == false)
-	{
-		App->physics->DrawConvexCollider(this);
-	}*/
 }
 
 void ComponentConvexHullCollider::DrawSpecificInspector()

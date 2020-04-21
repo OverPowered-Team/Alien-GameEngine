@@ -42,6 +42,12 @@ private:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+private:
+
+	void DebugDrawConvex(const float4x4& transform, const PxConvexMesh* mesh, const float3& color = float3::one()) const;
+	void DrawCollider(ComponentCollider* collider);
+	void DrawWorld();
+
 	PxRigidActor* CreateBody(const float4x4& transform, bool is_dynamic);
 	void RemoveBody(PxRigidActor* body);
 	PxShape* CreateShape(const PxGeometry& geometry, const PxMaterial& material);
@@ -49,9 +55,6 @@ private:
 	PxController* GetController(uint index) const;
 	uint GetNbControllers() const;
 	PxMaterial* CreateMaterial(float staticFriction = 0.5f, float dynamicFriction = 0.5f, float restitution = 0.5f) const;
-
-	void DrawCollider(ComponentCollider* collider);
-	void DrawWorld();
 
 	// Delay Libraries -----------------------------------------
 
