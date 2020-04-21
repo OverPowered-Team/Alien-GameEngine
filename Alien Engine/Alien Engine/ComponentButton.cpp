@@ -34,13 +34,6 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 
 	to_save->SetNumber("UIType", (int)ui_type);
 
-	/*to_save->SetString("TextureID", (texture != nullptr) ? std::to_string(texture->GetID()).data() : "0");
-	to_save->SetString("TextureIdleID", (idle_tex != nullptr) ? std::to_string(idle_tex->GetID()).data() : "0");
-	to_save->SetString("TextureHoverID", (hover_tex != nullptr) ? std::to_string(hover_tex->GetID()).data() : "0");
-	to_save->SetString("TextureClickedID", (clicked_tex != nullptr) ? std::to_string(clicked_tex->GetID()).data() : "0");
-	to_save->SetString("TexturePressedID", (pressed_tex != nullptr) ? std::to_string(pressed_tex->GetID()).data() : "0");
-	to_save->SetString("TextureDisabledID", (disabled_tex != nullptr) ? std::to_string(disabled_tex->GetID()).data() : "0");*/
-
 	to_save->SetColor("ColorCurrent", current_color);
 	to_save->SetColor("ColorIdle", idle_color);
 	to_save->SetColor("ColorHover", hover_color);
@@ -51,6 +44,60 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("ClickEvent", click_event.data());
 	to_save->SetString("MoveEvent", move_event.data());
 
+	//---------------------------------------------------------
+
+	to_save->SetBoolean("HasAnimatedIdleImages", !idle_info.tex_array.empty());
+	if (!idle_info.tex_array.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedIdleImages");
+		auto item = idle_info.tex_array.begin();
+		for (; item != idle_info.tex_array.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - idle_info.tex_array.begin()).data(), ((*item) != nullptr) ? std::to_string((*item)->GetID()).data() : "0");
+		}
+	}
+
+	to_save->SetBoolean("HasAnimatedHoverImages", !hover_info.tex_array.empty());
+	if (!hover_info.tex_array.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedHoverImages");
+		auto item = hover_info.tex_array.begin();
+		for (; item != hover_info.tex_array.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - hover_info.tex_array.begin()).data(), ((*item) != nullptr) ? std::to_string((*item)->GetID()).data() : "0");
+		}
+	}
+
+	to_save->SetBoolean("HasAnimatedClickedImages", !clicked_info.tex_array.empty());
+	if (!clicked_info.tex_array.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedClickedImages");
+		auto item = clicked_info.tex_array.begin();
+		for (; item != clicked_info.tex_array.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - clicked_info.tex_array.begin()).data(), ((*item) != nullptr) ? std::to_string((*item)->GetID()).data() : "0");
+		}
+	}
+
+	to_save->SetBoolean("HasAnimatedPressedImages", !pressed_info.tex_array.empty());
+	if (!pressed_info.tex_array.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedPressedImages");
+		auto item = pressed_info.tex_array.begin();
+		for (; item != pressed_info.tex_array.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - pressed_info.tex_array.begin()).data(), ((*item) != nullptr) ? std::to_string((*item)->GetID()).data() : "0");
+		}
+	}
+
+	to_save->SetBoolean("HasAnimatedDisabledImages", !disabled_info.tex_array.empty());
+	if (!disabled_info.tex_array.empty()) {
+		JSONArraypack* imagesArray = to_save->InitNewArray("AnimatedDisabledImages");
+		auto item = disabled_info.tex_array.begin();
+		for (; item != disabled_info.tex_array.end(); ++item) {
+			imagesArray->SetAnotherNode();
+			imagesArray->SetString(std::to_string(item - disabled_info.tex_array.begin()).data(), ((*item) != nullptr) ? std::to_string((*item)->GetID()).data() : "0");
+		}
+	}
+
+	//---------------------------------------------------------
+	//---------------------------------------------------------
 	//---------------------------------------------------------
 	to_save->SetBoolean("HasListenersOnClick", !listenersOnClick.empty());
 	if (!listenersOnClick.empty()) {
@@ -134,11 +181,122 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	click_event = to_load->GetString("ClickEvent");
 	move_event = to_load->GetString("MoveEvent");
 
+	//-----------------------------------------------------------
+
 	select_on_up = std::stoull(to_load->GetString("SelectOnUp"));
 	select_on_down = std::stoull(to_load->GetString("SelectOnDown"));
 	select_on_right = std::stoull(to_load->GetString("SelectOnRight"));
 	select_on_left = std::stoull(to_load->GetString("SelectOnLeft"));
 
+	//-------------------------------------------------------------
+
+	if (to_load->GetBoolean("HasAnimatedIdleImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedIdleImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i).data()));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					idle_info.tex_array.push_back(nullptr);
+					idle_info.tex_array.at(i) = SetTextureArray(tex, idle_info.tex_array.at(i));
+					idle_info.last_frame++;
+				}
+			}
+			else
+			{
+				idle_info.tex_array.push_back(nullptr);
+				idle_info.last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+	if (to_load->GetBoolean("HasAnimatedHoverImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedHoverImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i).data()));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					hover_info.tex_array.push_back(nullptr);
+					hover_info.tex_array.at(i) = SetTextureArray(tex, hover_info.tex_array.at(i));
+					hover_info.last_frame++;
+				}
+			}
+			else
+			{
+				hover_info.tex_array.push_back(nullptr);
+				hover_info.last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+	if (to_load->GetBoolean("HasAnimatedClickedImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedClickedImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i).data()));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					clicked_info.tex_array.push_back(nullptr);
+					clicked_info.tex_array.at(i) = SetTextureArray(tex, clicked_info.tex_array.at(i));
+					clicked_info.last_frame++;
+				}
+			}
+			else
+			{
+				clicked_info.tex_array.push_back(nullptr);
+				clicked_info.last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+	if (to_load->GetBoolean("HasAnimatedPressedImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedPressedImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i).data()));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					pressed_info.tex_array.push_back(nullptr);
+					pressed_info.tex_array.at(i) = SetTextureArray(tex, pressed_info.tex_array.at(i));
+					pressed_info.last_frame++;
+				}
+			}
+			else
+			{
+				pressed_info.tex_array.push_back(nullptr);
+				pressed_info.last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+	
+	if (to_load->GetBoolean("HasAnimatedDisabledImages")) {
+		JSONArraypack* imagesVector = to_load->GetArray("AnimatedDisabledImages");
+		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
+			u64 textureID = std::stoull(imagesVector->GetString(std::to_string(i).data()));
+			if (textureID != 0) {
+				ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+				if (tex != nullptr) {
+					disabled_info.tex_array.push_back(nullptr);
+					disabled_info.tex_array.at(i) = SetTextureArray(tex, disabled_info.tex_array.at(i));
+					disabled_info.last_frame++;
+				}
+			}
+			else
+			{
+				disabled_info.tex_array.push_back(nullptr);
+				disabled_info.last_frame++;
+			}
+			imagesVector->GetAnotherNode();
+		}
+	}
+
+	//-------------------------------------------------------------
+	//-------------------------------------------------------------
 	//-------------------------------------------------------------
 	if (to_load->GetBoolean("HasListenersOnClick")) {
 		JSONArraypack* onClickListeners = to_load->GetArray("ListenersOnClick");
@@ -194,50 +352,6 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 		}
 	}
 	//-------------------------------------------------------------
-
-
-	/*u64 textureID = std::stoull(to_load->GetString("TextureID"));
-	if (textureID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
-		if (tex != nullptr) {
-			SetTexture(tex);
-		}
-	}
-	u64 textureIdleID = std::stoull(to_load->GetString("TextureIdleID"));
-	if (textureIdleID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureIdleID);
-		if (tex != nullptr) {
-			SetStateTexture(UIState::Idle, tex);
-		}
-	}
-	u64 textureHoverID = std::stoull(to_load->GetString("TextureHoverID"));
-	if (textureHoverID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureHoverID);
-		if (tex != nullptr) {
-			SetStateTexture(UIState::Hover, tex);
-		}
-	}
-	u64 textureClickedID = std::stoull(to_load->GetString("TextureClickedID"));
-	if (textureClickedID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureClickedID);
-		if (tex != nullptr) {
-			SetStateTexture(UIState::Click, tex);
-		}
-	}
-	u64 texturePressedID = std::stoull(to_load->GetString("TexturePressedID"));
-	if (texturePressedID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturePressedID);
-		if (tex != nullptr) {
-			SetStateTexture(UIState::Pressed, tex);
-		}
-	}
-	u64 textureDisabledID = std::stoull(to_load->GetString("TextureDisabledID"));
-	if (textureDisabledID != 0) {
-		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(textureDisabledID);
-		if (tex != nullptr) {
-			SetStateTexture(UIState::Disabled, tex);
-		}
-	}*/
 
 
 	GameObject* p = game_object_attached->parent;
@@ -1646,11 +1760,6 @@ bool ComponentButton::OnRelease()
 {
 	if (active) {
 	
-		/*current_color = hover_color;
-		if (!hover_tex_array.empty())
-		{
-			SetCurrentTexArray(hover_tex_array, current_tex_array);
-		}*/
 		CallListeners(&listenersOnRelease);
 	}
 	return true;
@@ -1686,103 +1795,6 @@ void ComponentButton::CallListeners(std::vector<std::pair<std::string, std::func
 	}
 }
 
-/*void ComponentButton::SetStateTexture(UIState state, ResourceTexture* tex)
-{
-	switch (state)
-	{
-	case Idle: {
-		if (tex != nullptr && tex != idle_tex) {
-			tex->IncreaseReferences();
-			if (idle_tex != nullptr) {
-				idle_tex->DecreaseReferences();
-			}
-			idle_tex = tex;
-		}
-		break; }
-	case Hover: {
-		if (tex != nullptr && tex != hover_tex) {
-			tex->IncreaseReferences();
-			if (hover_tex != nullptr) {
-				hover_tex->DecreaseReferences();
-			}
-			hover_tex = tex;
-		}
-		break; }
-	case Click: {
-		if (tex != nullptr && tex != clicked_tex) {
-			tex->IncreaseReferences();
-			if (clicked_tex != nullptr) {
-				clicked_tex->DecreaseReferences();
-			}
-			clicked_tex = tex;
-			
-		}
-		break; }
-	case Pressed: {
-		if (tex != nullptr && tex != pressed_tex) {
-			tex->IncreaseReferences();
-			if (pressed_tex != nullptr) {
-				pressed_tex->DecreaseReferences();
-			}
-			pressed_tex = tex;
-			
-		}
-		break; }
-	case Disabled: {
-		if (tex != nullptr && tex != disabled_tex) {
-			tex->IncreaseReferences();
-			if (disabled_tex != nullptr) {
-				disabled_tex->DecreaseReferences();
-			}
-			disabled_tex = tex;
-			
-		}
-		break; }
-	default: {
-		break; }
-	}
-	
-	
-}*/
-
-/*void ComponentButton::ClearStateTexture(UIState state)
-{
-	switch (state)
-	{
-	case Idle: {
-		if (idle_tex != nullptr) {
-			idle_tex->DecreaseReferences();
-			idle_tex = nullptr;
-		}
-		break; }
-	case Hover: {
-		if (hover_tex != nullptr) {
-			hover_tex->DecreaseReferences();
-			hover_tex = nullptr;
-		}
-		break; }
-	case Click: {
-		if (clicked_tex != nullptr) {
-			clicked_tex->DecreaseReferences();
-			clicked_tex = nullptr;
-		}
-		break; }
-	case Pressed: {
-		if (pressed_tex != nullptr) {
-			pressed_tex->DecreaseReferences();
-			pressed_tex = nullptr;
-		}
-		break; }
-	case Disabled: {
-		if (disabled_tex != nullptr) {
-			disabled_tex->DecreaseReferences();
-			disabled_tex = nullptr;
-		}
-		break; }
-	default: {
-		break; }
-	}
-}*/
 
 ResourceTexture* ComponentButton::ClearTextureArray(ResourceTexture* item)
 {
