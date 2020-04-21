@@ -9,6 +9,7 @@
 #include "ResourceMaterial.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "Globals.h"
 #include "Time.h"
 #include "ComponentLightDirectional.h"
@@ -209,6 +210,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1i("refraction_texture", 2);
 		SetUniform1i("dudv_map", 3);
 		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.075f);
+		SetUniformFloat3("camera_position", App->renderer3D->actual_game_camera->GetCameraPosition());
 		ApplyLightsUniforms();
 		break; }
 

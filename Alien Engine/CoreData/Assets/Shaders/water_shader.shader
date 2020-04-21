@@ -19,6 +19,8 @@ uniform int animate;
 uniform float density = 0;
 uniform float gradient = 0;
 
+uniform vec3 camera_position;
+
 out vec3 frag_pos;
 out vec2 texCoords;
 out vec2 texCoordsD;
@@ -26,6 +28,7 @@ out vec3 norms;
 out mat3 TBN; 
 out float visibility; 
 out vec4 clip_space;
+out vec3 to_camera_vector;
 
 const float tiling = 6.0;
 
@@ -35,8 +38,10 @@ void main()
     vec4 pos = vec4(position, 1.0);
     frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
-    clip_space = projection * view * model * vec4(position.x, 0.0, position.y, 1.0);
+    vec4 world_position = model * vec4(position.x, 0.0, position.y, 1.0);
+    clip_space = projection * view * world_position;
     texCoordsD = vec2(position.x / 2.0 + 0.5, position.y / 2.0 + 0.5) * tiling;
+    to_camera_vector = camera_position - world_position.xyz;
 
     // --------- Fog ----------
     vec4 worldPos = model * pos;
@@ -162,6 +167,7 @@ in mat3 TBN;
 in float visibility;
 in vec4 clip_space;
 in vec2 texCoordsD;
+in vec3 to_camera_vector;
 
 // Outs
 out vec4 FragColor;
@@ -229,7 +235,11 @@ void main()
     vec4 reflection_colour = texture(reflection_texture, reflection_coords);
     vec4 refraction_colour = texture(refraction_texture, refraction_coords);
 
-    FragColor = mix(reflection_colour, refraction_colour, 0.5);
+    vec3 view_vector = normalize(to_camera_vector);
+    float refractive_factor = dot(view_vector, vec3(0.0, 1.0, 0.0));
+    refractive_factor = pow(refractive_factor, 0.75);
+
+    FragColor = mix(reflection_colour, refraction_colour, refractive_factor);
 
     // ----------------------------------------------------------
 
