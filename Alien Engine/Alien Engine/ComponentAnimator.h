@@ -36,7 +36,7 @@ public:
 	void SetBool(const char* parameter_name, bool parameter_value);
 	void SetFloat(const char* parameter_name, float parameter_value);
 	void SetInt(const char* parameter_name, int parameter_value);
-
+	void SetCurrentStateSpeed(float speed);
 private:
 	ResourceAnimatorController* animator_controller = nullptr;
 	ResourceAnimatorController* source_animator_controller = nullptr;

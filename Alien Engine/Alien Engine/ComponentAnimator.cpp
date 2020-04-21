@@ -160,6 +160,11 @@ void ComponentAnimator::SetInt(const char* parameter_name, int parameter_value)
 	animator_controller->SetInt(parameter_name, parameter_value);
 }
 
+void ComponentAnimator::SetCurrentStateSpeed(float speed)
+{
+	animator_controller->GetCurrentNode()->SetSpeed(speed);
+}
+
 float ComponentAnimator::GetCurrentStateDuration()
 {
 	return animator_controller->GetCurrentNode()->GetClip()->GetDuration() / animator_controller->GetCurrentNode()->GetSpeed();
