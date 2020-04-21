@@ -1,0 +1,9 @@
+{
+    "HasData": true,
+    "DataStructure": [
+        {
+            "DataName": "col_test",
+            "UsesAlien": true
+        }
+    ]
+}
