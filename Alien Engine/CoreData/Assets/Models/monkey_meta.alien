@@ -1,6 +1,6 @@
 {
     "Meta": {
-        "ID": "13557101548615249173",
+        "ID": "1673377832783622611",
         "NumMeshes": 1,
         "Name": "monkey",
         "NumBones": 0,
@@ -8,12 +8,12 @@
         "Animations": [],
         "NumMaterials": 1,
         "PathMeshes": [
-            "Library\/Meshes\/12806368210727950789.alienMesh"
+            "Library\/Meshes\/16234361458667739946.alienMesh"
         ],
         "PathAnimations": [],
         "PathBones": [],
         "PathMaterials": [
-            "Library\/Materials\/826586160564093285.material"
+            "Library\/Materials\/11194389908093623402.material"
         ]
     },
     "Nodes": [

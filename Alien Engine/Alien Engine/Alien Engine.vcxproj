@@ -86,16 +86,17 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;glm;PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PX_DEBUG=1;PX_CHECKED=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Debug;glm;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysX\libx86\_debug\PhysXExtensions_static_32.lib;PhysX\libx86\_debug\PhysX_32.lib;PhysX\libx86\_debug\PhysXPvdSDK_static_32.lib;PhysX\libx86\_debug\PhysXVehicle_static_32.lib;PhysX\libx86\_debug\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_debug\PhysXCooking_32.lib;PhysX\libx86\_debug\PhysXCommon_32.lib;PhysX\libx86\_debug\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Debug;glm;PhysX\libx86\_debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>PhysX_32.dll;PhysXFoundation_32.dll;PhysXCommon_32.dll;PhysXCooking_32.dll;PhysXGpu_32.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(IntDir)$(ProjectName).lib" "EngineBuild\$(ProjectName).lib"</Command>
@@ -122,9 +123,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;RENDER_SNIPPET;PX_SUPPORT_PVD=0;CMAKE_INTDIR="release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CoreData\AlienEngineScripts;Bullet\include;PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -132,8 +133,9 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysX\libx86\_release\PhysXExtensions_static_32.lib;PhysX\libx86\_release\PhysX_32.lib;PhysX\libx86\_release\PhysXPvdSDK_static_32.lib;PhysX\libx86\_release\PhysXVehicle_static_32.lib;PhysX\libx86\_release\PhysXCharacterKinematic_static_32.lib;PhysX\libx86\_release\PhysXCooking_32.lib;PhysX\libx86\_release\PhysXCommon_32.lib;PhysX\libx86\_release\PhysXFoundation_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\CoreData\AlienEngineScripts\OutPut;Bullet\libx86\_Release;PhysX\libx86\_release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>PhysX_32.dll;PhysXFoundation_32.dll;PhysXCommon_32.dll;PhysXCooking_32.dll;PhysXGpu_32.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(IntDir)$(ProjectName).lib" "EngineBuild\$(ProjectName).lib"</Command>
@@ -685,10 +687,12 @@
     <ClInclude Include="Bullet\include\LinearMath\btVector3.h" />
     <ClInclude Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportInterface.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionLayers.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentAnimatedImage.h" />
     <ClInclude Include="ComponentAnimator.h" />
+    <ClInclude Include="ComponentBasePhysic.h" />
     <ClInclude Include="ComponentBone.h" />
     <ClInclude Include="ComponentBoxCollider.h" />
     <ClInclude Include="ComponentCamera.h" />
@@ -708,6 +712,7 @@
     <ClInclude Include="ComponentLightSpot.h" />
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentPhysics.h" />
     <ClInclude Include="ComponentPointConstraint.h" />
     <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentRigidBody.h" />
@@ -825,6 +830,7 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleObjects.h" />
     <ClInclude Include="ModulePhysics.h" />
+    <ClInclude Include="ModulePhysX.h" />
     <ClInclude Include="ModuleRenderer3D.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleUI.h" />
@@ -899,6 +905,7 @@
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="ModuleTween.h" />
+    <ClInclude Include="UtilitiesPhysX.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="WwiseT.h" />
   </ItemGroup>
@@ -1107,10 +1114,12 @@
     <ClCompile Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportPosix.cpp" />
     <ClCompile Include="Bullet\include\LinearMath\TaskScheduler\btThreadSupportWin32.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionLayers.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentAnimatedImage.cpp" />
     <ClCompile Include="ComponentAnimator.cpp" />
+    <ClCompile Include="ComponentBasePhysic.cpp" />
     <ClCompile Include="ComponentBone.cpp" />
     <ClCompile Include="ComponentBoxCollider.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
@@ -1131,6 +1140,7 @@
     <ClCompile Include="ComponentLightSpot.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentPhysics.cpp" />
     <ClCompile Include="ComponentPointConstraint.cpp" />
     <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentRigidBody.cpp" />
@@ -1201,6 +1211,7 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleObjects.cpp" />
     <ClCompile Include="ModulePhysics.cpp" />
+    <ClCompile Include="ModulePhysX.cpp" />
     <ClCompile Include="ModuleRenderer3D.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleUI.cpp" />
@@ -1264,6 +1275,7 @@
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="ModuleTween.cpp" />
+    <ClCompile Include="UtilitiesPhysX.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="WwiseT.cpp" />
   </ItemGroup>
