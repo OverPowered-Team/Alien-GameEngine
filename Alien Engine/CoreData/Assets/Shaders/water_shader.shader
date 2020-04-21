@@ -216,11 +216,13 @@ void main()
     vec2 reflection_coords = vec2(ndc.x, ndc.y);
 
     vec2 distortion01 = (texture(dudv_map, vec2(texCoordsD.x + move_factor, texCoordsD.y)).rg * 2.0 - 1.0) * wave_strength;
+    vec2 distortion02 = (texture(dudv_map, vec2(-texCoordsD.x + move_factor, texCoordsD.y + move_factor)).rg * 2.0 - 1.0) * wave_strength;
+    vec2 total_distortion = distortion01 + distortion02;
 
-    refraction_coords += distortion01;
+    refraction_coords += total_distortion;
     //refraction_coords = clamp(refraction_coords, 0.001, 0.999);
 
-    reflection_coords += distortion01;
+    reflection_coords += total_distortion;
     //reflection_coords.x = clamp(reflection_coords.x, 0.001, 0.999);
     //reflection_coords.y = clamp(reflection_coords.y, -0.999, -0.001);
 
