@@ -150,6 +150,8 @@ uniform sampler2D reflection_texture;
 uniform sampler2D refraction_texture;
 uniform sampler2D dudv_map;
 
+const float wave_strength = 0.02;
+
 // Ins
 in vec2 texCoords;
 in vec3 frag_pos;
@@ -211,7 +213,7 @@ void main()
     vec2 refraction_coords = vec2(ndc.x, -ndc.y);
     vec2 reflection_coords = vec2(ndc.x, ndc.y);
 
-    vec2 distortion01 = texture(dudv_map, vec2(texCoordsD.x, texCoordsD.y)).rg * 2.0 - 1.0;
+    vec2 distortion01 = (texture(dudv_map, vec2(texCoordsD.x, texCoordsD.y)).rg * 2.0 - 1.0) * wave_strength;
 
     refraction_coords += distortion01;
     reflection_coords += distortion01;
