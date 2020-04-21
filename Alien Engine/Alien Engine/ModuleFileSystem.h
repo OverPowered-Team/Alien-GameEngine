@@ -28,6 +28,7 @@ struct aiFileIO;
 #define LIBRARY_FONTS_FOLDER "Library/Fonts/"
 #define CONFIGURATION_FOLDER "Configuration/"
 #define CONFIGURATION_LAYOUTS_FOLDER "Configuration/Layouts/"
+#define CONFIGURATION_PHYSICS "Configuration/PhysicsSettings.json"
 #define MODELS_FOLDER "Assets/Models/"
 #define TEXTURES_FOLDER "Assets/Textures/"
 #define SHADERS_FOLDER "Assets/Shaders/"
