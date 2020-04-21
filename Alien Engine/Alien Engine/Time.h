@@ -31,6 +31,8 @@ private:
 	friend class PanelAnimTimeline;
 	friend class ComponentAudioEmitter;
 	friend class ModulePhysics;
+	friend class ModulePhysX;
+	friend class ComponentPhysics;
 	friend class ModuleAudio;
 	friend class ComponentParticleSystem;
 	friend class ComponentUI;

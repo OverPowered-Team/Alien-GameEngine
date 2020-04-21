@@ -2,14 +2,15 @@
 
 #include "Globals.h"
 #include "Component.h"
+#include "ComponentScript.h"
 #include <vector>
 #include <string>
+#include <map>
+#include <stack>
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "JSONfilepack.h"
-#include <map>
-#include "ComponentScript.h"
 #include "Alien.h"
-#include <stack>
+#include "Event.h"
 
 enum class ResourceType;
 class Resource;
@@ -24,11 +25,9 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentParticleSystem;
-	friend class PanelAnimTimeline;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
 	friend class ComponentLightPoint;
-	friend class Viewport;
 	friend class ComponentMaterial;
 	friend class ComponentTransform;
 	friend class ComponentMesh;
@@ -36,15 +35,6 @@ class __declspec(dllexport) GameObject
 	friend class ComponentBone;
 	friend class ComponentAnimator;
 	friend class ComponentMaterial;
-	friend class ComponentCollider;
-	friend class ComponentBoxCollider;
-	friend class PanelSceneSelector;
-	friend class ComponentSphereCollider;
-	friend class ComponentCapsuleCollider;
-	friend class ComponentConvexHullCollider;
-	friend class ComponentPointConstraint;
-	friend class ComponentRigidBody;
-	friend class ComponentCharacterController;
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
@@ -54,35 +44,53 @@ class __declspec(dllexport) GameObject
 	friend class ComponentButton;
 	friend class ComponentBar;
 	friend class ComponentAnimatedImage;
-	friend class GameObject;
-	friend class ReturnZ;
-	friend class CompZ;
-	friend class ModuleCamera3D;
-	friend class Prefab;
-	friend class Octree;
-	friend class OctreeNode;
-	friend class FileNode;
-	friend class ModuleImporter;
+	friend class ComponentImage;
+	friend class ComponentSlider;
+
+	friend class ComponentBasePhysic;
+	friend class ComponentPhysics;
+	friend class ComponentCollider;
+	friend class ComponentBoxCollider;
+	friend class ComponentSphereCollider;
+	friend class ComponentCapsuleCollider;
+	friend class ComponentConvexHullCollider;
+	friend class ComponentPointConstraint;
+	friend class ComponentRigidBody;
+	friend class ComponentCharacterController;
+
 	friend class PanelHierarchy;
+	friend class PanelAnimTimeline;
 	friend class PanelScene;
-	friend class ModuleRenderer3D;
 	friend class PanelAnimator;
 	friend class PanelParticleSystem;
 	friend class PanelCreateObject;
 	friend class PanelInspector;
+
 	friend class ResourceModel;
 	friend class ResourceMesh;
 	friend class ResourcePrefab;
 	friend class PanelSceneSelector;
 	friend class ResourceTexture;
 	friend class ResourceAnimatorController;
+
+	friend class ModulePhysX;
+	friend class ModuleCamera3D;
 	friend class ModuleObjects;
-	friend class ComponentImage;
-	friend class ComponentSlider;
-	friend class ModuleUI;
 	friend class ModuleTween;
+	friend class ModuleImporter;
+	friend class ModuleRenderer3D;
+	friend class ModuleUI;
+
+	friend class GameObject;
+	friend class Prefab;
+	friend class Octree;
+	friend class OctreeNode;
+	friend class FileNode;
 	friend class AnimTween;
 	friend class FadeToBlack;
+	friend class Viewport;
+	friend class ReturnZ;
+	friend class CompZ;
 
 public:
 	GameObject(GameObject* parent, bool ignore_transform = false);
@@ -107,6 +115,8 @@ public:
 
 		DontDestroyOnLoad();
 	*/
+	template<class Comp>
+	bool HasComponent();
 
 	template <class Comp>
 	Comp* GetComponent();
@@ -127,6 +137,9 @@ public:
 	Comp* GetComponentInChildrenRecursive();
 	template <class Comp>
 	std::vector<Comp*> GetComponentsInChildrenRecursive();
+
+
+
 
 	GameObject* GetChild(const char* child_name);
 	GameObject* GetChild(const int& index);
@@ -255,6 +268,13 @@ private:
 	void SayChildrenParentIsSelected(const bool& selected);
 	void GetComponentsChildren(const ComponentType& type, std::vector<Component*>* to_fill, bool recursive);
 	void ReTag(const char* from, const char* to);
+
+
+	// Events 
+
+	void SendAlienEventHierarchy(void* object, AlienEventType type); // Only hierarchy component
+	void SendAlienEventAll(void* object, AlienEventType type);   // All scene components
+	void SendAlientEventThis(void* object, AlienEventType type); // Itself components
 
 public:
 
@@ -498,4 +518,15 @@ inline std::vector<Comp*> GameObject::GetComponentsInChildrenRecursive()
 	return comps;
 }
 
+template<class Comp>
+inline bool GameObject::HasComponent()
+{
+	for (uint i = 0; i < components.size(); ++i) {
+		Comp* component = dynamic_cast<Comp*>(components[i]);
+		if (component != nullptr) {
+			return true;
+		}
+	}
+	return false;
+}
 

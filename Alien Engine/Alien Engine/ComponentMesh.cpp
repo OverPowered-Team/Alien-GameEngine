@@ -250,7 +250,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
