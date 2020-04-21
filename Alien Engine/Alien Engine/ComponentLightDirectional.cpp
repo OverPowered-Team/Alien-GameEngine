@@ -66,8 +66,15 @@ void ComponentLightDirectional::PostUpdate()
 	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
 		0.1f,
 		distance_far_plane);
+
+	float3 cam_pos = light_props.position - light_props.direction;
+	glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_props.position.x, (float)light_props.position.y, (float)light_props.position.z),
+		glm::vec3((float)cam_pos.x, (float)cam_pos.y, (float)cam_pos.z),
+		glm::vec3(0.0, 1.0, 0.0));
+
 		
 	light_props.projMat.Set(&projectionMatrix[0][0]);
+	light_props.viewMat.Set(&viewMatrix[0][0]);
 }
 
 

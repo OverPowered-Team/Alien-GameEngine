@@ -262,7 +262,7 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera, camera->ViewMatrix, camera->GetProjectionMatrix4f4(), camera->GetCameraPosition());
+		mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position);
 
 	}
 }

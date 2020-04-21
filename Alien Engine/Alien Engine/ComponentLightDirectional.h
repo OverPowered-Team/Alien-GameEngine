@@ -51,7 +51,7 @@ private:
 	bool print_icon = true;
 
 	float sizefrustrum = 10.f;
-	float distance_far_plane = 10.f;
+	float distance_far_plane = 100.f;
 	uint renderer_id = 0;
 
 	DirLightProperties light_props;
