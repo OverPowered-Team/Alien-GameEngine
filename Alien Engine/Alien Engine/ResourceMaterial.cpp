@@ -8,7 +8,6 @@
 #include "FileNode.h"
 #include "JSONfilepack.h"
 
-#include "Optick/include/optick.h"
 #include "glew/include/glew.h"
 #include "mmgr/mmgr.h"
 
@@ -18,8 +17,7 @@ ResourceMaterial::ResourceMaterial() : Resource()
 
 	for (uint i = 0; i < (uint)TextureType::MAX; ++i)
 	{
-		textures[i].first = NO_TEXTURE_ID;
-		textures[i].second = nullptr;
+		texturesID[i] = NO_TEXTURE_ID;
 	}
 
 	simple_depth_shader = App->resources->simple_depth_shader;
@@ -39,28 +37,18 @@ ResourceMaterial::~ResourceMaterial()
 {
 	for (uint texType = 0; texType < (uint)TextureType::MAX; ++texType)
 	{
-		textures[texType].first = NO_TEXTURE_ID; 
-		
-		if (!App->IsQuiting())
-		{
-			if (textures[texType].second != nullptr)
-			{
-				textures[texType].second->DecreaseReferences(); 
-			}
-		}
-
-		textures[texType].second = nullptr;
-
+		RemoveTexture((TextureType)texType);
 	}
 }
 
 bool ResourceMaterial::LoadMemory()
 {
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (textures[iter].first != NO_TEXTURE_ID)
+		if (texturesID[iter] != NO_TEXTURE_ID)
 		{
-			if (textures[iter].second != nullptr)
-				textures[iter].second->IncreaseReferences(); 
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->IncreaseReferences();
 		}
 	}
 
@@ -70,10 +58,11 @@ bool ResourceMaterial::LoadMemory()
 void ResourceMaterial::FreeMemory()
 {
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		if (textures[iter].first != NO_TEXTURE_ID)
+		if (texturesID[iter] != NO_TEXTURE_ID)
 		{
-			if (textures[iter].second != nullptr)
-				textures[iter].second->DecreaseReferences();
+			ResourceTexture* texture = App->resources->GetTextureByID(texturesID[iter]);
+			if (texture != nullptr)
+				texture->DecreaseReferences();
 		}
 	}
 }
@@ -247,7 +236,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 
 	file->SetString("ShaderID", std::to_string(used_shader_ID).data());
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		file->SetString(std::to_string(iter).data(), std::to_string(textures[iter].first).data());
+		file->SetString(std::to_string(iter).data(), std::to_string(texturesID[iter]).data());
 	}
 
 	file->FinishSave();
@@ -263,15 +252,12 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 
 	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
-		textures[iter].first = std::stoull(file->GetString(std::to_string(iter).data()));
-		textures[iter].second = App->resources->GetTextureByID(textures[iter].first);
+		texturesID[iter] = std::stoull(file->GetString(std::to_string(iter).data()));
 	}
 }
 
 void ResourceMaterial::ApplyMaterial()
 {
-	OPTICK_EVENT();
-
 	// Bind the actual shader
 	simple_depth_shader->Bind();
 
@@ -293,31 +279,31 @@ void ResourceMaterial::ApplyShadows()
 	// Bind the actual shader
 	used_shader->Bind();
 
-	if (textures[(uint)TextureType::DIFFUSE].first != NO_TEXTURE_ID && textures[(uint)TextureType::DIFFUSE].second != nullptr)
+	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textures[(uint)TextureType::DIFFUSE].second->id);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
 		used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
 	}
 	else
 	{
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
-
-	if (textures[(uint)TextureType::SPECULAR].first != NO_TEXTURE_ID && textures[(uint)TextureType::SPECULAR].second != nullptr)
+	}
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textures[(uint)TextureType::SPECULAR].second->id);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
 		used_shader->SetUniform1i("objectMaterial.specularMap", 1);
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
 	}
 	else
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
-	if (textures[(uint)TextureType::NORMALS].first != NO_TEXTURE_ID && textures[(uint)TextureType::NORMALS].second != nullptr)
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
 	{
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, textures[(uint)TextureType::NORMALS].second->id);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
 		used_shader->SetUniform1i("objectMaterial.normalMap", 2);
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
 	}
@@ -327,7 +313,7 @@ void ResourceMaterial::ApplyShadows()
 	//default_shader->DrawShadows();
 
 	// Update uniforms
-	shaderInputs.standardShaderProperties.diffuse_color = color;
+	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	shaderInputs.particleShaderProperties.color = color;
 	used_shader->UpdateUniforms(shaderInputs);
 }
@@ -335,14 +321,13 @@ void ResourceMaterial::ApplyShadows()
 void ResourceMaterial::UnbindMaterial()
 {
 	used_shader->Unbind();
-	
-	if (textures[(uint)TextureType::SPECULAR].first != NO_TEXTURE_ID)
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	if (textures[(uint)TextureType::NORMALS].first != NO_TEXTURE_ID)
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
 	{
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -362,35 +347,35 @@ void ResourceMaterial::SetTexture(ResourceTexture* tex, TextureType texType)
 		return;
 
 	tex->IncreaseReferences();
-	textures[(uint)texType].first = tex->GetID();
-	textures[(uint)texType].second = tex;
+	texturesID[(uint)texType] = tex->GetID();
 }
 
 const ResourceTexture* ResourceMaterial::GetTexture(TextureType texType) const
 {
-	return textures[(uint)texType].second;
+	return App->resources->GetTextureByID(texturesID[(int)texType]);
 }
 
 ResourceTexture* ResourceMaterial::GetTexture(TextureType texType)
 {
-	return textures[(uint)texType].second;
+	return App->resources->GetTextureByID(texturesID[(int)texType]);
 }
 
 void ResourceMaterial::RemoveTexture(TextureType texType)
 {
-	if (textures[(uint)texType].first != NO_TEXTURE_ID)
+	if (texturesID[(uint)texType] != NO_TEXTURE_ID)
 	{
-		if (textures[(uint)texType].second != nullptr)
-			textures[(uint)texType].second->DecreaseReferences();
+		ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(texturesID[(uint)texType]);
 
-		textures[(uint)texType].first = NO_TEXTURE_ID;
-		textures[(uint)texType].second = nullptr;
+		if(tex != nullptr)
+			tex->DecreaseReferences();
+
+		texturesID[(uint)texType] = NO_TEXTURE_ID;
 	}
 }
 
 bool ResourceMaterial::HasTexture(TextureType texType) const
 {
-	return textures[(int)texType].first != NO_TEXTURE_ID;
+	return texturesID[(int)texType] != NO_TEXTURE_ID;
 }
 
 void ResourceMaterial::SetShader(ResourceShader* newShader)
@@ -507,7 +492,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::Text("Diffuse:");
 		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine();
-		ImGui::ColorEdit4("Albedo", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
 
 		// Specular 
 		ImGui::Text("Specular:");
@@ -594,7 +579,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 void ResourceMaterial::InputTexture(TextureType texType)
 {
-	ImGui::ImageButton((ImTextureID)App->resources->GetTextureidByID(textures[(uint)texType].first), ImVec2(30, 30));
+	ImGui::ImageButton((ImTextureID)App->resources->GetTextureidByID(texturesID[(uint)texType]), ImVec2(30, 30));
 	if (ImGui::BeginDragDropTarget() && this != App->resources->default_material) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
 		if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {

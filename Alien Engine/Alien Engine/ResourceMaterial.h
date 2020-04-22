@@ -34,7 +34,7 @@ struct ShaderInputs
 {
 	struct StandardShaderProperties
 	{
-		float4 diffuse_color = float4::one;
+		float3 diffuse_color = float3::one();
 		float smoothness = DEFAULT_SMOOTHNESS;
 		float metalness = DEFAULT_METALNESS;
 	} standardShaderProperties;
@@ -115,7 +115,7 @@ public:
 
 	bool textureActivated = true;
 	bool recive_shadow = false;
-	std::pair<u64, ResourceTexture*> textures[(uint)TextureType::MAX];
+	u64 texturesID[(uint)TextureType::MAX];
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;

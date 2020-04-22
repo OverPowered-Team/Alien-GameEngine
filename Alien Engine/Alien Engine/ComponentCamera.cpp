@@ -269,18 +269,8 @@ bool ComponentCamera::DrawInspector()
 		}
 
 		ImGui::Spacing();
-		if (ImGui::Button("Apply Fog to Editor Camera"))
-		{
-			App->renderer3D->scene_fake_camera->activeFog = activeFog; 
-			App->renderer3D->scene_fake_camera->fogDensity = fogDensity;
-			App->renderer3D->scene_fake_camera->fogGradient = fogGradient;
-			App->renderer3D->scene_fake_camera->camera_color_background = camera_color_background;
-		}
-
-		if (ImGui::Button("Reset Editor Camera"))
-		{
-			App->renderer3D->scene_fake_camera->Reset();
-		}
+		ImGui::Separator();
+		ImGui::Spacing();
 
 		ImGui::Spacing();
 		ImGui::Separator();

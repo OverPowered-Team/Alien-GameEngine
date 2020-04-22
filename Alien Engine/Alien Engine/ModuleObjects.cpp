@@ -221,10 +221,10 @@ update_status ModuleObjects::PreUpdate(float dt)
 update_status ModuleObjects::Update(float dt)
 {
 
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
-	//{
-	//	App->fade_to_black->StartFade(2, FadeType::COMPLETE_FADE, FadeToBlackType::FADE);
-	//}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
+	{
+		App->fade_to_black->StartFade(2, FadeType::COMPLETE_FADE, FadeToBlackType::FADE);
+	}
 
 
 	OPTICK_EVENT();

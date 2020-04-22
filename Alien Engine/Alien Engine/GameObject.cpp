@@ -309,7 +309,6 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
-	OPTICK_EVENT();
 
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
@@ -340,13 +339,11 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		light_dir->LightLogic();
 	}
-
 	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
 	if (light_spot != nullptr && light_spot->IsEnabled())
 	{
 		light_spot->LightLogic();
 	}
-
 	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
 	if (light_point != nullptr && light_point->IsEnabled())
 	{
@@ -375,24 +372,15 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 	{
 		if (camera_ != nullptr && camera_->IsEnabled())
 		{
-			camera_->DrawIconCamera();
+			//camera_->DrawIconCamera();
 		}
 
-		//TOFIX / DO. Light does not exist anymore here
-		if (light_dir != nullptr && light_dir->IsEnabled())
+		/* TOFIX / DO. Light does not exist anymore here
+		if (light != nullptr && light->IsEnabled())
 		{
-			light_dir->DrawIconLight();
+			//light->DrawIconLight();
 		}
-
-		if (light_spot != nullptr && light_spot->IsEnabled())
-		{
-			light_spot->DrawIconLight();
-		}
-		
-		if (light_point != nullptr && light_point->IsEnabled())
-		{
-			light_point->DrawIconLight();
-		}
+		*/
 
 		if (partSystem != nullptr)
 		{
@@ -566,8 +554,6 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
-	OPTICK_EVENT();
-
 	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE || type == ComponentType::UI_CHECKBOX || type == ComponentType::UI_BAR || type == ComponentType::UI_SLIDER || type == ComponentType::UI_ANIMATED_IMAGE || type == ComponentType::UI_TEXT) {
 		std::vector<Component*>::iterator item = components.begin();
 		for (; item != components.end(); ++item) {
