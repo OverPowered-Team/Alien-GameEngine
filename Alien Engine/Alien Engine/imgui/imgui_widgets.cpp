@@ -7897,7 +7897,7 @@ void ImGui::Title(const char* title, int hierarchy) // Type 1: Panel | 2: Menu
     }
 
     float window_width = ImGui::GetWindowContentRegionWidth();
-    float separation;
+    float separation = 0;
 
     if (style.SeparationType == ImGuiSeparationType::ImGui_WindowSeparation)
     {

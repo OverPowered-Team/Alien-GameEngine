@@ -936,6 +936,54 @@ void GameObject::ReTag(const char* from, const char* to)
 	}
 }
 
+void GameObject::SendAlienEventHierarchy(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+	std::stack<GameObject*> go_stack;
+	go_stack.push(this);
+
+	while (!go_stack.empty())
+	{
+		GameObject* go = go_stack.top();
+		go_stack.pop();
+
+		for (Component* component : go->components)
+		{
+			if (component)
+				component->HandleAlienEvent(alien_event);
+		}
+
+		for (GameObject* child : go->children)
+		{
+			go_stack.push(child);
+		}
+	}
+}
+
+void GameObject::SendAlienEventAll(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+	App->objects->HandleAlienEvent(alien_event);
+}
+
+void GameObject::SendAlientEventThis(void* object, AlienEventType type)
+{
+	AlienEvent alien_event;
+	alien_event.object = object;
+	alien_event.type = type;
+
+	for (Component* component : components)
+	{
+		if (component)
+			component->HandleAlienEvent(alien_event);
+	}
+}
+
+
 GameObject* GameObject::GetGameObjectByID(const u64 & id)
 {
 	GameObject* ret = nullptr;
@@ -1110,7 +1158,7 @@ void GameObject::SaveObject(JSONArraypack* to_save, const uint& family_number)
 
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item) {
-		if (*item != nullptr) {
+		if (*item != nullptr && (*item)->serialize) {
 			(*item)->SaveComponent(components_to_save);
 			if ((*item) != components.back())
 				components_to_save->SetAnotherNode();
@@ -1448,7 +1496,26 @@ void GameObject::CloningGameObject(GameObject* clone)
 						break; }
 					}
 					break; }
-
+				case ComponentType::BOX_COLLIDER: {
+					ComponentBoxCollider* collider = new ComponentBoxCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::SPHERE_COLLIDER: {
+					ComponentSphereCollider* collider = new ComponentSphereCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::CAPSULE_COLLIDER: {
+					ComponentCapsuleCollider* collider = new ComponentCapsuleCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
+				case ComponentType::CONVEX_HULL_COLLIDER: {
+					ComponentConvexHullCollider* collider = new ComponentConvexHullCollider(clone);
+					(*item)->Clone(collider);
+					clone->AddComponent(collider);
+					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;

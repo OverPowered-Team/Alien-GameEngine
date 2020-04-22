@@ -699,8 +699,8 @@ void ResourceModel::ConvertToGameObjects()
 
 	App->objects->SetNewSelectedObject(App->objects->GetRoot(false)->children.back(), false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
-	App->camera->fake_camera->Look(App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint());
-	App->camera->reference = App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint();
+	//App->camera->fake_camera->Look(App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint());
+	//App->camera->reference = App->objects->GetRoot(false)->children.back()->GetBB().CenterPoint();
 }
 
 bool ResourceModel::SortByFamilyNumber(const ModelNode& node1, const ModelNode& node2)
