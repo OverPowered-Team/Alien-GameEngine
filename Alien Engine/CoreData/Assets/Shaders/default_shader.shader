@@ -225,7 +225,8 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     vec3 ambient = light.dirLightProperties[indexAmbient];
     
     // Diffuse
-    vec3 lightDir = normalize(light.lightPos - frag_pos);
+    vec3 fake_lightDir = normalize(light.lightPos - frag_pos);
+    vec3 lightDir = normalize(-light.dirLightProperties[indexDirection]);
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = light.dirLightProperties[indexDiffuse] * diff;
     
@@ -239,7 +240,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     else   
         specular = light.dirLightProperties[indexSpecular] * spec;
 
-    float shadow = ShadowCalculation(light,lightSpaceMat, normal, lightDir);
+    float shadow = ShadowCalculation(light,lightSpaceMat, normal, fake_lightDir);
     return (ambient + (1.0 - shadow) * (diffuse + specular)) * vec3(intensity, intensity, intensity);
 }
 

@@ -271,7 +271,7 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	shaderInputs.particleShaderProperties.color = color;
-	simple_depth_shader->UpdateUniforms(shaderInputs);
+	//simple_depth_shader->UpdateUniforms(shaderInputs);
 }
 
 void ResourceMaterial::ApplyShadows()
@@ -320,8 +320,7 @@ void ResourceMaterial::ApplyShadows()
 
 void ResourceMaterial::UnbindMaterial()
 {
-	simple_depth_shader->Unbind();
-	
+	default_shader->Unbind();
 	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{	
 		glActiveTexture(GL_TEXTURE1);

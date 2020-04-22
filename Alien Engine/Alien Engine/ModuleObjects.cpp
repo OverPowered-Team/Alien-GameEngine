@@ -310,24 +310,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
-				//float3 cam_pos = float3((*iter)->position.x - (*iter)->direction.x, (*iter)->position.y - (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z);
-				/*float3 light_pos = float3(((*iter)->position.x + (*iter)->direction.x)/ (*iter)->light->sizefrustrum, ((*iter)->position.y + (*iter)->direction.y) / (*iter)->light->sizefrustrum, ((*iter)->position.z + (*iter)->direction.z) / (*iter)->light->distance_far_plane);
-									glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
-										glm::vec3((float)(*iter)->position.x / (*iter)->light->sizefrustrum, (float)(*iter)->position.y / (*iter)->light->sizefrustrum, (float)(*iter)->position.z / (*iter)->light->distance_far_plane),
-										glm::vec3(0.0, 1.0, 0.0));
-
-				(*iter)->viewMat.Set(&viewMatrix[0][0]);
-
-				(*iter)->light->fake_position = light_pos;*/
-				//float4x4 light_matView = viewport->GetCamera()->GetViewMatrix4x4();
-				//(*iter)->viewMat = light_matView.FromQuat((*iter)->light->game_object_attached->transform->GetLocalRotation());
-				//float3 pos = (*iter)->position;
-
-				//(*iter)->viewMat = (*iter)->viewMat.Translate(cam_pos + (*iter)->direction * 10);
-				//(*iter)->viewMat = (*iter)->viewMat.Translate(cam_pos);
-
-
-
 				if (!light_view)
 				{
 					glViewport(0, 0, 1024, 1024);
@@ -338,9 +320,25 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
-							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 						else
-							(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+						{
+							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance;
+							float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
+							camera_pos.z = -camera_pos.z;
+							float3 camera_direction = viewport->GetCamera()->frustum.front;
+							float halfFarPlaneD = (*iter)->light->distance_far_plane;
+							float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
+
+							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(camera_pos.x), (float)(camera_pos.y), (float)(camera_pos.z)),
+								glm::vec3((float)light_pos.x , (float)light_pos.y, (float)light_pos.z ),
+								glm::vec3(0.0, 1.0, 0.0));
+
+							(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
+							(*iter)->fake_position = light_pos;
+							(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);	
+						}
 					}
 				}
 			}
@@ -390,6 +388,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 	}
 
 #else
+	static bool light_view;
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	light_view = !light_view;
 
 	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
@@ -419,30 +420,41 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 		{
+	
 			glViewport(0, 0, 1024, 1024);
 			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
-			glClear(GL_DEPTH_BUFFER_BIT);	
+			glClear(GL_DEPTH_BUFFER_BIT);
+			
+			(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance;
+			float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
+			camera_pos.z = -camera_pos.z;
+			float3 camera_direction = game_viewport->GetCamera()->frustum.front;
+			float halfFarPlaneD = (*iter)->light->distance_far_plane;
+			float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
+
+			glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(camera_pos.x), (float)(camera_pos.y), (float)(camera_pos.z)),
+				glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
+				glm::vec3(0.0, 1.0, 0.0));
+
+			(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
+			(*iter)->fake_position = light_pos;
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-					if (printing_scene)
-						(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
-					else
-						(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->position);
+				if ((*it).second != nullptr) {				
+						(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+
 				}
 			}
 		}
 		
-		glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
-		glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
+		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
+		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				if (printing_scene)
-					(*it).second->DrawScene(viewport->GetCamera());
-				else
-					(*it).second->DrawGame(viewport->GetCamera());
+				(*it).second->DrawGame(game_viewport->GetCamera());
 			}
 		}
 

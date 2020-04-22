@@ -137,11 +137,10 @@ void ComponentMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
-	material->default_shader->Unbind();
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	material->simple_depth_shader->Unbind();
+	material->default_shader->Unbind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	material->UnbindMaterial();
@@ -233,7 +232,7 @@ void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCam
 {
 	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	std::string depth_shader("simple_depth_shader");
-	if (depth_shader.compare(resource_material->simple_depth_shader->GetName()) == 0)
+	if (depth_shader.compare(resource_material->simple_depth_shader->GetName()) != 0)
 	{
 		resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
 	}
@@ -261,7 +260,7 @@ void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, Compon
 	resource_material->default_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->default_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
-	//resource_material->shadow_shader->SetUniform1i("animate", animate);
+	resource_material->default_shader->SetUniform1i("animate", animate);
 }
 
 void ComponentMesh::DrawVertexNormals()

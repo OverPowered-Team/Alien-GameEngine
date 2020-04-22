@@ -340,7 +340,7 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
 
 		std::string clightPos = std::string(cname).append(".lightPos");
-		SetUniformFloat3(clightPos , (*iter)->position);
+		SetUniformFloat3(clightPos , (*iter)->fake_position);
 
 		++i;
 	}

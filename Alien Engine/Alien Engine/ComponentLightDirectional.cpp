@@ -64,17 +64,10 @@ ComponentLightDirectional::~ComponentLightDirectional()
 void ComponentLightDirectional::PostUpdate()
 {	
 	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
-		0.1f,
-		distance_far_plane);
+		-sizefrustrum,
+		sizefrustrum);
 
-	//float3 cam_pos = float3(light_props.position.x - light_props.direction.x, light_props.position.y - light_props.direction.y, light_props.position.z + light_props.direction.z);
-	float3 cam_pos = float3((light_props.position.x - light_props.direction.x)/ sizefrustrum, (light_props.position.y - light_props.direction.y) / sizefrustrum, (light_props.position.z + light_props.direction.z) / distance_far_plane);
-	glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_props.position.x / sizefrustrum, (float)light_props.position.y / sizefrustrum, (float)light_props.position.z / distance_far_plane), 
-		glm::vec3((float)cam_pos.x, (float)cam_pos.y, (float)cam_pos.z),
-		glm::vec3(0.0, 1.0, 0.0));
-	
 	light_props.projMat.Set(&projectionMatrix[0][0]);
-	light_props.viewMat.Set(&viewMatrix[0][0]);
 	
 }
 
@@ -143,7 +136,7 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(1,1), ImVec2(0,0));
+		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(0,1), ImVec2(1,0));
 		ImGui::DragFloat("size", &sizefrustrum);
 		ImGui::DragFloat("distance far plane", &distance_far_plane);
 	}
