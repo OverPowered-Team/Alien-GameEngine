@@ -63,8 +63,9 @@ ComponentLightDirectional::~ComponentLightDirectional()
 
 void ComponentLightDirectional::PostUpdate()
 {	
+	float near_plane = sizefrustrum;
 	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
-		-sizefrustrum,
+		-near_plane,
 		sizefrustrum);
 
 	light_props.projMat.Set(&projectionMatrix[0][0]);

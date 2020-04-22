@@ -428,7 +428,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				OnPreRender(viewport->GetCamera());
 			}
 			
-			/*for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
 
 				glViewport(0, 0, 1024, 1024);
@@ -449,7 +449,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 							float halfFarPlaneD = (*iter)->light->distance_far_plane;
 							float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
-							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(camera_pos.x), (float)(camera_pos.y), (float)(camera_pos.z)),
+							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(viewport->GetCamera()->GetCameraPosition().x/ (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
 								glm::vec3((float)light_pos.x , (float)light_pos.y, (float)light_pos.z ),
 								glm::vec3(0.0, 1.0, 0.0));
 
@@ -462,7 +462,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
-			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());*/
+			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 							
@@ -660,7 +660,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame(game_viewport->GetCamera());
+				(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
 			}
 		}
 
