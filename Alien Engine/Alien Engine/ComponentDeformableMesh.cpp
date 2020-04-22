@@ -129,9 +129,14 @@ void ComponentDeformableMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	ComponentMesh::SetUniform(material, camera, ViewMat, ProjMatrix, position);
-	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
-	material->shadow_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+	material->simple_depth_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 
+}
+
+void ComponentDeformableMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	ComponentMesh::SetUniformShadow(resource_material, camera);
+	resource_material->default_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 }
 
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)

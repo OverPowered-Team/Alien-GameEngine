@@ -1603,9 +1603,9 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		break; }
 	case ResourceType::RESOURCE_SHADER: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->material->used_shader == (ResourceShader*)to_delete) {
-			material->material->used_shader = App->resources->default_shader;
-			App->resources->default_shader->IncreaseReferences();
+		if (material != nullptr && material->material->simple_depth_shader == (ResourceShader*)to_delete) {
+			material->material->simple_depth_shader = App->resources->simple_depth_shader;
+			App->resources->simple_depth_shader->IncreaseReferences();
 		}
 		break; }
 	case ResourceType::RESOURCE_MESH: {

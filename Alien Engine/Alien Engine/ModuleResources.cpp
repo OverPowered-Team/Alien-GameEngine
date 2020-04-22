@@ -587,7 +587,7 @@ ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
 			if (App->StringCmp((*res)->GetName(), shaderName.c_str()))
 			{
 				desiredShader = (ResourceShader*)(*res);
-				break;
+				return desiredShader;
 			}
 		}
 	}
@@ -699,9 +699,9 @@ void ModuleResources::ReadAllMetaData()
 	ReadShaders(directories, files, SHADERS_FOLDER);
 	files.clear();
 	directories.clear();
-	default_shader = GetShaderByName("simple_depth_shader");
+	simple_depth_shader = GetShaderByName("simple_depth_shader");
 	default_particle_shader = GetShaderByName("particle_shader");
-	shadow_shader = GetShaderByName("shadow_shader");
+	default_shader = GetShaderByName("default_shader");
 	skybox_shader = GetShaderByName("skybox_shader");
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);

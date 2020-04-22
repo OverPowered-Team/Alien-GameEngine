@@ -90,7 +90,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat
 	
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	material->used_shader->Unbind();
+	material->simple_depth_shader->Unbind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	material->UnbindMaterial();
@@ -134,13 +134,14 @@ void ComponentMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 	SetUniformShadow(material, camera);
 
 	// Uniforms --------------
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
-	material->shadow_shader->Unbind();
+	material->default_shader->Unbind();
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	material->used_shader->Unbind();
+	material->simple_depth_shader->Unbind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	material->UnbindMaterial();
@@ -230,35 +231,35 @@ void ComponentMesh::DrawMesh()
 
 void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
-	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	std::string depth_shader("simple_depth_shader");
-	if (depth_shader.compare(resource_material->used_shader->GetName()) == 0)
+	if (depth_shader.compare(resource_material->simple_depth_shader->GetName()) == 0)
 	{
-		resource_material->used_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
+		resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
 	}
 	else
 	{
-		resource_material->used_shader->SetUniformMat4f("view", ViewMat);
-		resource_material->used_shader->SetUniformMat4f("projection", ProjMatrix);
-		resource_material->used_shader->SetUniformFloat3("view_pos", position);
-		resource_material->used_shader->SetUniform1i("animate", animate);
+		resource_material->simple_depth_shader->SetUniformMat4f("view", ViewMat);
+		resource_material->simple_depth_shader->SetUniformMat4f("projection", ProjMatrix);
+		resource_material->simple_depth_shader->SetUniformFloat3("view_pos", position);
+		resource_material->simple_depth_shader->SetUniform1i("animate", animate);
 
-		resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
+		resource_material->simple_depth_shader->SetUniform1i("activeFog", camera->activeFog);
 		if (camera->activeFog)
 		{
-			resource_material->used_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
-			resource_material->used_shader->SetUniform1f("density", camera->fogDensity);
-			resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
+			resource_material->simple_depth_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			resource_material->simple_depth_shader->SetUniform1f("density", camera->fogDensity);
+			resource_material->simple_depth_shader->SetUniform1f("gradient", camera->fogGradient);
 		}
 	}
 }
 
 void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
-	resource_material->shadow_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
-	resource_material->shadow_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->shadow_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	resource_material->shadow_shader->SetUniformFloat3("viewPos", camera->GetCameraPosition());
+	resource_material->default_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->default_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->default_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->default_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
 	//resource_material->shadow_shader->SetUniform1i("animate", animate);
 }

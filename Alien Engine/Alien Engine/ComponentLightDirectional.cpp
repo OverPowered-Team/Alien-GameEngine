@@ -67,14 +67,15 @@ void ComponentLightDirectional::PostUpdate()
 		0.1f,
 		distance_far_plane);
 
-	float3 cam_pos = light_props.position - light_props.direction;
-	glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_props.position.x, (float)light_props.position.y, (float)light_props.position.z),
+	//float3 cam_pos = float3(light_props.position.x - light_props.direction.x, light_props.position.y - light_props.direction.y, light_props.position.z + light_props.direction.z);
+	float3 cam_pos = float3((light_props.position.x - light_props.direction.x)/ sizefrustrum, (light_props.position.y - light_props.direction.y) / sizefrustrum, (light_props.position.z + light_props.direction.z) / distance_far_plane);
+	glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_props.position.x / sizefrustrum, (float)light_props.position.y / sizefrustrum, (float)light_props.position.z / distance_far_plane), 
 		glm::vec3((float)cam_pos.x, (float)cam_pos.y, (float)cam_pos.z),
 		glm::vec3(0.0, 1.0, 0.0));
-
-		
+	
 	light_props.projMat.Set(&projectionMatrix[0][0]);
 	light_props.viewMat.Set(&viewMatrix[0][0]);
+	
 }
 
 
@@ -98,7 +99,7 @@ void ComponentLightDirectional::LightLogic()
 			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
 			App->renderer3D->EndDebugDraw();
 		}
-		DrawLightFrustrum();
+		//DrawLightFrustrum();
 	}
 #endif
 }
@@ -142,10 +143,8 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500));
-		sizefrustrum /= 2;
+		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(1,1), ImVec2(0,0));
 		ImGui::DragFloat("size", &sizefrustrum);
-		sizefrustrum *= 2;
 		ImGui::DragFloat("distance far plane", &distance_far_plane);
 	}
 	else

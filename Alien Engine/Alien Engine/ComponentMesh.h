@@ -53,7 +53,7 @@ protected:
 	virtual void DrawMesh();
 	virtual void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 
-	void SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera);
+	virtual void SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera);
 
 	void DrawVertexNormals();
 	void DrawFaceNormals();

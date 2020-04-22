@@ -310,20 +310,23 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
-				/*float3 frustum_center = viewport->GetCamera()->frustum.CenterPoint();
-				float3 cam_pos = frustum_center - (*iter)->direction * 100;
-				glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)cam_pos.x, (float)cam_pos.y, (float)cam_pos.z),
-					glm::vec3((float)frustum_center.x, (float)frustum_center.y, (float)frustum_center.z),
-					glm::vec3(0.0, 1.0, 0.0));*/
+				//float3 cam_pos = float3((*iter)->position.x - (*iter)->direction.x, (*iter)->position.y - (*iter)->direction.y, (*iter)->position.z + (*iter)->direction.z);
+				/*float3 light_pos = float3(((*iter)->position.x + (*iter)->direction.x)/ (*iter)->light->sizefrustrum, ((*iter)->position.y + (*iter)->direction.y) / (*iter)->light->sizefrustrum, ((*iter)->position.z + (*iter)->direction.z) / (*iter)->light->distance_far_plane);
+									glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
+										glm::vec3((float)(*iter)->position.x / (*iter)->light->sizefrustrum, (float)(*iter)->position.y / (*iter)->light->sizefrustrum, (float)(*iter)->position.z / (*iter)->light->distance_far_plane),
+										glm::vec3(0.0, 1.0, 0.0));
 
-				//--------------------------------------------------------------------
-				//App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-				//Gizmos::DrawWireSphere(frustum_center, 100, Color::Red());
-				//Gizmos::DrawCube(cam_pos,float3(20,20,20),Color::Blue());
-				//Gizmos::DrawLine(cam_pos, frustum_center, Color::Green(), 2.0f);
-				//App->renderer3D->EndDebugDraw();
-				//--------------------------------------------------------------------
-				//(*iter)->viewMat.Set(&viewMatrix[0][0]);
+				(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
+				(*iter)->light->fake_position = light_pos;*/
+				//float4x4 light_matView = viewport->GetCamera()->GetViewMatrix4x4();
+				//(*iter)->viewMat = light_matView.FromQuat((*iter)->light->game_object_attached->transform->GetLocalRotation());
+				//float3 pos = (*iter)->position;
+
+				//(*iter)->viewMat = (*iter)->viewMat.Translate(cam_pos + (*iter)->direction * 10);
+				//(*iter)->viewMat = (*iter)->viewMat.Translate(cam_pos);
+
+
 
 				if (!light_view)
 				{

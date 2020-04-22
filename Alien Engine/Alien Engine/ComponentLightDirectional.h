@@ -46,13 +46,15 @@ private:
 	void DrawIconLight();
 	void DrawLightFrustrum();
 
+public:
+	float sizefrustrum = 88.f;
+	float distance_far_plane = 178.f;
+	float3 fake_position;
+
 private:
 	ComponentMesh* bulb = nullptr;
 	bool print_icon = true;
 
-	float sizefrustrum = 10.f;
-	float distance_far_plane = 100.f;
 	uint renderer_id = 0;
-
 	DirLightProperties light_props;
 };

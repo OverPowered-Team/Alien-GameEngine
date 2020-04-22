@@ -310,6 +310,11 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
+
+	std::string clightSpaceMatrix("lightSpaceMatrix");
+	clightSpaceMatrix.append("[%i]");
+
+	SetUniform1i("num_space_matrix", dirLights.size());
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
 		char cname[128];
@@ -324,8 +329,18 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 		std::string variablesLocation = std::string(cname).append(".dirLightProperties");
 		SetUniformFloat3v(variablesLocation, variablesVec3, 5);
-		
-		//CreateDepthMap(*iter);
+
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
+		std::string cdepthmap = std::string(cname).append(".depthMap");
+		SetUniform1i(cdepthmap, 3);
+
+		char clightspaceM[128];
+		sprintf_s(clightspaceM, clightSpaceMatrix.c_str(), i);
+		SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
+
+		std::string clightPos = std::string(cname).append(".lightPos");
+		SetUniformFloat3(clightPos , (*iter)->position);
 
 		++i;
 	}
@@ -583,24 +598,14 @@ void ResourceShader::CreateDepthMap(DirLightProperties* light)
 void ResourceShader::DrawShadows()
 {
 	// 1. first render to depth map
-	int i = 0;
-	std::string tmp_name("dir_light");
-	tmp_name.append("[%i]");
+	//int i = 0;
+	//std::string tmp_name("dir_light");
+	//tmp_name.append("[%i]");
 
-	for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
-	{
-		glActiveTexture(GL_TEXTURE3);
-
-		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
-
-		SetUniform1i("depthMap", 3);
-
-		ComponentCamera* current_camera = App->objects->current_viewport->GetCamera();
-
-		//SetUniformFloat3("viewPos", current_camera->GetCameraPosition());
-		SetUniformMat4f("lightSpaceMatrix", (*iter)->projMat * (*iter)->viewMat);
-		SetUniformFloat3("lightPos", (*iter)->position);
+	//for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
+	//{
+	//	
 
 
-	}
+	//}
 }

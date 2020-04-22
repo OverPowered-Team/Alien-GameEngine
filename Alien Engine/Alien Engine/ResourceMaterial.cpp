@@ -20,15 +20,15 @@ ResourceMaterial::ResourceMaterial() : Resource()
 		texturesID[i] = NO_TEXTURE_ID;
 	}
 
-	used_shader = App->resources->default_shader;
-	if (used_shader != nullptr)
-		used_shader->IncreaseReferences();
+	simple_depth_shader = App->resources->simple_depth_shader;
+	if (simple_depth_shader != nullptr)
+		simple_depth_shader->IncreaseReferences();
 	else
 		LOG_ENGINE("There was an error. Could not find the default shader");
 
-	shadow_shader = App->resources->shadow_shader;
-	if (shadow_shader != nullptr)
-		shadow_shader->IncreaseReferences();
+	default_shader = App->resources->default_shader;
+	if (default_shader != nullptr)
+		default_shader->IncreaseReferences();
 	else
 		LOG_ENGINE("There was an error. Could not find the shadow shader");
 }
@@ -259,75 +259,68 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 void ResourceMaterial::ApplyMaterial()
 {
 	// Bind the actual shader
-	used_shader->Bind();
+	simple_depth_shader->Bind();
 
 	if (!recive_shadow)
 	{
-		used_shader->has_shadow = true;
+		simple_depth_shader->has_shadow = true;
 	}
 	// Bind textures
 	std::string depth_shader("simple_depth_shader");
-	if (depth_shader.compare(used_shader->GetName()) != 0)
-	{
-		if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
-		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
-			used_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
-			used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
-			//shadows
-			if (recive_shadow)
-			{
-				shadow_shader->SetUniform1i("diffuseTexture", 0);
-				shadow_shader->SetUniform1i("hasDiffuseTexture", 1);
-			}
-		}
-		else
-		{
-			used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
-			if (recive_shadow)
-				shadow_shader->SetUniform1i("hasDiffuseTexture", 0);
-		}
-		if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
-		{
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
-			used_shader->SetUniform1i("objectMaterial.specularMap", 1);
-			used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
-		}
-		else
-			used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
-		if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
-		{
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
-			used_shader->SetUniform1i("objectMaterial.normalMap", 2);
-			used_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
-		}
-		else
-			used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
-	}
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
 	shaderInputs.particleShaderProperties.color = color;
-	used_shader->UpdateUniforms(shaderInputs);
+	simple_depth_shader->UpdateUniforms(shaderInputs);
 }
 
 void ResourceMaterial::ApplyShadows()
 {
 	// Bind the actual shader
-	shadow_shader->Bind();
+	default_shader->Bind();
 
-	shadow_shader->DrawShadows();
+	if (texturesID[(uint)TextureType::DIFFUSE] != NO_TEXTURE_ID && textureActivated)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::DIFFUSE]));
+		default_shader->SetUniform1i("objectMaterial.diffuseTexture", 0);
+		default_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
+	}
+	else
+	{
+		default_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
+	}
+	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::SPECULAR]));
+		default_shader->SetUniform1i("objectMaterial.specularMap", 1);
+		default_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
+	}
+	else
+		default_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
+
+	if (texturesID[(uint)TextureType::NORMALS] != NO_TEXTURE_ID)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, App->resources->GetTextureidByID(texturesID[(uint)TextureType::NORMALS]));
+		default_shader->SetUniform1i("objectMaterial.normalMap", 2);
+		default_shader->SetUniform1i("objectMaterial.hasNormalMap", 1);
+	}
+	else
+		default_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
+
+	//default_shader->DrawShadows();
 
 	// Update uniforms
-	shadow_shader->SetUniformFloat3("diffuse_color", shaderInputs.standardShaderProperties.diffuse_color);
+	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shaderInputs.particleShaderProperties.color = color;
+	default_shader->UpdateUniforms(shaderInputs);
 }
 
 void ResourceMaterial::UnbindMaterial()
 {
-	used_shader->Unbind();
+	simple_depth_shader->Unbind();
 	
 	if (texturesID[(uint)TextureType::SPECULAR] != NO_TEXTURE_ID)
 	{	
@@ -388,13 +381,13 @@ bool ResourceMaterial::HasTexture(TextureType texType) const
 
 void ResourceMaterial::SetShader(ResourceShader* newShader)
 {
-	if (newShader == nullptr || newShader == used_shader)
+	if (newShader == nullptr || newShader == default_shader)
 		return;
 
-	used_shader->DecreaseReferences();
-	used_shader = newShader;
-	used_shader_ID = used_shader->GetID();
-	used_shader->IncreaseReferences();
+	default_shader->DecreaseReferences();
+	default_shader = newShader;
+	used_shader_ID = default_shader->GetID();
+	default_shader->IncreaseReferences();
 }
 
 
@@ -461,7 +454,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 {
 	std::vector<ResourceShader*> shadersList;
 	App->resources->GetShaders(shadersList);
-	selectedShader = used_shader->GetName();
+	selectedShader = default_shader->GetName();
 	if (ImGui::BeginCombo("Selected Shader", selectedShader))
 	{
 		for (std::vector<ResourceShader*>::iterator iter = shadersList.begin(); iter != shadersList.end(); iter++)
@@ -475,7 +468,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 				if (newShader != nullptr)
 				{
 					SetShader(newShader);
-					LOG_ENGINE("Selected Shader %s\n", used_shader->GetName());
+					LOG_ENGINE("Selected Shader %s\n", default_shader->GetName());
 				}
 				else
 					is_selected = false;
@@ -491,7 +484,7 @@ void ResourceMaterial::ShaderSelectionHeader()
 void ResourceMaterial::ShaderInputsSegment()
 {
 
-	switch (used_shader->GetShaderType())
+	switch (default_shader->GetShaderType())
 	{
 	case SHADER_TEMPLATE::DEFAULT: {//difusse
 		//ImGui::ColorEdit3("Albedo", shaderInputs.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);

@@ -119,8 +119,8 @@ public:
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;
-	ResourceShader* used_shader = nullptr; 
-	ResourceShader* shadow_shader = nullptr;
+	ResourceShader* simple_depth_shader = nullptr; 
+	ResourceShader* default_shader = nullptr;
 	const char* selectedShader = nullptr;
 	ResourceTexture* selected_texture = nullptr;
 	bool change_texture_menu = false;
