@@ -120,7 +120,7 @@ struct SpotLight
 };
 
 struct Material {
-    vec3 diffuse_color;
+    vec4 diffuse_color;
 
     sampler2D diffuseTexture;
     bool hasDiffuseTexture;
@@ -170,13 +170,13 @@ out vec4 FragColor;
 void main()
 {
     // ----------------------- Object Color ---------------------
-    vec4 objectColor = vec4(objectMaterial.diffuse_color, 1.0f);
+    vec4 objectColor = objectMaterial.diffuse_color;
     if(objectMaterial.hasDiffuseTexture == true)
     {
         objectColor = objectColor * vec4(texture(objectMaterial.diffuseTexture, texCoords));
     }
 
-    if(objectColor.w < 0.1)
+    if(objectColor.w < 0.001)
     {
         discard;
     }
