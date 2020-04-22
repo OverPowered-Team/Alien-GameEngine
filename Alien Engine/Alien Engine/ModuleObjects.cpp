@@ -430,6 +430,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
+				if (!(*iter)->light->castShadows)
+					continue; 
 
 				glViewport(0, 0, 1024, 1024);
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);

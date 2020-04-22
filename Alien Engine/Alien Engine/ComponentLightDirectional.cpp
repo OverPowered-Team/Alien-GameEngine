@@ -137,7 +137,10 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(0,1), ImVec2(1,0));
+		ImGui::Checkbox("Casts Shadows", &castShadows);
+
+		if(castShadows)
+			ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(0,1), ImVec2(1,0));
 
 	}
 	else

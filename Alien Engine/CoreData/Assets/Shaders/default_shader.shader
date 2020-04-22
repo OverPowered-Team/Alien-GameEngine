@@ -97,6 +97,8 @@ struct DirectionalLight
     vec3 dirLightProperties[5];
     sampler2D depthMap;
     vec3 lightPos;
+
+    bool castShadow;
 };
 
 struct PointLight
@@ -244,8 +246,21 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     else   
         specular = light.dirLightProperties[indexSpecular] * spec;
 
-    float shadow = ShadowCalculation(light,lightSpaceMat, normal, fake_lightDir);
-    return (ambient + (1.0 - shadow) * (diffuse + specular)) * vec3(intensity, intensity, intensity);
+
+    // Final Calculation 
+    vec3 result = vec3(0);
+
+    if(light.castShadow == true)
+    {
+        float shadow = ShadowCalculation(light,lightSpaceMat, normal, fake_lightDir);
+        result = (ambient + (1.0 - shadow) * (diffuse + specular)) * vec3(intensity, intensity, intensity);
+    }
+    else 
+    {
+        result = (ambient + diffuse + specular) * vec3(intensity, intensity, intensity);
+    }
+
+    return result;
 }
 
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMaterial, vec2 texCoords)

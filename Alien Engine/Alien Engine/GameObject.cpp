@@ -184,22 +184,8 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position);
-		/*if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();*/
-			//if (mesh->view_mesh || mesh->wireframe)
-			//	mesh->DrawMesh();
-			//if (mesh->view_vertex_normals)
-			//	mesh->DrawVertexNormals();
-			//if (mesh->view_face_normals)
-			//	mesh->DrawFaceNormals();
-			//if (mesh->draw_AABB)
-			//	mesh->DrawGlobalAABB(camera);
-			//if (mesh->draw_OBB)
-			//	mesh->DrawOBB(camera);
+			mesh->PreDrawPolygonForShadows(camera, ViewMat, ProjMatrix, position);
 	}
-
-
 }
 
 void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
@@ -231,7 +217,7 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygonWithShadows(camera);
+			mesh->DrawPolygon(camera);
 		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
@@ -270,7 +256,7 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position);
+		mesh->PreDrawPolygonForShadows(camera, ViewMat, ProjMatrix, position);
 
 	}
 }
@@ -302,7 +288,7 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygonWithShadows(camera);
+		mesh->DrawPolygon(camera);
 
 	}
 }
