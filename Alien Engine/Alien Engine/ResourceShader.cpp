@@ -207,7 +207,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::WATER: {
-		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
 		SetUniform1i("reflection_texture", 1);
