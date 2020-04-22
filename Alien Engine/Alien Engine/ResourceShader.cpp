@@ -14,7 +14,9 @@
 #include "Time.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentTransform.h"
 #include "ComponentLightPoint.h"
+#include "Viewport.h"
 #include "mmgr/mmgr.h"
 
 #include "Optick/include/optick.h"
@@ -162,6 +164,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
+	else if (std::strcmp(name.c_str(), "simple_depth_shader") == 0)
+		shaderType = SHADER_TEMPLATE::SHADOW;
 	else if (std::strcmp(name.c_str(), "water_shader") == 0)
 		shaderType = SHADER_TEMPLATE::WATER;
 	else 
@@ -204,6 +208,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
+		break; }
+	case SHADER_TEMPLATE::SHADOW: {
+
 		break; }
 
 	case SHADER_TEMPLATE::WATER: {
@@ -351,11 +358,16 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
+
+	std::string clightSpaceMatrix("lightSpaceMatrix");
+	clightSpaceMatrix.append("[%i]");
+
+	SetUniform1i("num_space_matrix", dirLights.size());
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
 		char cname[128];
 		sprintf_s(cname, tmp_name.c_str(), i);
-		
+
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
@@ -365,6 +377,18 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 		std::string variablesLocation = std::string(cname).append(".dirLightProperties");
 		SetUniformFloat3v(variablesLocation, variablesVec3, 5);
+
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
+		std::string cdepthmap = std::string(cname).append(".depthMap");
+		SetUniform1i(cdepthmap, 4);
+
+		char clightspaceM[128];
+		sprintf_s(clightspaceM, clightSpaceMatrix.c_str(), i);
+		SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
+
+		std::string clightPos = std::string(cname).append(".lightPos");
+		SetUniformFloat3(clightPos , (*iter)->fake_position);
 
 		++i;
 	}
@@ -616,4 +640,24 @@ void ResourceShader::CreateShaderDoc(const int& type, const char* name)
 		file.close();
 	}
 	App->file_system->Save(file_output.data(), file_str.data(), file_str.size());
+}
+
+void ResourceShader::CreateDepthMap(DirLightProperties* light)
+{
+
+}
+
+void ResourceShader::DrawShadows()
+{
+	// 1. first render to depth map
+	//int i = 0;
+	//std::string tmp_name("dir_light");
+	//tmp_name.append("[%i]");
+
+	//for (std::list<DirLightProperties*>::const_iterator iter = App->objects->directional_light_properites.begin(); iter != App->objects->directional_light_properites.end(); iter++)
+	//{
+	//	
+
+
+	//}
 }

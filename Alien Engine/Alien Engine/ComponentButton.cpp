@@ -15,6 +15,7 @@
 #include "PanelGame.h"
 #include "ModuleResources.h"
 #include "ModuleUI.h"
+#include "ModuleWindow.h"
 #include "mmgr/mmgr.h"
 
 ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
