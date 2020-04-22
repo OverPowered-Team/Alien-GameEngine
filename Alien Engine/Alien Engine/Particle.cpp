@@ -20,7 +20,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	if (owner->material != nullptr) 
 	{
 		p_material = new ResourceMaterial();
-		p_material->SetShader(owner->material->default_shader);
+		p_material->SetShader(owner->material->used_shader);
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
 

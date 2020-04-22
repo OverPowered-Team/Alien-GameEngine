@@ -82,7 +82,15 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat
 	// Uniforms --------------
 	SetUniform(material, camera, ViewMat, ProjMatrix, position);
 
-	
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetRefractionTexture());
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->dvud_tex->id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
+
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	material->simple_depth_shader->Unbind();
@@ -136,9 +144,6 @@ void ComponentMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->dvud_tex->id);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
-
 	// --------------------------------------------------------------------- 
 	// Uniforms --------------
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
@@ -147,7 +152,7 @@ void ComponentMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	material->default_shader->Unbind();
+	material->used_shader->Unbind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	material->UnbindMaterial();
@@ -244,18 +249,18 @@ void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCam
 
 void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
-	resource_material->default_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
-	resource_material->default_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->default_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	resource_material->default_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
+	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
 	//resource_material->default_shader->SetUniform1i("animate", animate);
-	resource_material->default_shader->SetUniform1i("activeFog", camera->activeFog);
+	resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
 	if (camera->activeFog)
 	{
-		resource_material->default_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
-		resource_material->default_shader->SetUniform1f("density", camera->fogDensity);
-		resource_material->default_shader->SetUniform1f("gradient", camera->fogGradient);
+		resource_material->used_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+		resource_material->used_shader->SetUniform1f("density", camera->fogDensity);
+		resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
 	}
 }
 

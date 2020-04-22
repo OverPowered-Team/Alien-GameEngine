@@ -137,8 +137,7 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500),ImVec2(0,1), ImVec2(1,0));
-		ImGui::DragFloat("size", &sizefrustrum);
-		ImGui::DragFloat("distance far plane", &distance_far_plane);
+
 	}
 	else
 		RightClickMenu("Light Directional");

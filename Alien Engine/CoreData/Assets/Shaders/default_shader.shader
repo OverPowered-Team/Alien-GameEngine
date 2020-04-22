@@ -31,7 +31,7 @@ out float visibility;
 out vec4 FragPosLightSpace[MAX_SPACEMATRIX];
 //out float visibility;
 
-//uniform vec4 clip_plane;
+uniform vec4 clip_plane;
 
 void main()
 {
@@ -51,7 +51,7 @@ void main()
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
     // ------------------------
-    //gl_ClipDistance[0] = dot(worldPos, clip_plane);
+    gl_ClipDistance[0] = dot(worldPos, clip_plane);
     //gl_ClipDistance[0] = -1;
     // --------------------------------------- 
 

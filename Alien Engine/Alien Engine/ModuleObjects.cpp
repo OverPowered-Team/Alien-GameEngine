@@ -427,21 +427,13 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
-
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) 
-					(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
-				}
-				
-			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+			
+			/*for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
-				if (!light_view)
-				{
-					glViewport(0, 0, 1024, 1024);
-					glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
-					glClear(GL_DEPTH_BUFFER_BIT);
-				}
+
+				glViewport(0, 0, 1024, 1024);
+				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
+				glClear(GL_DEPTH_BUFFER_BIT);
 			
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
@@ -469,22 +461,21 @@ update_status ModuleObjects::PostUpdate(float dt)
 					}
 				}
 			}
-			if (!light_view)
-			{
-				glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
-				glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
-				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
+			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());*/
+
+			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 							
-				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
-						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera());
-						else
-							(*it).second->DrawGame(viewport->GetCamera());
-					}
+			for (; it != to_draw.end(); ++it) {
+				if ((*it).second != nullptr) {
+					if (printing_scene)
+						(*it).second->DrawScene(viewport->GetCamera(),float4(0.0f,-1.0f,0.0f,100000.0f));
+					else
+						(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
 				}
-			
 			}
+			
+			
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
 			if (!printing_scene) {
 				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);

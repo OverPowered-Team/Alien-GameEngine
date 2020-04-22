@@ -120,7 +120,7 @@ public:
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;
 	ResourceShader* simple_depth_shader = nullptr; 
-	ResourceShader* default_shader = nullptr;
+	ResourceShader* used_shader = nullptr;
 	const char* selectedShader = nullptr;
 	ResourceTexture* selected_texture = nullptr;
 	bool change_texture_menu = false;

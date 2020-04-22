@@ -202,7 +202,7 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 
 }
 
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
