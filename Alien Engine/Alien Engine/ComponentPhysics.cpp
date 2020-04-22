@@ -422,20 +422,9 @@ void ComponentPhysics::PutToSleep()
 
 void ComponentPhysics::ChangedFilters()
 {
-	//if (!IsDisabled())
-	//	App->physx->px_scene->resetFiltering(*actor);
-
 	if (IsDisabled()) return;
 
-	PxU32 num_shapes = actor->getNbShapes();
-	PxShape* shapes = nullptr; // Buffer Shapes 
-	actor->getShapes(&shapes, num_shapes);
-	for (PxU32 i = 0; i < num_shapes; ++i)
-		actor->detachShape(shapes[i]);
-
-	for (ComponentCollider* collider : colliders)
-		if (collider->enabled && collider->shape) // TODO: check this
-			actor->attachShape(*collider->shape);
+	//App->physx->px_scene->resetFiltering(*actor);
 
 }
 

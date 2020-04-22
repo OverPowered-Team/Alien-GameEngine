@@ -1499,6 +1499,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					(*item)->Clone(collider);
 					clone->AddComponent(collider);
 					break; }
+				case ComponentType::RIGID_BODY: {
+					ComponentRigidBody* rb = new ComponentRigidBody(clone);
+					(*item)->Clone(rb);
+					clone->AddComponent(rb);
+					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");
 					break;
