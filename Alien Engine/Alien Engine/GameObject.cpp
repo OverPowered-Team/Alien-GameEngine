@@ -168,6 +168,40 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
+void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	OPTICK_EVENT();
+	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
+	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+
+	if (mesh != nullptr && mesh->IsEnabled())
+	{
+		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
+			glColor3f(1, 1, 1);
+		if (!mesh->wireframe)
+			mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+			//if (mesh->view_mesh || mesh->wireframe)
+			//	mesh->DrawMesh();
+			//if (mesh->view_vertex_normals)
+			//	mesh->DrawVertexNormals();
+			//if (mesh->view_face_normals)
+			//	mesh->DrawFaceNormals();
+			//if (mesh->draw_AABB)
+			//	mesh->DrawGlobalAABB(camera);
+			//if (mesh->draw_OBB)
+			//	mesh->DrawOBB(camera);
+	}
+
+
+}
+
 void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
@@ -197,7 +231,7 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
 		if (!mesh->wireframe)
-			mesh->DrawPolygon(camera);
+			mesh->DrawPolygonWithShadows(camera);
 		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine();*/
 		if (mesh->view_mesh || mesh->wireframe)
@@ -218,6 +252,28 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 	}
 }
 
+void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	OPTICK_EVENT();
+	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
+
+	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
+	if (mesh == nullptr) //not sure if this is the best solution
+		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	{
+		material->BindTexture();
+	}*/
+
+	if (mesh != nullptr && mesh->IsEnabled())
+	{
+		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
+			glColor3f(1, 1, 1);
+		mesh->DrawPolygon(camera, ViewMat, ProjMatrix, position);
+
+	}
+}
 
 void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 {
@@ -246,7 +302,8 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 	{
 		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
 			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera);
+		mesh->DrawPolygonWithShadows(camera);
+
 	}
 }
 
@@ -1582,9 +1639,9 @@ void GameObject::SearchResourceToDelete(const ResourceType& type, Resource* to_d
 		break; }
 	case ResourceType::RESOURCE_SHADER: {
 		ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-		if (material != nullptr && material->material->used_shader == (ResourceShader*)to_delete) {
-			material->material->used_shader = App->resources->default_shader;
-			App->resources->default_shader->IncreaseReferences();
+		if (material != nullptr && material->material->simple_depth_shader == (ResourceShader*)to_delete) {
+			material->material->simple_depth_shader = App->resources->simple_depth_shader;
+			App->resources->simple_depth_shader->IncreaseReferences();
 		}
 		break; }
 	case ResourceType::RESOURCE_MESH: {

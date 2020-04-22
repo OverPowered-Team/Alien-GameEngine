@@ -22,12 +22,17 @@ ResourceMaterial::ResourceMaterial() : Resource()
 		textures[i].second = nullptr;
 	}
 
-	used_shader = App->resources->default_shader;
+	simple_depth_shader = App->resources->simple_depth_shader;
+	if (simple_depth_shader != nullptr)
+		simple_depth_shader->IncreaseReferences();
+	else
+		LOG_ENGINE("There was an error. Could not find the default shader");
 
+	used_shader = App->resources->default_shader;
 	if (used_shader != nullptr)
 		used_shader->IncreaseReferences();
 	else
-		LOG_ENGINE("There was an error. Could not find the default shader");
+		LOG_ENGINE("There was an error. Could not find the shadow shader");
 }
 
 ResourceMaterial::~ResourceMaterial()
@@ -268,9 +273,26 @@ void ResourceMaterial::ApplyMaterial()
 	OPTICK_EVENT();
 
 	// Bind the actual shader
+	simple_depth_shader->Bind();
+
+	if (!recive_shadow)
+	{
+		simple_depth_shader->has_shadow = true;
+	}
+	// Bind textures
+	std::string depth_shader("simple_depth_shader");
+
+	// Update uniforms
+	shaderInputs.standardShaderProperties.diffuse_color = color;
+	shaderInputs.particleShaderProperties.color = color;
+	//simple_depth_shader->UpdateUniforms(shaderInputs);
+}
+
+void ResourceMaterial::ApplyShadows()
+{
+	// Bind the actual shader
 	used_shader->Bind();
 
-	// Bind textures
 	if (textures[(uint)TextureType::DIFFUSE].first != NO_TEXTURE_ID && textures[(uint)TextureType::DIFFUSE].second != nullptr)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -279,7 +301,9 @@ void ResourceMaterial::ApplyMaterial()
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 1);
 	}
 	else
+	{
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
+	}
 
 	if (textures[(uint)TextureType::SPECULAR].first != NO_TEXTURE_ID && textures[(uint)TextureType::SPECULAR].second != nullptr)
 	{
@@ -288,7 +312,7 @@ void ResourceMaterial::ApplyMaterial()
 		used_shader->SetUniform1i("objectMaterial.specularMap", 1);
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 1);
 	}
-	else	
+	else
 		used_shader->SetUniform1i("objectMaterial.hasSpecularMap", 0);
 
 	if (textures[(uint)TextureType::NORMALS].first != NO_TEXTURE_ID && textures[(uint)TextureType::NORMALS].second != nullptr)
@@ -301,11 +325,12 @@ void ResourceMaterial::ApplyMaterial()
 	else
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
 
+	//default_shader->DrawShadows();
+
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
 	used_shader->UpdateUniforms(shaderInputs);
-
 }
 
 void ResourceMaterial::UnbindMaterial()
@@ -564,6 +589,8 @@ void ResourceMaterial::ShaderInputsSegment()
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
 	}
+	ImGui::Spacing();
+
 }
 
 void ResourceMaterial::InputTexture(TextureType texType)
