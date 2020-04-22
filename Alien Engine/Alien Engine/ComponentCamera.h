@@ -43,6 +43,8 @@ public:
 	float4x4 GetViewMatrix4x4() const; 
 	void SetViewMatrix4x4(const float4x4& mat);
 
+	void InvertPitch();
+
 	void SetVerticalFov(const float& vertical_fov);
 	float GetVerticalFov() const;
 	void SetHorizontalFov(const float& horitzontal_fov);

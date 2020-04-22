@@ -81,11 +81,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat
 
 	// Uniforms --------------
 	SetUniform(material, camera, ViewMat, ProjMatrix, position);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
-
-	// --------------------------------------------------------------------- 
 
 	
 	glBindVertexArray(0);
@@ -133,6 +128,18 @@ void ComponentMesh::DrawPolygonWithShadows(ComponentCamera* camera)
 
 	SetUniformShadow(material, camera);
 
+	// Reflection / Refraction --------------
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetRefractionTexture());
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->dvud_tex->id);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
+
+	// --------------------------------------------------------------------- 
 	// Uniforms --------------
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
