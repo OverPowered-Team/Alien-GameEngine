@@ -10,7 +10,6 @@
 #include <map>
 #include <utility>
 #include "Octree.h"
-#include "WaterFrameBuffers.h"
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
@@ -319,8 +318,6 @@ public:
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
 	std::string sceneNameToChange;
-
-	WaterFrameBuffers* wfbos = nullptr;
 
 private:
 	// root

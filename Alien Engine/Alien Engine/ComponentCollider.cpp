@@ -120,12 +120,12 @@ void ComponentCollider::SetCollisionLayer(std::string layer)
 	BeginUpdateShape();
 	PxFilterData filter_data;
 	filter_data.word0 = index;
-	filter_data.word1 = physics->ID;
+	filter_data.word1 = game_object_attached->ID;
 	shape->setSimulationFilterData(filter_data);
 	shape->setQueryFilterData(filter_data);
 	EndUpdateShape();
 
-	physics->ChangedFilters();
+	physics->WakeUp();
 }
 
 std::string ComponentCollider::GetCollisionLayer()
@@ -350,7 +350,6 @@ void ComponentCollider::InitMaterial()
 {
 	SetStaticFriction(0.5f);
 	SetDynamicFriction(0.5f);
-	SetBouncing(0.5f);
 	SetFrictionCombineMode(CombineMode::Average);
 	SetBouncingCombineMode(CombineMode::Average);
 }
