@@ -218,6 +218,8 @@ public:
 
 	std::vector<ResourceScene*> current_scenes;
 
+	Viewport* current_viewport = nullptr;
+
 	std::list<Alien*> current_scripts;
 
 	Component* component_in_copy = nullptr;
@@ -314,7 +316,6 @@ public:
 	std::list<DirLightProperties*> directional_light_properites;
 	std::list<PointLightProperties*> point_light_properites;
 	std::list<SpotLightProperties*> spot_light_properites;
-
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
 	std::string sceneNameToChange;
@@ -329,7 +330,6 @@ private:
 
 	std::stack<ReturnZ*> save_return_actions;
 	std::stack<ReturnZ*> save_fordward_actions;
-
 
 
 	std::list<InvokeInfo*> invokes;

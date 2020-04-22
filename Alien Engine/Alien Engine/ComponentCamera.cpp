@@ -641,6 +641,10 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 	return float4x4(frustum.ViewMatrix()).Transposed();
 }
 
+void ComponentCamera::SetViewMatrix4x4(const float4x4& mat)
+{
+	ViewMatrix = mat;
+}
 void ComponentCamera::InvertPitch()
 {
 	/*float3x4* v_m = &frustum.ViewMatrix();

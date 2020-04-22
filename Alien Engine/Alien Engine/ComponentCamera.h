@@ -41,7 +41,8 @@ public:
 	float4x4 GetProjectionMatrix4f4() const;
 
 	float* GetViewMatrix() const;
-	float4x4 GetViewMatrix4x4() const;
+	float4x4 GetViewMatrix4x4() const; 
+	void SetViewMatrix4x4(const float4x4& mat);
 
 	void InvertPitch();
 
