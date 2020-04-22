@@ -283,7 +283,7 @@ void ResourceMaterial::ApplyMaterial()
 	std::string depth_shader("simple_depth_shader");
 
 	// Update uniforms
-	shaderInputs.standardShaderProperties.diffuse_color = float3(color.x, color.y, color.z);
+	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
 	//simple_depth_shader->UpdateUniforms(shaderInputs);
 }
@@ -303,6 +303,7 @@ void ResourceMaterial::ApplyShadows()
 	else
 	{
 		used_shader->SetUniform1i("objectMaterial.hasDiffuseTexture", 0);
+	}
 
 	if (textures[(uint)TextureType::SPECULAR].first != NO_TEXTURE_ID && textures[(uint)TextureType::SPECULAR].second != nullptr)
 	{
