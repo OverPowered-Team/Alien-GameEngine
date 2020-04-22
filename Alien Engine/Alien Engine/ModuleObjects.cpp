@@ -323,7 +323,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 						else
 						{
-							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance;
+							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance *0.25;
 							float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
 							camera_pos.z = -camera_pos.z;
 							float3 camera_direction = viewport->GetCamera()->frustum.front;

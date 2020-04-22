@@ -231,26 +231,8 @@ void ComponentMesh::DrawMesh()
 void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	std::string depth_shader("simple_depth_shader");
-	if (depth_shader.compare(resource_material->simple_depth_shader->GetName()) != 0)
-	{
-		resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
-	}
-	else
-	{
-		resource_material->simple_depth_shader->SetUniformMat4f("view", ViewMat);
-		resource_material->simple_depth_shader->SetUniformMat4f("projection", ProjMatrix);
-		resource_material->simple_depth_shader->SetUniformFloat3("view_pos", position);
-		resource_material->simple_depth_shader->SetUniform1i("animate", animate);
+	resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
 
-		resource_material->simple_depth_shader->SetUniform1i("activeFog", camera->activeFog);
-		if (camera->activeFog)
-		{
-			resource_material->simple_depth_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
-			resource_material->simple_depth_shader->SetUniform1f("density", camera->fogDensity);
-			resource_material->simple_depth_shader->SetUniform1f("gradient", camera->fogGradient);
-		}
-	}
 }
 
 void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
@@ -260,7 +242,14 @@ void ComponentMesh::SetUniformShadow(ResourceMaterial* resource_material, Compon
 	resource_material->default_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->default_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
 
-	resource_material->default_shader->SetUniform1i("animate", animate);
+	//resource_material->default_shader->SetUniform1i("animate", animate);
+	resource_material->default_shader->SetUniform1i("activeFog", camera->activeFog);
+	if (camera->activeFog)
+	{
+		resource_material->default_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+		resource_material->default_shader->SetUniform1f("density", camera->fogDensity);
+		resource_material->default_shader->SetUniform1f("gradient", camera->fogGradient);
+	}
 }
 
 void ComponentMesh::DrawVertexNormals()
