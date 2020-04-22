@@ -541,34 +541,6 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::ColorEdit3("Albedo",color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
-	case SHADER_TEMPLATE::WATER: {//difusse
-		//ImGui::ColorEdit3("Albedo", shaderInputs.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
-
-		// Diffuse 
-		ImGui::Text("Diffuse:");
-		InputTexture(TextureType::DIFFUSE);
-		ImGui::SameLine();
-		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
-
-		// Specular 
-		ImGui::Text("Specular:");
-		InputTexture(TextureType::SPECULAR);
-		ImGui::SameLine();
-		float posX = ImGui::GetCursorPosX();
-		ImGui::SliderFloat("Metalness", &shaderInputs.standardShaderProperties.metalness, 0.0f, 1.f);
-		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(posX, -15));
-		if (ImGui::Button("Reset Metalness")) shaderInputs.standardShaderProperties.metalness = DEFAULT_METALNESS;
-		ImGui::SetCursorPosX(posX);
-		ImGui::SliderFloat("Smoothness", &shaderInputs.standardShaderProperties.smoothness, 16.f, 128.f);
-		ImGui::SetCursorPosX(posX);
-		if (ImGui::Button("Reset Smoothness"))  shaderInputs.standardShaderProperties.smoothness = DEFAULT_SMOOTHNESS;
-
-		// Normal Map
-		ImGui::Text("Normal Map:");
-		InputTexture(TextureType::NORMALS);
-
-		break; }
-
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;

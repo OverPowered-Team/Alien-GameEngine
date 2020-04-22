@@ -68,6 +68,20 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	// This is the default skybox
 
+	/*cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"6647353476053033927.dds");
+	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"16365362325777703218.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"13945118401434491814.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13294645959885894553.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"882162789730207050.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"13059454142476507694.dds");*/
+
+	/*cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"6647353476053033927.dds");
+	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"16365362325777703218.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"13945118401434491814.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13294645959885894553.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"882162789730207050.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"13059454142476507694.dds");*/
+
 	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"6647353476053033927.dds");
 	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"16365362325777703218.dds");
 	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"13945118401434491814.dds");
@@ -634,14 +648,6 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 void ComponentCamera::SetViewMatrix4x4(const float4x4& mat)
 {
 	ViewMatrix = mat;
-}
-void ComponentCamera::InvertPitch()
-{
-	/*float3x4* v_m = &frustum.ViewMatrix();
-	v_m->At(1, 2) *= -1.0f;
-	v_m->At(0, 3) *= -1.0f;
-	v_m->At(2, 3) *= -1.0f;*/
-	frustum.ViewMatrix().Inverse();
 }
 
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
