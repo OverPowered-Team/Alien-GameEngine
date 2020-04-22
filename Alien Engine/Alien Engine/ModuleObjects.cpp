@@ -246,6 +246,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 	float2 vg_size = App->camera->scene_viewport->GetSize();
 
+	/*
 	ImGui::Begin("WReflection");
 	ImGui::Text("Test");
 	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
@@ -255,6 +256,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ImGui::Text("Test2");
 	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
 	ImGui::End();
+	*/
 
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
@@ -450,7 +452,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
 
-	/*
+	
 	glEnable(GL_CLIP_DISTANCE0);
 
 	// Reflection 
@@ -536,7 +538,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	wfbos->UnbindCurrentFrameBuffer();
 
 	glDisable(GL_CLIP_DISTANCE0);
-	*/
+	
 
 	game_viewport->BeginViewport();
 
@@ -564,7 +566,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
-				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
+				(*it).second->DrawGame(App->renderer3D->actual_game_camera, float4(0.0f, -1.0f, 0.0f, 100000.0f));
 			}
 		}
 
