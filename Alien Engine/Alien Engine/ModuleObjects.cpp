@@ -303,7 +303,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
-								(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
+							viewport->GetCamera()->DrawSkybox();
+								//(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
 						}
 					}
 				}
@@ -344,7 +345,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
-							(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
+							viewport->GetCamera()->DrawSkybox();
+							//(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
 						}
 					}
 				}
