@@ -29,6 +29,7 @@ class __declspec(dllexport) ComponentCamera : public Component {
 	friend class Viewport;
 	friend class Octree;
 	friend class OctreeNode;
+	friend class PanelConfig;
 public:
 
 	ComponentCamera(GameObject* attach);
@@ -40,8 +41,7 @@ public:
 	float4x4 GetProjectionMatrix4f4() const;
 
 	float* GetViewMatrix() const;
-	float4x4 GetViewMatrix4x4() const; 
-	void SetViewMatrix4x4(const float4x4& mat);
+	float4x4 GetViewMatrix4x4() const;
 
 	void InvertPitch();
 

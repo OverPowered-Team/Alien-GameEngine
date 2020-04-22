@@ -269,8 +269,18 @@ bool ComponentCamera::DrawInspector()
 		}
 
 		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
+		if (ImGui::Button("Apply Fog to Editor Camera"))
+		{
+			App->renderer3D->scene_fake_camera->activeFog = activeFog; 
+			App->renderer3D->scene_fake_camera->fogDensity = fogDensity;
+			App->renderer3D->scene_fake_camera->fogGradient = fogGradient;
+			App->renderer3D->scene_fake_camera->camera_color_background = camera_color_background;
+		}
+
+		if (ImGui::Button("Reset Editor Camera"))
+		{
+			App->renderer3D->scene_fake_camera->Reset();
+		}
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -631,10 +641,6 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 	return float4x4(frustum.ViewMatrix()).Transposed();
 }
 
-void ComponentCamera::SetViewMatrix4x4(const float4x4& mat)
-{
-	ViewMatrix = mat;
-}
 void ComponentCamera::InvertPitch()
 {
 	/*float3x4* v_m = &frustum.ViewMatrix();

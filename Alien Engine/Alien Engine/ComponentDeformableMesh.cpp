@@ -90,6 +90,8 @@ void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 
 void ComponentDeformableMesh::UpdateBonesMatrix()
 {
+	OPTICK_EVENT(); 
+
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{
@@ -103,7 +105,7 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 }
 
 
-void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
@@ -111,32 +113,14 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera, const float4x
 
 	UpdateBonesMatrix();
 
-	ComponentMesh::DrawPolygon(camera, ViewMat, ProjMatrix, position);
+	ComponentMesh::DrawPolygon(camera);
 
 }
 
-void ComponentDeformableMesh::DrawPolygonWithShadows(ComponentCamera* camera)
+void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera)
 {
-	OPTICK_EVENT();
-	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
-		return;
-
-	UpdateBonesMatrix();
-
-	ComponentMesh::DrawPolygonWithShadows(camera);
-}
-
-void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
-{
-	ComponentMesh::SetUniform(material, camera, ViewMat, ProjMatrix, position);
-	material->simple_depth_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
-
-}
-
-void ComponentDeformableMesh::SetUniformShadow(ResourceMaterial* resource_material, ComponentCamera* camera)
-{
-	ComponentMesh::SetUniformShadow(resource_material, camera);
-	resource_material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+	ComponentMesh::SetUniform(material, camera);
+	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 }
 
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
