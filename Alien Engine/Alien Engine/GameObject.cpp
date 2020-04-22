@@ -168,7 +168,7 @@ bool GameObject::IsEnabled() const
 	return enabled;
 }
 
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -177,11 +177,20 @@ void GameObject::DrawScene(ComponentCamera* camera)
 	
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+	
+	if(material)
+		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
 	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
 	}*/
+
+	// Skybox Drawn before anything ---
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -203,7 +212,6 @@ void GameObject::DrawScene(ComponentCamera* camera)
 			mesh->DrawOBB(camera);
 	}
 
-
 	for (Component* component : components)
 	{
 		component->DrawScene();
@@ -211,19 +219,28 @@ void GameObject::DrawScene(ComponentCamera* camera)
 }
 
 
-void GameObject::DrawGame(ComponentCamera* camera)
+void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-	
+
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	if(mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+
+	if(material)
+		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
 	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
 	{
 		material->BindTexture();
 	}*/
+
+	// Skybox Drawn before anything ---
+	// This will draw the editor skybox too.
+	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
+	// component camera it will have no effect on the editor skybox.
+	camera->DrawSkybox();
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -1512,6 +1529,11 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentConvexHullCollider* collider = new ComponentConvexHullCollider(clone);
 					(*item)->Clone(collider);
 					clone->AddComponent(collider);
+					break; }
+				case ComponentType::RIGID_BODY: {
+					ComponentRigidBody* rb = new ComponentRigidBody(clone);
+					(*item)->Clone(rb);
+					clone->AddComponent(rb);
 					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");

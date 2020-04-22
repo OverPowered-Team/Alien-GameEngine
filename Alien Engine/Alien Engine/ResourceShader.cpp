@@ -9,7 +9,9 @@
 #include "ResourceMaterial.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleRenderer3D.h"
 #include "Globals.h"
+#include "Time.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
@@ -160,6 +162,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
+	else if (std::strcmp(name.c_str(), "water_shader") == 0)
+		shaderType = SHADER_TEMPLATE::WATER;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -200,6 +204,18 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
+		break; }
+
+	case SHADER_TEMPLATE::WATER: {
+		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
+		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
+		SetUniform1i("reflection_texture", 1);
+		SetUniform1i("refraction_texture", 2);
+		SetUniform1i("dudv_map", 3);
+		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.075f);
+		SetUniformFloat3("camera_position", App->renderer3D->actual_game_camera->GetCameraPosition());
+		ApplyLightsUniforms();
 		break; }
 
 	default:

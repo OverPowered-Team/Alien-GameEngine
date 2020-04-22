@@ -23,7 +23,9 @@ out vec3 frag_pos;
 out vec2 texCoords;
 out vec3 norms;
 out mat3 TBN; 
-out float visibility; 
+out float visibility;
+
+uniform vec4 clip_plane;
 
 void main()
 {
@@ -39,7 +41,8 @@ void main()
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
     // ------------------------
-
+    gl_ClipDistance[0] = dot(worldPos, clip_plane);
+    //gl_ClipDistance[0] = -1;
     // --------------------------------------- 
 
     // --------------- Animation -------------
