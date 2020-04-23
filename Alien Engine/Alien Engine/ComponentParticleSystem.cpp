@@ -96,6 +96,21 @@ void ComponentParticleSystem::PostUpdate()
 		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
+void ComponentParticleSystem::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	Draw();
+	DebugDraw();
+}
+
+void ComponentParticleSystem::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	Draw();
+}
+
 void ComponentParticleSystem::DebugDraw()
 {
 	OPTICK_EVENT();

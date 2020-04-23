@@ -29,6 +29,11 @@ ComponentCanvas::~ComponentCanvas()
 	text_ortho = nullptr;*/
 }
 
+void ComponentCanvas::DrawScene(ComponentCamera* camera)
+{
+	Draw();
+}
+
 bool ComponentCanvas::DrawInspector()
 {
 	static bool check;

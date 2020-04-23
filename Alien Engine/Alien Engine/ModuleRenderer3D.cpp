@@ -240,6 +240,8 @@ ComponentCamera* ModuleRenderer3D::GetCurrentMainCamera()
 }
 void ModuleRenderer3D::BeginDebugDraw(float4& color)
 {
+	OPTICK_EVENT();
+
 	float current_color[4];
 	glGetFloatv(GL_CURRENT_COLOR, current_color);
 	App->renderer3D->last_color.Set(current_color[0], current_color[1], current_color[2], current_color[3]);
@@ -251,6 +253,8 @@ void ModuleRenderer3D::BeginDebugDraw(float4& color)
 
 void ModuleRenderer3D::EndDebugDraw()
 {
+	OPTICK_EVENT();
+
 	glEnable(GL_LIGHTING);
 	glColor4fv(&App->renderer3D->last_color[0]);
 	glLineWidth(1.f);

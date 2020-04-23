@@ -254,6 +254,39 @@ void ComponentMesh::SetShadowUniforms(ResourceMaterial* resource_material, Compo
 	resource_material->simple_depth_shader->SetUniform1i("animate", animate);
 }
 
+void ComponentMesh::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		if (!wireframe)
+			DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
+	}
+}
+
+void ComponentMesh::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		DrawPolygon(camera);
+	}
+}
+
 void ComponentMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
 	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());

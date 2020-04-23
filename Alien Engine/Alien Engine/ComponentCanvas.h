@@ -17,6 +17,8 @@ public:
 	void Update() {};
 	void PostUpdate() {};
 
+	void DrawScene(ComponentCamera* camera) override; 
+
 	bool DrawInspector();
 
 	void SaveComponent(JSONArraypack* to_save);

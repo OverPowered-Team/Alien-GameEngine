@@ -191,20 +191,9 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 {
 	OPTICK_EVENT();
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	
-	if (mesh == nullptr) //not sure if this is the best solution
-		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
-	
+	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);	
 	if(material)
 		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
-
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
 
 	// Skybox Drawn before anything ---
 	// This will draw the editor skybox too.
@@ -212,29 +201,9 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 	// component camera it will have no effect on the editor skybox.
 	camera->DrawSkybox();
 
-	if (mesh != nullptr && mesh->IsEnabled())
-	{
-		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
-			glColor3f(1, 1, 1);
-		if (!mesh->wireframe)
-			mesh->DrawPolygon(camera);
-		/*if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();*/
-		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh();
-		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals();
-		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals();
-		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB(camera);
-		if (mesh->draw_OBB)
-			mesh->DrawOBB(camera);
-	}
-
 	for (Component* component : components)
 	{
-		component->DrawScene();
+		component->DrawScene(camera);
 	}
 }
 
@@ -266,30 +235,17 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 	OPTICK_EVENT();
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 
-	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	if(mesh == nullptr) //not sure if this is the best solution
-		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
-
 	if(material)
 		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
-
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
 
 	// Skybox Drawn before anything ---
 	// This will draw the editor skybox too.
 	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
 	// component camera it will have no effect on the editor skybox.
 	camera->DrawSkybox();
-
-	if (mesh != nullptr && mesh->IsEnabled())
+	for (Component* component : components)
 	{
-		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
-			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera);
-
+		component->DrawGame(camera);
 	}
 }
 
@@ -319,80 +275,6 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			to_draw->push_back({ distance, this });
 		}
-	}
-
-	// Lights
-	ComponentLightDirectional* light_dir = (ComponentLightDirectional*)GetComponent(ComponentType::LIGHT_DIRECTIONAL);
-	if (light_dir != nullptr && light_dir->IsEnabled())
-	{
-		light_dir->LightLogic();
-	}
-
-	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
-	if (light_spot != nullptr && light_spot->IsEnabled())
-	{
-		light_spot->LightLogic();
-	}
-
-	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
-	if (light_point != nullptr && light_point->IsEnabled())
-	{
-		light_point->LightLogic();
-	}
-
-	if (camera_ != nullptr && camera_->IsEnabled()) 
-	{
-		if (App->objects->printing_scene && App->objects->draw_frustum && std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
-			camera_->DrawFrustum();
-		}
-		camera_->frustum.pos = transform->GetGlobalPosition();
-		camera_->frustum.front = transform->GetGlobalRotation().WorldZ();
-		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
-	}
-
-
-	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
-	
-	if(partSystem != nullptr)
-	{
-		partSystem->Draw();
-	}
-
-
-	if (App->objects->printing_scene)
-	{
-		//if (camera_ != nullptr && camera_->IsEnabled())
-		//{
-		//	camera_->DrawIconCamera();
-		//}
-
-		////TOFIX / DO. Light does not exist anymore here
-		//if (light_dir != nullptr && light_dir->IsEnabled())
-		//{
-		//	light_dir->DrawIconLight();
-		//}
-
-		//if (light_spot != nullptr && light_spot->IsEnabled())
-		//{
-		//	light_spot->DrawIconLight();
-		//}
-		//
-		//if (light_point != nullptr && light_point->IsEnabled())
-		//{
-		//	light_point->DrawIconLight();
-		//}
-
-		if (partSystem != nullptr)
-		{
-			partSystem->DebugDraw();
-		}
-	}
-
-	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
-
-	if (canvas != nullptr && canvas->IsEnabled())
-	{
-		canvas->Draw();
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();

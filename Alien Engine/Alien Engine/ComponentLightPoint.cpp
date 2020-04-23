@@ -42,22 +42,6 @@ void ComponentLightPoint::LightLogic()
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
-	
-#ifndef GAME_VERSION
-	if (App->objects->printing_scene)
-	{
-		if (this->game_object_attached->IsSelected())
-		{
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
-			App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
-		}
-		else
-		{
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
-			App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
-		}
-	}
-#endif
 }
 
 bool ComponentLightPoint::DrawInspector()
@@ -111,6 +95,31 @@ bool ComponentLightPoint::DrawInspector()
 void ComponentLightPoint::OnDisable()
 {
 
+}
+
+void ComponentLightPoint::Update()
+{
+	OPTICK_EVENT();
+
+	LightLogic();
+}
+
+void ComponentLightPoint::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
+		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
+	}
+	else if (IsEnabled())
+	{
+		DrawIconLight();
+
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+	}
 }
 
 void ComponentLightPoint::Clone(Component* clone)

@@ -42,24 +42,33 @@ void ComponentLightSpot::LightLogic()
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-	
-#ifndef GAME_VERSION
-	if (App->objects->printing_scene)
+}
+
+void ComponentLightSpot::Update()
+{
+	OPTICK_EVENT();
+
+	LightLogic();
+}
+
+void ComponentLightSpot::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (this->game_object_attached->IsSelected())
 	{
-		if (this->game_object_attached->IsSelected())
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
-			App->renderer3D->EndDebugDraw();
-		}
-		else
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
-			App->renderer3D->EndDebugDraw();
-		}
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
+		App->renderer3D->EndDebugDraw();
 	}
-#endif
+	else if(IsEnabled())
+	{
+		DrawIconLight();
+
+		App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
+		App->renderer3D->EndDebugDraw();
+	}
 }
 
 bool ComponentLightSpot::DrawInspector()

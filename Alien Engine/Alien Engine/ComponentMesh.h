@@ -55,6 +55,8 @@ protected:
 	virtual void SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera);
 	virtual void SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 
+	void DrawScene(ComponentCamera* camera) override;
+	void DrawGame(ComponentCamera* camera) override;
 
 	void DrawVertexNormals();
 	void DrawFaceNormals();

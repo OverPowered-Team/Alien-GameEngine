@@ -74,6 +74,8 @@ void ComponentLightDirectional::PostUpdate()
 
 	light_props.projMat.Set(&projectionMatrix[0][0]);
 	
+	LightLogic();
+
 }
 
 
@@ -84,24 +86,22 @@ void ComponentLightDirectional::LightLogic()
 	ComponentTransform* transform=(ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-#ifndef GAME_VERSION
-	if (App->objects->printing_scene)
+}
+
+void ComponentLightDirectional::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (this->game_object_attached->IsSelected())
 	{
-		if (this->game_object_attached->IsSelected())
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
-			App->renderer3D->EndDebugDraw();
-		}
-		else
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
-			App->renderer3D->EndDebugDraw();
-		}
-		//DrawLightFrustrum();
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
 	}
-#endif
+	else if (IsEnabled())
+	{
+		DrawIconLight();
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
+	}
+	//DrawLightFrustrum();
 }
 
 bool ComponentLightDirectional::DrawInspector()

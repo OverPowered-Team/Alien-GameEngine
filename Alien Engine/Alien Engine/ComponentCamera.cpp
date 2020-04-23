@@ -779,6 +779,29 @@ void ComponentCamera::DrawSkybox()
 	}
 }
 
+void ComponentCamera::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (game_object_attached->IsSelected())
+	{
+		DrawFrustum();
+		frustum.pos = game_object_attached->transform->GetGlobalPosition();
+		frustum.front = game_object_attached->transform->GetGlobalRotation().WorldZ();
+		frustum.up = game_object_attached->transform->GetGlobalRotation().WorldY();
+	}
+
+	DrawIconCamera();
+	DrawSkybox();
+}
+
+void ComponentCamera::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	DrawSkybox();
+}
+
 void ComponentCamera::DrawFrustum()
 {
 	OPTICK_EVENT();
@@ -840,9 +863,7 @@ void ComponentCamera::DrawIconCamera()
 		float3 position = transform->GetGlobalPosition() - frustum.front.Normalized() * 2;
 		Quat rotated = transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } * Quat{ 0.7071,0,0.7071,0 });
 		float4x4 matrix = float4x4::FromTRS(position, rotated, { 0.1F,0.1F,0.1F });
-		glDisable(GL_LIGHTING);
 		Gizmos::DrawPoly(mesh_camera->mesh, matrix, camera_icon_color);
-		glEnable(GL_LIGHTING);
 	}
 }
 
