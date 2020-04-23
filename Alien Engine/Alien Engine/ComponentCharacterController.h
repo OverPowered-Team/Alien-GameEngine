@@ -75,11 +75,17 @@ public:
 	void SetCharacterHeight(const float height);
 	//float GetCharacterRadius() { return character_radius; }
 	void SetCharacterRadius(const float radius);
+	
 	// Auto resize from the bottom (moving position pivot automatly)
 	void Resize(const float new_height);
 	void SetSlopeLimit(const float slopeLimit);
 	void SetStepOffset(const float stepOffset);
 	void SetContactOffset(const float contactOffset);
+
+	// translates without overlap check
+	bool SetPosition(float3 position) const;
+	float3 GetPosition() const;
+	float3 GetFootPosition() const;
 
 	// TODO: make own copy of collision flag to not work with physx data outside.
 
