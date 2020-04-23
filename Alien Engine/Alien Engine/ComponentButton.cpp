@@ -45,6 +45,8 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("ClickEvent", click_event.data());
 	to_save->SetString("MoveEvent", move_event.data());
 
+	to_save->SetBoolean("Loop", loop);
+	to_save->SetNumber("AnimSpeed", speed);
 	//---------------------------------------------------------
 
 	to_save->SetBoolean("HasAnimatedIdleImages", !idle_info.tex_array.empty());
@@ -181,6 +183,9 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 
 	click_event = to_load->GetString("ClickEvent");
 	move_event = to_load->GetString("MoveEvent");
+
+	loop = to_load->GetBoolean("Loop");
+	speed = to_load->GetNumber("AnimSpeed");
 
 	//-----------------------------------------------------------
 
@@ -1732,7 +1737,7 @@ bool ComponentButton::OnClick()
 		{
 			emitter->StartSound(click_event.c_str());
 		}
-
+		
 		current_color = clicked_color;
 		if (!clicked_info.tex_array.empty())
 		{
@@ -1746,7 +1751,6 @@ bool ComponentButton::OnClick()
 bool ComponentButton::OnPressed()
 {
 	if (active) {
-
 		current_color = pressed_color;
 		if (!pressed_info.tex_array.empty())
 		{
@@ -1760,7 +1764,7 @@ bool ComponentButton::OnPressed()
 bool ComponentButton::OnRelease()
 {
 	if (active) {
-	
+		pressed_info.current_frame = 0.0f;
 		CallListeners(&listenersOnRelease);
 	}
 	return true;
