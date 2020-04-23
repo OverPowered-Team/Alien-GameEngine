@@ -296,6 +296,7 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
+	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
 
 	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
@@ -349,6 +350,7 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
 	}
 
+
 	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
 	
 	if(partSystem != nullptr)
@@ -359,26 +361,26 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 
 	if (App->objects->printing_scene)
 	{
-		if (camera_ != nullptr && camera_->IsEnabled())
-		{
-			camera_->DrawIconCamera();
-		}
+		//if (camera_ != nullptr && camera_->IsEnabled())
+		//{
+		//	camera_->DrawIconCamera();
+		//}
 
-		//TOFIX / DO. Light does not exist anymore here
-		if (light_dir != nullptr && light_dir->IsEnabled())
-		{
-			light_dir->DrawIconLight();
-		}
+		////TOFIX / DO. Light does not exist anymore here
+		//if (light_dir != nullptr && light_dir->IsEnabled())
+		//{
+		//	light_dir->DrawIconLight();
+		//}
 
-		if (light_spot != nullptr && light_spot->IsEnabled())
-		{
-			light_spot->DrawIconLight();
-		}
-		
-		if (light_point != nullptr && light_point->IsEnabled())
-		{
-			light_point->DrawIconLight();
-		}
+		//if (light_spot != nullptr && light_spot->IsEnabled())
+		//{
+		//	light_spot->DrawIconLight();
+		//}
+		//
+		//if (light_point != nullptr && light_point->IsEnabled())
+		//{
+		//	light_point->DrawIconLight();
+		//}
 
 		if (partSystem != nullptr)
 		{
