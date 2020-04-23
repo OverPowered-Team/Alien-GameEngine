@@ -435,7 +435,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 							float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
 							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(viewport->GetCamera()->GetCameraPosition().x/ (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
-								glm::vec3((float)light_pos.x , (float)light_pos.y, (float)light_pos.z ),
+								glm::vec3((float)light_pos.x , (float)light_pos.y, (float)-light_pos.z ),
 								glm::vec3(0.0, 1.0, 0.0));
 
 							(*iter)->viewMat.Set(&viewMatrix[0][0]);
