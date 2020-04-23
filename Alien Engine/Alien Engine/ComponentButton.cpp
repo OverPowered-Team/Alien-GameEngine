@@ -181,8 +181,8 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	pressed_color = to_load->GetColor("ColorPressed");
 	disabled_color = to_load->GetColor("ColorDisabled");
 
-	click_event = to_load->GetString("ClickEvent");
-	move_event = to_load->GetString("MoveEvent");
+	click_event = to_load->GetString("ClickEvent", "none");
+	move_event = to_load->GetString("MoveEvent", "none");
 
 	loop = to_load->GetBoolean("Loop");
 	speed = to_load->GetNumber("AnimSpeed");

@@ -642,10 +642,11 @@ void JSONArraypack::SetString(const char* name, const char* string_parameter)
 	json_object_dotset_string(json_value_get_object(value), name, string_parameter);
 }
 
-const char* JSONArraypack::GetString(const char* name, const std::string& default_string)
+const char* JSONArraypack::GetString(const char* name, std::string default_string)
 {
 	try {
-		return json_object_dotget_string(json_value_get_object(value), name);
+		const char* ret = json_object_dotget_string(json_value_get_object(value), name);
+		return ret;
 	}
 	catch (...) {
 		return default_string.data();
