@@ -37,16 +37,12 @@ void main()
 {
     // --------------- OUTS ---------------
     vec4 pos = vec4(position, 1.0);
-    frag_pos = vec3(model * pos);
     texCoords = vec2(uvs.x, uvs.y);
 
     // --------- Fog ----------
     vec4 worldPos = model * pos;
     vec4 positionRelativeToCam = view * worldPos;
     float distance = length(positionRelativeToCam.xyz);
-
-    for(int i = 0; i < num_space_matrix; i++)
-        FragPosLightSpace[i] = lightSpaceMatrix[i] * vec4(frag_pos, 1.0);
 
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
@@ -65,6 +61,10 @@ void main()
             pos = BoneTransform * pos;
     }
     // --------------------------------------- 
+    frag_pos = vec3(model * pos);
+    
+    for(int i = 0; i < num_space_matrix; i++)
+        FragPosLightSpace[i] = lightSpaceMatrix[i] * vec4(frag_pos, 1.0);
 
     // --------------- Normals ---------------
     norms = mat3(transpose(inverse(model))) * normals;
@@ -76,7 +76,7 @@ void main()
     TBN = mat3(T,B,N);
     // ---------------------------------------
 
-    gl_Position = projection * view * vec4(frag_pos, 1.0f); 
+    gl_Position = projection * view * vec4(frag_pos, 1.0f);
 };
 
 
