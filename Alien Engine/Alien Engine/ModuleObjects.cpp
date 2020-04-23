@@ -60,7 +60,7 @@
 #include "glm/glm/gtc/type_ptr.hpp"
 #include "glm/glm/gtc/matrix_transform.hpp"
 
-ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
+ModuleObjects::ModuleObjects(bool start_enabled) :Module(start_enabled)
 {
 	name.assign("ModuleObject");
 }
@@ -122,7 +122,7 @@ bool ModuleObjects::Start()
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 
-	
+
 
 #else 
 	JSON_Value* value = json_parse_file(BUILD_SETTINGS_PATH);
@@ -152,14 +152,14 @@ bool ModuleObjects::Start()
 update_status ModuleObjects::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
-	
+
 	if (!sceneNameToChange.empty()) {
 		LoadScene(sceneNameToChange.data());
 		sceneNameToChange.clear();
 	}
-	
+
 	// delete objects
-	if (need_to_delete_objects) { 
+	if (need_to_delete_objects) {
 		need_to_delete_objects = false;
 		base_game_object->SearchToDelete();
 	}
@@ -234,7 +234,7 @@ update_status ModuleObjects::Update(float dt)
 			catch (...)
 			{
 				LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING A FUNTION IN TIMELINE");
-			}	
+			}
 		}
 		functions_to_call.clear();
 	}
@@ -274,7 +274,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 				glEnable(GL_LIGHT0);
 			}
-			
+
 			// TODO : DELETE ------------------------
 
 			//App->physx->DrawWorld();
@@ -322,10 +322,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {						
+					if ((*it).second != nullptr) {
 						if (!printing_scene)
 						{
-							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance*0.25;
+							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
 							float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
 							camera_pos.z = -camera_pos.z;
 							float3 camera_direction = viewport->GetCamera()->frustum.front;
@@ -371,7 +371,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				if ((*it_ui).second != nullptr) {
 					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
-					{			
+					{
 						ui->Orientate(mainCamera);
 						ui->Rotate();
 						ui->Draw(!printing_scene);
@@ -410,7 +410,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 		for (; item != base_game_object->children.end(); ++item) {
 			if (*item != nullptr && (*item)->IsEnabled()) {
-				(*item)->SetDrawList(&to_draw,&to_draw_ui, frustum_camera);
+				(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
 			}
 		}
 
@@ -430,7 +430,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
-					
+
 					(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
 					float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
 					camera_pos.z = -camera_pos.z;
@@ -446,7 +446,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 					(*iter)->fake_position = light_pos;
 					(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-					
+
 				}
 			}
 		}
@@ -520,7 +520,7 @@ bool ModuleObjects::CleanUp()
 
 	delete base_game_object;
 	base_game_object = nullptr;
-	
+
 	if (octree.root != nullptr) {
 		delete octree.root;
 		octree.root = nullptr;
@@ -531,7 +531,7 @@ bool ModuleObjects::CleanUp()
 	for (Viewport* viewport : viewports) {
 		delete viewport;
 	}
-	
+
 	return true;
 }
 
@@ -547,7 +547,7 @@ void ModuleObjects::ChangeViewMeshMode()
 	base_game_object->ChangeMeshView(view_mesh_mode);
 }
 
-void ModuleObjects::DeleteAllObjects() 
+void ModuleObjects::DeleteAllObjects()
 {
 	std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 	while (item != base_game_object->children.end()) {
@@ -668,13 +668,13 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected, bool selec
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
 
-	#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 	if (App->ui->panel_project->selected_resource != nullptr)
 	{
 		App->SendAlienEvent(App->ui->panel_project->selected_resource, AlienEventType::RESOURCE_DESELECTED);
 		App->ui->panel_project->selected_resource = nullptr;
 	}
-	#endif // !GAME_VERSION
+#endif // !GAME_VERSION
 
 	App->CastEvent(EventType::ON_GO_SELECT);
 
@@ -689,7 +689,7 @@ void ModuleObjects::DeselectObjects()
 {
 	auto item = game_objects_selected.begin();
 	for (; item != game_objects_selected.end(); ++item) {
-			(*item)->ChangeSelected(false);
+		(*item)->ChangeSelected(false);
 	}
 	game_objects_selected.clear();
 	App->renderer3D->selected_game_camera = nullptr;
@@ -771,9 +771,9 @@ void ModuleObjects::ScriptsPreUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS PREUPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -790,7 +790,7 @@ void ModuleObjects::ScriptsUpdate() const
 				try {
 					(*item)->Update();
 				}
-				catch (...)	   
+				catch (...)
 				{
 					try {
 						LOG_ENGINE("CODE ERROR IN THE UPDATE OF THE SCRIPT: %s", (*item)->data_name);
@@ -798,9 +798,9 @@ void ModuleObjects::ScriptsUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS UPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -825,9 +825,9 @@ void ModuleObjects::ScriptsPostUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS POSTUPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -851,9 +851,9 @@ void ModuleObjects::CleanUpScriptsOnStop() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS CLEANUP");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -876,9 +876,9 @@ void ModuleObjects::OnDrawGizmos() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONDRAWGIZMOS");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -902,9 +902,9 @@ void ModuleObjects::OnDrawGizmos() const
 							catch (...) {
 								LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONDRAWGIZMOSSELECTED");
 							}
-							#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 							App->ui->SetError();
-							#endif
+#endif
 						}
 					}
 				}
@@ -934,14 +934,14 @@ void ModuleObjects::OnPreCull(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPRECULL");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
 		}
-	} 
+	}
 }
 
 void ModuleObjects::OnPreRender(ComponentCamera* camera) const
@@ -964,9 +964,9 @@ void ModuleObjects::OnPreRender(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPRERENDER");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
@@ -994,9 +994,9 @@ void ModuleObjects::OnPostRender(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPOSTRENDER");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
@@ -1017,7 +1017,7 @@ GameObject* ModuleObjects::CreateEmptyGameObject(GameObject* parent, bool set_se
 		object = new GameObject(GetRoot(false));
 		object->SetName("Empty GameObject");
 	}
-	
+
 	if (set_selected)
 		SetNewSelectedObject(object, false);
 
@@ -1157,7 +1157,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 	else {
 		meta_path = std::string(force_with_path);
 	}
-	
+
 	json_serialize_to_file_pretty(value, meta_path.data());
 
 	if (value != nullptr && object != nullptr)
@@ -1224,7 +1224,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 	}
 }
 
-void ModuleObjects::LoadScene(const char * name, bool change_scene)
+void ModuleObjects::LoadScene(const char* name, bool change_scene)
 {
 	OPTICK_EVENT();
 	App->audio->Stop();
@@ -1300,7 +1300,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					objects_created.push_back(obj);
 					game_objects->GetAnotherNode();
 				}
-				for each (GameObject* obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+				for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
 				{
 					ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
 					if (def_mesh)
@@ -1679,7 +1679,7 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
 					CompareName(&checkbox->listenersOnExit, scriptsVec);
 					CompareName(&checkbox->listenersOnEnter, scriptsVec);
-					
+
 				}
 			}
 		}
@@ -2013,7 +2013,7 @@ u64 ModuleObjects::SetNewSelected(std::string neightbour, u64 selected_neightbou
 		else
 		{
 			if (GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left != -1)
-				return SetNewSelected("left",GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left);
+				return SetNewSelected("left", GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left);
 			else
 				return -1;
 		}
@@ -2067,12 +2067,12 @@ void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function
 	}
 }
 
-bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
+bool ModuleObjects::SortByFamilyNumber(std::tuple<uint, u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
 {
 	return std::get<0>(tuple1) < std::get<0>(tuple2);
 }
 
-void ModuleObjects::LoadConfig(JSONfilepack*& config) 
+void ModuleObjects::LoadConfig(JSONfilepack*& config)
 {
 	wireframe_mode = config->GetBoolean("Configuration.Renderer.Wireframe");
 	view_mesh_mode = config->GetBoolean("Configuration.Renderer.MeshView");
@@ -2165,7 +2165,7 @@ void ModuleObjects::HandleAlienEvent(const AlienEvent& alien_event)
 	{
 		go_stack.push(base_game_object);
 	}
-	
+
 	while (!go_stack.empty())
 	{
 		GameObject* go = go_stack.top();
@@ -2214,11 +2214,11 @@ void ModuleObjects::HandleEvent(EventType eventType)
 		InitScripts();
 	}
 	else if (eventType == EventType::ON_ASSET_DELETE) {
-		#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 		App->ui->panel_project->selected_resource = nullptr;
-		#endif
+#endif
 	}
-	
+
 
 }
 
@@ -2266,7 +2266,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->SetResourceMesh(resource);
-	
+
 	// Add collider --------------------------------------------
 
 	switch (type) {
@@ -2305,7 +2305,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 
 	case ComponentType::UI_IMAGE: {
- 		ComponentCanvas* canvas = GetCanvas();
+		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentImage(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Image");
@@ -2333,7 +2333,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		object_text->AddComponent(comp_text);
 
 
-		
+
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		ReparentGameObject(object_text, object, false);
 		break; }
