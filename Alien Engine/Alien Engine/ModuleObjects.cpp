@@ -253,7 +253,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
-	float2 vg_size = App->camera->scene_viewport->GetSize();
+	//float2 vg_size = App->camera->scene_viewport->GetSize();
 
 	/*
 	ImGui::Begin("WReflection");
