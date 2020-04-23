@@ -311,20 +311,19 @@ update_status ModuleObjects::PostUpdate(float dt)
 				OnPreRender(viewport->GetCamera());
 			}
 			//predraw
+			glViewport(0, 0, 1024, 1024);
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
 				if (!(*iter)->light->castShadows)
 					continue;
-				glViewport(0, 0, 1024, 1024);
+
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 				glClear(GL_DEPTH_BUFFER_BIT);
 
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
-						if (printing_scene)
-							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-						else
+					if ((*it).second != nullptr) {						
+						if (!printing_scene)
 						{
 							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance*0.25;
 							float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
@@ -342,6 +341,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 							(*iter)->fake_position = light_pos;
 							(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 						}
+						//else
+							//(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 					}
 				}
 			}
@@ -418,37 +419,34 @@ update_status ModuleObjects::PostUpdate(float dt)
 		OnPreRender(game_viewport->GetCamera());
 
 		//predraw
+		glViewport(0, 0, 1024, 1024);
 		for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 		{
 			if (!(*iter)->light->castShadows)
 				continue;
-			glViewport(0, 0, 1024, 1024);
 			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
-					if (printing_scene)
-						(*it).second->PreDrawScene(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-					else
-					{
-						(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
-						float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
-						camera_pos.z = -camera_pos.z;
-						float3 camera_direction = game_viewport->GetCamera()->frustum.front;
-						float halfFarPlaneD = (*iter)->light->distance_far_plane;
-						float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
+					
+					(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
+					float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
+					camera_pos.z = -camera_pos.z;
+					float3 camera_direction = game_viewport->GetCamera()->frustum.front;
+					float halfFarPlaneD = (*iter)->light->distance_far_plane;
+					float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
-						glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(game_viewport->GetCamera()->GetCameraPosition().x / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
-							glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z),
-							glm::vec3(0.0, 1.0, 0.0));
+					glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(game_viewport->GetCamera()->GetCameraPosition().x / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
+						glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z),
+						glm::vec3(0.0, 1.0, 0.0));
 
-						(*iter)->viewMat.Set(&viewMatrix[0][0]);
+					(*iter)->viewMat.Set(&viewMatrix[0][0]);
 
-						(*iter)->fake_position = light_pos;
-						(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-					}
+					(*iter)->fake_position = light_pos;
+					(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+					
 				}
 			}
 		}
