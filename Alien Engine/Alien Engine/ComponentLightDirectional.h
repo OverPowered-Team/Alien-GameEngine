@@ -45,13 +45,12 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void DrawIconLight();
-	void DrawLightFrustrum();
 
 public:
 	float sizefrustrum = 88.f;
 	float distance_far_plane = 178.f;
 	float3 fake_position;
-	bool castShadows = false;
+	bool castShadows = true;
 
 private:
 	ComponentMesh* bulb = nullptr;
