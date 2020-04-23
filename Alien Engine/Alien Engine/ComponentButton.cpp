@@ -1706,10 +1706,8 @@ bool ComponentButton::OnIdle()
 	if (active) {
 		current_color = idle_color;
 
-		if (!idle_info.tex_array.empty())
-		{
-			SetCurrentTexArray(&idle_info);
-		}
+		SetCurrentTexArray(&idle_info);
+		
 	}
 	return true;
 }
@@ -1719,10 +1717,9 @@ bool ComponentButton::OnHover()
 	if (active) {
 
 		current_color = hover_color;
-		if (!hover_info.tex_array.empty())
-		{
-			SetCurrentTexArray(&hover_info);
-		}
+		
+		SetCurrentTexArray(&hover_info);
+		
 		CallListeners(&listenersOnHover);
 	}
 	return true;
@@ -1739,10 +1736,9 @@ bool ComponentButton::OnClick()
 		}
 		
 		current_color = clicked_color;
-		if (!clicked_info.tex_array.empty())
-		{
-			SetCurrentTexArray(&clicked_info);
-		}
+		
+		SetCurrentTexArray(&clicked_info);
+		
 		CallListeners(&listenersOnClick);
 	}
 	return true;
@@ -1752,10 +1748,9 @@ bool ComponentButton::OnPressed()
 {
 	if (active) {
 		current_color = pressed_color;
-		if (!pressed_info.tex_array.empty())
-		{
-			SetCurrentTexArray(&pressed_info);
-		}
+		
+		SetCurrentTexArray(&pressed_info);
+		
 		CallListeners(&listenersOnClickRepeat);
 	}
 	return true;
@@ -1831,15 +1826,19 @@ void ComponentButton::SetCurrentTexArray(AnimationInfo* new_tex)
 			(*item)->DecreaseReferences();
 		}
 	}
-
+	
 	current_tex_array = new_tex;
-	for (auto item = current_tex_array->tex_array.begin(); item != current_tex_array->tex_array.end(); ++item)
+	if (!new_tex->tex_array.empty())
 	{
-		if ((*item) != nullptr) {
-			(*item)->IncreaseReferences();
-			SetSize((*item)->width, (*item)->height);
+		for (auto item = current_tex_array->tex_array.begin(); item != current_tex_array->tex_array.end(); ++item)
+		{
+			if ((*item) != nullptr) {
+				(*item)->IncreaseReferences();
+				SetSize((*item)->width, (*item)->height);
+			}
 		}
 	}
+	
 }
 
 ResourceTexture* ComponentButton::GetCurrentFrame(float dt)
