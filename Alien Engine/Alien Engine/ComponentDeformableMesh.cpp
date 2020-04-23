@@ -137,6 +137,7 @@ void ComponentDeformableMesh::SetUniforms(ResourceMaterial* resource_material, C
 void ComponentDeformableMesh::SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera,const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	ComponentMesh::SetShadowUniforms(resource_material, camera, ViewMat, ProjMatrix, position);
+	resource_material->simple_depth_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 }
 
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)

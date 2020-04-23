@@ -251,6 +251,7 @@ void ComponentMesh::SetShadowUniforms(ResourceMaterial* resource_material, Compo
 {
 	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
+	resource_material->simple_depth_shader->SetUniform1i("animate", animate);
 }
 
 void ComponentMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
