@@ -34,7 +34,7 @@ struct ShaderInputs
 {
 	struct StandardShaderProperties
 	{
-		float3 diffuse_color = float3::one();
+		float4 diffuse_color = float4::one;
 		float smoothness = DEFAULT_SMOOTHNESS;
 		float metalness = DEFAULT_METALNESS;
 	} standardShaderProperties;
@@ -86,6 +86,7 @@ public:
 
 	// Functionality
 	void ApplyMaterial();
+	void ApplyPreRenderShadows();
 	void UnbindMaterial();
 
 	void SetTexture(ResourceTexture* texture, TextureType texType = TextureType::DIFFUSE);
@@ -112,11 +113,12 @@ public:
 	float4 color = float4::one;
 
 	bool textureActivated = true;
-	u64 texturesID[(uint)TextureType::MAX];
+	std::pair<u64, ResourceTexture*> textures[(uint)TextureType::MAX];
 	TextureType selectedType = TextureType::NONE;
 	ShaderInputs shaderInputs;
 	u64 used_shader_ID = 0;
 	ResourceShader* used_shader = nullptr; 
+	ResourceShader* simple_depth_shader = nullptr;
 	const char* selectedShader = nullptr;
 	ResourceTexture* selected_texture = nullptr;
 	bool change_texture_menu = false;

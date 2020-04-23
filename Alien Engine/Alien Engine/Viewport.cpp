@@ -184,6 +184,11 @@ uint FBO::GetFBOTexture()
 	return ID[NORMAL_TEXTURE];
 }
 
+uint FBO::GetFBO()
+{
+	return ID[MULTISAMPLING_FBO];
+}
+
 // Viewport ========================================================================
 
 Viewport::Viewport(ComponentCamera* camera_go)
@@ -298,6 +303,11 @@ void Viewport::SetMSAA(uint mssa)
 uint Viewport::GetMSAA()
 {
 	return fbo->GetMSAA();
+}
+
+uint Viewport::GetFBO()
+{
+	return fbo->GetFBO();
 }
 
 uint Viewport::GetTexture()

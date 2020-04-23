@@ -15,6 +15,9 @@
 #include "ComponentLightPoint.h"
 #include "mmgr/mmgr.h"
 
+#include "Optick/include/optick.h"
+
+
 ResourceShader::ResourceShader()
 {
 	type = ResourceType::RESOURCE_SHADER;
@@ -177,9 +180,11 @@ SHADER_TEMPLATE ResourceShader::GetShaderType() const
 
 void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 {
+	OPTICK_EVENT();
+
 	switch (shaderType) {
-	case SHADER_TEMPLATE::DEFAULT: { 
-		SetUniformFloat3("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+	case SHADER_TEMPLATE::DEFAULT: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
 		ApplyLightsUniforms();
@@ -197,11 +202,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
 		break; }
+	case SHADER_TEMPLATE::SHADOW: {
 
-	default:
-		LOG_ENGINE("We currently don't support editing this type of uniform...");
-		break;
-
+		break; }
 	}
 }
 
@@ -300,14 +303,21 @@ void ResourceShader::SetUniformMat4f(const std::string& name, const math::float4
 
 void ResourceShader::SetDirectionalLights(const std::string& name, const std::list<DirLightProperties*>& dirLights)
 {
+	OPTICK_EVENT();
+
 	int i = 0;
 	std::string tmp_name(name.c_str());
 	tmp_name.append("[%i]");
+
+	std::string clightSpaceMatrix("lightSpaceMatrix");
+	clightSpaceMatrix.append("[%i]");
+
+	SetUniform1i("num_space_matrix", dirLights.size());
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
 		char cname[128];
 		sprintf_s(cname, tmp_name.c_str(), i);
-		
+
 		// All uniforms
 		std::string cintensity = std::string(cname).append(".intensity");
 		SetUniform1f(cintensity, (*iter)->intensity);
@@ -317,6 +327,25 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 		std::string variablesLocation = std::string(cname).append(".dirLightProperties");
 		SetUniformFloat3v(variablesLocation, variablesVec3, 5);
+
+		std::string cshadow = std::string(cname).append(".castShadow");
+		if ((*iter)->light->castShadows)
+		{
+			SetUniform1i(cshadow, 1);
+			glActiveTexture(GL_TEXTURE4);
+			glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
+			std::string cdepthmap = std::string(cname).append(".depthMap");
+			SetUniform1i(cdepthmap, 4);
+		}
+		else
+			SetUniform1i(cshadow, 0);
+
+		char clightspaceM[128];
+		sprintf_s(clightspaceM, clightSpaceMatrix.c_str(), i);
+		SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
+
+		std::string clightPos = std::string(cname).append(".lightPos");
+		SetUniformFloat3(clightPos, (*iter)->fake_position);
 
 		++i;
 	}

@@ -700,6 +700,7 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = GetShaderByName("default_shader");
+	shadow_shader = GetShaderByName("simple_depth_shader");
 	default_particle_shader = GetShaderByName("particle_shader");
 
 	skybox_shader = GetShaderByName("skybox_shader");
@@ -774,6 +775,8 @@ void ModuleResources::ReadAllMetaData()
 	directories.clear();
 	default_shader = (ResourceShader*)GetResourceWithID(2074311779325559006);
 	skybox_shader = (ResourceShader*)GetResourceWithID(10031399484334738574); // TODO
+	//TODOSHADOW:
+	shadow_shader = (ResourceShader*)GetResourceWithID(5088601162293274710);
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 
 	// materials
