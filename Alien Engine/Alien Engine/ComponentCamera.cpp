@@ -68,12 +68,12 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	// This is the default skybox
 
-	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"6647353476053033927.dds");
-	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"16365362325777703218.dds");
-	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"13945118401434491814.dds");
-	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13294645959885894553.dds");
-	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"882162789730207050.dds");
-	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"13059454142476507694.dds");
+	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"14059935274421270400.dds");
+	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"17871350930873594524.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"5118434943308934301.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"14265519993990640998.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"3680900417465944678.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"16155666848095087743.dds");
 
 	auto faces = cubemap->ToVector();
 	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
