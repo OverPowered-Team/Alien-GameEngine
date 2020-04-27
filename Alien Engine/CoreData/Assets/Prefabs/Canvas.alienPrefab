@@ -1,0 +1,227 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Canvas",
+                "FamilyNumber": 1,
+                "ID": "11856277801795585582",
+                "ParentID": "326600076195409253",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "16361232383544918844",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1975025449723706422"
+                    },
+                    {
+                        "Enabled": true,
+                        "isWorld": false,
+                        "Type": 19,
+                        "BBType": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Button",
+                "FamilyNumber": 2,
+                "ID": "1965570301568075392",
+                "ParentID": "11856277801795585582",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "16361232383544918844",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15638012634163057115"
+                    },
+                    {
+                        "Width": 10,
+                        "Height": 10,
+                        "Enabled": true,
+                        "Type": 30,
+                        "UIType": 21,
+                        "ColorCurrent": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorIdle": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorHover": [
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "ColorClicked": [
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            1
+                        ],
+                        "ColorPressed": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "ColorDisabled": [
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            1
+                        ],
+                        "ClickEvent": "CLICK",
+                        "MoveEvent": "ENTER",
+                        "Loop": true,
+                        "AnimSpeed": 1,
+                        "HasAnimatedIdleImages": false,
+                        "HasAnimatedHoverImages": false,
+                        "HasAnimatedClickedImages": false,
+                        "HasAnimatedPressedImages": false,
+                        "HasAnimatedDisabledImages": false,
+                        "HasListenersOnClick": true,
+                        "ListenersOnClick": [
+                            {
+                                "0": "player_example::TEst"
+                            }
+                        ],
+                        "HasListenersOnHover": false,
+                        "HasListenersOnClickRepeat": false,
+                        "HasListenersOnRelease": false,
+                        "HasListenersOnExit": false,
+                        "HasListenersOnEnter": false,
+                        "SelectOnUp": "18446744073709551615",
+                        "SelectOnDown": "18446744073709551615",
+                        "SelectOnRight": "18446744073709551615",
+                        "SelectOnLeft": "18446744073709551615"
+                    },
+                    {
+                        "ID": "9192786674203776750",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "0",
+                        "Event": "0",
+                        "PlayOnAwake": true
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "13802728941324437279",
+                        "ResourceID": "6008583145087647197",
+                        "DataName": "player_example",
+                        "HasInspector": false
+                    }
+                ]
+            },
+            {
+                "Name": "Text",
+                "FamilyNumber": 3,
+                "ID": "4927930184536702546",
+                "ParentID": "1965570301568075392",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "16361232383544918844",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11759905605881272432"
+                    },
+                    {
+                        "Type": 30,
+                        "ID": "14808837017990530495",
+                        "Text": "Hola",
+                        "UIType": 22,
+                        "FontID": "6090935666492539845",
+                        "Enabled": true,
+                        "Color": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "Width": 200,
+                        "Interlineal": 1.5,
+                        "Align": 0
+                    }
+                ]
+            }
+        ]
+    }
+}

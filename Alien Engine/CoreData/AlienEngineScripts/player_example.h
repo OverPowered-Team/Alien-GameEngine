@@ -9,20 +9,28 @@ public:
 
 	player_example();
 	virtual ~player_example();
-	
+
 	void Start();
 	void Update();
 
 	// only performed when Move (controller) is called
 	void OnControllerColliderHit(ControllerColliderHit hit);
 
+
+
+
 	// COLLISION AND TRIGGERS
 	void OnCollisionEnter(const Collision& collision);
 	void OnCollisionStay(const Collision& collision);
 	void OnCollisionExit(const Collision& collision);
 
+
 	void OnTriggerEnter(ComponentCollider* collider);
+
 	// etc
+
+	void TEst(){}
+
 
 public:
 	ComponentCharacterController* ccontroller = nullptr;
@@ -34,9 +42,10 @@ public:
 	float3 moveDirection;
 };
 
+
 ALIEN_FACTORY player_example* Createplayer_example() {
 	player_example* alien = new player_example();
 	// To show in inspector here
-
+	SHOW_VOID_FUNCTION(player_example::TEst, alien);
 	return alien;
 } 
