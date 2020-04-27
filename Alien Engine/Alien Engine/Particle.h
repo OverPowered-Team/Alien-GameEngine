@@ -16,6 +16,14 @@ class ComponentCamera;
 #define ANGULAR_CAP 200 // angular velocity will be capped at 360 degrees x second
 #define MAX_ANIMATIONS 16
 
+enum class PARTICLE_MESH
+{
+	NONE = -1,
+	CUBE,
+	SPHERE,
+	CUSTOM
+};
+
 
 struct Frame {
 	float x0, x1, y0, y1;
@@ -127,7 +135,7 @@ public:
 
 private:
 	//ResourceTexture* resMat = nullptr;
-
+	
 	ParticleSystem* owner = nullptr;
 	ResourceMaterial* p_material = nullptr;
 

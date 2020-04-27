@@ -6,6 +6,7 @@
 #include "ResourceTexture.h"
 #include "ParticleEmitter.h"
 #include "ResourceMaterial.h"
+#include "ResourceMesh.h"
 #include "ResourceShader.h"
 #include "ComponentParticleSystem.h"
 #include <map>
@@ -84,6 +85,7 @@ public:
 	void StartEmmitter();
 
 	void SetBillboardType(BillboardType type);
+	void SetMeshType(PARTICLE_MESH type);
 	BillboardType GetBillboardType() const;
 	uint GetTotalParticles() const;
 
@@ -111,6 +113,9 @@ public:
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
 	
+	void SetMesh(ResourceMesh* mesh);
+	void RemoveMesh();
+
 	void CalculateParticleUV(int rows, int columns, float speed, int startFrame, int endFrame);
 	void ResetParticleUV();
 	
@@ -123,6 +128,7 @@ public:
 
 	ParticleEmmitter emmitter;
 	BillboardType bbType = BillboardType::SCREEN;
+	PARTICLE_MESH meshType = PARTICLE_MESH::NONE;
 
 private:
 
@@ -139,6 +145,8 @@ public:
 	ResourceTexture* texture = nullptr;
 	ResourceMaterial* material = nullptr;
 	ResourceMaterial* default_material = nullptr;
+	ResourceMesh* mesh = nullptr;
+
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;
 	FunctionBlendType funcBlendDest = FunctionBlendType::ONE_MINUS_SRC_ALPHA;

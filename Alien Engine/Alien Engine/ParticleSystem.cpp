@@ -287,6 +287,12 @@ void ParticleSystem::SetBillboardType(BillboardType type)
 	bbType = type;
 }
 
+void ParticleSystem::SetMeshType(PARTICLE_MESH type)
+{
+	meshType = type;
+}
+
+
 BillboardType ParticleSystem::GetBillboardType() const
 {
 	return bbType;
@@ -445,6 +451,29 @@ void ParticleSystem::RemoveMaterial()
 {
 	material->DecreaseReferences();
 	material = nullptr;
+}
+
+void ParticleSystem::SetMesh(ResourceMesh* m)
+{
+
+	if (m == nullptr)
+		return;
+
+	if (mesh != nullptr)
+	{
+		mesh->DecreaseReferences();
+		//material = nullptr;
+	}
+
+	mesh = m;
+	mesh->IncreaseReferences();
+
+}
+
+void ParticleSystem::RemoveMesh()
+{
+	mesh->DecreaseReferences();
+	mesh = nullptr;
 }
 
 

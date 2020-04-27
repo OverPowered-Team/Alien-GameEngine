@@ -11,6 +11,7 @@
 #include "imgui/imgui_internal.h"
 #include "PanelProject.h"
 #include "ResourceMaterial.h"
+#include "ResourceMesh.h"
 #include "Optick/include/optick.h"
 #include "ComponentMaterial.h"
 #include "mmgr/mmgr.h"
@@ -425,10 +426,14 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Separator();
 			ImGui::Spacing();
 			ImGui::Spacing();
+			
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "PARTICLE BILLBOARD:");
+			ImGui::Spacing();
+			ImGui::Spacing();
 
 			ImGui::Text("Orientation Mode ");
 			ImGui::SameLine(200, 15);
-			if (ImGui::Combo("Billboard", &bbTypeSelected, "Screen Aligned\0World Aligned\0Axially Aligned\0Velocity Aligned\0None\0\0"))
+			if (ImGui::Combo("Billboard", &bbTypeSelected, "Screen Aligned\0World Aligned\0Axially Aligned\0Velocity Aligned\0Mesh\0None\0\0"))
 			{
 				particleSystem->SetBillboardType((BillboardType)bbTypeSelected);
 			}
@@ -446,6 +451,67 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Text("Speed Scale: "); ImGui::SameLine(200, 15);
 				ImGui::DragFloat("##Speed Scale", &particleSystem->particleInfo.speedScale, 0.0f, 100.0f);
 			}
+			else if (particleSystem->bbType == BillboardType::MESH)
+			{
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "PARTICLE MESH:");
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				ImGui::Text("Mesh ");
+				ImGui::SameLine(200, 15);
+
+				if (ImGui::Combo("Mesh", &meshTypeSelected, "Cube\0Sphere\0Custom\0None\0\0"))
+				{
+					particleSystem->SetMeshType((PARTICLE_MESH)meshTypeSelected);
+				}
+				
+
+				if (particleSystem->meshType == PARTICLE_MESH::CUSTOM)
+				{
+					ImGui::Spacing();
+					ImGui::Text("Custom Mesh ");
+					ImGui::SameLine(200, 15);
+
+					if (particleSystem->mesh != nullptr)
+						ImGui::Button(particleSystem->mesh->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
+					else
+						ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
+
+					if (ImGui::BeginDragDropTarget()) {
+						const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+						if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+							FileNode* node = *(FileNode**)payload->Data;
+							if (node != nullptr && node->type == FileDropType::MODEL3D) {
+
+								if (particleSystem->meshType == PARTICLE_MESH::CUSTOM)
+								{
+
+								}
+								std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+								path += "_meta.alien";
+								u64 ID = App->resources->GetIDFromAlienPath(path.data());
+								if (ID != 0) {
+									ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
+									if (mesh != nullptr) {
+										particleSystem->SetMesh(mesh);
+									}
+								}
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+						ImGui::SameLine();
+						if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
+						{
+
+							if (particleSystem->mesh != nullptr) {
+								particleSystem->RemoveMesh();
+							}
+						}
+				}
+			}
 			else
 			{
 				particleSystem->particleInfo.lengthScale = 1.0f;
@@ -455,7 +521,10 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 
-			ImGui::Text("Particle Material");
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "PARTICLE MATERIAL: ");
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Text("Material");
 			ImGui::SameLine(200, 15);
 
 			if (particleSystem->material != nullptr)
