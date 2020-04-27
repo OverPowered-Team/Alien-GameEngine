@@ -778,7 +778,8 @@ void ModuleResources::ReadAllMetaData()
 	//TODOSHADOW:
 	shadow_shader = (ResourceShader*)GetResourceWithID(5088601162293274710);
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
-
+	default_particle_shader->SetName("particle_shader");
+	default_particle_shader->TryToSetShaderType();
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {
