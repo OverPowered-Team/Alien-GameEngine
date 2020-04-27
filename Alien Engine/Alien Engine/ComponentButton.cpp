@@ -203,8 +203,16 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	disabled_info.loop = to_load->GetBoolean("LoopDisabled");
 	disabled_info.speed = to_load->GetNumber("AnimSpeedDisabled");
 
-	loop = to_load->GetBoolean("Loop");
-	speed = to_load->GetNumber("AnimSpeed");
+	idle_info.loop = to_load->GetBoolean("LoopIdle");
+	idle_info.speed = to_load->GetNumber("AnimSpeedIdle");
+	hover_info.loop = to_load->GetBoolean("LoopHover");
+	hover_info.speed = to_load->GetNumber("AnimSpeedHover");
+	clicked_info.loop = to_load->GetBoolean("LoopClicked");
+	clicked_info.speed = to_load->GetNumber("AnimSpeedClicked");
+	pressed_info.loop = to_load->GetBoolean("LoopPressed");
+	pressed_info.speed = to_load->GetNumber("AnimSpeedPressed");
+	disabled_info.loop = to_load->GetBoolean("LoopDisabled");
+	disabled_info.speed = to_load->GetNumber("AnimSpeedDisabled");
 
 	//-----------------------------------------------------------
 
