@@ -103,7 +103,7 @@ private:
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnExit;
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnEnter;
 
-	bool active = true;
+	bool active_ui = true;
 };
 
 

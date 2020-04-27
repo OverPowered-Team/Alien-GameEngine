@@ -122,6 +122,9 @@ protected:
 	float3 angle3D = float3::zero();
 	float3 scale = float3::zero();
 
+
+	bool active = true;
+
 };
 
 

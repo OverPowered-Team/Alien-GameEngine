@@ -1814,7 +1814,6 @@ bool ComponentButton::OnEnter()
 {
 	if (active)
 	{
-		//baina loka
 		ComponentAudioEmitter* emitter = game_object_attached->GetComponent<ComponentAudioEmitter>();
 		if (emitter != nullptr)
 		{
@@ -1996,8 +1995,8 @@ int ComponentButton::SeeCurrentFrame()
 
 void ComponentButton::SetActive(bool active)
 {
-	this->active = active;
-	if (active) {
+	this->active_ui = active;
+	if (active_ui) {
 		current_color = idle_color;
 
 		if (!idle_info.tex_array.empty())
