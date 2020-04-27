@@ -12,6 +12,7 @@
 
 ParticleSystem::ParticleSystem()
 {
+	
 	particles.reserve(MAX_PARTICLES);
 	emmitter.particleSystem = this;
 
@@ -97,6 +98,8 @@ ParticleSystem::ParticleSystem()
 	// LIGHTS
 	light_id = GL_LIGHT0;
 	InitLight();
+
+	//Stop();
 }
 
 

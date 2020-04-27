@@ -105,7 +105,10 @@ void ComponentParticleSystem::DebugDraw()
 void ComponentParticleSystem::Draw()
 {
 	OPTICK_EVENT();
-	particleSystem->DrawParticles();
+
+	if (App->objects->GetSelectedObjects().back() == game_object_attached)
+		particleSystem->DrawParticles();
+
 }
 
 void ComponentParticleSystem::OnEnable()

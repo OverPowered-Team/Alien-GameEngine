@@ -218,6 +218,7 @@ void Particle::Draw()
 
 	
 	//glBlendFunc(owner->sourceFactor, owner->destinationFactor);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	switch (owner->eqBlend)
 	{
@@ -283,8 +284,8 @@ void Particle::Draw()
 
 	
 	// ---- DISABLE STUFF --- //
-	/*glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);*/
+	//glDisable(GL_BLEND);
+	//glDisable(GL_ALPHA_TEST);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
