@@ -319,25 +319,26 @@ update_status ModuleObjects::PostUpdate(float dt)
 				for (; it != to_draw.end(); ++it) {
 					if ((*it).second != nullptr && (*it).second->cast_shadow) {
 						if (!printing_scene)
-						{
-							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
+						{	
+							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.5;
 							float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
 							camera_pos.z = -camera_pos.z;
 							float3 camera_direction = viewport->GetCamera()->frustum.front;
 							float halfFarPlaneD = (*iter)->light->distance_far_plane;
 							float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
-							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(viewport->GetCamera()->GetCameraPosition().x / (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
+							glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)camera_pos.x, (float)camera_pos.y, (float)camera_pos.z),
 								glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z),
 								glm::vec3(0.0, 1.0, 0.0));
 
 							(*iter)->viewMat.Set(&viewMatrix[0][0]);
 
 							(*iter)->fake_position = light_pos;
+
 							(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 						}
-						//else
-							//(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+						/*else
+							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);*/
 					}
 				}
 			}
