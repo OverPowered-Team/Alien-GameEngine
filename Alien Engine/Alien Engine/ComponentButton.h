@@ -61,7 +61,7 @@ private:
 	bool OnPressed();
 	bool OnRelease();
 	bool OnExit();
-	
+
 
 	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
 	/*void SetStateTexture(UIState state, ResourceTexture* tex);

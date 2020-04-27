@@ -1028,12 +1028,20 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// --------------- Material Resource Info -------------------- //
 	
 	to_save->SetBoolean("HasMaterial", (particleSystem->material != nullptr) ? true : false);
+
 	if (particleSystem->material != nullptr) {
-		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()).data());
+
+		if(particleSystem->material != particleSystem->default_material)
+			to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()).data());
+		else
+			to_save->SetString("MaterialID", "-1");
+
+
 		//to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.color);
 		//to_save->SetFloat3("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.start_color);
 		//to_save->SetFloat3("End.Color", particleSystem->material->shaderInputs.particleShaderProperties.end_color);
 	}
+	
 
 	// ------------------------ Animation Info ------------------------ //
 	to_save->SetBoolean("HasAnimation", (enable_anim) ? true : false);
@@ -1191,8 +1199,12 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// ---------------------- Resource Info -------------------------- //
 
 	if (to_load->GetBoolean("HasMaterial")) {
+
 		u64 ID = std::stoull(to_load->GetString("MaterialID"));
-		particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
+
+		if(ID != -1) // DEFAULT PARTICLE MATERIAL
+			particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
+
 		//particleSystem->material->shaderInputs.particleShaderProperties.color = to_load->GetFloat4("Start.Color");
 
 		//particleSystem->material->shaderInputs.particleShaderProperties.start_color = to_load->GetFloat3("Start.Color");
