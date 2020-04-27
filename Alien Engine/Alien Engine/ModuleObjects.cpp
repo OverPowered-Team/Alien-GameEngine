@@ -26,6 +26,7 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentMaterial.h"
 #include "ComponentAudioEmitter.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
@@ -316,7 +317,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 				for (; it != to_draw.end(); ++it) {
-					if ((*it).second != nullptr) {
+					if ((*it).second != nullptr && (*it).second->cast_shadow) {
 						if (!printing_scene)
 						{
 							(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.25;

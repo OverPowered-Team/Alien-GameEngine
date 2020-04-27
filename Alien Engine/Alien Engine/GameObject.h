@@ -283,7 +283,7 @@ public:
 
 	GameObject* parent = nullptr;
 	ComponentTransform* transform = nullptr;
-
+	bool cast_shadow = true;
 private:
 	bool to_delete = false; 
 	u64 prefabID = 0;
