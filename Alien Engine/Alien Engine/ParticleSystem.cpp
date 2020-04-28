@@ -317,6 +317,26 @@ void ParticleSystem::CreateParticleMesh(PARTICLE_MESH type)
 		tmp = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
 		SetMesh(tmp);
 		break; }
+	case PARTICLE_MESH::DODECAHEDRON: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::DODECAHEDRON);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::ICOSAHEDRON: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::ICOSAHEDRON);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::OCTAHEDRON: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::OCTAHEDRON);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::ROCK: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::ROCK);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::TORUS: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::TORUS);
+		SetMesh(tmp);
+		break; }
 	case PARTICLE_MESH::CUSTOM: {
 		RemoveMesh();
 		break; }

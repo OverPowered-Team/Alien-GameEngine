@@ -467,7 +467,7 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Text("Mesh ");
 				ImGui::SameLine(200, 15);
 
-				if (ImGui::Combo("Mesh", &meshTypeSelected, "Cube\0Sphere\0Custom\0None\0\0"))
+				if (ImGui::Combo("Mesh", &meshTypeSelected, "Cube\0Sphere\0Rock\0Dodecahedron\0Octahedron\0Torus\0Icosahedron\0Custom\0None\0\0"))
 				{
 					particleSystem->SetMeshType((PARTICLE_MESH)meshTypeSelected);
 					particleSystem->CreateParticleMesh(particleSystem->meshType);
