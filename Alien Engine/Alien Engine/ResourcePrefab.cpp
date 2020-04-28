@@ -9,6 +9,7 @@
 #include "ModuleResources.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
+#include "ComponentUI.h"
 #include "Time.h"
 #include "ComponentDeformableMesh.h"
 #include "ComponentRigidBody.h"
@@ -273,7 +274,7 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		if (!App->objects->to_add.empty()) {
 			auto item = App->objects->to_add.begin();
 			for (; item != App->objects->to_add.end(); ++item) {
-				GameObject* found = obj->GetGameObjectByID(((*item).first));
+				GameObject* found = obj->GetGameObjectByIDReverse(((*item).first));
 				if (found != nullptr) {
 					*(*item).second = found;
 				}
@@ -301,8 +302,21 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 			Prefab::InitScripts(obj);
 		}
 
+		// Navigation
+		auto ui = parent->GetComponentsInChildrenRecursive<ComponentUI>();
+		auto uiParent = parent->GetComponents<ComponentUI>();
+		ui.insert(ui.end(), uiParent.begin(), uiParent.end());
+		for each (ComponentUI* uiElement in ui) {
+			uiElement->ReSetIDNavigation();
+		}
+
 		App->objects->ReAttachUIScriptEvents();
 		obj->ResetIDs();
+
+		for each (ComponentUI * uiElement in ui) {
+			uiElement->ReSetIDNavigation();
+		}
+
 		obj->SetPrefab(ID);
 		obj->transform->SetLocalPosition(pos);
 		if (set_selected) {

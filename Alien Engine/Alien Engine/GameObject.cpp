@@ -1028,6 +1028,23 @@ GameObject* GameObject::GetGameObjectByID(const u64 & id)
 	return ret;
 }
 
+GameObject* GameObject::GetGameObjectByIDReverse(const u64& id)
+{
+	GameObject* ret = nullptr;
+	if (id == this->ID) {
+		return this;
+	}
+	auto item = children.rbegin();
+	for (; item != children.rend(); ++item) {
+		if (*item != nullptr) {
+			ret = (*item)->GetGameObjectByID(id);
+			if (ret != nullptr)
+				break;
+		}
+	}
+	return ret;
+}
+
 GameObject* GameObject::FindTag(const char* tag_to_find)
 {
 	GameObject* ret = nullptr;

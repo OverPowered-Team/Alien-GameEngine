@@ -15,8 +15,10 @@ void player_example::Start()
 }
 
 void player_example::Update()
+
 {
     // * ---------------- OVERLAP ----------------- * //
+
     float overlap_r = 6.0f;
     const std::vector<ComponentCollider*> colliders =  Physics::OverlapSphere(transform->GetGlobalPosition(), overlap_r);
 
