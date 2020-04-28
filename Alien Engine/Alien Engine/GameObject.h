@@ -261,6 +261,7 @@ private:
 	// find
 	GameObject* Find(const char* name);
 	GameObject* GetGameObjectByID(const u64& id);
+	GameObject* GetGameObjectByIDReverse(const u64& id);
 	GameObject* FindTag(const char* tag_to_find);
 	void FindTags(const char* tag_to_find, std::vector<GameObject*>* objects);
 

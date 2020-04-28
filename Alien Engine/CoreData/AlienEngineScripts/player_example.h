@@ -40,6 +40,8 @@ public:
 	float gravity = 20.0f;
 
 	float3 moveDirection;
+
+	GameObject* obj = nullptr;
 };
 
 
@@ -47,5 +49,7 @@ ALIEN_FACTORY player_example* Createplayer_example() {
 	player_example* alien = new player_example();
 	// To show in inspector here
 	SHOW_VOID_FUNCTION(player_example::TEst, alien);
+
+	SHOW_IN_INSPECTOR_AS_GAMEOBJECT(alien->obj);
 	return alien;
 } 

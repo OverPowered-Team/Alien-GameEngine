@@ -274,7 +274,7 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		if (!App->objects->to_add.empty()) {
 			auto item = App->objects->to_add.begin();
 			for (; item != App->objects->to_add.end(); ++item) {
-				GameObject* found = obj->GetGameObjectByID(((*item).first));
+				GameObject* found = obj->GetGameObjectByIDReverse(((*item).first));
 				if (found != nullptr) {
 					*(*item).second = found;
 				}
