@@ -345,39 +345,46 @@ void ComponentUI::CheckFirstSelected()
 
 void ComponentUI::Orientate(ComponentCamera* camera)
 {
-	if (camera == nullptr)
-		return;
-
-	switch (canvas->bbtype)
+	if (canvas->isWorld)
 	{
-	case BillboardType::SCREEN:
-		rotation = Billboard::AlignToScreen(camera);
-		break;
+		if (camera == nullptr)
+			return;
 
-	case BillboardType::WORLD:
-		rotation = Billboard::AlignToWorld(camera, position);
-		break;
+		switch (canvas->bbtype)
+		{
+		case BillboardType::SCREEN:
+			rotation = Billboard::AlignToScreen(camera);
+			break;
 
-	case BillboardType::AXIS:
-		rotation = Billboard::AlignToAxis(camera, position);
+		case BillboardType::WORLD:
+			rotation = Billboard::AlignToWorld(camera, position);
+			break;
 
-		break;
+		case BillboardType::AXIS:
+			rotation = Billboard::AlignToAxis(camera, position);
+			break;
 
-	case BillboardType::NONE:
-		rotation = Quat::identity();
-		break;
+		case BillboardType::NONE:
+			rotation = Quat::identity();
+			break;
 
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 	
 }
 
 void ComponentUI::Rotate()
 {
-	rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
-	rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
-	rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+	if (canvas->isWorld)
+	{
+		rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
+		rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
+		rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+
+		game_object_attached->transform->SetGlobalRotation(rotation);
+	}
 }
 
 void ComponentUI::SetSize(float width, float height)

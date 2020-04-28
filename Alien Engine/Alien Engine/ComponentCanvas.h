@@ -24,6 +24,7 @@ public:
 
 	void Draw();
 
+
 public:
 	uint width = 0, height = 0;
 	bool allow_navigation	= true;
