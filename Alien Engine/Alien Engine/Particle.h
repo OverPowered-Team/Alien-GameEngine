@@ -8,6 +8,7 @@
 
 #include "ResourceTexture.h"
 #include "ResourceMaterial.h"
+#include "ResourceMesh.h"
 
 class ParticleSystem;
 class ComponentCamera;
@@ -18,10 +19,11 @@ class ComponentCamera;
 
 enum class PARTICLE_MESH
 {
-	NONE = -1,
+	UNKNOWN = -1,
 	CUBE,
 	SPHERE,
-	CUSTOM
+	CUSTOM,
+	NONE
 };
 
 

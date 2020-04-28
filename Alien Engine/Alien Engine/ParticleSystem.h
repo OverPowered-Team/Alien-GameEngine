@@ -88,7 +88,7 @@ public:
 	void SetMeshType(PARTICLE_MESH type);
 	BillboardType GetBillboardType() const;
 	uint GetTotalParticles() const;
-
+	void CreateParticleMesh(PARTICLE_MESH type);
 	// ------------------------------ PARTICLE INFO ------------------------------
 
 	// -------- Global Properties --------
@@ -114,6 +114,7 @@ public:
 	void RemoveMaterial();
 	
 	void SetMesh(ResourceMesh* mesh);
+	void SetMeshes(std::vector<ResourceMesh*> meshes);
 	void RemoveMesh();
 
 	void CalculateParticleUV(int rows, int columns, float speed, int startFrame, int endFrame);
@@ -145,7 +146,9 @@ public:
 	ResourceTexture* texture = nullptr;
 	ResourceMaterial* material = nullptr;
 	ResourceMaterial* default_material = nullptr;
-	ResourceMesh* mesh = nullptr;
+	//ResourceMesh* mesh = nullptr;
+	std::vector<ResourceMesh*> meshes;
+	bool mesh_mode = false;
 
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;

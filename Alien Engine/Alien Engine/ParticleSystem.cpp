@@ -303,6 +303,33 @@ uint ParticleSystem::GetTotalParticles() const
 	return totalParticles;
 }
 
+void ParticleSystem::CreateParticleMesh(PARTICLE_MESH type)
+{
+
+	ResourceMesh* tmp = nullptr;
+	
+	switch (type) {
+	case PARTICLE_MESH::CUBE: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::CUBE);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::SPHERE: {
+		tmp = App->resources->GetPrimitive(PrimitiveType::SPHERE_ALIEN);
+		SetMesh(tmp);
+		break; }
+	case PARTICLE_MESH::CUSTOM: {
+		RemoveMesh();
+		break; }
+	case PARTICLE_MESH::NONE: {
+		RemoveMesh();
+		break; }
+	default:
+		break;
+	}
+
+
+}
+
 bool ParticleSystem::isSystemActive() const
 {
 	return !particles.empty() || emmitter.isActive();
@@ -459,21 +486,56 @@ void ParticleSystem::SetMesh(ResourceMesh* m)
 	if (m == nullptr)
 		return;
 
-	if (mesh != nullptr)
+	if (this->meshes.size() > 0)
 	{
-		mesh->DecreaseReferences();
-		//material = nullptr;
+		for (int i = 0; i < this->meshes.size(); ++i)
+		{
+			this->meshes.at(i)->DecreaseReferences();
+		}
+		this->meshes.clear();
+
 	}
 
-	mesh = m;
-	mesh->IncreaseReferences();
+	this->meshes.push_back(m);
+	this->meshes.back()->IncreaseReferences();
 
+}
+
+void ParticleSystem::SetMeshes(std::vector<ResourceMesh*> m)
+{
+	if (m.size() <= 0)
+		return;
+
+	if (this->meshes.size() > 0)
+	{
+		for (int i = 0; i < this->meshes.size(); ++i)
+		{
+			this->meshes.at(i)->DecreaseReferences();
+		}
+		this->meshes.clear();
+
+	}
+
+	this->meshes = m;
+
+	for (int i = 0; i < this->meshes.size(); ++i)
+	{
+		this->meshes.at(i)->IncreaseReferences();
+	}
 }
 
 void ParticleSystem::RemoveMesh()
 {
-	mesh->DecreaseReferences();
-	mesh = nullptr;
+	if (!meshes.empty()) {
+
+		for (int i = 0; i < this->meshes.size(); ++i)
+		{
+			this->meshes.at(i)->DecreaseReferences();
+		}
+		this->meshes.clear();
+
+	}
+	
 }
 
 
