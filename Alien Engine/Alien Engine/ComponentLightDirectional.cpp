@@ -25,6 +25,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	App->objects->directional_light_properites.push_back(&light_props);
 	App->objects->AddNumOfDirLights();
 	glGenFramebuffers(1, &light_props.depthMapFBO);
+	glGenFramebuffers(1, &light_props.bakedepthMapFBO);
 
 	light_props.light = this;
 #ifndef GAME_VERSION
@@ -32,6 +33,12 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	bulb->mesh = App->resources->light_mesh;
 #endif
 
+	InitFrameBuffers();
+}
+
+void ComponentLightDirectional::InitFrameBuffers()
+{
+	//static shadows
 	glBindFramebuffer(GL_FRAMEBUFFER, light_props.depthMapFBO);
 	glGenTextures(1, &light_props.depthMap);
 	glBindTexture(GL_TEXTURE_2D, light_props.depthMap);
@@ -44,9 +51,26 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-
 	glBindFramebuffer(GL_FRAMEBUFFER, light_props.depthMapFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light_props.depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//dynamic shadows
+	glBindFramebuffer(GL_FRAMEBUFFER, light_props.bakedepthMapFBO);
+	glGenTextures(1, &light_props.bakedepthMap);
+	glBindTexture(GL_TEXTURE_2D, light_props.bakedepthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, light_props.bakedepthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light_props.bakedepthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -144,9 +168,8 @@ bool ComponentLightDirectional::DrawInspector()
 
 		ImGui::Checkbox("Casts Shadows", &castShadows);
 
-		if (castShadows)
-			ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(500, 500), ImVec2(0, 1), ImVec2(1, 0));
-
+		if (ImGui::Button("Bake Shadows"))
+			bakeShadows = true;
 	}
 	else
 		RightClickMenu("Light Directional");

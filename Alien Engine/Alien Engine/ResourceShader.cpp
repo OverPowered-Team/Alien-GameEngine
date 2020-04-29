@@ -347,6 +347,11 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
 			std::string cdepthmap = std::string(cname).append(".depthMap");
 			SetUniform1i(cdepthmap, 4);
+
+			glActiveTexture(GL_TEXTURE5);
+			glBindTexture(GL_TEXTURE_2D, (*iter)->bakedepthMap);
+			std::string cdepthmapbaked = std::string(cname).append(".bakeShadows");
+			SetUniform1i(cdepthmapbaked, 5);
 		}
 		else
 			SetUniform1i(cshadow, 0);

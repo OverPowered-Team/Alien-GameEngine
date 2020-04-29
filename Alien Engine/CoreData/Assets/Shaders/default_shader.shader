@@ -96,6 +96,7 @@ struct DirectionalLight
     float intensity;
     vec3 dirLightProperties[5];
     sampler2D depthMap;
+    sampler2D bakeShadows;
     vec3 lightPos;
 
     bool castShadow;
@@ -366,5 +367,30 @@ float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace, vec3 norm
     }
     shadow /= 9.0;
 
-    return shadow;
+
+    closestDepth = texture(light.bakeShadows, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+   
+   // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
+
+    //if(projCoords.z > 1.0)
+       // shadow = 0.0;
+        
+    float shadow2 = 0.0f;
+    texelSize = 1.0/ textureSize(light.bakeShadows,0);
+
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(light.bakeShadows, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow2 += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow2 /= 9.0;
+
+    return shadow + shadow2;
 }

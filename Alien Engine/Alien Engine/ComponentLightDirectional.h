@@ -18,6 +18,10 @@ struct __declspec(dllexport) DirLightProperties
 	ComponentLightDirectional* light = nullptr;
 	uint depthMap = 0;
 	uint depthMapFBO;
+
+	uint bakedepthMap = 0;
+	uint bakedepthMapFBO;
+
 	float4x4 viewMat;
 	float4x4 projMat;
 };
@@ -27,6 +31,7 @@ class __declspec(dllexport) ComponentLightDirectional : public Component {
 	friend class ComponentMesh;
 public:
 	ComponentLightDirectional(GameObject* attach);
+	void InitFrameBuffers();
 	virtual ~ComponentLightDirectional();
 
 	void PostUpdate();
@@ -51,7 +56,7 @@ public:
 	float distance_far_plane = 178.f;
 	float3 fake_position;
 	bool castShadows = true;
-
+	bool bakeShadows = false;
 private:
 	ComponentMesh* bulb = nullptr;
 	bool print_icon = true;

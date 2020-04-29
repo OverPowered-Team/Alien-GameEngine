@@ -283,6 +283,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> dynamic_to_draw;
+			std::vector<std::pair<float, GameObject*>> static_to_draw;
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
@@ -292,15 +294,21 @@ update_status ModuleObjects::PostUpdate(float dt)
 				frustum_camera = App->renderer3D->actual_game_camera;
 			}
 
-			octree.SetStaticDrawList(&to_draw, frustum_camera);
+			octree.SetStaticDrawList(&static_to_draw, frustum_camera);
+
+			to_draw.assign(static_to_draw.begin(), static_to_draw.end());
 
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					(*item)->SetDrawList(&dynamic_to_draw, &to_draw_ui, frustum_camera);
 				}
 			}
 
+			to_draw.insert(to_draw.end(),dynamic_to_draw.begin(), dynamic_to_draw.end());
+
+			std::sort(dynamic_to_draw.begin(), dynamic_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(static_to_draw.begin(), static_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
 			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
@@ -315,8 +323,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 				glClear(GL_DEPTH_BUFFER_BIT);
 
-				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-				for (; it != to_draw.end(); ++it) {
+				std::vector<std::pair<float, GameObject*>>::iterator it = dynamic_to_draw.begin();
+				for (; it != dynamic_to_draw.end(); ++it) {
 					if ((*it).second != nullptr && (*it).second->cast_shadow) {
 						if (!printing_scene)
 						{	
@@ -340,6 +348,23 @@ update_status ModuleObjects::PostUpdate(float dt)
 						/*else
 							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);*/
 					}
+				}
+
+				if ((*iter)->light->bakeShadows)
+				{
+					glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->bakedepthMapFBO);
+					glClear(GL_DEPTH_BUFFER_BIT);
+					std::vector<std::pair<float, GameObject*>>::iterator it = static_to_draw.begin();
+					for (; it != static_to_draw.end(); ++it) {
+						if ((*it).second != nullptr && (*it).second->cast_shadow) {
+							if (!printing_scene)
+							{
+								(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+							}
+							
+						}
+					}
+					(*iter)->light->bakeShadows = false;
 				}
 			}
 			glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
