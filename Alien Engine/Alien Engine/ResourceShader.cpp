@@ -158,6 +158,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
+	else if (std::strcmp(name.c_str(), "shield_shader") == 0)
+		shaderType = SHADER_TEMPLATE::SHIELD;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -196,6 +198,11 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
+		break; }
+
+	case SHADER_TEMPLATE::SHIELD: {
+		SetUniformFloat3("objectMaterial.diffuse_color", inputs.shieldShaderProperties.color);
+		SetUniformFloat3("hitPosition", inputs.shieldShaderProperties.hit_position);
 		break; }
 
 	default:
