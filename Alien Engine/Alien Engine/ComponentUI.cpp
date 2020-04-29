@@ -201,10 +201,10 @@ void ComponentUI::Draw(bool isGame)
 
 		scale.x = matrix[0][0];
 		scale.y = matrix[1][1];
-		scale.z = 1.0f;
+		scale.z = matrix[2][2];
 
 
-		float4x4 uiLocal = float4x4::FromTRS(position, rotation, scale);
+		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
 		float4x4 uiGlobal = uiLocal;
 
 		/*	if (!particleInfo.globalTransform)
@@ -350,27 +350,30 @@ void ComponentUI::Orientate(ComponentCamera* camera)
 	{
 		if (camera == nullptr)
 			return;
-
-		switch (canvas->bbtype)
+		if (game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
 		{
-		case BillboardType::SCREEN:
-			rotation = Billboard::AlignToScreen(camera);
-			break;
 
-		case BillboardType::WORLD:
-			rotation = Billboard::AlignToWorld(camera, position);
-			break;
+			switch (canvas->bbtype)
+			{
+			case BillboardType::SCREEN:
+				rotation = Billboard::AlignToScreen(camera);
+				break;
 
-		case BillboardType::AXIS:
-			rotation = Billboard::AlignToAxis(camera, position);
-			break;
+			case BillboardType::WORLD:
+				rotation = Billboard::AlignToWorld(camera, position);
+				break;
 
-		case BillboardType::NONE:
-			rotation = Quat::identity();
-			break;
+			case BillboardType::AXIS:
+				rotation = Billboard::AlignToAxis(camera, position);
+				break;
 
-		default:
-			break;
+			case BillboardType::NONE:
+				rotation = Quat::identity();
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 	
@@ -378,7 +381,7 @@ void ComponentUI::Orientate(ComponentCamera* camera)
 
 void ComponentUI::Rotate()
 {
-	if (canvas->isWorld)
+	if (canvas->isWorld && game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
 	{
 		rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
 		rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
