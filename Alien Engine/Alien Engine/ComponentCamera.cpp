@@ -792,14 +792,6 @@ void ComponentCamera::DrawScene(ComponentCamera* camera)
 	}
 
 	DrawIconCamera();
-	DrawSkybox();
-}
-
-void ComponentCamera::DrawGame(ComponentCamera* camera)
-{
-	OPTICK_EVENT();
-
-	DrawSkybox();
 }
 
 void ComponentCamera::DrawFrustum()

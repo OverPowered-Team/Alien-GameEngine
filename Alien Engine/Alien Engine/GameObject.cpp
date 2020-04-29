@@ -195,12 +195,6 @@ void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
 	if(material)
 		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
-	// Skybox Drawn before anything ---
-	// This will draw the editor skybox too.
-	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
-	// component camera it will have no effect on the editor skybox.
-	camera->DrawSkybox();
-
 	for (Component* component : components)
 	{
 		component->DrawScene(camera);
@@ -238,11 +232,6 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 	if(material)
 		material->material->used_shader->SetUniform4f("clip_plane", clip_plane);
 
-	// Skybox Drawn before anything ---
-	// This will draw the editor skybox too.
-	// Note that the editor skybox will use the default skybox, so if you change the skybox on a 
-	// component camera it will have no effect on the editor skybox.
-	camera->DrawSkybox();
 	for (Component* component : components)
 	{
 		component->DrawGame(camera);
@@ -252,10 +241,6 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
-	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
-
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
 
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
@@ -264,14 +249,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
-				float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+				float3 obj_pos = transform->GetGlobalPosition();
 				float distance = camera->frustum.pos.Distance(obj_pos);
 				to_draw->push_back({ distance, this });
 			}
 		}
 		else
 		{
-			float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			to_draw->push_back({ distance, this });
 		}

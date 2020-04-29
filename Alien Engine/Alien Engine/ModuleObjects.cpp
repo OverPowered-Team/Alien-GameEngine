@@ -449,6 +449,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
 			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 
+			// Draw Skybox first of all
+			viewport->GetCamera()->DrawSkybox();
+
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 							
 			for (; it != to_draw.end(); ++it) {
@@ -641,6 +644,10 @@ update_status ModuleObjects::PostUpdate(float dt)
 		
 		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
 		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
+
+		// Draw Skybox first of all
+		game_viewport->GetCamera()->DrawSkybox();
+		
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 
 		for (; it != to_draw.end(); ++it) {
