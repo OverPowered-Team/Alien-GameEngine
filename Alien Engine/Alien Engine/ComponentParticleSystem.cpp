@@ -108,7 +108,12 @@ void ComponentParticleSystem::Draw()
 {
 	OPTICK_EVENT();
 
-	if (App->objects->GetSelectedObjects().back() == game_object_attached)
+	if (App->objects->printing_scene)
+	{
+		if (App->objects->GetSelectedObjects().back() == game_object_attached)
+			particleSystem->DrawParticles();
+	}
+	else
 		particleSystem->DrawParticles();
 
 }
@@ -1021,7 +1026,7 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// Position
 	to_save->SetFloat3("Start.Position", particleSystem->particleInfo.position);
 	// Rotation
-	to_save->SetQuat("Start.Rotation", particleSystem->particleInfo.rotation); 
+	to_save->SetQuat("Start.Rotation", particleSystem->particleInfo.rotation);
 	// Global / Local
 	to_save->SetBoolean("Start.Global", particleSystem->particleInfo.globalTransform);
 	// Velocity
@@ -1033,11 +1038,11 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// Color
 	to_save->SetFloat4("Start.Color", particleSystem->particleInfo.color);
 
-	
-	
+
+
 	// Size
 	to_save->SetNumber("Start.Size", (float)particleSystem->particleInfo.size);
-	
+
 	// LightColor
 	to_save->SetFloat4("Start.LightColor", particleSystem->particleInfo.lightColor);
 	// MaxLifeTime
@@ -1050,7 +1055,7 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Start.ChangeOverLifeTime", particleSystem->particleInfo.changeOverLifeTime);
 	// rotateOverLifeTime
 	to_save->SetBoolean("Start.RotateOverLifeTime", particleSystem->particleInfo.rotateOverTime);
-	
+
 	// ----------------- Particle System End Info -------------------- //
 
 	// Color
@@ -1134,22 +1139,14 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Blending.Equation", (int)particleSystem->eqBlend);
 
 	// --------------- Material Resource Info -------------------- //
-	
+
 	to_save->SetBoolean("HasMaterial", (particleSystem->material != nullptr) ? true : false);
-
 	if (particleSystem->material != nullptr) {
-
-		if(particleSystem->material != particleSystem->default_material)
-			to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()).data());
-		else
-			to_save->SetString("MaterialID", "-1");
-
-
+		to_save->SetString("MaterialID", std::to_string(particleSystem->material->GetID()).data());
 		//to_save->SetFloat4("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.color);
 		//to_save->SetFloat3("Start.Color", particleSystem->material->shaderInputs.particleShaderProperties.start_color);
 		//to_save->SetFloat3("End.Color", particleSystem->material->shaderInputs.particleShaderProperties.end_color);
 	}
-	
 
 	// ------------------------ Animation Info ------------------------ //
 	to_save->SetBoolean("HasAnimation", (enable_anim) ? true : false);
@@ -1164,15 +1161,34 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	// EndFrame
 	to_save->SetNumber("Animation.EndFrame", endFrame);
 
+
+	to_save->SetBoolean("HasMesh", (particleSystem->mesh_mode) ? true : false);
+
+	if (particleSystem->mesh_mode)
+	{
+		to_save->SetNumber("Mesh.MeshType", (int)particleSystem->meshType);
+		to_save->SetNumber("Mesh.Size", (int)particleSystem->meshes.size());
+
+		if (particleSystem->meshes.size() > 0)
+		{
+			for (int i = 0; i < particleSystem->meshes.size(); ++i)
+			{
+				std::string tmp = std::to_string(i);
+				to_save->SetString(("Mesh.MeshesAttached.MeshID_" + tmp).data(), std::to_string(particleSystem->meshes.at(i)->GetID()).data());
+			}
+		}
+
+	}
+
 	// --------------- Deprecated -------------------- //
 	/*to_save->SetBoolean("TextureEnabled", texture_activated);
 	to_save->SetString("ID", std::to_string(ID));
 	to_save->SetBoolean("HasTexture", (texture != nullptr) ? true : false);
-	
+
 	if (texture != nullptr) {
 		to_save->SetString("TextureID", std::to_string(texture->GetID()));
 	}*/
-	
+
 }
 
 void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
@@ -1184,7 +1200,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// ----------------------- Billboard Info ----------------------- //
 
 	particleSystem->bbType = (BillboardType)(int)to_load->GetNumber("Billboard");
-
+	bbTypeSelected = (int)to_load->GetNumber("Billboard");
 	// --------------- Particle System Start Info -------------------- //
 
 	// Position
@@ -1211,7 +1227,7 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// AxisRot
 	particleSystem->particleInfo.axisRot3DStart = to_load->GetBoolean("Start.AxisRotationStart");
 	// Angle Rotation
-	particleSystem->particleInfo.angle3D =  to_load->GetFloat3("Start.Angle3D");
+	particleSystem->particleInfo.angle3D = to_load->GetFloat3("Start.Angle3D");
 	// changeOverLifeTime
 	particleSystem->particleInfo.changeOverLifeTime = to_load->GetBoolean("Start.ChangeOverLifeTime");
 	// rotateOverLifeTime
@@ -1307,20 +1323,16 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// ---------------------- Resource Info -------------------------- //
 
 	if (to_load->GetBoolean("HasMaterial")) {
-
 		u64 ID = std::stoull(to_load->GetString("MaterialID"));
-
-		if(ID != -1) // DEFAULT PARTICLE MATERIAL
-			particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
-
+		particleSystem->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
 		//particleSystem->material->shaderInputs.particleShaderProperties.color = to_load->GetFloat4("Start.Color");
 
 		//particleSystem->material->shaderInputs.particleShaderProperties.start_color = to_load->GetFloat3("Start.Color");
 		//particleSystem->material->shaderInputs.particleShaderProperties.end_color = to_load->GetFloat3("End.Color");
 	}
 	ID = std::stoull(to_load->GetString("ID"));
-	
-	
+
+
 	// ---------------------- Animation Info -------------------------- //
 
 	if (to_load->GetBoolean("HasAnimation")) {
@@ -1339,13 +1351,46 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 		particleSystem->CalculateParticleUV(texRows, texColumns, animSpeed, startFrame, endFrame);
 	}
 
+	particleSystem->mesh_mode = to_load->GetBoolean("HasMesh");
+
+	if (to_load->GetBoolean("HasMesh")) {
+
+		particleSystem->meshType = (PARTICLE_MESH)(int)to_load->GetNumber("Mesh.MeshType");
+		meshTypeSelected = (int)to_load->GetNumber("Mesh.MeshType");
+		particleSystem->CreateParticleMesh((PARTICLE_MESH)particleSystem->meshType);
+
+		if ((PARTICLE_MESH)particleSystem->meshType == PARTICLE_MESH::CUSTOM)
+		{
+			int size = (int)to_load->GetNumber("Mesh.Size");
+
+			if (size > 0)
+			{
+				std::vector<ResourceMesh*> tmp_meshes;
+
+				for (int i = 0; i < size; ++i)
+				{
+					std::string tmp = std::to_string(i);
+					u64 ID = std::stoull(to_load->GetString(("Mesh.MeshesAttached.MeshID_" + tmp).data()));
+
+					ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
+
+					if (mesh != nullptr)
+					{
+						tmp_meshes.push_back(mesh);
+					}
+				}
+				particleSystem->SetMeshes(tmp_meshes);
+			}
+		}
+	}
+
 	// ---------------------- Deprecated -------------------------- //
 	/*texture_activated = to_load->GetBoolean("TextureEnabled");
 
 	if (to_load->GetBoolean("HasTexture")) {
 		u64 ID = std::stoull(to_load->GetString("TextureID"));
 		texture = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-		if (texture != nullptr) 
+		if (texture != nullptr)
 		{
 			texture->IncreaseReferences();
 			particleSystem->texture = texture;

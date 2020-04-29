@@ -54,6 +54,13 @@ struct ShaderInputs
 		//float3 start_color = float3(1.f, 0.f, 0.8f);
 		//float3 end_color = float3(1.f, 1.f, 1.f);
 	} particleShaderProperties;
+
+
+	struct ShieldShaderProperties {
+		float3 color = float3(1.f, 1.f, 1.f);
+		float3 hit_position = float3(0.9757f, -0.2074f, -0.0703f);
+	} shieldShaderProperties; 
+
 };
 
 class ResourceShader; 
