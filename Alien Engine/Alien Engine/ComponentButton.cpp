@@ -18,7 +18,7 @@
 #include "ModuleWindow.h"
 #include "mmgr/mmgr.h"
 
-ComponentButton::ComponentButton(GameObject* obj):ComponentUI(obj)
+ComponentButton::ComponentButton(GameObject* obj) :ComponentUI(obj)
 {
 	ui_type = ComponentType::UI_BUTTON;
 	tabbable = true;
@@ -173,7 +173,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
 
 	enabled = to_load->GetBoolean("Enabled");
-	
+
 	current_color = to_load->GetColor("ColorCurrent");
 	idle_color = to_load->GetColor("ColorIdle");
 	hover_color = to_load->GetColor("ColorHover");
@@ -183,6 +183,9 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 
 	click_event = to_load->GetString("ClickEvent", "none");
 	move_event = to_load->GetString("MoveEvent", "none");
+
+	loop = to_load->GetBoolean("Loop");
+	speed = to_load->GetNumber("AnimSpeed");
 
 	loop = to_load->GetBoolean("Loop");
 	speed = to_load->GetNumber("AnimSpeed");
@@ -216,7 +219,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 			imagesVector->GetAnotherNode();
 		}
 	}
-	
+
 	if (to_load->GetBoolean("HasAnimatedHoverImages")) {
 		JSONArraypack* imagesVector = to_load->GetArray("AnimatedHoverImages");
 		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
@@ -237,7 +240,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 			imagesVector->GetAnotherNode();
 		}
 	}
-	
+
 	if (to_load->GetBoolean("HasAnimatedClickedImages")) {
 		JSONArraypack* imagesVector = to_load->GetArray("AnimatedClickedImages");
 		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
@@ -258,7 +261,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 			imagesVector->GetAnotherNode();
 		}
 	}
-	
+
 	if (to_load->GetBoolean("HasAnimatedPressedImages")) {
 		JSONArraypack* imagesVector = to_load->GetArray("AnimatedPressedImages");
 		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
@@ -279,7 +282,7 @@ void ComponentButton::LoadComponent(JSONArraypack* to_load)
 			imagesVector->GetAnotherNode();
 		}
 	}
-	
+
 	if (to_load->GetBoolean("HasAnimatedDisabledImages")) {
 		JSONArraypack* imagesVector = to_load->GetArray("AnimatedDisabledImages");
 		for (int i = 0; i < imagesVector->GetArraySize(); ++i) {
@@ -392,10 +395,13 @@ float ComponentButton::GetAnimSpeed()
 
 void ComponentButton::HandleAlienEvent(const AlienEvent& e)
 {
-	
+
 	switch (e.type)
 	{
 	case AlienEventType::SCRIPT_DELETED: {
+		if (App->objects->inHotReload) {
+			break;
+		}
 		ComponentScript* script = (ComponentScript*)e.object;
 		if (script->game_object_attached == game_object_attached)
 		{
@@ -410,7 +416,7 @@ void ComponentButton::HandleAlienEvent(const AlienEvent& e)
 						break;
 					}
 				}
-		
+
 			}
 
 			//Delete on Hover
@@ -421,7 +427,7 @@ void ComponentButton::HandleAlienEvent(const AlienEvent& e)
 					{
 						listenersOnHover.erase(item);
 						//delete this from listeners on Click
-			
+
 						break;
 					}
 				}
@@ -438,7 +444,7 @@ void ComponentButton::HandleAlienEvent(const AlienEvent& e)
 						break;
 					}
 				}
-			
+
 			}
 
 			//delete on release
@@ -476,7 +482,7 @@ void ComponentButton::HandleAlienEvent(const AlienEvent& e)
 					}
 				}
 			}
-			
+
 		}
 		break; }
 
@@ -970,13 +976,13 @@ bool ComponentButton::DrawInspector()
 				ImGui::TreePop();
 			}
 			ImGui::Spacing(); ImGui::Spacing();
-			
+
 			ImGui::TreePop();
 
 		}
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-		if (ImGui::TreeNode("Animation Settings")){
+		if (ImGui::TreeNode("Animation Settings")) {
 
 			ImGui::Text("Loop");
 			ImGui::SameLine(125);
@@ -985,7 +991,7 @@ bool ComponentButton::DrawInspector()
 			ImGui::Text("Speed");
 			ImGui::SameLine(125);
 			ImGui::DragFloat("##Speed", &speed, 0.5F, 0.1f, 100.0f, "%.1f");
-			
+
 			ImGui::TreePop();
 		}
 
@@ -1367,7 +1373,7 @@ bool ComponentButton::DrawInspector()
 			if (ImGui::BeginDragDropTarget()) {
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
-					GameObject* obj = *(GameObject * *)payload->Data;
+					GameObject* obj = *(GameObject**)payload->Data;
 					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
 						select_on_up = obj->ID;
 					}
@@ -1405,7 +1411,7 @@ bool ComponentButton::DrawInspector()
 			if (ImGui::BeginDragDropTarget()) {
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 				if (payload != nullptr && payload->IsDataType(DROP_ID_HIERARCHY_NODES)) {
-					GameObject* obj = *(GameObject * *)payload->Data;
+					GameObject* obj = *(GameObject**)payload->Data;
 					if (obj != nullptr && obj->GetComponent<ComponentUI>()->tabbable) {
 						select_on_down = obj->ID;
 					}
@@ -1707,7 +1713,6 @@ bool ComponentButton::OnIdle()
 		current_color = idle_color;
 
 		SetCurrentTexArray(&idle_info);
-		
 	}
 	return true;
 }
@@ -1717,9 +1722,9 @@ bool ComponentButton::OnHover()
 	if (active) {
 
 		current_color = hover_color;
-		
+
 		SetCurrentTexArray(&hover_info);
-		
+
 		CallListeners(&listenersOnHover);
 	}
 	return true;
@@ -1736,9 +1741,9 @@ bool ComponentButton::OnClick()
 		}
 		
 		current_color = clicked_color;
-		
+
 		SetCurrentTexArray(&clicked_info);
-		
+
 		CallListeners(&listenersOnClick);
 	}
 	return true;
@@ -1748,9 +1753,9 @@ bool ComponentButton::OnPressed()
 {
 	if (active) {
 		current_color = pressed_color;
-		
+
 		SetCurrentTexArray(&pressed_info);
-		
+
 		CallListeners(&listenersOnClickRepeat);
 	}
 	return true;
@@ -1767,9 +1772,9 @@ bool ComponentButton::OnRelease()
 
 bool ComponentButton::OnExit()
 {
-	if (active) 
+	if (active)
 	{
-		
+
 		CallListeners(&listenersOnExit);
 	}
 	return true;
@@ -1785,10 +1790,10 @@ void ComponentButton::CallListeners(std::vector<std::pair<std::string, std::func
 					(*item).second();
 				}
 				catch (...) {
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					LOG_ENGINE("Error when calling a listener function of a button");
 					App->ui->SetError();
-				#endif
+#endif
 				}
 			}
 		}
@@ -1838,7 +1843,6 @@ void ComponentButton::SetCurrentTexArray(AnimationInfo* new_tex)
 			}
 		}
 	}
-	
 }
 
 ResourceTexture* ComponentButton::GetCurrentFrame(float dt)
@@ -1861,7 +1865,7 @@ void ComponentButton::Reset()
 {
 	current_tex_array->loops = 0;
 	current_tex_array->current_frame = 0.0f;
-	
+
 }
 
 int ComponentButton::SeeCurrentFrame()
@@ -1948,12 +1952,11 @@ bool ComponentButton::CheckIfScriptIsAlreadyAdded(std::vector<std::pair<std::str
 {
 	if (listeners != nullptr) {
 
-		for (auto item = listeners->begin(); item != listeners->end(); ++item){
-		
+		for (auto item = listeners->begin(); item != listeners->end(); ++item) {
+
 			if ((*item).first == name)
 				return true;
 		}
 	}
 	return false;
 }
-

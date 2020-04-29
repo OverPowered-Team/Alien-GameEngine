@@ -103,7 +103,7 @@ protected:
 	virtual void DrawScene(ComponentCamera* camera) {}
 	virtual void DrawGame(ComponentCamera* camera) {}
 
-	void ResetIDs();
+	virtual void ResetIDs();
 
 	const ComponentType& GetType() const;
 

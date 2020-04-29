@@ -778,8 +778,9 @@ void ModuleResources::ReadAllMetaData()
 	skybox_shader = (ResourceShader*)GetResourceWithID(10031399484334738574); // TODO
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 	simple_depth_shader = (ResourceShader*)GetResourceWithID(12293234483734622872);
-	water_shader = (ResourceShader*)GetResourceWithID(14940717270935665446);
 
+	default_particle_shader->SetName("particle_shader");
+	default_particle_shader->TryToSetShaderType();
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

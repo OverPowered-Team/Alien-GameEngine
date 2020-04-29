@@ -312,6 +312,8 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
+	shaderInputs.shieldShaderProperties.color = float3(color.x, color.y, color.z);
+
 	used_shader->UpdateUniforms(shaderInputs);
 
 }
@@ -557,31 +559,22 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::ColorEdit3("Albedo",color.ptr(), ImGuiColorEditFlags_Float);
 		break; }
 
-	case SHADER_TEMPLATE::WATER: {//difusse
-		//ImGui::ColorEdit3("Albedo", shaderInputs.standardShaderProperties.diffuse_color.ptr(), ImGuiColorEditFlags_Float);
+	case SHADER_TEMPLATE::SHIELD: {
 
-		// Diffuse 
-		ImGui::Text("Diffuse:");
-		InputTexture(TextureType::DIFFUSE);
-		ImGui::SameLine();
-		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float /*|ImGuiColorEditFlags_NoInputs | */);
+		//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Hit Position", (unsigned int)type); ImGui::SameLine();
+		//ImGui::SetNextItemWidth(70);
+		//ImGui::InputFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, 0.00001, ImGuiInputTextFlags_CharsDecimal);
+		ImGui::SliderFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, -100.0f, 100.0f);
 
-		// Specular 
-		ImGui::Text("Specular:");
-		InputTexture(TextureType::SPECULAR);
-		ImGui::SameLine();
-		float posX = ImGui::GetCursorPosX();
-		ImGui::SliderFloat("Metalness", &shaderInputs.standardShaderProperties.metalness, 0.0f, 1.f);
-		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(posX, -15));
-		if (ImGui::Button("Reset Metalness")) shaderInputs.standardShaderProperties.metalness = DEFAULT_METALNESS;
-		ImGui::SetCursorPosX(posX);
-		ImGui::SliderFloat("Smoothness", &shaderInputs.standardShaderProperties.smoothness, 16.f, 128.f);
-		ImGui::SetCursorPosX(posX);
-		if (ImGui::Button("Reset Smoothness"))  shaderInputs.standardShaderProperties.smoothness = DEFAULT_SMOOTHNESS;
+		/*ImGui::InputFloat("X: ", &shaderInputs.shieldShaderProperties.hit_position.x, 0, 0, 2); ImGui::SameLine();
+		ImGui::SetNextItemWidth(70);
+		ImGui::InputFloat("Y: ", &shaderInputs.shieldShaderProperties.hit_position.y, 0, 0, 2); ImGui::SameLine();
+		ImGui::SetNextItemWidth(70);
+		ImGui::InputFloat("Z: ", &shaderInputs.shieldShaderProperties.hit_position.z, 0, 0, 2);*/
 
-		// Normal Map
-		ImGui::Text("Normal Map:");
-		InputTexture(TextureType::NORMALS);
+		ImGui::Spacing();
+
+		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float);
 
 		break; }
 
