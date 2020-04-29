@@ -28,7 +28,8 @@ enum class SHADER_TEMPLATE
 	ILUMINATED,
 	PARTICLE,
 	SHADOW,
-	WATER
+	WATER,
+	SHIELD
 };
 
 struct ShaderInputs;
