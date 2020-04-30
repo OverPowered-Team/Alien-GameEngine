@@ -681,6 +681,12 @@
     <ClInclude Include="ComponentCurve.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Bezier\tinysplinecxx.h">
+      <Filter>Tools\Bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Bezier\tinyspline.h">
+      <Filter>Tools\Bezier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -1618,6 +1624,12 @@
     </ClCompile>
     <ClCompile Include="ComponentCurve.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bezier\tinysplinecxx.cxx">
+      <Filter>Tools\Bezier</Filter>
+    </ClCompile>
+    <ClCompile Include="Bezier\tinyspline.c">
+      <Filter>Tools\Bezier</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

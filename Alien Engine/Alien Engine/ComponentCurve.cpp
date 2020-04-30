@@ -8,7 +8,7 @@ ComponentCurve::ComponentCurve(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::CURVE;
 
-	curve.CreatePoints(0.001, { -10,0,0 }, { -10,10,0 }, { 10,10,0 }, { 10,0,0 });
+	curve.CreatePoints(0.1, { -10,0,0 }, { -10,10,0 }, { 10,10,0 }, { 10,0,0 });
 }
 
 ComponentCurve::~ComponentCurve()
