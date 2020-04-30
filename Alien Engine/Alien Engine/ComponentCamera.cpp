@@ -779,6 +779,13 @@ void ComponentCamera::DrawSkybox()
 	}
 }
 
+float2 ComponentCamera::WorldToScreenPoint(float3 world_position)
+{
+	float3 position = App->renderer3D->GetCurrentMainCamera()->frustum.ViewProjMatrix().MulPos(world_position);
+
+	return float2(((position.x + 1) * 0.5f) * App->objects->game_viewport->GetSize().x, ((1 - position.y) * 0.5f) * App->objects->game_viewport->GetSize().y);
+}
+
 void ComponentCamera::DrawFrustum()
 {
 	OPTICK_EVENT();
