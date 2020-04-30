@@ -9,6 +9,13 @@ public:
 	virtual ~ComponentCurve();
 
 private:
+
+	void DrawScene();
+
+	void print(int x, int y, char* string);
+
+	int* bezier(float t, int* p0, int* p1, int* p2, int* p3);
+
 	bool DrawInspector();
 
 	void Clone(Component* clone);

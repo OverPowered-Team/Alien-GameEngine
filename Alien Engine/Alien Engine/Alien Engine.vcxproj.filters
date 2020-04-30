@@ -124,6 +124,9 @@
     <Filter Include="Components\Physics\Controllers">
       <UniqueIdentifier>{1867fcbc-9bd2-48f6-bd5b-2dc3dba4f928}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\Bezier">
+      <UniqueIdentifier>{14ae7ae6-f310-43c9-bb9c-0acc657f48c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
