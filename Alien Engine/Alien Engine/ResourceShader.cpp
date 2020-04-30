@@ -236,6 +236,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::SHIELD_FRESNEL: {
+		SetUniform4f("diffuse_color", inputs.shieldFresnelShaderProperties.color);
 		SetUniform1f("shieldStrength", inputs.shieldFresnelShaderProperties.shieldStrength);
 		SetUniform1f("shieldCooldown", inputs.shieldFresnelShaderProperties.shieldCooldown);
 		SetUniform1f("exponent", inputs.shieldFresnelShaderProperties.fresnel_exponent);

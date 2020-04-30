@@ -1387,12 +1387,15 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 					std::string tmp = std::to_string(i);
 					u64 ID = std::stoull(to_load->GetString(("Mesh.MeshesAttached.MeshID_" + tmp).data()));
 
-					ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
-
-					if (mesh != nullptr)
+					if (ID != 0)
 					{
-						tmp_meshes.push_back(mesh);
+						ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
+						if (mesh != nullptr)
+						{
+							tmp_meshes.push_back(mesh);
+						}
 					}
+
 				}
 				particleSystem->SetMeshes(tmp_meshes);
 			}

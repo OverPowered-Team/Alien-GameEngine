@@ -62,13 +62,15 @@ struct ShaderInputs
 	} shieldShaderProperties; 
 
 	struct ShieldFresnelShaderProperties {
+		float4 color = float4(1.f, 1.f, 1.f,1.f);
+		float shieldStrength = 1.0f;
+		float shieldCooldown = 1.0f;
+		float fresnel_exponent = 0.75f;
 		//static const int32_t MAX_SHIELD_HITS = 5;
-		float shieldStrength = 5.0f;
-		float shieldCooldown = 5.0f;
-		float fresnel_exponent = 10.f;
 		//float3 hitPos[MAX_SHIELD_HITS];
 		//float radii[MAX_SHIELD_HITS];
-		int numHits = 1;
+		//int numHits = 1;
+
 	} shieldFresnelShaderProperties;
 
 };
@@ -124,6 +126,7 @@ public:
 	void TexturesSegment();
 
 	void TextureBrowser(TextureType texType);
+	
 	// ------------------ 
 
 public:

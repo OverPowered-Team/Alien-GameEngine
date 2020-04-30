@@ -24,7 +24,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		p_material->SetShader(owner->material->used_shader);
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
-
+		p_material->shaderInputs = owner->material->shaderInputs;
 		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
@@ -353,7 +353,7 @@ void Particle::Orientate(ComponentCamera* camera)
 		break;
 
 	case BillboardType::MESH:
-		particleInfo.rotation = Quat::identity();
+		particleInfo.rotation = Billboard::AlignToWorld(camera, particleInfo.position);
 		break;
 
 	case BillboardType::NONE:
