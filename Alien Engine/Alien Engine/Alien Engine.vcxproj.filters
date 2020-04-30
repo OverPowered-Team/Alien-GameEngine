@@ -681,9 +681,6 @@
     <ClInclude Include="ComponentCurve.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Bezier\bezier.h">
-      <Filter>Tools\Bezier</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">

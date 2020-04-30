@@ -334,7 +334,6 @@
     <ClInclude Include="AlienEngine.h" />
     <ClInclude Include="AnimTween.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Bezier\bezier.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionLayers.h" />
