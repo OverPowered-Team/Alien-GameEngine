@@ -3,6 +3,7 @@
 #include "ReturnZ.h"
 #include "Maths.h"
 #include "glew/include/glew.h"
+#include "Bezier/tinysplinecxx.h"
 
 ComponentCurve::ComponentCurve(GameObject* attach) : Component(attach)
 {
@@ -71,7 +72,7 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCurve::DrawScene()
 {	
-	glBegin(GL_LINE_STRIP);
+	/*glBegin(GL_LINE_STRIP);
 	for (float f = 0; f <= 1; f += 0.001F) {
 		float3 p = curve.ValueAt(f);
 		glVertex3f(p[0], p[1], p[2]);
@@ -85,7 +86,46 @@ void ComponentCurve::DrawScene()
 		glVertex3f(p[0], p[1], p[2]);
 	}
 	glEnd();
-	glPointSize(1);
+	glPointSize(1);*/
+
+	tinyspline::BSpline beizer(4, 3, 3, tsBSplineType::TS_BEZIERS);
+	std::vector<tinyspline::real> controlPoints = beizer.controlPoints();
+	controlPoints[0] = -10;
+	controlPoints[1] = 0;
+	controlPoints[2] = 0;
+	
+	controlPoints[3] = 0;
+	controlPoints[4] = 10;
+	controlPoints[5] = 0;
+
+	controlPoints[6] = 10;
+	controlPoints[7] = 0;
+	controlPoints[8] = 0;
+
+	controlPoints[9] = 20;
+	controlPoints[10] = 20;
+	controlPoints[11] = 0;
+
+	beizer.setControlPoints(controlPoints);
+
+
+
+	//tinyspline::BSpline beizer = spline.derive().toBeziers();
+
+	glPointSize(9);
+	glBegin(GL_POINTS);
+	for (uint i = 0; i < beizer.controlPoints().size(); i += 3) {
+		glVertex3f(beizer.controlPoints()[i], beizer.controlPoints()[i + 1], beizer.controlPoints()[i + 2]);
+	}
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	for (float f = 0.0F; f <= 1; f += 0.001) {
+		auto res = beizer(f).result();
+		glVertex3f(res[0], res[1], res[2]);
+	}
+	glEnd();
+
 }
 
 float3 Curve::ValueAt(float at)

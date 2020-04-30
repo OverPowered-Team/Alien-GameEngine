@@ -58,8 +58,8 @@ public:
 	Domain &operator=(const Domain &other);
 
 	/* Accessors */
-	real min() const;
-	real max() const;
+	real (min)() const;
+	real (max)() const;
 
 	/* Debug */
 	std::string toString() const;
