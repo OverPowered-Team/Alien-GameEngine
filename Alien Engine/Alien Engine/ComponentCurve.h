@@ -9,14 +9,16 @@ public:
 	Curve() {}
 	~Curve() {}
 
-	uint Size();
-
 	// 0 - 1
 	float3 ValueAt(float at);
 
-	void CreatePoints(float detail, const std::vector<float3>& controlPoints);
+	void CreatePoints(float detail, const float3& p0, const float3& p1, const float3& p2, const float3& p3);
 
 	const std::vector<float3>& GetControlPoints();
+
+private:
+
+	float3 bezier(float t, float* p0, float* p1, float* p2, float* p3);
 
 private:
 
@@ -35,8 +37,6 @@ private:
 
 	void DrawScene();
 
-	float* bezier(float t, float* p0, float* p1, float* p2, float* p3);
-
 	bool DrawInspector();
 
 	void Clone(Component* clone);
@@ -45,5 +45,8 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 public:
+
+	Curve curve;
+
 };
 
