@@ -20,6 +20,7 @@ private:
 	friend class ModuleUI;
 	friend class ReturnZ;
 	friend class ComponentCollider;
+	friend class ComponentRigidBody;
 	friend class ComponentCharacterController;
 	friend class ModuleObjects;
 	friend class PanelScene;
@@ -29,7 +30,8 @@ private:
 	friend class ComponentAnimator;
 	friend class PanelAnimTimeline;
 	friend class ComponentAudioEmitter;
-	friend class ModulePhysics;
+	friend class ModulePhysX;
+	friend class ComponentPhysics;
 	friend class ModuleAudio;
 	friend class ComponentParticleSystem;
 	friend class ComponentUI;
@@ -37,6 +39,7 @@ private:
 	friend class ComponentSlider;
 	friend class ComponentBar;
 	friend class ComponentCanvas;
+	friend class ComponentButton;
 
 	static void Start();
 	static void Update();

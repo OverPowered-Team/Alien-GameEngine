@@ -176,9 +176,11 @@ void ModuleImporter::InitScene(const char *path, const aiScene *scene, const cha
 	if (model->CreateMetaData())
 	{
 		App->resources->AddResource(model);
-		App->ui->panel_project->RefreshAllNodes();
-		model->ConvertToGameObjects();
-		ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
+		if (App->ui->panel_project != nullptr) {
+			App->ui->panel_project->RefreshAllNodes();
+			model->ConvertToGameObjects();
+			ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, App->objects->GetRoot(false)->children.back());
+		}
 	}
 
 	model = nullptr;
@@ -336,6 +338,15 @@ void ModuleImporter::LoadMesh(const aiMesh *mesh)
 		memcpy(ret->uv_cords, (float *)mesh->mTextureCoords[0], sizeof(float) * mesh->mNumVertices * 3);
 	}
 
+	if (mesh->HasTangentsAndBitangents())
+	{
+		ret->tangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->tangents, (float*)mesh->mTangents, sizeof(float) * mesh->mNumVertices * 3);
+
+		ret->biTangents = new float[mesh->mNumVertices * 3];
+		memcpy(ret->biTangents, (float*)mesh->mBitangents, sizeof(float) * mesh->mNumVertices * 3);
+	}
+
 	ret->name = std::string(mesh->mName.C_Str());
 	ret->InitBuffers();
 	App->resources->AddResource(ret);
@@ -421,6 +432,9 @@ void ModuleImporter::LoadMaterials(aiMaterial *material, const char *extern_path
 	}
 
 	LoadModelTexture(material, mat, aiTextureType_DIFFUSE, TextureType::DIFFUSE, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_SPECULAR, TextureType::SPECULAR, extern_path);
+	LoadModelTexture(material, mat, aiTextureType_NORMALS, TextureType::NORMALS, extern_path);
+
 	model->materials_attached.push_back(mat);
 }
 
@@ -435,7 +449,8 @@ void ModuleImporter::LoadModelTexture(const aiMaterial *material, ResourceMateri
 		ResourceTexture *tex = (ResourceTexture *)App->resources->GetTextureByName(name.data());
 		if (tex != nullptr)
 		{
-			mat->texturesID[(uint)type] = tex->GetID();
+			mat->textures[(uint)type].first = tex->GetID();
+			mat->textures[(uint)type].second = tex;
 		}
 		else if (extern_path != nullptr)
 		{
@@ -458,7 +473,8 @@ void ModuleImporter::LoadModelTexture(const aiMaterial *material, ResourceMateri
 				tex->CreateMetaData();
 				App->resources->AddNewFileNode(assets_path, true);
 
-				mat->texturesID[(uint)type] = tex->GetID();
+				mat->textures[(uint)type].first = tex->GetID();
+				mat->textures[(uint)type].second = tex;
 			}
 		}
 	}

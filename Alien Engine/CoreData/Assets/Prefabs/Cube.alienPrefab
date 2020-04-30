@@ -1,41 +1,42 @@
 {
+    "Name": "Cube",
     "Prefab": {
         "GameObjects": [
             {
                 "Name": "Cube",
                 "FamilyNumber": 1,
-                "ID": "10489201333160165724",
-                "ParentID": "0",
+                "ID": "635924240760353080",
+                "ParentID": "1717594832241760130",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "14314553825116347071",
+                "PrefabID": "18082267237102029037",
                 "Components": [
                     {
                         "Type": 0,
                         "Position": [
                             0,
-                            3.1466352939605713,
+                            0,
                             0
                         ],
                         "Rotation": [
                             0,
                             0,
                             0,
-                            1
+                            0
                         ],
                         "Scale": [
-                            1,
+                            6,
                             1,
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6941521242920779063"
+                        "ID": "8400074087045764304"
                     },
                     {
                         "Type": 1,
@@ -45,7 +46,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "16655476268602289381",
+                        "ID": "10649035243881853362",
                         "HasMesh": true,
                         "IsPrimitive": true,
                         "PrimType": 0,
@@ -53,40 +54,34 @@
                     },
                     {
                         "Type": 2,
-                        "ID": "6532553580588671387",
+                        "ID": "13474851794322188839",
                         "HasMaterial": true,
                         "MaterialID": "0",
                         "Enabled": true
                     },
                     {
+                        "Enabled": true,
                         "Type": 7,
-                        "IsTrigger": false,
                         "Center": [
-                            0.5,
-                            0.5,
-                            0.5
+                            0,
+                            0,
+                            0
                         ],
-                        "Bouncing": 0.10000000149011612,
-                        "Friction": 0.5,
-                        "AngularFriction": 0.10000000149011612,
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0.5,
+                        "StaticFriction": 0.5,
+                        "DynamicFriction": 0.5,
+                        "CollisionLayer": "Default",
                         "Size": [
                             1,
                             1,
                             1
                         ]
-                    },
-                    {
-                        "Type": 11,
-                        "IsKinematic": 0,
-                        "Mass": 1,
-                        "Drag": 0,
-                        "AngularDrag": 0,
-                        "FreezePosX": false,
-                        "FreezePosY": false,
-                        "FreezePosZ": false,
-                        "FreezeRotX": false,
-                        "FreezeRotY": false,
-                        "FreezeRotZ": false
                     }
                 ]
             }

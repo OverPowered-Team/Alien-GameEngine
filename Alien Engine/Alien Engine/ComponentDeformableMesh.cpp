@@ -42,7 +42,8 @@ ComponentDeformableMesh::~ComponentDeformableMesh()
 		mesh->DecreaseReferences();
 		mesh = nullptr;
 	}
-	//clear deformable mesh?
+	//clear bones matrix :)
+	delete[] bones_matrix;
 }
 
 void ComponentDeformableMesh::AttachSkeleton(ComponentTransform* root)
@@ -68,6 +69,9 @@ void ComponentDeformableMesh::AttachSkeleton()
 
 void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 {
+	if (mesh == nullptr) {
+		return;
+	}
 	std::vector<ComponentBone*> c_bones = bone_transform->game_object_attached->GetComponents<ComponentBone>();
 
 	if (c_bones.size() > 0)
@@ -86,6 +90,8 @@ void ComponentDeformableMesh::AttachBone(ComponentTransform* bone_transform)
 
 void ComponentDeformableMesh::UpdateBonesMatrix()
 {
+	OPTICK_EVENT(); 
+
 	uint i = 0;
 	for (std::vector<ComponentBone*>::iterator it = bones.begin(); it != bones.end(); ++it, ++i)
 	{
@@ -95,6 +101,39 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 		math::float4x4 boneTransform = meshMatrix * boneGlobalMatrix * r_bone->matrix;
 		
 		bones_matrix[i] = boneTransform;
+	}
+}
+
+void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		if (!wireframe)
+			DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
+	}
+}
+
+void ComponentDeformableMesh::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		DrawPolygon(camera);
 	}
 }
 
@@ -111,10 +150,27 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 }
 
-void ComponentDeformableMesh::SetUniform(ResourceMaterial* material, ComponentCamera* camera)
+void ComponentDeformableMesh::PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
-	ComponentMesh::SetUniform(material, camera);
-	material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+	OPTICK_EVENT();
+	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
+		return;
+
+	UpdateBonesMatrix();
+
+	ComponentMesh::PreDrawPolygonForShadows(camera, ViewMat, ProjMatrix, position);
+}
+
+void ComponentDeformableMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
+{
+	ComponentMesh::SetUniforms(resource_material, camera);
+	resource_material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
+}
+
+void ComponentDeformableMesh::SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera,const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	ComponentMesh::SetShadowUniforms(resource_material, camera, ViewMat, ProjMatrix, position);
+	resource_material->simple_depth_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 }
 
 void ComponentDeformableMesh::SaveComponent(JSONArraypack* to_save)
@@ -159,6 +215,10 @@ void ComponentDeformableMesh::LoadComponent(JSONArraypack* to_load)
 //When loading resouce model
 void ComponentDeformableMesh::SendWeightsAndID()
 {
+	if (mesh == nullptr) {
+		return;
+	}
+
 	if (mesh->weights != nullptr && mesh->bones_ID != nullptr)
 		return;
 

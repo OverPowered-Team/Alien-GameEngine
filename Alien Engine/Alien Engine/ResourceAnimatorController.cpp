@@ -19,8 +19,6 @@
 #include "ResourceAnimatorController.h"
 #include "mmgr/mmgr.h"
 
-
-
 ResourceAnimatorController::ResourceAnimatorController() : Resource()
 {
 	type = ResourceType::RESOURCE_ANIMATOR_CONTROLLER;
@@ -60,6 +58,7 @@ ResourceAnimatorController::ResourceAnimatorController(ResourceAnimatorControlle
 
 ResourceAnimatorController::~ResourceAnimatorController()
 {
+	FreeMemory();
 	ax::NodeEditor::DestroyEditor(ed_context);
 }
 
@@ -197,6 +196,7 @@ void ResourceAnimatorController::ReImport(const u64& force_id)
 
 		CreateMetaData(ID);
 		FreeMemory();
+		delete asset;
 	}
 }
 
@@ -400,32 +400,28 @@ void ResourceAnimatorController::UpdateState(State* state)
 
 		float to_end = state->fade_duration - state->fade_time;
 
-		if (to_end >= 0) {
+		if (to_end > 0) {
 
 			state->fade_time += (Time::GetDT());
 			UpdateState(state->next_state);
 		}
 		else {
-
 			if (Time::IsPlaying()) {
-				for (auto item = App->objects->current_scripts.begin(); item != App->objects->current_scripts.end(); ++item) {
-					try {
-						if ((*item)->game_object->HasComponent(ComponentType::ANIMATOR))(*item)->OnAnimationEnd(state->GetName().c_str());
-					}
-					catch (...)
+				auto scripts = mycomponent->game_object_attached->GetComponents<ComponentScript>();
+				for (auto item = scripts.begin(); item != scripts.end(); ++item)
+				{
+					if ((*item)->need_alien)
 					{
+						Alien* alien = (Alien*)(*item)->data_ptr;
 						try {
-							LOG_ENGINE("CODE ERROR IN THE ONANIMATIONEND OF THE SCRIPT: %s", (*item)->data_name);
+							alien->OnAnimationEnd(state->GetName().c_str());
 						}
-						catch (...) {
-							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONANIMATIONEND");
+						catch (...)
+						{
+							LOG_ENGINE("ERROR TRYING TO CALL ANIMATION END OF SCRIPT %s", (*item)->data_name.c_str());
 						}
-#ifndef GAME_VERSION
-						App->ui->SetError();
-#endif
 					}
 				}
-
 			}
 
 			current_state = state->next_state;
@@ -591,6 +587,7 @@ bool ResourceAnimatorController::SaveAsset(const u64& force_id)
 
 	asset->FinishSave();
 	CreateMetaData(ID);
+	delete asset;
 
 	return true;
 }
@@ -599,8 +596,9 @@ void ResourceAnimatorController::FreeMemory()
 {
 	for (std::vector<State*>::iterator it = states.begin(); it != states.end(); ++it)
 	{
-		if ((*it)->GetClip())
+		if ((*it)->GetClip() && !App->IsQuiting())
 			(*it)->GetClip()->DecreaseReferences();
+
 		delete (*it);
 	}
 	states.clear();
@@ -627,6 +625,11 @@ void ResourceAnimatorController::FreeMemory()
 	bool_parameters.clear();
 	float_parameters.clear();
 	int_parameters.clear();
+
+	for (std::vector<AnimEvent*>::iterator it_anim = anim_events.begin(); it_anim != anim_events.end(); ++it_anim)
+	{
+		delete (*it_anim);
+	}
 
 	anim_events.clear();
 
@@ -1076,6 +1079,7 @@ bool ResourceAnimatorController::CreateMetaData(const u64& force_id)
 		meta->StartSave();
 		meta->SetString("Meta.ID", std::to_string(ID).data());
 		meta->FinishSave();
+		delete meta;
 	}
 
 	//SAVE LIBRARY FILE
@@ -1709,7 +1713,7 @@ void ResourceAnimatorController::ActiveEvent(ResourceAnimation* _animation, uint
 							if (strcmp((*j).first.data(), (*it)->event_id.c_str()) == 0)
 							{
 								std::function<void()> functEvent = (*j).second;
-								functEvent();
+								App->objects->functions_to_call.push_back(functEvent);
 							}
 						}
 					}

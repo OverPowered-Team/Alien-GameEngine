@@ -15,6 +15,11 @@ public:
 private:
 
 	void GuizmosControls();
+	void ChangeWorldMode();
+	void ChangeLocalMode();
+	void Translate();
+	void Rotate();
+	void Scale();
 	void GuizmosLogic();
 	void DrawNavigationWindows();
 
@@ -34,5 +39,6 @@ public:
 	ImVec2 viewport_min = { 0.f, 0.f };
 	ImVec2 viewport_max = { 0.f, 0.f };
 	ImVec2 current_viewport_size = { 0.f, 0.f };
+
 };
 

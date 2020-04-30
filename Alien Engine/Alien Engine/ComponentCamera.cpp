@@ -26,6 +26,8 @@
 #include "mmgr/mmgr.h"
 #include "Viewport.h"
 
+#include "Optick/include/optick.h"
+
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 {
 	type = ComponentType::CAMERA;
@@ -66,12 +68,12 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	// This is the default skybox
 
-	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"575523041464209442.dds");
-	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"2272049821688510999.dds");
-	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"8243941029542624066.dds");
-	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"13353609087236361933.dds");
-	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"14034231489549923375.dds");
-	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"10216792741298181251.dds");
+	cubemap->neg_x.assign(LIBRARY_TEXTURES_FOLDER"14059935274421270400.dds");
+	cubemap->pos_x.assign(LIBRARY_TEXTURES_FOLDER"17871350930873594524.dds");
+	cubemap->pos_y.assign(LIBRARY_TEXTURES_FOLDER"5118434943308934301.dds");
+	cubemap->neg_y.assign(LIBRARY_TEXTURES_FOLDER"14265519993990640998.dds");
+	cubemap->pos_z.assign(LIBRARY_TEXTURES_FOLDER"3680900417465944678.dds");
+	cubemap->neg_z.assign(LIBRARY_TEXTURES_FOLDER"16155666848095087743.dds");
 
 	auto faces = cubemap->ToVector();
 	skybox_texture_id = skybox->LoadCubeMapFromLibraryFiles(faces);
@@ -117,6 +119,15 @@ ComponentCamera::~ComponentCamera()
 				App->camera->selected_viewport->SetCamera(nullptr);
 			}
 			#endif
+
+			if (App->objects->game_viewport->GetCamera() == this) {
+				if (!App->objects->game_cameras.empty()) {
+					App->objects->game_viewport->SetCamera(App->objects->game_cameras.front());
+				}
+				else {
+					App->objects->game_viewport->SetCamera(nullptr);
+				}
+			}
 			break;
 		}
 	}
@@ -245,6 +256,31 @@ bool ComponentCamera::DrawInspector()
 
 		ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.4f);
 		ImGui::Combo("## cool fov combp", &is_fov_horizontal, "Vertical\0Horizontal\0");
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+		
+		ImGui::Checkbox("Active Fog", &activeFog);
+		if (activeFog)
+		{
+			ImGui::DragFloat("Density", &fogDensity, 0.001f, 0.0f, 10.f);
+			ImGui::DragFloat("Gradient", &fogGradient, 0.02f, 0.0f, 10.f);
+		}
+
+		ImGui::Spacing();
+		if (ImGui::Button("Apply Fog to Editor Camera"))
+		{
+			App->renderer3D->scene_fake_camera->activeFog = activeFog; 
+			App->renderer3D->scene_fake_camera->fogDensity = fogDensity;
+			App->renderer3D->scene_fake_camera->fogGradient = fogGradient;
+			App->renderer3D->scene_fake_camera->camera_color_background = camera_color_background;
+		}
+
+		if (ImGui::Button("Reset Editor Camera"))
+		{
+			App->renderer3D->scene_fake_camera->Reset();
+		}
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -516,6 +552,22 @@ bool ComponentCamera::DrawInspector()
 	return true;
 }
 
+void ComponentCamera::DrawScene(ComponentCamera* camera)
+{
+	
+	OPTICK_EVENT();
+
+	if (game_object_attached->IsSelected())
+	{
+		DrawFrustum();
+		frustum.pos = game_object_attached->transform->GetGlobalPosition();
+		frustum.front = game_object_attached->transform->GetGlobalRotation().WorldZ();
+		frustum.up = game_object_attached->transform->GetGlobalRotation().WorldY();
+	}
+
+	DrawIconCamera();
+}
+
 void ComponentCamera::Reset()
 {
 	camera_color_background = { 0.05f, 0.05f, 0.05f, 1.0f };
@@ -538,6 +590,7 @@ void ComponentCamera::Reset()
 	AspectRatio(16, 9);
 	horizontal_fov = frustum.horizontalFov * Maths::Rad2Deg();
 	print_icon = true;
+	activeFog = false;
 }
 
 void ComponentCamera::SetComponent(Component* component)
@@ -604,6 +657,19 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 	return float4x4(frustum.ViewMatrix()).Transposed();
 }
 
+void ComponentCamera::SetViewMatrix4x4(const float4x4& mat)
+{
+	ViewMatrix = mat;
+}
+void ComponentCamera::InvertPitch()
+{
+	/*float3x4* v_m = &frustum.ViewMatrix();
+	v_m->At(1, 2) *= -1.0f;
+	v_m->At(0, 3) *= -1.0f;
+	v_m->At(2, 3) *= -1.0f;*/
+	frustum.ViewMatrix().Inverse();
+}
+
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
 {
 	this->vertical_fov = vertical_fov;
@@ -660,33 +726,86 @@ float3 ComponentCamera::GetCameraPosition() const
 	return frustum.pos;
 }
 
+void ComponentCamera::EnableFog()
+{
+	activeFog = true;
+}
+
+void ComponentCamera::DisableFog()
+{
+	activeFog = false;
+}
+
+void ComponentCamera::SetFogDensity(const float& density)
+{
+	fogDensity = density;
+}
+
+void ComponentCamera::SetFogGradient(const float& gradient)
+{
+	fogGradient = gradient;
+}
+
+float ComponentCamera::GetFogDensity() const
+{
+	return fogDensity;
+}
+
+float ComponentCamera::GetFogGradient() const
+{
+	return fogGradient;
+}
+
+void ComponentCamera::SetBackgroundColor(const float3& color)
+{
+	camera_color_background = { color.x, color.y, color.z };
+}
+
+float3 ComponentCamera::GetBackgroundColor() const
+{
+	return float3(camera_color_background.r, camera_color_background.g, camera_color_background.b);
+}
+
 void ComponentCamera::DrawSkybox()
 {
-	glDepthFunc(GL_LEQUAL);
-	skybox_shader->Bind();
+	OPTICK_EVENT();
+	if (App->renderer3D->render_skybox && !activeFog)
+	{
+		glDepthFunc(GL_LEQUAL);
+		skybox_shader->Bind();
 
-	float4x4 view_m = this->GetViewMatrix4x4();
-	// Theoretically this should remove the translation [x, y, z] of the matrix,
-	// but because it is relative to the camera it has no effect.
-	view_m[0][3] = 0;
-	view_m[1][3] = 0;
-	view_m[2][3] = 0;
-	skybox_shader->SetUniformMat4f("view", view_m);
-	float4x4 projection = this->GetProjectionMatrix4f4();
-	skybox_shader->SetUniformMat4f("projection", projection);
+		float4x4 view_m = this->GetViewMatrix4x4();
+		// Theoretically this should remove the translation [x, y, z] of the matrix,
+		// but because it is relative to the camera it has no effect.
+		view_m[0][3] = 0;
+		view_m[1][3] = 0;
+		view_m[2][3] = 0;
+		skybox_shader->SetUniformMat4f("view", view_m);
+		float4x4 projection = this->GetProjectionMatrix4f4();
+		skybox_shader->SetUniformMat4f("projection", projection);
+	
+		glBindVertexArray(skybox->vao);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture_id);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
+		glBindVertexArray(0);
+		skybox_shader->Unbind();
+	}
+}
 
-	glBindVertexArray(skybox->vao);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture_id);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-	glDepthFunc(GL_LESS);
-	glBindVertexArray(0);
-	skybox_shader->Unbind();
+float2 ComponentCamera::WorldToScreenPoint(float3 world_position)
+{
+	float3 position = App->renderer3D->GetCurrentMainCamera()->frustum.ViewProjMatrix().MulPos(world_position);
+
+	return float2(((position.x + 1) * 0.5f) * App->objects->game_viewport->GetSize().x, ((1 - position.y) * 0.5f) * App->objects->game_viewport->GetSize().y);
 }
 
 void ComponentCamera::DrawFrustum()
 {
+	OPTICK_EVENT();
+
 	static float3 points[8];
 	frustum.GetCornerPoints(points);
 
@@ -736,15 +855,15 @@ void ComponentCamera::DrawFrustum()
 
 void ComponentCamera::DrawIconCamera()
 {
+	OPTICK_EVENT();
+
 	if (mesh_camera != nullptr && print_icon)
 	{
 		ComponentTransform* transform = game_object_attached->transform;
 		float3 position = transform->GetGlobalPosition() - frustum.front.Normalized() * 2;
 		Quat rotated = transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } * Quat{ 0.7071,0,0.7071,0 });
 		float4x4 matrix = float4x4::FromTRS(position, rotated, { 0.1F,0.1F,0.1F });
-		glDisable(GL_LIGHTING);
 		Gizmos::DrawPoly(mesh_camera->mesh, matrix, camera_icon_color);
-		glEnable(GL_LIGHTING);
 	}
 }
 
@@ -767,10 +886,14 @@ void ComponentCamera::Clone(Component* clone)
 	camera->ViewMatrix = ViewMatrix;
 	camera->ViewMatrixInverse = ViewMatrixInverse;
 	camera->cubemap = cubemap;
+	camera->activeFog = activeFog;
+	camera->fogDensity = fogDensity;
+	camera->fogGradient = fogGradient;
 }
 
 void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 {
+	OPTICK_EVENT();
 	to_save->SetBoolean("Enabled", enabled);
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetNumber("VerticalFov", vertical_fov);
@@ -784,6 +907,9 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("IsSelectedCamera", (game_object_attached->IsSelected()) ? true : false);
 	to_save->SetBoolean("PrintIcon", print_icon);
 	to_save->SetColor("IconColor", camera_icon_color);
+	to_save->SetBoolean("Fog", activeFog);
+	to_save->SetNumber("Density", fogDensity);
+	to_save->SetNumber("Gradient", fogGradient);
 
 	/* Save skybox (Library File) */
 	std::string path1 = cubemap->pos_x;
@@ -807,6 +933,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 {
+	OPTICK_EVENT();
 	enabled = to_load->GetBoolean("Enabled");
 	vertical_fov = to_load->GetNumber("VerticalFov");
 	horizontal_fov = to_load->GetNumber("HoritzontalFov");
@@ -823,6 +950,11 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	if (to_load->GetBoolean("IsSelectedCamera")) {
 		App->renderer3D->selected_game_camera = this;
 	}
+
+	activeFog = to_load->GetBoolean("Fog");
+	fogDensity = (float)to_load->GetNumber("Density");
+	fogGradient = (float)to_load->GetNumber("Gradient");
+
 
 	cubemap->pos_x.assign(to_load->GetString("Skybox_PositiveX"));
 	std::string path_pos_x = App->file_system->GetBaseFileName(cubemap->pos_x.c_str());

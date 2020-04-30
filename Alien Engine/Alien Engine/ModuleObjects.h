@@ -10,6 +10,7 @@
 #include <map>
 #include <utility>
 #include "Octree.h"
+#include "WaterFrameBuffers.h"
 #include "ComponentCamera.h"
 #include <stack>
 #include <functional>
@@ -130,7 +131,7 @@ public:
 	void DeleteAllObjects();
 
 	// select/disselect objects
-	void SetNewSelectedObject(GameObject* selected);
+	void SetNewSelectedObject(GameObject* selected, bool select_children);
 	const std::list<GameObject*>& GetSelectedObjects();
 	void DeselectObjects();
 	void DeselectObject(GameObject* obj);
@@ -166,12 +167,14 @@ public:
 	// scenes
 	void SaveScene(ResourceScene* scene, const char* force_with_path = nullptr);
 	void LoadScene(const char * name, bool change_scene = true);
-	void CreateEmptyScene(ResourceScene* scene);
+	void OpenCoScene(const char* name);
+	void CreateEmptyScene();
 
 	static bool SortByFamilyNumber(std::tuple<uint, u64, uint> pair1, std::tuple<uint, u64, uint> pair2);
 	void SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number);
 
 	GameObject* GetRoot(bool ignore_prefab);
+	GameObject* GetGlobalRoot();
 	void CreateRoot();
 
 	void SwapReturnZ(bool get_save, bool delete_current);
@@ -193,6 +196,8 @@ public:
 
 	void ReAttachUIScriptEvents();
 
+	void ResetUIFocus();
+
 private:
 
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
@@ -205,10 +210,16 @@ private:
 	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
 
 public:
+	bool inPrefabCreation = false;
+	bool inHotReload = false;
+	u64 scene_active = 0;
+
 	//Focus
 	u64 selected_ui = -1;
 
-	ResourceScene* current_scene = nullptr;
+	std::vector<ResourceScene*> current_scenes;
+
+	Viewport* current_viewport = nullptr;
 
 	std::list<Alien*> current_scripts;
 
@@ -218,6 +229,10 @@ public:
 	bool printing_scene = false;
 	// Prefab Scene
 	Color prefab_color_background{ 0.2f, 0.4f, 0.6f, 1.0f };
+
+	std::vector<std::function<void()>> functions_to_call;
+
+	bool is_saving_prefab = false;
 
 	// Frustum
 	bool draw_frustum = true;
@@ -302,8 +317,11 @@ public:
 	std::list<DirLightProperties*> directional_light_properites;
 	std::list<PointLightProperties*> point_light_properites;
 	std::list<SpotLightProperties*> spot_light_properites;
-
 	std::vector<std::pair<u64, GameObject**>> to_add;
+
+	std::string sceneNameToChange;
+
+	WaterFrameBuffers* wfbos = nullptr;
 
 private:
 	// root
@@ -313,7 +331,6 @@ private:
 
 	std::stack<ReturnZ*> save_return_actions;
 	std::stack<ReturnZ*> save_fordward_actions;
-
 
 
 	std::list<InvokeInfo*> invokes;

@@ -13,7 +13,9 @@
 #include "ModuleInput.h"
 #include "ModuleObjects.h"
 #include "ModuleRenderer3D.h"
+#include "Billboard.h"
 #include "StaticInput.h"
+#include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
 ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
@@ -29,6 +31,9 @@ ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
 	glGenBuffers(1, &indexID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	type = ComponentType::UI;
 }
@@ -53,6 +58,8 @@ void ComponentUI::UpdateVertex()
 
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
@@ -69,35 +76,51 @@ void ComponentUI::SetCanvas(ComponentCanvas* canvas_)
 
 void ComponentUI::Update()
 {
+	
 	if (Time::IsPlaying()) {
 		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 
 		//UILogicMouse();
 
-		switch (state)
+		(game_object_attached->enabled) ? active = true : active = false;
+
+		if (active)
+			(canvas->game_object_attached->enabled) ? active = true : active = false;
+
+		if (active)
 		{
-		case Idle: {
-			OnIdle();
-			break; }
-		case Hover: {
-			OnHover();
-			break; }
-		case Click: {
-			OnClick();
-			break; }
-		case Pressed: {
-			OnPressed();
-			break; }
-		case Release: {
-			OnRelease();
-			break; }
-		default: {
-			break; }
+			switch (state)
+			{
+			case Idle: {
+				OnIdle();
+				break; }
+			case Hover: {
+				OnHover();
+				break; }
+			case Click: {
+				OnClick();
+				break; }
+			case Pressed: {
+				OnPressed();
+				break; }
+			case Release: {
+				OnRelease();
+				break; }
+			case Exit: {
+				OnExit();
+				break; }
+			case Enter: {
+				OnEnter();
+				break; }
+			default: {
+				break; }
+			}
+
+			if (canvas->game_object_attached->enabled && canvas->allow_navigation)
+				UILogicGamePad();
 		}
 
-		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
-			UILogicGamePad();
 	}
 }
 
@@ -110,13 +133,14 @@ void ComponentUI::Draw(bool isGame)
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
 
+
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
-	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+	if (isGame && App->renderer3D->actual_game_camera != nullptr && !canvas->isWorld) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -151,6 +175,8 @@ void ComponentUI::Draw(bool isGame)
 		matrix[2][3] = 0.0f;
 	}
 
+	
+
 	if (texture != nullptr) {
 		//glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -162,8 +188,36 @@ void ComponentUI::Draw(bool isGame)
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	glPushMatrix();
-	glMultMatrixf(matrix.Transposed().ptr());
+	if (!canvas->isWorld)
+	{
+		glPushMatrix();
+		glMultMatrixf(matrix.Transposed().ptr());
+	}
+	else
+	{
+		position.x = matrix[0][3];
+		position.y = matrix[1][3];
+		position.z = matrix[2][3];
+
+		scale.x = matrix[0][0];
+		scale.y = matrix[1][1];
+		scale.z = matrix[2][2];
+
+
+		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
+		float4x4 uiGlobal = uiLocal;
+
+		/*	if (!particleInfo.globalTransform)
+			{
+				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
+				particleGlobal = parentGlobal * particleLocal;
+			}*/
+
+		glPushMatrix();
+		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
+
+	}
+	
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -290,6 +344,53 @@ void ComponentUI::CheckFirstSelected()
 	}
 }
 
+void ComponentUI::Orientate(ComponentCamera* camera)
+{
+	if (canvas->isWorld)
+	{
+		if (camera == nullptr)
+			return;
+		if (game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+		{
+
+			switch (canvas->bbtype)
+			{
+			case BillboardType::SCREEN:
+				rotation = Billboard::AlignToScreen(camera);
+				break;
+
+			case BillboardType::WORLD:
+				rotation = Billboard::AlignToWorld(camera, position);
+				break;
+
+			case BillboardType::AXIS:
+				rotation = Billboard::AlignToAxis(camera, position);
+				break;
+
+			case BillboardType::NONE:
+				rotation = Quat::identity();
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+	
+}
+
+void ComponentUI::Rotate()
+{
+	if (canvas->isWorld && game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+	{
+		rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
+		rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
+		rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+
+		game_object_attached->transform->SetGlobalRotation(rotation);
+	}
+}
+
 void ComponentUI::SetSize(float width, float height)
 {
 	size.x = width / 100.0f;
@@ -306,7 +407,36 @@ void ComponentUI::SetSize(float width, float height)
 	UpdateVertex();
 }
 
-
+void ComponentUI::ReSetIDNavigation()
+{
+	if (save_getting) {
+		GameObject* root = game_object_attached->FindPrefabRoot();
+		save_left = root->GetGameObjectByID(select_on_left);
+		save_right = root->GetGameObjectByID(select_on_right);
+		save_up = root->GetGameObjectByID(select_on_up);
+		save_bottom = root->GetGameObjectByID(select_on_down);
+	}
+	else {
+		if (save_left != nullptr) {
+			select_on_left = save_left->ID;
+			save_left = nullptr;
+		}
+		if (save_right != nullptr) {
+			select_on_right = save_right->ID;
+			save_right = nullptr;
+		}
+		if(save_up != nullptr) {
+			select_on_up = save_up->ID;
+			save_up = nullptr;
+		}
+		if (save_bottom != nullptr) {
+			select_on_down = save_bottom->ID;
+			save_bottom = nullptr;
+		}
+	}
+	
+	save_getting = !save_getting;
+}
 
 void ComponentUI::UILogicGamePad()
 {
@@ -317,24 +447,32 @@ void ComponentUI::UILogicGamePad()
 		state = Idle;
 		break; }
 	case Hover: {
-		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 			state = Click;
 
 		break; }
 	case Click: {
-		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_REPEAT)
+		if (Input::GetControllerButtonRepeat(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 			state = Pressed;
 
-		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
 			state = Release;
 
 		break; }
 	case Pressed: {
-		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_UP)
+		if (Input::GetControllerButtonUp(1, Input::CONTROLLER_BUTTON_A) || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
 			state = Release;
 
 		break; }
 	case Release: {
+		state = Hover;
+		break; }
+
+	case Exit: {
+		state = Idle;
+		break; }
+
+	case Enter: {
 		state = Hover;
 		break; }
 	}

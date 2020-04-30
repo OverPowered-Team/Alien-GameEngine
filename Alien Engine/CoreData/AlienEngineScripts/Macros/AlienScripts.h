@@ -14,17 +14,22 @@
 #include "..\..\..\Alien Engine\ComponentAnimator.h"
 #include "..\..\..\Alien Engine\ParticleSystem.h"
 #include "..\..\..\Alien Engine\ParticleEmitter.h"
+#include "..\..\..\Alien Engine\ComponentDeformableMesh.h"
+// physix ----
 #include "..\..\..\Alien Engine\ComponentRigidBody.h"
 #include "..\..\..\Alien Engine\ComponentCharacterController.h"
 #include "..\..\..\Alien Engine\ComponentCollider.h"
 #include "..\..\..\Alien Engine\ComponentBoxCollider.h"
 #include "..\..\..\Alien Engine\ComponentCapsuleCollider.h"
+#include "..\..\..\Alien Engine\ComponentBasePhysic.h"
+// -----------
 #include "..\..\..\Alien Engine\ComponentSphereCollider.h"
 #include "..\..\..\Alien Engine\ComponentLightDirectional.h"
 #include "..\..\..\Alien Engine\ComponentLightPoint.h"
 #include "..\..\..\Alien Engine\ComponentLightSpot.h"
 #include "..\..\..\Alien Engine\ComponentUI.h"
 #include "..\..\..\Alien Engine\ComponentButton.h"
+#include "..\..\..\Alien Engine\ComponentText.h"
 #include "..\..\..\Alien Engine\ComponentImage.h"
 /*-----------------COMPONENTS-------------------*/
 
@@ -38,9 +43,11 @@
 #include "..\..\..\Alien Engine\StaticInput.h"
 #include "..\..\..\Alien Engine\StaticTween.h"
 #include "..\..\..\Alien Engine\Maths.h"
+#include "..\..\..\Alien Engine\Physics.h"
 #include "..\..\..\Alien Engine\Debug.h"
 #include "..\..\..\Alien Engine\RandomHelper.h"
 #include "..\..\..\Alien Engine\Time.h"
+#include "..\..\..\Alien Engine\Physics.h"
 #include "..\..\..\Alien Engine\Camera.h"
 #include "..\..\..\Alien Engine\Gizmos.h"
 #include "..\..\..\Alien Engine\Color.h"
@@ -62,7 +69,10 @@
 // define it next to the CreateClass/StructFunct to be able to use the class/struct
 #define ALIEN_FACTORY extern "C" ALIEN_ENGINE_API
 
-static char* helper = nullptr;
+ALIEN_FACTORY void ChangeString(std::string* pointer, const char* newString) {
+	pointer->assign(newString);
+}
+
 // ------------INSPECTOR MACROS----------------\\
 /*--------------------int--------------------*/
 #define SHOW_IN_INSPECTOR_AS_INPUT_INT(INT_) ComponentScript::InspectorInputInt(&INT_, #INT_)
@@ -75,7 +85,7 @@ static char* helper = nullptr;
 /*--------------------bool--------------------*/
 #define SHOW_IN_INSPECTOR_AS_CHECKBOX_BOOL(BOOL_) ComponentScript::InspectorBool(&BOOL_, #BOOL_)
 /*--------------------string--------------------*/
-#define SHOW_IN_INSPECTOR_AS_STRING(STD_STRING) ComponentScript::InspectorString(STD_STRING.data(), #STD_STRING)
+#define SHOW_IN_INSPECTOR_AS_STRING(STRING) ComponentScript::InspectorString(&STRING, #STRING)
 /*--------------------enum--------------------*/
 #define SHOW_IN_INSPECTOR_AS_ENUM(ENUM_TYPE, ENUM_VALUE) ComponentScript::InspectorEnum((int*)(void*)&ENUM_VALUE, #ENUM_VALUE, ENUM_TYPE##EnumNames)
 /*--------------------prefab--------------------*/

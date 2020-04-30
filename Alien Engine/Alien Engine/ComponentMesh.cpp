@@ -16,6 +16,9 @@
 #include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
+#include "Viewport.h"
+#include "ComponentCamera.h"
+
 #include "Optick/include/optick.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
@@ -45,8 +48,42 @@ void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 	RecalculateAABB_OBB();
 }
 
+void ComponentMesh::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		if (!wireframe)
+			DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
+	}
+}
+
+void ComponentMesh::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		DrawPolygon(camera);
+	}
+}
+
 void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 {
+
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -61,33 +98,109 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	ComponentMaterial* mat = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
 
 	// Mandatory Material ??
-	if (mat == nullptr) 
+	if (mat == nullptr)
 		return;
 
 	ResourceMaterial* material = mat->material;
 
+
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);
 
-	// -------------------------- Actual Drawing -------------------------- 
-	material->ApplyMaterial();
+	//Shadows------------------------------
 
+	material->ApplyMaterial();
 	glBindVertexArray(mesh->vao);
 
-	// Uniforms --------------
-	SetUniform(material, camera);
+	SetUniforms(material, camera);
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+	// Reflection / Refraction --------------
+
+	// TODO: Change slots, probably used
+
+	/*glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetRefractionTexture());
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->dvud_tex->id);*/
 
 	// --------------------------------------------------------------------- 
+	// Uniforms --------------
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	material->used_shader->Unbind();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	material->UnbindMaterial();
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
+
+}
+
+void ComponentMesh::PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	OPTICK_EVENT();
+
+	if (mesh == nullptr || mesh->id_index <= 0)
+		return;
+
+	if (game_object_attached->IsSelected() || game_object_attached->IsParentSelected()) {
+		/*glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_ALWAYS, 1, -1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
+	}
+
+	ComponentTransform* transform = game_object_attached->transform;
+	ComponentMaterial* mat = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
+
+	// Mandatory Material ??
+	if (mat == nullptr)
+		return;
+
+	ResourceMaterial* material = mat->material;
+
+
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CW);
+
+	//Shadows------------------------------
+
+		// -------------------------- Actual Drawing -------------------------- 
+	material->ApplyPreRenderShadows();
+	glBindVertexArray(mesh->vao);
+
+	// Uniforms --------------
+	SetShadowUniforms(material, camera, ViewMat, ProjMatrix, position);
+
+	//TODO: Change slots, probably occupied
+
+	/*glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetReflectionTexture());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->GetRefractionTexture());
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, App->objects->wfbos->dvud_tex->id);*/
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
+
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	material->simple_depth_shader->Unbind();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	material->UnbindMaterial();
+
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CCW);
+
+
 }
 
 void ComponentMesh::DrawOutLine()
@@ -125,7 +238,7 @@ void ComponentMesh::DrawOutLine()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
 
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_POLYGON_OFFSET_FILL);
@@ -158,7 +271,7 @@ void ComponentMesh::DrawMesh()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index * 3, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	glLineWidth(1);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -167,16 +280,29 @@ void ComponentMesh::DrawMesh()
 
 }
 
-void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+void ComponentMesh::SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
+	resource_material->simple_depth_shader->SetUniform1i("animate", animate);
+}
+
+void ComponentMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
 	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
+
 	resource_material->used_shader->SetUniform1i("animate", animate);
+	resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
+	if (camera->activeFog)
+	{
+		resource_material->used_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+		resource_material->used_shader->SetUniform1f("density", camera->fogDensity);
+		resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
+	}
 }
-
-
 
 void ComponentMesh::DrawVertexNormals()
 {
@@ -243,7 +369,7 @@ bool ComponentMesh::DrawInspector()
 	ImGui::PopID();
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader(name, &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(name, &not_destroy))
 	{
 		RightClickMenu("Mesh");
 		ImGui::Spacing();
@@ -498,6 +624,7 @@ const OBB ComponentMesh::GetOBB() const
 
 void ComponentMesh::SaveComponent(JSONArraypack* to_save)
 {
+	OPTICK_EVENT();
 	to_save->SetNumber("Type", (int)type);
 	to_save->SetBoolean("ViewMesh", view_mesh);
 	to_save->SetBoolean("Wireframe", wireframe);
@@ -540,6 +667,7 @@ void ComponentMesh::SaveComponent(JSONArraypack* to_save)
 
 void ComponentMesh::LoadComponent(JSONArraypack* to_load)
 {
+	OPTICK_EVENT();
 	view_mesh = to_load->GetBoolean("ViewMesh");
 	wireframe = to_load->GetBoolean("Wireframe");
 	view_vertex_normals = to_load->GetBoolean("ViewVertexNormals");

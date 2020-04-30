@@ -208,6 +208,8 @@ public:
 	PanelAnimator* panel_animator = nullptr;
 	PanelPhysics* panel_physics = nullptr;
 	PanelNavigation* panel_navigation = nullptr;
+	bool update_shortcut = true;
+
 
 	// layouts
 	std::vector<Layout*> layouts;

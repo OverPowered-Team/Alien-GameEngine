@@ -5,7 +5,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleUI.h"
 #include "AnimTween.h"
-#include "ModulePhysics.h"
+#include "ModulePhysX.h"
 #include "ModuleObjects.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
@@ -15,6 +15,7 @@
 #include "Parson/parson.h"
 #include "Time.h"
 #include "Skybox.h"
+#include "ModuleFadeToBlack.h"
 #include "ResourceShader.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
@@ -32,9 +33,10 @@ Application::Application()
 #endif
 	importer = new ModuleImporter();
 	tween = new AnimTween();
+	fade_to_black = new FadeToBlack();
 	objects = new ModuleObjects();
-	physics = new ModulePhysics();
 	nav = new ModuleNavigation();
+	physx = new ModulePhysX();
 	file_system = new ModuleFileSystem();
 	resources = new ModuleResources();
 	audio = new ModuleAudio();
@@ -54,7 +56,8 @@ Application::Application()
 	AddModule(audio);
 	// Scenes
 	AddModule(nav);
-	AddModule(physics);
+	AddModule(physx);
+	AddModule(fade_to_black);
 	AddModule(objects);
 	AddModule(tween);
 #ifndef GAME_VERSION
@@ -354,6 +357,7 @@ update_status Application::Update()
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
+
 	PreUpdate(ret);
 
 #ifndef GAME_VERSION
@@ -375,7 +379,10 @@ void Application::PreUpdate(update_status& ret)
 	auto item = list_modules.begin();
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		ret = (*item)->PreUpdate(dt);
+		if ((*item)->IsEnabled())
+		{
+			ret = (*item)->PreUpdate(dt);
+		}
 		//assert(ret == UPDATE_CONTINUE);
 		++item;
 	}
@@ -387,7 +394,10 @@ void Application::OnUpdate(update_status& ret)
 	auto item = list_modules.begin();
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		ret = (*item)->Update(dt);
+		if ((*item)->IsEnabled())
+		{
+			ret = (*item)->Update(dt);
+		}
 		//assert(ret == UPDATE_CONTINUE);
 		++item;
 	}
@@ -399,7 +409,10 @@ void Application::PostUpdate(update_status& ret)
 	auto item = list_modules.begin();
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		ret = (*item)->PostUpdate(dt);
+		if ((*item)->IsEnabled())
+		{
+			ret = (*item)->PostUpdate(dt);
+		}
 		//assert(ret == UPDATE_CONTINUE);
 		++item;
 	}

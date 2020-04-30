@@ -73,9 +73,11 @@ class __declspec(dllexport) ComponentScript : public Component {
 	friend class ComponentCheckbox;
 	friend class ModuleObjects;
 	friend class ComponentTransform;
-	friend class ModulePhysics;
+	friend class ComponentPhysics;
+	friend class SimulationEventCallback;
 	friend class ComponentCollider;
 	friend class GameObject;
+	friend class ComponentCharacterController;
 public:
 	ComponentScript(GameObject* attach);
 	virtual ~ComponentScript();
@@ -113,7 +115,7 @@ public:
 	/*--------------------BOOL-----------------------*/
 	static void InspectorBool(bool* ptr, const char* ptr_name);
 	/*--------------------STRING-----------------------*/
-	static void InspectorString(const char* ptr, const char* ptr_name);
+	static void InspectorString(std::string* ptr, const char* ptr_name);
 	/*--------------------ENUM-----------------------*/
 	static void InspectorEnum(int* ptr, const char* ptr_name, const char* enumAllString);
 	/*--------------------PREFAB-----------------------*/

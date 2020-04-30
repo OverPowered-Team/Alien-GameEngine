@@ -29,6 +29,7 @@ class __declspec(dllexport) ComponentCamera : public Component {
 	friend class Viewport;
 	friend class Octree;
 	friend class OctreeNode;
+	friend class PanelConfig;
 public:
 
 	ComponentCamera(GameObject* attach);
@@ -41,6 +42,9 @@ public:
 
 	float* GetViewMatrix() const;
 	float4x4 GetViewMatrix4x4() const; 
+	void SetViewMatrix4x4(const float4x4& mat);
+
+	void InvertPitch();
 
 	void SetVerticalFov(const float& vertical_fov);
 	float GetVerticalFov() const;
@@ -55,12 +59,27 @@ public:
 	void SetCameraPosition(const float3& position);
 	float3 GetCameraPosition() const;
 
+	void EnableFog();
+	void DisableFog();
+
+	void SetFogDensity(const float& density);
+	void SetFogGradient(const float& gradient);
+	float GetFogDensity() const;
+	float GetFogGradient() const;
+
+	void SetBackgroundColor(const float3& color);
+	float3 GetBackgroundColor() const;
+
 	void DrawSkybox();
+
+	static float2 WorldToScreenPoint(float3 world_position);
 
 private:
 	void AspectRatio(int width_ratio, int height_ratio, bool fov_type = 0);
 
 	bool DrawInspector();
+
+	void DrawScene(ComponentCamera* camera) override; 
 
 	void DrawFrustum();
 	void DrawIconCamera();
@@ -102,4 +121,8 @@ public:
 	Cubemap* cubemap = nullptr;
 	ResourceShader* skybox_shader = nullptr;
 	uint skybox_texture_id = 0u;
+	
+	bool activeFog = false;
+	float fogDensity = 0.035;
+	float fogGradient = 1.35;
 };

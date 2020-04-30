@@ -12,7 +12,9 @@ class __declspec(dllexport) ComponentTransform : public Component {
 	friend class ComponentUI;
 	friend class ComponentText;
 	friend class ComponentCheckbox;
+	friend class ComponentButton;
 	friend class ComponentBar;
+	friend class ComponentCanvas;
 	friend class ComponentAnimatedImage;
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
@@ -53,7 +55,6 @@ public:
 	const Quat GetGlobalRotation() const;
 
 	float4x4 GetGlobalMatrix() const;
-
 	void AddPosition(const float3 pos);
 	void AddScale(const float3 scale);
 	void AddRotation(const float3 rot);
