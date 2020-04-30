@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Bezier/bezier.h"
 
 class __declspec(dllexport) ComponentCurve : public Component {
 public:
