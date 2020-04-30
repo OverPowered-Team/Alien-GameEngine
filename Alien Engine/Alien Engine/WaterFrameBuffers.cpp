@@ -75,13 +75,15 @@ void WaterFrameBuffers::BindRefractionFrameBuffer()
 	BindFrameBuffer(refraction_frame_buffer, WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 }
 
-void WaterFrameBuffers::UnbindCurrentFrameBuffer()
+void WaterFrameBuffers::UnbindCurrentFrameBuffer(const int& width, const int& height)
 {
 	glDisable(GL_LIGHTING);
 	glDisable(GL_POLYGON_SMOOTH);
 
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_STENCIL_TEST);
+
+	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glViewport(0, 0, width, height); glClear ?
@@ -107,7 +109,7 @@ void WaterFrameBuffers::InitialiseReflectionFrameBuffer()
 	reflection_frame_buffer = CreateFrameBuffer();
 	reflection_texture = CreateTextureAttachment(WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 	reflection_depth_buffer = CreateDepthBufferAttachment(WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
-	UnbindCurrentFrameBuffer();
+	UnbindCurrentFrameBuffer(WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 }
 
 void WaterFrameBuffers::InitialiseRefractionFrameBuffer()
@@ -115,7 +117,7 @@ void WaterFrameBuffers::InitialiseRefractionFrameBuffer()
 	refraction_frame_buffer = CreateFrameBuffer();
 	refraction_texture = CreateTextureAttachment(WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 	refraction_depth_texture = CreateDepthTextureAttachment(WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
-	UnbindCurrentFrameBuffer();
+	UnbindCurrentFrameBuffer(WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 }
 
 void WaterFrameBuffers::BindFrameBuffer(const uint& frame_buffer, const int& width, const int& height)

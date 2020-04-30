@@ -315,7 +315,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
 				c_cam->InvertPitch();
 			}
-			wfbos->UnbindCurrentFrameBuffer();
+			wfbos->UnbindCurrentFrameBuffer(WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 
 			/* Refraction */
 			wfbos->BindRefractionFrameBuffer();
@@ -352,7 +352,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 					}
 				}
 			}
-			wfbos->UnbindCurrentFrameBuffer();
+			wfbos->UnbindCurrentFrameBuffer(WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 
 			glDisable(GL_CLIP_DISTANCE0);
 		}
@@ -502,9 +502,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 		c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
 		c_cam->InvertPitch();
 	}
-	wfbos->UnbindCurrentFrameBuffer();
+	wfbos->UnbindCurrentFrameBuffer(WaterFrameBuffers::reflection_width, WaterFrameBuffers::reflection_height);
 
-	// efraction
+	// Refraction
 	wfbos->BindRefractionFrameBuffer();
 	{
 		if (base_game_object->HasChildren())
@@ -538,7 +538,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 		}
 	}
-	wfbos->UnbindCurrentFrameBuffer();
+	wfbos->UnbindCurrentFrameBuffer(WaterFrameBuffers::refraction_width, WaterFrameBuffers::refraction_height);
 
 	glDisable(GL_CLIP_DISTANCE0);
 	
