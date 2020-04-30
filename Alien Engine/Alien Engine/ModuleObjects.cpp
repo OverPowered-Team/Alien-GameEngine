@@ -246,7 +246,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 	float2 vg_size = App->camera->scene_viewport->GetSize();
 
-	/*
+	
 	ImGui::Begin("WReflection");
 	ImGui::Text("Test");
 	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
@@ -256,7 +256,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ImGui::Text("Test2");
 	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
 	ImGui::End();
-	*/
+	
 
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
@@ -273,8 +273,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			/* Reflection */
 			wfbos->BindReflectionFrameBuffer();
 			{
-				float distance = 2 * (viewport->GetCamera()->GetCameraPosition().y - 0.0f);
-				ComponentCamera* c_cam = viewport->GetCamera();
+				float distance = 2 * (App->camera->fake_camera->GetCameraPosition().y - 0.0f);
+				ComponentCamera* c_cam = App->camera->fake_camera;
 				float c_pos_y = c_cam->GetCameraPosition().y;
 				c_pos_y -= distance;
 				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
