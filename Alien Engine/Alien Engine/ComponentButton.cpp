@@ -31,7 +31,6 @@ void ComponentButton::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Height", size.y);
 
 	to_save->SetBoolean("Enabled", enabled);
-	to_save->SetNumber("Type", (int)type);
 
 	to_save->SetNumber("UIType", (int)ui_type);
 
