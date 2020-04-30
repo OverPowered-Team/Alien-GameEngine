@@ -4,12 +4,39 @@
 #include "Maths.h"
 #include "glew/include/glew.h"
 #include "Bezier/tinysplinecxx.h"
+#include "Application.h"
+#include "ModuleInput.h"
 
+static 	tinyspline::BSpline spline(5, 3);
+static tinyspline::BSpline beizer;
 ComponentCurve::ComponentCurve(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::CURVE;
 
-	curve.CreatePoints(0.1, { -10,0,0 }, { -10,10,0 }, { 10,10,0 }, { 10,0,0 });
+	std::vector<tinyspline::real> controlPoints = spline.controlPoints();
+	controlPoints[0] = -10;
+	controlPoints[1] = 0;
+	controlPoints[2] = 10;
+
+	controlPoints[3] = 0;
+	controlPoints[4] = 10;
+	controlPoints[5] = -10;
+
+	controlPoints[6] = 10;
+	controlPoints[7] = 0;
+	controlPoints[8] = 30;
+
+	controlPoints[9] = 20;
+	controlPoints[10] = 20;
+	controlPoints[11] = 4;
+
+	controlPoints[12] = 40;
+	controlPoints[13] = -20;
+	controlPoints[14] = -3;
+
+	spline.setControlPoints(controlPoints);
+
+	beizer = spline.toBeziers();
 }
 
 ComponentCurve::~ComponentCurve()
@@ -36,19 +63,16 @@ bool ComponentCurve::DrawInspector()
 	if (ImGui::CollapsingHeader("Curve", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Curve");
-		bool reset = false;
-		for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
-			ImGui::PushID(&curve.GetControlPoints()[i]);
-			if (ImGui::DragFloat3("##FFFF", (float*)curve.GetControlPoints()[i].ptr())) {
-				reset = true;
+		
+		for (uint i = 0; i < beizer.controlPoints().size(); i += 3) {
+			ImGui::PushID(3213 + i);
+			float3 point(beizer.controlPoints()[i], beizer.controlPoints()[i + 1], beizer.controlPoints()[i + 2]);
+			if (ImGui::DragFloat3("##FFF", point.ptr())) {
+				beizer.setControlPointAt(i/3, { point.x, point.y, point.z });
 			}
 			ImGui::PopID();
 		}
-		if (reset) {
-			std::vector<float3> points;
-			points.assign(curve.GetControlPoints().begin(), curve.GetControlPoints().end());
-			curve.CreatePoints(0.001F, points[0], points[1], points[2], points[3]);
-		}
+
 
 	}
 	else {
@@ -72,45 +96,66 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCurve::DrawScene()
 {	
-	/*glBegin(GL_LINE_STRIP);
-	for (float f = 0; f <= 1; f += 0.001F) {
-		float3 p = curve.ValueAt(f);
-		glVertex3f(p[0], p[1], p[2]);
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+		spline = tinyspline::BSpline(6,3);
+		std::vector<tinyspline::real> controlPoints = spline.controlPoints();
+		controlPoints[0] = -10;
+		controlPoints[1] = 0;
+		controlPoints[2] = 10;
+
+		controlPoints[3] = 0;
+		controlPoints[4] = 10;
+		controlPoints[5] = -10;
+
+		controlPoints[6] = 10;
+		controlPoints[7] = 0;
+		controlPoints[8] = 30;
+
+		controlPoints[9] = 20;
+		controlPoints[10] = 20;
+		controlPoints[11] = 4;
+
+		controlPoints[12] = 40;
+		controlPoints[13] = -20;
+		controlPoints[14] = -3;
+
+		controlPoints[12] = 100;
+		controlPoints[13] = 160;
+		controlPoints[14] = 120;
+
+		spline.setControlPoints(controlPoints);
+
+		beizer = spline.toBeziers();
+
 	}
-	glEnd();
 
-	glPointSize(9);
-	glBegin(GL_POINTS);
-	for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
-		float3 p = curve.GetControlPoints()[i];
-		glVertex3f(p[0], p[1], p[2]);
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+		spline = tinyspline::BSpline(4, 3);
+		std::vector<tinyspline::real> controlPoints = spline.controlPoints();
+		controlPoints[0] = -10;
+		controlPoints[1] = 0;
+		controlPoints[2] = 10;
+
+		controlPoints[3] = 0;
+		controlPoints[4] = 10;
+		controlPoints[5] = -10;
+
+		controlPoints[6] = 10;
+		controlPoints[7] = 0;
+		controlPoints[8] = 30;
+
+		controlPoints[9] = 20;
+		controlPoints[10] = 20;
+		controlPoints[11] = 4;
+
+		spline.setControlPoints(controlPoints);
+
+		beizer = spline.toBeziers();
 	}
-	glEnd();
-	glPointSize(1);*/
 
-	tinyspline::BSpline beizer(4, 3, 3, tsBSplineType::TS_BEZIERS);
-	std::vector<tinyspline::real> controlPoints = beizer.controlPoints();
-	controlPoints[0] = -10;
-	controlPoints[1] = 0;
-	controlPoints[2] = 0;
-	
-	controlPoints[3] = 0;
-	controlPoints[4] = 10;
-	controlPoints[5] = 0;
-
-	controlPoints[6] = 10;
-	controlPoints[7] = 0;
-	controlPoints[8] = 0;
-
-	controlPoints[9] = 20;
-	controlPoints[10] = 20;
-	controlPoints[11] = 0;
-
-	beizer.setControlPoints(controlPoints);
-
-
-
-	//tinyspline::BSpline beizer = spline.derive().toBeziers();
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+		beizer.setControlPointAt(1, { -50, 10, 20 });
+	}
 
 	glPointSize(9);
 	glBegin(GL_POINTS);
