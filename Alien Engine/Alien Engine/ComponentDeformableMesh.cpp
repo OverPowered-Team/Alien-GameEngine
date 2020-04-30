@@ -104,6 +104,39 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 	}
 }
 
+void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		if (!wireframe)
+			DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
+	}
+}
+
+void ComponentDeformableMesh::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		DrawPolygon(camera);
+	}
+}
+
 
 void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 {

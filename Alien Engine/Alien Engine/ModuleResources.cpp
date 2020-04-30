@@ -776,6 +776,7 @@ void ModuleResources::ReadAllMetaData()
 	directories.clear();
 	default_shader = (ResourceShader*)GetResourceWithID(2074311779325559006);
 	skybox_shader = (ResourceShader*)GetResourceWithID(10031399484334738574); // TODO
+	simple_depth_shader = (ResourceShader*)GetResourceWithID(12293234483734622872); // TODO
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 	default_particle_shader->SetName("particle_shader");
 	default_particle_shader->TryToSetShaderType();

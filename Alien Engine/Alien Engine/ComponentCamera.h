@@ -79,6 +79,8 @@ private:
 
 	bool DrawInspector();
 
+	void DrawScene(ComponentCamera* camera) override; 
+
 	void DrawFrustum();
 	void DrawIconCamera();
 

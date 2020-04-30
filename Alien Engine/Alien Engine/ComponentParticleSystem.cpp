@@ -98,25 +98,38 @@ void ComponentParticleSystem::PostUpdate()
 		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
+void ComponentParticleSystem::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (game_object_attached->selected)
+	{
+		Draw();
+		DebugDraw();
+	}
+}
+
+void ComponentParticleSystem::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	Draw();
+}
+
 void ComponentParticleSystem::DebugDraw()
 {
 	OPTICK_EVENT();
 
-	if (drawEmmitter && App->objects->GetSelectedObjects().back() == game_object_attached)
+	if (drawEmmitter) 
 		particleSystem->DrawEmmitter();
+
 }
 
 void ComponentParticleSystem::Draw()
 {
 	OPTICK_EVENT();
 
-	if (App->objects->printing_scene)
-	{
-		if (App->objects->GetSelectedObjects().back() == game_object_attached)
-			particleSystem->DrawParticles();
-	}
-	else
-		particleSystem->DrawParticles();
+	particleSystem->DrawParticles();
 
 }
 
