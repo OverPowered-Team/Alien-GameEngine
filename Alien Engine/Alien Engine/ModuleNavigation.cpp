@@ -150,7 +150,7 @@ bool ModuleNavigation::Bake()
 		GameObject* go = stacked_go.top();
 		stacked_go.pop();
 
-		if (go->GetComponent(ComponentType::MESH) != nullptr && go->nav_data.nav_static)
+		if (go->GetComponent<ComponentMesh>() != nullptr && go->nav_data.nav_static)
 			gos_with_mesh.push_back(go);
 
 		std::vector<GameObject*> child_gos = go->GetChildren();
@@ -172,7 +172,7 @@ bool ModuleNavigation::Bake()
 	for (int i = 0; i < gos_with_mesh.size(); ++i)
 	{
 		GameObject* go = gos_with_mesh[i];
-		ComponentMesh* mesh =  static_cast<ComponentMesh*>(go->GetComponent(ComponentType::MESH));
+		ComponentMesh* mesh =  static_cast<ComponentMesh*>(go->GetComponent<ComponentMesh>());
 		nverts += mesh->mesh->num_vertex;
 		ntris += mesh->mesh->num_faces;
 		meshes.push_back(mesh);

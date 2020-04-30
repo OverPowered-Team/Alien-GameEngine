@@ -94,6 +94,7 @@ void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 		RemoveRigidBody(object);
 		break; }
 	case AlienEventType::RIGIDBODY_ENABLED:
+		break;
 	case AlienEventType::RIGIDBODY_DISABLED: {
 		ComponentRigidBody* object = (ComponentRigidBody*)e.object;
 		SwitchedRigidBody(object);
@@ -107,6 +108,7 @@ void ComponentPhysics::HandleAlienEvent(const AlienEvent& e)
 		RemoveController(object);
 		break; }
 	case AlienEventType::CHARACTER_CTRL_ENABLED:
+		break;
 	case AlienEventType::CHARACTER_CTRL_DISABLED: {
 		ComponentCharacterController* object = (ComponentCharacterController*)e.object;
 		SwitchedController(object);
