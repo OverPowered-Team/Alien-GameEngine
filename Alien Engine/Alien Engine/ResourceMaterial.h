@@ -61,6 +61,16 @@ struct ShaderInputs
 		float3 hit_position = float3(0.9757f, -0.2074f, -0.0703f);
 	} shieldShaderProperties; 
 
+	struct ShieldFresnelShaderProperties {
+		//static const int32_t MAX_SHIELD_HITS = 5;
+		float shieldStrength = 5.0f;
+		float shieldCooldown = 5.0f;
+		float fresnel_exponent = 10.f;
+		//float3 hitPos[MAX_SHIELD_HITS];
+		//float radii[MAX_SHIELD_HITS];
+		int numHits = 1;
+	} shieldFresnelShaderProperties;
+
 };
 
 class ResourceShader; 

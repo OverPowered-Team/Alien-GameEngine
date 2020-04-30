@@ -27,7 +27,8 @@ enum class SHADER_TEMPLATE
 	WAVE,
 	ILUMINATED,
 	PARTICLE,
-	SHIELD
+	SHIELD,
+	SHIELD_FRESNEL
 };
 
 struct ShaderInputs;

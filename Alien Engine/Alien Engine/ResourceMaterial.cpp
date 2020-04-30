@@ -521,21 +521,23 @@ void ResourceMaterial::ShaderInputsSegment()
 		break; }
 
 	case SHADER_TEMPLATE::SHIELD: {
-
-		//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Hit Position", (unsigned int)type); ImGui::SameLine();
-		//ImGui::SetNextItemWidth(70);
-		//ImGui::InputFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, 0.00001, ImGuiInputTextFlags_CharsDecimal);
-		ImGui::SliderFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, -100.0f, 100.0f);
-
-		/*ImGui::InputFloat("X: ", &shaderInputs.shieldShaderProperties.hit_position.x, 0, 0, 2); ImGui::SameLine();
-		ImGui::SetNextItemWidth(70);
-		ImGui::InputFloat("Y: ", &shaderInputs.shieldShaderProperties.hit_position.y, 0, 0, 2); ImGui::SameLine();
-		ImGui::SetNextItemWidth(70);
-		ImGui::InputFloat("Z: ", &shaderInputs.shieldShaderProperties.hit_position.z, 0, 0, 2);*/
-
+		ImGui::SliderFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, -1.0f, 1.0f);
 		ImGui::Spacing();
-
 		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float);
+		break; }
+
+	case SHADER_TEMPLATE::SHIELD_FRESNEL: {
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Strength", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputFloat("##strength", &shaderInputs.shieldFresnelShaderProperties.shieldStrength, 1, 100, 2);
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Cooldown", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputFloat("##cooldown", &shaderInputs.shieldFresnelShaderProperties.shieldCooldown, 0.1, 100, 2);
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Num Hits", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputInt("##numhits", &shaderInputs.shieldFresnelShaderProperties.numHits);
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Fresnel", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputFloat("##fresnel", &shaderInputs.shieldFresnelShaderProperties.fresnel_exponent, 0.5, 100, 2);
 
 		break; }
 
