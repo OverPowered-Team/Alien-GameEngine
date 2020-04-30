@@ -162,7 +162,9 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::PARTICLE;
 	else if (std::strcmp(name.c_str(), "water_shader") == 0)
 		shaderType = SHADER_TEMPLATE::WATER;
-	else 
+	else if (std::strcmp(name.c_str(), "shield_shader") == 0)
+		shaderType = SHADER_TEMPLATE::SHIELD;
+	else
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
 
@@ -212,12 +214,15 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.075f);
 		SetUniformFloat3("camera_position", App->renderer3D->actual_game_camera->GetCameraPosition());
 		ApplyLightsUniforms();
+	case SHADER_TEMPLATE::SHIELD: {
+		SetUniformFloat3("objectMaterial.diffuse_color", inputs.shieldShaderProperties.color);
+		SetUniformFloat3("hitPosition", inputs.shieldShaderProperties.hit_position);
 		break; }
 
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
-
+		}
 	}
 }
 
