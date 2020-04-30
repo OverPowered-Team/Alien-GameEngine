@@ -309,7 +309,7 @@ void ComponentCharacterController::SetCollisionLayer(std::string layer)
 	}
 }
 
-void ComponentCharacterController::DrawScene()
+void ComponentCharacterController::DrawScene(ComponentCamera* camera)
 {
 	if (game_object_attached->IsSelected() && App->physx->debug_physics == false)
 	{
