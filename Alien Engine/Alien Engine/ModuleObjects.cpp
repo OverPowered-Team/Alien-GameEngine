@@ -246,7 +246,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 	float2 vg_size = App->camera->scene_viewport->GetSize();
 
-	
+	/*
 	ImGui::Begin("WReflection");
 	ImGui::Text("Test");
 	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
@@ -256,7 +256,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ImGui::Text("Test2");
 	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
 	ImGui::End();
-	
+	*/
 
 #ifndef GAME_VERSION
 	for (Viewport* viewport : viewports) {
