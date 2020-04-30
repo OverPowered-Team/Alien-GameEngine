@@ -13,9 +13,6 @@ private:
 
 	void DrawScene();
 
-
-	float* bezier(float t, float* p0, float* p1, float* p2, float* p3);
-
 	bool DrawInspector();
 
 	void Clone(Component* clone);
@@ -24,6 +21,10 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 public:
+
+private:
+
+	Bezier::Bezier curve;
 
 };
 
