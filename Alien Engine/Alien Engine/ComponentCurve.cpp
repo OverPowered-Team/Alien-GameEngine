@@ -3,6 +3,7 @@
 #include "ReturnZ.h"
 #include "Maths.h"
 #include "glew/include/glew.h"
+#include "imgui/imgui_internal.h"
 
 #include "Application.h"
 #include "ModuleInput.h"
@@ -96,6 +97,47 @@ bool ComponentCurve::DrawInspector()
 						curve.SetControlPointAt(i + 2, curve.GetControlPoints()[i + 2]);
 					}
 					ImGui::PopID();
+					float width = ImGui::GetItemRectSize().x - 8;
+					ImGui::Spacing();
+					
+
+					if (curve.GetControlPoints().size() == 4) {
+						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+					}
+
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 91);
+					ImGui::PushID(989 + i);
+					if (ImGui::Button("Remove Begin", { width * 0.5F, 0 })) {
+						curve.RemoveControlPoint(i);
+						ImGui::PopID();
+						ImGui::TreePop();
+						break;
+					}
+					ImGui::PopID();
+					ImGui::SameLine();
+					ImGui::PushID(64343 + i);
+					if (ImGui::Button("Remove End", { width * 0.5F, 0 })) {
+						curve.RemoveControlPoint(i + 3);
+						ImGui::PopID();
+						ImGui::TreePop();
+						break;
+					}
+					ImGui::PopID();
+
+
+					if (curve.GetControlPoints().size() == 4) {
+						ImGui::PopItemFlag();
+						ImGui::PopStyleVar();
+					}
+					ImGui::Spacing();
+					ImGui::PushID(32 + i);
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 91);
+					if (ImGui::Button("Add Control Point", { width + 8, 0 })) {
+
+					}
+					ImGui::PopID();
+
 
 					ImGui::TreePop();
 				}
@@ -212,6 +254,27 @@ void Curve::AddSegment(bool begin)
 		control_points.push_back(tensor1);
 		control_points.push_back(tensor2);
 		control_points.push_back(newPoint);
+	}
+
+	Refresh();
+}
+
+void Curve::RemoveControlPoint(int index)
+{
+	if (index == 0) {
+		control_points.erase(control_points.begin());
+		control_points.erase(control_points.begin());
+		control_points.erase(control_points.begin());
+	}
+	else if (index == control_points.size() - 1) {
+		control_points.pop_back();
+		control_points.pop_back();
+		control_points.pop_back();
+	}
+	else {
+		control_points.erase(control_points.begin() + --index);
+		control_points.erase(control_points.begin() + index);
+		control_points.erase(control_points.begin() + index);
 	}
 
 	Refresh();

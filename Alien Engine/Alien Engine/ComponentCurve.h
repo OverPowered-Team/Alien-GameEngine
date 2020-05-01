@@ -20,6 +20,7 @@ public:
 	void SetDetail(int detail);
 
 	void AddSegment(bool begin);
+	void RemoveControlPoint(int index);
 
 private:
 
@@ -30,7 +31,7 @@ private:
 
 public:
 
-	int detail = 50;
+	int detail = 1000;
 
 private:
 
