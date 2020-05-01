@@ -389,6 +389,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
+			std::vector<std::pair<float, GameObject*>> ui_2d;
+			std::vector<std::pair<float, GameObject*>> ui_world;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
 
@@ -460,18 +462,30 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
+			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
 			
-			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
-			if (!printing_scene) {
-				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-			}
 			ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
-			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-			for (; it_ui != to_draw_ui.end(); ++it_ui) {
-				if ((*it_ui).second != nullptr) {
-					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+			for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+				if ((*it_ui_2d).second != nullptr) {
+					ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{			
+						/*ui->Orientate(mainCamera);
+						ui->Rotate();*/
+						ui->Draw(!printing_scene);
+
+					}
+				}
+			}
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+			for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+				if ((*it_ui_world).second != nullptr) {
+					ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+					if (ui != nullptr && ui->IsEnabled())
+					{
 						ui->Orientate(mainCamera);
 						ui->Rotate();
 						ui->Draw(!printing_scene);
@@ -2254,6 +2268,34 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	}
 	return canvas;
 }
+
+void ModuleObjects::UIOrdering(std::vector<std::pair<float, GameObject*>>* current, std::vector<std::pair<float, GameObject*>>* ui_2d, std::vector<std::pair<float, GameObject*>>* ui_world)
+{
+	std::vector<std::pair<float, GameObject*>>::iterator it_ui = current->begin();
+	for (; it_ui != current->end(); ++it_ui)
+	{
+		if ((*it_ui).second != nullptr)
+		{
+			ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+			if (ui->canvas != nullptr && !ui->canvas->isWorld)
+				ui_2d->push_back((*it_ui));
+
+			else if (ui->canvas != nullptr && ui->canvas->isWorld)
+				ui_world->push_back((*it_ui));
+		}
+	}
+
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortUIToDraw);
+	if (!printing_scene) {
+		std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	}
+
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+
+
+}
+
+
 
 void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec)
 {
