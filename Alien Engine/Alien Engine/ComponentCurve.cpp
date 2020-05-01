@@ -55,7 +55,7 @@ bool ComponentCurve::DrawInspector()
 		ImGui::Spacing();
 		if (ImGui::TreeNodeEx("Segments", ImGuiTreeNodeFlags_SpanAvailWidth)) {
 			for (uint i = 0; i < curve.GetControlPoints().size() - 1; i += 3) {
-				if (ImGui::TreeNodeEx(std::string("Segment " + std::to_string(int(i / (float)4) + 1)).data(), ImGuiTreeNodeFlags_SpanAvailWidth)) {
+				if (ImGui::TreeNodeEx(std::string("Segment " + std::to_string(int(i / (float)3) + 1)).data(), ImGuiTreeNodeFlags_SpanAvailWidth)) {
 					ImGui::Spacing();
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 					ImGui::Text("Start Point");
@@ -191,7 +191,30 @@ void Curve::SetDetail(int detail)
 
 void Curve::AddSegment(bool begin)
 {
+	float3 newPoint = float3::zero();
+	float3 tensor1 = float3::zero();
+	float3 tensor2 = float3::zero();
 
+	if (begin) {
+		newPoint = control_points.front() + float3(-10, 0, 0);
+		tensor1 = newPoint + float3(2.5F, 10, 0);
+		tensor2 = control_points.front() + float3(-2.5F, 0, 0);
+		
+		control_points.insert(control_points.begin(), tensor2);
+		control_points.insert(control_points.begin(), tensor1);
+		control_points.insert(control_points.begin(), newPoint);
+	}
+	else {
+		newPoint = control_points.back() + float3(10, 0, 0);
+		tensor1 = control_points.back() + float3(2.5F, 10, 0);
+		tensor2 = newPoint + float3(-2.5F, 10, 0);
+
+		control_points.push_back(tensor1);
+		control_points.push_back(tensor2);
+		control_points.push_back(newPoint);
+	}
+
+	Refresh();
 }
 
 void Curve::Refresh()
