@@ -187,7 +187,7 @@ void ComponentCollider::OnDisable()
 		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DISABLED);
 }
 
-void ComponentCollider::DrawScene()
+void ComponentCollider::DrawScene(ComponentCamera* camera)
 {
 	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics))
 	{

@@ -98,25 +98,38 @@ void ComponentParticleSystem::PostUpdate()
 		particleSystem->PostUpdate(Time::GetCurrentDT());
 }
 
+void ComponentParticleSystem::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (game_object_attached->selected)
+	{
+		Draw();
+		DebugDraw();
+	}
+}
+
+void ComponentParticleSystem::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	Draw();
+}
+
 void ComponentParticleSystem::DebugDraw()
 {
 	OPTICK_EVENT();
 
-	if (drawEmmitter && App->objects->GetSelectedObjects().back() == game_object_attached)
+	if (drawEmmitter) 
 		particleSystem->DrawEmmitter();
+
 }
 
 void ComponentParticleSystem::Draw()
 {
 	OPTICK_EVENT();
 
-	if (App->objects->printing_scene)
-	{
-		if (App->objects->GetSelectedObjects().back() == game_object_attached)
-			particleSystem->DrawParticles();
-	}
-	else
-		particleSystem->DrawParticles();
+	particleSystem->DrawParticles();
 
 }
 
@@ -1374,12 +1387,15 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 					std::string tmp = std::to_string(i);
 					u64 ID = std::stoull(to_load->GetString(("Mesh.MeshesAttached.MeshID_" + tmp).data()));
 
-					ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
-
-					if (mesh != nullptr)
+					if (ID != 0)
 					{
-						tmp_meshes.push_back(mesh);
+						ResourceMesh* mesh = (ResourceMesh*)App->resources->GetResourceWithID(ID);
+						if (mesh != nullptr)
+						{
+							tmp_meshes.push_back(mesh);
+						}
 					}
+
 				}
 				particleSystem->SetMeshes(tmp_meshes);
 			}

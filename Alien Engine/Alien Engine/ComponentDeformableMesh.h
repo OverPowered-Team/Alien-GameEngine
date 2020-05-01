@@ -24,6 +24,9 @@ protected:
 	void AttachBone(ComponentTransform* bone_transform);
 	void UpdateBonesMatrix();
 
+	void DrawScene(ComponentCamera* camera) override; 
+	void DrawGame(ComponentCamera* camera) override; 
+
 	void DrawPolygon(ComponentCamera* camera) override;
 	void PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position) override;
 
