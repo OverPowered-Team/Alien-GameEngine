@@ -15,13 +15,20 @@ public:
 
 	const std::vector<float3>& GetControlPoints();
 
+	void SetControlPointAt(int index, const float3& value);
+
+	void SetDetail(int detail);
+
 private:
 
-	float3 bezier(float t, const float3& p0, const float3& p1, const float3& p2, const float3& p3);
+	void Refresh();
+
+	void CalculateCurvePoints();
+	float3 CalculateBezier(float t, const float3& p0, const float3& p1, const float3& p2, const float3& p3);
 
 public:
 
-	float detail = 0.01F;
+	int detail = 50;
 
 private:
 

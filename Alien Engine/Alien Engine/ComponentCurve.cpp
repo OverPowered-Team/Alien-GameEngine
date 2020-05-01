@@ -39,6 +39,17 @@ bool ComponentCurve::DrawInspector()
 	{
 		RightClickMenu("Curve");
 
+		if (ImGui::DragInt("Detail", &curve.detail)) {
+			curve.SetDetail(curve.detail);
+		}
+
+		for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
+			ImGui::PushID(323123 + i);
+			if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i].ptr())) {
+				curve.SetControlPointAt(i, curve.GetControlPoints()[i]);
+			}
+			ImGui::PopID();
+		}
 
 	}
 	else {
@@ -62,19 +73,30 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 
 void ComponentCurve::DrawScene()
 {
+	glDisable(GL_LIGHTING);
 	glPointSize(9);
 	glBegin(GL_POINTS);
 	for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
+		if (i % 3 == 0) {
+			glColor3f(0, 1, 0);
+		}
+		else {
+			glColor3f(1, 0, 0);
+		}
 		glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
 	}
 	glEnd();
 
+	glColor3f(0, 0, 1);
 	glBegin(GL_LINE_STRIP);
-	for (float f = 0.0F; f <= 1; f += 0.001) {
-		auto res = curve.ValueAt(f);
+	for (int f = 0; f <= curve.detail; ++f) {
+		auto res = curve.ValueAt(f/(float)curve.detail);
 		glVertex3f(res[0], res[1], res[2]);
 	}
+	//auto res = curve.ValueAt(1);
+	//glVertex3f(res[0], res[1], res[2]);
 	glEnd();
+	glEnable(GL_LIGHTING);
 }
 
 Curve::Curve(const float3& begin, const float3& end)
@@ -84,9 +106,7 @@ Curve::Curve(const float3& begin, const float3& end)
 	control_points.push_back(end + float3(-5, 10, 0));
 	control_points.push_back(end);
 
-	for (float t = 0; t < 1; t += detail) {
-		curve_points.push_back(bezier(t, control_points[0], control_points[1], control_points[2], control_points[3]));
-	}
+	CalculateCurvePoints();
 }
 
 float3 Curve::ValueAt(float at)
@@ -104,7 +124,35 @@ const std::vector<float3>& Curve::GetControlPoints()
 	return control_points;
 }
 
-float3 Curve::bezier(float t, const float3& p0, const float3& p1, const float3& p2, const float3& p3)
+void Curve::SetControlPointAt(int index, const float3& value)
+{
+	control_points[index] = value;
+	Refresh();
+}
+
+void Curve::SetDetail(int detail)
+{
+	this->detail = detail;
+	Refresh();
+}
+
+void Curve::Refresh()
+{
+	curve_points.clear();
+
+	CalculateCurvePoints();
+}
+
+void Curve::CalculateCurvePoints()
+{
+	for (uint i = 0; i < control_points.size(); i += 4) {
+		for (int f = 0; f <= detail; ++f) {
+			curve_points.push_back(CalculateBezier(f/(float)detail, control_points[i], control_points[i + 1], control_points[i + 2], control_points[i + 3]));
+		}
+	}
+}
+
+float3 Curve::CalculateBezier(float t, const float3& p0, const float3& p1, const float3& p2, const float3& p3)
 {
 	float3 res = float3::zero();
 	res[0] = pow((1 - t), 3) * p0[0] + 3 * t * pow((1 - t), 2) * p1[0] + 3 * pow(t, 2) * (1 - t) * p2[0] + pow(t, 3) * p3[0];
