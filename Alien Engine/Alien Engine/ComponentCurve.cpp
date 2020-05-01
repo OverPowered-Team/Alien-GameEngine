@@ -38,19 +38,73 @@ bool ComponentCurve::DrawInspector()
 	if (ImGui::CollapsingHeader("Curve", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		RightClickMenu("Curve");
-
+		ImGui::Spacing();
 		if (ImGui::DragInt("Detail", &curve.detail)) {
 			curve.SetDetail(curve.detail);
 		}
+		ImGui::Spacing();
 
-		for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
-			ImGui::PushID(323123 + i);
-			if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i].ptr())) {
-				curve.SetControlPointAt(i, curve.GetControlPoints()[i]);
-			}
-			ImGui::PopID();
+		if (ImGui::Button("Add Segment in the beggining")) {
+			curve.AddSegment(true);
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Add Segment in the end")) {
+			curve.AddSegment(false);
+		}
+		
+		ImGui::Spacing();
+		if (ImGui::TreeNodeEx("Segments", ImGuiTreeNodeFlags_SpanAvailWidth)) {
+			for (uint i = 0; i < curve.GetControlPoints().size() - 1; i += 3) {
+				if (ImGui::TreeNodeEx(std::string("Segment " + std::to_string(int(i / (float)4) + 1)).data(), ImGuiTreeNodeFlags_SpanAvailWidth)) {
+					ImGui::Spacing();
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("Start Point");
+					ImGui::SameLine(140);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(323123 + i);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i].ptr())) {
+						curve.SetControlPointAt(i, curve.GetControlPoints()[i]);
+					}
+					ImGui::PopID();
 
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("End Point");
+					ImGui::SameLine(140);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(323123 + i + 3);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 3].ptr())) {
+						curve.SetControlPointAt(i + 3, curve.GetControlPoints()[i + 3]);
+					}
+					ImGui::PopID();
+
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("Tensor 1");
+					ImGui::SameLine(140);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(323123 + i + 1);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 1].ptr())) {
+						curve.SetControlPointAt(i + 1, curve.GetControlPoints()[i + 1]);
+					}
+					ImGui::PopID();
+
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("Tensor 2");
+					ImGui::SameLine(140);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(323123 + i + 2);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 2].ptr())) {
+						curve.SetControlPointAt(i + 2, curve.GetControlPoints()[i + 2]);
+					}
+					ImGui::PopID();
+
+					ImGui::TreePop();
+				}
+			}
+			ImGui::TreePop();
+		}
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
 	else {
 		RightClickMenu("Curve");
@@ -90,12 +144,11 @@ void ComponentCurve::DrawScene()
 	glColor3f(0, 0, 1);
 	glBegin(GL_LINE_STRIP);
 	for (int f = 0; f <= curve.detail; ++f) {
-		auto res = curve.ValueAt(f/(float)curve.detail);
+		float3 res = curve.ValueAt(f/(float)curve.detail);
 		glVertex3f(res[0], res[1], res[2]);
 	}
-	//auto res = curve.ValueAt(1);
-	//glVertex3f(res[0], res[1], res[2]);
 	glEnd();
+
 	glEnable(GL_LIGHTING);
 }
 
@@ -136,6 +189,11 @@ void Curve::SetDetail(int detail)
 	Refresh();
 }
 
+void Curve::AddSegment(bool begin)
+{
+
+}
+
 void Curve::Refresh()
 {
 	curve_points.clear();
@@ -145,7 +203,7 @@ void Curve::Refresh()
 
 void Curve::CalculateCurvePoints()
 {
-	for (uint i = 0; i < control_points.size(); i += 4) {
+	for (uint i = 0; i < control_points.size() - 1; i += 3) {
 		for (int f = 0; f <= detail; ++f) {
 			curve_points.push_back(CalculateBezier(f/(float)detail, control_points[i], control_points[i + 1], control_points[i + 2], control_points[i + 3]));
 		}

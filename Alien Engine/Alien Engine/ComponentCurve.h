@@ -19,6 +19,8 @@ public:
 
 	void SetDetail(int detail);
 
+	void AddSegment(bool begin);
+
 private:
 
 	void Refresh();
