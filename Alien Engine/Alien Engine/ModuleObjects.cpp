@@ -426,6 +426,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		std::vector<std::pair<float, GameObject*>> to_draw;
 		std::vector<std::pair<float, GameObject*>> to_draw_ui;
+		std::vector<std::pair<float, GameObject*>> ui_2d;
+		std::vector<std::pair<float, GameObject*>> ui_world;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
@@ -486,13 +488,29 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		OnPostRender(game_viewport->GetCamera());
 
-		std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-		std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-		for (; it_ui != to_draw_ui.end(); ++it_ui) {
-			if ((*it_ui).second != nullptr) {
-				ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+		UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
+		ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
+
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+		for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+			if ((*it_ui_2d).second != nullptr) {
+				ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 				if (ui != nullptr && ui->IsEnabled())
 				{
+					ui->Draw(!printing_scene);
+
+				}
+			}
+		}
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+		for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+			if ((*it_ui_world).second != nullptr) {
+				ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+				if (ui != nullptr && ui->IsEnabled())
+				{
+					ui->Orientate(mainCamera);
+					ui->Rotate();
 					ui->Draw(!printing_scene);
 
 				}
@@ -1629,11 +1647,13 @@ void ModuleObjects::HotReload()
 
 bool ModuleObjects::SortGameObjectToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from near to far
 	return first.first > last.first;
 }
 
 bool ModuleObjects::SortUIToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from far to near
 	return first.first < last.first;
 }
 
@@ -2106,13 +2126,18 @@ void ModuleObjects::UIOrdering(std::vector<std::pair<float, GameObject*>>* curre
 		}
 	}
 
+#ifndef GAME_VERSION
 	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortUIToDraw);
 	if (!printing_scene) {
 		std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
 	}
 
 	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+#else
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
 
+#endif
 
 }
 
