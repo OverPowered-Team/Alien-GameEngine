@@ -47,6 +47,7 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "GBuffer.h"
 #include "glm/glm/glm.hpp"
 #include "glm/glm/gtc/type_ptr.hpp"
 #include "glm/glm/gtc/matrix_transform.hpp"
@@ -107,6 +108,7 @@ bool ModuleObjects::Start()
 	game_viewport = new Viewport(nullptr);
 
 	wfbos = new WaterFrameBuffers();
+	gFrameBuffer = new GBuffer();
 
 #ifndef GAME_VERSION
 	GameObject* scene_root = new GameObject();

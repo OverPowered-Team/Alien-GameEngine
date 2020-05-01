@@ -322,7 +322,7 @@ public:
 	std::string sceneNameToChange;
 
 	WaterFrameBuffers* wfbos = nullptr;
-
+	GBuffer* gFrameBuffer = nullptr;
 private:
 	// root
 	GameObject* base_game_object = nullptr;
