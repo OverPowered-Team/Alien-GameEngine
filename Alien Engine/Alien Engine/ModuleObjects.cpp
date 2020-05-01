@@ -70,6 +70,7 @@ ModuleObjects::~ModuleObjects()
 	DeleteReturns();
 
 	RELEASE(wfbos);
+	RELEASE(gFrameBuffer);
 }
 
 bool ModuleObjects::Init()

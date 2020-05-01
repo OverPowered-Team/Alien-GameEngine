@@ -29,6 +29,7 @@ class PointLightProperties;
 class SpotLightProperties;
 class ComponentUI;
 
+class GBuffer;
 class Viewport;
 struct AlienEvent;
 

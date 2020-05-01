@@ -1619,6 +1619,7 @@
     <ClCompile Include="ComponentPhysics.cpp">
       <Filter>Components\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="GBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">

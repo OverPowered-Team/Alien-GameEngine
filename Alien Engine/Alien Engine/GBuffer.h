@@ -13,6 +13,9 @@ public:
 	GBuffer();
 	~GBuffer();
 
+	void GenerateGBuffer();
+	void DestroyGBuffer(); 
+
 	void BeginGBuffer(); 
 	void EndGBuffer();
 

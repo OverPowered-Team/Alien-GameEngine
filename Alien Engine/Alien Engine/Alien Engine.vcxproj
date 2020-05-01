@@ -610,6 +610,7 @@
     <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="FileNode.cpp" />
+    <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="Gizmos.cpp" />
     <ClCompile Include="gpudetect\DeviceId.cpp" />
     <ClCompile Include="ImGuizmos\ImCurveEdit.cpp" />
