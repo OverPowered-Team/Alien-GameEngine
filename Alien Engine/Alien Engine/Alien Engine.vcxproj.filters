@@ -124,9 +124,6 @@
     <Filter Include="Components\Physics\Controllers">
       <UniqueIdentifier>{1867fcbc-9bd2-48f6-bd5b-2dc3dba4f928}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tools\Bezier">
-      <UniqueIdentifier>{14ae7ae6-f310-43c9-bb9c-0acc657f48c3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -680,12 +677,6 @@
     </ClInclude>
     <ClInclude Include="ComponentCurve.h">
       <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Bezier\tinysplinecxx.h">
-      <Filter>Tools\Bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="Bezier\tinyspline.h">
-      <Filter>Tools\Bezier</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1624,12 +1615,6 @@
     </ClCompile>
     <ClCompile Include="ComponentCurve.cpp">
       <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Bezier\tinysplinecxx.cxx">
-      <Filter>Tools\Bezier</Filter>
-    </ClCompile>
-    <ClCompile Include="Bezier\tinyspline.c">
-      <Filter>Tools\Bezier</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

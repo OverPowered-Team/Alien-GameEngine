@@ -334,8 +334,6 @@
     <ClInclude Include="AlienEngine.h" />
     <ClInclude Include="AnimTween.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Bezier\tinyspline.h" />
-    <ClInclude Include="Bezier\tinysplinecxx.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionLayers.h" />
@@ -571,8 +569,6 @@
     <ClCompile Include="AlienEngine.cpp" />
     <ClCompile Include="AnimTween.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Bezier\tinyspline.c" />
-    <ClCompile Include="Bezier\tinysplinecxx.cxx" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionLayers.cpp" />
