@@ -20,6 +20,8 @@ public:
 	void SetDetail(int detail);
 
 	void AddSegment(bool begin);
+
+	void InsertControlPoint(int index);
 	void RemoveControlPoint(int index);
 
 private:

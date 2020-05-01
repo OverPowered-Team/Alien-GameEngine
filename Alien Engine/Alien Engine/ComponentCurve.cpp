@@ -134,7 +134,7 @@ bool ComponentCurve::DrawInspector()
 					ImGui::PushID(32 + i);
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 91);
 					if (ImGui::Button("Add Control Point", { width + 8, 0 })) {
-
+						curve.InsertControlPoint(i);
 					}
 					ImGui::PopID();
 
@@ -255,6 +255,25 @@ void Curve::AddSegment(bool begin)
 		control_points.push_back(tensor2);
 		control_points.push_back(newPoint);
 	}
+
+	Refresh();
+}
+
+void Curve::InsertControlPoint(int index)
+{
+	float3 begin = control_points[index];
+	float3 end = control_points[index + 3];
+
+	float3 mid = (begin + end) * 0.5F;
+	float3 tensor1 = mid + float3(-5, 10, 0);
+	float3 tensor2 = mid + float3(5, 10, 0);
+
+	std::vector<float3> points;
+	points.push_back(tensor1);
+	points.push_back(mid);
+	points.push_back(tensor2);
+
+	control_points.insert(control_points.begin() + index + 2, points.begin(), points.end());
 
 	Refresh();
 }
