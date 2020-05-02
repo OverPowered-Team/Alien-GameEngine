@@ -188,7 +188,6 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 }
 
 // TODO: mouse picking control points
-// TODO: normals & render normals
 
 void ComponentCurve::DrawScene()
 {
@@ -259,8 +258,8 @@ Curve::Curve(const float3& begin, const float3& end)
 	control_points.push_back(end + float3(-5, 10, 0));
 	control_points.push_back(end);
 
-	control_points_normals.push_back(float3(-1, 0, 1));
-	control_points_normals.push_back(float3(1, 0, -1));
+	control_points_normals.push_back(float3::unitY());
+	control_points_normals.push_back(float3::unitY());
 
 	CalculateCurvePoints();
 }
@@ -327,6 +326,8 @@ void Curve::AddSegment(bool begin)
 		control_points.insert(control_points.begin(), tensor2);
 		control_points.insert(control_points.begin(), tensor1);
 		control_points.insert(control_points.begin(), newPoint);
+
+		control_points_normals.insert(control_points_normals.begin(), float3::unitY());
 	}
 	else {
 		newPoint = control_points.back() + float3(10, 0, 0);
@@ -336,6 +337,8 @@ void Curve::AddSegment(bool begin)
 		control_points.push_back(tensor1);
 		control_points.push_back(tensor2);
 		control_points.push_back(newPoint);
+
+		control_points_normals.push_back(float3::unitY());
 	}
 
 	Refresh();
@@ -355,6 +358,8 @@ void Curve::InsertControlPoint(int index)
 	points.push_back(mid);
 	points.push_back(tensor2);
 
+	control_points_normals.insert(control_points_normals.begin() + (index/3) + 1, -float3::unitY());
+
 	control_points.insert(control_points.begin() + index + 2, points.begin(), points.end());
 
 	Refresh();
@@ -366,13 +371,19 @@ void Curve::RemoveControlPoint(int index)
 		control_points.erase(control_points.begin());
 		control_points.erase(control_points.begin());
 		control_points.erase(control_points.begin());
+
+		control_points_normals.erase(control_points_normals.begin());
 	}
 	else if (index == control_points.size() - 1) {
 		control_points.pop_back();
 		control_points.pop_back();
 		control_points.pop_back();
+
+		control_points_normals.pop_back();
 	}
 	else {
+		control_points_normals.erase(control_points_normals.begin() + (index / 3));
+
 		control_points.erase(control_points.begin() + --index);
 		control_points.erase(control_points.begin() + index);
 		control_points.erase(control_points.begin() + index);

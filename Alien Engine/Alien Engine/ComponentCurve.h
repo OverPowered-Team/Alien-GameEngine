@@ -36,7 +36,7 @@ private:
 
 public:
 
-	int detail = 10;
+	int detail = 50;
 
 private:
 
