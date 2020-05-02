@@ -167,6 +167,10 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 {
 }
 
+// TODO: mouse picking control points
+// TODO: render tangents/tensors
+// TODO: normals & render normals
+
 void ComponentCurve::DrawScene()
 {
 	glDisable(GL_LIGHTING);
@@ -190,6 +194,25 @@ void ComponentCurve::DrawScene()
 		glVertex3f(res[0], res[1], res[2]);
 	}
 	glEnd();
+	
+	glColor3f(1, 1, 0);
+	for (uint i = 0; i < curve.GetControlPoints().size(); i += 3) {
+		glBegin(GL_LINE_STRIP);
+		if (i == 0) {
+			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+			glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
+		}
+		else if (i == curve.GetControlPoints().size() - 1) {
+			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+			glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
+		}
+		else {
+			glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
+			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+			glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
+		}
+		glEnd();
+	}
 
 	glEnable(GL_LIGHTING);
 }
