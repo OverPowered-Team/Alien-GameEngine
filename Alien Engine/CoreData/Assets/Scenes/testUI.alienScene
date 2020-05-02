@@ -1,15 +1,15 @@
 {
     "Scene": {
-        "Name": "player_basic",
+        "Name": "testUI",
         "GameObjects": [
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "11661558164342143329",
-                "ParentID": "12931508060670575766",
+                "ID": "2894477380479381184",
+                "ParentID": "7203993891004798146",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -20,14 +20,14 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            4.403954029083252,
-                            -19.648262023925781
+                            0,
+                            32.364459991455078
                         ],
                         "Rotation": [
-                            0.19758452475070953,
                             0,
+                            1,
                             0,
-                            0.9802858829498291
+                            -4.3711388286737929e-08
                         ],
                         "Scale": [
                             1,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6890025458558187350"
+                        "ID": "16878416981953007242"
                     },
                     {
                         "Enabled": true,
@@ -51,9 +51,9 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "10475761051264739894",
+                        "ID": "15097396106171030813",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": true,
+                        "IsSelectedCamera": false,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -64,20 +64,20 @@
                         "Fog": false,
                         "Density": 0.035000000149011612,
                         "Gradient": 1.3500000238418579,
-                        "Skybox_PositiveX": "Library\/Textures\/16365362325777703218.dds",
-                        "Skybox_NegativeX": "Library\/Textures\/6647353476053033927.dds",
-                        "Skybox_PositiveY": "Library\/Textures\/13945118401434491814.dds",
-                        "Skybox_NegativeY": "Library\/Textures\/13294645959885894553.dds",
-                        "Skybox_PositiveZ": "Library\/Textures\/882162789730207050.dds",
-                        "Skybox_NegativeZ": "Library\/Textures\/13059454142476507694.dds"
+                        "Skybox_PositiveX": "Library\/Textures\/17871350930873594524.dds",
+                        "Skybox_NegativeX": "Library\/Textures\/14059935274421270400.dds",
+                        "Skybox_PositiveY": "Library\/Textures\/5118434943308934301.dds",
+                        "Skybox_NegativeY": "Library\/Textures\/14265519993990640998.dds",
+                        "Skybox_PositiveZ": "Library\/Textures\/3680900417465944678.dds",
+                        "Skybox_NegativeZ": "Library\/Textures\/16155666848095087743.dds"
                     }
                 ]
             },
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "10822368277736632330",
-                "ParentID": "12931508060670575766",
+                "ID": "15066924792756154670",
+                "ParentID": "7203993891004798146",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -106,12 +106,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "592442516178822473"
+                        "ID": "13757129883596918784"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "11578974737453768506",
+                        "ID": "10595755464459862213",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -138,98 +138,110 @@
                             1,
                             1,
                             1
+                        ],
+                        "CastShadows": false
+                    }
+                ]
+            },
+            {
+                "Name": "Canvas",
+                "FamilyNumber": 1,
+                "ID": "10225554509901504100",
+                "ParentID": "7203993891004798146",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16999446721953042570"
+                    },
+                    {
+                        "Enabled": true,
+                        "isWorld": true,
+                        "Type": 19,
+                        "BBType": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Image",
+                "FamilyNumber": 2,
+                "ID": "10256351639761542262",
+                "ParentID": "10225554509901504100",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            4.3711388286737929e-08,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            11.999970436096191,
+                            9.5,
+                            0.99999910593032837
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12773310230296863614"
+                    },
+                    {
+                        "Width": 10,
+                        "Height": 10,
+                        "Enabled": true,
+                        "Type": 30,
+                        "UIType": 20,
+                        "TextureID": "0",
+                        "Color": [
+                            0.89215683937072754,
+                            0.096213012933731079,
+                            0.096213012933731079,
+                            0.72200000286102295
                         ]
                     }
                 ]
             },
             {
-                "Name": "floor",
+                "Name": "Cube",
                 "FamilyNumber": 1,
-                "ID": "17860849587504220164",
-                "ParentID": "12931508060670575766",
-                "Enabled": true,
-                "ParentEnabled": true,
-                "Selected": false,
-                "ParentSelected": false,
-                "IsStatic": false,
-                "IsPrefab": false,
-                "PrefabLocked": false,
-                "Tag": "UnTagged",
-                "Components": [
-                    {
-                        "Type": 0,
-                        "Position": [
-                            0,
-                            5.1365089416503906,
-                            0
-                        ],
-                        "Rotation": [
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "Scale": [
-                            1,
-                            1,
-                            1
-                        ],
-                        "ScaleNegative": false,
-                        "ID": "1716827788637887364"
-                    },
-                    {
-                        "Type": 1,
-                        "ViewMesh": false,
-                        "Wireframe": false,
-                        "ViewVertexNormals": false,
-                        "ViewFaceNormals": false,
-                        "DrawAABB": false,
-                        "DrawOBB": false,
-                        "ID": "15937228121311846775",
-                        "HasMesh": true,
-                        "IsPrimitive": true,
-                        "PrimType": 0,
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 2,
-                        "ID": "3285724225419102974",
-                        "HasMaterial": true,
-                        "MaterialID": "0",
-                        "Enabled": true
-                    },
-                    {
-                        "Type": 13,
-                        "SlopeLimit": 45,
-                        "StepOffset": 0.5,
-                        "SkinWidth": 0.10000000149011612,
-                        "MinMoveDistance": 0.0010000000474974513,
-                        "Center": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "CharacterRadius": 0.5,
-                        "CharacterHeight": 2,
-                        "Gravity": 20,
-                        "ForceGravity": true,
-                        "ForceMove": false,
-                        "CollisionLayer": "Default"
-                    },
-                    {
-                        "Type": 29,
-                        "ID": "13994866771185248447",
-                        "ResourceID": "6008583145087647197",
-                        "DataName": "player_example",
-                        "HasInspector": false
-                    }
-                ]
-            },
-            {
-                "Name": "floor",
-                "FamilyNumber": 1,
-                "ID": "3027612535769598747",
-                "ParentID": "12931508060670575766",
+                "ID": "9823288171899816757",
+                "ParentID": "7203993891004798146",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -244,21 +256,21 @@
                         "Position": [
                             0,
                             0,
-                            0
+                            -11.884180068969727
                         ],
                         "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
+                            -0.20752657949924469,
+                            0.27728307247161865,
+                            -0.061472177505493164,
+                            0.93609189987182617
                         ],
                         "Scale": [
-                            16,
-                            1,
-                            18.5
+                            8,
+                            36.5,
+                            5.5
                         ],
                         "ScaleNegative": false,
-                        "ID": "2343444824400800821"
+                        "ID": "11130085230183116391"
                     },
                     {
                         "Type": 1,
@@ -268,7 +280,7 @@
                         "ViewFaceNormals": false,
                         "DrawAABB": false,
                         "DrawOBB": false,
-                        "ID": "4718908025918391079",
+                        "ID": "17852045090411170741",
                         "HasMesh": true,
                         "IsPrimitive": true,
                         "PrimType": 0,
@@ -276,7 +288,7 @@
                     },
                     {
                         "Type": 2,
-                        "ID": "2616103150656284284",
+                        "ID": "4382750180846058091",
                         "HasMaterial": true,
                         "MaterialID": "0",
                         "Enabled": true
@@ -295,7 +307,7 @@
                             0
                         ],
                         "IsTrigger": false,
-                        "Bouncing": 0,
+                        "Bouncing": 0.5,
                         "StaticFriction": 0.5,
                         "DynamicFriction": 0.5,
                         "CollisionLayer": "Default",
