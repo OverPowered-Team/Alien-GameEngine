@@ -60,7 +60,7 @@ bool ComponentCurve::DrawInspector()
 					ImGui::Spacing();
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 					ImGui::Text("Start Point");
-					ImGui::SameLine(140);
+					ImGui::SameLine(150);
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 					ImGui::PushID(323123 + i);
 					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i].ptr())) {
@@ -70,7 +70,7 @@ bool ComponentCurve::DrawInspector()
 
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 					ImGui::Text("End Point");
-					ImGui::SameLine(140);
+					ImGui::SameLine(150);
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 					ImGui::PushID(323123 + i + 3);
 					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 3].ptr())) {
@@ -80,7 +80,7 @@ bool ComponentCurve::DrawInspector()
 
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 					ImGui::Text("Tensor 1");
-					ImGui::SameLine(140);
+					ImGui::SameLine(150);
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 					ImGui::PushID(323123 + i + 1);
 					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 1].ptr())) {
@@ -90,23 +90,43 @@ bool ComponentCurve::DrawInspector()
 
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 					ImGui::Text("Tensor 2");
-					ImGui::SameLine(140);
+					ImGui::SameLine(150);
 					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 					ImGui::PushID(323123 + i + 2);
 					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPoints()[i + 2].ptr())) {
 						curve.SetControlPointAt(i + 2, curve.GetControlPoints()[i + 2]);
 					}
 					ImGui::PopID();
+
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("Normals Start");
+					ImGui::SameLine(150);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(8767 + i + 2);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPointsNormals()[i / 3].ptr(), 0.1F, -1, 1)) {
+						curve.SetControlPointNormalAt(i / 3, curve.GetControlPointsNormals()[i / 3]);
+					}
+					ImGui::PopID();
+
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+					ImGui::Text("Normals End");
+					ImGui::SameLine(150);
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+					ImGui::PushID(6665 + i + 2);
+					if (ImGui::DragFloat3("##FF", (float*)curve.GetControlPointsNormals()[(i / 3) + 1].ptr(), 0.1F, -1, 1)) {
+						curve.SetControlPointNormalAt((i / 3) + 1, curve.GetControlPointsNormals()[(i / 3) + 1]);
+					}
+					ImGui::PopID();
+
 					float width = ImGui::GetItemRectSize().x - 8;
 					ImGui::Spacing();
-					
 
 					if (curve.GetControlPoints().size() == 4) {
 						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 					}
 
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 91);
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 101);
 					ImGui::PushID(989 + i);
 					if (ImGui::Button("Remove Begin", { width * 0.5F, 0 })) {
 						curve.RemoveControlPoint(i);
@@ -132,7 +152,7 @@ bool ComponentCurve::DrawInspector()
 					}
 					ImGui::Spacing();
 					ImGui::PushID(32 + i);
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 91);
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 101);
 					if (ImGui::Button("Add Control Point", { width + 8, 0 })) {
 						curve.InsertControlPoint(i);
 					}
@@ -168,12 +188,13 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 }
 
 // TODO: mouse picking control points
-// TODO: render tangents/tensors
 // TODO: normals & render normals
 
 void ComponentCurve::DrawScene()
 {
 	glDisable(GL_LIGHTING);
+
+	// Draw Control Points
 	glPointSize(9);
 	glBegin(GL_POINTS);
 	for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
@@ -186,7 +207,9 @@ void ComponentCurve::DrawScene()
 		glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
 	}
 	glEnd();
+	glPointSize(1);
 
+	// Draw Curve
 	glColor3f(0, 0, 1);
 	glBegin(GL_LINE_STRIP);
 	for (int f = 0; f <= curve.detail; ++f) {
@@ -195,6 +218,7 @@ void ComponentCurve::DrawScene()
 	}
 	glEnd();
 	
+	// Draw Tensors
 	glColor3f(1, 1, 0);
 	for (uint i = 0; i < curve.GetControlPoints().size(); i += 3) {
 		glBegin(GL_LINE_STRIP);
@@ -214,6 +238,17 @@ void ComponentCurve::DrawScene()
 		glEnd();
 	}
 
+	// Draw Normals
+	glColor3f(1, 0.5F, 1);
+	glBegin(GL_LINES);
+	for (int f = 0; f <= curve.detail; ++f) {
+		float3 point = curve.ValueAt(f / (float)curve.detail);
+		float3 normal = curve.NormalAt(f / (float)curve.detail);
+		glVertex3f(point[0], point[1], point[2]);
+		glVertex3f(point[0] + normal[0], point[1] + normal[1], point[2] + normal[2]);
+	}
+	glEnd();
+
 	glEnable(GL_LIGHTING);
 }
 
@@ -223,6 +258,9 @@ Curve::Curve(const float3& begin, const float3& end)
 	control_points.push_back(begin + float3(5,10,0));
 	control_points.push_back(end + float3(-5, 10, 0));
 	control_points.push_back(end);
+
+	control_points_normals.push_back(float3(-1, 0, 1));
+	control_points_normals.push_back(float3(1, 0, -1));
 
 	CalculateCurvePoints();
 }
@@ -237,14 +275,35 @@ float3 Curve::ValueAt(float at)
 	return curve_points[index];
 }
 
+float3 Curve::NormalAt(float at)
+{
+	if (at < 0 || at > 1 || curve_points.empty() || control_points.empty() || curve_normals.empty()) {
+		return float3::zero();
+	}
+
+	uint index = Maths::Map(at, 0, 1, 0, curve_normals.size() - 1);
+	return curve_normals[index];
+}
+
 const std::vector<float3>& Curve::GetControlPoints()
 {
 	return control_points;
 }
 
+const std::vector<float3>& Curve::GetControlPointsNormals()
+{
+	return control_points_normals;
+}
+
 void Curve::SetControlPointAt(int index, const float3& value)
 {
 	control_points[index] = value;
+	Refresh();
+}
+
+void Curve::SetControlPointNormalAt(int index, const float3& value)
+{
+	control_points_normals[index] = value;
 	Refresh();
 }
 
@@ -325,6 +384,7 @@ void Curve::RemoveControlPoint(int index)
 void Curve::Refresh()
 {
 	curve_points.clear();
+	curve_normals.clear();
 
 	CalculateCurvePoints();
 }
@@ -334,6 +394,7 @@ void Curve::CalculateCurvePoints()
 	for (uint i = 0; i < control_points.size() - 1; i += 3) {
 		for (int f = 0; f <= detail; ++f) {
 			curve_points.push_back(CalculateBezier(f/(float)detail, control_points[i], control_points[i + 1], control_points[i + 2], control_points[i + 3]));
+			curve_normals.push_back(Quat::SlerpVector(control_points_normals[i/3].Normalized(), control_points_normals[(i/3)+1].Normalized(), f / (float)detail));
 		}
 	}
 }

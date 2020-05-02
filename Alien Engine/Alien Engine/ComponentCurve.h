@@ -12,10 +12,13 @@ public:
 
 	// 0 - 1
 	float3 ValueAt(float at);
+	float3 NormalAt(float at);
 
 	const std::vector<float3>& GetControlPoints();
+	const std::vector<float3>& GetControlPointsNormals();
 
 	void SetControlPointAt(int index, const float3& value);
+	void SetControlPointNormalAt(int index, const float3& value);
 
 	void SetDetail(int detail);
 
@@ -33,11 +36,13 @@ private:
 
 public:
 
-	int detail = 1000;
+	int detail = 10;
 
 private:
 
 	std::vector<float3> control_points;
+	std::vector<float3> control_points_normals;
+	std::vector<float3> curve_normals;
 	std::vector<float3> curve_points;
 
 };
@@ -62,5 +67,7 @@ private:
 public:
 
 	Curve curve;
+
+	bool renderTensors = true;
 
 };
