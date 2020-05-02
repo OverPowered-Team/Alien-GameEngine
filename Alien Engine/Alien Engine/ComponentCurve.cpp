@@ -358,7 +358,7 @@ void Curve::InsertControlPoint(int index)
 	points.push_back(mid);
 	points.push_back(tensor2);
 
-	control_points_normals.insert(control_points_normals.begin() + (index/3) + 1, -float3::unitY());
+	control_points_normals.insert(control_points_normals.begin() + (index/3) + 1, float3::unitY());
 
 	control_points.insert(control_points.begin() + index + 2, points.begin(), points.end());
 
