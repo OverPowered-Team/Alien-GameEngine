@@ -16,8 +16,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	owner->sourceFactor = GL_SRC_ALPHA;
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
 	currentFrame = owner->currentFrame;
-
-
+	
 	if (owner->material != nullptr) 
 	{
 		p_material = new ResourceMaterial();
@@ -165,7 +164,7 @@ void Particle::Draw()
 {
 	
 	// -------- ATTITUDE -------- //
-	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size * (particleInfo.lengthScale + particleInfo.velocityScale), particleInfo.size));
+	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size3D.x, particleInfo.size3D.y * (particleInfo.lengthScale + particleInfo.velocityScale), particleInfo.size3D.z));
 	float4x4 particleGlobal = particleLocal;
 
 	if (!particleInfo.globalTransform)
@@ -180,7 +179,7 @@ void Particle::Draw()
 
 
 	// ----- BLENDING COLOR ----- //
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 
 	switch (owner->funcBlendSource)
 	{
@@ -219,7 +218,7 @@ void Particle::Draw()
 
 	
 	//glBlendFunc(owner->sourceFactor, owner->destinationFactor);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	switch (owner->eqBlend)
 	{
@@ -309,7 +308,7 @@ void Particle::Draw()
 
 	
 	// ---- DISABLE STUFF --- //
-	//glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 	//glDisable(GL_ALPHA_TEST);
 
 	glBindVertexArray(0);
@@ -353,7 +352,7 @@ void Particle::Orientate(ComponentCamera* camera)
 		break;
 
 	case BillboardType::MESH:
-		particleInfo.rotation = Billboard::AlignToWorld(camera, particleInfo.position);
+		particleInfo.rotation = Quat::identity();
 		break;
 
 	case BillboardType::NONE:
@@ -375,7 +374,7 @@ void Particle::Rotate()
 void Particle::InterpolateValues(float dt)
 {
 
-	rateToLerp = 1.f / particleInfo.maxLifeTime;
+	rateToLerp = 1.f / particleInfo.changedTime;
 	if (t <= 1)
 	{
 		t += rateToLerp * dt;
@@ -385,9 +384,16 @@ void Particle::InterpolateValues(float dt)
 		else
 			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 
-		particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
-		//particleInfo.rotation = Slerp(particleInfo.rotation.Mul(Quat::RotateZ(startInfo.angle)), particleInfo.rotation.Mul(Quat::RotateZ(endInfo.angle)),t);
+		//particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
+		particleInfo.size3D = float3::Lerp(startInfo.size3D, endInfo.size3D, t);
 		particleInfo.force = float3::Lerp(startInfo.force, endInfo.force, t);
+		
+		if (particleInfo.speed == 0)
+			return;
+
+		particleInfo.velocity /= particleInfo.speed;
+		particleInfo.speed = Lerp(startInfo.speed, endInfo.speed, t);
+		particleInfo.velocity *= particleInfo.speed;
 	}
 
 }
