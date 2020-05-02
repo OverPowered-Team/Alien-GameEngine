@@ -4,6 +4,9 @@
 #include "Maths.h"
 #include "glew/include/glew.h"
 #include "imgui/imgui_internal.h"
+#include "Application.h"
+#include "ModuleUI.h"
+#include "PanelScene.h"
 
 #include "Application.h"
 #include "ModuleInput.h"
@@ -129,6 +132,9 @@ bool ComponentCurve::DrawInspector()
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 101);
 					ImGui::PushID(989 + i);
 					if (ImGui::Button("Remove Begin", { width * 0.5F, 0 })) {
+						App->ui->panel_scene->gizmo_curve = false;
+						App->ui->panel_scene->curve = nullptr;
+						App->ui->panel_scene->curve_index = 0;
 						curve.RemoveControlPoint(i);
 						ImGui::PopID();
 						ImGui::TreePop();
@@ -138,6 +144,9 @@ bool ComponentCurve::DrawInspector()
 					ImGui::SameLine();
 					ImGui::PushID(64343 + i);
 					if (ImGui::Button("Remove End", { width * 0.5F, 0 })) {
+						App->ui->panel_scene->gizmo_curve = false;
+						App->ui->panel_scene->curve = nullptr;
+						App->ui->panel_scene->curve_index = 0;
 						curve.RemoveControlPoint(i + 3);
 						ImGui::PopID();
 						ImGui::TreePop();
@@ -154,6 +163,9 @@ bool ComponentCurve::DrawInspector()
 					ImGui::PushID(32 + i);
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 101);
 					if (ImGui::Button("Add Control Point", { width + 8, 0 })) {
+						App->ui->panel_scene->gizmo_curve = false;
+						App->ui->panel_scene->curve = nullptr;
+						App->ui->panel_scene->curve_index = 0;
 						curve.InsertControlPoint(i);
 					}
 					ImGui::PopID();

@@ -15,6 +15,7 @@
 #include "ComponentCanvas.h"
 #include "ComponentText.h"
 #include "ComponentButton.h"
+#include "ComponentCurve.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
@@ -42,6 +43,8 @@
 
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ModuleUI.h"
+#include "PanelScene.h"
 #include "Alien.h"
 #include "ComponentCapsuleCollider.h"
 #include "ComponentConvexHullCollider.h"
@@ -91,6 +94,9 @@ GameObject::~GameObject()
 {
 	if (std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
 		App->objects->DeselectObject(this);
+		App->ui->panel_scene->gizmo_curve = false;
+		App->ui->panel_scene->curve = nullptr;
+		App->ui->panel_scene->curve_index = 0;
 	}
 
 	App->objects->octree.Remove(this);
@@ -1099,7 +1105,7 @@ AABB GameObject::GetBB()
 		else
 		{
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
-
+			ComponentCurve* curve = GetComponent<ComponentCurve>();
 			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1108,6 +1114,16 @@ AABB GameObject::GetBB()
 				aabb_ui.SetFromCenterAndSize(pos, { scale.x * 2,scale.y * 2,2 });
 				return aabb_ui;
 			}
+			else if (curve != nullptr) {
+				AABB aabb;
+				aabb.SetNegativeInfinity();
+				for (uint i = 0; i < curve->curve.GetControlPoints().size(); ++i) {
+					aabb.maxPoint = float3(max(aabb.maxPoint.x, curve->curve.GetControlPoints()[i].x), max(aabb.maxPoint.y, curve->curve.GetControlPoints()[i].y), max(aabb.maxPoint.z, curve->curve.GetControlPoints()[i].z));
+					aabb.minPoint = float3(min(aabb.minPoint.x, curve->curve.GetControlPoints()[i].x), min(aabb.minPoint.y, curve->curve.GetControlPoints()[i].y), min(aabb.minPoint.z, curve->curve.GetControlPoints()[i].z));
+				}
+				return aabb;
+			}
+			
 
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
