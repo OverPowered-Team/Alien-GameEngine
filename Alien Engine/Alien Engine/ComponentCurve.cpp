@@ -202,14 +202,52 @@ bool ComponentCurve::DrawInspector()
 
 void ComponentCurve::SaveComponent(JSONArraypack* to_save)
 {
+	to_save->SetBoolean("Enabled", enabled);
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetBoolean("Tensors", renderTensors);
+	to_save->SetBoolean("Normals", renderNormals);
+	to_save->SetBoolean("OnSelected", renderOnSelected);
+	to_save->SetNumber("Detail", curve.detail);
+
+	JSONArraypack* controlPoints = to_save->InitNewArray("ControlPoints");
+	for (uint i = 0; i < curve.GetControlPoints().size(); ++i) {
+		controlPoints->SetAnotherNode();
+		controlPoints->SetFloat3("ControlPoint", curve.GetControlPoints()[i]);
+	}
+
+	JSONArraypack* normals = to_save->InitNewArray("NormalsPoints");
+	for (uint i = 0; i < curve.GetControlPointsNormals().size(); ++i) {
+		normals->SetAnotherNode();
+		normals->SetFloat3("NormalPoint", curve.GetControlPointsNormals()[i]);
+	}
 }
 
 void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 {
-}
+	enabled = to_load->GetBoolean("Enabled");
+	renderNormals = to_load->GetBoolean("Normals");
+	renderTensors = to_load->GetBoolean("Tensors");
+	renderOnSelected = to_load->GetBoolean("OnSelected");
 
-// TODO: que la curve vagi amb la pos del GO
-// TODO: save & load
+	curve.detail = to_load->GetNumber("Detail");
+
+	std::vector<float3> control_points;
+	std::vector<float3> control_points_normals;
+
+	JSONArraypack* controlPoints = to_load->GetArray("ControlPoints");
+	for (uint i = 0; i < controlPoints->GetArraySize(); ++i) {
+		control_points.push_back(controlPoints->GetFloat3("ControlPoint"));
+		controlPoints->GetAnotherNode();
+	}
+
+	JSONArraypack* normalPoints = to_load->GetArray("NormalsPoints");
+	for (uint i = 0; i < normalPoints->GetArraySize(); ++i) {
+		control_points_normals.push_back(normalPoints->GetFloat3("NormalPoint"));
+		normalPoints->GetAnotherNode();
+	}
+
+	curve.SetPoints(control_points, control_points_normals);
+}
 
 void ComponentCurve::DrawScene()
 {
@@ -432,6 +470,17 @@ void Curve::UpdatePosition(const float3& new_position)
 	for (auto item = control_points.begin(); item != control_points.end(); ++item) {
 		(*item) += difference;
 	}
+
+	Refresh();
+}
+
+void Curve::SetPoints(const std::vector<float3>& controlPoints, const std::vector<float3>& normalPoints)
+{
+	control_points.clear();
+	control_points_normals.clear();
+
+	control_points.assign(controlPoints.begin(), controlPoints.end());
+	control_points_normals.assign(normalPoints.begin(), normalPoints.end());
 
 	Refresh();
 }

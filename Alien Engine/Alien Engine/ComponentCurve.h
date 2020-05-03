@@ -29,6 +29,8 @@ public:
 
 	void UpdatePosition(const float3& new_position);
 
+	void SetPoints(const std::vector<float3>& controlPoints, const std::vector<float3>& normalPoints);
+
 private:
 
 	void Refresh();
@@ -51,6 +53,7 @@ private:
 };
 
 class __declspec(dllexport) ComponentCurve : public Component {
+	friend class GameObject;
 public:
 
 	ComponentCurve(GameObject* attach);

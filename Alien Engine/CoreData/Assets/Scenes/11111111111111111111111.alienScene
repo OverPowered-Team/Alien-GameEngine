@@ -5,8 +5,8 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "7940819154656027734",
-                "ParentID": "14877230854711861620",
+                "ID": "15106135372054476518",
+                "ParentID": "18098659496002418228",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5880040493114515105"
+                        "ID": "17203521911151948937"
                     },
                     {
                         "Enabled": true,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "1935164243997197186",
+                        "ID": "13199196647788808704",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -76,11 +76,11 @@
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "14036322829362467058",
-                "ParentID": "14877230854711861620",
+                "ID": "7280935830436074242",
+                "ParentID": "18098659496002418228",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -106,12 +106,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "2467936118986850541"
+                        "ID": "7325780281475540691"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "126278220138354476",
+                        "ID": "18344079090349782315",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -138,6 +138,116 @@
                             1,
                             1,
                             1
+                        ]
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 30,
+                        "Tensors": true,
+                        "Normals": true,
+                        "OnSelected": false,
+                        "Detail": 12,
+                        "ControlPoints": [
+                            {
+                                "ControlPoint": [
+                                    -20,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -17.5,
+                                    10,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -127.5,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -10,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -5,
+                                    10,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    5,
+                                    10,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    10,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    12.5,
+                                    10,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    17.5,
+                                    10,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    20,
+                                    0,
+                                    0
+                                ]
+                            }
+                        ],
+                        "NormalsPoints": [
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    1,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    1,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    1,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    1,
+                                    0
+                                ]
+                            }
                         ]
                     }
                 ]

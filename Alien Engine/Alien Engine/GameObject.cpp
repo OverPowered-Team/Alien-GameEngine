@@ -1286,6 +1286,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				listener->LoadComponent(components_to_load);
 				AddComponent(listener);
 				break; }
+			case (int)ComponentType::CURVE: {
+				ComponentCurve* curve = new ComponentCurve(this);
+				curve->LoadComponent(components_to_load);
+				AddComponent(curve);
+				break; }
 			case (int)ComponentType::PARTICLES: {
 				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
 				particleSystem->LoadComponent(components_to_load);
