@@ -209,12 +209,12 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-		/*ImGui::PushID("ScaleBar");
+		ImGui::PushID("ScaleBar");
 		ImGui::Text("Slider Scale:	"); ImGui::SameLine(150); ImGui::SetNextItemWidth(100);
 		ImGui::DragFloat("X", &barScaleX, 0.05F); 
 		ImGui::SameLine(); ImGui::SetNextItemWidth(100);
 		ImGui::DragFloat("Y", &barScaleY, 0.05F);
-		ImGui::PopID();*/
+		ImGui::PopID();
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -229,6 +229,7 @@ bool ComponentBar::DrawInspector()
 
 void ComponentBar::Draw(bool isGame)
 {
+	draw_bar = true;
 	if (canvas == nullptr || canvas_trans == nullptr) {
 		return;
 	}
@@ -237,6 +238,7 @@ void ComponentBar::Draw(bool isGame)
 	
 	DrawTexture(isGame, barTexture);
 
+	draw_bar = false;
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
@@ -281,7 +283,7 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 
 		origin.x = (origin.x - 0.5F) * 2;
 		origin.y = -(-origin.y - 0.5F) * 2;
-		if (tex != texture) {
+		if (draw_bar) {
 			matrix[0][3] = origin.x + offsetX;
 			matrix[1][3] = origin.y - offsetY;
 		}
@@ -291,10 +293,12 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		}
 		matrix[2][3] = 0.0f;
 
-		if (tex!=nullptr && tex == barTexture)
+		if (tex != nullptr && draw_bar)
 		{
+			matrix[0][0] *= barScaleX;
+			matrix[1][1] *= barScaleY;
 			glEnable(GL_SCISSOR_TEST);
-			glScissor(x - tex->width * 0.5f, y - tex->height * 0.5f, tex->width * factor, tex->height);
+			glScissor(x - (tex->width * 0.5f*barScaleX), y - (tex->height * 0.5f*barScaleY), tex->width * factor * barScaleX, tex->height);
 		}
 		
 
@@ -335,12 +339,6 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
 		float4x4 uiGlobal = uiLocal;
 
-		/*	if (!particleInfo.globalTransform)
-			{
-				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
-				particleGlobal = parentGlobal * particleLocal;
-			}*/
-
 		glPushMatrix();
 		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
 
@@ -372,7 +370,7 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 
 	glPopMatrix();
 
-	if (tex == barTexture)
+	if (draw_bar)
 		glDisable(GL_SCISSOR_TEST);
 		
 	
