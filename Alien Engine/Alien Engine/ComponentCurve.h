@@ -59,8 +59,6 @@ private:
 
 	bool DrawInspector();
 
-	void Clone(Component* clone);
-
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
@@ -69,5 +67,6 @@ public:
 	Curve curve;
 
 	bool renderTensors = true;
-
+	bool renderNormals = true;
+	bool renderOnSelected = false;
 };

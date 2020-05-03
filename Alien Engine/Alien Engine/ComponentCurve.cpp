@@ -43,6 +43,14 @@ bool ComponentCurve::DrawInspector()
 	{
 		RightClickMenu("Curve");
 		ImGui::Spacing();
+
+		ImGui::Checkbox("Render On Selected", &renderOnSelected);
+		ImGui::SameLine();
+		ImGui::Checkbox("Render Normals", &renderNormals);
+		ImGui::SameLine();
+		ImGui::Checkbox("Render Tensors", &renderTensors);
+
+		ImGui::Spacing();
 		if (ImGui::DragInt("Detail", &curve.detail)) {
 			curve.SetDetail(curve.detail);
 		}
@@ -187,10 +195,6 @@ bool ComponentCurve::DrawInspector()
 	return true;
 }
 
-void ComponentCurve::Clone(Component* clone)
-{
-}
-
 void ComponentCurve::SaveComponent(JSONArraypack* to_save)
 {
 }
@@ -199,10 +203,15 @@ void ComponentCurve::LoadComponent(JSONArraypack* to_load)
 {
 }
 
-// TODO: mouse picking control points
+// TODO: que la curve vagi amb la pos del GO
+// TODO: save & load
 
 void ComponentCurve::DrawScene()
 {
+	if (!game_object_attached->IsSelected() && renderOnSelected) {
+		return;
+	}
+
 	glDisable(GL_LIGHTING);
 
 	// Draw Control Points
@@ -229,36 +238,40 @@ void ComponentCurve::DrawScene()
 	}
 	glEnd();
 	
-	// Draw Tensors
-	glColor3f(1, 1, 0);
-	for (uint i = 0; i < curve.GetControlPoints().size(); i += 3) {
-		glBegin(GL_LINE_STRIP);
-		if (i == 0) {
-			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
-			glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
+	if (renderTensors) {
+		// Draw Tensors
+		glColor3f(1, 1, 0);
+		for (uint i = 0; i < curve.GetControlPoints().size(); i += 3) {
+			glBegin(GL_LINE_STRIP);
+			if (i == 0) {
+				glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+				glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
+			}
+			else if (i == curve.GetControlPoints().size() - 1) {
+				glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+				glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
+			}
+			else {
+				glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
+				glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
+				glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
+			}
+			glEnd();
 		}
-		else if (i == curve.GetControlPoints().size() - 1) {
-			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
-			glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
-		}
-		else {
-			glVertex3f(curve.GetControlPoints()[i - 1].x, curve.GetControlPoints()[i - 1].y, curve.GetControlPoints()[i - 1].z);
-			glVertex3f(curve.GetControlPoints()[i].x, curve.GetControlPoints()[i].y, curve.GetControlPoints()[i].z);
-			glVertex3f(curve.GetControlPoints()[i + 1].x, curve.GetControlPoints()[i + 1].y, curve.GetControlPoints()[i + 1].z);
-		}
-		glEnd();
 	}
 
 	// Draw Normals
-	glColor3f(1, 0.5F, 1);
-	glBegin(GL_LINES);
-	for (int f = 0; f <= curve.detail; ++f) {
-		float3 point = curve.ValueAt(f / (float)curve.detail);
-		float3 normal = curve.NormalAt(f / (float)curve.detail);
-		glVertex3f(point[0], point[1], point[2]);
-		glVertex3f(point[0] + normal[0], point[1] + normal[1], point[2] + normal[2]);
+	if (renderNormals) {
+		glColor3f(1, 0.5F, 1);
+		glBegin(GL_LINES);
+		for (int f = 0; f <= curve.detail; ++f) {
+			float3 point = curve.ValueAt(f / (float)curve.detail);
+			float3 normal = curve.NormalAt(f / (float)curve.detail);
+			glVertex3f(point[0], point[1], point[2]);
+			glVertex3f(point[0] + normal[0], point[1] + normal[1], point[2] + normal[2]);
+		}
+		glEnd();
 	}
-	glEnd();
 
 	glEnable(GL_LIGHTING);
 }
