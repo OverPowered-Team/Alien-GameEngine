@@ -4,6 +4,7 @@
 #include "glew/include/glew.h"
 
 #include "Globals.h"
+#include "MathGeoLib/include/Math/float2.h"
 
 class ResourceTexture;
 
@@ -22,7 +23,9 @@ public:
 	void UpdateTextures();
 	void SetSize(float width, float height);
 
-private:
+	float2 GetSize() const;
+
+public:
 	float width = 0.f;
 	float height = 0.f; 
 

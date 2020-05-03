@@ -5,6 +5,8 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleObjects.h"
+#include "GBuffer.h"
 #include "imgui/imgui.h"
 #include "gpudetect/DeviceId.h"
 
@@ -218,6 +220,15 @@ void PanelConfig::PanelLogic()
 		if (ImGui::Button("Reset Camera Properties"))
 			App->renderer3D->scene_fake_camera->Reset();
 
+		// Testing GBUFFER
+		ImGui::Separator();
+		ImGui::Text("Position");
+		ImGui::Image((ImTextureID) App->objects->gFrameBuffer->gPosition, ImVec2(App->objects->gFrameBuffer->width, App->objects->gFrameBuffer->height), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Text("Normals");
+		ImGui::Image((ImTextureID) App->objects->gFrameBuffer->gNormals, ImVec2(App->objects->gFrameBuffer->width, App->objects->gFrameBuffer->height), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Text("Color");
+		ImGui::Image((ImTextureID) App->objects->gFrameBuffer->gColorSpec, ImVec2(App->objects->gFrameBuffer->width, App->objects->gFrameBuffer->height), ImVec2(0, 1), ImVec2(1, 0));
+		// ---------------
 	}
 	if (ImGui::CollapsingHeader("Input")) 
 	{

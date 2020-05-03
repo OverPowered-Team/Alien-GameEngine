@@ -102,3 +102,8 @@ void GBuffer::SetSize(float width, float height)
 	this->height = height;
 	to_update = true;
 }
+
+float2 GBuffer::GetSize() const
+{
+	return float2(width, height);
+}

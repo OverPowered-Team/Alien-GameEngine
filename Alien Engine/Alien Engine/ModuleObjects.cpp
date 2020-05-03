@@ -363,6 +363,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
 			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
+			gFrameBuffer->SetSize(current_viewport->GetSize().x, current_viewport->GetSize().y); // Provisional
+			gFrameBuffer->BeginGBuffer();
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 						
@@ -377,6 +379,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
+			gFrameBuffer->EndGBuffer();
 			
 			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
 			if (!printing_scene) {
