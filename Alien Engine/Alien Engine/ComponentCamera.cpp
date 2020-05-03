@@ -633,11 +633,11 @@ float4x4 ComponentCamera::GetViewMatrix4x4() const
 
 void ComponentCamera::InvertPitch()
 {
-	/*float3x4* v_m = &frustum.ViewMatrix();
+	float3x4* v_m = &frustum.ViewMatrix();
 	v_m->At(1, 2) *= -1.0f;
 	v_m->At(0, 3) *= -1.0f;
-	v_m->At(2, 3) *= -1.0f;*/
-	frustum.ViewMatrix().Inverse();
+	v_m->At(2, 3) *= -1.0f;
+	//frustum.ViewMatrix().Inverse();
 }
 
 void ComponentCamera::SetVerticalFov(const float& vertical_fov)
