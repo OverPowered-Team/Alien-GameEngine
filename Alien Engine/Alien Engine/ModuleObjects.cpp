@@ -294,9 +294,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 				frustum_camera = App->renderer3D->actual_game_camera;
 			}
 
-			octree.SetStaticDrawList(&static_to_draw, frustum_camera);
-
-			to_draw.assign(static_to_draw.begin(), static_to_draw.end());
+			octree.SetStaticDrawList(&to_draw, frustum_camera);
 
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
@@ -308,18 +306,17 @@ update_status ModuleObjects::PostUpdate(float dt)
 			to_draw.insert(to_draw.end(),dynamic_to_draw.begin(), dynamic_to_draw.end());
 
 			std::sort(dynamic_to_draw.begin(), dynamic_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-			std::sort(static_to_draw.begin(), static_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
 			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
-			//predraw
-			glViewport(0, 0, 1024, 1024);
+			//predraw	
 			for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 			{
 				if (!(*iter)->light->castShadows)
 					continue;
 
+				glViewport(0, 0, 2048, 2048);
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 				glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -352,21 +349,22 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				if ((*iter)->light->bakeShadows)
 				{
+
+					octree.ShowAllStaticObjects(&static_to_draw, frustum_camera);
+					std::sort(static_to_draw.begin(), static_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+					glViewport(0, 0, 8192, 8192);
 					glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->bakedepthMapFBO);
 					glClear(GL_DEPTH_BUFFER_BIT);
-					std::vector<std::pair<float, GameObject*>>::iterator it = static_to_draw.begin();
-					for (; it != static_to_draw.end(); ++it) {
-						if ((*it).second != nullptr && (*it).second->cast_shadow) {
-							if (!printing_scene)
-							{
-								(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-							}
-							
+					std::vector<std::pair<float, GameObject*>>::iterator it2 = static_to_draw.begin();
+					for (; it2 != static_to_draw.end(); ++it2) {
+						if ((*it2).second != nullptr && (*it2).second->cast_shadow) {
+							(*it2).second->PreDrawGame(viewport->GetCamera(), (*iter)->light->viewMatrix, (*iter)->light->projMatrix, (*iter)->position);		
 						}
 					}
 					(*iter)->light->bakeShadows = false;
 				}
 			}
+
 			glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
 			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetFBO());
 

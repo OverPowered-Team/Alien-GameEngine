@@ -18,6 +18,7 @@ uniform mat4 projection;
 
 uniform int num_space_matrix;
 uniform mat4 lightSpaceMatrix[MAX_SPACEMATRIX];
+uniform mat4 lightSpaceMatrixBaked[MAX_SPACEMATRIX];
 uniform int animate;
 
 uniform float density = 0;
@@ -29,6 +30,7 @@ out vec3 norms;
 out mat3 TBN; 
 out float visibility; 
 out vec4 FragPosLightSpace[MAX_SPACEMATRIX];
+out vec4 FragPosLightSpaceBaked[MAX_SPACEMATRIX];
 //out float visibility;
 
 uniform vec4 clip_plane;
@@ -64,8 +66,10 @@ void main()
     frag_pos = vec3(model * pos);
     
     for(int i = 0; i < num_space_matrix; i++)
+    {
         FragPosLightSpace[i] = lightSpaceMatrix[i] * vec4(frag_pos, 1.0);
-
+        FragPosLightSpaceBaked[i] = lightSpaceMatrixBaked[i] * vec4(frag_pos, 1.0);
+    }
     // --------------- Normals ---------------
     norms = mat3(transpose(inverse(model))) * normals;
 
@@ -96,8 +100,10 @@ struct DirectionalLight
     float intensity;
     vec3 dirLightProperties[5];
     sampler2D depthMap;
-    sampler2D bakeShadows;
     vec3 lightPos;
+
+    sampler2D bakeShadows;
+    vec3 lightPosBaked;
 
     bool castShadow;
 };
@@ -139,10 +145,10 @@ struct Material {
 };
 
 // Function declarations
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMat, vec2 texCoords,vec4 lightSpaceMat);
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMat, vec2 texCoords,vec4 lightSpaceMat, vec4 lightSpaceMatBaked);
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMat, vec2 texCoords);
 vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMat, vec2 texCoords);
-float ShadowCalculation(DirectionalLight light, vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
+float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace,vec4 fragPosLightSpaceBaked, vec3 normal, vec3 lightDir, vec3 lightDirBaked);
 
 // Uniforms
 uniform Material objectMaterial;
@@ -167,6 +173,7 @@ in vec3 norms;
 in mat3 TBN;
 in float visibility;
 in vec4 FragPosLightSpace[MAX_SPACEMATRIX];
+in vec4 FragPosLightSpaceBaked[MAX_SPACEMATRIX];
 // Outs
 out vec4 FragColor;
 
@@ -206,7 +213,7 @@ void main()
     // Light calculations
 
     for(int i = 0; i < max_lights.x; i++)
-        result += CalculateDirectionalLight(dir_light[i], normal, view_dir, objectMaterial, texCoords, FragPosLightSpace[i]);
+        result += CalculateDirectionalLight(dir_light[i], normal, view_dir, objectMaterial, texCoords, FragPosLightSpace[i],FragPosLightSpaceBaked[i]);
     for(int i = 0; i < max_lights.y; i++)
         result += CalculatePointLight(point_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);    
     for(int i = 0; i < max_lights.z; i++)
@@ -223,7 +230,7 @@ void main()
 }
 
 // Function definitions
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat)
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked)
 {
     // Intensity
     float intensity = light.intensity;
@@ -233,6 +240,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     
     // Diffuse
     vec3 fake_lightDir = normalize(light.lightPos - frag_pos);
+    vec3 fake_lightDirBaked = normalize(light.lightPosBaked - frag_pos);
     vec3 lightDir = normalize(-light.dirLightProperties[indexDirection]);
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = light.dirLightProperties[indexDiffuse] * diff;
@@ -253,7 +261,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
 
     if(light.castShadow == true)
     {
-        float shadow = ShadowCalculation(light,lightSpaceMat, normal, fake_lightDir);
+        float shadow = ShadowCalculation(light,lightSpaceMat, lightSpaceMatBaked, normal, fake_lightDir, fake_lightDirBaked);
         result = (ambient + (1.0 - shadow) * (diffuse + specular)) * vec3(intensity, intensity, intensity);
     }
     else 
@@ -336,7 +344,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_d
     return (ambient + diffuse + specular) * intensity;
 }
 
-float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
+float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace,vec4 fragPosLightSpaceBaked, vec3 normal, vec3 lightDir, vec3 lightDirBaked)
 {
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -367,12 +375,15 @@ float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace, vec3 norm
     }
     shadow /= 9.0;
 
+    projCoords = fragPosLightSpaceBaked.xyz / fragPosLightSpaceBaked.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
 
     closestDepth = texture(light.bakeShadows, projCoords.xy).r; 
     // get depth of current fragment from light's perspective
     currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
-    bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    bias = max(0.05 * (1.0 - dot(normal, lightDirBaked)), 0.005);
    
    // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
 

@@ -10,6 +10,7 @@ struct __declspec(dllexport) DirLightProperties
 	float intensity = 1.0f;
 	float3 position = float3::zero();
 	float3 fake_position = float3::zero();
+	float3 fake_position_baked = float3::zero();
 	float3 direction = float3::zero();
 	float3 ambient = float3::zero();
 	float3 diffuse = float3::one();
@@ -54,13 +55,17 @@ private:
 public:
 	float sizefrustrum = 88.f;
 	float distance_far_plane = 178.f;
+	float sizefrustrumbaked = 153.f;
 	float3 fake_position;
 	bool castShadows = true;
-	bool bakeShadows = false;
+	bool bakeShadows = true;
+
+	float4x4 projMatrix;
+	float4x4 viewMatrix;
+
 private:
 	ComponentMesh* bulb = nullptr;
 	bool print_icon = true;
-
 
 	uint renderer_id = 0;
 	DirLightProperties light_props;

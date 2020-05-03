@@ -323,6 +323,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	std::string clightSpaceMatrix("lightSpaceMatrix");
 	clightSpaceMatrix.append("[%i]");
 
+	std::string clightSpaceMatrixBaked("lightSpaceMatrixBaked");
+	clightSpaceMatrixBaked.append("[%i]");
+
 	SetUniform1i("num_space_matrix", dirLights.size());
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
@@ -362,6 +365,13 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 
 		std::string clightPos = std::string(cname).append(".lightPos");
 		SetUniformFloat3(clightPos, (*iter)->fake_position);
+
+		std::string clightPosBaked = std::string(cname).append(".lightPosBaked");
+		SetUniformFloat3(clightPosBaked, (*iter)->fake_position_baked);
+
+		char clightspaceMB[128];
+		sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i);
+		SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix);
 
 		++i;
 	}

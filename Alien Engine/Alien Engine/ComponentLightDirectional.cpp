@@ -43,7 +43,7 @@ void ComponentLightDirectional::InitFrameBuffers()
 	glGenTextures(1, &light_props.depthMap);
 	glBindTexture(GL_TEXTURE_2D, light_props.depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -62,7 +62,7 @@ void ComponentLightDirectional::InitFrameBuffers()
 	glGenTextures(1, &light_props.bakedepthMap);
 	glBindTexture(GL_TEXTURE_2D, light_props.bakedepthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		8192, 8192, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -90,13 +90,21 @@ ComponentLightDirectional::~ComponentLightDirectional()
 void ComponentLightDirectional::PostUpdate()
 {
 	OPTICK_EVENT();
+	float3 light_pos = float3(light_props.position.x / sizefrustrum, light_props.position.y / sizefrustrum, light_props.position.z / sizefrustrum);
+	float3 light_dir = float3((light_pos.x - light_props.direction.x * distance_far_plane), (light_pos.y - light_props.direction.y * distance_far_plane), (light_pos.z - light_props.direction.z * distance_far_plane));
 
-	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrum, sizefrustrum, -sizefrustrum, sizefrustrum,
-		-sizefrustrum,
-		sizefrustrum);
+	glm::mat4 viewMat = glm::lookAt(glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
+		glm::vec3((float)light_dir.x, (float)light_dir.y, (float)-light_dir.z),
+		glm::vec3(0.0, 1.0, 0.0));
 
+	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrumbaked, sizefrustrumbaked, -sizefrustrumbaked, sizefrustrumbaked,
+		-sizefrustrumbaked,
+		sizefrustrumbaked);
+
+	light_props.fake_position_baked = light_dir;
 	light_props.projMat.Set(&projectionMatrix[0][0]);
-
+	projMatrix.Set(&projectionMatrix[0][0]);
+	viewMatrix.Set(&viewMat[0][0]);
 }
 
 
@@ -167,6 +175,12 @@ bool ComponentLightDirectional::DrawInspector()
 		ImGui::Spacing();
 
 		ImGui::Checkbox("Casts Shadows", &castShadows);
+
+		ImGui::DragFloat("baked Shadow Map Size", &sizefrustrumbaked);
+
+		ImGui::Text("Baked Depth Map");
+
+		ImGui::Image((ImTextureID)light_props.bakedepthMap, ImVec2(300, 300));
 
 		if (ImGui::Button("Bake Shadows"))
 			bakeShadows = true;
