@@ -25,6 +25,8 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void SetSize(float width, float height);
+
 	//Script
 	void CalculateFactor();
 	float GetBarValue();
