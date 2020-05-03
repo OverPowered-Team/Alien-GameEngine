@@ -709,6 +709,8 @@ void ParticleSystem::CalculateParticleUV(int rows, int columns, float speed, int
 	}
 
 	ResourceTexture* tex = material->GetTexture(TextureType::DIFFUSE);
+	//ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(material->texturesID[(int)TextureType::DIFFUSE]);
+
 	if (tex != nullptr)
 	{
 		LoadUVs(rows, columns, tex);

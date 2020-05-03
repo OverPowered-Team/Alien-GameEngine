@@ -192,44 +192,13 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 void GameObject::DrawScene(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	
-	if (mesh == nullptr) //not sure if this is the best solution
-		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
-
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
-
-	if (mesh != nullptr && mesh->IsEnabled())
-	{
-		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
-			glColor3f(1, 1, 1);
-		if (!mesh->wireframe)
-			mesh->DrawPolygon(camera);
-		/*if ((selected || parent_selected) && App->objects->outline)
-			mesh->DrawOutLine();*/
-		if (mesh->view_mesh || mesh->wireframe)
-			mesh->DrawMesh();
-		if (mesh->view_vertex_normals)
-			mesh->DrawVertexNormals();
-		if (mesh->view_face_normals)
-			mesh->DrawFaceNormals();
-		if (mesh->draw_AABB)
-			mesh->DrawGlobalAABB(camera);
-		if (mesh->draw_OBB)
-			mesh->DrawOBB(camera);
-	}
-
-
 	for (Component* component : components)
 	{
-		component->DrawScene();
+		component->DrawScene(camera);
 	}
 }
+
+
 
 void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
@@ -239,11 +208,6 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
-
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -258,31 +222,18 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 void GameObject::DrawGame(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
-	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
-	
-	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-	if(mesh == nullptr) //not sure if this is the best solution
-		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
 
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
+	for (Component* component : components)
 	{
-		material->BindTexture();
-	}*/
-
-	if (mesh != nullptr && mesh->IsEnabled())
-	{
-		if (material == nullptr || (material != nullptr && !material->IsEnabled())) // set the basic color if the GameObject hasn't a material
-			glColor3f(1, 1, 1);
-		mesh->DrawPolygon(camera);
+		component->DrawGame(camera);
 	}
 }
 
+
 void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
-
-	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
-	ComponentCamera* camera_ = (ComponentCamera*)GetComponent(ComponentType::CAMERA);
-
+	OPTICK_EVENT();
+	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
 	if (!is_static) {
 		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 		if (mesh == nullptr) //not sure if this is the best solution
@@ -290,79 +241,17 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
-				float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+				float3 obj_pos = transform->GetGlobalPosition();
 				float distance = camera->frustum.pos.Distance(obj_pos);
 				to_draw->push_back({ distance, this });
 			}
 		}
 		else
 		{
-			float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			to_draw->push_back({ distance, this });
 		}
-	}
-
-	// Lights
-	ComponentLightDirectional* light_dir = (ComponentLightDirectional*)GetComponent(ComponentType::LIGHT_DIRECTIONAL);
-	if (light_dir != nullptr && light_dir->IsEnabled())
-	{
-		light_dir->LightLogic();
-	}
-	ComponentLightSpot* light_spot = (ComponentLightSpot*)GetComponent(ComponentType::LIGHT_SPOT);
-	if (light_spot != nullptr && light_spot->IsEnabled())
-	{
-		light_spot->LightLogic();
-	}
-	ComponentLightPoint* light_point = (ComponentLightPoint*)GetComponent(ComponentType::LIGHT_POINT);
-	if (light_point != nullptr && light_point->IsEnabled())
-	{
-		light_point->LightLogic();
-	}
-
-	if (camera_ != nullptr && camera_->IsEnabled()) 
-	{
-		if (App->objects->printing_scene && App->objects->draw_frustum && std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
-			camera_->DrawFrustum();
-		}
-		camera_->frustum.pos = transform->GetGlobalPosition();
-		camera_->frustum.front = transform->GetGlobalRotation().WorldZ();
-		camera_->frustum.up = transform->GetGlobalRotation().WorldY();
-	}
-
-	ComponentParticleSystem* partSystem = (ComponentParticleSystem*)GetComponent(ComponentType::PARTICLES);
-	
-	if(partSystem != nullptr)
-	{
-		partSystem->Draw();
-	}
-
-
-	if (App->objects->printing_scene)
-	{
-		if (camera_ != nullptr && camera_->IsEnabled())
-		{
-			//camera_->DrawIconCamera();
-		}
-
-		/* TOFIX / DO. Light does not exist anymore here
-		if (light != nullptr && light->IsEnabled())
-		{
-			//light->DrawIconLight();
-		}
-		*/
-
-		if (partSystem != nullptr)
-		{
-			partSystem->DebugDraw();
-		}
-	}
-
-	ComponentCanvas* canvas = GetComponent<ComponentCanvas>();
-
-	if (canvas != nullptr && canvas->IsEnabled())
-	{
-		canvas->Draw();
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
@@ -376,10 +265,10 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 
 	if (ui != nullptr && ui->IsEnabled())
 	{
-		float3 obj_pos = static_cast<ComponentTransform*>(GetComponent(ComponentType::TRANSFORM))->GetGlobalPosition();
+		float3 obj_pos = transform->GetGlobalPosition();
 		float distance = obj_pos.z;
 		//ui->Draw(!App->objects->printing_scene);
-		to_draw_ui->push_back({distance, this });
+		to_draw_ui->push_back({ distance, this });
 	}
 }
 
@@ -524,6 +413,8 @@ const char* GameObject::GetTag() const
 
 Component* GameObject::GetComponent(const ComponentType& type)
 {
+	OPTICK_EVENT();
+
 	if (type == ComponentType::UI_BUTTON || type == ComponentType::UI_IMAGE || type == ComponentType::UI_CHECKBOX || type == ComponentType::UI_BAR || type == ComponentType::UI_SLIDER || type == ComponentType::UI_ANIMATED_IMAGE || type == ComponentType::UI_TEXT) {
 		std::vector<Component*>::iterator item = components.begin();
 		for (; item != components.end(); ++item) {

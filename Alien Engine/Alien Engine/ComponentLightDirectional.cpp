@@ -90,11 +90,11 @@ ComponentLightDirectional::~ComponentLightDirectional()
 void ComponentLightDirectional::PostUpdate()
 {
 	OPTICK_EVENT();
-	float3 light_pos = float3(light_props.position.x / sizefrustrum, light_props.position.y / sizefrustrum, light_props.position.z / sizefrustrum);
+	float3 light_pos = float3(light_props.position.x / sizefrustrumbaked, light_props.position.y / sizefrustrumbaked, light_props.position.z / sizefrustrumbaked);
 	float3 light_dir = float3((light_pos.x - light_props.direction.x * distance_far_plane), (light_pos.y - light_props.direction.y * distance_far_plane), (light_pos.z - light_props.direction.z * distance_far_plane));
 
 	glm::mat4 viewMat = glm::lookAt(glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
-		glm::vec3((float)light_dir.x, (float)light_dir.y, (float)-light_dir.z),
+		glm::vec3((float)light_dir.x, (float)light_dir.y, (float)(-light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
 	glm::mat4 projectionMatrix = glm::ortho(-sizefrustrumbaked, sizefrustrumbaked, -sizefrustrumbaked, sizefrustrumbaked,
@@ -105,6 +105,8 @@ void ComponentLightDirectional::PostUpdate()
 	light_props.projMat.Set(&projectionMatrix[0][0]);
 	projMatrix.Set(&projectionMatrix[0][0]);
 	viewMatrix.Set(&viewMat[0][0]);
+
+	LightLogic();
 }
 
 
@@ -115,24 +117,19 @@ void ComponentLightDirectional::LightLogic()
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-#ifndef GAME_VERSION
-	if (App->objects->printing_scene)
+}
+
+void ComponentLightDirectional::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
 	{
-		if (this->game_object_attached->IsSelected())
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 2.0f);
-			App->renderer3D->EndDebugDraw();
-		}
-		else
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
-			App->renderer3D->EndDebugDraw();
-		}
-		//DrawLightFrustrum();
+		DrawIconLight();
+		Gizmos::DrawLine(light_props.position, (light_props.position + light_props.direction * 3), Color::Green(), 0.1f);
 	}
-#endif
+
+	//DrawLightFrustrum();
 }
 
 bool ComponentLightDirectional::DrawInspector()

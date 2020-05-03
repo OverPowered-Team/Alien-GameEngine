@@ -27,8 +27,11 @@ enum class SHADER_TEMPLATE
 	WAVE,
 	ILUMINATED,
 	PARTICLE,
+	SHIELD,
+	SHIELD_FRESNEL,
 	SHADOW,
-	SHIELD
+	WATER
+
 };
 
 struct ShaderInputs;
@@ -92,6 +95,9 @@ public:
 	void SetSpotLights(const std::string& name, const std::list<SpotLightProperties*>& dirLights);
 	void CreateShaderDoc(const int& type, const char* name);
 
+	void CreateDepthMap(DirLightProperties* light);
+	void DrawShadows();
+
 private:
 	SHADER_PROGRAM_SOURCE ParseShader(const std::string& path);
 	uint CreateShader(const std::string& vertex_shader, const std::string& fragment_shader);
@@ -101,10 +107,13 @@ private:
 	int GetUniformLocation(const std::string& name);
 
 private:
-
 	uint shader_id;
 	SHADER_TEMPLATE shaderType = SHADER_TEMPLATE::DEFAULT;
 	std::unordered_map<std::string, int> uniform_location_cache;
+public:
+	bool has_shadow = false;
+	//uint depthMapFBO;
+
 };
 
 #endif /* __RESOURCE_SHADER_H__ */

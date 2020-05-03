@@ -151,8 +151,6 @@ public:
 	void SetEnable(bool enable);
 	bool IsEnabled() const;
 
-	void PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
-
 	ComponentTransform* GetComponentTransform(); //sorry ori
 
 	// parent
@@ -189,8 +187,9 @@ private:
 
 	// here we call Component Mesh, Material & light
 	void DrawScene(ComponentCamera* camera);
-	void PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	void DrawGame(ComponentCamera* camera);
+	void PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
+	void PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera);
 
 	ComponentCanvas* GetCanvas();

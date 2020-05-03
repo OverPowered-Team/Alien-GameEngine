@@ -16,6 +16,9 @@
 #include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
+#include "Viewport.h"
+#include "ComponentCamera.h"
+
 #include "Optick/include/optick.h"
 
 ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
@@ -45,8 +48,42 @@ void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 	RecalculateAABB_OBB();
 }
 
+void ComponentMesh::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		if (!wireframe)
+			DrawPolygon(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
+	}
+}
+
+void ComponentMesh::DrawGame(ComponentCamera* camera)
+{
+	OPTICK_EVENT();
+
+	if (IsEnabled())
+	{
+		DrawPolygon(camera);
+	}
+}
+
 void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 {
+
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0)
 		return;
@@ -75,7 +112,7 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 	material->ApplyMaterial();
 	glBindVertexArray(mesh->vao);
 
-	SetUniform(material, camera);
+	SetUniforms(material, camera);
 
 	// Reflection / Refraction --------------
 
@@ -92,7 +129,6 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
-
 }
 
 void ComponentMesh::PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
@@ -143,6 +179,7 @@ void ComponentMesh::PreDrawPolygonForShadows(ComponentCamera* camera, const floa
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CCW);
+
 
 
 }
@@ -225,14 +262,21 @@ void ComponentMesh::DrawMesh()
 
 }
 
-void ComponentMesh::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera)
+void ComponentMesh::SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
+{
+	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
+	resource_material->simple_depth_shader->SetUniform1i("animate", animate);
+}
+
+void ComponentMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
 {
 resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
 	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 	resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	resource_material->used_shader->SetUniform1i("animate", animate);
 
+	resource_material->used_shader->SetUniform1i("animate", animate);
 	resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
 	if (camera->activeFog)
 	{
@@ -241,14 +285,6 @@ resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4
 		resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
 	}
 }
-
-void ComponentMesh::SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
-{
-	resource_material->simple_depth_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
-	resource_material->simple_depth_shader->SetUniformMat4f("lightSpaceMatrix", ProjMatrix * ViewMat);
-	resource_material->simple_depth_shader->SetUniform1i("animate", animate);
-}
-
 
 void ComponentMesh::DrawVertexNormals()
 {
