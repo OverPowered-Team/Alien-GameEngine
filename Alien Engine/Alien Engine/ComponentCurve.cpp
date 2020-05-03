@@ -7,7 +7,7 @@
 #include "Application.h"
 #include "ModuleUI.h"
 #include "PanelScene.h"
-
+#include "ComponentTransform.h"
 #include "Application.h"
 #include "ModuleInput.h"
 
@@ -15,11 +15,16 @@ ComponentCurve::ComponentCurve(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::CURVE;
 
-	curve = Curve(float3{ -10,0,0 }, float3{ 10,0,0 });
+	curve = Curve(float3{ -10,0,0 }, float3{ 10,0,0 }, game_object_attached->transform->GetGlobalPosition());
 }
 
 ComponentCurve::~ComponentCurve()
 {
+}
+
+void ComponentCurve::UpdatePosition(const float3& new_position)
+{
+	curve.UpdatePosition(new_position);
 }
 
 bool ComponentCurve::DrawInspector()
@@ -276,12 +281,14 @@ void ComponentCurve::DrawScene()
 	glEnable(GL_LIGHTING);
 }
 
-Curve::Curve(const float3& begin, const float3& end)
+Curve::Curve(const float3& begin, const float3& end, const float3& position)
 {
-	control_points.push_back(begin);
-	control_points.push_back(begin + float3(5,10,0));
-	control_points.push_back(end + float3(-5, 10, 0));
-	control_points.push_back(end);
+	this->position = position;
+
+	control_points.push_back(begin + position);
+	control_points.push_back(begin + float3(5,10,0) + position);
+	control_points.push_back(end + float3(-5, 10, 0) + position);
+	control_points.push_back(end + position);
 
 	control_points_normals.push_back(float3::unitY());
 	control_points_normals.push_back(float3::unitY());
@@ -412,6 +419,18 @@ void Curve::RemoveControlPoint(int index)
 		control_points.erase(control_points.begin() + --index);
 		control_points.erase(control_points.begin() + index);
 		control_points.erase(control_points.begin() + index);
+	}
+
+	Refresh();
+}
+
+void Curve::UpdatePosition(const float3& new_position)
+{
+	float3 difference = new_position - position;
+	position = new_position;
+
+	for (auto item = control_points.begin(); item != control_points.end(); ++item) {
+		(*item) += difference;
 	}
 
 	Refresh();

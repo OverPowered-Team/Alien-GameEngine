@@ -7,7 +7,7 @@
 class __declspec(dllexport) Curve {
 public:
 	Curve() {}
-	Curve(const float3& begin, const float3& end);
+	Curve(const float3& begin, const float3& end, const float3& position);
 	~Curve() {}
 
 	// 0 - 1
@@ -27,6 +27,8 @@ public:
 	void InsertControlPoint(int index);
 	void RemoveControlPoint(int index);
 
+	void UpdatePosition(const float3& new_position);
+
 private:
 
 	void Refresh();
@@ -45,6 +47,7 @@ private:
 	std::vector<float3> curve_normals;
 	std::vector<float3> curve_points;
 
+	float3 position = float3::zero();
 };
 
 class __declspec(dllexport) ComponentCurve : public Component {
@@ -52,6 +55,8 @@ public:
 
 	ComponentCurve(GameObject* attach);
 	virtual ~ComponentCurve();
+
+	void UpdatePosition(const float3& new_position);
 
 private:
 
