@@ -370,12 +370,12 @@ update_status ModuleObjects::PostUpdate(float dt)
 				c_pos_y -= distance;
 				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
 				c_cam->InvertPitch();
-				if (base_game_object->HasChildren()) {					
+				if (base_game_object->HasChildren()) {
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							//viewport->GetCamera()->DrawSkybox();
-							(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
+							(*it).second->DrawGame(c_cam, float4(0.0f, 1.0f, 0.0f, -0.0f));
 						}
 					}
 				}
@@ -396,7 +396,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							//viewport->GetCamera()->DrawSkybox();
-							(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
+							(*it).second->DrawGame(App->camera->fake_camera, float4(0.0f, -1.0f, 0.0f, 1.0f));
 						}
 					}
 				}
@@ -419,12 +419,11 @@ update_status ModuleObjects::PostUpdate(float dt)
 				c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
 				c_cam->InvertPitch();
 				if (base_game_object->HasChildren()) {
-
 					std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 					for (; it != to_draw.end(); ++it) {
 						if ((*it).second != nullptr) {
 							//viewport->GetCamera()->DrawSkybox();
-							(*it).second->DrawGame(App->renderer3D->actual_game_camera, float4(0.0f, 1.0f, 0.0f, -0.0f));
+							(*it).second->DrawGame(c_cam, float4(0.0f, 1.0f, 0.0f, -0.0f));
 						}
 					}
 				}
