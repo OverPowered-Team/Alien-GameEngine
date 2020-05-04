@@ -293,6 +293,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> to_draw_transparency;
+
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
 			std::vector<std::pair<float, GameObject*>> ui_2d;
 			std::vector<std::pair<float, GameObject*>> ui_world;
@@ -309,11 +311,13 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					(*item)->SetDrawList(&to_draw, &to_draw_transparency, &to_draw_ui, frustum_camera);
 				}
 			}
 
 			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(to_draw_transparency.begin(), to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
+			
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
@@ -360,6 +364,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 						
 			viewport->GetCamera()->DrawSkybox(); 
 
+			// First draw solids
+
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
 					if (printing_scene)
@@ -369,6 +375,17 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
+			// Then draw transparents
+			it = to_draw_transparency.begin();
+			for (; it != to_draw_transparency.end(); ++it) {
+				if ((*it).second != nullptr) {
+					if (printing_scene)
+						(*it).second->DrawScene(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+					else
+						(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+				}
+			}
+
 			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 
 			
@@ -902,6 +919,8 @@ void ModuleObjects::CleanUpScriptsOnStop() const
 
 void ModuleObjects::OnDrawGizmos() const
 {
+	OPTICK_EVENT();
+
 	Gizmos::controller = !Gizmos::controller;
 	// scripts OnDrawGizmos
 	for (std::list<Alien*>::const_iterator item = current_scripts.cbegin(); item != current_scripts.cend(); ++item) {
