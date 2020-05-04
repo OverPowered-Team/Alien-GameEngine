@@ -552,6 +552,15 @@ bool ComponentCamera::DrawInspector()
 	return true;
 }
 
+void ComponentCamera::Update()
+{
+	OPTICK_EVENT();
+
+	frustum.pos = game_object_attached->transform->GetGlobalPosition();
+	frustum.front = game_object_attached->transform->GetGlobalRotation().WorldZ();
+	frustum.up = game_object_attached->transform->GetGlobalRotation().WorldY();
+}
+
 void ComponentCamera::DrawScene(ComponentCamera* camera)
 {
 	
@@ -560,9 +569,6 @@ void ComponentCamera::DrawScene(ComponentCamera* camera)
 	if (game_object_attached->IsSelected())
 	{
 		DrawFrustum();
-		frustum.pos = game_object_attached->transform->GetGlobalPosition();
-		frustum.front = game_object_attached->transform->GetGlobalRotation().WorldZ();
-		frustum.up = game_object_attached->transform->GetGlobalRotation().WorldY();
 	}
 
 	DrawIconCamera();
