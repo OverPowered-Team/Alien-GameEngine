@@ -30,6 +30,7 @@
 #include "..\..\..\Alien Engine\ComponentUI.h"
 #include "..\..\..\Alien Engine\ComponentButton.h"
 #include "..\..\..\Alien Engine\ComponentText.h"
+#include "..\..\..\Alien Engine\ComponentCurve.h"
 #include "..\..\..\Alien Engine\ComponentImage.h"
 /*-----------------COMPONENTS-------------------*/
 

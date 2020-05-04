@@ -72,7 +72,7 @@ public:
 
 	void DrawSkybox();
 
-	static float2 WorldToScreenPoint(float3 world_position);
+	static float2 WorldToScreenPoint(const float3& world_position);
 
 private:
 	void AspectRatio(int width_ratio, int height_ratio, bool fov_type = 0);

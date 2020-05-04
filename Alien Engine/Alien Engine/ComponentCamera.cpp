@@ -795,7 +795,7 @@ void ComponentCamera::DrawSkybox()
 	}
 }
 
-float2 ComponentCamera::WorldToScreenPoint(float3 world_position)
+float2 ComponentCamera::WorldToScreenPoint(const float3& world_position)
 {
 	float3 position = App->renderer3D->GetCurrentMainCamera()->frustum.ViewProjMatrix().MulPos(world_position);
 
