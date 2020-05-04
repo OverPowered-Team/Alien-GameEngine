@@ -391,6 +391,8 @@ bool ModuleCamera3D::TestTrianglesIntersections(GameObject* object, const LineSe
 	bool ret = false;
 	ComponentMesh* mesh = (ComponentMesh*)object->GetComponent(ComponentType::MESH);
 	LineSegment local_ray = ray;
+	float3 point = float3::zero();
+	float distance = 0.f;
 	local_ray.Transform(object->transform->global_transformation.Inverted());
 
 	if (mesh != nullptr && mesh->mesh != nullptr) {
@@ -406,10 +408,10 @@ bool ModuleCamera3D::TestTrianglesIntersections(GameObject* object, const LineSe
 			float3 point_c(&mesh->mesh->vertex[index_c]);
 
 			Triangle triangle_to_check(point_a, point_b, point_c);
-			float distance = 0.f;
 
-			if (local_ray.Intersects(triangle_to_check, &distance, nullptr)) {
+			if (local_ray.Intersects(triangle_to_check, nullptr, &point)) {
 				ret = true;
+				distance = object->transform->global_transformation.TransformPos(point).Distance(ray.a);
 				if (min_dist > distance)
 					min_dist = distance;
 			}

@@ -166,16 +166,16 @@ bool ModulePhysX::CleanUp()
 	return true;
 }
 
-void ModulePhysX::SetGravity(float3 gravity)
+void ModulePhysX::SetGravity(float3 _gravity)
 {
+	gravity = _gravity;
+	px_scene->setGravity(F3_TO_PXVEC3(_gravity));
 }
 
 float3 ModulePhysX::GetGravity()
 {
-	return float3();
+	return gravity;
 }
-
-
 
 bool ModulePhysX::LoadPhysicsExplicitely()
 {
