@@ -35,6 +35,7 @@ private:
 	void DrawScene(ComponentCamera* camera) override;
 
 	bool DrawInspector();
+	void OnEnable();
 	void OnDisable();
 
 	void Clone(Component* clone);
