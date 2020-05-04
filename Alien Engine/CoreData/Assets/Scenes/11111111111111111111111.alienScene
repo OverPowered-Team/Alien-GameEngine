@@ -5,8 +5,8 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "15106135372054476518",
-                "ParentID": "18098659496002418228",
+                "ID": "9544600282542826530",
+                "ParentID": "2736275230525889392",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "17203521911151948937"
+                        "ID": "7724930560745803900"
                     },
                     {
                         "Enabled": true,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "13199196647788808704",
+                        "ID": "8155887286653630782",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -64,23 +64,23 @@
                         "Fog": false,
                         "Density": 0.035000000149011612,
                         "Gradient": 1.3500000238418579,
-                        "Skybox_PositiveX": "Library\/Textures\/16365362325777703218.dds",
-                        "Skybox_NegativeX": "Library\/Textures\/6647353476053033927.dds",
-                        "Skybox_PositiveY": "Library\/Textures\/13945118401434491814.dds",
-                        "Skybox_NegativeY": "Library\/Textures\/13294645959885894553.dds",
-                        "Skybox_PositiveZ": "Library\/Textures\/882162789730207050.dds",
-                        "Skybox_NegativeZ": "Library\/Textures\/13059454142476507694.dds"
+                        "Skybox_PositiveX": "Library\/Textures\/17871350930873594524.dds",
+                        "Skybox_NegativeX": "Library\/Textures\/14059935274421270400.dds",
+                        "Skybox_PositiveY": "Library\/Textures\/5118434943308934301.dds",
+                        "Skybox_NegativeY": "Library\/Textures\/14265519993990640998.dds",
+                        "Skybox_PositiveZ": "Library\/Textures\/3680900417465944678.dds",
+                        "Skybox_NegativeZ": "Library\/Textures\/16155666848095087743.dds"
                     }
                 ]
             },
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "7280935830436074242",
-                "ParentID": "18098659496002418228",
+                "ID": "7358746922112564917",
+                "ParentID": "2736275230525889392",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -106,12 +106,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "7325780281475540691"
+                        "ID": "17095358483173111064"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "18344079090349782315",
+                        "ID": "5806593124214602106",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -138,37 +138,17 @@
                             1,
                             1,
                             1
-                        ]
+                        ],
+                        "CastShadows": false
                     },
                     {
                         "Enabled": true,
-                        "Type": 30,
+                        "Type": 31,
                         "Tensors": true,
                         "Normals": true,
                         "OnSelected": false,
-                        "Detail": 12,
+                        "Detail": 50,
                         "ControlPoints": [
-                            {
-                                "ControlPoint": [
-                                    -20,
-                                    0,
-                                    0
-                                ]
-                            },
-                            {
-                                "ControlPoint": [
-                                    -17.5,
-                                    10,
-                                    0
-                                ]
-                            },
-                            {
-                                "ControlPoint": [
-                                    -127.5,
-                                    0,
-                                    0
-                                ]
-                            },
                             {
                                 "ControlPoint": [
                                     -10,
@@ -196,27 +176,6 @@
                                     0,
                                     0
                                 ]
-                            },
-                            {
-                                "ControlPoint": [
-                                    12.5,
-                                    10,
-                                    0
-                                ]
-                            },
-                            {
-                                "ControlPoint": [
-                                    17.5,
-                                    10,
-                                    0
-                                ]
-                            },
-                            {
-                                "ControlPoint": [
-                                    20,
-                                    0,
-                                    0
-                                ]
                             }
                         ],
                         "NormalsPoints": [
@@ -233,22 +192,222 @@
                                     1,
                                     0
                                 ]
-                            },
-                            {
-                                "NormalPoint": [
-                                    0,
-                                    1,
-                                    0
-                                ]
-                            },
-                            {
-                                "NormalPoint": [
-                                    0,
-                                    1,
-                                    0
-                                ]
                             }
                         ]
+                    }
+                ]
+            },
+            {
+                "Name": "Canvas",
+                "FamilyNumber": 1,
+                "ID": "14645824321579627987",
+                "ParentID": "2736275230525889392",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1816060729125107174"
+                    },
+                    {
+                        "Enabled": true,
+                        "isWorld": false,
+                        "Type": 19,
+                        "BBType": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Button",
+                "FamilyNumber": 2,
+                "ID": "7207022022347256994",
+                "ParentID": "14645824321579627987",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14029533364022492483"
+                    },
+                    {
+                        "Width": 10,
+                        "Height": 10,
+                        "Enabled": true,
+                        "Type": 30,
+                        "UIType": 21,
+                        "ColorCurrent": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorIdle": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorHover": [
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "ColorClicked": [
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            1
+                        ],
+                        "ColorPressed": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "ColorDisabled": [
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            1
+                        ],
+                        "ClickEvent": "CLICK",
+                        "MoveEvent": "ENTER",
+                        "LoopIdle": true,
+                        "AnimSpeedIdle": 1,
+                        "LoopHover": true,
+                        "AnimSpeedHover": 1,
+                        "LoopClicked": true,
+                        "AnimSpeedClicked": 1,
+                        "LoopPressed": true,
+                        "AnimSpeedPressed": 1,
+                        "LoopDisabled": true,
+                        "AnimSpeedDisabled": 1,
+                        "HasAnimatedIdleImages": false,
+                        "HasAnimatedHoverImages": false,
+                        "HasAnimatedClickedImages": false,
+                        "HasAnimatedPressedImages": false,
+                        "HasAnimatedDisabledImages": false,
+                        "HasListenersOnClick": false,
+                        "HasListenersOnHover": false,
+                        "HasListenersOnClickRepeat": false,
+                        "HasListenersOnRelease": false,
+                        "HasListenersOnExit": false,
+                        "HasListenersOnEnter": false,
+                        "SelectOnUp": "18446744073709551615",
+                        "SelectOnDown": "18446744073709551615",
+                        "SelectOnRight": "18446744073709551615",
+                        "SelectOnLeft": "18446744073709551615"
+                    },
+                    {
+                        "ID": "11768320677959068079",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "0",
+                        "Event": "0",
+                        "PlayOnAwake": true
+                    }
+                ]
+            },
+            {
+                "Name": "Text",
+                "FamilyNumber": 3,
+                "ID": "16151867526349990032",
+                "ParentID": "7207022022347256994",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7980582774787239480"
+                    },
+                    {
+                        "Type": 30,
+                        "ID": "14862801596363622523",
+                        "Text": "Hola",
+                        "UIType": 22,
+                        "FontID": "6090935666492539845",
+                        "Enabled": true,
+                        "Color": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "Width": 200,
+                        "Interlineal": 1.5,
+                        "Align": 0
                     }
                 ]
             }

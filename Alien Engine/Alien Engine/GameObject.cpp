@@ -139,15 +139,20 @@ GameObject* GameObject::GetChild(const int& index)
 
 GameObject* GameObject::GetChildRecursive(const char* child_name)
 {
+	GameObject* ret = nullptr;
 	auto item = children.begin();
 	for (; item != children.end(); ++item) {
 		if (*item != nullptr) {
+			if (ret != nullptr) {
+				return ret;
+			}
 			if (App->StringCmp((*item)->name, child_name)) {
 				return (*item);
 			}
-			(*item)->GetChildRecursive(child_name);
+			ret = (*item)->GetChildRecursive(child_name);
 		}
 	}
+	return ret;
 }
 
 std::vector<GameObject*>& GameObject::GetChildren()
