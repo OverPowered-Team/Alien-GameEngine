@@ -12,9 +12,12 @@
 #include "ResourceMesh.h"
 #include "Viewport.h"
 #include "ComponentCurve.h"
+#include "ShortCutManager.h"
 #include "mmgr/mmgr.h"
+#include <functional>
 
 #include "Optick/include/optick.h"
+
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 {
@@ -38,6 +41,8 @@ bool ModuleCamera3D::Start()
 	final_pitch = current_pitch = 30;
 	Rotate(current_yaw, current_pitch);
 	max_distance = 10;
+
+	focus_short = App->shortcut_manager->AddShortCut("Focus", SDL_SCANCODE_F, std::bind(&ModuleCamera3D::Focus, App->camera));
 	return ret;
 }
 // -----------------------------------------------------------------
@@ -125,9 +130,6 @@ update_status ModuleCamera3D::Update(float dt)
 				Rotation(dt);
 			}
 			
-		}
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-			Focus();
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
@@ -244,6 +246,9 @@ void ModuleCamera3D::Rotation(float dt)
 
 void ModuleCamera3D::Focus()
 {
+	if (start_lerp)
+		return;
+
 	if (!App->objects->GetSelectedObjects().empty())
 	{
 		AABB bounding_box;

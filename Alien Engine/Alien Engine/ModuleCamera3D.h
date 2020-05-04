@@ -7,6 +7,7 @@ class ComponentCamera;
 class GameObject;
 class OctreeNode;
 class Viewport;
+struct ShortCut;
 
 class ModuleCamera3D : public Module
 {
@@ -77,6 +78,6 @@ private:
 	float lerp_trans_speed = 6.f;
 	float lerp_rot_speed = 10.f;
 	float max_distance;
-	
+	ShortCut* focus_short;
 
 };
