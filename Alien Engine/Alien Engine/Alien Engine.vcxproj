@@ -349,6 +349,7 @@
     <ClInclude Include="ComponentCharacterController.h" />
     <ClInclude Include="ComponentCollider.h" />
     <ClInclude Include="ComponentConvexHullCollider.h" />
+    <ClInclude Include="ComponentCurve.h" />
     <ClInclude Include="ComponentDeformableMesh.h" />
     <ClInclude Include="ComponentAudioEmitter.h" />
     <ClInclude Include="ComponentAudioListener.h" />
@@ -584,6 +585,7 @@
     <ClCompile Include="ComponentCharacterController.cpp" />
     <ClCompile Include="ComponentCollider.cpp" />
     <ClCompile Include="ComponentConvexHullCollider.cpp" />
+    <ClCompile Include="ComponentCurve.cpp" />
     <ClCompile Include="ComponentDeformableMesh.cpp" />
     <ClCompile Include="ComponentAudioEmitter.cpp" />
     <ClCompile Include="ComponentAudioListener.cpp" />

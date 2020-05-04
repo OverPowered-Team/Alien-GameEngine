@@ -25,6 +25,7 @@ public:
 
 	void Draw();
 
+	float3 GetWorldPositionInCanvas(const float3& world_position);
 
 public:
 	uint width = 0, height = 0;
