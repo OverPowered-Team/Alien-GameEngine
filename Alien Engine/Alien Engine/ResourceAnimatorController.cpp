@@ -367,6 +367,9 @@ void ResourceAnimatorController::Update()
 void ResourceAnimatorController::UpdateState(State* state)
 {
 	ResourceAnimation* animation = state->GetClip();
+	ResourceAnimation* current_clip = current_state->GetClip();
+	if (current_clip == nullptr)
+		return;
 
 	if (!transitioning)CheckTriggers();
 
@@ -388,7 +391,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 			if (state->GetClip()->loops)
 			{
 				state->time = 0;
-				previous_key_time = current_state->GetClip()->start_tick;
+				previous_key_time = current_clip->start_tick;
 			}
 			else
 				state->time = animation->GetDuration();
@@ -430,7 +433,7 @@ void ResourceAnimatorController::UpdateState(State* state)
 			state->fade_time = 0;
 			state->fade_duration = 0;
 			transitioning = false;
-			previous_key_time = current_state->GetClip()->start_tick;
+			previous_key_time = current_clip->start_tick;
 		}
 	}
 }
