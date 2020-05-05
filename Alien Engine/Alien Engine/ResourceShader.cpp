@@ -172,6 +172,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::SHIELD;
 	else if (std::strcmp(name.c_str(), "shield_fresnel_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHIELD_FRESNEL;
+	else if (std::strcmp(name.c_str(), "dissolve_shader") == 0)
+		shaderType = SHADER_TEMPLATE::DISSOLVE;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -241,6 +243,13 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("shieldCooldown", inputs.shieldFresnelShaderProperties.shieldCooldown);
 		SetUniform1f("exponent", inputs.shieldFresnelShaderProperties.fresnel_exponent);
 		//SetUniform1i("numHits", inputs.shieldFresnelShaderProperties.numHits);
+		break; }
+	case SHADER_TEMPLATE::DISSOLVE: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
+		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
+
+		ApplyLightsUniforms();
 		break; }
 
 	default:

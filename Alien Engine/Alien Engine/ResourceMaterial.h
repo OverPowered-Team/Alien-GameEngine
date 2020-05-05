@@ -26,7 +26,7 @@ enum class TextureType {
 	DIFFUSE_ROUGHNESS,
 	AMBIENT_OCCLUSION,
 	METALNESS,
-
+	NOISE_ALPHA,
 	MAX
 };
 

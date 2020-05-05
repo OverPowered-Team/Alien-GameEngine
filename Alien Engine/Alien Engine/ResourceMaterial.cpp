@@ -307,6 +307,16 @@ void ResourceMaterial::ApplyMaterial()
 	else
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
 
+	if (textures[(uint)TextureType::NOISE_ALPHA].first != NO_TEXTURE_ID && textures[(uint)TextureType::NOISE_ALPHA].second != nullptr)
+	{
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, textures[(uint)TextureType::NOISE_ALPHA].second->id);
+		used_shader->SetUniform1i("objectMaterial.normalMap", 3);
+		used_shader->SetUniform1i("hasAlpha", 1);
+	}
+	else
+		used_shader->SetUniform1i("hasAlpha", 0);
+
 	//default_shader->DrawShadows();
 
 	// Update uniforms
@@ -612,6 +622,34 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::InputInt("##numhits", &shaderInputs.shieldFresnelShaderProperties.numHits);*/
 
 		break; }
+	case SHADER_TEMPLATE::DISSOLVE:
+	{
+		ImGui::Text("Alpha noise:");
+		InputTexture(TextureType::DIFFUSE);
+		// Diffuse 
+		ImGui::Text("Diffuse:");
+		InputTexture(TextureType::DIFFUSE);
+		ImGui::SameLine();
+		ImGui::ColorEdit4("Albedo", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+
+		// Specular 
+		ImGui::Text("Specular:");
+		InputTexture(TextureType::SPECULAR);
+		ImGui::SameLine();
+		float posX = ImGui::GetCursorPosX();
+		ImGui::SliderFloat("Metalness", &shaderInputs.standardShaderProperties.metalness, 0.0f, 1.f);
+		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(posX, -15));
+		if (ImGui::Button("Reset Metalness")) shaderInputs.standardShaderProperties.metalness = DEFAULT_METALNESS;
+		ImGui::SetCursorPosX(posX);
+		ImGui::SliderFloat("Smoothness", &shaderInputs.standardShaderProperties.smoothness, 16.f, 128.f);
+		ImGui::SetCursorPosX(posX);
+		if (ImGui::Button("Reset Smoothness"))  shaderInputs.standardShaderProperties.smoothness = DEFAULT_SMOOTHNESS;
+
+		// Normal Map
+		ImGui::Text("Normal Map:");
+		InputTexture(TextureType::NORMALS);
+		break;
+	}
 
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
