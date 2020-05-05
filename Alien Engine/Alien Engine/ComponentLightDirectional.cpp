@@ -230,6 +230,7 @@ bool ComponentLightDirectional::DrawInspector()
 
 		ImGui::Text("Baked Depth Map");
 
+		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(300, 300));
 		for(int i = 0; i < num_of_static_shadowMap; ++i)
 			ImGui::Image((ImTextureID)light_props.bakedepthMap[i], ImVec2(300, 300));
 
