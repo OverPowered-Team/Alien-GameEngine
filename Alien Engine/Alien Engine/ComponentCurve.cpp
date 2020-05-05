@@ -339,9 +339,16 @@ float3 Curve::ValueAt(float at)
 	if (at < 0 || at > 1 || curve_points.empty() || control_points.empty()) {
 		return float3::zero();
 	}
+	else if (at == 1.0F) {
+		return curve_points.back();
+	}
 
-	uint index = Maths::Map(at, 0, 1, 0, curve_points.size() - 1);
-	return curve_points[index];
+	int index = (int)(float)(at * (float)(curve_points.size() - 1)); // starting guess
+	int indexAfter = index + 1;
+
+	float time = Maths::Map(at, 0.0F, 1.0F, times[index], times[indexAfter]);
+
+	return Lerp(curve_points[index], curve_points[indexAfter], time);
 }
 
 float3 Curve::NormalAt(float at)
@@ -478,6 +485,7 @@ void Curve::SetPoints(const std::vector<float3>& controlPoints, const std::vecto
 {
 	control_points.clear();
 	control_points_normals.clear();
+	times.clear();
 
 	control_points.assign(controlPoints.begin(), controlPoints.end());
 	control_points_normals.assign(normalPoints.begin(), normalPoints.end());
@@ -489,17 +497,27 @@ void Curve::Refresh()
 {
 	curve_points.clear();
 	curve_normals.clear();
+	times.clear();
 
 	CalculateCurvePoints();
 }
 
 void Curve::CalculateCurvePoints()
 {
+	int num_segments = (control_points.size() - 1) / 3;
+	float ratio_segments = 1 / (float)num_segments;
+	float toAdd = 0.0F;
 	for (uint i = 0; i < control_points.size() - 1; i += 3) {
-		for (int f = 0; f <= detail; ++f) {
-			curve_points.push_back(CalculateBezier(f/(float)detail, control_points[i], control_points[i + 1], control_points[i + 2], control_points[i + 3]));
-			curve_normals.push_back(Quat::SlerpVector(control_points_normals[i/3].Normalized(), control_points_normals[(i/3)+1].Normalized(), f / (float)detail));
+		for (int f = 0.0F; f <= detail; ++f) {
+			if (f == 0.0F && toAdd != 0.0F) {
+				continue;
+			}
+			float time = f / (float)detail;
+			curve_points.push_back(CalculateBezier(time, control_points[i], control_points[i + 1], control_points[i + 2], control_points[i + 3]));
+			curve_normals.push_back(Quat::SlerpVector(control_points_normals[i / 3].Normalized(), control_points_normals[(i / 3) + 1].Normalized(), time));
+			times.push_back(time * ratio_segments + toAdd);
 		}
+		toAdd = times.back();
 	}
 }
 
