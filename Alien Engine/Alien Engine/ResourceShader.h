@@ -84,6 +84,10 @@ public:
 
 	void SetUniformFloat3v(const std::string& name, const float3* vec, uint count);
 
+	void SetUniformFloatv(const std::string& name, const float* vec, uint count);
+
+	void SetUniformIntv(const std::string& name, const int* vec, uint count);
+
 	void SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3);
 	void SetUniform4f(const std::string& name, const float4& vec);
 

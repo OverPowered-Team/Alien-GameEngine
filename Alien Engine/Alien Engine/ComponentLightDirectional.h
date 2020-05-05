@@ -10,7 +10,7 @@ struct __declspec(dllexport) DirLightProperties
 	float intensity = 1.0f;
 	float3 position = float3::zero();
 	float3 fake_position = float3::zero();
-	float3 fake_position_baked = float3::zero();
+	float3 fake_position_baked[3];
 	float3 direction = float3::one();
 	float3 ambient = float3::zero();
 	float3 diffuse = float3::one();
@@ -20,7 +20,7 @@ struct __declspec(dllexport) DirLightProperties
 	uint depthMap = 0;
 	uint depthMapFBO;
 
-	uint bakedepthMap = 0;
+	uint bakedepthMap[3];
 	uint bakedepthMapFBO;
 
 	float4x4 viewMat;
@@ -36,9 +36,15 @@ public:
 	virtual ~ComponentLightDirectional();
 
 	void PostUpdate();
+
+	void BindForWriting(uint cascadeIndex);
+	void BindForReading();
+	void CalculateBakedViewMatrix();
+
 private:
 	void LightLogic();
 	void DrawScene(ComponentCamera* camera) override;
+
 
 	bool DrawInspector();
 	void OnDisable();
@@ -53,6 +59,8 @@ private:
 
 	void DrawIconLight();
 
+	uint num_of_static_shadowMap = 3;
+
 public:
 	float sizefrustrum = 88.f;
 	float distance_far_plane = 178.f;
@@ -62,7 +70,7 @@ public:
 	bool bakeShadows = true;
 
 	float4x4 projMatrix;
-	float4x4 viewMatrix;
+	float4x4 viewMatrix[3];
 
 private:
 	ComponentMesh* bulb = nullptr;

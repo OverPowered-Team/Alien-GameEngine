@@ -333,6 +333,24 @@ void ResourceShader::SetUniformFloat3v(const std::string& name, const float3* ve
 		glUniform3fv(location, count, vec[0].ptr());
 }
 
+void ResourceShader::SetUniformFloatv(const std::string& name, const float* vec, uint count)
+{
+	OPTICK_EVENT();
+
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1fv(location,count, vec);
+}
+
+void ResourceShader::SetUniformIntv(const std::string& name, const int* vec, uint count)
+{
+	OPTICK_EVENT();
+
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform1iv(location, count, vec);
+}
+
 void ResourceShader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
 	OPTICK_EVENT();
@@ -408,10 +426,10 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			std::string cdepthmap = std::string(cname).append(".depthMap");
 			SetUniform1i(cdepthmap, 4);
 
-			glActiveTexture(GL_TEXTURE5);
-			glBindTexture(GL_TEXTURE_2D, (*iter)->bakedepthMap);
+			(*iter)->light->BindForReading();
+			int bakedDepthMap[3] = { 5,6,7 };
 			std::string cdepthmapbaked = std::string(cname).append(".bakeShadows");
-			SetUniform1i(cdepthmapbaked, 5);
+			SetUniformIntv(cdepthmapbaked, bakedDepthMap, 3);
 		}
 		else
 			SetUniform1i(cshadow, 0);
@@ -424,11 +442,14 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 		SetUniformFloat3(clightPos, (*iter)->fake_position);
 
 		std::string clightPosBaked = std::string(cname).append(".lightPosBaked");
-		SetUniformFloat3(clightPosBaked, (*iter)->fake_position_baked);
-
-		char clightspaceMB[128];
-		sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i);
-		SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix);
+		SetUniformFloat3v(clightPosBaked, (*iter)->fake_position_baked, 3);
+		
+		for (int it = 0; it < 3; ++it)
+		{
+			char clightspaceMB[128];
+			sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i*3 + it);
+			SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix[it]);
+		}
 
 		++i;
 	}

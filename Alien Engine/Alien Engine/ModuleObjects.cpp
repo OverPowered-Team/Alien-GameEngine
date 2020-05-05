@@ -418,55 +418,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 		OnPreRender(game_viewport->GetCamera());
 
 		//predraw
+		CalculateShadows(dynamic_to_draw, game_viewport, static_to_draw, frustum_camera);
 
-		for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
-		{
-			if (!(*iter)->light->castShadows)
-				continue;
-			glViewport(0, 0, 2048, 2048);
-			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
-			glClear(GL_DEPTH_BUFFER_BIT);
-
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-
-					(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
-					float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
-					camera_pos.z = -camera_pos.z;
-					float3 camera_direction = game_viewport->GetCamera()->frustum.front;
-					float halfFarPlaneD = (*iter)->light->distance_far_plane;
-					float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
-
-					glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(game_viewport->GetCamera()->GetCameraPosition().x / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
-						glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z),
-						glm::vec3(0.0, 1.0, 0.0));
-
-					(*iter)->viewMat.Set(&viewMatrix[0][0]);
-
-					(*iter)->fake_position = light_pos;
-					(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-
-				}
-			}
-
-			if ((*iter)->light->bakeShadows)
-			{
-
-				octree.ShowAllStaticObjects(&static_to_draw, frustum_camera);
-				std::sort(static_to_draw.begin(), static_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-				glViewport(0, 0, 8192, 8192);
-				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->bakedepthMapFBO);
-				glClear(GL_DEPTH_BUFFER_BIT);
-				std::vector<std::pair<float, GameObject*>>::iterator it2 = static_to_draw.begin();
-				for (; it2 != static_to_draw.end(); ++it2) {
-					if ((*it2).second != nullptr && (*it2).second->cast_shadow) {
-						(*it2).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->light->viewMatrix, (*iter)->light->projMatrix, (*iter)->position);
-					}
-				}
-				(*iter)->light->bakeShadows = false;
-			}
-		}
 		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
 		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
 
@@ -574,16 +527,20 @@ void ModuleObjects::CalculateShadows(std::vector<std::pair<float, GameObject*>>&
 
 			octree.ShowAllStaticObjects(&static_to_draw, frustum_camera);
 			std::sort(static_to_draw.begin(), static_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-			glViewport(0, 0, 8192, 8192);
-			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->bakedepthMapFBO);
-			glClear(GL_DEPTH_BUFFER_BIT);
-			std::vector<std::pair<float, GameObject*>>::iterator it2 = static_to_draw.begin();
-			for (; it2 != static_to_draw.end(); ++it2) {
-				if ((*it2).second != nullptr && (*it2).second->cast_shadow) {
-					(*it2).second->PreDrawGame(viewport->GetCamera(), (*iter)->light->viewMatrix, (*iter)->light->projMatrix, (*iter)->position);
+			(*iter)->light->CalculateBakedViewMatrix();
+			for (uint i = 0; i < 3; ++i)
+			{
+				glViewport(0, 0, 2048, 2048);
+				(*iter)->light->BindForWriting(i);
+				glClear(GL_DEPTH_BUFFER_BIT);
+				std::vector<std::pair<float, GameObject*>>::iterator it2 = static_to_draw.begin();
+				for (; it2 != static_to_draw.end(); ++it2) {
+					if ((*it2).second != nullptr && (*it2).second->cast_shadow) {
+						(*it2).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->light->viewMatrix[i], (*iter)->light->projMatrix, (*iter)->position);
+					}
 				}
+				(*iter)->light->bakeShadows = false;
 			}
-			(*iter)->light->bakeShadows = false;
 		}
 	}
 }
