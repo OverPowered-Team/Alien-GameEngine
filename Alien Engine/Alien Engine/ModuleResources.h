@@ -139,6 +139,7 @@ public:
 	ResourceShader* water_shader = nullptr;
 	ResourceShader* shield_fresnel_shader = nullptr;
 	ResourceShader* shield_shader = nullptr;
+	ResourceTexture* alpha_noise_texture = nullptr;
 	FileNode* assets = nullptr;
 
 private:

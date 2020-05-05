@@ -93,6 +93,7 @@ bool ModuleResources::Start()
 
 	camera_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/camera.FBX");
 	light_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/bulb.fbx");
+	alpha_noise_texture = App->importer->LoadEngineTexture("Configuration/EngineTextures/alphanoise.png");
 
 	assets = new FileNode();
 	assets->is_file = false;

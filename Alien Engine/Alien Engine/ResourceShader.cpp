@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
+#include "ResourceTexture.h"
+
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer3D.h"
@@ -248,7 +250,11 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
-
+		
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
+		SetUniform1i("alpha_noise", 3);
+		SetUniform1f("burn", inputs.dissolveFresnelShaderProperties.burn);
 		ApplyLightsUniforms();
 		break; }
 

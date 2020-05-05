@@ -102,7 +102,10 @@ void ComponentMesh::DrawPolygon(ComponentCamera* camera)
 		return;
 
 	ResourceMaterial* material = mat->material;
+	//if (material->used_shader->GetShaderType() == SHADER_TEMPLATE::DISSOLVE)
+	//{
 
+	//}
 
 	if (transform->IsScaleNegative())
 		glFrontFace(GL_CW);

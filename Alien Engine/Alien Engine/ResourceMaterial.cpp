@@ -307,16 +307,6 @@ void ResourceMaterial::ApplyMaterial()
 	else
 		used_shader->SetUniform1i("objectMaterial.hasNormalMap", 0);
 
-	if (textures[(uint)TextureType::NOISE_ALPHA].first != NO_TEXTURE_ID && textures[(uint)TextureType::NOISE_ALPHA].second != nullptr)
-	{
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, textures[(uint)TextureType::NOISE_ALPHA].second->id);
-		used_shader->SetUniform1i("objectMaterial.normalMap", 3);
-		used_shader->SetUniform1i("hasAlpha", 1);
-	}
-	else
-		used_shader->SetUniform1i("hasAlpha", 0);
-
 	//default_shader->DrawShadows();
 
 	// Update uniforms
@@ -624,8 +614,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		break; }
 	case SHADER_TEMPLATE::DISSOLVE:
 	{
-		ImGui::Text("Alpha noise:");
-		InputTexture(TextureType::DIFFUSE);
+		ImGui::SliderFloat("Burn", &shaderInputs.dissolveFresnelShaderProperties.burn, 0, 1);
 		// Diffuse 
 		ImGui::Text("Diffuse:");
 		InputTexture(TextureType::DIFFUSE);

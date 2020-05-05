@@ -138,6 +138,8 @@ struct Material {
     float smoothness;
     float metalness;
 };
+uniform sampler2D alpha_noise;
+uniform float burn;
 
 // Function declarations
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMat, vec2 texCoords,vec4 lightSpaceMat);
@@ -213,9 +215,17 @@ void main()
     for(int i = 0; i < max_lights.z; i++)
         result += CalculateSpotLight(spot_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);   
 
+    float alpha;
     // ----------------------------------------------------------
-
-    FragColor = vec4(result, 1.0) * objectColor;
+    if(texture2D(alpha_noise, texCoords).r > burn)
+    {
+        alpha =0;
+    }
+    else
+    {
+        alpha = 1;
+    }
+    FragColor = vec4(result, alpha) * objectColor;
 
     if(activeFog == true)
     {
