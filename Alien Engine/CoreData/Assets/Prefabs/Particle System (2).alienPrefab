@@ -1,12 +1,12 @@
 {
-    "Name": "Particle System",
+    "Name": "Particle System (2)",
     "Prefab": {
         "GameObjects": [
             {
                 "Name": "Particle System",
                 "FamilyNumber": 1,
-                "ID": "3475616439904065510",
-                "ParentID": "11275763136862692239",
+                "ID": "17486381870415725375",
+                "ParentID": "13830520216048424476",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": true,
@@ -15,7 +15,7 @@
                 "IsPrefab": true,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
-                "PrefabID": "468692835943225534",
+                "PrefabID": "8058484998357124131",
                 "Components": [
                     {
                         "Type": 0,
@@ -36,12 +36,12 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "5078582676641370761"
+                        "ID": "9520739533346732409"
                     },
                     {
                         "Type": 15,
-                        "ID": "9756877553565297079",
-                        "Billboard": 4,
+                        "ID": "8693552026579207981",
+                        "Billboard": 0,
                         "Start": {
                             "Position": [
                                 0,
@@ -56,23 +56,29 @@
                             ],
                             "Global": true,
                             "Velocity": [
-                                0.013514614664018154,
-                                -0.53176575899124146,
-                                -0.84678369760513306
+                                3.3410396575927734,
+                                4.9683570861816406,
+                                -0.39100295305252075
                             ],
                             "Force": [
                                 0,
                                 0,
                                 0
                             ],
-                            "Speed": 1,
+                            "Speed": 6,
                             "Color": [
-                                0.80000001192092896,
-                                0.80000001192092896,
+                                1,
+                                0,
                                 0.80000001192092896,
                                 1
                             ],
+                            "SizeStart3D": false,
                             "Size": 1,
+                            "Size3D": [
+                                1,
+                                1,
+                                1
+                            ],
                             "LightColor": [
                                 0,
                                 0,
@@ -80,16 +86,18 @@
                                 0
                             ],
                             "MaxLifeTime": 5,
-                            "AxisRotationStart": true,
+                            "AxisRotationStart": false,
                             "Angle3D": [
-                                -90,
                                 0,
-                                180
+                                0,
+                                0
                             ],
-                            "ChangeOverLifeTime": false,
-                            "RotateOverLifeTime": true
+                            "ChangeOverLifeTime": true,
+                            "RotateOverLifeTime": false
                         },
                         "End": {
+                            "FinalTime": 2,
+                            "Speed": 0,
                             "Color": [
                                 1,
                                 1,
@@ -97,6 +105,11 @@
                                 1
                             ],
                             "Size": 1,
+                            "Size3D": [
+                                1,
+                                1,
+                                1
+                            ],
                             "LightColor": [
                                 -1.5816464369601856e+38,
                                 -1.5816464369601856e+38,
@@ -105,7 +118,7 @@
                             ],
                             "Force": [
                                 0,
-                                -10,
+                                0,
                                 0
                             ],
                             "AxisRotation": false,
@@ -132,7 +145,7 @@
                                 10
                             ],
                             "MaxLife": 10,
-                            "CurrentLife": 3.5689976215362549,
+                            "CurrentLife": 6.4230070114135742,
                             "SpawnRate": 20,
                             "Delay": 2,
                             "Loop": true,
@@ -171,7 +184,7 @@
                             "Equation": 0
                         },
                         "HasMaterial": true,
-                        "MaterialID": "826586160564093285",
+                        "MaterialID": "0",
                         "HasAnimation": false,
                         "Animation": {
                             "AnimSpeed": 0.10000000149011612,
@@ -180,14 +193,7 @@
                             "StartFrame": 0,
                             "EndFrame": 0
                         },
-                        "HasMesh": true,
-                        "Mesh": {
-                            "MeshType": 7,
-                            "Size": 1,
-                            "MeshesAttached": {
-                                "MeshID_0": "13948970600398492777"
-                            }
-                        }
+                        "HasMesh": false
                     }
                 ]
             }
