@@ -47,6 +47,7 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "ResourceShader.h"
 #include "glm/glm/glm.hpp"
 #include "glm/glm/gtc/type_ptr.hpp"
 #include "glm/glm/gtc/matrix_transform.hpp"
@@ -293,6 +294,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> to_draw_no_shader;
 			std::vector<std::pair<float, GameObject*>> to_draw_transparency;
 
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
@@ -311,7 +313,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, &to_draw_transparency, &to_draw_ui, frustum_camera);
+					(*item)->SetDrawList(&to_draw, &to_draw_no_shader, &to_draw_transparency, &to_draw_ui, frustum_camera);
 				}
 			}
 
@@ -365,24 +367,56 @@ update_status ModuleObjects::PostUpdate(float dt)
 			viewport->GetCamera()->DrawSkybox(); 
 
 			// First draw solids
+			ResourceShader* current_used_shader = App->resources->default_shader;
 
-			for (; it != to_draw.end(); ++it) {
+			// Draw Solids without shaders 
+
+			while (!to_draw.empty())
+			{
+				current_used_shader->Bind();
+				current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+
+				for (it = to_draw.begin(); it != to_draw.end();) {
+					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
+					if (material->GetUsedShader() == current_used_shader)
+					{
+						(*it).second->DrawScene(viewport->GetCamera());
+						it = to_draw.erase(it);
+						continue;
+					}
+					++it;
+				}
+
+				current_used_shader->Unbind();
+
+				if (!to_draw.empty())
+				{
+					ComponentMaterial* nextMat = to_draw.front().second->GetComponent<ComponentMaterial>();
+					if(nextMat != nullptr)
+					current_used_shader = nextMat->GetUsedShader();
+				}
+
+
+			}
+
+			for (it = to_draw_no_shader.begin(); it != to_draw_no_shader.end(); ++it) {
+
 				if ((*it).second != nullptr) {
 					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera(),float4(0.0f,-1.0f,0.0f,100000.0f));
+						(*it).second->DrawScene(viewport->GetCamera());
 					else
-						(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
 			
 			// Then draw transparents
-			it = to_draw_transparency.begin();
-			for (; it != to_draw_transparency.end(); ++it) {
+			
+			for (it = to_draw_transparency.begin(); it != to_draw_transparency.end(); ++it) {
 				if ((*it).second != nullptr) {
 					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+						(*it).second->DrawScene(viewport->GetCamera());
 					else
-						(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+						(*it).second->DrawGame(viewport->GetCamera());
 				}
 			}
 

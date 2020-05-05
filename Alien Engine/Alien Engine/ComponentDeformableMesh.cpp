@@ -161,9 +161,9 @@ void ComponentDeformableMesh::PreDrawPolygonForShadows(ComponentCamera* camera, 
 	ComponentMesh::PreDrawPolygonForShadows(camera, ViewMat, ProjMatrix, position);
 }
 
-void ComponentDeformableMesh::SetUniforms(ResourceMaterial* resource_material, ComponentCamera* camera)
+void ComponentDeformableMesh::SetUniforms(ResourceMaterial* resource_material)
 {
-	ComponentMesh::SetUniforms(resource_material, camera);
+	ComponentMesh::SetUniforms(resource_material);
 	resource_material->used_shader->SetUniformMat4f("gBones", bones_matrix, bones.size());
 }
 

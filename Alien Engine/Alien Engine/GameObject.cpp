@@ -187,7 +187,7 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 }
 
-void GameObject::DrawScene(ComponentCamera* camera, const float4& clip_plane)
+void GameObject::DrawScene(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 
@@ -220,7 +220,7 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	}
 }
 
-void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
+void GameObject::DrawGame(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 
@@ -231,7 +231,7 @@ void GameObject::DrawGame(ComponentCamera* camera, const float4& clip_plane)
 
 }
 
-void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
+void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_no_shader, std::vector<std::pair<float, GameObject*>>* to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
@@ -267,14 +267,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
-			to_draw->push_back({ distance, this });
+			to_draw_no_shader->push_back({ distance, this });
 		}
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
-			(*child)->SetDrawList(to_draw, to_draw_transparency, to_draw_ui, camera);
+			(*child)->SetDrawList(to_draw, to_draw_no_shader, to_draw_transparency, to_draw_ui, camera);
 		}
 	}
 

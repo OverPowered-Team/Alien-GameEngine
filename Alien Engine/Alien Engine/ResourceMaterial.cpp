@@ -274,9 +274,6 @@ void ResourceMaterial::ApplyMaterial()
 {
 	OPTICK_EVENT();
 
-	// Bind the actual shader
-	used_shader->Bind();
-
 	if (textures[(uint)TextureType::DIFFUSE].first != NO_TEXTURE_ID && textures[(uint)TextureType::DIFFUSE].second != nullptr)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -340,8 +337,6 @@ void ResourceMaterial::ApplyPreRenderShadows()
 
 void ResourceMaterial::UnbindMaterial()
 {
-	used_shader->Unbind();
-	
 	if (textures[(uint)TextureType::SPECULAR].first != NO_TEXTURE_ID)
 	{	
 		glActiveTexture(GL_TEXTURE1);
