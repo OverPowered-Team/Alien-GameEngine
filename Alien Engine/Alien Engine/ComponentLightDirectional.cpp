@@ -28,6 +28,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	glGenFramebuffers(1, &light_props.bakedepthMapFBO);
 
 	light_props.light = this;
+	light_props.enabled = enabled;
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
 	bulb->mesh = App->resources->light_mesh;
@@ -245,11 +246,13 @@ bool ComponentLightDirectional::DrawInspector()
 void ComponentLightDirectional::OnEnable()
 {
 	enabled = true;
+	light_props.enabled = true;
 }
 
 void ComponentLightDirectional::OnDisable()
 {
 	enabled = false;
+	light_props.enabled = false;
 }
 
 void ComponentLightDirectional::Clone(Component* clone)

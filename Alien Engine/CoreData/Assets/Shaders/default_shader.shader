@@ -102,6 +102,7 @@ void main()
 // Structs
 struct DirectionalLight
 {
+    bool enabled;
     float intensity;
     vec3 dirLightProperties[5];
     sampler2D depthMap;
@@ -115,6 +116,7 @@ struct DirectionalLight
 
 struct PointLight
 {
+    bool enabled;
     float intensity;
     vec3 pointLightProperties[4];
     float constant;
@@ -124,6 +126,7 @@ struct PointLight
 
 struct SpotLight
 {
+    bool enabled;
     float intensity;
     vec3 spotLightProperties[5];
     float constant;
@@ -244,7 +247,11 @@ void main()
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked0, vec4 lightSpaceMatBaked1, vec4 lightSpaceMatBaked2)
 {
     // Intensity
-    float intensity = light.intensity;
+    float intensity = 0.0;
+    if(light.enabled)
+        intensity = light.intensity;
+    else
+    intensity = 0.0;
 
     // Ambient
     vec3 ambient = light.dirLightProperties[indexAmbient];
@@ -298,7 +305,11 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMaterial, vec2 texCoords)
 {
     // Intensity
-    float intensity = light.intensity;
+    float intensity = 0.0;
+    if(light.enabled)
+        intensity = light.intensity;
+    else
+        intensity = 0.0;
 
     // Ambient
     vec3 ambient = light.pointLightProperties[indexAmbient];
@@ -328,7 +339,11 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
 vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMaterial, vec2 texCoords)
 {
     // Intensity
-    float intensity = light.intensity;
+    float intensity = 0.0;
+    if(light.enabled)
+        intensity = light.intensity;
+    else
+        intensity = 0.0;
 
     // ambient
     vec3 ambient = light.spotLightProperties[indexAmbient];
