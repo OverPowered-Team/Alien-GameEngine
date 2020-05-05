@@ -140,20 +140,20 @@ void ComponentUI::Draw(bool isGame)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
-	float4x4 ortho_matrix = float4x4((2.0f / App->ui->panel_game->width), 0.0f, 0.0f, -(App->ui->panel_game->width / App->ui->panel_game->width),
+	/*float4x4 ortho_matrix = float4x4((2.0f / App->ui->panel_game->width), 0.0f, 0.0f, -(App->ui->panel_game->width / App->ui->panel_game->width),
 		0.0f, (2.0f / App->ui->panel_game->height), 0.0f, -(App->ui->panel_game->height / App->ui->panel_game->height),
 		0.0f, 0.0f, (-2.0f / 2.0f), -(0.0 / 2.0f),
-		0.0f, 0.0f, 0.0f, 1.0f);
+		0.0f, 0.0f, 0.0f, 1.0f);*/
 
 	if (isGame && App->renderer3D->actual_game_camera != nullptr && !canvas->isWorld) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 #ifndef GAME_VERSION
-		//glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0,'F', 'F');
-		glPushMatrix();
+		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0,'F', 'F');
+		/*glPushMatrix();
 		glMultMatrixf(ortho_matrix.ptr());
-		glPopMatrix();
+		glPopMatrix();*/
 #else
 		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
 #endif
