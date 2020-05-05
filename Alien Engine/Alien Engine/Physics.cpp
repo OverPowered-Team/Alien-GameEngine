@@ -24,11 +24,15 @@ bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, RaycastHit
 
 const std::vector<RaycastHit>& Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
 {
-	return  App->physx->RaycastAll(origin, unitDir, maxDistance);
+	static std::vector<RaycastHit> ret;
+	ret = App->physx->RaycastAll(origin, unitDir, maxDistance);
+	return ret;
 }
 
 // TODO: uncomment this when we have heap change integred
 const std::vector<ComponentCollider*>& Physics::OverlapSphere(float3 center, float radius)
 {
-	return  App->physx->OverlapSphere(center, radius);;
+	static  std::vector<ComponentCollider*> ret;
+	ret = App->physx->OverlapSphere(center, radius);
+	return ret;
 }
