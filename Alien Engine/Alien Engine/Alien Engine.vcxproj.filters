@@ -121,6 +121,9 @@
     <Filter Include="Tools\FreeImage">
       <UniqueIdentifier>{78bf3428-1a09-4931-84fd-d3b902f84b5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\TerrainEditor">
+      <UniqueIdentifier>{ae9f9b55-4488-42d4-bd8a-57a70d85c844}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -654,8 +657,12 @@
     <ClInclude Include="ModuleFadeToBlack.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleTerrain.h" />
+    <ClInclude Include="Chunk.h">
+      <Filter>Components\TerrainEditor</Filter>
+    </ClInclude>
     <ClInclude Include="PanelTerrainEditor.h">
-      <Filter>Panels</Filter>
+      <Filter>Components\TerrainEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2630,8 +2637,11 @@
     <ClCompile Include="ModuleFadeToBlack.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Chunk.cpp">
+      <Filter>Components\TerrainEditor</Filter>
+    </ClCompile>
     <ClCompile Include="PanelTerrainEditor.cpp">
-      <Filter>Panels</Filter>
+      <Filter>Components\TerrainEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
