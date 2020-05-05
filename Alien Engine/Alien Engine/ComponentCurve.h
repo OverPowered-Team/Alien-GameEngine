@@ -49,6 +49,8 @@ private:
 	std::vector<float3> curve_normals;
 	std::vector<float3> curve_points;
 
+	std::vector<float> times;
+
 	float3 position = float3::zero();
 };
 
@@ -63,7 +65,7 @@ public:
 
 private:
 
-	void DrawScene();
+	void DrawScene(ComponentCamera* camera);
 
 	bool DrawInspector();
 

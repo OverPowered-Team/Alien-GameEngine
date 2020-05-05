@@ -225,6 +225,15 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
+	
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
+	{
+		if (GetSelectedObjects().front())
+		{
+			App->renderer3D->actual_game_camera->WorldToScreenPoint(GetSelectedObjects().front()->transform->GetGlobalPosition());
+		}
+	}
+
 	OPTICK_EVENT();
 	base_game_object->Update();
 	if (!functions_to_call.empty()) {
@@ -536,7 +545,7 @@ void ModuleObjects::CalculateShadows(std::vector<std::pair<float, GameObject*>>&
 				std::vector<std::pair<float, GameObject*>>::iterator it2 = static_to_draw.begin();
 				for (; it2 != static_to_draw.end(); ++it2) {
 					if ((*it2).second != nullptr && (*it2).second->cast_shadow) {
-						(*it2).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->light->viewMatrix[i], (*iter)->light->projMatrix, (*iter)->position);
+						(*it2).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->light->viewMatrix[i], (*iter)->light->projMatrix, (*iter)->fake_position_baked[i]);
 					}
 				}
 				(*iter)->light->bakeShadows = false;

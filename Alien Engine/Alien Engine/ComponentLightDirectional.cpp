@@ -146,8 +146,8 @@ void ComponentLightDirectional::DrawScene(ComponentCamera* camera)
 void ComponentLightDirectional::CalculateBakedViewMatrix()
 {
 	//Calculate ortographic light frustum position
-	float3 far_position = (light_props.position + float3(sizefrustrumbaked, 0 ,0)) / sizefrustrumbaked;
-	float3 near_position = (light_props.position - float3(sizefrustrumbaked, 0, 0)) / sizefrustrumbaked;
+	float3 far_position = (light_props.position + float3(2 * sizefrustrumbaked, 0 ,0)) / sizefrustrumbaked;
+	float3 near_position = (light_props.position - float3(2 * sizefrustrumbaked, 0, 0)) / sizefrustrumbaked;
 	float3 center_pos = (light_props.position) / sizefrustrumbaked ;
 
 	//Calculate ortographic light frustum direction
@@ -242,9 +242,14 @@ bool ComponentLightDirectional::DrawInspector()
 	return true;
 }
 
+void ComponentLightDirectional::OnEnable()
+{
+	enabled = true;
+}
+
 void ComponentLightDirectional::OnDisable()
 {
-
+	enabled = false;
 }
 
 void ComponentLightDirectional::Clone(Component* clone)

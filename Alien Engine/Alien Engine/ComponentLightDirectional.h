@@ -11,8 +11,8 @@ struct __declspec(dllexport) DirLightProperties
 	float3 position = float3::zero();
 	float3 fake_position = float3::zero();
 	float3 fake_position_baked[3];
-	float3 direction = float3::one();
-	float3 ambient = float3::zero();
+	float3 direction = float3::zero();
+	float3 ambient = {0.76F,0.76F,0.76F };
 	float3 diffuse = float3::one();
 	float3 specular = float3::one();
 
@@ -47,6 +47,7 @@ private:
 
 
 	bool DrawInspector();
+	void OnEnable();
 	void OnDisable();
 
 	void Clone(Component* clone);
