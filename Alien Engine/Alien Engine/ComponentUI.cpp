@@ -140,12 +140,20 @@ void ComponentUI::Draw(bool isGame)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
+	float4x4 ortho_matrix = float4x4((2.0f / App->ui->panel_game->width), 0.0f, 0.0f, -(App->ui->panel_game->width / App->ui->panel_game->width),
+		0.0f, (2.0f / App->ui->panel_game->height), 0.0f, -(App->ui->panel_game->height / App->ui->panel_game->height),
+		0.0f, 0.0f, (-2.0f / 2.0f), -(0.0 / 2.0f),
+		0.0f, 0.0f, 0.0f, 1.0f);
+
 	if (isGame && App->renderer3D->actual_game_camera != nullptr && !canvas->isWorld) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 #ifndef GAME_VERSION
-		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		//glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0,'F', 'F');
+		glPushMatrix();
+		glMultMatrixf(ortho_matrix.ptr());
+		glPopMatrix();
 #else
 		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
 #endif
@@ -178,7 +186,6 @@ void ComponentUI::Draw(bool isGame)
 	
 
 	if (texture != nullptr) {
-		//glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 	}
@@ -207,11 +214,6 @@ void ComponentUI::Draw(bool isGame)
 		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
 		float4x4 uiGlobal = uiLocal;
 
-		/*	if (!particleInfo.globalTransform)
-			{
-				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
-				particleGlobal = parentGlobal * particleLocal;
-			}*/
 
 		glPushMatrix();
 		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
