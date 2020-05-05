@@ -72,10 +72,16 @@ public:
 
 	void DrawSkybox();
 
+	static float2 WorldToScreenPoint(const float3& world_position);
+
 private:
 	void AspectRatio(int width_ratio, int height_ratio, bool fov_type = 0);
 
 	bool DrawInspector();
+
+	void Update() override; 
+
+	void DrawScene(ComponentCamera* camera) override; 
 
 	void DrawFrustum();
 	void DrawIconCamera();

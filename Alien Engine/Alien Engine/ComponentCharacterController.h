@@ -86,7 +86,6 @@ public:
 	bool SetPosition(float3 position) const;
 	float3 GetPosition() const;
 	float3 GetFootPosition() const;
-
 	// TODO: make own copy of collision flag to not work with physx data outside.
 
 	// Move by motion, this function doesn't apply any gravity,
@@ -98,6 +97,8 @@ private:
 	void SetDefaultConf();
 
 	void OnControllerColliderHit(ControllerColliderHit hit);
+	
+
 
 protected:
 
@@ -106,7 +107,7 @@ protected:
 	void Reset() {}*/
 	void Clone(Component* clone) {}
 	void Update();
-	void DrawScene();
+	void DrawScene(ComponentCamera* camera) override;
 	bool DrawInspector();
 
 	void HandleAlienEvent(const AlienEvent& e);

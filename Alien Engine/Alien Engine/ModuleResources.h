@@ -137,7 +137,8 @@ public:
 	ResourceShader* skybox_shader = nullptr;
 	ResourceShader* default_shader = nullptr;
 	ResourceShader* water_shader = nullptr;
-
+	ResourceShader* shield_fresnel_shader = nullptr;
+	ResourceShader* shield_shader = nullptr;
 	FileNode* assets = nullptr;
 
 private:

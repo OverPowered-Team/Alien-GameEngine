@@ -38,6 +38,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
+	friend class ComponentCurve;
 	friend class ComponentCheckbox;
 	friend class Component;
 	friend class ComponentText;
@@ -108,6 +109,7 @@ public:
 	static std::vector<GameObject*>& FindGameObjectsWithTag(const char* tag_to_find);
 	// parent = nullptr is root
 	static GameObject* Instantiate(const Prefab& prefab, const float3& position, bool check_child = false, GameObject* parent = nullptr);
+	static GameObject* Instantiate(const char* prefab, const float3& position, bool check_child = false, GameObject* parent = nullptr);
 	static GameObject* CloneObject(GameObject* to_clone, GameObject* parent = nullptr);
 	// TODO:
 	/*
@@ -263,6 +265,7 @@ private:
 	// find
 	GameObject* Find(const char* name);
 	GameObject* GetGameObjectByID(const u64& id);
+	GameObject* GetGameObjectByIDReverse(const u64& id);
 	GameObject* FindTag(const char* tag_to_find);
 	void FindTags(const char* tag_to_find, std::vector<GameObject*>* objects);
 

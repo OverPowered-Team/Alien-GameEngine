@@ -220,12 +220,14 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
-
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
-	//{
-	//	App->fade_to_black->StartFade(2, FadeType::COMPLETE_FADE, FadeToBlackType::FADE);
-	//}
-
+	
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
+	{
+		if (GetSelectedObjects().front())
+		{
+			App->renderer3D->actual_game_camera->WorldToScreenPoint(GetSelectedObjects().front()->transform->GetGlobalPosition());
+		}
+	}
 
 	OPTICK_EVENT();
 	base_game_object->Update();
@@ -253,20 +255,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 	base_game_object->PostUpdate();
 	ScriptsPostUpdate();
 
-	//float2 vg_size = App->camera->scene_viewport->GetSize();
-
-	/*
-	ImGui::Begin("WReflection");
-	ImGui::Text("Test");
-	ImGui::Image((ImTextureID)wfbos->GetReflectionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
-	ImGui::End();
-
-	ImGui::Begin("WRefraction");
-	ImGui::Text("Test2");
-	ImGui::Image((ImTextureID)wfbos->GetRefractionTexture(), ImVec2(vg_size.x * 0.5f, vg_size.y * 0.5f));
-	ImGui::End();
-	*/
-
 #ifndef GAME_VERSION
 
 	static bool light_view = false;
@@ -280,80 +268,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 		viewport->BeginViewport();
 		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
 		bool isGameCamera = (viewport == game_viewport) ? true : false;
-
-		//if (isGameCamera)
-		//{
-		//	std::vector<std::pair<float, GameObject*>> to_draw;
-		//	std::vector<std::pair<float, GameObject*>> to_draw_ui;
-
-		//	if (base_game_object->HasChildren())
-		//	{
-		//		ComponentCamera* frustum_camera = viewport->GetCamera();
-
-		//		if (check_culling_in_scene && App->renderer3D->actual_game_camera)
-		//		{
-		//			frustum_camera = App->renderer3D->actual_game_camera;
-		//		}
-
-		//		octree.SetStaticDrawList(&to_draw, frustum_camera);
-
-		//		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-		//		for (; item != base_game_object->children.end(); ++item) {
-		//			if (*item != nullptr && (*item)->IsEnabled()) {
-		//				(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
-		//			}
-		//		}
-
-		//		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-		//	}
-
-		//	glEnable(GL_CLIP_DISTANCE0);
-
-		//	/* Reflection */
-		//	wfbos->BindReflectionFrameBuffer();
-		//	{
-		//		float distance = 2 * (App->renderer3D->actual_game_camera->GetCameraPosition().y - 0.0f);
-		//		ComponentCamera* c_cam = App->renderer3D->actual_game_camera;
-		//		float c_pos_y = c_cam->GetCameraPosition().y;
-		//		c_pos_y -= distance;
-		//		c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
-		//		c_cam->InvertPitch();
-		//		if (base_game_object->HasChildren()) {
-		//			
-		//			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-		//			for (; it != to_draw.end(); ++it) {
-		//				if ((*it).second != nullptr) {
-		//					viewport->GetCamera()->DrawSkybox();
-		//						//(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
-		//				}
-		//			}
-		//		}
-
-		//		c_pos_y = c_cam->GetCameraPosition().y;
-		//		c_pos_y += distance;
-		//		c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
-		//		c_cam->InvertPitch();
-		//	}
-		//	wfbos->UnbindCurrentFrameBuffer();
-
-		//	/* Refraction */
-		//	wfbos->BindRefractionFrameBuffer();
-		//	{
-		//		if (base_game_object->HasChildren())
-		//		{
-		//			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-		//			for (; it != to_draw.end(); ++it) {
-		//				if ((*it).second != nullptr) {
-		//					viewport->GetCamera()->DrawSkybox();
-		//					//(*it).second->DrawGame(viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
-		//				}
-		//			}
-		//		}
-		//	}
-		//	wfbos->UnbindCurrentFrameBuffer();
-
-		//	glDisable(GL_CLIP_DISTANCE0);
-		//}
 
 		viewport->BeginViewport();
 		if (printing_scene)
@@ -389,6 +303,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			std::vector<std::pair<float, GameObject*>> to_draw;
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
+			std::vector<std::pair<float, GameObject*>> ui_2d;
+			std::vector<std::pair<float, GameObject*>> ui_world;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
 
@@ -450,7 +366,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 
 			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-							
+						
+			viewport->GetCamera()->DrawSkybox(); 
+
 			for (; it != to_draw.end(); ++it) {
 				if ((*it).second != nullptr) {
 					if (printing_scene)
@@ -460,18 +378,30 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
+			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
 			
-			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
-			if (!printing_scene) {
-				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-			}
 			ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
-			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-			for (; it_ui != to_draw_ui.end(); ++it_ui) {
-				if ((*it_ui).second != nullptr) {
-					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+			for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+				if ((*it_ui_2d).second != nullptr) {
+					ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{			
+						/*ui->Orientate(mainCamera);
+						ui->Rotate();*/
+						ui->Draw(!printing_scene);
+
+					}
+				}
+			}
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+			for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+				if ((*it_ui_world).second != nullptr) {
+					ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+					if (ui != nullptr && ui->IsEnabled())
+					{
 						ui->Orientate(mainCamera);
 						ui->Rotate();
 						ui->Draw(!printing_scene);
@@ -498,94 +428,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
 
-	//
-	//glEnable(GL_CLIP_DISTANCE0);
-
-	//// Reflection 
-	//wfbos->BindReflectionFrameBuffer();
-	//{
-	//	float distance = 2 * (App->renderer3D->actual_game_camera->GetCameraPosition().y - 0.0f);
-	//	ComponentCamera* c_cam = App->renderer3D->actual_game_camera;
-	//	float c_pos_y = c_cam->GetCameraPosition().y;
-	//	c_pos_y -= distance;
-	//	c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
-	//	c_cam->InvertPitch();
-	//	if (base_game_object->HasChildren()) {
-	//		std::vector<std::pair<float, GameObject*>> to_draw;
-	//		std::vector<std::pair<float, GameObject*>> to_draw_ui;
-
-	//		ComponentCamera* frustum_camera = game_viewport->GetCamera();
-
-	//		if (check_culling_in_scene && App->renderer3D->actual_game_camera)
-	//		{
-	//			frustum_camera = App->renderer3D->actual_game_camera;
-	//		}
-
-	//		octree.SetStaticDrawList(&to_draw, frustum_camera);
-
-	//		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-	//		for (; item != base_game_object->children.end(); ++item) {
-	//			if (*item != nullptr && (*item)->IsEnabled()) {
-	//				(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
-	//			}
-	//		}
-
-	//		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-
-	//		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-	//		for (; it != to_draw.end(); ++it) {
-	//			if ((*it).second != nullptr) {
-	//				(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, 1.0f, 0.0f, -0.0f));
-	//			}
-	//		}
-	//	}
-
-	//	c_pos_y = c_cam->GetCameraPosition().y;
-	//	c_pos_y += distance;
-	//	c_cam->SetCameraPosition(float3(c_cam->GetCameraPosition().x, c_pos_y, c_cam->GetCameraPosition().z));
-	//	c_cam->InvertPitch();
-	//}
-	//wfbos->UnbindCurrentFrameBuffer();
-
-	//// efraction
-	//wfbos->BindRefractionFrameBuffer();
-	//{
-	//	if (base_game_object->HasChildren())
-	//	{
-	//		std::vector<std::pair<float, GameObject*>> to_draw;
-	//		std::vector<std::pair<float, GameObject*>> to_draw_ui;
-
-	//		ComponentCamera* frustum_camera = game_viewport->GetCamera();
-
-	//		if (check_culling_in_scene && App->renderer3D->actual_game_camera)
-	//		{
-	//			frustum_camera = App->renderer3D->actual_game_camera;
-	//		}
-
-	//		octree.SetStaticDrawList(&to_draw, frustum_camera);
-
-	//		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
-	//		for (; item != base_game_object->children.end(); ++item) {
-	//			if (*item != nullptr && (*item)->IsEnabled()) {
-	//				(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
-	//			}
-	//		}
-
-	//		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-
-	//		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-	//		for (; it != to_draw.end(); ++it) {
-	//			if ((*it).second != nullptr) {
-	//				(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 1.0f));
-	//			}
-	//		}
-	//	}
-	//}
-	//wfbos->UnbindCurrentFrameBuffer();
-
-	//glDisable(GL_CLIP_DISTANCE0);
-	
-
 	game_viewport->BeginViewport();
 
 	if (base_game_object->HasChildren()) {
@@ -593,6 +435,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		std::vector<std::pair<float, GameObject*>> to_draw;
 		std::vector<std::pair<float, GameObject*>> to_draw_ui;
+		std::vector<std::pair<float, GameObject*>> ui_2d;
+		std::vector<std::pair<float, GameObject*>> ui_world;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
@@ -643,6 +487,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
 		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 
+		game_viewport->GetCamera()->DrawSkybox();
+
 		for (; it != to_draw.end(); ++it) {
 			if ((*it).second != nullptr) {
 				(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
@@ -651,13 +497,29 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		OnPostRender(game_viewport->GetCamera());
 
-		std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-		std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-		for (; it_ui != to_draw_ui.end(); ++it_ui) {
-			if ((*it_ui).second != nullptr) {
-				ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+		UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
+		ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
+
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+		for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+			if ((*it_ui_2d).second != nullptr) {
+				ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 				if (ui != nullptr && ui->IsEnabled())
 				{
+					ui->Draw(!printing_scene);
+
+				}
+			}
+		}
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+		for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+			if ((*it_ui_world).second != nullptr) {
+				ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+				if (ui != nullptr && ui->IsEnabled())
+				{
+					ui->Orientate(mainCamera);
+					ui->Rotate();
 					ui->Draw(!printing_scene);
 
 				}
@@ -1731,6 +1593,7 @@ void ModuleObjects::SwapReturnZ(bool get_save, bool delete_current)
 
 void ModuleObjects::HotReload()
 {
+	inHotReload = true;
 	JSON_Value* value = json_value_init_object();
 	JSON_Object* json_object = json_value_get_object(value);
 	json_serialize_to_file_pretty(value, "Library/ScriptsTEMP.alien");
@@ -1788,15 +1651,18 @@ void ModuleObjects::HotReload()
 			}
 		}
 	}
+	inHotReload = false;
 }
 
 bool ModuleObjects::SortGameObjectToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from near to far
 	return first.first > last.first;
 }
 
 bool ModuleObjects::SortUIToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from far to near
 	return first.first < last.first;
 }
 
@@ -2111,7 +1977,7 @@ void ModuleObjects::DeleteReturns()
 
 void ModuleObjects::UpdateGamePadInput()
 {
-	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation))
+	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->active)
 	{
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_UP) == KEY_DOWN)
 		{
@@ -2253,6 +2119,39 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	return canvas;
 }
 
+void ModuleObjects::UIOrdering(std::vector<std::pair<float, GameObject*>>* current, std::vector<std::pair<float, GameObject*>>* ui_2d, std::vector<std::pair<float, GameObject*>>* ui_world)
+{
+	std::vector<std::pair<float, GameObject*>>::iterator it_ui = current->begin();
+	for (; it_ui != current->end(); ++it_ui)
+	{
+		if ((*it_ui).second != nullptr)
+		{
+			ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+			if (ui->canvas != nullptr && !ui->canvas->isWorld)
+				ui_2d->push_back((*it_ui));
+
+			else if (ui->canvas != nullptr && ui->canvas->isWorld)
+				ui_world->push_back((*it_ui));
+		}
+	}
+
+#ifndef GAME_VERSION
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortUIToDraw);
+	if (!printing_scene) {
+		std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	}
+
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+#else
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+
+#endif
+
+}
+
+
+
 void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec)
 {
 	auto item = listeners->begin();
@@ -2261,7 +2160,7 @@ void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function
 		for (auto scripts = scriptsVec.begin(); scripts != scriptsVec.end(); ++scripts) {
 			for (auto funct = (*scripts)->functionMap.begin(); funct != (*scripts)->functionMap.end(); ++funct) {
 				if ((*funct).first == (*item).first) {
-					(*item).second = (*funct).second;
+					(*item).second = ([funct]() -> void { (*funct).second(); });
 					skip = true;
 					break;
 				}

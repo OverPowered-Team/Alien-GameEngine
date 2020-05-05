@@ -10,6 +10,9 @@
 #include "imgui/imgui.h"
 #include "ReturnZ.h"
 #include "mmgr/mmgr.h"
+#include "ComponentCamera.h"
+#include "ModuleObjects.h"
+#include "Viewport.h"
 
 #include "Optick/include/optick.h"
 
@@ -27,6 +30,11 @@ ComponentCanvas::~ComponentCanvas()
 	text_shader = nullptr;
 	text_ortho->DecreaseReferences();
 	text_ortho = nullptr;*/
+}
+
+void ComponentCanvas::DrawScene(ComponentCamera* camera)
+{
+	Draw();
 }
 
 bool ComponentCanvas::DrawInspector()
@@ -129,3 +137,16 @@ void ComponentCanvas::Draw()
 #endif
 
 }
+
+float3 ComponentCanvas::GetWorldPositionInCanvas(const float3& world_position)
+{
+	float2 position = ComponentCamera::WorldToScreenPoint(world_position);
+
+	return float3(
+		game_object_attached->transform->GetGlobalPosition().x + (position.x * width / App->objects->current_viewport->GetSize().x),
+		game_object_attached->transform->GetGlobalPosition().y + (position.y * height / App->objects->current_viewport->GetSize().y),
+		game_object_attached->transform->GetGlobalPosition().z
+		);
+}
+
+

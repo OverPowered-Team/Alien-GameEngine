@@ -35,6 +35,27 @@ ComponentLightSpot::~ComponentLightSpot()
 	App->objects->ReduceNumOfSpotLights();
 }
 
+void ComponentLightSpot::Update()
+{
+	OPTICK_EVENT();
+
+	LightLogic();
+}
+
+void ComponentLightSpot::DrawScene(ComponentCamera* camera)
+{
+	OPTICK_EVENT(); 
+
+	if (this->game_object_attached->IsSelected())
+	{
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
+	}
+	else if (IsEnabled())
+	{
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
+	}
+}
+
 void ComponentLightSpot::LightLogic()
 {
 	OPTICK_EVENT();
@@ -42,24 +63,6 @@ void ComponentLightSpot::LightLogic()
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	light_props.position = float3(transform->GetGlobalPosition().x, transform->GetGlobalPosition().y, transform->GetGlobalPosition().z);
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
-	
-#ifndef GAME_VERSION
-	if (App->objects->printing_scene)
-	{
-		if (this->game_object_attached->IsSelected())
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT);
-			App->renderer3D->EndDebugDraw();
-		}
-		else
-		{
-			App->renderer3D->BeginDebugDraw(math::float4(0.0f, 1.0f, 0.0f, 1.0f));
-			App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIER_SPOT, 0.1f);
-			App->renderer3D->EndDebugDraw();
-		}
-	}
-#endif
 }
 
 bool ComponentLightSpot::DrawInspector()
@@ -112,9 +115,14 @@ bool ComponentLightSpot::DrawInspector()
 	return true;
 }
 
+void ComponentLightSpot::OnEnable()
+{
+	enabled = true;
+}
+
 void ComponentLightSpot::OnDisable()
 {
-
+	enabled = false;
 }
 
 void ComponentLightSpot::Clone(Component* clone)

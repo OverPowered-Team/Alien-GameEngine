@@ -206,11 +206,13 @@ private:
 	void UpdateGamePadInput();
 	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
 	ComponentCanvas* GetCanvas();
+	void UIOrdering(std::vector<std::pair<float, GameObject*>>* current, std::vector<std::pair<float, GameObject*>>* ui_2d, std::vector<std::pair<float, GameObject*>>* ui_world);
 
 	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
 
 public:
-
+	bool inPrefabCreation = false;
+	bool inHotReload = false;
 	u64 scene_active = 0;
 
 	//Focus

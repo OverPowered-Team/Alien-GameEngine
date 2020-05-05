@@ -312,6 +312,9 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
+	shaderInputs.shieldFresnelShaderProperties.color = color;
+	shaderInputs.shieldShaderProperties.color = float3(color.x, color.y, color.z);
+
 	used_shader->UpdateUniforms(shaderInputs);
 
 }
@@ -582,6 +585,31 @@ void ResourceMaterial::ShaderInputsSegment()
 		// Normal Map
 		ImGui::Text("Normal Map:");
 		InputTexture(TextureType::NORMALS);
+		break;}
+		
+	case SHADER_TEMPLATE::SHIELD: {
+		ImGui::SliderFloat3("Hit Position", (float*)&shaderInputs.shieldShaderProperties.hit_position, -1.0f, 1.0f);
+		ImGui::Spacing();
+		ImGui::ColorEdit3("Albedo", color.ptr(), ImGuiColorEditFlags_Float);
+		break; }
+
+	case SHADER_TEMPLATE::SHIELD_FRESNEL: {
+		ImGui::ColorEdit4("Albedo", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Strength", (unsigned int)type); ImGui::SameLine();
+		ImGui::SliderFloat("##strength", &shaderInputs.shieldFresnelShaderProperties.shieldStrength, -1.0f, 1.0f);
+		//ImGui::InputFloat("##strength", &shaderInputs.shieldFresnelShaderProperties.shieldStrength, 0.1, 1, 2);
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Cooldown", (unsigned int)type); ImGui::SameLine();
+		//ImGui::InputFloat("##cooldown", &shaderInputs.shieldFresnelShaderProperties.shieldCooldown, 0.1,1, 2);
+		ImGui::SliderFloat("##cooldown", &shaderInputs.shieldFresnelShaderProperties.shieldCooldown, 0.0f, 1.0f);
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Fresnel", (unsigned int)type); ImGui::SameLine();
+		//ImGui::InputFloat("##fresnel", &shaderInputs.shieldFresnelShaderProperties.fresnel_exponent, 0.1, 1, 2);
+		ImGui::SliderFloat("##fresnel", &shaderInputs.shieldFresnelShaderProperties.fresnel_exponent, 0.0f, 1.0f);
+		
+		/*ImGui::Spacing();
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Num Hits", (unsigned int)type); ImGui::SameLine();
+		ImGui::InputInt("##numhits", &shaderInputs.shieldFresnelShaderProperties.numHits);*/
 
 		break; }
 

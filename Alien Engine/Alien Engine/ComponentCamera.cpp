@@ -552,6 +552,28 @@ bool ComponentCamera::DrawInspector()
 	return true;
 }
 
+void ComponentCamera::Update()
+{
+	OPTICK_EVENT();
+
+	frustum.pos = game_object_attached->transform->GetGlobalPosition();
+	frustum.front = game_object_attached->transform->GetGlobalRotation().WorldZ();
+	frustum.up = game_object_attached->transform->GetGlobalRotation().WorldY();
+}
+
+void ComponentCamera::DrawScene(ComponentCamera* camera)
+{
+	
+	OPTICK_EVENT();
+
+	if (game_object_attached->IsSelected())
+	{
+		DrawFrustum();
+	}
+
+	DrawIconCamera();
+}
+
 void ComponentCamera::Reset()
 {
 	camera_color_background = { 0.05f, 0.05f, 0.05f, 1.0f };
@@ -779,6 +801,14 @@ void ComponentCamera::DrawSkybox()
 	}
 }
 
+float2 ComponentCamera::WorldToScreenPoint(const float3& world_position)
+{
+	float3 position = App->renderer3D->actual_game_camera->GetViewMatrix4x4().MulPos(world_position);
+
+	return float2((((position.x / -position.z) + 16 * 0.5f) / App->objects->current_viewport->GetSize().x),
+		((position.y / -position.z) + 9 * 0.5f) / App->objects->current_viewport->GetSize().y);
+}
+
 void ComponentCamera::DrawFrustum()
 {
 	OPTICK_EVENT();
@@ -840,9 +870,7 @@ void ComponentCamera::DrawIconCamera()
 		float3 position = transform->GetGlobalPosition() - frustum.front.Normalized() * 2;
 		Quat rotated = transform->GetGlobalRotation() * (Quat{ 0,0,1,0 } * Quat{ 0.7071,0,0.7071,0 });
 		float4x4 matrix = float4x4::FromTRS(position, rotated, { 0.1F,0.1F,0.1F });
-		glDisable(GL_LIGHTING);
 		Gizmos::DrawPoly(mesh_camera->mesh, matrix, camera_icon_color);
-		glEnable(GL_LIGHTING);
 	}
 }
 

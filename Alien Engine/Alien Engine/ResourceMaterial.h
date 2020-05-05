@@ -54,6 +54,25 @@ struct ShaderInputs
 		//float3 start_color = float3(1.f, 0.f, 0.8f);
 		//float3 end_color = float3(1.f, 1.f, 1.f);
 	} particleShaderProperties;
+
+
+	struct ShieldShaderProperties {
+		float3 color = float3(1.f, 1.f, 1.f);
+		float3 hit_position = float3(0.9757f, -0.2074f, -0.0703f);
+	} shieldShaderProperties; 
+
+	struct ShieldFresnelShaderProperties {
+		float4 color = float4(1.f, 1.f, 1.f,1.f);
+		float shieldStrength = 1.0f;
+		float shieldCooldown = 1.0f;
+		float fresnel_exponent = 0.75f;
+		//static const int32_t MAX_SHIELD_HITS = 5;
+		//float3 hitPos[MAX_SHIELD_HITS];
+		//float radii[MAX_SHIELD_HITS];
+		//int numHits = 1;
+
+	} shieldFresnelShaderProperties;
+
 };
 
 class ResourceShader; 
@@ -107,6 +126,7 @@ public:
 	void TexturesSegment();
 
 	void TextureBrowser(TextureType texType);
+	
 	// ------------------ 
 
 public:
