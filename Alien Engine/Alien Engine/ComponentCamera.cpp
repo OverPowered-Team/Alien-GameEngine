@@ -797,9 +797,10 @@ void ComponentCamera::DrawSkybox()
 
 float2 ComponentCamera::WorldToScreenPoint(const float3& world_position)
 {
-	float3 position = App->renderer3D->GetCurrentMainCamera()->frustum.ViewProjMatrix().MulPos(world_position);
+	float3 position = App->renderer3D->actual_game_camera->GetViewMatrix4x4().MulPos(world_position);
 
-	return float2(((position.x + 1) * 0.5f) * App->objects->game_viewport->GetSize().x, ((1 - position.y) * 0.5f) * App->objects->game_viewport->GetSize().y);
+	return float2((((position.x / -position.z) + 16 * 0.5f) / App->objects->current_viewport->GetSize().x),
+		((position.y / -position.z) + 9 * 0.5f) / App->objects->current_viewport->GetSize().y);
 }
 
 void ComponentCamera::DrawFrustum()
