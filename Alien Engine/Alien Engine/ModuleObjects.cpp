@@ -521,7 +521,7 @@ void ModuleObjects::CalculateShadows(std::vector<std::pair<float, GameObject*>>&
 
 					(*iter)->viewMat.Set(&viewMatrix[0][0]);
 
-					(*iter)->fake_position = camera_pos;
+					(*iter)->fake_position = light_pos;
 
 					(*it).second->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
 				}
