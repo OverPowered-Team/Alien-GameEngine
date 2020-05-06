@@ -91,14 +91,14 @@
                         "Type": 0,
                         "Position": [
                             0,
-                            0,
+                            6.5132827758789063,
                             0
                         ],
                         "Rotation": [
-                            0.2798481285572052,
-                            -0.36470523476600647,
-                            0.115916907787323,
-                            0.88047623634338379
+                            0.28895646333694458,
+                            -0.28587692975997925,
+                            0.090862326323986053,
+                            0.90913289785385132
                         ],
                         "Scale": [
                             1,
@@ -116,13 +116,13 @@
                         "Intensity": 1,
                         "Position": [
                             0,
-                            0,
+                            6.5132827758789063,
                             0
                         ],
                         "Direction": [
-                            -0.57735037803649902,
-                            -0.57735025882720947,
-                            0.57735025882720947
+                            -0.46728974580764771,
+                            -0.57735049724578857,
+                            0.66955709457397461
                         ],
                         "Ambient": [
                             0,
@@ -196,9 +196,9 @@
                             ],
                             "Global": true,
                             "Velocity": [
-                                -0.50649666786193848,
-                                -0.11984985321760178,
-                                -0.85387176275253296
+                                0.8396458625793457,
+                                0.54305028915405273,
+                                -0.0095491567626595497
                             ],
                             "Force": [
                                 0,
@@ -285,7 +285,7 @@
                                 10
                             ],
                             "MaxLife": 10,
-                            "CurrentLife": 1.2499995231628418,
+                            "CurrentLife": 8.6819944381713867,
                             "SpawnRate": 20,
                             "Delay": 2,
                             "Loop": true,
@@ -3233,7 +3233,7 @@
                 "ParentID": "7663786423266608610",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -3279,9 +3279,9 @@
                             ],
                             "Global": true,
                             "Velocity": [
-                                0.59310901165008545,
-                                -0.037769980728626251,
-                                0.80423563718795776
+                                -0.66848748922348022,
+                                0.48356422781944275,
+                                0.56505769491195679
                             ],
                             "Force": [
                                 0,
@@ -3290,10 +3290,10 @@
                             ],
                             "Speed": 1,
                             "Color": [
-                                1,
-                                0,
-                                0,
-                                0.036585390567779541
+                                0.81463414430618286,
+                                0.81462597846984863,
+                                0.81462597846984863,
+                                0.76829266548156738
                             ],
                             "SizeStart3D": false,
                             "Size": 1,
@@ -3309,11 +3309,11 @@
                                 0
                             ],
                             "MaxLifeTime": 5,
-                            "AxisRotationStart": false,
+                            "AxisRotationStart": true,
                             "Angle3D": [
+                                -90,
                                 0,
-                                0,
-                                0
+                                180
                             ],
                             "ChangeOverLifeTime": false,
                             "RotateOverLifeTime": true
@@ -3368,7 +3368,7 @@
                                 10
                             ],
                             "MaxLife": 10,
-                            "CurrentLife": 1.2499995231628418,
+                            "CurrentLife": 8.6819944381713867,
                             "SpawnRate": 20,
                             "Delay": 2,
                             "Loop": true,
@@ -3694,7 +3694,7 @@
                 "ParentEnabled": true,
                 "Selected": false,
                 "ParentSelected": false,
-                "IsStatic": false,
+                "IsStatic": true,
                 "IsPrefab": false,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
@@ -3774,9 +3774,9 @@
                 "ParentID": "7663786423266608610",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
-                "IsStatic": false,
+                "IsStatic": true,
                 "IsPrefab": false,
                 "PrefabLocked": false,
                 "Tag": "UnTagged",
