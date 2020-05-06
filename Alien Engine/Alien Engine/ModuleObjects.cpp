@@ -402,9 +402,12 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			// Draw Debugging Options
 
-			for (std::map<Component*, std::function<void()>>::iterator it = debug_draw_list.begin(); it != debug_draw_list.end(); ++it)
+			if (printing_scene)
 			{
-				(*it).second();
+				for (std::map<Component*, std::function<void()>>::iterator it = debug_draw_list.begin(); it != debug_draw_list.end(); ++it)
+				{
+					(*it).second();
+				}
 			}
 
 			
