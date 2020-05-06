@@ -512,69 +512,148 @@ update_status ModuleObjects::PostUpdate(float dt)
 	if (base_game_object->HasChildren()) {
 		OnPreCull(game_viewport->GetCamera());
 
-		std::vector<std::pair<float, GameObject*>> to_draw;
+		std::vector<std::pair<float, GameObject*>> meshes_to_draw;					// SOLID WITH SHADERS 
+		std::vector<std::pair<float, GameObject*>> meshes_to_draw_transparency;		// TRANSPARENCIES WITH SHADERS
+
 		std::vector<std::pair<float, GameObject*>> to_draw_ui;
 		std::vector<std::pair<float, GameObject*>> ui_2d;
 		std::vector<std::pair<float, GameObject*>> ui_world;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
-		octree.SetStaticDrawList(&to_draw, frustum_camera);
+		octree.SetStaticDrawList(&meshes_to_draw, frustum_camera);
 
 		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 		for (; item != base_game_object->children.end(); ++item) {
 			if (*item != nullptr && (*item)->IsEnabled()) {
-				(*item)->SetDrawList(&to_draw,&to_draw_ui, frustum_camera);
+				(*item)->SetDrawList(&meshes_to_draw, &meshes_to_draw_transparency, &to_draw_ui, frustum_camera);
 			}
 		}
 
-		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+		std::sort(meshes_to_draw.begin(), meshes_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+		std::sort(meshes_to_draw_transparency.begin(), meshes_to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
 
 		OnPreRender(game_viewport->GetCamera());
 
 		for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
 		{
-	
+			if (!(*iter)->light->castShadows)
+				continue;
+
 			glViewport(0, 0, 1024, 1024);
 			glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
-			
-			(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance;
-			float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
-			camera_pos.z = -camera_pos.z;
-			float3 camera_direction = game_viewport->GetCamera()->frustum.front;
-			float halfFarPlaneD = (*iter)->light->distance_far_plane;
-			float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
-			glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(camera_pos.x), (float)(camera_pos.y), (float)(camera_pos.z)),
-				glm::vec3((float)light_pos.x, (float)light_pos.y, (float)light_pos.z),
-				glm::vec3(0.0, 1.0, 0.0));
+			for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin(); it != meshes_to_draw.end(); ++it) {
+				if ((*it).second != nullptr) {
+					if (printing_scene)
+						(*it).second->PreDrawScene(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+					else
+					{
+						(*iter)->light->sizefrustrum = game_viewport->GetCamera()->frustum.farPlaneDistance * 0.25;
+						float3 camera_pos = game_viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
+						camera_pos.z = -camera_pos.z;
+						float3 camera_direction = game_viewport->GetCamera()->frustum.front;
+						float halfFarPlaneD = (*iter)->light->distance_far_plane;
+						float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
-			(*iter)->viewMat.Set(&viewMatrix[0][0]);
+						glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)(game_viewport->GetCamera()->GetCameraPosition().x / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().y / (*iter)->light->sizefrustrum), (float)(game_viewport->GetCamera()->GetCameraPosition().z / -(*iter)->light->sizefrustrum)),
+							glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z),
+							glm::vec3(0.0, 1.0, 0.0));
 
-			(*iter)->fake_position = light_pos;
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {				
+						(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
+						(*iter)->fake_position = light_pos;
 						(*it).second->PreDrawGame(game_viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
-
+					}
 				}
 			}
 		}
-		
+
 		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
 		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
-		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
 
 		game_viewport->GetCamera()->DrawSkybox();
 
-		for (; it != to_draw.end(); ++it) {
-			if ((*it).second != nullptr) {
-				(*it).second->DrawGame(game_viewport->GetCamera(), float4(0.0f, -1.0f, 0.0f, 100000.0f));
+		// Draw Solid Meshes 
+		ResourceShader* current_used_shader = App->resources->default_shader;
+
+		while (!meshes_to_draw.empty())
+		{
+			current_used_shader->Bind();
+			current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+
+			for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin(); it != meshes_to_draw.end();) {
+
+				if ((*it).second == nullptr)
+				{
+					it = meshes_to_draw.erase(it);
+					continue;
+				}
+
+				ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
+				if (material->GetUsedShader() == current_used_shader)
+				{
+					(*it).second->DrawGame();
+					it = meshes_to_draw.erase(it);
+					continue;
+				}
+				++it;
+			}
+
+			current_used_shader->Unbind();
+
+			if (!meshes_to_draw.empty())
+			{
+				ComponentMaterial* nextMat = meshes_to_draw.front().second->GetComponent<ComponentMaterial>();
+				if (nextMat != nullptr)
+					current_used_shader = nextMat->GetUsedShader();
 			}
 		}
 
-		OnPostRender(game_viewport->GetCamera());
+		glEnable(GL_BLEND);
+		current_used_shader = App->resources->default_shader;
+
+		current_used_shader->Bind();
+		current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+
+		for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw_transparency.begin(); it != meshes_to_draw_transparency.end(); ++it) {
+
+			if ((*it).second == nullptr) {
+				continue;
+			}
+
+			ResourceShader* wanted_shader = nullptr;
+			ComponentMaterial* mat = (*it).second->GetComponent<ComponentMaterial>();
+
+			if (mat != nullptr)
+			{
+				wanted_shader = mat->GetUsedShader();
+			}
+			else
+			{
+				ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
+				if (partSystem == nullptr)
+					continue;
+
+				ResourceMaterial* mat = partSystem->GetSystem()->material;
+				if (mat != nullptr)
+					wanted_shader = mat->used_shader;
+			}
+
+			if (wanted_shader != current_used_shader)
+			{
+				current_used_shader->Unbind();
+				current_used_shader = wanted_shader;
+				current_used_shader->Bind();
+				current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+			}
+
+			(*it).second->DrawGame();
+		}
+		glDisable(GL_BLEND);
+
+		current_used_shader->Unbind();
 
 		UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 
@@ -604,6 +683,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 		}
+
+		OnPostRender(game_viewport->GetCamera());
+
 	}
 
 	game_viewport->EndViewport();

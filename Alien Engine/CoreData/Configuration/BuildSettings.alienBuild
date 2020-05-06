@@ -1,6 +1,6 @@
 {
     "Build": {
-        "FirstScene": "Assets\/Scenes\/testUI.alienScene",
+        "FirstScene": "Assets\/Scenes\/FINALTEST.alienScene",
         "GameName": "MyAwesomeGame"
     }
 }

@@ -120,7 +120,20 @@ void ComponentParticleSystem::DrawGame()
 {
 	OPTICK_EVENT();
 
+#ifndef GAME_VERSION
+	if (App->objects->printing_scene)
+	{
+		if(game_object_attached->selected)
+			Draw();
+	}
+	else 
+		Draw();
+#else
+
 	Draw();
+
+#endif
+
 }
 
 void ComponentParticleSystem::DebugDraw()
