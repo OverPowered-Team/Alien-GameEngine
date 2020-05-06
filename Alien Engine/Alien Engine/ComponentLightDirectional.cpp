@@ -58,6 +58,10 @@ void ComponentLightDirectional::InitFrameBuffers()
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentLightDirectional::DrawScene, this));
+#endif // !GAME_VERSION
+
 	//static shadows
 	glBindFramebuffer(GL_FRAMEBUFFER, light_props.bakedepthMapFBO);
 	glGenTextures(num_of_static_shadowMap, light_props.bakedepthMap);
@@ -87,6 +91,10 @@ ComponentLightDirectional::~ComponentLightDirectional()
 	App->objects->directional_light_properites.remove(&light_props);
 	App->objects->ReduceNumOfDirLights();
 	glDeleteFramebuffers(1, &light_props.depthMapFBO);
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
 }
 
 void ComponentLightDirectional::PostUpdate()
@@ -131,7 +139,7 @@ void ComponentLightDirectional::LightLogic()
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
 }
 
-void ComponentLightDirectional::DrawScene(ComponentCamera* camera)
+void ComponentLightDirectional::DrawScene()
 {
 	OPTICK_EVENT();
 
