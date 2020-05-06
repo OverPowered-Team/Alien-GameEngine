@@ -298,7 +298,10 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 			matrix[0][0] *= barScaleX;
 			matrix[1][1] *= barScaleY;
 			glEnable(GL_SCISSOR_TEST);
-			glScissor(x - (tex->width * 0.5f * barScaleX), y - (tex->height * 0.5f*barScaleY), tex->width * factor * barScaleX, tex->height);
+			glScissor(x-(transform->global_transformation[0][0] / (canvas->width * 0.5F) * App->ui->panel_game->width),
+				y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
+				((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (transform->global_transformation[0][0] / (canvas->width * 0.5F) * App->ui->panel_game->width)))*factor,
+				y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
 		}
 		
 
