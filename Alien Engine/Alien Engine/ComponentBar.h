@@ -45,6 +45,7 @@ private:
 
 	float offsetX = 0.0f, offsetY = 0.0f;
 	bool draw_bar = false;
+	bool right_to_left = true;
 };
 
 #endif // !_COMPONENT_BAR_H_
