@@ -216,6 +216,12 @@ bool ComponentBar::DrawInspector()
 		ImGui::DragFloat("Y", &barScaleY, 0.05F);
 		ImGui::PopID();
 
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		ImGui::Text("Right to left");
+		ImGui::SameLine();
+		ImGui::Checkbox("##righttoleft", &right_to_left);
+
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -298,10 +304,20 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 			matrix[0][0] *= barScaleX;
 			matrix[1][1] *= barScaleY;
 			glEnable(GL_SCISSOR_TEST);
-			glScissor(x-(matrix[0][0] * App->ui->panel_game->width)  + offsetX ,
-				y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
-				((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width)))*factor,
-				y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+			if (right_to_left)
+			{
+				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + offsetX,
+					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
+					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
+					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+			}
+			else
+			{
+				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) +	(((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) - (((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor)),
+					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
+					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
+					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+			}
 		}
 		
 
@@ -406,6 +422,7 @@ void ComponentBar::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("barScaleY", barScaleY);
 	to_save->SetNumber("offsetX", offsetX);
 	to_save->SetNumber("offsetY", offsetY);
+	to_save->SetBoolean("RightToLeft", right_to_left);
 	
 }
 
@@ -427,6 +444,15 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	barScaleY = to_load->GetNumber("barScaleY");
 	offsetX = to_load->GetNumber("offsetX");
 	offsetY = to_load->GetNumber("offsetY");
+
+	try
+	{
+		right_to_left = to_load->GetBoolean("RightToLeft");
+	}
+	catch (...)
+	{
+		right_to_left = true;
+	}
 
 
 	u64 textureID = std::stoull(to_load->GetString("TextureID"));
