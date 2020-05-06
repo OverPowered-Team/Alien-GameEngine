@@ -410,27 +410,47 @@ update_status ModuleObjects::PostUpdate(float dt)
 			
 			// Then draw transparents meshes
 			
+			glEnable(GL_BLEND);
 			current_used_shader = App->resources->default_shader;
+
+			current_used_shader->Bind();
+			current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
 
 			for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw_transparency.begin(); it != meshes_to_draw_transparency.end(); ++it) {
 
-				(*it).second->DrawGame();
-				if ((*it).second != nullptr) {
-					
-					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
-
-					if (material == nullptr)
-					{
-						ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
-						if (partSystem == nullptr)
-							continue;
-
-						partSystem->GetSystem()->material;
-					}
-
-
+				if ((*it).second == nullptr) {
+					continue;
 				}
+
+				ResourceShader* wanted_shader = nullptr; 
+				ComponentMaterial* mat = (*it).second->GetComponent<ComponentMaterial>();
+
+				if (mat != nullptr)
+				{
+					wanted_shader = mat->GetUsedShader();
+				}
+				else
+				{
+					ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
+					if (partSystem == nullptr)
+						continue;
+
+					ResourceMaterial* mat = partSystem->GetSystem()->material;
+					if (mat != nullptr)
+						wanted_shader = mat->used_shader;
+				}
+
+				if (wanted_shader != current_used_shader)
+				{
+					current_used_shader->Unbind();
+					current_used_shader = wanted_shader;
+					current_used_shader->Bind();
+					current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+				}
+
+				(*it).second->DrawGame();				
 			}
+			glDisable(GL_BLEND);
 
 			current_used_shader->Unbind();
 

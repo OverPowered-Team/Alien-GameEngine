@@ -270,6 +270,7 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 	case SHADER_TEMPLATE::PARTICLE:
 		SetUniformMat4f("view", camera->GetViewMatrix4x4());
 		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniform1i("activeFog", camera->activeFog);
 		if (camera->activeFog)
 		{
 			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));

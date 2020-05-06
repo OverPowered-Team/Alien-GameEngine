@@ -496,8 +496,9 @@ void ParticleSystem::SetMaterial(ResourceMaterial* mat)
 
 void ParticleSystem::RemoveMaterial()
 {
-	material->DecreaseReferences();
-	material = nullptr;
+	SetMaterial(default_material);
+	/*material->DecreaseReferences();
+	material = nullptr;*/
 }
 
 void ParticleSystem::SetMesh(ResourceMesh* m)

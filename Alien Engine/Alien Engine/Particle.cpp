@@ -173,13 +173,13 @@ void Particle::Draw()
 		particleGlobal = parentGlobal * particleLocal;
 	}
 
-	glPushMatrix();
-	glMultMatrixf((GLfloat*) & (particleGlobal.Transposed()));
+	//glPushMatrix();
+	//glMultMatrixf((GLfloat*) & (particleGlobal.Transposed()));
 
 
 
 	// ----- BLENDING COLOR ----- //
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
 
 	switch (owner->funcBlendSource)
 	{
@@ -234,50 +234,20 @@ void Particle::Draw()
 
 	
 	// --------- COLOR --------- //
-	if (p_material == nullptr)
-	   glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
-
 	
 	// ------ VAO BUFFER ------ //
-	
-	
+		
 	//// --- VERTEX BUFFER ---- //
 	//glEnableClientState(GL_VERTEX_ARRAY);
 	//glBindBuffer(GL_ARRAY_BUFFER, owner->id_vertex);
 	//glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-
-
-
-
-	if (owner->material != nullptr && p_material != nullptr)
-	{
-
-		owner->DeactivateLight();
-
-		// ---- TEXTCOORD BUFFER ----- //
-		/*glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);*/
-
-		// --------- MATERIAL -------- //
-		p_material->ApplyMaterial();
-		
-
-
-		// ---- CAMERA PROJECTION ---- //
-
-		SetUniform(owner->material, particleGlobal);
-
-	}
-	owner->ActivateLight();
-	
-
 	// ---- INDEX BUFFER ---- //
 
 
-
 	// ----- DRAW ------ //
+	p_material->ApplyMaterial();
+	SetUniform(owner->material, particleGlobal);
 
 	if (owner->mesh_mode) // MESH DRAWING
 	{
@@ -301,20 +271,13 @@ void Particle::Draw()
 
 	
 	// ---- DISABLE STUFF --- //
-	glDisable(GL_BLEND);
-	//glDisable(GL_ALPHA_TEST);
+	//glDisable(GL_BLEND);
 
 	glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	if (owner->material != nullptr && p_material != nullptr)
-		p_material->UnbindMaterial();
-
-	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	owner->DeactivateLight();
+	
+	p_material->UnbindMaterial();
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 

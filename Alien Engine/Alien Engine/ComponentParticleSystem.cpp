@@ -112,7 +112,6 @@ void ComponentParticleSystem::DrawScene()
 
 	if (game_object_attached->selected)
 	{
-		Draw();
 		DebugDraw();
 	}
 }
