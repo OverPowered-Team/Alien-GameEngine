@@ -39,6 +39,10 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 	controller->setUserData(this);
 	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ADDED);
 	SetCollisionLayer("Default");
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentCollider::DrawScene, this));
+#endif // !GAME_VERSION
 }
 
 ComponentCharacterController::~ComponentCharacterController()
@@ -46,6 +50,11 @@ ComponentCharacterController::~ComponentCharacterController()
 	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DELETED);
 	controller->release();
 	delete report;
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
+
 }
 
 // Movement Functions -----------------------------------------
@@ -309,7 +318,7 @@ void ComponentCharacterController::SetCollisionLayer(std::string layer)
 	}
 }
 
-void ComponentCharacterController::DrawScene(ComponentCamera* camera)
+void ComponentCharacterController::DrawScene()
 {
 	if (game_object_attached->IsSelected() && App->physx->debug_physics == false)
 	{
