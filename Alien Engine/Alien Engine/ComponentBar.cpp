@@ -336,9 +336,9 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 				break; }
 
 			case SCISSOR_TYPE::CENTER: {
-				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + offsetX,
+				glScissor(x - (((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor * 0.5f) /*+ offsetX*/,
 					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
-					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
+					((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
 					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
 				break; }
 			default: {
