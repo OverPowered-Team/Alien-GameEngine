@@ -19,7 +19,7 @@ __declspec(dllexport) void log(const char file[], int line, const char* format, 
 
 
 // DISCOMMENT TO START THE ENGINE IN PLAY MODE
-//crec#define GAME_VERSION
+//#define GAME_VERSION
 
 #define RELEASE( x )\
     {\
