@@ -290,8 +290,8 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		origin.x = (origin.x - 0.5F) * 2;
 		origin.y = -(-origin.y - 0.5F) * 2;
 		if (draw_bar) {
-			matrix[0][3] = origin.x + offsetX;
-			matrix[1][3] = origin.y - offsetY;
+			matrix[0][3] = origin.x /*+ offsetX*/;
+			matrix[1][3] = origin.y /*- offsetY*/;
 		}
 		else {
 			matrix[0][3] = origin.x;
@@ -308,14 +308,14 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 			{
 				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + offsetX,
 					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
-					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
+					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
 					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
 			}
 			else
 			{
-				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) +	(((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) - (((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor)),
+				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) +	(((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) - (((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor)),
 					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
-					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
+					((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
 					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
 			}
 		}
