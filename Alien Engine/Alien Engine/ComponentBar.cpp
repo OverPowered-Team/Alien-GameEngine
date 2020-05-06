@@ -218,9 +218,24 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-		ImGui::Text("Right to left");
-		ImGui::SameLine();
-		ImGui::Checkbox("##righttoleft", &right_to_left);
+		ImGui::Text("Scissoring Type");
+		ImGui::SameLine(150);
+		static int type = 0;
+		ImGui::Combo("##ScissorType", &type, "Right to left\0Left to right\0Center\0");
+		switch (SCISSOR_TYPE(type))
+		{
+		case SCISSOR_TYPE::RIGHT_TO_LEFT: {
+			scType = SCISSOR_TYPE::RIGHT_TO_LEFT;
+			break; }
+		case SCISSOR_TYPE::LEFT_TO_RIGHT: {
+			scType = SCISSOR_TYPE::LEFT_TO_RIGHT;
+			break; }
+		case SCISSOR_TYPE::CENTER: {
+			scType = SCISSOR_TYPE::CENTER;
+			break; }
+		default: {
+			break; }
+		}
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -290,8 +305,8 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		origin.x = (origin.x - 0.5F) * 2;
 		origin.y = -(-origin.y - 0.5F) * 2;
 		if (draw_bar) {
-			matrix[0][3] = origin.x /*+ offsetX*/;
-			matrix[1][3] = origin.y /*- offsetY*/;
+			matrix[0][3] = origin.x;
+			matrix[1][3] = origin.y;
 		}
 		else {
 			matrix[0][3] = origin.x;
@@ -304,19 +319,30 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 			matrix[0][0] *= barScaleX;
 			matrix[1][1] *= barScaleY;
 			glEnable(GL_SCISSOR_TEST);
-			if (right_to_left)
+			switch (scType)
 			{
+			case SCISSOR_TYPE::RIGHT_TO_LEFT: {
 				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + offsetX,
 					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
 					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
 					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
-			}
-			else
-			{
-				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) +	(((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) - (((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor)),
+				break; }
+
+			case SCISSOR_TYPE::LEFT_TO_RIGHT: {
+				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + (((x + (matrix[0][0] * App->ui->panel_game->width) - offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) - (((x + (matrix[0][0] * App->ui->panel_game->width) - offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor)),
 					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
-					((x + (matrix[0][0] * App->ui->panel_game->width)-offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
+					((x + (matrix[0][0] * App->ui->panel_game->width) - offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width))) * factor,
 					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+				break; }
+
+			case SCISSOR_TYPE::CENTER: {
+				glScissor(x - (matrix[0][0] * App->ui->panel_game->width) + offsetX,
+					y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
+					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
+					y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+				break; }
+			default: {
+				break; }
 			}
 		}
 		
@@ -422,7 +448,7 @@ void ComponentBar::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("barScaleY", barScaleY);
 	to_save->SetNumber("offsetX", offsetX);
 	to_save->SetNumber("offsetY", offsetY);
-	to_save->SetBoolean("RightToLeft", right_to_left);
+	to_save->SetNumber("SCType", (int)scType);
 	
 }
 
@@ -447,11 +473,11 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 
 	try
 	{
-		right_to_left = to_load->GetBoolean("RightToLeft");
+		scType = (SCISSOR_TYPE)(int)to_load->GetNumber("SCType");
 	}
 	catch (...)
 	{
-		right_to_left = true;
+		scType = SCISSOR_TYPE::RIGHT_TO_LEFT;
 	}
 
 
