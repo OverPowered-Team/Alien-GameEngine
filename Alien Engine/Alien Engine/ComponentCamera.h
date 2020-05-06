@@ -80,6 +80,7 @@ private:
 	bool DrawInspector();
 
 	void DrawScene() override; 
+	void Update() override; 
 
 	void DrawFrustum();
 	void DrawIconCamera();

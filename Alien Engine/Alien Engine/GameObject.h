@@ -38,6 +38,7 @@ class __declspec(dllexport) GameObject
 	friend class ComponentScript;
 	friend class ComponentUI;
 	friend class ComponentCanvas;
+	friend class ComponentCurve;
 	friend class ComponentCheckbox;
 	friend class Component;
 	friend class ComponentText;
@@ -190,7 +191,7 @@ private:
 	void PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	void DrawGame();
 	void DrawScene(); 
-	void SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera);
+	void SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<GameObject*>* dynamic_objects, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera);
 
 	ComponentCanvas* GetCanvas();
 
@@ -284,7 +285,7 @@ public:
 
 	GameObject* parent = nullptr;
 	ComponentTransform* transform = nullptr;
-
+	bool cast_shadow = true;
 private:
 	bool to_delete = false; 
 	u64 prefabID = 0;

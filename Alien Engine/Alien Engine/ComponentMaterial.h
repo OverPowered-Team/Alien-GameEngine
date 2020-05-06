@@ -59,4 +59,5 @@ private:
 	std::string file_to_edit;
 	bool show_shader_text_editor = false;
 	bool select_shader = false;
+
 };

@@ -58,7 +58,6 @@ protected:
 	virtual void SetUniforms(ResourceMaterial* resource_material);
 	virtual void SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 
-
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();

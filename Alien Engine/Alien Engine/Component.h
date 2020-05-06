@@ -42,6 +42,7 @@ enum class ComponentType {
 	BONE = 28,
 	SCRIPT = 29,
 	UI = 30,
+	CURVE = 31,
 
 	MAX //LAST LAST LAST
 };

@@ -15,6 +15,7 @@
 #include "ComponentCanvas.h"
 #include "ComponentText.h"
 #include "ComponentButton.h"
+#include "ComponentCurve.h"
 #include "RandomHelper.h"
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
@@ -42,6 +43,8 @@
 
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ModuleUI.h"
+#include "PanelScene.h"
 #include "Alien.h"
 #include "ComponentCapsuleCollider.h"
 #include "ComponentConvexHullCollider.h"
@@ -89,9 +92,14 @@ GameObject::GameObject(bool ignore_transform)
 
 GameObject::~GameObject()
 {
+#ifndef GAME_VERSION
 	if (std::find(App->objects->GetSelectedObjects().begin(), App->objects->GetSelectedObjects().end(), this) != App->objects->GetSelectedObjects().end()) {
 		App->objects->DeselectObject(this);
+		App->ui->panel_scene->gizmo_curve = false;
+		App->ui->panel_scene->curve = nullptr;
+		App->ui->panel_scene->curve_index = 0;
 	}
+#endif
 
 	App->objects->octree.Remove(this);
 
@@ -133,15 +141,20 @@ GameObject* GameObject::GetChild(const int& index)
 
 GameObject* GameObject::GetChildRecursive(const char* child_name)
 {
+	GameObject* ret = nullptr;
 	auto item = children.begin();
 	for (; item != children.end(); ++item) {
 		if (*item != nullptr) {
+			if (ret != nullptr) {
+				return ret;
+			}
 			if (App->StringCmp((*item)->name, child_name)) {
 				return (*item);
 			}
-			(*item)->GetChildRecursive(child_name);
+			ret = (*item)->GetChildRecursive(child_name);
 		}
 	}
+	return ret;
 }
 
 std::vector<GameObject*>& GameObject::GetChildren()
@@ -171,6 +184,7 @@ bool GameObject::IsEnabled() const
 void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	OPTICK_EVENT();
+	ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
 	ComponentMaterial* material = (ComponentMaterial*)GetComponent(ComponentType::MATERIAL);
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 
@@ -190,12 +204,13 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 void GameObject::DrawScene()
 {
 	OPTICK_EVENT();
-
 	for (Component* component : components)
 	{
 		component->DrawScene();
 	}
 }
+
+
 
 void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
@@ -205,11 +220,6 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
 	if (mesh == nullptr) //not sure if this is the best solution
 		mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
-
-	/*if (material != nullptr && material->IsEnabled() && mesh != nullptr && mesh->IsEnabled())
-	{
-		material->BindTexture();
-	}*/
 
 	if (mesh != nullptr && mesh->IsEnabled())
 	{
@@ -228,10 +238,9 @@ void GameObject::DrawGame()
 	{
 		component->DrawGame();
 	}
-
 }
 
-void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
+void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<GameObject*>* dynamic_objects, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
@@ -261,12 +270,14 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			meshes_to_draw_transparency->push_back({ distance, this });
 		}
+
+		dynamic_objects->push_back(this);
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
-			(*child)->SetDrawList(meshes_to_draw, meshes_to_draw_transparency, to_draw_ui, camera);
+			(*child)->SetDrawList(meshes_to_draw, meshes_to_draw_transparency, dynamic_objects,to_draw_ui, camera);
 		}
 	}
 
@@ -1043,7 +1054,7 @@ AABB GameObject::GetBB()
 		else
 		{
 			ComponentUI* ui = (ComponentUI*)GetComponent(ComponentType::UI);
-
+			ComponentCurve* curve = GetComponent<ComponentCurve>();
 			if (ui != nullptr) {
 				AABB aabb_ui;
 				ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1052,6 +1063,16 @@ AABB GameObject::GetBB()
 				aabb_ui.SetFromCenterAndSize(pos, { scale.x * 2,scale.y * 2,2 });
 				return aabb_ui;
 			}
+			else if (curve != nullptr) {
+				AABB aabb;
+				aabb.SetNegativeInfinity();
+				for (uint i = 0; i < curve->curve.GetControlPoints().size(); ++i) {
+					aabb.maxPoint = float3(max(aabb.maxPoint.x, curve->curve.GetControlPoints()[i].x), max(aabb.maxPoint.y, curve->curve.GetControlPoints()[i].y), max(aabb.maxPoint.z, curve->curve.GetControlPoints()[i].z));
+					aabb.minPoint = float3(min(aabb.minPoint.x, curve->curve.GetControlPoints()[i].x), min(aabb.minPoint.y, curve->curve.GetControlPoints()[i].y), min(aabb.minPoint.z, curve->curve.GetControlPoints()[i].z));
+				}
+				return aabb;
+			}
+			
 
 			AABB aabb_null;
 			ComponentTransform* transform = (ComponentTransform*)GetComponent(ComponentType::TRANSFORM);
@@ -1213,6 +1234,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentAudioListener* listener = new ComponentAudioListener(this);
 				listener->LoadComponent(components_to_load);
 				AddComponent(listener);
+				break; }
+			case (int)ComponentType::CURVE: {
+				ComponentCurve* curve = new ComponentCurve(this);
+				curve->LoadComponent(components_to_load);
+				AddComponent(curve);
 				break; }
 			case (int)ComponentType::PARTICLES: {
 				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
