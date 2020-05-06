@@ -83,6 +83,7 @@ class __declspec(dllexport) GameObject
 	friend class ModuleTween;
 	friend class AnimTween;
 	friend class FadeToBlack;
+	friend class ComponentTerrain;
 
 public:
 	GameObject(GameObject* parent, bool ignore_transform = false);

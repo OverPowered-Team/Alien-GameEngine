@@ -42,6 +42,7 @@ enum class ComponentType {
 	BONE = 28,
 	SCRIPT = 29,
 	UI = 30,
+	TERRAIN = 31,
 
 	MAX //LAST LAST LAST
 };
@@ -64,6 +65,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentScript;
 	friend class ComponentImage;
 	friend class ComponentText;
+	friend class ComponentTerrain;
 	friend class GameObject;
 	friend class ReturnZ;
 	friend class Prefab;

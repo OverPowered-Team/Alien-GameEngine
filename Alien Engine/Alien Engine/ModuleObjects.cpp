@@ -49,6 +49,7 @@
 #include "Event.h"
 #include "PanelProject.h"
 #include "ComponentAnimator.h"
+#include "ComponentTerrain.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 #include "ResourceScript.h"
@@ -2354,6 +2355,28 @@ void ModuleObjects::CreateEffect(ComponentType type)
 	{
 		object->SetName("Particle System");
 		comp = new ComponentParticleSystem(object);
+		object->AddComponent(comp);
+		break;
+	}
+	default:
+		break;
+	}
+
+	SetNewSelectedObject(object, false);
+	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
+}
+
+void ModuleObjects::CreateTerrain(ComponentType type)
+{
+	GameObject* object = new GameObject(GetRoot(false));
+	Component* comp = nullptr;
+
+	switch (type)
+	{
+	case ComponentType::TERRAIN:
+	{
+		object->SetName("Terrain");
+		comp = new ComponentTerrain(object);
 		object->AddComponent(comp);
 		break;
 	}

@@ -101,6 +101,8 @@ public:
 	//particle system
 	void CreateEffect(ComponentType type);
 	
+	void CreateTerrain(ComponentType type);
+
 	uint GetNumOfPointLights() const;
 	uint GetNumOfDirLights() const;
 	uint GetNumOfSpotLights() const;

@@ -1,12 +1,13 @@
 #include "Chunk.h"
 #include "PanelTerrainEditor.h"
+//#include "ComponentTerrain.h"
 #include "MathGeoLib/include/Math/float4.h"
 Chunk::Chunk()
 {
 	bbox.SetNegativeInfinity();
 }
 
-Chunk::Chunk(PanelTerrainEditor* owner) : owner(owner)
+Chunk::Chunk(ComponentTerrain* owner) : owner(owner)
 {
 	bbox.SetNegativeInfinity();
 }

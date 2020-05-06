@@ -664,6 +664,9 @@
     <ClInclude Include="PanelTerrainEditor.h">
       <Filter>Components\TerrainEditor</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentTerrain.h">
+      <Filter>Components\TerrainEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleCamera3D.cpp">
@@ -2641,6 +2644,9 @@
       <Filter>Components\TerrainEditor</Filter>
     </ClCompile>
     <ClCompile Include="PanelTerrainEditor.cpp">
+      <Filter>Components\TerrainEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentTerrain.cpp">
       <Filter>Components\TerrainEditor</Filter>
     </ClCompile>
   </ItemGroup>

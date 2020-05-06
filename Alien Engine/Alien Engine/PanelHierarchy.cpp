@@ -636,6 +636,12 @@ void PanelHierarchy::RightClickMenu()
 			}
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::MenuItem("Terrain"))
+		{
+			App->objects->CreateTerrain(ComponentType::TERRAIN);
+		}
+
 		if (ImGui::MenuItem("Create..."))
 		{
 			App->ui->panel_create_object->ChangeEnable();

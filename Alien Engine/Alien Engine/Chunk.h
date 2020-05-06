@@ -1,13 +1,14 @@
 #pragma once
 #include "Globals.h"
 #include "MathGeoLib/include/Geometry/AABB.h"
-#include "PanelTerrainEditor.h"
+#include "ComponentTerrain.h"
+
 class Chunk
 {
 public:
 
 	Chunk();
-	Chunk(PanelTerrainEditor* owner);
+	Chunk(ComponentTerrain* owner);
 	~Chunk();
 
 	int GetBufferID();
@@ -31,5 +32,5 @@ private:
 	int index_id;
 	uint chunck_memory = 0;
 	AABB bbox;
-	PanelTerrainEditor* owner = nullptr;
+	ComponentTerrain* owner = nullptr;
 };

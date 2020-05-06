@@ -10,7 +10,7 @@
 #define CHUNK_W 64
 #define CHUNK_H 64
 
-class Chunk;
+//class Chunk;
 
 class PanelTerrainEditor : public Panel {
 
@@ -20,29 +20,29 @@ public:
 	virtual ~PanelTerrainEditor();
 
 	void PanelLogic();
-	void SetHeigthMapTexture(ResourceTexture* tex);
+	//void SetHeigthMapTexture(ResourceTexture* tex);
 
-	uint GetHeightMapID();
-	float2 GetHeightMapSize();
-	const float3* GetVertices();
+	//uint GetHeightMapID();
+	//float2 GetHeightMapSize();
+	//const float3* GetVertices();
 
 private:
 
-	void GenerateHeightMap(const char* path, int gaussian);
-	void SetPixelData(const char* path);
-	void AllocateHeightMapBuffer();
-	void GaussianBlur(int iterations);
+	//void GenerateHeightMap(const char* path, int gaussian);
+	//void SetPixelData(const char* path);
+	//void AllocateHeightMapBuffer();
+	//void GaussianBlur(int iterations);
 
 
-	void GenerateTerrainMesh();
-	
-	void GenerateVertices();
-	void GenerateIndices();
-	void GenerateNormals();
-	void GenerateTexCoords();
+	//void GenerateTerrainMesh();
+	//
+	//void GenerateVertices();
+	//void GenerateIndices();
+	//void GenerateNormals();
+	//void GenerateTexCoords();
 
-	void AllocateMeshBuffers();
-	void DeallocateMeshBuffers();
+	//void AllocateMeshBuffers();
+	//void DeallocateMeshBuffers();
 
 public:
 
@@ -50,36 +50,36 @@ public:
 
 private:
 
-	int m_Width;
-	int m_Height;
-	std::vector <float3> m_data;
+	//int m_Width;
+	//int m_Height;
+	//std::vector <float3> m_data;
 
-	ResourceTexture* heigthmapTexture = nullptr;
-	bool is_focused = false;
-	uint heightmap_id = 0;
+	//ResourceTexture* heigthmapTexture = nullptr;
+	//bool is_focused = false;
+	//uint heightmap_id = 0;
 
 
-	float3* terrainData = nullptr;
-	float3* terrainDataHeight = nullptr;
-	float maxHeight = 100.0f;
+	//float3* terrainData = nullptr;
+	//float3* terrainDataHeight = nullptr;
+	//float maxHeight = 100.0f;
 
-	float texScale = 0.03f;
+	//float texScale = 0.03f;
 
-	//vertex data
-	float3* vertices = nullptr;
-	uint num_vertices;
-	uint vertex_id;
+	////vertex data
+	//float3* vertices = nullptr;
+	//uint num_vertices;
+	//uint vertex_id;
 
-	//normal data
-	float3* normals = nullptr;
-	uint num_normals;
-	uint normals_id;
+	////normal data
+	//float3* normals = nullptr;
+	//uint num_normals;
+	//uint normals_id;
 
-	//texCoords data
-	float2* uvs = nullptr;
-	float2* scaled_uvs = nullptr;
-	uint num_uvs;
-	uint uv_id;
-	uint scaled_uv_id;
-	std::map<int, std::map<int, Chunk>> chunks;
+	////texCoords data
+	//float2* uvs = nullptr;
+	//float2* scaled_uvs = nullptr;
+	//uint num_uvs;
+	//uint uv_id;
+	//uint scaled_uv_id;
+	//std::map<int, std::map<int, Chunk>> chunks;
 };

@@ -715,6 +715,7 @@
     <ClInclude Include="ComponentScript.h" />
     <ClInclude Include="ComponentSlider.h" />
     <ClInclude Include="ComponentSphereCollider.h" />
+    <ClInclude Include="ComponentTerrain.h" />
     <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="ComponentUI.h" />
@@ -1140,6 +1141,7 @@
     <ClCompile Include="ComponentScript.cpp" />
     <ClCompile Include="ComponentSlider.cpp" />
     <ClCompile Include="ComponentSphereCollider.cpp" />
+    <ClCompile Include="ComponentTerrain.cpp" />
     <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="ComponentUI.cpp" />
