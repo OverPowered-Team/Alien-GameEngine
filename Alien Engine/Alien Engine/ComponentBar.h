@@ -25,6 +25,8 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void SetSize(float width, float height);
+
 	//Script
 	void CalculateFactor();
 	float GetBarValue();
@@ -42,6 +44,7 @@ private:
 	float barScaleY = 0.8F, barScaleX = 1.0f;
 
 	float offsetX = 0.0f, offsetY = 0.0f;
+	bool draw_bar = false;
 };
 
 #endif // !_COMPONENT_BAR_H_

@@ -84,9 +84,9 @@ void ComponentUI::Update()
 		//UILogicMouse();
 
 		(game_object_attached->enabled) ? active = true : active = false;
-
+		
 		if (active)
-			(canvas->game_object_attached->enabled) ? active = true : active = false;
+			(game_object_attached->IsUpWardsEnabled()) ? active = true : active = false;
 
 		if (active)
 		{

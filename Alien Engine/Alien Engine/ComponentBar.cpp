@@ -64,7 +64,7 @@ bool ComponentBar::DrawInspector()
 		ImGui::Text("Offset:	"); ImGui::SameLine(150); ImGui::SetNextItemWidth(100);
 		ImGui::DragFloat("X", &offsetX, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
 		ImGui::SameLine(); ImGui::SetNextItemWidth(100);
-		ImGui::DragFloat("Y", &barScaleY, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
+		ImGui::DragFloat("Y", &offsetY, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
 		ImGui::PopID();
 
 		ImGui::Spacing();
@@ -229,17 +229,16 @@ bool ComponentBar::DrawInspector()
 
 void ComponentBar::Draw(bool isGame)
 {
+	draw_bar = true;
 	if (canvas == nullptr || canvas_trans == nullptr) {
 		return;
 	}
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
 	float4x4 matrix = transform->global_transformation;
-	transform->global_transformation[0][0] = transform->global_transformation[0][0] * factor * barScaleX; //w
-	transform->global_transformation[1][1] = transform->global_transformation[1][1] * barScaleY; //h
-	transform->global_transformation[0][3] = matrix[0][3] - matrix[0][0] + transform->global_transformation[0][0] /*+ offsetX*/; //x
-	transform->global_transformation[1][3] = transform->global_transformation[1][3] + offsetY; //y
+	
 	DrawTexture(isGame, barTexture);
 
+	draw_bar = false;
 	transform->global_transformation = matrix;
 	DrawTexture(isGame, texture);
 }
@@ -255,7 +254,8 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
-	if (isGame && App->renderer3D->actual_game_camera != nullptr) {
+
+	if (isGame && App->renderer3D->actual_game_camera != nullptr && !canvas->isWorld) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 #ifndef GAME_VERSION
@@ -283,10 +283,31 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 
 		origin.x = (origin.x - 0.5F) * 2;
 		origin.y = -(-origin.y - 0.5F) * 2;
-		matrix[0][3] = origin.x;
-		matrix[1][3] = origin.y;
-		//matrix[2][3] = 0.0f;
+		if (draw_bar) {
+			matrix[0][3] = origin.x + offsetX;
+			matrix[1][3] = origin.y - offsetY;
+		}
+		else {
+			matrix[0][3] = origin.x;
+			matrix[1][3] = origin.y;
+		}
+		matrix[2][3] = 0.0f;
+
+		if (tex != nullptr && draw_bar)
+		{
+			matrix[0][0] *= barScaleX;
+			matrix[1][1] *= barScaleY;
+			glEnable(GL_SCISSOR_TEST);
+			glScissor(x-(matrix[0][0] * App->ui->panel_game->width)  + offsetX ,
+				y - ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F),
+				((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width)))*factor,
+				y + ((transform->global_transformation[1][1] / (canvas->height * 0.5F) * App->ui->panel_game->height) * 0.5F));
+		}
+		
+
 	}
+
+	
 
 	if (tex != nullptr) {
 		glAlphaFunc(GL_GREATER, 0.0f);
@@ -321,12 +342,6 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
 		float4x4 uiGlobal = uiLocal;
 
-		/*	if (!particleInfo.globalTransform)
-			{
-				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
-				particleGlobal = parentGlobal * particleLocal;
-			}*/
-
 		glPushMatrix();
 		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
 
@@ -358,6 +373,10 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 
 	glPopMatrix();
 
+	if (draw_bar)
+		glDisable(GL_SCISSOR_TEST);
+		
+	
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
@@ -449,6 +468,23 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	}
 }
 
+void ComponentBar::SetSize(float width, float height)
+{
+	size.x = width / 100.0f;
+	size.y = height / 100.0f;
+
+	float halfWidth = size.x * 0.5F;
+	float halfHeight = size.y * 0.5F;
+
+	vertices[0] = { -halfWidth, halfHeight, 0 };
+	vertices[1] = { -halfWidth, -halfHeight, 0 };
+	vertices[2] = { halfWidth, -halfHeight, 0 };
+	vertices[3] = { halfWidth, halfHeight, 0 };
+
+	UpdateVertex();
+	LOG_ENGINE("Sorry, I'm cutre");
+}
+
 void ComponentBar::CalculateFactor()
 {
 	if (currentValue > maxValue) currentValue = maxValue;
@@ -487,7 +523,7 @@ void ComponentBar::SetTextureBar(ResourceTexture* tex)
 			barTexture->DecreaseReferences();
 		}
 		barTexture = tex;
-		//SetSize(tex->width, tex->height);
+		SetSize(tex->width, tex->height);
 	}
 }
 
