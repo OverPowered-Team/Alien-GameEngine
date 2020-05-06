@@ -589,7 +589,7 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	//assert(vertex_s == 0, "Vertex Failed To Compile");
 	uint fragment_s = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
 	//assert(fragment_s == 0, "Fragment Failed To Compile");
-
+	//OriiOri
 	glAttachShader(program, vertex_s);
 	glAttachShader(program, fragment_s);
 		
