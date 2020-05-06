@@ -320,6 +320,8 @@ public:
 	std::list<SpotLightProperties*> spot_light_properites;
 	std::vector<std::pair<u64, GameObject**>> to_add;
 
+	std::map<Component*, std::function<void()>> debug_draw_list;
+
 	std::string sceneNameToChange;
 
 	WaterFrameBuffers* wfbos = nullptr;

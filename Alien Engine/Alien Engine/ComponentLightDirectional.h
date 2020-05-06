@@ -32,7 +32,7 @@ public:
 	void PostUpdate();
 private:
 	void LightLogic();
-	void DrawScene(ComponentCamera* camera) override;
+	void DrawScene() override;
 
 	bool DrawInspector();
 	void OnDisable();

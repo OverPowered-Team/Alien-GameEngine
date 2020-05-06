@@ -25,6 +25,11 @@ ComponentMesh::ComponentMesh(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::MESH;
 	name = "Mesh";
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentMesh::DrawScene, this));
+#endif // !GAME_VERSION
+
 }
 
 ComponentMesh::~ComponentMesh()
@@ -37,6 +42,11 @@ ComponentMesh::~ComponentMesh()
 		mesh->DecreaseReferences();
 		mesh = nullptr;
 	}
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
+
 }
 
 void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
@@ -48,7 +58,7 @@ void ComponentMesh::SetResourceMesh(ResourceMesh* resource)
 	RecalculateAABB_OBB();
 }
 
-void ComponentMesh::DrawScene(ComponentCamera* camera)
+void ComponentMesh::DrawScene()
 {
 	OPTICK_EVENT();
 
@@ -67,28 +77,20 @@ void ComponentMesh::DrawScene(ComponentCamera* camera)
 		if (view_face_normals)
 			DrawFaceNormals();
 		if (draw_AABB)
-			DrawGlobalAABB(camera);
+			DrawGlobalAABB();
 		if (draw_OBB)
-			DrawOBB(camera);
+			DrawOBB();
 	}
 }
 
-void ComponentMesh::DrawGame(ComponentCamera* camera)
+void ComponentMesh::DrawGame()
 {
 	OPTICK_EVENT();
 
 	if (IsEnabled())
 	{
-		//DrawPolygon(camera);
-	}
-}
-
-void ComponentMesh::Render()
-{
-	OPTICK_EVENT();
-
-	if(IsEnabled())
 		DrawPolygon();
+	}
 }
 
 void ComponentMesh::DrawPolygon()
@@ -419,7 +421,7 @@ bool ComponentMesh::DrawInspector()
 	return true;
 }
 
-void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
+void ComponentMesh::DrawGlobalAABB()
 {
 	if (mesh == nullptr)
 		return;
@@ -470,7 +472,7 @@ void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
 	glEnd();
 }
 
-void ComponentMesh::DrawOBB(ComponentCamera* camera)
+void ComponentMesh::DrawOBB()
 {
 	if (mesh == nullptr)
 		return;

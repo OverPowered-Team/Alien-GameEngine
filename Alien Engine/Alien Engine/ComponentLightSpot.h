@@ -31,7 +31,7 @@ public:
 
 private:
 	void Update() override;
-	void DrawScene(ComponentCamera* camera) override;
+	void DrawScene() override;
 	void LightLogic();
 
 	bool DrawInspector();

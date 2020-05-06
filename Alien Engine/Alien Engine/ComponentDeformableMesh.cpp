@@ -104,13 +104,7 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 	}
 }
 
-void ComponentDeformableMesh::Render()
-{
-	if (IsEnabled())
-		DrawPolygon();
-}
-
-void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
+void ComponentDeformableMesh::DrawScene()
 {
 	OPTICK_EVENT();
 
@@ -129,19 +123,19 @@ void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
 		if (view_face_normals)
 			DrawFaceNormals();
 		if (draw_AABB)
-			DrawGlobalAABB(camera);
+			DrawGlobalAABB();
 		if (draw_OBB)
-			DrawOBB(camera);
+			DrawOBB();
 	}
 }
 
-void ComponentDeformableMesh::DrawGame(ComponentCamera* camera)
+void ComponentDeformableMesh::DrawGame()
 {
 	OPTICK_EVENT();
 
 	if (IsEnabled())
 	{
-		//DrawPolygon(camera);
+		DrawPolygon();
 	}
 }
 

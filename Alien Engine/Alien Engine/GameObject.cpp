@@ -187,23 +187,13 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 }
 
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene()
 {
 	OPTICK_EVENT();
 
 	for (Component* component : components)
 	{
-		component->DrawScene(camera);
-	}
-}
-
-void GameObject::Render()
-{
-	OPTICK_EVENT();
-
-	for (Component* component : components)
-	{
-		component->Render();
+		component->DrawScene();
 	}
 }
 
@@ -230,25 +220,23 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	}
 }
 
-void GameObject::DrawGame(ComponentCamera* camera)
+void GameObject::DrawGame()
 {
 	OPTICK_EVENT();
 
 	for (Component* component : components)
 	{
-		component->DrawGame(camera);
+		component->DrawGame();
 	}
 
 }
 
-void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
+void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
 	if (!is_static) {
-		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh == nullptr) //not sure if this is the best solution
-			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+		ComponentMesh* mesh = GetComponent<ComponentMesh>();
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
@@ -264,9 +252,6 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 					
 					else
 						meshes_to_draw->push_back({ distance, this });
-
-					// Push the object to be drawn for debug options
-					to_draw->push_back({ distance, this });
 				}
 			}
 		}
@@ -276,18 +261,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			meshes_to_draw_transparency->push_back({ distance, this });
 		}
-		else 
-		{
-			float3 obj_pos = transform->GetGlobalPosition();
-			float distance = camera->frustum.pos.Distance(obj_pos);
-			to_draw->push_back({ distance, this });
-		}
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
-			(*child)->SetDrawList(meshes_to_draw, to_draw, meshes_to_draw_transparency, to_draw_ui, camera);
+			(*child)->SetDrawList(meshes_to_draw, meshes_to_draw_transparency, to_draw_ui, camera);
 		}
 	}
 

@@ -47,10 +47,8 @@ protected:
 
 	void SetResourceMesh(ResourceMesh* resource);
 
-	void DrawScene(ComponentCamera* camera) override;
-	void DrawGame(ComponentCamera* camera) override;
-
-	void Render() override; 
+	void DrawScene() override;
+	void DrawGame() override;
 
 	virtual void DrawPolygon();
 	virtual void PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
@@ -64,8 +62,8 @@ protected:
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
-	void DrawGlobalAABB(ComponentCamera* camera);
-	void DrawOBB(ComponentCamera* camera);
+	void DrawGlobalAABB();
+	void DrawOBB();
 
 	void Reset();
 	void SetComponent(Component* component);

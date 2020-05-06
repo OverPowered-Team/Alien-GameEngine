@@ -89,6 +89,12 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 	skybox_shader->Bind();
 	skybox_shader->SetUniform1i("skybox", 0);
 	skybox_shader->Unbind();
+
+#ifndef GAME_VERSION
+	if(attach != nullptr)
+		App->objects->debug_draw_list.emplace(this, std::bind(&ComponentCamera::DrawScene, this));
+#endif // !GAME_VERSION
+
 }
 
 ComponentCamera::~ComponentCamera()
@@ -139,6 +145,11 @@ ComponentCamera::~ComponentCamera()
 
 	RELEASE(skybox);
 	RELEASE(cubemap);
+
+#ifndef GAME_VERSION
+	if (game_object_attached != nullptr)
+		App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
 }
 
 bool ComponentCamera::DrawInspector()
@@ -552,7 +563,7 @@ bool ComponentCamera::DrawInspector()
 	return true;
 }
 
-void ComponentCamera::DrawScene(ComponentCamera* camera)
+void ComponentCamera::DrawScene()
 {
 	
 	OPTICK_EVENT();
