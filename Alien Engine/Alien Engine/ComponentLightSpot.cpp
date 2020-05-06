@@ -19,6 +19,8 @@ ComponentLightSpot::ComponentLightSpot(GameObject* attach) : Component(attach)
 	App->objects->spot_light_properites.push_back(&light_props);
 	App->objects->AddNumOfSpotLights();
 	light_props.enabled = enabled;
+	light_props.light = this;
+
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
 	bulb->mesh = App->resources->light_mesh;
