@@ -1408,6 +1408,7 @@ void ModuleObjects::LoadScene(const char* name, bool change_scene)
 							*(*item).second = found;
 						}
 					}
+					to_add.clear();
 				}
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
