@@ -231,7 +231,7 @@ void GameObject::DrawGame(ComponentCamera* camera)
 
 }
 
-void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_no_shader, std::vector<std::pair<float, GameObject*>>* to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
+void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
@@ -250,10 +250,13 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 					float distance = camera->frustum.pos.Distance(obj_pos);
 
 					if (material->IsTransparent())
-						to_draw_transparency->push_back({ distance, this });
+						meshes_to_draw_transparency->push_back({ distance, this });
 					
 					else
-						to_draw->push_back({ distance, this });					   
+						meshes_to_draw->push_back({ distance, this });
+
+					// Push the object to be drawn for debug options
+					//to_draw->push_back({ distance, this });
 				}
 			}
 		}
@@ -261,20 +264,20 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
-			to_draw_transparency->push_back({ distance, this });
+			meshes_to_draw_transparency->push_back({ distance, this });
 		}
 		else 
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
-			to_draw_no_shader->push_back({ distance, this });
+			to_draw->push_back({ distance, this });
 		}
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
-			(*child)->SetDrawList(to_draw, to_draw_no_shader, to_draw_transparency, to_draw_ui, camera);
+			(*child)->SetDrawList(meshes_to_draw, to_draw, meshes_to_draw_transparency, to_draw_ui, camera);
 		}
 	}
 

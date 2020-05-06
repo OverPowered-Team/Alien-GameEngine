@@ -266,6 +266,18 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		}
 		ApplyLightsUniforms();
 		break;
+
+	case SHADER_TEMPLATE::PARTICLE:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		break;
+
 	}
 }
 

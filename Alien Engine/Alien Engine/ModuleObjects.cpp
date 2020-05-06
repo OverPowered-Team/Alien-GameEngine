@@ -293,9 +293,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 				OnPreCull(viewport->GetCamera());
 			}
 
-			std::vector<std::pair<float, GameObject*>> to_draw;
-			std::vector<std::pair<float, GameObject*>> to_draw_no_shader;
-			std::vector<std::pair<float, GameObject*>> to_draw_transparency;
+			std::vector<std::pair<float, GameObject*>> to_draw_no_shader;				// SOLID WITHOUT SHADERS (Can't be transparent without material I think)
+			std::vector<std::pair<float, GameObject*>> meshes_to_draw;					// SOLID WITH SHADERS 
+			std::vector<std::pair<float, GameObject*>> meshes_to_draw_transparency;		// TRANSPARENCIES WITH SHADERS
 
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
 			std::vector<std::pair<float, GameObject*>> ui_2d;
@@ -308,17 +308,17 @@ update_status ModuleObjects::PostUpdate(float dt)
 				frustum_camera = App->renderer3D->actual_game_camera;
 			}
 
-			octree.SetStaticDrawList(&to_draw, frustum_camera);
+			octree.SetStaticDrawList(&meshes_to_draw, frustum_camera);
 
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, &to_draw_no_shader, &to_draw_transparency, &to_draw_ui, frustum_camera);
+					(*item)->SetDrawList(&meshes_to_draw, &to_draw_no_shader, &meshes_to_draw_transparency, &to_draw_ui, frustum_camera);
 				}
 			}
 
-			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
-			std::sort(to_draw_transparency.begin(), to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(meshes_to_draw.begin(), meshes_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(meshes_to_draw_transparency.begin(), meshes_to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
 			
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
@@ -333,8 +333,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
 				glClear(GL_DEPTH_BUFFER_BIT);
 			
-				std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-				for (; it != to_draw.end(); ++it) {
+				std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin();
+				for (; it != meshes_to_draw.end(); ++it) {
 					if ((*it).second != nullptr) {
 						if (printing_scene)
 							(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
@@ -362,26 +362,37 @@ update_status ModuleObjects::PostUpdate(float dt)
 			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
 			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
 
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
+			std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin();
 						
 			viewport->GetCamera()->DrawSkybox(); 
 
 			// First draw solids
 			ResourceShader* current_used_shader = App->resources->default_shader;
 
-			// Draw Solids without shaders 
+			// Draw Solids with shaders (must have material)
 
-			while (!to_draw.empty())
+			while (!meshes_to_draw.empty())
 			{
 				current_used_shader->Bind();
 				current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
 
-				for (it = to_draw.begin(); it != to_draw.end();) {
+				for (it = meshes_to_draw.begin(); it != meshes_to_draw.end();) {
+
+					if ((*it).second == nullptr)
+					{
+						it = meshes_to_draw.erase(it);
+						continue;
+					}
+
 					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
 					if (material->GetUsedShader() == current_used_shader)
 					{
-						(*it).second->DrawScene(viewport->GetCamera());
-						it = to_draw.erase(it);
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
+
+						it = meshes_to_draw.erase(it);
 						continue;
 					}
 					++it;
@@ -389,15 +400,15 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 				current_used_shader->Unbind();
 
-				if (!to_draw.empty())
+				if (!meshes_to_draw.empty())
 				{
-					ComponentMaterial* nextMat = to_draw.front().second->GetComponent<ComponentMaterial>();
+					ComponentMaterial* nextMat = meshes_to_draw.front().second->GetComponent<ComponentMaterial>();
 					if(nextMat != nullptr)
 					current_used_shader = nextMat->GetUsedShader();
 				}
-
-
 			}
+
+			// Draw Solids without shaders 
 
 			for (it = to_draw_no_shader.begin(); it != to_draw_no_shader.end(); ++it) {
 
@@ -411,14 +422,32 @@ update_status ModuleObjects::PostUpdate(float dt)
 			
 			// Then draw transparents
 			
-			for (it = to_draw_transparency.begin(); it != to_draw_transparency.end(); ++it) {
+			current_used_shader = App->resources->default_shader;
+
+			for (it = meshes_to_draw_transparency.begin(); it != meshes_to_draw_transparency.end(); ++it) {
+
 				if ((*it).second != nullptr) {
-					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera());
-					else
-						(*it).second->DrawGame(viewport->GetCamera());
+					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
+
+					if (material != nullptr)
+					{
+						if (material->GetUsedShader() != current_used_shader);
+						{
+							current_used_shader->Unbind();
+							current_used_shader = material->GetUsedShader();
+							current_used_shader->Bind();
+							current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+						}
+
+						if (printing_scene)
+							(*it).second->DrawScene(viewport->GetCamera());
+						else
+							(*it).second->DrawGame(viewport->GetCamera());
+					}
 				}
 			}
+
+			current_used_shader->Unbind();
 
 			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 

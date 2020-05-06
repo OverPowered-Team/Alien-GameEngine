@@ -266,15 +266,8 @@ void Particle::Draw()
 
 
 		// ---- CAMERA PROJECTION ---- //
-		ComponentCamera* mainCamera = nullptr;
 
-		if (App->objects->printing_scene)
-			 mainCamera = App->camera->scene_viewport->GetCamera();
-		else
-			 mainCamera = App->renderer3D->GetCurrentMainCamera();
-
-		SetUniform(owner->material, mainCamera, particleGlobal);
-
+		SetUniform(owner->material, particleGlobal);
 
 	}
 	owner->ActivateLight();
@@ -414,21 +407,9 @@ float Particle::Lerp(float v0, float v1, float t)
 	return (1 - t) * v0 + t * v1;
 }
 
-void Particle::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, float4x4 globalMatrix)
+void Particle::SetUniform(ResourceMaterial* resource_material, float4x4 globalMatrix)
 {
-	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->used_shader->SetUniformMat4f("model", globalMatrix.Transposed());
-	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	/*resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	resource_material->used_shader->SetUniform1i("animate", animate);*/
-
-	resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
-	if (camera->activeFog)
-	{
-		resource_material->used_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
-		resource_material->used_shader->SetUniform1f("density", camera->fogDensity);
-		resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
-	}
 }
 
 

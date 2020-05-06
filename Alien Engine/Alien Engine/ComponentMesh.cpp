@@ -56,18 +56,18 @@ void ComponentMesh::DrawScene(ComponentCamera* camera)
 	{
 		if (!wireframe)
 			DrawPolygon(camera);
-		///*if ((selected || parent_selected) && App->objects->outline)
-		//	mesh->DrawOutLine();*/
-		//if (view_mesh || wireframe)
-		//	DrawMesh();
-		//if (view_vertex_normals)
-		//	DrawVertexNormals();
-		//if (view_face_normals)
-		//	DrawFaceNormals();
-		//if (draw_AABB)
-		//	DrawGlobalAABB(camera);
-		//if (draw_OBB)
-		//	DrawOBB(camera);
+		/*if ((selected || parent_selected) && App->objects->outline)
+			mesh->DrawOutLine();*/
+		if (view_mesh || wireframe)
+			DrawMesh();
+		if (view_vertex_normals)
+			DrawVertexNormals();
+		if (view_face_normals)
+			DrawFaceNormals();
+		if (draw_AABB)
+			DrawGlobalAABB(camera);
+		if (draw_OBB)
+			DrawOBB(camera);
 	}
 }
 
@@ -260,6 +260,7 @@ void ComponentMesh::DrawMesh()
 
 	glLineWidth(1);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glColor3f(1.f, 1.f, 1.f);
 
 	glPopMatrix();
 
@@ -455,6 +456,7 @@ void ComponentMesh::DrawGlobalAABB(ComponentCamera* camera)
 	glVertex3f(global_aabb.maxPoint.x, global_aabb.maxPoint.y, global_aabb.maxPoint.z);
 
 	glLineWidth(1);
+	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
 }
 
