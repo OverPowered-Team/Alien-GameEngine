@@ -294,6 +294,7 @@ void ComponentLightDirectional::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
 	to_save->SetFloat3("Specular", float3(light_props.specular));
 	to_save->SetBoolean("CastShadows", castShadows);
+	to_save->SetNumber("SizeBakedShadow", sizefrustrumbaked);
 }
 
 void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
@@ -309,6 +310,7 @@ void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
 	light_props.specular = to_load->GetFloat3("Specular");
 	castShadows = to_load->GetBoolean("CastShadows");
+	sizefrustrumbaked = to_load->GetNumber("SizeBakedShadow");
 }
 
 void ComponentLightDirectional::DrawIconLight()
