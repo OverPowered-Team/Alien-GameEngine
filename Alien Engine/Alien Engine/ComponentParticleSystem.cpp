@@ -116,6 +116,11 @@ void ComponentParticleSystem::DrawGame(ComponentCamera* camera)
 	Draw();
 }
 
+void ComponentParticleSystem::Render()
+{
+
+}
+
 void ComponentParticleSystem::DebugDraw()
 {
 	OPTICK_EVENT();

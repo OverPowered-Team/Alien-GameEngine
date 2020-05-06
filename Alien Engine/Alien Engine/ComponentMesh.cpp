@@ -55,7 +55,9 @@ void ComponentMesh::DrawScene(ComponentCamera* camera)
 	if (IsEnabled())
 	{
 		if (!wireframe)
-			DrawPolygon(camera);
+		{
+			//DrawPolygon(camera);
+		}
 		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine();*/
 		if (view_mesh || wireframe)
@@ -77,11 +79,19 @@ void ComponentMesh::DrawGame(ComponentCamera* camera)
 
 	if (IsEnabled())
 	{
-		DrawPolygon(camera);
+		//DrawPolygon(camera);
 	}
 }
 
-void ComponentMesh::DrawPolygon(ComponentCamera* camera)
+void ComponentMesh::Render()
+{
+	OPTICK_EVENT();
+
+	if(IsEnabled())
+		DrawPolygon();
+}
+
+void ComponentMesh::DrawPolygon()
 {
 
 	OPTICK_EVENT();

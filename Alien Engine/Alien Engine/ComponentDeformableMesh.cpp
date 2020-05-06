@@ -104,6 +104,12 @@ void ComponentDeformableMesh::UpdateBonesMatrix()
 	}
 }
 
+void ComponentDeformableMesh::Render()
+{
+	if (IsEnabled())
+		DrawPolygon();
+}
+
 void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
 {
 	OPTICK_EVENT();
@@ -111,7 +117,9 @@ void ComponentDeformableMesh::DrawScene(ComponentCamera* camera)
 	if (IsEnabled())
 	{
 		if (!wireframe)
-			DrawPolygon(camera);
+		{
+			//DrawPolygon(camera);
+		}
 		/*if ((selected || parent_selected) && App->objects->outline)
 			mesh->DrawOutLine();*/
 		if (view_mesh || wireframe)
@@ -133,12 +141,12 @@ void ComponentDeformableMesh::DrawGame(ComponentCamera* camera)
 
 	if (IsEnabled())
 	{
-		DrawPolygon(camera);
+		//DrawPolygon(camera);
 	}
 }
 
 
-void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
+void ComponentDeformableMesh::DrawPolygon()
 {
 	OPTICK_EVENT();
 	if (mesh == nullptr || mesh->id_index <= 0 || material == nullptr)
@@ -146,7 +154,7 @@ void ComponentDeformableMesh::DrawPolygon(ComponentCamera* camera)
 
 	UpdateBonesMatrix();
 
-	ComponentMesh::DrawPolygon(camera);
+	ComponentMesh::DrawPolygon();
 
 }
 

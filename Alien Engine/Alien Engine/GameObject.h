@@ -189,7 +189,8 @@ private:
 	void PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	void PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	void DrawGame(ComponentCamera* camera);
-	void DrawScene(ComponentCamera* camera);
+	void DrawScene(ComponentCamera* camera); 
+	void Render();	// Virtual function in components to draw with shaders
 	void SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_no_shader, std::vector<std::pair<float, GameObject*>>* to_draw_transparency, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera);
 
 	ComponentCanvas* GetCanvas();

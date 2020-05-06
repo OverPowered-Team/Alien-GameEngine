@@ -104,6 +104,8 @@ protected:
 	virtual void DrawScene(ComponentCamera* camera) {}
 	virtual void DrawGame(ComponentCamera* camera) {}
 
+	virtual void Render() {}
+
 	virtual void ResetIDs();
 
 	const ComponentType& GetType() const;

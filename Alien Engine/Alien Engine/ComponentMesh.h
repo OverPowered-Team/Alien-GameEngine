@@ -50,7 +50,9 @@ protected:
 	void DrawScene(ComponentCamera* camera) override;
 	void DrawGame(ComponentCamera* camera) override;
 
-	virtual void DrawPolygon(ComponentCamera* camera);
+	void Render() override; 
+
+	virtual void DrawPolygon();
 	virtual void PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	virtual void DrawOutLine();
 	virtual void DrawMesh();

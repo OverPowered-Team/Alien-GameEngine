@@ -197,6 +197,16 @@ void GameObject::DrawScene(ComponentCamera* camera)
 	}
 }
 
+void GameObject::Render()
+{
+	OPTICK_EVENT();
+
+	for (Component* component : components)
+	{
+		component->Render();
+	}
+}
+
 void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position)
 {
 	OPTICK_EVENT();
@@ -256,7 +266,7 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 						meshes_to_draw->push_back({ distance, this });
 
 					// Push the object to be drawn for debug options
-					//to_draw->push_back({ distance, this });
+					to_draw->push_back({ distance, this });
 				}
 			}
 		}

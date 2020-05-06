@@ -387,11 +387,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
 					if (material->GetUsedShader() == current_used_shader)
 					{
-						if (printing_scene)
-							(*it).second->DrawScene(viewport->GetCamera());
-						else
-							(*it).second->DrawGame(viewport->GetCamera());
-
+						(*it).second->Render(); 
 						it = meshes_to_draw.erase(it);
 						continue;
 					}

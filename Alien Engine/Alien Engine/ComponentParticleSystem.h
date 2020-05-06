@@ -28,6 +28,8 @@ private:
 	void DrawScene(ComponentCamera* camera) override;
 	void DrawGame(ComponentCamera* camera) override;
 
+	void Render() override; 
+
 	void DebugDraw();
 	void Draw();
 
