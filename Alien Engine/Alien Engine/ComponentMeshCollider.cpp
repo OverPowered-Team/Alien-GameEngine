@@ -9,12 +9,8 @@ ComponentMeshCollider::ComponentMeshCollider(GameObject* go) : ComponentCollider
 {
 	name.assign("Mesh Collider");
 	type = ComponentType::MESH_COLLIDER;
-	shape = CreateMeshShape();
+	CreateMeshShape();
 	InitCollider();
-}
-
-void ComponentMeshCollider::SetSize(const float3 size)
-{
 }
 
 void ComponentMeshCollider::ScaleChanged()
@@ -30,10 +26,13 @@ void ComponentMeshCollider::DrawSpecificInspector()
 
 void ComponentMeshCollider::SaveComponent(JSONArraypack* to_save)
 {
+	ComponentCollider::SaveComponent(to_save);
 }
 
 void ComponentMeshCollider::LoadComponent(JSONArraypack* to_load)
 {
+	ComponentCollider::LoadComponent(to_load);
+
 }
 
 void ComponentMeshCollider::Clone(Component* clone)
@@ -44,7 +43,7 @@ void ComponentMeshCollider::Reset()
 {
 }
 
-PxShape* ComponentMeshCollider::CreateMeshShape()
+bool ComponentMeshCollider::CreateMeshShape()
 {
 	if (shape) {
 		shape->release();
@@ -53,7 +52,7 @@ PxShape* ComponentMeshCollider::CreateMeshShape()
 
 	const ComponentMesh* mesh = GetMesh();
 	if (!mesh) {
-		return nullptr;
+		return false;
 	}
 
 	uint nverts = mesh->mesh->num_vertex;
@@ -78,5 +77,5 @@ PxShape* ComponentMeshCollider::CreateMeshShape()
 
 	PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 	triangle_mesh = App->physx->px_physics->createTriangleMesh(readBuffer);
-	return App->physx->CreateShape(PxTriangleMeshGeometry(triangle_mesh, PxMeshScale(F3_TO_PXVEC3(physics->scale))), *material);
+	shape = App->physx->CreateShape(PxTriangleMeshGeometry(triangle_mesh, PxMeshScale(F3_TO_PXVEC3(physics->scale))), *material);
 }

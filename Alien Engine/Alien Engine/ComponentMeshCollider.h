@@ -11,9 +11,6 @@ class __declspec(dllexport) ComponentMeshCollider : public ComponentCollider
 
 public:
 	ComponentMeshCollider(GameObject* go);
-	void SetSize(const float3 size);
-	const float3 GetSize() const { return size; }
-
 private:
 	void ScaleChanged();
 	void DrawSpecificInspector();
@@ -22,10 +19,9 @@ private:
 	void Clone(Component* clone);
 	void Reset();
 
-	PxShape* CreateMeshShape();
+	bool CreateMeshShape();
 
 private:
 	PxTriangleMesh* triangle_mesh = nullptr;
-	float3 size = float3::one();
 };
 
