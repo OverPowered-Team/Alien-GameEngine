@@ -108,8 +108,10 @@ bool ModuleObjects::Init()
 bool ModuleObjects::Start()
 {
 	OPTICK_EVENT();
+
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
+
 
 	game_viewport = new Viewport(nullptr);
 
