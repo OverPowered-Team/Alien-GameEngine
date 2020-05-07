@@ -357,7 +357,7 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
-	if(tex == texture)
+	if(!draw_bar)
 		glColor4f(current_color.r, current_color.g, current_color.b, current_color.a);
 	else
 		glColor4f(bar_color.r, bar_color.g, bar_color.b, bar_color.a);
