@@ -352,8 +352,8 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 	
 
 	if (tex != nullptr) {
-		glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex->id);
 	}
 
@@ -412,6 +412,7 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
 
 	glPopMatrix();
 
