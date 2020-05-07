@@ -343,10 +343,6 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		App->objects->ReAttachUIScriptEvents();
 		obj->ResetIDs();
 
-		for each (ComponentUI * uiElement in ui) {
-			uiElement->ReSetIDNavigation();
-		}
-
 		obj->SetPrefab(ID);
 		obj->transform->SetLocalPosition(pos);
 		if (set_selected) {
