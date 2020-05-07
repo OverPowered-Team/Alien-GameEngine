@@ -220,7 +220,7 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::Text("Scissoring Type");
 		ImGui::SameLine(150);
-		static int type = 0;
+		int type = (int)scType;
 		ImGui::Combo("##ScissorType", &type, "Right to left\0Left to right\0Center\0");
 		switch (SCISSOR_TYPE(type))
 		{
