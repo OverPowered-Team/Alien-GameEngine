@@ -5,8 +5,8 @@
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
-                "ID": "8010392064045621071",
-                "ParentID": "842767299524603442",
+                "ID": "4829625050689832445",
+                "ParentID": "16972187868218193999",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -35,7 +35,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "932117476766797758"
+                        "ID": "11598399055657258864"
                     },
                     {
                         "Enabled": true,
@@ -51,7 +51,7 @@
                         "FarPlane": 200,
                         "NearPlane": 0.10000000149011612,
                         "isFovHori": 0,
-                        "ID": "17838962509591116737",
+                        "ID": "14644987636267503266",
                         "IsGameCamera": true,
                         "IsSelectedCamera": false,
                         "PrintIcon": true,
@@ -76,8 +76,8 @@
             {
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
-                "ID": "7860989476443001750",
-                "ParentID": "842767299524603442",
+                "ID": "17128603531732154154",
+                "ParentID": "16972187868218193999",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -106,12 +106,12 @@
                             0.99999994039535522
                         ],
                         "ScaleNegative": false,
-                        "ID": "5713512539661216288"
+                        "ID": "15874537595718195330"
                     },
                     {
                         "Type": 3,
                         "Enabled": true,
-                        "ID": "3381296641850398626",
+                        "ID": "15355440494070916295",
                         "PrintIcon": true,
                         "Intensity": 1,
                         "Position": [
@@ -147,8 +147,8 @@
             {
                 "Name": "Canvas",
                 "FamilyNumber": 1,
-                "ID": "9874426104082174172",
-                "ParentID": "842767299524603442",
+                "ID": "13332471474672343297",
+                "ParentID": "16972187868218193999",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -177,7 +177,7 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "10365935263668838775"
+                        "ID": "18055214911455707915"
                     },
                     {
                         "Enabled": true,
@@ -190,8 +190,8 @@
             {
                 "Name": "Bar",
                 "FamilyNumber": 2,
-                "ID": "17666579950014395925",
-                "ParentID": "9874426104082174172",
+                "ID": "12255493378121306931",
+                "ParentID": "13332471474672343297",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": true,
@@ -215,12 +215,12 @@
                             1
                         ],
                         "Scale": [
-                            12.886499404907227,
-                            12.886499404907227,
-                            12.886499404907227
+                            16.920791625976563,
+                            16.920791625976563,
+                            16.920791625976563
                         ],
                         "ScaleNegative": false,
-                        "ID": "5973352168763513681"
+                        "ID": "6245355853768419271"
                     },
                     {
                         "X": 349.5,
@@ -230,7 +230,7 @@
                         "Enabled": true,
                         "Type": 30,
                         "UIType": 25,
-                        "TextureID": "0",
+                        "TextureID": "6852702857392497102",
                         "sliderTexture": "1925105467071951427",
                         "Color": [
                             0.80000001192092896,
@@ -246,8 +246,8 @@
                         ],
                         "maxValue": 100,
                         "minValue": 0,
-                        "currentValue": 60.5,
-                        "factor": 0.60500001907348633,
+                        "currentValue": 0,
+                        "factor": 0,
                         "barScaleX": 1,
                         "barScaleY": 0.80000001192092896,
                         "offsetX": 0,

@@ -455,6 +455,17 @@ update_status ModuleObjects::PostUpdate(float dt)
 					ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
 					{
+						ui->Draw(!printing_scene);
+
+					}
+				}
+			}
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+			for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+				if ((*it_ui_world).second != nullptr) {
+					ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+					if (ui != nullptr && ui->IsEnabled())
+					{
 						ui->Orientate(mainCamera);
 						ui->Rotate();
 						ui->Draw(!printing_scene);

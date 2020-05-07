@@ -329,6 +329,18 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 					((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
 					10000);
 
+
+				/*if (App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) {
+					LOG_ENGINE("X: %f", x);
+					LOG_ENGINE("CURRENT: %f", x - (matrix[0][0] * App->ui->panel_game->width) + offsetX);
+					LOG_ENGINE("CURRENT OFFSET: %f", (matrix[0][0] * App->ui->panel_game->width) + offsetX);
+					LOG_ENGINE("WIDTH: %f", ((x + (matrix[0][0] * App->ui->panel_game->width)) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor);
+				}
+				else
+				{
+					LOG_ENGINE("MOUSE: %f", (App->input->GetMouseX() - App->ui->panel_game->posX));
+				}*/
+
 #else
 				glScissor(x - (matrix[0][0] * App->window->width) + offsetX,
 					0,
@@ -483,6 +495,7 @@ void ComponentBar::LoadComponent(JSONArraypack* to_load)
 	x = to_load->GetNumber("X");
 	y = to_load->GetNumber("Y");
 	size = { (float)to_load->GetNumber("Width"), (float)to_load->GetNumber("Height") };
+	SetSize(size.x * 100.0f, size.y * 100.0f);
 
 	enabled = to_load->GetBoolean("Enabled");
 	current_color = to_load->GetColor("Color");
