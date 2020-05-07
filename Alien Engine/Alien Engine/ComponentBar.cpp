@@ -534,7 +534,6 @@ void ComponentBar::SetSize(float width, float height)
 	vertices[3] = { halfWidth, halfHeight, 0 };
 
 	UpdateVertex();
-	LOG_ENGINE("Sorry, I'm cutre");
 }
 
 void ComponentBar::CalculateFactor()

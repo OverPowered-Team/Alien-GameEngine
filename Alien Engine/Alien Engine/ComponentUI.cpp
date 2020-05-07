@@ -78,7 +78,7 @@ void ComponentUI::Update()
 {
 	
 	if (Time::IsPlaying()) {
-		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
+		if (canvas!=nullptr && canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 
 		//UILogicMouse();
@@ -117,7 +117,7 @@ void ComponentUI::Update()
 				break; }
 			}
 
-			if (canvas->game_object_attached->enabled && canvas->allow_navigation)
+			if (canvas!=nullptr && canvas->game_object_attached->enabled && canvas->allow_navigation)
 				UILogicGamePad();
 		}
 
