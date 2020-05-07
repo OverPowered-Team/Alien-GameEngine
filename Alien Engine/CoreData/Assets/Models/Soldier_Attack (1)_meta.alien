@@ -13,7 +13,7 @@
                 "End_Tick": 68
             }
         ],
-        "NumMaterials": 1,
+        "NumMaterials": 0,
         "PathMeshes": [
             "Library\/Meshes\/13552636148958231160.alienMesh"
         ],
@@ -64,9 +64,7 @@
             "Library\/Bones\/16248023474463553743.alienBone",
             "Library\/Bones\/17251524655450379033.alienBone"
         ],
-        "PathMaterials": [
-            "Library\/Materials\/9971961625262891401.material"
-        ]
+        "PathMaterials": []
     },
     "Nodes": [
         {

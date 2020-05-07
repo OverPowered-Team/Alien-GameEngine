@@ -1,0 +1,47 @@
+{
+    "Meta": {
+        "ID": "13401219593521318769",
+        "NumMeshes": 1,
+        "Name": "uploads_files_2012526_LOD_3_167'771_tris",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/9725216854797358971.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/1601413692509697000.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                100,
+                100,
+                100
+            ],
+            "rot": [
+                0,
+                0,
+                1,
+                -4.3711388286737929e-08
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Plane.003",
+            "parentName": "uploads_files_2012526_LOD_3_167'771_tris",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}
