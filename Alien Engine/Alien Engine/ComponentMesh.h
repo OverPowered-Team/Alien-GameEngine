@@ -25,6 +25,7 @@ class __declspec(dllexport) ComponentMesh : public Component {
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
+	friend class ComponentMeshCollider;
 	friend class ComponentConvexHullCollider;
 	friend class GameObject;
 	friend class ModuleCamera3D;
@@ -47,16 +48,22 @@ protected:
 
 	void SetResourceMesh(ResourceMesh* resource);
 
-	virtual void DrawPolygon(ComponentCamera* camera);
+	void DrawScene() override;
+	void DrawGame() override;
+
+	virtual void DrawPolygon();
+	virtual void PreDrawPolygonForShadows(ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 	virtual void DrawOutLine();
 	virtual void DrawMesh();
-	virtual void SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera);
+
+	virtual void SetUniforms(ResourceMaterial* resource_material);
+	virtual void SetShadowUniforms(ResourceMaterial* resource_material, ComponentCamera* camera, const float4x4& ViewMat, const float4x4& ProjMatrix, const float3& position);
 
 	void DrawVertexNormals();
 	void DrawFaceNormals();
 	bool DrawInspector();
-	void DrawGlobalAABB(ComponentCamera* camera);
-	void DrawOBB(ComponentCamera* camera);
+	void DrawGlobalAABB();
+	void DrawOBB();
 
 	void Reset();
 	void SetComponent(Component* component);

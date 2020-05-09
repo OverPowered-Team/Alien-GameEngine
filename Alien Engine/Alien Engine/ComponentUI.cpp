@@ -15,6 +15,7 @@
 #include "ModuleRenderer3D.h"
 #include "Billboard.h"
 #include "StaticInput.h"
+#include "ModuleResources.h"
 #include "mmgr/mmgr.h"
 
 ComponentUI::ComponentUI(GameObject* obj) :Component(obj)
@@ -77,41 +78,48 @@ void ComponentUI::Update()
 {
 	
 	if (Time::IsPlaying()) {
-		if (canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
+		if (canvas != nullptr && canvas->allow_navigation && (!App->objects->first_assigned_selected || (App->objects->GetGameObjectByID(App->objects->selected_ui) != nullptr && !App->objects->GetGameObjectByID(App->objects->selected_ui)->enabled)))
 			CheckFirstSelected();
 
 		//UILogicMouse();
 
-		switch (state)
+		(game_object_attached->enabled) ? active = true : active = false;
+		
+		if (active)
+			(game_object_attached->IsUpWardsEnabled()) ? active = true : active = false;
+
+		if (active)
 		{
-		case Idle: {
-			OnIdle();
-			break; }
-		case Hover: {
-			OnHover();
-			break; }
-		case Click: {
-			OnClick();
-			break; }
-		case Pressed: {
-			OnPressed();
-			break; }
-		case Release: {
-			OnRelease();
-			break; }
-		case Exit: {
-			OnExit();
-			break; }
-		case Enter: {
-			OnEnter();
-			break; }
-		default: {
-			break; }
+			switch (state)
+			{
+			case Idle: {
+				OnIdle();
+				break; }
+			case Hover: {
+				OnHover();
+				break; }
+			case Click: {
+				OnClick();
+				break; }
+			case Pressed: {
+				OnPressed();
+				break; }
+			case Release: {
+				OnRelease();
+				break; }
+			case Exit: {
+				OnExit();
+				break; }
+			case Enter: {
+				OnEnter();
+				break; }
+			default: {
+				break; }
+			}
+
+			if (canvas!=nullptr && canvas->game_object_attached->enabled && canvas->allow_navigation)
+				UILogicGamePad();
 		}
-
-		if (canvas->game_object_attached->enabled || canvas->allow_navigation)
-			UILogicGamePad();
-
 
 	}
 }
@@ -119,6 +127,7 @@ void ComponentUI::Update()
 void ComponentUI::Draw(bool isGame)
 {
 	if (canvas == nullptr || canvas_trans == nullptr) {
+		LOG_ENGINE("Canvas is nullptr");
 		return;
 	}
 
@@ -132,12 +141,20 @@ void ComponentUI::Draw(bool isGame)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 
+	/*float4x4 ortho_matrix = float4x4((2.0f / App->ui->panel_game->width), 0.0f, 0.0f, -(App->ui->panel_game->width / App->ui->panel_game->width),
+		0.0f, (2.0f / App->ui->panel_game->height), 0.0f, -(App->ui->panel_game->height / App->ui->panel_game->height),
+		0.0f, 0.0f, (-2.0f / 2.0f), -(0.0 / 2.0f),
+		0.0f, 0.0f, 0.0f, 1.0f);*/
+
 	if (isGame && App->renderer3D->actual_game_camera != nullptr && !canvas->isWorld) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 #ifndef GAME_VERSION
-		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		glOrtho(0, App->ui->panel_game->width, App->ui->panel_game->height, 0,App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
+		/*glPushMatrix();
+		glMultMatrixf(ortho_matrix.ptr());
+		glPopMatrix();*/
 #else
 		glOrtho(0, App->window->width, App->window->height, 0, App->renderer3D->actual_game_camera->frustum.farPlaneDistance, App->renderer3D->actual_game_camera->frustum.farPlaneDistance);
 #endif
@@ -164,14 +181,14 @@ void ComponentUI::Draw(bool isGame)
 		origin.y = -(-origin.y - 0.5F) * 2;
 		matrix[0][3] = origin.x;
 		matrix[1][3] = origin.y;
-		matrix[2][3] = 0.0f;
+		//matrix[2][3] = 0.0f;
 	}
 
 	
 
 	if (texture != nullptr) {
-		//glAlphaFunc(GL_GREATER, 0.0f);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 	}
 
@@ -193,17 +210,12 @@ void ComponentUI::Draw(bool isGame)
 
 		scale.x = matrix[0][0];
 		scale.y = matrix[1][1];
-		scale.z = 1.0f;
+		scale.z = matrix[2][2];
 
 
-		float4x4 uiLocal = float4x4::FromTRS(position, rotation, scale);
+		float4x4 uiLocal = float4x4::FromTRS(position, game_object_attached->transform->GetGlobalRotation(), scale);
 		float4x4 uiGlobal = uiLocal;
 
-		/*	if (!particleInfo.globalTransform)
-			{
-				float4x4 parentGlobal = owner->emmitter.GetGlobalTransform();
-				particleGlobal = parentGlobal * particleLocal;
-			}*/
 
 		glPushMatrix();
 		glMultMatrixf((GLfloat*)&(uiGlobal.Transposed()));
@@ -234,6 +246,7 @@ void ComponentUI::Draw(bool isGame)
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
 
 	glPopMatrix();
 
@@ -338,39 +351,49 @@ void ComponentUI::CheckFirstSelected()
 
 void ComponentUI::Orientate(ComponentCamera* camera)
 {
-	if (camera == nullptr)
-		return;
-
-	switch (canvas->bbtype)
+	if (canvas != nullptr && canvas->isWorld)
 	{
-	case BillboardType::SCREEN:
-		rotation = Billboard::AlignToScreen(camera);
-		break;
+		if (camera == nullptr)
+			return;
+		if (game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+		{
 
-	case BillboardType::WORLD:
-		rotation = Billboard::AlignToWorld(camera, position);
-		break;
+			switch (canvas->bbtype)
+			{
+			case BillboardType::SCREEN:
+				rotation = Billboard::AlignToScreen(camera);
+				break;
 
-	case BillboardType::AXIS:
-		rotation = Billboard::AlignToAxis(camera, position);
+			case BillboardType::WORLD:
+				rotation = Billboard::AlignToWorld(camera, position);
+				break;
 
-		break;
+			case BillboardType::AXIS:
+				rotation = Billboard::AlignToAxis(camera, position);
+				break;
 
-	case BillboardType::NONE:
-		rotation = Quat::identity();
-		break;
+			case BillboardType::NONE:
+				rotation = Quat::identity();
+				break;
 
-	default:
-		break;
+			default:
+				break;
+			}
+		}
 	}
 	
 }
 
 void ComponentUI::Rotate()
 {
-	rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
-	rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
-	rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+	if (canvas != nullptr && canvas->isWorld && game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+	{
+		rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
+		rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
+		rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+
+		game_object_attached->transform->SetGlobalRotation(rotation);
+	}
 }
 
 void ComponentUI::SetSize(float width, float height)
@@ -389,7 +412,36 @@ void ComponentUI::SetSize(float width, float height)
 	UpdateVertex();
 }
 
-
+void ComponentUI::ReSetIDNavigation()
+{
+	if (save_getting) {
+		GameObject* root = game_object_attached->FindPrefabRoot();
+		save_left = root->GetGameObjectByID(select_on_left);
+		save_right = root->GetGameObjectByID(select_on_right);
+		save_up = root->GetGameObjectByID(select_on_up);
+		save_bottom = root->GetGameObjectByID(select_on_down);
+	}
+	else {
+		if (save_left != nullptr) {
+			select_on_left = save_left->ID;
+			save_left = nullptr;
+		}
+		if (save_right != nullptr) {
+			select_on_right = save_right->ID;
+			save_right = nullptr;
+		}
+		if(save_up != nullptr) {
+			select_on_up = save_up->ID;
+			save_up = nullptr;
+		}
+		if (save_bottom != nullptr) {
+			select_on_down = save_bottom->ID;
+			save_bottom = nullptr;
+		}
+	}
+	
+	save_getting = !save_getting;
+}
 
 void ComponentUI::UILogicGamePad()
 {

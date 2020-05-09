@@ -26,11 +26,11 @@
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
 #include "ComponentLightPoint.h"
+#include "ComponentMaterial.h"
 #include "ComponentAudioEmitter.h"
 #include "ModuleUI.h"
 #include "ModuleCamera3D.h"
 #include "ModuleFileSystem.h"
-#include "ModulePhysics.h"
 #include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ReturnZ.h"
@@ -48,6 +48,11 @@
 #include "Alien.h"
 #include "Event.h"
 #include "PanelProject.h"
+#include "ResourceShader.h"
+#include "ParticleSystem.h"
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
 #include "ComponentAnimator.h"
 #include "ComponentTerrain.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
@@ -58,7 +63,11 @@
 #include "ModuleFadeToBlack.h"
 #include "SceneManager.h"
 
-ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+
+ModuleObjects::ModuleObjects(bool start_enabled) :Module(start_enabled)
 {
 	name.assign("ModuleObject");
 }
@@ -66,6 +75,8 @@ ModuleObjects::ModuleObjects(bool start_enabled):Module(start_enabled)
 ModuleObjects::~ModuleObjects()
 {
 	DeleteReturns();
+
+	RELEASE(wfbos);
 }
 
 bool ModuleObjects::Init()
@@ -98,11 +109,15 @@ bool ModuleObjects::Init()
 bool ModuleObjects::Start()
 {
 	OPTICK_EVENT();
+
 	LOG_ENGINE("Starting Module Objects");
 	bool ret = true;
 
 
 	game_viewport = new Viewport(nullptr);
+
+	wfbos = new WaterFrameBuffers();
+
 #ifndef GAME_VERSION
 	GameObject* scene_root = new GameObject();
 	scene_root->ID = App->resources->GetRandomID();
@@ -120,7 +135,7 @@ bool ModuleObjects::Start()
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
 
-	
+
 
 #else 
 	JSON_Value* value = json_parse_file(BUILD_SETTINGS_PATH);
@@ -150,14 +165,14 @@ bool ModuleObjects::Start()
 update_status ModuleObjects::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
-	
+
 	if (!sceneNameToChange.empty()) {
 		LoadScene(sceneNameToChange.data());
 		sceneNameToChange.clear();
 	}
-	
+
 	// delete objects
-	if (need_to_delete_objects) { 
+	if (need_to_delete_objects) {
 		need_to_delete_objects = false;
 		base_game_object->SearchToDelete();
 	}
@@ -215,6 +230,15 @@ update_status ModuleObjects::PreUpdate(float dt)
 
 update_status ModuleObjects::Update(float dt)
 {
+	
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == Input::KEY_DOWN)
+	{
+		if (GetSelectedObjects().front())
+		{
+			App->renderer3D->actual_game_camera->WorldToScreenPoint(GetSelectedObjects().front()->transform->GetGlobalPosition());
+		}
+	}
+
 	OPTICK_EVENT();
 	base_game_object->Update();
 	if (!functions_to_call.empty()) {
@@ -225,7 +249,7 @@ update_status ModuleObjects::Update(float dt)
 			catch (...)
 			{
 				LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS WHEN CALLING A FUNTION IN TIMELINE");
-			}	
+			}
 		}
 		functions_to_call.clear();
 	}
@@ -242,14 +266,22 @@ update_status ModuleObjects::PostUpdate(float dt)
 	ScriptsPostUpdate();
 
 #ifndef GAME_VERSION
+
+	static bool light_view = false;
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		light_view = !light_view;
 	for (Viewport* viewport : viewports) {
 		if (!viewport->active || !viewport->CanRender() || (App->renderer3D->selected_game_camera == nullptr) && viewport == App->camera->selected_viewport)
 			continue;
 
+		current_viewport = viewport;
 		viewport->BeginViewport();
 		printing_scene = (viewport == App->camera->scene_viewport) ? true : false;
 		bool isGameCamera = (viewport == game_viewport) ? true : false;
-		if (printing_scene) {
+
+		viewport->BeginViewport();
+		if (printing_scene)
+		{
 			if (draw_ray)
 				DrawRay();
 
@@ -258,6 +290,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			if (render_octree)
 				octree.Draw();
+
 			if (prefab_scene) {
 				static float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				static float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -265,11 +298,12 @@ update_status ModuleObjects::PostUpdate(float dt)
 				glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 				glEnable(GL_LIGHT0);
 			}
-			
-			if (App->physics->debug_physics)
-			{
-				App->physics->DrawWorld();
-			}
+
+			// TODO : DELETE ------------------------
+
+			//App->physx->DrawWorld();
+
+			// -------------------------------------
 		}
 
 		if (base_game_object->HasChildren()) {
@@ -277,8 +311,15 @@ update_status ModuleObjects::PostUpdate(float dt)
 				OnPreCull(viewport->GetCamera());
 			}
 
-			std::vector<std::pair<float, GameObject*>> to_draw;
+			std::vector<std::pair<float, GameObject*>> meshes_to_draw;					// SOLID WITH SHADERS 
+			std::vector<std::pair<float, GameObject*>> meshes_to_draw_transparency;		// TRANSPARENCIES WITH SHADERS
+
+			std::vector<GameObject*> dynamic_to_draw;
+			std::vector<GameObject*> static_to_draw;
+
 			std::vector<std::pair<float, GameObject*>> to_draw_ui;
+			std::vector<std::pair<float, GameObject*>> ui_2d;
+			std::vector<std::pair<float, GameObject*>> ui_world;
 
 			ComponentCamera* frustum_camera = viewport->GetCamera();
 
@@ -287,42 +328,145 @@ update_status ModuleObjects::PostUpdate(float dt)
 				frustum_camera = App->renderer3D->actual_game_camera;
 			}
 
-			octree.SetStaticDrawList(&to_draw, frustum_camera);
+			octree.SetStaticDrawList(&meshes_to_draw, &meshes_to_draw_transparency, frustum_camera);
 
 			std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 			for (; item != base_game_object->children.end(); ++item) {
 				if (*item != nullptr && (*item)->IsEnabled()) {
-					(*item)->SetDrawList(&to_draw, &to_draw_ui, frustum_camera);
+					(*item)->SetDrawList(&meshes_to_draw, &meshes_to_draw_transparency, &dynamic_to_draw, &to_draw_ui, frustum_camera);
 				}
 			}
 
-			std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(meshes_to_draw.begin(), meshes_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+			std::sort(meshes_to_draw_transparency.begin(), meshes_to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
+			
 			if (isGameCamera) {
 				OnPreRender(viewport->GetCamera());
 			}
 
-			std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-			for (; it != to_draw.end(); ++it) {
-				if ((*it).second != nullptr) {
-					if (printing_scene)
-						(*it).second->DrawScene(viewport->GetCamera());
-					else
-						(*it).second->DrawGame(viewport->GetCamera());
+			//predraw	
+			CalculateShadows(dynamic_to_draw, viewport, static_to_draw, frustum_camera);
+
+			glViewport(0, 0, current_viewport->GetSize().x, current_viewport->GetSize().y);
+			glBindFramebuffer(GL_FRAMEBUFFER, current_viewport->GetFBO());
+									
+			viewport->GetCamera()->DrawSkybox(); 
+
+			// Draw Solid Meshes 
+			ResourceShader* current_used_shader = App->resources->default_shader;
+
+			while (!meshes_to_draw.empty())
+			{
+				current_used_shader->Bind();
+				current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+
+				for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin(); it != meshes_to_draw.end();) {
+
+					if ((*it).second == nullptr)
+					{
+						it = meshes_to_draw.erase(it);
+						continue;
+					}
+
+					ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
+					if (material->GetUsedShader() == current_used_shader)
+					{
+						(*it).second->DrawGame(); 
+						it = meshes_to_draw.erase(it);
+						continue;
+					}
+					++it;
+				}
+
+				current_used_shader->Unbind();
+
+				if (!meshes_to_draw.empty())
+				{
+					ComponentMaterial* nextMat = meshes_to_draw.front().second->GetComponent<ComponentMaterial>();
+					if(nextMat != nullptr)
+					current_used_shader = nextMat->GetUsedShader();
 				}
 			}
 
+			// Draw Debugging Options
 
-			std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortUIToDraw);
-			if (!printing_scene) {
-				std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
+			if (printing_scene)
+			{
+				for (std::map<Component*, std::function<void()>>::iterator it = debug_draw_list.begin(); it != debug_draw_list.end(); ++it)
+				{
+					(*it).second();
+				}
 			}
+
+			
+			// Then draw transparents meshes
+			
+			glEnable(GL_BLEND);
+			current_used_shader = App->resources->default_shader;
+
+			current_used_shader->Bind();
+			current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+
+			for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw_transparency.begin(); it != meshes_to_draw_transparency.end(); ++it) {
+
+				if ((*it).second == nullptr) {
+					continue;
+				}
+
+				ResourceShader* wanted_shader = nullptr; 
+				ComponentMaterial* mat = (*it).second->GetComponent<ComponentMaterial>();
+
+				if (mat != nullptr)
+				{
+					wanted_shader = mat->GetUsedShader();
+				}
+				else
+				{
+					ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
+					if (partSystem == nullptr)
+						continue;
+
+					ResourceMaterial* mat = partSystem->GetSystem()->material;
+					if (mat != nullptr)
+						wanted_shader = mat->used_shader;
+				}
+
+				if (wanted_shader != current_used_shader)
+				{
+					current_used_shader->Unbind();
+					current_used_shader = wanted_shader;
+					current_used_shader->Bind();
+					current_used_shader->ApplyCurrentShaderGlobalUniforms(viewport->GetCamera());
+				}
+
+				(*it).second->DrawGame();				
+			}
+			glDisable(GL_BLEND);
+
+			current_used_shader->Unbind();
+
+			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
+			
 			ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
-			std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-			for (; it_ui != to_draw_ui.end(); ++it_ui) {
-				if ((*it_ui).second != nullptr) {
-					ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+			for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+				if ((*it_ui_2d).second != nullptr) {
+					ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 					if (ui != nullptr && ui->IsEnabled())
-					{			
+					{
+						ui->Draw(!printing_scene);
+
+					}
+				}
+			}
+			std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+			for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+				if ((*it_ui_world).second != nullptr) {
+					ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+					if (ui != nullptr && ui->IsEnabled())
+					{
 						ui->Orientate(mainCamera);
 						ui->Rotate();
 						ui->Draw(!printing_scene);
@@ -342,6 +486,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 	}
 
 #else
+	static bool light_view;
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	light_view = !light_view;
 
 	if (!game_viewport->active || !game_viewport->CanRender() || game_viewport->GetCamera() == nullptr)
 		return UPDATE_CONTINUE;
@@ -351,38 +498,128 @@ update_status ModuleObjects::PostUpdate(float dt)
 	if (base_game_object->HasChildren()) {
 		OnPreCull(game_viewport->GetCamera());
 
-		std::vector<std::pair<float, GameObject*>> to_draw;
+		std::vector<std::pair<float, GameObject*>> meshes_to_draw;					// SOLID WITH SHADERS 
+		std::vector<std::pair<float, GameObject*>> meshes_to_draw_transparency;		// TRANSPARENCIES WITH SHADERS
+
 		std::vector<std::pair<float, GameObject*>> to_draw_ui;
+		std::vector<std::pair<float, GameObject*>> ui_2d;
+		std::vector<std::pair<float, GameObject*>> ui_world;
+
+		std::vector<GameObject*> dynamic_to_draw;
+		std::vector<GameObject*> static_to_draw;
 
 		ComponentCamera* frustum_camera = game_viewport->GetCamera();
 
-		octree.SetStaticDrawList(&to_draw, frustum_camera);
+		octree.SetStaticDrawList(&meshes_to_draw, &meshes_to_draw_transparency, frustum_camera);
 
 		std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 		for (; item != base_game_object->children.end(); ++item) {
 			if (*item != nullptr && (*item)->IsEnabled()) {
-				(*item)->SetDrawList(&to_draw,&to_draw_ui, frustum_camera);
+				(*item)->SetDrawList(&meshes_to_draw, &meshes_to_draw_transparency, &dynamic_to_draw, &to_draw_ui, frustum_camera);
 			}
 		}
 
-		std::sort(to_draw.begin(), to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+		std::sort(meshes_to_draw.begin(), meshes_to_draw.end(), ModuleObjects::SortGameObjectToDraw);
+		std::sort(meshes_to_draw_transparency.begin(), meshes_to_draw_transparency.end(), ModuleObjects::SortGameObjectToDraw);
 
 		OnPreRender(game_viewport->GetCamera());
+		
+		//predraw
+		CalculateShadows(dynamic_to_draw, game_viewport, static_to_draw, frustum_camera);
+		
+		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
+		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
 
-		std::vector<std::pair<float, GameObject*>>::iterator it = to_draw.begin();
-		for (; it != to_draw.end(); ++it) {
-			if ((*it).second != nullptr) {
-				(*it).second->DrawGame(App->renderer3D->actual_game_camera);
+		game_viewport->GetCamera()->DrawSkybox();
+
+		// Draw Solid Meshes 
+		ResourceShader* current_used_shader = App->resources->default_shader;
+
+		while (!meshes_to_draw.empty())
+		{
+			current_used_shader->Bind();
+			current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+
+			for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw.begin(); it != meshes_to_draw.end();) {
+
+				if ((*it).second == nullptr)
+				{
+					it = meshes_to_draw.erase(it);
+					continue;
+				}
+
+				ComponentMaterial* material = (*it).second->GetComponent<ComponentMaterial>();
+				if (material->GetUsedShader() == current_used_shader)
+				{
+					(*it).second->DrawGame();
+					it = meshes_to_draw.erase(it);
+					continue;
+				}
+				++it;
+			}
+
+			current_used_shader->Unbind();
+
+			if (!meshes_to_draw.empty())
+			{
+				ComponentMaterial* nextMat = meshes_to_draw.front().second->GetComponent<ComponentMaterial>();
+				if (nextMat != nullptr)
+					current_used_shader = nextMat->GetUsedShader();
 			}
 		}
 
-		OnPostRender(game_viewport->GetCamera());
+		glEnable(GL_BLEND);
+		current_used_shader = App->resources->default_shader;
 
-		std::sort(to_draw_ui.begin(), to_draw_ui.end(), ModuleObjects::SortGameObjectToDraw);
-		std::vector<std::pair<float, GameObject*>>::iterator it_ui = to_draw_ui.begin();
-		for (; it_ui != to_draw_ui.end(); ++it_ui) {
-			if ((*it_ui).second != nullptr) {
-				ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+		current_used_shader->Bind();
+		current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+
+		for (std::vector<std::pair<float, GameObject*>>::iterator it = meshes_to_draw_transparency.begin(); it != meshes_to_draw_transparency.end(); ++it) {
+
+			if ((*it).second == nullptr) {
+				continue;
+			}
+
+			ResourceShader* wanted_shader = nullptr;
+			ComponentMaterial* mat = (*it).second->GetComponent<ComponentMaterial>();
+
+			if (mat != nullptr)
+			{
+				wanted_shader = mat->GetUsedShader();
+			}
+			else
+			{
+				ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
+				if (partSystem == nullptr)
+					continue;
+
+				ResourceMaterial* mat = partSystem->GetSystem()->material;
+				if (mat != nullptr)
+					wanted_shader = mat->used_shader;
+			}
+
+			if (wanted_shader != current_used_shader)
+			{
+				current_used_shader->Unbind();
+				current_used_shader = wanted_shader;
+				current_used_shader->Bind();
+				current_used_shader->ApplyCurrentShaderGlobalUniforms(game_viewport->GetCamera());
+			}
+
+			(*it).second->DrawGame();
+		}
+		glDisable(GL_BLEND);
+
+		current_used_shader->Unbind();
+
+		UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+
+		ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
+
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_2d = ui_2d.begin();
+		for (; it_ui_2d != ui_2d.end(); ++it_ui_2d) {
+			if ((*it_ui_2d).second != nullptr) {
+				ComponentUI* ui = (*it_ui_2d).second->GetComponent<ComponentUI>();
 				if (ui != nullptr && ui->IsEnabled())
 				{
 					ui->Draw(!printing_scene);
@@ -390,6 +627,22 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 		}
+		std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
+		for (; it_ui_world != ui_world.end(); ++it_ui_world) {
+			if ((*it_ui_world).second != nullptr) {
+				ComponentUI* ui = (*it_ui_world).second->GetComponent<ComponentUI>();
+				if (ui != nullptr && ui->IsEnabled())
+				{
+					ui->Orientate(mainCamera);
+					ui->Rotate();
+					ui->Draw(!printing_scene);
+
+				}
+			}
+		}
+
+		OnPostRender(game_viewport->GetCamera());
+
 	}
 
 	game_viewport->EndViewport();
@@ -407,6 +660,66 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 #endif
 	return UPDATE_CONTINUE;
+}
+
+void ModuleObjects::CalculateShadows(std::vector<GameObject*>& dynamic_to_draw, Viewport* viewport, std::vector<GameObject*>& static_to_draw, ComponentCamera* frustum_camera)
+{
+	OPTICK_EVENT();
+	for (std::list<DirLightProperties*>::const_iterator iter = directional_light_properites.begin(); iter != directional_light_properites.end(); iter++)
+	{
+		if (!(*iter)->light->castShadows)
+			continue;
+
+		glViewport(0, 0, 2048, 2048);
+		glBindFramebuffer(GL_FRAMEBUFFER, (*iter)->depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		std::vector<GameObject*>::iterator it = dynamic_to_draw.begin();
+		for (; it != dynamic_to_draw.end(); ++it) {
+			if ((*it) != nullptr && (*it)->cast_shadow) {
+				if (!printing_scene)
+				{
+					(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.5f;
+					float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
+					float3 camera_direction = viewport->GetCamera()->frustum.front;
+					float halfFarPlaneD = (*iter)->light->sizefrustrum * 0.5f;
+					float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
+
+					glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)camera_pos.x, (float)camera_pos.y, (float)camera_pos.z),
+						glm::vec3((float)light_pos.x, (float)light_pos.y, (float)-light_pos.z), 
+						glm::vec3(0.0, 1.0, 0.0));
+
+					(*iter)->viewMat.Set(&viewMatrix[0][0]);
+
+					(*iter)->fake_position = light_pos;
+
+					(*it)->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+				}
+				/*else
+				(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);*/
+			}
+		}
+
+		if ((*iter)->light->bakeShadows)
+		{
+
+			octree.ShowAllStaticObjects(&static_to_draw, frustum_camera);
+			(*iter)->light->CalculateBakedViewMatrix();
+			for (uint i = 0; i < 3; ++i)
+			{
+				glViewport(0, 0, 2048, 2048);
+				(*iter)->light->BindForWriting(i);
+				glClear(GL_DEPTH_BUFFER_BIT);
+				std::vector<GameObject*>::iterator it2 = static_to_draw.begin();
+				for (; it2 != static_to_draw.end(); ++it2) {
+					if ((*it2) != nullptr && (*it2)->cast_shadow) {
+						(*it2)->PreDrawGame(game_viewport->GetCamera(), (*iter)->light->viewMatrix[i], (*iter)->light->projMatrix, (*iter)->fake_position_baked[i]);
+					}
+				}
+				(*iter)->light->bakeShadows = false;
+			}
+		}
+	}
 }
 
 void ModuleObjects::DrawRay()
@@ -435,7 +748,7 @@ bool ModuleObjects::CleanUp()
 
 	delete base_game_object;
 	base_game_object = nullptr;
-	
+
 	if (octree.root != nullptr) {
 		delete octree.root;
 		octree.root = nullptr;
@@ -446,7 +759,7 @@ bool ModuleObjects::CleanUp()
 	for (Viewport* viewport : viewports) {
 		delete viewport;
 	}
-	
+
 	return true;
 }
 
@@ -462,7 +775,7 @@ void ModuleObjects::ChangeViewMeshMode()
 	base_game_object->ChangeMeshView(view_mesh_mode);
 }
 
-void ModuleObjects::DeleteAllObjects() 
+void ModuleObjects::DeleteAllObjects()
 {
 	std::vector<GameObject*>::iterator item = base_game_object->children.begin();
 	while (item != base_game_object->children.end()) {
@@ -583,13 +896,13 @@ void ModuleObjects::SetNewSelectedObject(GameObject* object_selected, bool selec
 	}
 	App->renderer3D->selected_game_camera = (ComponentCamera*)object_selected->GetComponent(ComponentType::CAMERA);
 
-	#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 	if (App->ui->panel_project->selected_resource != nullptr)
 	{
 		App->SendAlienEvent(App->ui->panel_project->selected_resource, AlienEventType::RESOURCE_DESELECTED);
 		App->ui->panel_project->selected_resource = nullptr;
 	}
-	#endif // !GAME_VERSION
+#endif // !GAME_VERSION
 
 	App->CastEvent(EventType::ON_GO_SELECT);
 
@@ -604,7 +917,7 @@ void ModuleObjects::DeselectObjects()
 {
 	auto item = game_objects_selected.begin();
 	for (; item != game_objects_selected.end(); ++item) {
-			(*item)->ChangeSelected(false);
+		(*item)->ChangeSelected(false);
 	}
 	game_objects_selected.clear();
 	App->renderer3D->selected_game_camera = nullptr;
@@ -686,9 +999,9 @@ void ModuleObjects::ScriptsPreUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS PREUPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -705,7 +1018,7 @@ void ModuleObjects::ScriptsUpdate() const
 				try {
 					(*item)->Update();
 				}
-				catch (...)	   
+				catch (...)
 				{
 					try {
 						LOG_ENGINE("CODE ERROR IN THE UPDATE OF THE SCRIPT: %s", (*item)->data_name);
@@ -713,9 +1026,9 @@ void ModuleObjects::ScriptsUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS UPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -740,9 +1053,9 @@ void ModuleObjects::ScriptsPostUpdate() const
 					catch (...) {
 						LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS POSTUPDATE");
 					}
-					#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 					App->ui->SetError();
-					#endif
+#endif
 				}
 			}
 		}
@@ -766,9 +1079,9 @@ void ModuleObjects::CleanUpScriptsOnStop() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS CLEANUP");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -776,6 +1089,8 @@ void ModuleObjects::CleanUpScriptsOnStop() const
 
 void ModuleObjects::OnDrawGizmos() const
 {
+	OPTICK_EVENT();
+
 	Gizmos::controller = !Gizmos::controller;
 	// scripts OnDrawGizmos
 	for (std::list<Alien*>::const_iterator item = current_scripts.cbegin(); item != current_scripts.cend(); ++item) {
@@ -791,9 +1106,9 @@ void ModuleObjects::OnDrawGizmos() const
 				catch (...) {
 					LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONDRAWGIZMOS");
 				}
-				#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 				App->ui->SetError();
-				#endif
+#endif
 			}
 		}
 	}
@@ -817,9 +1132,9 @@ void ModuleObjects::OnDrawGizmos() const
 							catch (...) {
 								LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONDRAWGIZMOSSELECTED");
 							}
-							#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 							App->ui->SetError();
-							#endif
+#endif
 						}
 					}
 				}
@@ -849,14 +1164,14 @@ void ModuleObjects::OnPreCull(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPRECULL");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
 		}
-	} 
+	}
 }
 
 void ModuleObjects::OnPreRender(ComponentCamera* camera) const
@@ -879,9 +1194,9 @@ void ModuleObjects::OnPreRender(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPRERENDER");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
@@ -909,9 +1224,9 @@ void ModuleObjects::OnPostRender(ComponentCamera* camera) const
 						catch (...) {
 							LOG_ENGINE("UNKNOWN ERROR IN SCRIPTS ONPOSTRENDER");
 						}
-						#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 						App->ui->SetError();
-						#endif
+#endif
 					}
 				}
 			}
@@ -932,7 +1247,7 @@ GameObject* ModuleObjects::CreateEmptyGameObject(GameObject* parent, bool set_se
 		object = new GameObject(GetRoot(false));
 		object->SetName("Empty GameObject");
 	}
-	
+
 	if (set_selected)
 		SetNewSelectedObject(object, false);
 
@@ -1072,7 +1387,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 	else {
 		meta_path = std::string(force_with_path);
 	}
-	
+
 	json_serialize_to_file_pretty(value, meta_path.data());
 
 	if (value != nullptr && object != nullptr)
@@ -1139,7 +1454,7 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 	}
 }
 
-void ModuleObjects::LoadScene(const char * name, bool change_scene)
+void ModuleObjects::LoadScene(const char* name, bool change_scene)
 {
 	OPTICK_EVENT();
 	App->audio->Stop();
@@ -1215,7 +1530,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 					objects_created.push_back(obj);
 					game_objects->GetAnotherNode();
 				}
-				for each (GameObject* obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+				for each (GameObject * obj in objects_created) //not sure where to place this, need to link skeletons to meshes after all go's have been created
 				{
 					ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
 					if (def_mesh)
@@ -1236,6 +1551,7 @@ void ModuleObjects::LoadScene(const char * name, bool change_scene)
 							*(*item).second = found;
 						}
 					}
+					to_add.clear();
 				}
 
 				if (!current_scripts.empty() && Time::IsInGameState()) {
@@ -1354,6 +1670,7 @@ void ModuleObjects::CreateEmptyScene()
 
 void ModuleObjects::SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number)
 {
+	OPTICK_EVENT();
 	obj->SaveObject(to_save, family_number);
 
 	std::vector<GameObject*>::iterator item = obj->children.begin();
@@ -1429,6 +1746,7 @@ void ModuleObjects::SwapReturnZ(bool get_save, bool delete_current)
 
 void ModuleObjects::HotReload()
 {
+	inHotReload = true;
 	JSON_Value* value = json_value_init_object();
 	JSON_Object* json_object = json_value_get_object(value);
 	json_serialize_to_file_pretty(value, "Library/ScriptsTEMP.alien");
@@ -1486,15 +1804,18 @@ void ModuleObjects::HotReload()
 			}
 		}
 	}
+	inHotReload = false;
 }
 
 bool ModuleObjects::SortGameObjectToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from near to far
 	return first.first > last.first;
 }
 
 bool ModuleObjects::SortUIToDraw(std::pair<float, GameObject*> first, std::pair<float, GameObject*> last)
 {
+	//orders from far to near
 	return first.first < last.first;
 }
 
@@ -1593,7 +1914,7 @@ void ModuleObjects::ReAttachUIScriptEvents()
 					CompareName(&checkbox->listenersOnRelease, scriptsVec);
 					CompareName(&checkbox->listenersOnExit, scriptsVec);
 					CompareName(&checkbox->listenersOnEnter, scriptsVec);
-					
+
 				}
 			}
 		}
@@ -1809,7 +2130,7 @@ void ModuleObjects::DeleteReturns()
 
 void ModuleObjects::UpdateGamePadInput()
 {
-	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && (GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation))
+	if (GetGameObjectByID(selected_ui) != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>() != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->state != Pressed && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas != nullptr && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->canvas->allow_navigation && GetGameObjectByID(selected_ui)->GetComponent<ComponentUI>()->active)
 	{
 		if (Input::GetControllerButtonDown(1, Input::CONTROLLER_BUTTON_DPAD_UP) || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || /*Input::GetControllerVerticalLeftAxis(1) > 0.2f*/ Input::GetControllerJoystickLeft(1, Input::JOYSTICK_BUTTONS::JOYSTICK_UP) == KEY_DOWN)
 		{
@@ -1927,7 +2248,7 @@ u64 ModuleObjects::SetNewSelected(std::string neightbour, u64 selected_neightbou
 		else
 		{
 			if (GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left != -1)
-				return SetNewSelected("left",GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left);
+				return SetNewSelected("left", GetGameObjectByID(selected_neightbour)->GetComponent<ComponentUI>()->select_on_left);
 			else
 				return -1;
 		}
@@ -1951,6 +2272,39 @@ ComponentCanvas* ModuleObjects::GetCanvas()
 	return canvas;
 }
 
+void ModuleObjects::UIOrdering(std::vector<std::pair<float, GameObject*>>* current, std::vector<std::pair<float, GameObject*>>* ui_2d, std::vector<std::pair<float, GameObject*>>* ui_world)
+{
+	std::vector<std::pair<float, GameObject*>>::iterator it_ui = current->begin();
+	for (; it_ui != current->end(); ++it_ui)
+	{
+		if ((*it_ui).second != nullptr)
+		{
+			ComponentUI* ui = (*it_ui).second->GetComponent<ComponentUI>();
+			if (ui->canvas != nullptr && !ui->canvas->isWorld)
+				ui_2d->push_back((*it_ui));
+
+			else if (ui->canvas != nullptr && ui->canvas->isWorld)
+				ui_world->push_back((*it_ui));
+		}
+	}
+
+#ifndef GAME_VERSION
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortUIToDraw);
+	if (!printing_scene) {
+		std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	}
+
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+#else
+	std::sort(ui_2d->begin(), ui_2d->end(), ModuleObjects::SortGameObjectToDraw);
+	std::sort(ui_world->begin(), ui_world->end(), ModuleObjects::SortUIToDraw);
+
+#endif
+
+}
+
+
+
 void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec)
 {
 	auto item = listeners->begin();
@@ -1959,7 +2313,7 @@ void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function
 		for (auto scripts = scriptsVec.begin(); scripts != scriptsVec.end(); ++scripts) {
 			for (auto funct = (*scripts)->functionMap.begin(); funct != (*scripts)->functionMap.end(); ++funct) {
 				if ((*funct).first == (*item).first) {
-					(*item).second = (*funct).second;
+					(*item).second = ([funct]() -> void { (*funct).second(); });
 					skip = true;
 					break;
 				}
@@ -1981,12 +2335,12 @@ void ModuleObjects::CompareName(std::vector<std::pair<std::string, std::function
 	}
 }
 
-bool ModuleObjects::SortByFamilyNumber(std::tuple<uint,u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
+bool ModuleObjects::SortByFamilyNumber(std::tuple<uint, u64, uint> tuple1, std::tuple<uint, u64, uint> tuple2)
 {
 	return std::get<0>(tuple1) < std::get<0>(tuple2);
 }
 
-void ModuleObjects::LoadConfig(JSONfilepack*& config) 
+void ModuleObjects::LoadConfig(JSONfilepack*& config)
 {
 	wireframe_mode = config->GetBoolean("Configuration.Renderer.Wireframe");
 	view_mesh_mode = config->GetBoolean("Configuration.Renderer.MeshView");
@@ -2079,7 +2433,7 @@ void ModuleObjects::HandleAlienEvent(const AlienEvent& alien_event)
 	{
 		go_stack.push(base_game_object);
 	}
-	
+
 	while (!go_stack.empty())
 	{
 		GameObject* go = go_stack.top();
@@ -2128,11 +2482,11 @@ void ModuleObjects::HandleEvent(EventType eventType)
 		InitScripts();
 	}
 	else if (eventType == EventType::ON_ASSET_DELETE) {
-		#ifndef GAME_VERSION
+#ifndef GAME_VERSION
 		App->ui->panel_project->selected_resource = nullptr;
-		#endif
+#endif
 	}
-	
+
 
 }
 
@@ -2180,7 +2534,7 @@ void ModuleObjects::CreateBasePrimitive(PrimitiveType type)
 	object->AddComponent(mesh);
 	object->AddComponent(material);
 	mesh->SetResourceMesh(resource);
-	
+
 	// Add collider --------------------------------------------
 
 	switch (type) {
@@ -2219,7 +2573,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		break; }
 
 	case ComponentType::UI_IMAGE: {
- 		ComponentCanvas* canvas = GetCanvas();
+		ComponentCanvas* canvas = GetCanvas();
 		comp = new ComponentImage(object);
 		dynamic_cast<ComponentUI*>(comp)->SetCanvas(canvas);
 		object->SetName("Image");
@@ -2247,7 +2601,7 @@ void ModuleObjects::CreateBaseUI(ComponentType type)
 		object_text->AddComponent(comp_text);
 
 
-		
+
 		ReparentGameObject(object, canvas->game_object_attached, false);
 		ReparentGameObject(object_text, object, false);
 		break; }
