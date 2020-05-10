@@ -47,6 +47,10 @@ private:
 	void AllocateMeshBuffers();
 	void DeallocateMeshBuffers();
 
+	void DrawGame();
+	void DrawScene();
+
+	void DrawTerrain();
 public:
 
 	std::string file_name;
@@ -68,6 +72,9 @@ public:
 
 	float texScale = 0.03f;
 
+	//vao
+	uint vao = 0u;
+
 	//vertex data
 	float3* vertices = nullptr;
 	uint num_vertices;
@@ -84,6 +91,8 @@ public:
 	uint num_uvs;
 	uint uv_id;
 	uint scaled_uv_id;
+
+	bool chunkDraw = false;
 
 	//Chunk test;
 	std::map<int, std::map<int, Chunk>> chunks;

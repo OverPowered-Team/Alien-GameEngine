@@ -49,9 +49,125 @@ bool ComponentTerrain::DrawInspector()
 
 	if (ImGui::CollapsingHeader("Terrain Editor", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Terrain Information");
+
+		if (ImGui::TreeNodeEx("Height Map", ImGuiTreeNodeFlags_Framed))
+		{
+
+			if (heigthmapTexture != nullptr)
+				ImGui::ImageButton((ImTextureID)heigthmapTexture->id, ImVec2(30, 30));
+			else
+				ImGui::ImageButton((ImTextureID)0, ImVec2(30, 30));
+
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+					FileNode* node = *(FileNode**)payload->Data;
+					if (node != nullptr && node->type == FileDropType::TEXTURE) {
+						std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+						path += "_meta.alien";
+						u64 ID = App->resources->GetIDFromAlienPath(path.data());
+						if (ID != 0) {
+							ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+							if (tex != nullptr) {
+								SetHeigthMapTexture(tex);
+							}
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+
+			if (ImGui::RadioButton("###", false))
+			{
+			}
+			ImGui::Spacing();
+			ImGui::Spacing();
+			if (ImGui::Button("Create Blur") && heigthmapTexture != nullptr)
+			{
+				std::string lib_path = heigthmapTexture->GetLibraryPath();
+				GenerateHeightMap(lib_path.data(), 10);
+			}
+
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture:");
+
+			if (heigthmapTexture != nullptr)
+			{
+				float2 size = GetHeightMapSize();
+
+				float maxSize = max(size.x, size.y);
+				if (maxSize > 500)
+				{
+					float scale = 500.0f / maxSize;
+					size.x *= scale;
+					size.y *= scale;
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Image((void*)heigthmapTexture->id, ImVec2(size.x, size.y));
+			}
+			else
+			{
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
+				ImGui::Spacing();
+			}
+
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture Blurred:");
+
+			int hp = GetHeightMapID();
+			if (hp != 0)
+			{
+				float2 size = GetHeightMapSize();
+
+				float maxSize = max(size.x, size.y);
+				if (maxSize > 500)
+				{
+					float scale = 500.0f / maxSize;
+					size.x *= scale;
+					size.y *= scale;
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Image((void*)hp, ImVec2(size.x, size.y));
+			}
+			else
+			{
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
+				ImGui::Spacing();
+			}
+
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Mesh", ImGuiTreeNodeFlags_Framed))
+		{
+			if (ImGui::Button("Generate Mesh"))
+			{
+				if (terrainData != nullptr)
+				{
+					GenerateTerrainMesh();
+				}
+			}
+			ImGui::TreePop();
+		}
 	}
+
 	
+
 
 	return true;
 }
@@ -351,37 +467,62 @@ void ComponentTerrain::GenerateTexCoords()
 
 void ComponentTerrain::AllocateMeshBuffers()
 {
+	// VAO BUFFER
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
 	//VERTEX BUFFERS
 	glGenBuffers(1, (GLuint*) & (vertex_id));
-
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * m_Width * m_Height, vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
+
+	//SCALED UV BUFFERS
+	if (scaled_uvs != nullptr)
+	{
+		glGenBuffers(1, (GLuint*) & (scaled_uv_id));
+		glBindBuffer(GL_ARRAY_BUFFER, scaled_uv_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, scaled_uvs, GL_STATIC_DRAW);
+	
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);										
+		glEnableVertexAttribArray(1);
+		delete[] scaled_uvs;
+	}
+
+	//NORMAL BUFFERS
+	if (normals != nullptr)
+	{
+		glGenBuffers(1, (GLuint*) & (normals_id));
+		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * m_Width * m_Height, normals, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(2);
+	}
+
+	//UV BUFFERS
+	if (uvs != nullptr)
+	{
+		glGenBuffers(1, (GLuint*) & (uv_id));
+		glBindBuffer(GL_ARRAY_BUFFER, uv_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, uvs, GL_STATIC_DRAW);
+	
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(3);
+		delete[] uvs;
+	}
+
 
 	//INDEX BUFFERS
 	for (auto& iter_z = chunks.begin(); iter_z != chunks.end(); iter_z++)
 		for (auto& iter_x = iter_z->second.begin(); iter_x != iter_z->second.end(); iter_x++)
 			iter_x->second.GenerateBuffer();
 
-	//NORMAL BUFFERS
-	glGenBuffers(1, (GLuint*) & (normals_id));
-	glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * m_Width * m_Height, normals, GL_STATIC_DRAW);
-
-	//SCALED UV BUFFERS
-	glGenBuffers(1, (GLuint*) & (scaled_uv_id));
-	glBindBuffer(GL_ARRAY_BUFFER, scaled_uv_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, scaled_uvs, GL_STATIC_DRAW);
-
-	delete[] scaled_uvs;
-
-	//UV BUFFERS
-	glGenBuffers(1, (GLuint*) & (uv_id));
-
-	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, uvs, GL_STATIC_DRAW);
-
-	delete[] uvs;
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 }
 
@@ -407,6 +548,43 @@ void ComponentTerrain::DeallocateMeshBuffers()
 	//UV BUFFERS
 	glDeleteBuffers(1, (GLuint*)&uv_id);
 	uv_id = 0;
+}
+
+void ComponentTerrain::DrawGame()
+{
+	if (IsEnabled())
+	{
+		DrawTerrain();
+	}
+}
+
+void ComponentTerrain::DrawScene()
+{
+	if (chunkDraw)
+	{
+		for (auto& iter_z = chunks.begin(); iter_z != chunks.end(); iter_z++)
+			for (auto& iter_x = iter_z->second.begin(); iter_x != iter_z->second.end(); iter_x++)
+				iter_x->second.Render();
+	}
+}
+
+void ComponentTerrain::DrawTerrain()
+{
+	glBindVertexArray(vao);
+
+
+	for (std::map<int, std::map<int, Chunk>>::iterator it_z = chunks.begin(); it_z != chunks.end(); it_z++)
+	{
+		for (std::map<int, Chunk>::iterator it_x = it_z->second.begin(); it_x != it_z->second.end(); it_x++)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, it_x->second.GetBufferID());
+			glDrawElements(GL_TRIANGLES, it_x->second.GetNumIndices(), GL_UNSIGNED_INT, (void*)0);
+		}
+	}
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
 }
 
 const float3* ComponentTerrain::GetVertices()
