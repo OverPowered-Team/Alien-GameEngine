@@ -19,12 +19,23 @@
 
 #include "ModuleRenderer3D.h"
 #include "mmgr/mmgr.h"
-
+#include "ResourceShader.h"
 #include "Optick/include/optick.h"
+#include "ComponentTransform.h"
+
+
 ComponentTerrain::ComponentTerrain(GameObject* attach) : Component(attach)
 {
 	type = ComponentType::TERRAIN;
 	name = "Terrain";
+
+	material = new ComponentMaterial(attach);
+	attach->AddComponent(material);
+
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentTerrain::DrawScene, this));
+#endif 
 }
 
 ComponentTerrain::~ComponentTerrain()
@@ -50,124 +61,61 @@ bool ComponentTerrain::DrawInspector()
 	if (ImGui::CollapsingHeader("Terrain Editor", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 
-		if (ImGui::TreeNodeEx("Height Map", ImGuiTreeNodeFlags_Framed))
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+
+		/*ImGui::SetCursorPosX(50);
+		ImGui::BeginGroup();
 		{
-
-			if (heigthmapTexture != nullptr)
-				ImGui::ImageButton((ImTextureID)heigthmapTexture->id, ImVec2(30, 30));
-			else
-				ImGui::ImageButton((ImTextureID)0, ImVec2(30, 30));
-
-			if (ImGui::BeginDragDropTarget()) {
-				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
-				if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
-					FileNode* node = *(FileNode**)payload->Data;
-					if (node != nullptr && node->type == FileDropType::TEXTURE) {
-						std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
-						path += "_meta.alien";
-						u64 ID = App->resources->GetIDFromAlienPath(path.data());
-						if (ID != 0) {
-							ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(ID);
-							if (tex != nullptr) {
-								SetHeigthMapTexture(tex);
-							}
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
+			ImGui::Button("Height map", ImVec2(110,25));
 			ImGui::SameLine();
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
-
-			if (ImGui::RadioButton("###", false))
-			{
-			}
-			ImGui::Spacing();
-			ImGui::Spacing();
-			if (ImGui::Button("Create Blur") && heigthmapTexture != nullptr)
-			{
-				std::string lib_path = heigthmapTexture->GetLibraryPath();
-				GenerateHeightMap(lib_path.data(), 10);
-			}
-
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture:");
-
-			if (heigthmapTexture != nullptr)
-			{
-				float2 size = GetHeightMapSize();
-
-				float maxSize = max(size.x, size.y);
-				if (maxSize > 500)
-				{
-					float scale = 500.0f / maxSize;
-					size.x *= scale;
-					size.y *= scale;
-				}
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-				ImGui::Image((void*)heigthmapTexture->id, ImVec2(size.x, size.y));
-			}
-			else
-			{
-				ImGui::SameLine();
-				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
-				ImGui::Spacing();
-			}
-
-
-			ImGui::Spacing();
-			ImGui::Spacing();
-			ImGui::Spacing();
-
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture Blurred:");
-
-			int hp = GetHeightMapID();
-			if (hp != 0)
-			{
-				float2 size = GetHeightMapSize();
-
-				float maxSize = max(size.x, size.y);
-				if (maxSize > 500)
-				{
-					float scale = 500.0f / maxSize;
-					size.x *= scale;
-					size.y *= scale;
-				}
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-				ImGui::Image((void*)hp, ImVec2(size.x, size.y));
-			}
-			else
-			{
-				ImGui::SameLine();
-				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
-				ImGui::Spacing();
-			}
-
-
-			ImGui::TreePop();
+			ImGui::Button("Scupt", ImVec2(110, 25));
+			ImGui::SameLine();
+			ImGui::Button("Paint", ImVec2(110, 25));
+			ImGui::SameLine();
+			ImGui::Button("Object", ImVec2(110, 25));
+			
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("First group hovered");
 		}
+		ImGui::EndGroup();
 
-		if (ImGui::TreeNodeEx("Mesh", ImGuiTreeNodeFlags_Framed))
+		ImGui::Separator();*/
+
+		static int terrain_mode;
+		ImGui::Text("Terrain Mode ");
+		ImGui::SameLine(200, 15);
+
+		if (ImGui::Combo("##", &terrain_mode, "Height map\0Sculpt\0Paint\0Object\0\0"))
 		{
-			if (ImGui::Button("Generate Mesh"))
-			{
-				if (terrainData != nullptr)
-				{
-					GenerateTerrainMesh();
-				}
-			}
-			ImGui::TreePop();
+			SetTerrainMode((TERRAIN_MODE)terrain_mode);
 		}
+		ImGui::Spacing();
+		ImGui::Separator();
+
+		switch (mode)
+		{
+		case TERRAIN_MODE::MODE_HEIGHTMAP:
+			HeighMapMode();
+			break;
+		case TERRAIN_MODE::MODE_SCULPT:
+			ScuptMode();
+			break;
+		case TERRAIN_MODE::MODE_PAINT:
+			PaintMode();
+			break;
+		case TERRAIN_MODE::MODE_OBJECT:
+			ObjectMode();
+			break;
+		default:
+			break;
+
+
+		}
+		
 	}
-
-	
-
 
 	return true;
 }
@@ -570,9 +518,21 @@ void ComponentTerrain::DrawScene()
 
 void ComponentTerrain::DrawTerrain()
 {
+	ComponentTransform* transform = game_object_attached->transform;
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CW);
+
+	ComponentMaterial* mat = (ComponentMaterial*)game_object_attached->GetComponent(ComponentType::MATERIAL);
+	if (mat == nullptr)
+		return;
+	ResourceMaterial* material = mat->material;
+
+	material->ApplyMaterial();
+	SetUniforms(material);
+
+
+
 	glBindVertexArray(vao);
-
-
 	for (std::map<int, std::map<int, Chunk>>::iterator it_z = chunks.begin(); it_z != chunks.end(); it_z++)
 	{
 		for (std::map<int, Chunk>::iterator it_x = it_z->second.begin(); it_x != it_z->second.end(); it_x++)
@@ -584,10 +544,153 @@ void ComponentTerrain::DrawTerrain()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
+	material->UnbindMaterial();
+	if (transform->IsScaleNegative())
+		glFrontFace(GL_CCW);
 }
 
 const float3* ComponentTerrain::GetVertices()
 {
 	return vertices;
+}
+
+void ComponentTerrain::SetUniforms(ResourceMaterial* resource_material)
+{
+	resource_material->used_shader->SetUniformMat4f("model", game_object_attached->transform->GetGlobalMatrix().Transposed());
+	resource_material->used_shader->SetUniform1i("animate", animate);
+}
+
+void ComponentTerrain::SetTerrainMode(TERRAIN_MODE mode)
+{
+	this->mode = mode;
+}
+
+void ComponentTerrain::HeighMapMode()
+{
+		ImGui::Text("HEIGHT MAP");
+
+		if (heigthmapTexture != nullptr)
+			ImGui::ImageButton((ImTextureID)heigthmapTexture->id, ImVec2(30, 30));
+		else
+			ImGui::ImageButton((ImTextureID)0, ImVec2(30, 30));
+
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+				FileNode* node = *(FileNode**)payload->Data;
+				if (node != nullptr && node->type == FileDropType::TEXTURE) {
+					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+					path += "_meta.alien";
+					u64 ID = App->resources->GetIDFromAlienPath(path.data());
+					if (ID != 0) {
+						ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(ID);
+						if (tex != nullptr) {
+							SetHeigthMapTexture(tex);
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+
+		if (ImGui::RadioButton("###", false))
+		{
+		}
+		ImGui::Spacing();
+		ImGui::Spacing();
+		if (ImGui::Button("Create Blur") && heigthmapTexture != nullptr)
+		{
+			std::string lib_path = heigthmapTexture->GetLibraryPath();
+			GenerateHeightMap(lib_path.data(), 10);
+		}
+
+
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture:");
+
+		if (heigthmapTexture != nullptr)
+		{
+			float2 size = GetHeightMapSize();
+
+			float maxSize = max(size.x, size.y);
+			if (maxSize > 500)
+			{
+				float scale = 500.0f / maxSize;
+				size.x *= scale;
+				size.y *= scale;
+			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Image((void*)heigthmapTexture->id, ImVec2(size.x, size.y));
+		}
+		else
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
+			ImGui::Spacing();
+		}
+
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "HeightMap Texture Blurred:");
+
+		int hp = GetHeightMapID();
+		if (hp != 0)
+		{
+			float2 size = GetHeightMapSize();
+
+			float maxSize = max(size.x, size.y);
+			if (maxSize > 500)
+			{
+				float scale = 500.0f / maxSize;
+				size.x *= scale;
+				size.y *= scale;
+			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Image((void*)hp, ImVec2(size.x, size.y));
+		}
+		else
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "No Texture loaded");
+			ImGui::Spacing();
+		}
+
+
+
+		ImGui::Text("MESH");
+
+		if (ImGui::Button("Generate Mesh"))
+		{
+			if (terrainData != nullptr)
+			{
+				GenerateTerrainMesh();
+			}
+		}
+		
+	
+}
+
+void ComponentTerrain::ScuptMode()
+{
+	ImGui::Text("This is the Scupt tab!");
+}
+
+void ComponentTerrain::PaintMode()
+{
+	ImGui::Text("This is the Paint tab!");
+}
+
+void ComponentTerrain::ObjectMode()
+{
+	ImGui::Text("This is the Object tab!");
 }

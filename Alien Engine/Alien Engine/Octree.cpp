@@ -6,6 +6,7 @@
 #include "ComponentCamera.h"
 #include "ModuleRenderer3D.h"
 #include "ComponentMaterial.h"
+#include "Chunk.h"
 #include "mmgr/mmgr.h"
 
 OctreeNode::OctreeNode(const float3& min, const float3& max)
@@ -228,6 +229,32 @@ void OctreeNode::SetStaticDrawList(std::vector<std::pair<float, GameObject*>>* m
 
 								else
 									meshes_to_draw->push_back({ distance, (*item) });
+							}
+						}
+					}
+
+
+					ComponentTerrain* terrain = (*item)->GetComponent<ComponentTerrain>();
+					if (terrain != nullptr && !terrain->chunks.empty())
+					{
+						for (std::map<int, std::map<int, Chunk>>::iterator z = terrain->chunks.begin(); z != terrain->chunks.end(); z++)
+						{
+							for (std::map<int, Chunk>::iterator x = z->second.begin(); x != z->second.end(); x++)
+							{
+								if (App->renderer3D->IsInsideFrustum(camera, x->second.GetAABB()))
+								{
+									ComponentMaterial* material = (*item)->GetComponent<ComponentMaterial>();
+									if (material != nullptr) 
+									{
+										float3 obj_pos = (*item)->transform->GetGlobalPosition();
+										float distance = camera->frustum.pos.Distance(obj_pos);
+
+										if (material->IsTransparent())
+											meshes_to_draw_transparency->push_back({ distance, (*item) });
+										else
+											meshes_to_draw->push_back({ distance, (*item) });
+									}
+								}
 							}
 						}
 					}

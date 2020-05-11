@@ -26,6 +26,7 @@ class __declspec(dllexport) ComponentTransform : public Component {
 	friend class ModuleUI;
 	friend class ComponentSlider;
 	friend class PanelInspector;
+	friend class ComponentTerrain;
 public:
 
 	ComponentTransform(GameObject* attach);

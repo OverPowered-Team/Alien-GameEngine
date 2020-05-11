@@ -6,6 +6,7 @@
 #include "MathGeoLib/include/Geometry/OBB.h"
 #include "Color.h"
 #include "ResourceTexture.h"
+#include "ResourceMaterial.h"
 #define CAP(n, _min, _max) ((n <= _min) ? n=_min : (n >= _max) ? n=_max : n=n)
 #define CHUNK_W 64
 #define CHUNK_H 64
@@ -14,6 +15,15 @@
 #include <map>
 class Chunk;
 
+enum class TERRAIN_MODE
+{
+	MODE_HEIGHTMAP,
+	MODE_SCULPT,
+	MODE_PAINT,
+	MODE_OBJECT,
+
+	MODE_UNKNOWN = -1
+};
 class __declspec(dllexport) ComponentTerrain : public Component {
 	//friend class Chunck;
 	
@@ -28,6 +38,15 @@ public:
 	uint GetHeightMapID();
 	float2 GetHeightMapSize();
 	const float3* GetVertices();
+	void SetUniforms(ResourceMaterial* resource_material);
+	void SetTerrainMode(TERRAIN_MODE mode);
+
+
+	void HeighMapMode();
+	void ScuptMode();
+	void PaintMode();
+	void ObjectMode();
+
 
 private:
 
@@ -96,4 +115,9 @@ public:
 
 	//Chunk test;
 	std::map<int, std::map<int, Chunk>> chunks;
+
+	ComponentMaterial* material = nullptr;
+	int animate = 0;
+	TERRAIN_MODE mode = TERRAIN_MODE::MODE_HEIGHTMAP;
+	//
 };
