@@ -1,12 +1,12 @@
 {
     "Scene": {
-        "Name": "testUI",
+        "Name": "test",
         "GameObjects": [
             {
                 "Name": "Main Camera",
                 "FamilyNumber": 1,
                 "ID": "4829625050689832445",
-                "ParentID": "16972187868218193999",
+                "ParentID": "1170433694339510209",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -77,7 +77,7 @@
                 "Name": "Directional Light",
                 "FamilyNumber": 1,
                 "ID": "17128603531732154154",
-                "ParentID": "16972187868218193999",
+                "ParentID": "1170433694339510209",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
@@ -148,7 +148,7 @@
                 "Name": "Canvas",
                 "FamilyNumber": 1,
                 "ID": "13332471474672343297",
-                "ParentID": "16972187868218193999",
+                "ParentID": "1170433694339510209",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": false,
