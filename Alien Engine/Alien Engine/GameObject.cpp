@@ -43,13 +43,15 @@
 
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ComponentCapsuleCollider.h"
+#include "ComponentMeshCollider.h"
+#include "ComponentConvexHullCollider.h"
+#include "ComponentCharacterController.h"
+#include "ComponentRigidBody.h"
+
 #include "ModuleUI.h"
 #include "PanelScene.h"
 #include "Alien.h"
-#include "ComponentCapsuleCollider.h"
-#include "ComponentConvexHullCollider.h"
-#include "ComponentRigidBody.h"
-#include "ComponentCharacterController.h"
 
 #include "Optick/include/optick.h"
 
@@ -201,13 +203,12 @@ void GameObject::PreDrawScene(ComponentCamera* camera, const float4x4& ViewMat, 
 	}
 }
 
-
-void GameObject::DrawScene(ComponentCamera* camera)
+void GameObject::DrawScene()
 {
 	OPTICK_EVENT();
 	for (Component* component : components)
 	{
-		component->DrawScene(camera);
+		component->DrawScene();
 	}
 }
 
@@ -231,46 +232,54 @@ void GameObject::PreDrawGame(ComponentCamera* camera, const float4x4& ViewMat, c
 	}
 }
 
-
-void GameObject::DrawGame(ComponentCamera* camera)
+void GameObject::DrawGame()
 {
 	OPTICK_EVENT();
 
 	for (Component* component : components)
 	{
-		component->DrawGame(camera);
+		component->DrawGame();
 	}
 }
 
-
-void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* to_draw, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
+void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_to_draw, std::vector<std::pair<float, GameObject*>>* meshes_to_draw_transparency, std::vector<GameObject*>* dynamic_objects, std::vector<std::pair<float, GameObject*>>* to_draw_ui, const ComponentCamera* camera)
 {
 	OPTICK_EVENT();
 	// TODO: HUGE TODO!: REVIEW THIS FUNCTION 
 	if (!is_static) {
-		ComponentMesh* mesh = (ComponentMesh*)GetComponent(ComponentType::MESH);
-		if (mesh == nullptr) //not sure if this is the best solution
-			mesh = (ComponentMesh*)GetComponent(ComponentType::DEFORMABLE_MESH);
+		ComponentMesh* mesh = GetComponent<ComponentMesh>();
 
 		if (mesh != nullptr && mesh->mesh != nullptr) {
 			if (App->renderer3D->IsInsideFrustum(camera, mesh->GetGlobalAABB())) {
-				float3 obj_pos = transform->GetGlobalPosition();
-				float distance = camera->frustum.pos.Distance(obj_pos);
-				to_draw->push_back({ distance, this });
+
+				ComponentMaterial* material = GetComponent<ComponentMaterial>();
+				if (material != nullptr) // Meshes won't be drawn without material ??
+				{
+					float3 obj_pos = transform->GetGlobalPosition();
+					float distance = camera->frustum.pos.Distance(obj_pos);
+
+					if (material->IsTransparent())
+						meshes_to_draw_transparency->push_back({ distance, this });
+					
+					else
+						meshes_to_draw->push_back({ distance, this });
+				}
 			}
 		}
-		else
+		else if (GetComponent<ComponentParticleSystem>() != nullptr)
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
-			to_draw->push_back({ distance, this });
+			meshes_to_draw_transparency->push_back({ distance, this });
 		}
+
+		dynamic_objects->push_back(this);
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child) {
 		if (*child != nullptr && (*child)->IsEnabled()) {
-			(*child)->SetDrawList(to_draw, to_draw_ui, camera);
+			(*child)->SetDrawList(meshes_to_draw, meshes_to_draw_transparency, dynamic_objects,to_draw_ui, camera);
 		}
 	}
 
@@ -1257,6 +1266,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCapsuleCollider* capsule_collider = new ComponentCapsuleCollider(this);
 				capsule_collider->LoadComponent(components_to_load);
 				AddComponent(capsule_collider);
+				break; }
+			case (int)ComponentType::MESH_COLLIDER: {
+				ComponentMeshCollider* mesh_collider = new ComponentMeshCollider(this);
+				mesh_collider->LoadComponent(components_to_load);
+				AddComponent(mesh_collider);
 				break; }
 			case (int)ComponentType::CONVEX_HULL_COLLIDER: {
 				ComponentConvexHullCollider* convex_hull_collider = new ComponentConvexHullCollider(this);

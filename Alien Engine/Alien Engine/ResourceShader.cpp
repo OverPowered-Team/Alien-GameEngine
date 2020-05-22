@@ -198,7 +198,6 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
 		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
 		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
-		ApplyLightsUniforms();
 		break; }
 
 	case SHADER_TEMPLATE::WAVE: {
@@ -245,6 +244,51 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
+		break;
+
+	}
+}
+
+void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
+{
+	switch (shaderType)
+	{
+	case SHADER_TEMPLATE::DEFAULT:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniformFloat3("view_pos", camera->GetCameraPosition());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		ApplyLightsUniforms();
+		break;
+
+	case SHADER_TEMPLATE::PARTICLE:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		break;
+
+	case SHADER_TEMPLATE::SHIELD_FRESNEL:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
 		break;
 
 	}
@@ -410,6 +454,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			sprintf_s(cname, tmp_name.c_str(), i);
 
 			// All uniforms
+			std::string cenabled = std::string(cname).append(".enabled");
+			SetUniform1f(cenabled, (*iter)->enabled);
+
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
 
@@ -473,6 +520,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 			sprintf_s(cname, tmp_name.c_str(), i);
 
 			// All uniforms
+			std::string cenabled = std::string(cname).append(".enabled");
+			SetUniform1f(cenabled, (*iter)->enabled);
+
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
 
@@ -511,6 +561,8 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 			sprintf_s(cname, tmp_name.c_str(), i);
 
 			// All uniforms
+			std::string cenabled = std::string(cname).append(".enabled");
+			SetUniform1f(cenabled, (*iter)->enabled);
 
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
@@ -581,7 +633,7 @@ uint ResourceShader::CreateShader(const std::string& vertex_shader, const std::s
 	//assert(vertex_s == 0, "Vertex Failed To Compile");
 	uint fragment_s = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
 	//assert(fragment_s == 0, "Fragment Failed To Compile");
-
+	//OriiOri
 	glAttachShader(program, vertex_s);
 	glAttachShader(program, fragment_s);
 		

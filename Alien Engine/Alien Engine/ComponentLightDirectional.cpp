@@ -28,6 +28,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	glGenFramebuffers(1, &light_props.bakedepthMapFBO);
 
 	light_props.light = this;
+	light_props.enabled = enabled;
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
 	bulb->mesh = App->resources->light_mesh;
@@ -56,6 +57,10 @@ void ComponentLightDirectional::InitFrameBuffers()
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentLightDirectional::DrawScene, this));
+#endif // !GAME_VERSION
 
 	//static shadows
 	glBindFramebuffer(GL_FRAMEBUFFER, light_props.bakedepthMapFBO);
@@ -86,6 +91,10 @@ ComponentLightDirectional::~ComponentLightDirectional()
 	App->objects->directional_light_properites.remove(&light_props);
 	App->objects->ReduceNumOfDirLights();
 	glDeleteFramebuffers(1, &light_props.depthMapFBO);
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
 }
 
 void ComponentLightDirectional::PostUpdate()
@@ -130,7 +139,7 @@ void ComponentLightDirectional::LightLogic()
 	light_props.direction = game_object_attached->transform->GetGlobalRotation().WorldZ();
 }
 
-void ComponentLightDirectional::DrawScene(ComponentCamera* camera)
+void ComponentLightDirectional::DrawScene()
 {
 	OPTICK_EVENT();
 
@@ -230,7 +239,6 @@ bool ComponentLightDirectional::DrawInspector()
 
 		ImGui::Text("Baked Depth Map");
 
-		ImGui::Image((ImTextureID)light_props.depthMap, ImVec2(300, 300));
 		for(int i = 0; i < num_of_static_shadowMap; ++i)
 			ImGui::Image((ImTextureID)light_props.bakedepthMap[i], ImVec2(300, 300));
 
@@ -246,11 +254,13 @@ bool ComponentLightDirectional::DrawInspector()
 void ComponentLightDirectional::OnEnable()
 {
 	enabled = true;
+	light_props.enabled = true;
 }
 
 void ComponentLightDirectional::OnDisable()
 {
 	enabled = false;
+	light_props.enabled = false;
 }
 
 void ComponentLightDirectional::Clone(Component* clone)
@@ -292,6 +302,7 @@ void ComponentLightDirectional::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
 	to_save->SetFloat3("Specular", float3(light_props.specular));
 	to_save->SetBoolean("CastShadows", castShadows);
+	to_save->SetNumber("SizeBakedShadow", sizefrustrumbaked);
 }
 
 void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
@@ -307,6 +318,13 @@ void ComponentLightDirectional::LoadComponent(JSONArraypack* to_load)
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
 	light_props.specular = to_load->GetFloat3("Specular");
 	castShadows = to_load->GetBoolean("CastShadows");
+
+	try {
+		sizefrustrumbaked = to_load->GetNumber("SizeBakedShadow");
+	}
+	catch (...) {
+		sizefrustrumbaked = 78.0f;
+	}
 }
 
 void ComponentLightDirectional::DrawIconLight()

@@ -459,6 +459,11 @@ void ParticleSystem::SetParticleInitialForce(const float3& initialForce)
 	particleInfo.force = initialForce;
 }
 
+void ParticleSystem::SetParticleInitialAngle(const float3& initialAngle)
+{
+	particleInfo.angle3D = initialAngle;
+}
+
 
 // -------- Final Properties ----------
 
@@ -498,8 +503,9 @@ void ParticleSystem::SetMaterial(ResourceMaterial* mat)
 
 void ParticleSystem::RemoveMaterial()
 {
-	material->DecreaseReferences();
-	material = nullptr;
+	SetMaterial(default_material);
+	/*material->DecreaseReferences();
+	material = nullptr;*/
 }
 
 void ParticleSystem::SetMesh(ResourceMesh* m)

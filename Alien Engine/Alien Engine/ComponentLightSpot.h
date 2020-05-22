@@ -9,6 +9,7 @@
 
 struct __declspec(dllexport) SpotLightProperties
 {
+	bool enabled = true;
 	float intensity = 1.0f;
 	float3 position = float3::zero();
 	float3 direction = float3::zero();
@@ -33,7 +34,7 @@ public:
 
 private:
 	void Update() override;
-	void DrawScene(ComponentCamera* camera) override;
+	void DrawScene() override;
 	void LightLogic();
 
 	bool DrawInspector();

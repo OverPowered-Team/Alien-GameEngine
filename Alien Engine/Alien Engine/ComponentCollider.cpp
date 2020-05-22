@@ -18,18 +18,25 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 	rotation = float3::zero();
 	material = App->physx->CreateMaterial();
 	InitMaterial();
+
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentCollider::DrawScene, this));
+#endif // !GAME_VERSION
 }
 
 ComponentCollider::~ComponentCollider()
 {
 	if (!IsController()) {
+		material->release();
+		material = nullptr;
 		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DELETED);
 		shape->release();
 		shape = nullptr;
 	}
 
-	material->release();
-	material = nullptr;
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
 }
 
 // Colliders Functions --------------------------------
@@ -180,7 +187,7 @@ void ComponentCollider::OnDisable()
 		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DISABLED);
 }
 
-void ComponentCollider::DrawScene(ComponentCamera* camera)
+void ComponentCollider::DrawScene()
 {
 	if (enabled == true && (game_object_attached->IsSelected() || App->physx->debug_physics))
 	{
