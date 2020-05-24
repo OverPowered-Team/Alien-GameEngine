@@ -1,0 +1,268 @@
+{
+    "Scene": {
+        "Name": "test_normals_bezier",
+        "GameObjects": [
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "17025107491907655978",
+                "ParentID": "11197954530399474530",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7247860878330280746"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 6,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 101.3709716796875,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "10603551996888515405",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ],
+                        "Fog": false,
+                        "Density": 0.035000000149011612,
+                        "Gradient": 1.3500000238418579,
+                        "Skybox_PositiveX": "Default",
+                        "Skybox_NegativeX": "Default",
+                        "Skybox_PositiveY": "Default",
+                        "Skybox_NegativeY": "Default",
+                        "Skybox_PositiveZ": "Default",
+                        "Skybox_NegativeZ": "Default"
+                    }
+                ]
+            },
+            {
+                "Name": "Directional Light",
+                "FamilyNumber": 1,
+                "ID": "4439166813987596684",
+                "ParentID": "11197954530399474530",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.2798481285572052,
+                            -0.36470523476600647,
+                            0.115916907787323,
+                            0.88047623634338379
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13850093734872170082"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "616798693142540045",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            -0.57735037803649902,
+                            -0.57735025882720947,
+                            0.57735025882720947
+                        ],
+                        "Ambient": [
+                            0.75999999046325684,
+                            0.75999999046325684,
+                            0.75999999046325684
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "CastShadows": true,
+                        "SizeBakedShadow": 153
+                    }
+                ]
+            },
+            {
+                "Name": "curve",
+                "FamilyNumber": 1,
+                "ID": "11401237302778182650",
+                "ParentID": "11197954530399474530",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            -1.6232837438583374
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4125746630870645309"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 31,
+                        "Tensors": true,
+                        "Normals": true,
+                        "OnSelected": false,
+                        "Detail": 50,
+                        "ControlPoints": [
+                            {
+                                "ControlPoint": [
+                                    -10,
+                                    0,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -8.6545305252075195,
+                                    9.2008590698242188,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -7.2307062149047852,
+                                    11.270865440368652,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -7.4505805969238281e-09,
+                                    11.043276786804199,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    7.5173959732055664,
+                                    10.449358940124512,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    8.7768516540527344,
+                                    8.1913642883300781,
+                                    -1.6232837438583374
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    10,
+                                    0,
+                                    -1.6232837438583374
+                                ]
+                            }
+                        ],
+                        "NormalsPoints": [
+                            {
+                                "NormalPoint": [
+                                    1,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    -1,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    -1,
+                                    0,
+                                    0
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
