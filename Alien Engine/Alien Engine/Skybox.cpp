@@ -24,7 +24,7 @@ Skybox::~Skybox()
 
 uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 {
-	OPTICK_EVENT();
+	/*OPTICK_EVENT();
 
 	GLuint texture_id;
 	glGenTextures(1, &texture_id);
@@ -64,14 +64,14 @@ uint Skybox::LoadCubeMap(const std::vector<std::string>& texture_files)
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 		RELEASE_ARRAY(data);
-	}
+	}*/
 
-	return texture_id;
+	return 0;
 }
 
 uint Skybox::LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture_files)
 {
-	OPTICK_EVENT();
+	/*OPTICK_EVENT();
 
 	GLuint texture_id;
 	glGenTextures(1, &texture_id);
@@ -111,9 +111,9 @@ uint Skybox::LoadCubeMapFromLibraryFiles(const std::vector<std::string>& texture
 
 			RELEASE_ARRAY(data);
 		}
-	}
+	}*/
 
-	return texture_id;
+	return 0;
 }
 
 uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
@@ -128,10 +128,9 @@ uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
 	for (int i = 0; i < 6; ++i)
 	{
 		ResourceTexture* t = skybox_textures[i];
-		if (t != nullptr && t->references == 0)
-			t->IncreaseReferences();
 		if (t != nullptr)
 		{
+
 			glBindTexture(GL_TEXTURE_2D, t->id);
 			unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -154,7 +153,10 @@ uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
 			RELEASE_ARRAY(data);
+
 		}
 	}
 

@@ -51,6 +51,7 @@ void main()
     //gl_ClipDistance[0] = -1;
     // --------------------------------------- 
 
+    
     // --------------- Animation -------------
     vec3 blendpos = vec3(0,0,0);
     if(animate == 1)

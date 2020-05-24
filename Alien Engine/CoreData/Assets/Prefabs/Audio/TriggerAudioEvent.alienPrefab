@@ -1,0 +1,86 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "TriggerAudioEvent",
+                "FamilyNumber": 1,
+                "ID": "12076041466230310995",
+                "ParentID": "8232295045223925732",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "2143524047733551651",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -3.5374102592468262,
+                            0,
+                            16.957786560058594
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            36.519256591796875,
+                            17.254543304443359,
+                            7.5285511016845703
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12188366949598727263"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": true,
+                        "Bouncing": 0.5,
+                        "StaticFriction": 0.5,
+                        "DynamicFriction": 0.5,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    {
+                        "ID": "524178969832862583",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "3698921875",
+                        "Event": "2372531077",
+                        "PlayOnAwake": false
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "7616470049095492578",
+                        "ResourceID": "17718388134020079204",
+                        "DataName": "TriggerAudioEvent",
+                        "HasInspector": false
+                    }
+                ]
+            }
+        ]
+    },
+    "Name": "TriggerAudioEvent"
+}
