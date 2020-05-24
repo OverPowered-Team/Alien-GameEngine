@@ -133,11 +133,15 @@ public:
 	ResourceFont* default_font = nullptr;
 	ResourceMaterial* default_material = nullptr;
 	ResourceShader* default_shader = nullptr;
+	ResourceShader* shadow_shader = nullptr;
 	ResourceShader* default_particle_shader = nullptr;
 	ResourceShader* skybox_shader = nullptr;
-
+	ResourceShader* water_shader = nullptr;
+	ResourceShader* shield_fresnel_shader = nullptr;
+	ResourceShader* shield_shader = nullptr;
+	ResourceTexture* alpha_noise_texture = nullptr;
 	FileNode* assets = nullptr;
-
+	ResourceTexture* default_skybox_textures[6] = { nullptr,nullptr,nullptr,nullptr,nullptr,nullptr };
 private:
 	ResourceMesh* cube = nullptr;
 	ResourceMesh* sphere = nullptr;

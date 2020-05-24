@@ -449,7 +449,8 @@ void ModuleImporter::LoadModelTexture(const aiMaterial *material, ResourceMateri
 		ResourceTexture *tex = (ResourceTexture *)App->resources->GetTextureByName(name.data());
 		if (tex != nullptr)
 		{
-			mat->texturesID[(uint)type] = tex->GetID();
+			mat->textures[(uint)type].first = tex->GetID();
+			mat->textures[(uint)type].second = tex;
 		}
 		else if (extern_path != nullptr)
 		{
@@ -472,7 +473,8 @@ void ModuleImporter::LoadModelTexture(const aiMaterial *material, ResourceMateri
 				tex->CreateMetaData();
 				App->resources->AddNewFileNode(assets_path, true);
 
-				mat->texturesID[(uint)type] = tex->GetID();
+				mat->textures[(uint)type].first = tex->GetID();
+				mat->textures[(uint)type].second = tex;
 			}
 		}
 	}
@@ -573,8 +575,9 @@ ResourceFont *ModuleImporter::LoadFontFile(const char *path)
 	return font;
 }
 
-void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
+bool ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *texture)
 {
+	bool ret = true;
 	ILuint new_image_id = 0;
 	ilGenImages(1, &new_image_id);
 	ilBindImage(new_image_id);
@@ -613,9 +616,11 @@ void ModuleImporter::LoadTextureToResource(const char *path, ResourceTexture *te
 
 		LOG_ENGINE("Error while loading image in %s", path);
 		LOG_ENGINE("Error: %s", ilGetString(ilGetError()));
+		ret = false;
 	}
 
 	ilDeleteImages(1, &new_image_id);
+	return ret;
 }
 
 void ModuleImporter::ApplyTextureToSelectedObject(ResourceTexture *texture)

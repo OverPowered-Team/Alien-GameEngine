@@ -93,6 +93,7 @@ bool ModuleResources::Start()
 
 	camera_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/camera.FBX");
 	light_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/bulb.fbx");
+	
 
 	assets = new FileNode();
 	assets->is_file = false;
@@ -102,6 +103,14 @@ bool ModuleResources::Start()
 	App->file_system->DiscoverEverythig(assets);
 
 #endif
+
+	default_skybox_textures[0] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxright.png");
+	default_skybox_textures[1] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxleft.png");
+	default_skybox_textures[2] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxtop.png");
+	default_skybox_textures[3] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxbottom.png");
+	default_skybox_textures[4] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxback.png");
+	default_skybox_textures[5] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxfront.png");
+	alpha_noise_texture		= App->importer->LoadEngineTexture("Configuration/EngineTextures/alphanoise.png");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
@@ -396,7 +405,7 @@ void ModuleResources::CreatePrimitive(const PrimitiveType& type, ResourceMesh** 
 {
 	(*ret)->is_primitive = true;
 	par_shapes_mesh* par_mesh = nullptr;
-
+	
 	switch (type)
 	{
 	case PrimitiveType::CUBE: {
@@ -587,7 +596,7 @@ ResourceShader* ModuleResources::GetShaderByName(std::string shaderName)
 			if (App->StringCmp((*res)->GetName(), shaderName.c_str()))
 			{
 				desiredShader = (ResourceShader*)(*res);
-				break;
+				return desiredShader;
 			}
 		}
 	}
@@ -700,9 +709,12 @@ void ModuleResources::ReadAllMetaData()
 	files.clear();
 	directories.clear();
 	default_shader = GetShaderByName("default_shader");
+	shadow_shader = GetShaderByName("simple_depth_shader");
 	default_particle_shader = GetShaderByName("particle_shader");
-
 	skybox_shader = GetShaderByName("skybox_shader");
+	water_shader = GetShaderByName("water_shader");
+	shield_fresnel_shader = GetShaderByName("shield_fresnel_shader");
+
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
 	ReadMaterials(directories, files, MATERIALS_FOLDER);
@@ -721,6 +733,9 @@ void ModuleResources::ReadAllMetaData()
 	App->file_system->DiscoverFiles(ANIM_CONTROLLER_FOLDER, files, directories);
 	ReadAnimControllers(directories, files, ANIM_CONTROLLER_FOLDER);
 
+	files.clear();
+	directories.clear();
+
 	// Init Prefabs
 	App->file_system->DiscoverFiles(ASSETS_PREFAB_FOLDER, files, directories);
 	ReadPrefabs(directories, files, ASSETS_PREFAB_FOLDER);
@@ -738,6 +753,8 @@ void ModuleResources::ReadAllMetaData()
 	// Init Scripts
 	ReadScripts();
 
+	files.clear();
+	directories.clear();
 	// Init Scenes
 	App->file_system->DiscoverFiles(SCENE_FOLDER, files, directories);
 	ReadScenes(directories, files, SCENE_FOLDER);
@@ -774,7 +791,17 @@ void ModuleResources::ReadAllMetaData()
 	directories.clear();
 	default_shader = (ResourceShader*)GetResourceWithID(2074311779325559006);
 	skybox_shader = (ResourceShader*)GetResourceWithID(10031399484334738574); // TODO
+	//TODOSHADOW:
+	shadow_shader = (ResourceShader*)GetResourceWithID(5088601162293274710);
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
+	shield_fresnel_shader = (ResourceShader*)GetResourceWithID(5257671272918645017);
+	shield_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
+	default_particle_shader->SetName("particle_shader");
+	default_particle_shader->TryToSetShaderType();
+	shield_fresnel_shader->SetName("shield_fresnel_shader");
+	shield_fresnel_shader->TryToSetShaderType();
+	shield_shader->SetName("shield_shader");
+	shield_shader->TryToSetShaderType();
 
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
@@ -919,8 +946,7 @@ void ModuleResources::ReadModels(std::vector<std::string> directories, std::vect
 	for (uint i = 0; i < files.size(); ++i) {
 		ResourceModel* model = new ResourceModel();
 		if (!model->ReadBaseInfo(std::string(current_folder + files[i]).data())) {
-			model->DeleteMetaData();
-			App->importer->LoadModelFile(std::string(current_folder + files[i]).data(), std::string(current_folder + files[i]).data());
+			App->importer->ReImportModel(model);
 		}
 	}
 	if (!directories.empty()) {

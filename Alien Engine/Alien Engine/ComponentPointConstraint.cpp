@@ -1,7 +1,4 @@
 #include "Application.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
-#include <BulletDynamics\Character\btKinematicCharacterController.h>
-#include "ModulePhysics.h"
 #include "ComponentCollider.h"
 #include "ComponentPointConstraint.h"
 #include "ComponentTransform.h"
@@ -15,11 +12,16 @@ ComponentPointConstraint::ComponentPointConstraint(GameObject* go) : Component(g
 	type = ComponentType::POINT_CONSTRAINT;
 	transform = game_object_attached->GetComponent<ComponentTransform>();
 
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentPointConstraint::DrawScene, this));
+#endif // !GAME_VERSION
 }
 
 ComponentPointConstraint::~ComponentPointConstraint()
 {
-
+#ifndef GAME_VERSION
+	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
+#endif // !GAME_VERSION
 }
 
 void ComponentPointConstraint::SaveComponent(JSONArraypack* to_save)
@@ -65,12 +67,12 @@ bool ComponentPointConstraint::DrawInspector()
 
 void ComponentPointConstraint::RecreateConstraint()
 {
-	if (constraint)
+	/*if (constraint)
 	{
 		App->physics->RemoveConstraint(constraint);
 		delete constraint;
 		constraint = nullptr;
-	}
+	}*/
 
 	//ComponentRigidBody* c_rb_a = linked_go->GetComponent<ComponentRigidBody>();
 }

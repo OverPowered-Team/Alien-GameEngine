@@ -16,14 +16,14 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	owner->sourceFactor = GL_SRC_ALPHA;
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
 	currentFrame = owner->currentFrame;
-
+	
 	if (owner->material != nullptr) 
 	{
 		p_material = new ResourceMaterial();
 		p_material->SetShader(owner->material->used_shader);
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
-
+		p_material->shaderInputs = owner->material->shaderInputs;
 		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
 		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
@@ -164,7 +164,7 @@ void Particle::Draw()
 {
 	
 	// -------- ATTITUDE -------- //
-	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size, particleInfo.size * (particleInfo.lengthScale + particleInfo.velocityScale), 1.f));
+	float4x4 particleLocal = float4x4::FromTRS(particleInfo.position, particleInfo.rotation, float3(particleInfo.size3D.x, particleInfo.size3D.y * (particleInfo.lengthScale + particleInfo.velocityScale), particleInfo.size3D.z));
 	float4x4 particleGlobal = particleLocal;
 
 	if (!particleInfo.globalTransform)
@@ -173,8 +173,8 @@ void Particle::Draw()
 		particleGlobal = parentGlobal * particleLocal;
 	}
 
-	glPushMatrix();
-	glMultMatrixf((GLfloat*) & (particleGlobal.Transposed()));
+	//glPushMatrix();
+	//glMultMatrixf((GLfloat*) & (particleGlobal.Transposed()));
 
 
 
@@ -218,6 +218,7 @@ void Particle::Draw()
 
 	
 	//glBlendFunc(owner->sourceFactor, owner->destinationFactor);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	switch (owner->eqBlend)
 	{
@@ -233,70 +234,50 @@ void Particle::Draw()
 
 	
 	// --------- COLOR --------- //
-	if (p_material == nullptr)
-	   glColor4f(particleInfo.color.x, particleInfo.color.y, particleInfo.color.z, particleInfo.color.w);
-
 	
 	// ------ VAO BUFFER ------ //
-	glBindVertexArray(owner->vao);
-	// --- VERTEX BUFFER ---- //
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, owner->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+		
+	//// --- VERTEX BUFFER ---- //
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glBindBuffer(GL_ARRAY_BUFFER, owner->id_vertex);
+	//glVertexPointer(3, GL_FLOAT, 0, NULL);
+
 	// ---- INDEX BUFFER ---- //
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->id_index);
 
 
+	// ----- DRAW ------ //
+	p_material->ApplyMaterial();
+	SetUniform(owner->material, particleGlobal);
 
-	if (owner->material != nullptr && p_material != nullptr)
+	if (owner->mesh_mode) // MESH DRAWING
 	{
 
-		owner->DeactivateLight();
-
-		// ---- TEXTCOORD BUFFER ----- //
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, owner->id_uv);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-		// --------- MATERIAL -------- //
-		p_material->ApplyMaterial();
-		
-
-
-		// ---- CAMERA PROJECTION ---- //
-		ComponentCamera* mainCamera = nullptr;
-
-		if (App->objects->printing_scene)
-			 mainCamera = App->camera->scene_viewport->GetCamera();
-		else
-			 mainCamera = App->renderer3D->GetCurrentMainCamera();
-
-		SetUniform(owner->material, mainCamera, particleGlobal);
-
-
+		if(!owner->meshes.empty())
+		{
+			for (int i = 0; i < owner->meshes.size(); ++i)
+			{
+				glBindVertexArray(owner->meshes.at(i)->vao);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->meshes.at(i)->id_index);
+				glDrawElements(GL_TRIANGLES, owner->meshes.at(i)->num_index, GL_UNSIGNED_INT, NULL);
+			}
+		}
 	}
-	owner->ActivateLight();
-	
-
-	// ----- DRAW QUAD ------ //
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	else // QUAD DRAWING
+	{
+		glBindVertexArray(owner->vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, owner->id_index);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
 
 	
 	// ---- DISABLE STUFF --- //
-	/*glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);*/
+	//glDisable(GL_BLEND);
 
 	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	if (owner->material != nullptr && p_material != nullptr)
-		p_material->used_shader->Unbind();
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	owner->DeactivateLight();
+	
+	p_material->UnbindMaterial();
 	glPopMatrix();
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
@@ -324,7 +305,10 @@ void Particle::Orientate(ComponentCamera* camera)
 
 	case BillboardType::VELOCITY:
 		particleInfo.rotation = Billboard::AlignToVelocity(camera, particleInfo.position, particleInfo.velocity);
+		break;
 
+	case BillboardType::MESH:
+		particleInfo.rotation = Quat::identity();
 		break;
 
 	case BillboardType::NONE:
@@ -346,7 +330,7 @@ void Particle::Rotate()
 void Particle::InterpolateValues(float dt)
 {
 
-	rateToLerp = 1.f / particleInfo.maxLifeTime;
+	rateToLerp = 1.f / particleInfo.changedTime;
 	if (t <= 1)
 	{
 		t += rateToLerp * dt;
@@ -356,9 +340,16 @@ void Particle::InterpolateValues(float dt)
 		else
 			particleInfo.color = float4::Lerp(startInfo.color, endInfo.color, t);
 
-		particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
-		//particleInfo.rotation = Slerp(particleInfo.rotation.Mul(Quat::RotateZ(startInfo.angle)), particleInfo.rotation.Mul(Quat::RotateZ(endInfo.angle)),t);
+		//particleInfo.size = Lerp(startInfo.size, endInfo.size, t);
+		particleInfo.size3D = float3::Lerp(startInfo.size3D, endInfo.size3D, t);
 		particleInfo.force = float3::Lerp(startInfo.force, endInfo.force, t);
+		
+		if (particleInfo.speed == 0)
+			return;
+
+		particleInfo.velocity /= particleInfo.speed;
+		particleInfo.speed = Lerp(startInfo.speed, endInfo.speed, t);
+		particleInfo.velocity *= particleInfo.speed;
 	}
 
 }
@@ -379,21 +370,9 @@ float Particle::Lerp(float v0, float v1, float t)
 	return (1 - t) * v0 + t * v1;
 }
 
-void Particle::SetUniform(ResourceMaterial* resource_material, ComponentCamera* camera, float4x4 globalMatrix)
+void Particle::SetUniform(ResourceMaterial* resource_material, float4x4 globalMatrix)
 {
-	resource_material->used_shader->SetUniformMat4f("view", camera->GetViewMatrix4x4());
 	resource_material->used_shader->SetUniformMat4f("model", globalMatrix.Transposed());
-	resource_material->used_shader->SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
-	/*resource_material->used_shader->SetUniformFloat3("view_pos", camera->GetCameraPosition());
-	resource_material->used_shader->SetUniform1i("animate", animate);*/
-
-	resource_material->used_shader->SetUniform1i("activeFog", camera->activeFog);
-	if (camera->activeFog)
-	{
-		resource_material->used_shader->SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
-		resource_material->used_shader->SetUniform1f("density", camera->fogDensity);
-		resource_material->used_shader->SetUniform1f("gradient", camera->fogGradient);
-	}
 }
 
 

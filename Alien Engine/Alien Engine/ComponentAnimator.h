@@ -16,6 +16,7 @@ public:
 	void Update();
 
 	void PlayState(const char* name);
+	void SetStateSpeed(const char* name, float value);
 	bool IsPlaying(const char* name);
 	void IncreaseAllStateSpeeds(float value);
 	void DecreaseAllStateSpeeds(float value);
@@ -23,6 +24,7 @@ public:
 	float GetCurrentStateSpeed();
 	float GetCurrentStateTime();
 	float GetCurrentStateDuration();
+	std::string GetCurrentStateName();
 	uint GetCurrentAnimTPS();
 	void OnPlay();
 

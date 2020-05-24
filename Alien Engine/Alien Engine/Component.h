@@ -42,6 +42,8 @@ enum class ComponentType {
 	BONE = 28,
 	SCRIPT = 29,
 	UI = 30,
+	CURVE = 31,
+	MESH_COLLIDER = 32,
 
 	MAX //LAST LAST LAST
 };
@@ -58,6 +60,7 @@ class __declspec(dllexport) Component {
 	friend class ComponentMaterial;
 	friend class ComponentCanvas;
 	friend class ComponentUI;
+	friend class ComponentPhysics;
 	friend class ComponentCharacterController;
 	friend class ComponentRigidBody;
 	friend class ComponentCollider;
@@ -70,6 +73,7 @@ class __declspec(dllexport) Component {
 	friend class CompZ;
 	friend class PanelInspector;
 	friend class ModuleObjects;
+	friend class ModulePhysX;
 	friend class ModuleUI;
 public:
 	Component(GameObject* attach);
@@ -77,6 +81,8 @@ public:
 
 	bool IsEnabled();
 	void SetEnable(bool enable);
+	void Destroy();
+
 public:
 	GameObject* game_object_attached = nullptr;
 
@@ -96,10 +102,11 @@ protected:
 	virtual void PreUpdate() {}
 	virtual void Update() {}
 	virtual void PostUpdate() {}
+
 	virtual void DrawScene() {}
 	virtual void DrawGame() {}
 
-	void ResetIDs();
+	virtual void ResetIDs();
 
 	const ComponentType& GetType() const;
 
@@ -122,4 +129,5 @@ protected:
 	u64 ID = 0;
 	bool not_destroy = true;
 	const char* name = "";
+	bool serialize = true;
 };

@@ -8,6 +8,16 @@
 
 class ResourceTexture;
 
+struct AnimationInfo
+{
+	std::vector<ResourceTexture*> tex_array;
+	float current_frame = 0.0f;
+	int last_frame = 0;
+	int loops = 0;
+	bool loop = true;
+	float speed = 1.0f;
+};
+
 class __declspec(dllexport) ComponentButton :public ComponentUI
 {
 	friend class ModuleObjects;
@@ -16,7 +26,7 @@ public:
 	~ComponentButton() {};
 
 	void SetActive(bool active);
-
+	void Draw(bool isGame);
 	void AddListenerOnHover(std::string name, std::function<void()> funct);
 	void AddListenerOnClick(std::string name, std::function<void()> funct);
 	void AddListenerOnClickRepeat(std::string name, std::function<void()> funct);
@@ -34,6 +44,9 @@ public:
 	void SaveComponent(JSONArraypack* to_save);
 	void LoadComponent(JSONArraypack* to_load);
 
+	void SetAnimSpeed(float speed, UIState type);
+	float GetAnimSpeed(UIState type);
+
 protected:
 	void HandleAlienEvent(const AlienEvent& e);
 
@@ -48,12 +61,20 @@ private:
 	bool OnPressed();
 	bool OnRelease();
 	bool OnExit();
-	
+
 
 	void CallListeners(std::vector<std::pair<std::string, std::function<void()>>>* listeners);
-	void SetStateTexture(UIState state, ResourceTexture* tex);
-	void ClearStateTexture(UIState state);
+	/*void SetStateTexture(UIState state, ResourceTexture* tex);
+	void ClearStateTexture(UIState state);*/
 
+	ResourceTexture* ClearTextureArray(ResourceTexture* item);
+	ResourceTexture* SetTextureArray(ResourceTexture* tex, ResourceTexture* item);
+	void SetCurrentTexArray(AnimationInfo* new_tex);
+
+	ResourceTexture* GetCurrentFrame(float dt);
+	bool Finished() const;
+	void Reset();
+	int SeeCurrentFrame();
 
 public:
 
@@ -64,11 +85,14 @@ public:
 	Color disabled_color = { 0.3f,0.3f,0.3f,1.0f };
 
 protected:
-	ResourceTexture* idle_tex		= nullptr;
-	ResourceTexture* hover_tex		= nullptr;
-	ResourceTexture* clicked_tex	= nullptr;
-	ResourceTexture* pressed_tex	= nullptr;
-	ResourceTexture* disabled_tex	= nullptr;
+
+	AnimationInfo idle_info;
+	AnimationInfo hover_info;
+	AnimationInfo clicked_info;
+	AnimationInfo pressed_info;
+	AnimationInfo disabled_info;
+	AnimationInfo* current_tex_array = nullptr;
+
 
 private:
 
@@ -79,7 +103,7 @@ private:
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnExit;
 	std::vector<std::pair<std::string, std::function<void()>>> listenersOnEnter;
 
-	bool active = true;
+	bool active_ui = true;
 };
 
 

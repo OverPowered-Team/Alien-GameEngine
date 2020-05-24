@@ -32,6 +32,10 @@ struct GamePad {
 	int number = 0;
 	Joystick joystick_left;
 	Joystick joystick_right;
+
+	float left_trigger = 0.0F;
+	float right_trigger = 0.0F;
+
 	KEY_STATE controller_buttons[SDL_CONTROLLER_BUTTON_MAX];
 	SDL_Haptic* haptic = nullptr;
 	SDL_GameController* controller = nullptr;
@@ -145,6 +149,8 @@ public:
 		return mouse_pressed;
 	}
 	bool IsControllerActive(int controller_index);
+
+	float GetControllerAxis(GamePad* gp, SDL_GameControllerAxis axis);
 
 	float3 GetMousePosition();
 private:

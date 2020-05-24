@@ -25,12 +25,14 @@ private:
 	void Update() override;
 	void PostUpdate() override;
 
+	void DrawScene() override;
+	void DrawGame() override;
+
 	void DebugDraw();
 	void Draw();
 
 	void OnEnable() override;
 	void OnDisable() override;
-
 
 	bool DrawInspector () override;
 
@@ -66,6 +68,7 @@ private:
 	bool drawEmmitter = false;
 	int shapeSelected = 0;
 	int bbTypeSelected = 0;
+	int meshTypeSelected = 8; // 8 - None mesh
 	int matTypeSelected = 0;
 	int eqTypeSelected = 0;
 	int funcTypeSource = 6;

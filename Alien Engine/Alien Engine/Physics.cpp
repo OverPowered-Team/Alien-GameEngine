@@ -1,33 +1,38 @@
 #include "Physics.h"
 #include "Application.h"
-#include "ModulePhysics.h"
+#include "ModulePhysX.h"
 
 void Physics::SetGravity(const float3 gravity)
 {
-	App->physics->SetGravity(gravity);
+	App->physx->SetGravity(gravity);
 }
 
 float3 Physics::GetGravity()
 {
-	return App->physics->GetGravity();
+	return App->physx->GetGravity();
 }
 
-std::vector<ComponentCollider*> Physics::RayCastAll(Ray ray)
+bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist)
 {
-	return App->physics->RayCastAll(ray);
+	return  App->physx->Raycast(origin, unit_dir, max_dist);
 }
 
-ComponentCollider* Physics::RayCastClosest(math::Ray ray)
+bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, RaycastHit& hit)
 {
-	return App->physics->RayCastClosest(ray);
+	return  App->physx->Raycast(origin, unit_dir, max_dist, hit);
 }
 
-std::vector<ComponentCollider*> Physics::SphereCast(float3 position, float radius)
+const std::vector<RaycastHit>& Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
 {
-	return App->physics->SphereCast(position, radius);
+	static std::vector<RaycastHit> ret;
+	ret = App->physx->RaycastAll(origin, unitDir, maxDistance);
+	return ret;
 }
 
-std::vector<ComponentCollider*> Physics::BoxCast(float3 size, float3 position, Quat rotation)
+// TODO: uncomment this when we have heap change integred
+const std::vector<ComponentCollider*>& Physics::OverlapSphere(float3 center, float radius)
 {
-	return App->physics->BoxCast(size, position, rotation);
+	static  std::vector<ComponentCollider*> ret;
+	ret = App->physx->OverlapSphere(center, radius);
+	return ret;
 }

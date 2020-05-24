@@ -12,6 +12,7 @@
 #include "ModuleUI.h"
 #include "ModuleResources.h"
 #include "PanelProject.h"
+#include "ComponentCurve.h"
 #include "Alien.h"
 #include "mmgr/mmgr.h"
 
@@ -263,7 +264,12 @@ void ComponentTransform::RecalculateTransform()
 	if (game_object_attached == nullptr)
 		return;
 
-	local_transformation = float4x4::FromTRS(local_position, local_rotation, local_scale);
+	float3 final_scale = float3(
+		(local_scale.x != 0.f) ? local_scale.x : 0.001f,
+		(local_scale.y != 0.f) ? local_scale.y : 0.001f,
+		(local_scale.z != 0.f) ? local_scale.z : 0.001f);
+
+	local_transformation = float4x4::FromTRS(local_position, local_rotation, final_scale);
 
 	if (game_object_attached->parent != nullptr) 
 	{
@@ -304,6 +310,11 @@ void ComponentTransform::RecalculateTransform()
 	if (mesh != nullptr)
 	{
 		mesh->RecalculateAABB_OBB();
+	}
+
+	ComponentCurve* curve = game_object_attached->GetComponent<ComponentCurve>();
+	if (curve != nullptr) {
+		curve->UpdatePosition(GetGlobalPosition());
 	}
 }
 

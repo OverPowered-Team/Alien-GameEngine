@@ -41,11 +41,13 @@ bool ComponentMaterial::DrawInspector()
 
 	//InspectorShaderProperties();
 
-	if (ImGui::CollapsingHeader("Material", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Material", &not_destroy))
 	{
 		material->DisplayMaterialOnInspector();
+		
 		RightClickMenu("Material");
 
+		ImGui::Checkbox("Cast shadow:", &game_object_attached->cast_shadow);
 		//InspectorShaderProperties();
 
 		/*ImGui::Spacing();
@@ -303,6 +305,16 @@ void ComponentMaterial::SetMaterial(ResourceMaterial* mat)
 const ResourceMaterial* ComponentMaterial::GetMaterial() const
 {
 	return material;
+}
+
+ResourceShader* ComponentMaterial::GetUsedShader() const
+{
+	return material->used_shader;
+}
+
+bool ComponentMaterial::IsTransparent() const
+{
+	return material->IsTransparent();
 }
 
 

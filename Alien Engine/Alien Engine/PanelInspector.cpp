@@ -9,6 +9,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentLightDirectional.h"
 #include "ComponentLightSpot.h"
+#include "ComponentCurve.h"
 #include "ComponentLightPoint.h"
 #include "ComponentAnimator.h"
 #include "ModuleResources.h"
@@ -42,8 +43,10 @@
 
 #include "mmgr/mmgr.h"
 
+#include "ComponentCollider.h"
 #include "ComponentBoxCollider.h"
 #include "ComponentSphereCollider.h"
+#include "ComponentMeshCollider.h"
 #include "ComponentCapsuleCollider.h"
 #include "ComponentConvexHullCollider.h"
 #include "ComponentRigidBody.h"
@@ -106,7 +109,7 @@ void PanelInspector::PanelLogic()
 			if (*item != nullptr)
 			{
 				if ((*item)->DrawInspector()) {
-					if (!(*item)->not_destroy) {
+					if (!(*item)->not_destroy && (*item)->serialize) {
 						to_destroy = (*item);
 						delete_panel = &(*item)->not_destroy;
 						*delete_panel = !(*delete_panel);
@@ -457,6 +460,17 @@ void PanelInspector::ButtonAddComponent()
 						LOG_ENGINE("The selected object already has this component!");
 
 					break; }
+				case ComponentType::CURVE: {
+
+					if (!selected->HasComponent(ComponentType::CURVE))
+					{
+						comp = new ComponentCurve(selected);
+						selected->AddComponent(comp);
+					}
+					else
+						LOG_ENGINE("The selected object already has this component!");
+
+					break; }
 				case ComponentType::LIGHT_SPOT: {
 
 					if (!selected->HasComponent(ComponentType::LIGHT_SPOT))
@@ -653,32 +667,24 @@ void PanelInspector::ButtonAddComponent()
 						LOG_ENGINE("The selected object already has Component UI!");
 					break; }
 				case ComponentType::BOX_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentBoxCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::SPHERE_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentSphereCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::CAPSULE_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentCapsuleCollider(selected);
 						selected->AddComponent(comp);
-					}
+					break; }
+				case ComponentType::MESH_COLLIDER: {
+					comp = new ComponentMeshCollider(selected);
+					selected->AddComponent(comp);
 					break; }
 				case ComponentType::CONVEX_HULL_COLLIDER: {
-					if (selected->GetComponent<ComponentCollider>() == nullptr)
-					{
 						comp = new ComponentConvexHullCollider(selected);
 						selected->AddComponent(comp);
-					}
 					break; }
 				case ComponentType::RIGID_BODY: {
 					if (!selected->HasComponent(ComponentType::RIGID_BODY))

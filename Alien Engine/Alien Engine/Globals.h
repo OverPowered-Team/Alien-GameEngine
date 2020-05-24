@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include "glew/include/glew.h"
 
+// DISCOMMENT TO START THE ENGINE IN PLAY MODE
+// #define GAME_VERSION
+
 #define LOG_ENGINE(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
 __declspec(dllexport) void log(const char file[], int line, const char* format, ...);
@@ -16,10 +19,6 @@ __declspec(dllexport) void log(const char file[], int line, const char* format, 
 
 #define HAVE_M_PI
 #define ALIEN_ENGINE_VERSION 1.0
-
-
-// DISCOMMENT TO START THE ENGINE IN PLAY MODE
-//#define GAME_VERSION
 
 #define RELEASE( x )\
     {\
@@ -68,3 +67,6 @@ enum update_status
 
 #define BAR_BEGIN_POS 6
 #define BAR_END_POS WINDOW_ICON_WIDTH - BAR_BEGIN_POS
+
+#define DEGTORAD 0.0174532925199432957f // 1degree x (pi rads / 180 degrees) = 0.017 rads
+#define RADTODEG 57.295779513082320876f // 1rad x (180 degrees / pi rads) = 57 degrees

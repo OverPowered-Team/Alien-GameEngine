@@ -37,6 +37,12 @@ void Component::SetEnable(bool enable)
 	(enabled) ? OnEnable() : OnDisable();
 }
 
+void Component::Destroy()
+{
+	not_destroy = false;
+	App->objects->need_to_delete_objects = true;
+}
+
 void Component::ResetIDs()
 {
 	ID = App->resources->GetRandomID();
@@ -83,6 +89,9 @@ std::string Component::EnumToString(ComponentType type)
 		break;
 	case ComponentType::CAPSULE_COLLIDER:
 		return std::string("Collider Capsule");
+		break;
+	case ComponentType::MESH_COLLIDER:
+		return std::string("Collider Mesh");
 		break;
 	case ComponentType::CONVEX_HULL_COLLIDER:
 		return std::string("Collider Convex Hull");
@@ -143,6 +152,9 @@ std::string Component::EnumToString(ComponentType type)
 		break;
 	case ComponentType::UI:
 		return std::string("UI");
+		break;
+	case ComponentType::CURVE:
+		return std::string("Curve");
 		break;
 	case ComponentType::MAX:
 		return std::string("MAX");
