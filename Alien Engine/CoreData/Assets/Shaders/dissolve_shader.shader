@@ -16,8 +16,6 @@ uniform mat4 view;
 uniform mat4 model;
 uniform mat4 projection;
 
-uniform int hasAlpha;
-
 uniform int num_space_matrix;
 uniform mat4 lightSpaceMatrix[MAX_SPACEMATRIX];
 uniform int animate;

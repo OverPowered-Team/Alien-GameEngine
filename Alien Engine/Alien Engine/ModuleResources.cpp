@@ -93,7 +93,7 @@ bool ModuleResources::Start()
 
 	camera_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/camera.FBX");
 	light_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/bulb.fbx");
-	alpha_noise_texture = App->importer->LoadEngineTexture("Configuration/EngineTextures/alphanoise.png");
+	
 
 	assets = new FileNode();
 	assets->is_file = false;
@@ -110,6 +110,7 @@ bool ModuleResources::Start()
 	default_skybox_textures[3] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxbottom.png");
 	default_skybox_textures[4] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxback.png");
 	default_skybox_textures[5] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxfront.png");
+	alpha_noise_texture		= App->importer->LoadEngineTexture("Configuration/EngineTextures/alphanoise.png");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
