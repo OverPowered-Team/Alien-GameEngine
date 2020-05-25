@@ -225,8 +225,8 @@
                     {
                         "X": 0,
                         "Y": 0,
-                        "Width": 8.619999885559082,
-                        "Height": 0.25,
+                        "Width": 8.9799995422363281,
+                        "Height": 0.40999999642372131,
                         "Enabled": true,
                         "Type": 30,
                         "UIType": 25,
@@ -252,7 +252,21 @@
                         "barScaleY": 0.80000001192092896,
                         "offsetX": 0,
                         "offsetY": 0,
-                        "SCType": 0
+                        "SCType": 2
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "5584190602333026766",
+                        "ResourceID": "6008583145087647197",
+                        "DataName": "player_example",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 8,
+                                "Name": "p",
+                                "prefab": "0"
+                            }
+                        ]
                     }
                 ]
             }
