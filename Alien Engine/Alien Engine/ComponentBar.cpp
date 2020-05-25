@@ -71,9 +71,9 @@ bool ComponentBar::DrawInspector()
 
 		ImGui::PushID(this);
 		ImGui::Text("Offset:	"); ImGui::SameLine(150); ImGui::SetNextItemWidth(100);
-		ImGui::DragFloat("X", &offsetX, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
+		ImGui::DragFloat("X", &offsetX, 0.01F, 0, 0, "%.3f", 1, game_object_attached->is_static);
 		ImGui::SameLine(); ImGui::SetNextItemWidth(100);
-		ImGui::DragFloat("Y", &offsetY, 0.1F, 0, 0, "%.1f", 1, game_object_attached->is_static);
+		ImGui::DragFloat("Y", &offsetY, 0.01F, 0, 0, "%.3f", 1, game_object_attached->is_static);
 		ImGui::PopID();
 
 		ImGui::Spacing();
@@ -315,17 +315,20 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 		x = origin.x * App->window->width;
 		y = origin.y * App->window->height;
 #endif
-
+		
 		matrix[0][3] = origin.x;
 		matrix[1][3] = origin.y;
 
 		if (tex != nullptr && draw_bar)
 		{
+			matrix[0][3] += offsetX;
+			matrix[1][3] -= offsetY;
 			matrix[0][0] *= barScaleX;
 			matrix[1][1] *= barScaleY;
+
 			glEnable(GL_SCISSOR_TEST);
 			float3 canPivot = { canvas_pos.x - canvas->width * 0.5F, canvas_pos.y + canvas->height * 0.5F, 0 };
-			float textureHalfWidth = ((texture->width * transform->global_transformation[0][0]) / 100) * 0.5F;
+			float textureHalfWidth = ((texture->width * transform->global_transformation[0][0]) / 100) * 0.5F * barScaleX;
 			switch (scType)
 			{
 			case SCISSOR_TYPE::RIGHT_TO_LEFT: {
