@@ -349,25 +349,26 @@ void ComponentBar::DrawTexture(bool isGame, ResourceTexture* tex)
 				float currentWidth = (endPoint - beginPoint) * factor;
 				glScissor(endPoint - currentWidth, 0, currentWidth, 10000);
 #else
-				glScissor(x - (matrix[0][0] * App->window->width) + (((x + (matrix[0][0] * App->window->width) - offsetX) - (x - (matrix[0][0] * App->window->width))) - (((x + (matrix[0][0] * App->window->width) - offsetX) - (x - (matrix[0][0] * App->window->width))) * factor)),
-					0,
-					((x + (matrix[0][0] * App->window->width) - offsetX) - (x - (matrix[0][0] * App->window->width))) * factor,
-					10000);
+				float endPoint = ((transform->global_transformation[0][3] + textureHalfWidth - canvasPivot.x) / canvas->width) * App->window->width;
+				float beginPoint = ((transform->global_transformation[0][3] - textureHalfWidth - canvasPivot.x) / canvas->width) * App->window->width;
+				float currentWidth = (endPoint - beginPoint) * factor;
+				glScissor(endPoint - currentWidth, 0, currentWidth, 10000);
 #endif	
 				break; }
 
 			case SCISSOR_TYPE::CENTER: {
 #ifndef GAME_VERSION
-				glScissor(x - (((x + (matrix[0][0] * App->ui->panel_game->width) - offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor * 0.5f) /*+ offsetX*/,
-					0,
-					((x + (matrix[0][0] * App->ui->panel_game->width) - offsetX) - (x - (matrix[0][0] * App->ui->panel_game->width) + offsetX)) * factor,
-					10000);
-				
+				float middlePos = ((transform->global_transformation[0][3] - canvasPivot.x) / canvas->width) * App->ui->panel_game->width;
+				float endPoint = ((transform->global_transformation[0][3] + textureHalfWidth - canvasPivot.x) / canvas->width) * App->ui->panel_game->width;
+				float beginPoint = ((transform->global_transformation[0][3] - textureHalfWidth - canvasPivot.x) / canvas->width) * App->ui->panel_game->width;
+				float currentWidth = (endPoint - beginPoint) * factor;
+				glScissor(middlePos - (currentWidth * 0.5F), 0, currentWidth, 10000);
 #else
-				glScissor(x - (((x + (matrix[0][0] * App->window->width) - offsetX) - (x - (matrix[0][0] * App->window->width) + offsetX)) * factor * 0.5f) /*+ offsetX*/,
-					0,
-					((x + (matrix[0][0] * App->window->width) - offsetX) - (x - (matrix[0][0] * App->window->width) + offsetX)) * factor,
-					10000);
+				float middlePos = ((transform->global_transformation[0][3] - canvasPivot.x) / canvas->width) * App->window->width;
+				float endPoint = ((transform->global_transformation[0][3] + textureHalfWidth - canvasPivot.x) / canvas->width) * App->window->width;
+				float beginPoint = ((transform->global_transformation[0][3] - textureHalfWidth - canvasPivot.x) / canvas->width) * App->window->width;
+				float currentWidth = (endPoint - beginPoint) * factor;
+				glScissor(middlePos - (currentWidth * 0.5F), 0, currentWidth, 10000);
 #endif	
 				break; }
 
