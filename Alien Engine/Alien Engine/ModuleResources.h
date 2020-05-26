@@ -65,8 +65,8 @@ public:
 	bool CreateNewModelInstanceOf(const char* path);
 
 	u64 GetIDFromAlienPath(const char* path);
-	Resource* GetResourceWithID(const u64& ID);
-	const Resource* GetResourceWithID(const u64& ID) const;
+	Resource* GetResourceWithID(const u64 ID);
+	const Resource* GetResourceWithID(const u64 ID) const;
 	std::vector<Resource*> GetResourcesWithType(ResourceType type);
 
 	void AddNewFileNode(const std::string& path, bool is_file);
@@ -92,8 +92,8 @@ public:
 	ResourceShader* GetShaderByName(std::string shaderName);
 	ResourceMaterial* GetMaterialByName(const char* name); 
 
-	const uint GetTextureidByID(const u64& ID) const;
-	ResourceTexture* GetTextureByID(const u64& ID);
+	const uint GetTextureidByID(const u64 ID) const;
+	ResourceTexture* GetTextureByID(const u64 ID);
 
 	// Shaders
 	bool GetShaders(std::vector<ResourceShader*>& to_fill);

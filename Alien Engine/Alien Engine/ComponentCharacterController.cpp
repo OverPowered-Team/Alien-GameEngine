@@ -37,8 +37,11 @@ ComponentCharacterController::ComponentCharacterController(GameObject* go) : Com
 		all_shapes[i].userData = this;
 
 	controller->setUserData(this);
-	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ADDED);
 	SetCollisionLayer("Default");
+
+	physics->AddController(this);
+	go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ADDED);
+
 }
 
 ComponentCharacterController::~ComponentCharacterController()

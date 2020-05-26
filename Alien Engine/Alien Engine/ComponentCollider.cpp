@@ -27,9 +27,9 @@ ComponentCollider::ComponentCollider(GameObject* go) : ComponentBasePhysic(go)
 ComponentCollider::~ComponentCollider()
 {
 	if (!IsController()) {
+		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DELETED);
 		material->release();
 		material = nullptr;
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DELETED);
 		shape->release();
 		shape = nullptr;
 	}
@@ -174,17 +174,17 @@ void ComponentCollider::Update()
 void ComponentCollider::OnEnable()
 {
 	if (!IsController())
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_ENABLED);
+		physics->AttachCollider(this);
 	else
-		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_ENABLED);
+		physics->SwitchedController((ComponentCharacterController*)this);
 }
 
 void ComponentCollider::OnDisable()
 {
 	if (!IsController())
-		go->SendAlientEventThis(this, AlienEventType::COLLIDER_DISABLED);
+		physics->DettachCollider(this);
 	else
-		go->SendAlientEventThis(this, AlienEventType::CHARACTER_CTRL_DISABLED);
+		physics->SwitchedController((ComponentCharacterController*)this);
 }
 
 void ComponentCollider::DrawScene()
@@ -342,8 +342,8 @@ void ComponentCollider::HandleAlienEvent(const AlienEvent& e)
 void ComponentCollider::InitCollider()
 {
 	shape->userData = this;
-	go->SendAlientEventThis(this, AlienEventType::COLLIDER_ADDED);
 	SetCollisionLayer("Default");
+	physics->AddCollider(this);
 }
 
 void ComponentCollider::InitMaterial()

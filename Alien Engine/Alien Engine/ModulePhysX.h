@@ -13,6 +13,8 @@ class ModulePhysX : public Module
 	friend class PanelPhysics;
 	friend class ModuleObjects;
 	friend class ComponentPhysics;
+	friend class ComponentBasePhysic;
+
 	friend class ComponentCollider;
 	friend class ComponentBoxCollider;
 	friend class ComponentSphereCollider;
@@ -20,7 +22,10 @@ class ModulePhysX : public Module
 	friend class ComponentMeshCollider;
 	friend class ComponentConvexHullCollider;
 	friend class ComponentCharacterController;
-	friend class ComponentBasePhysic;
+
+	friend class ComponentJoint;
+	friend class ComponentConfigurableJoint;
+
 
 public:
 
