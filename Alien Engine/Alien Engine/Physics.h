@@ -9,6 +9,8 @@ typedef unsigned int uint;
 class __declspec(dllexport) Physics {
 public:
 
+	static int							      GetLayerMask( const char* layer);
+	static int							      GetLayerMask( const vector<const char*>& layers);
 	static void								  SetGravity(const float3 gravity);
 	static float3							  GetGravity();
 

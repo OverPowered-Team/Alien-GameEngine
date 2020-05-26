@@ -2,6 +2,35 @@
 #include "Application.h"
 #include "ModulePhysX.h"
 
+int Physics::GetLayerMask(const char* layer)
+{
+	int index = 0;
+
+	if (App->physx->layers.GetIndexByName(layer, index))
+	{
+		return 1 << index;
+	}
+
+	return -1;
+}
+
+int Physics::GetLayerMask(const vector<const char*>& layers)
+{
+	int index = 0;
+	int layer_mask = -1;
+	for (int i = 0; i < layers.size(); ++i)
+	{
+		if (App->physx->layers.GetIndexByName(layers[i], index))
+		{
+			if (layer_mask == -1)
+				layer_mask = 1 << index;
+			else
+				layer_mask = layer_mask | (1 << index);
+		}
+	}
+	return layer_mask;
+}
+
 void Physics::SetGravity(const float3 gravity)
 {
 	App->physx->SetGravity(gravity);

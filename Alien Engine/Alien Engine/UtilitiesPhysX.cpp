@@ -225,7 +225,7 @@ PxQueryHitType::Enum ControllerFilterCallback::postFilter(const PxFilterData& fi
 PxQueryHitType::Enum RaycastFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
 	PxFilterData filterData1 = shape->getSimulationFilterData();
-	int value = (int)filterData1.word0;
+	int value = 1 << (int)filterData1.word0;
 	int layer_mask = App->physx->layer_mask;
 
 
@@ -234,7 +234,7 @@ PxQueryHitType::Enum RaycastFilterCallback::preFilter(const PxFilterData& filter
 		return (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
 	}
 
-	if ((1 << value & layer_mask) == layer_mask)
+	if ((value & layer_mask) != 0)
 	{
 		return  (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
 	}
