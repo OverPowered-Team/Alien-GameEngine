@@ -37,7 +37,8 @@ bool ModulePhysX::Init()
 		return false;
 
 	px_simulation_callback = new SimulationEventCallback();
-	px_controller_filter_callback = new ControllerFilterCallback();
+	px_controller_filter = new ControllerFilterCallback();
+	px_raycast_filter = new RaycastFilterCallback();
 
 	// TODO: make init blindings if any stage goes wrong
 
@@ -149,8 +150,10 @@ bool ModulePhysX::CleanUp()
 	PX_RELEASE(px_physics);
 	delete px_simulation_callback;
 	px_simulation_callback = nullptr;
-	delete px_controller_filter_callback;
-	px_controller_filter_callback = nullptr;
+	delete px_controller_filter;
+	px_controller_filter = nullptr;
+	delete px_raycast_filter;
+	px_raycast_filter = nullptr;
 
 	if (px_pvd)
 	{
@@ -344,16 +347,19 @@ bool ModulePhysX::Raycast(float3 origin, float3 unit_dir, float max_distance) co
 
 	PxQueryFilterData fd;
 	fd.flags |= PxQueryFlag::eANY_HIT;
+	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxRaycastBuffer raycast_buffer;
-	return px_scene->raycast(_origin, _unitDir, max_distance, raycast_buffer, PxHitFlag::eDEFAULT, fd);  // TODO: implement filtering (layermask | queryTriggerInteraction)
+	return px_scene->raycast(_origin, _unitDir, max_distance, raycast_buffer, PxHitFlag::eDEFAULT, fd, App->physx->px_raycast_filter);  // TODO: implement filtering (layermask | queryTriggerInteraction)
 }
 
 bool ModulePhysX::Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit) const
 {
 	PxVec3 _origin = F3_TO_PXVEC3(origin);
 	PxVec3 _unitDir = F3_TO_PXVEC3(unit_dir);
+	PxQueryFilterData fd;
+	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxRaycastBuffer raycast_buffer;
-	bool ret = px_scene->raycast(_origin, _unitDir, max_distance, raycast_buffer);
+	bool ret = px_scene->raycast(_origin, _unitDir, max_distance, raycast_buffer, PxHitFlag::eDEFAULT, fd, App->physx->px_raycast_filter);
 	if (ret) hit.SetRaycastHit(raycast_buffer.block);
 	return ret;
 }

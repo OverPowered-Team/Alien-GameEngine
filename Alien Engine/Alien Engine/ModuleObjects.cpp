@@ -1348,7 +1348,22 @@ void ModuleObjects::MoveComponentUp(GameObject* object, Component* component, bo
 
 GameObject* ModuleObjects::GetGameObjectByID(const u64 id)
 {
-	return base_game_object->GetGameObjectByID(id);
+	std::stack<GameObject*>objects;
+	objects.push(base_game_object);
+
+	while (!objects.empty()) {
+		GameObject* obj = objects.top();
+		objects.pop();
+
+		if (obj->ID == id)
+			return obj;
+
+		for (auto item = obj->children.begin(); item != obj->children.end(); ++item) {
+			objects.push(*item);
+		}
+	}
+
+	return nullptr;
 }
 
 void ModuleObjects::ReparentGameObject(GameObject* object, GameObject* next_parent, bool to_cntrlZ)

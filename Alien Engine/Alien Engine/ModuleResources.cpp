@@ -201,7 +201,7 @@ u64 ModuleResources::GetIDFromAlienPath(const char* path)
 	return ID;
 }
 
-Resource* ModuleResources::GetResourceWithID(const u64 ID)
+Resource* ModuleResources::GetResourceWithID(const u64& ID)
 {
 	OPTICK_EVENT();
 
@@ -217,7 +217,7 @@ Resource* ModuleResources::GetResourceWithID(const u64 ID)
 	return nullptr;
 }
 
-const Resource* ModuleResources::GetResourceWithID(const u64 ID) const
+const Resource* ModuleResources::GetResourceWithID(const u64& ID) const
 {
 	OPTICK_EVENT();
 	std::vector<Resource*>::const_iterator item = resources.cbegin();
@@ -620,7 +620,7 @@ ResourceMaterial* ModuleResources::GetMaterialByName(const char* name)
 	return desiredMaterial;
 }
 
-const uint ModuleResources::GetTextureidByID(const u64 ID) const // This needs to be redifined
+const uint ModuleResources::GetTextureidByID(const u64& ID) const // This needs to be redifined
 {
 	OPTICK_EVENT();
 
@@ -638,7 +638,7 @@ const uint ModuleResources::GetTextureidByID(const u64 ID) const // This needs t
 	return -1;
 }
 
-ResourceTexture* ModuleResources::GetTextureByID(const u64 ID)
+ResourceTexture* ModuleResources::GetTextureByID(const u64& ID)
 {
 	OPTICK_EVENT();
 

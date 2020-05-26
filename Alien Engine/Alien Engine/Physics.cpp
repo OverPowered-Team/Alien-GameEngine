@@ -12,20 +12,28 @@ float3 Physics::GetGravity()
 	return App->physx->GetGravity();
 }
 
-bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist)
+bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, int layer_mask)
 {
-	return  App->physx->Raycast(origin, unit_dir, max_dist);
+	App->physx->layer_mask = layer_mask;
+	bool ret = App->physx->Raycast(origin, unit_dir, max_dist);
+	App->physx->layer_mask = -1;
+	return ret;
 }
 
-bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, RaycastHit& hit)
+bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, RaycastHit& hit, int layer_mask)
 {
-	return  App->physx->Raycast(origin, unit_dir, max_dist, hit);
+	App->physx->layer_mask = layer_mask;
+	bool ret = App->physx->Raycast(origin, unit_dir, max_dist, hit);
+	App->physx->layer_mask = -1;
+	return ret;
 }
 
-const std::vector<RaycastHit>& Physics::RaycastAll(float3 origin, float3 unitDir, float maxDistance)
+const std::vector<RaycastHit>& Physics::RaycastAll(float3 origin, float3 unit_dir, float max_dist, int layer_mask)
 {
 	static std::vector<RaycastHit> ret;
-	ret = App->physx->RaycastAll(origin, unitDir, maxDistance);
+	App->physx->layer_mask = layer_mask;
+	ret = App->physx->RaycastAll(origin, unit_dir, max_dist);
+	App->physx->layer_mask = -1;
 	return ret;
 }
 

@@ -30,6 +30,9 @@ public:
 	void SetConnectedBody(RigidBody* body);
 	RigidBody* GetConnectedBody() { return connected_body; }
 
+	void SetAnchor( float3 _anchor);
+	float3 GetAnchor() { return anchor; }
+
 protected:
 
 	void CreateJoint();

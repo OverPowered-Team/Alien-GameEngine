@@ -73,7 +73,7 @@ public:
 
 	CollisionLayers	layers;
 	bool debug_physics = false;
-
+	int	 layer_mask = -1;
 private:
 
 	float accumulator = 0.f;
@@ -97,7 +97,9 @@ private:
 	PxDefaultAllocator			px_allocator;
 	CustomErrorCallback			px_error_callback;
 	SimulationEventCallback*    px_simulation_callback = nullptr;
-	ControllerFilterCallback*	px_controller_filter_callback = nullptr;
+	ControllerFilterCallback*	px_controller_filter = nullptr;
+	RaycastFilterCallback*		px_raycast_filter = nullptr;
+
 	PxFoundation*				px_foundation = nullptr;
 	PxPhysics*					px_physics = nullptr;
 	PxCooking*					px_cooking = nullptr;
@@ -106,5 +108,4 @@ private:
 	PxPvd*						px_pvd = nullptr;
 
 	PxControllerManager*		controllers_manager = nullptr;
-
 };

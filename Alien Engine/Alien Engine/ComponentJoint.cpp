@@ -23,6 +23,13 @@ void ComponentJoint::SetConnectedBody(RigidBody* body)
 		joint->setActors(physics->actor, (body) ? body->physics->actor : nullptr);
 }
 
+void ComponentJoint::SetAnchor(float3 _anchor)
+{
+	anchor = _anchor;
+	if (joint)
+		joint->setLocalPose(PxJointActorIndex::eACTOR0, PxTransform(F3_TO_PXVEC3(anchor)));
+}
+
 void ComponentJoint::CreateJoint()
 {
 	DestroyJoint();
@@ -33,7 +40,8 @@ void ComponentJoint::CreateJoint()
 
 	// Setup Joint -------------------------
 
-	SetConnectedBody( (connected_body) ? connected_body : nullptr);
+	SetConnectedBody(connected_body);
+	SetAnchor(anchor);
 	SetupSpecificJoint();
 }
 
@@ -81,16 +89,17 @@ bool ComponentJoint::DrawInspector()
 					ComponentRigidBody* rb = obj->GetComponent<ComponentRigidBody>();
 					if (rb != nullptr && rb->go != go)
 					{
-						SetConnectedBody(connected_body);
+						SetConnectedBody(rb);
 					}
 				}
 			}
 			ImGui::EndDragDropTarget();
 		}
-		ImGui::Spacing();
 
+		float3 c_anchor = anchor;
+		ImGui::Title("Anchor"); if (ImGui::DragFloat3("##anchor", c_anchor.ptr(), 0.05f)) { SetAnchor(c_anchor); }
 		DrawInspectorJoint();
-
+		ImGui::Spacing();
 	}
 
 	ImGui::PopID();
@@ -137,12 +146,12 @@ void ComponentJoint::SaveComponent(JSONArraypack* to_save)
 void ComponentJoint::LoadComponent(JSONArraypack* to_load)
 {
 	u64 connected_id = std::stoull(to_load->GetString("ConnectedID", "0"));
-	anchor = to_load->GetFloat3("Anchor");
+	SetAnchor(to_load->GetFloat3("Anchor"));
 
 	if (connected_id != 0)
 	{
 		GameObject*  rb_go = App->objects->GetGameObjectByID(connected_id);
-		if (rb_go)
-			SetConnectedBody(rb_go->GetComponent<RigidBody>());
+		if (rb_go) 
+			SetConnectedBody(rb_go->GetComponent<ComponentRigidBody>());
 	}
 }

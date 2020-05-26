@@ -30,6 +30,7 @@ void ComponentConfigurableJoint::SetupSpecificJoint()
 
 void ComponentConfigurableJoint::DrawInspectorJoint()
 {
+
 }
 
 void ComponentConfigurableJoint::SaveComponentJoint(JSONArraypack* to_save)
