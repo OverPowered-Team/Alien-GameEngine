@@ -37,10 +37,15 @@ public:
 
 	//* ---------- SCENE QUERIES ------------*//
 
-	bool Raycast(float3 origin, float3 unit_dir, float max_distance) const;
-	bool Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit) const;
-	const std::vector<RaycastHit> RaycastAll(float3 origin, float3 unitDir, float maxDistance) const;
-	const std::vector<ComponentCollider*> OverlapSphere(float3 center, float radius) const;
+	bool Raycast(float3 origin, float3 unit_dir, float max_distance, int layer_mask) const;
+	bool Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit, int layer_mask) const;
+	const std::vector<RaycastHit> RaycastAll(float3 origin, float3 unitDir, float maxDistance, int layer_mask) const;
+
+	bool CapsuleCast(float4x4 trans, float height, float radius, float3 unit_dir, float max_dist, int layer_mask) const;
+	bool CapsuleCast(float4x4 trans, float height, float radius, float3 unit_dir, float max_dist, RaycastHit& hit, int layer_mask) const;
+	const vector<RaycastHit>& CapsuleCastAll(float4x4 trans, float height, float radius, float3 unit_dir, float max_dist, int layer_mask) const;
+
+	const std::vector<ComponentCollider*> OverlapSphere(float3 center, float radius, int layer_mask) const;
 
 private:
 
@@ -74,6 +79,8 @@ public:
 	CollisionLayers	layers;
 	bool debug_physics = false;
 	int	 layer_mask = -1;
+	int  multiple_hit = false;
+
 private:
 
 	float accumulator = 0.f;

@@ -151,6 +151,7 @@ class RaycastHit {
 	friend class ModulePhysX;
 private:
 	void SetRaycastHit(const PxRaycastHit& _hit);
+	void SetRaycastHit(const PxSweepHit& _hit);
 public:
 	ComponentCollider*		collider = nullptr;
 	ComponentRigidBody*		rigid_body = nullptr;
