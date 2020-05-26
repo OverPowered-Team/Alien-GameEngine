@@ -28,7 +28,7 @@ public:
 
 private:
 	uint* indices = nullptr;
-	uint num_indices;
+	uint num_indices = 0;
 	int index_id;
 	uint chunck_memory = 0;
 	AABB bbox;

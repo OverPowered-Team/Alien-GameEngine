@@ -15,6 +15,7 @@ Chunk::Chunk(ComponentTerrain* owner) : owner(owner)
 Chunk::~Chunk()
 {
 	glDeleteBuffers(1, (GLuint*)&index_id);
+	index_id = 0;
 }
 
 

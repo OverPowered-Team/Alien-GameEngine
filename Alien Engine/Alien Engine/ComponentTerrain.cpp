@@ -140,8 +140,93 @@ float2 ComponentTerrain::GetHeightMapSize()
 
 void ComponentTerrain::GenerateHeightMap(const char* path, int iterations)
 {
-	SetPixelData(path);
-	GaussianBlur(iterations);
+	//SetPixelData(path);
+	//GaussianBlur(iterations);
+
+	ILuint new_image_id = 0;
+	ilGenImages(1, &new_image_id);
+	ilBindImage(new_image_id);
+
+	ilutRenderer(ILUT_OPENGL);
+
+	if (ilutGLLoadImage((char*)path))
+	{
+
+		m_Width = ilGetInteger(IL_IMAGE_WIDTH);
+		m_Height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+		int w = m_Width;
+		int h = m_Height;
+
+		terrainDataHeight = new float[m_Width * m_Height];
+		terrainData = new float[m_Width * m_Height];
+		BYTE* tmp = new BYTE[m_Width * m_Height * 3];
+		ilCopyPixels(0, 0, 0, m_Width, m_Height, 1, IL_RGB, IL_UNSIGNED_BYTE, tmp);
+
+		float* R = new float[m_Width * m_Height];
+		float* G = new float[m_Width * m_Height];
+		float* B = new float[m_Width * m_Height];
+
+		for (int n = 0; n < m_Width * m_Height; n++)
+		{
+			R[n] = tmp[n * 3];
+			G[n] = tmp[n * 3 + 1];
+			B[n] = tmp[n * 3 + 2];
+		}
+	
+		float* buf = new float[m_Width * m_Height];
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+				buf[y * w + x] = (max(max(R[y * w + x], G[y * w + x]), B[y * w + x]));
+			}
+		}
+		float value = 0.0f;
+		int n = 0;
+
+		//Iterating all image pixels
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+
+				value = 0.0f;
+				n = 0;
+				//Iterating all nearby pixels and checking they actually exist in the image
+				for (int _y = y - 1; _y <= y + 1; _y++)
+				{
+					if (_y > 0 && _y < h)
+					{
+						for (int _x = x - 1; _x <= x + 1; _x++)
+						{
+							if (_x > 0 && _x < w)
+							{
+								n++;
+								value += buf[_y * w + _x];
+							}
+						}
+					}
+				}
+				value /= n;
+				value /= 255;
+				terrainData[y * w + x] = value;
+				terrainDataHeight[y * w + x] = value * maxHeight;
+			}
+		}
+
+		delete[] R;
+		delete[] G;
+		delete[] B;
+
+		delete[] buf;
+		delete[] tmp;
+
+		ilBindImage(0);
+		ilDeleteImages(1, &new_image_id);
+	}
+
+
 	AllocateHeightMapBuffer();
 }
 
@@ -231,18 +316,18 @@ void ComponentTerrain::GaussianBlur(int iterations)
 
 	}
 
-	// Raw terrain data
-	terrainData = new float3[m_Width * m_Height];
-	terrainDataHeight = new float3[m_Width * m_Height];
+	//// Raw terrain data
+	//terrainData = new float3[m_Width * m_Height];
+	//terrainDataHeight = new float3[m_Width * m_Height];
 
-	for (int y = 0; y < m_Height; y++)
-	{
-		for (int x = 0; x < m_Width; x++)
-		{
-			terrainData[y * m_Width + x] = m_data.at(x) / 255;
-			terrainDataHeight[y * m_Width + x] = (m_data.at(x) / 255) * maxHeight;
-		}
-	}
+	//for (int y = 0; y < m_Height; y++)
+	//{
+	//	for (int x = 0; x < m_Width; x++)
+	//	{
+	//		terrainData[y * m_Width + x] = m_data.at(x)/255;
+	//		terrainDataHeight[y * m_Width + x] = (m_data.at(x)/255) * maxHeight;
+	//	}
+	//}
 }
 
 void ComponentTerrain::GenerateTerrainMesh()
@@ -262,13 +347,13 @@ void ComponentTerrain::GenerateVertices()
 	int h = m_Height;
 
 	num_vertices = w * h;
-
+	vertices = new float3[num_vertices];
 
 	for (int z = 0; z < h; z++)
 	{
 		for (int x = 0; x < w; x++)
 		{
-			vertices[z * w + x] = float3(x - w / 2, terrainDataHeight[z * w + x].y * maxHeight, z - h / 2);
+			vertices[z * w + x] = float3(x - w / 2, terrainData[z * w + x] * maxHeight, z - h / 2);
 		}
 	}
 
@@ -286,26 +371,27 @@ void ComponentTerrain::GenerateIndices()
 		{
 			int chunkX = floor(x / CHUNK_W);
 			int chunkZ = floor(z / CHUNK_H);
+			
+				std::map<int, std::map<int, Chunk>>::iterator iter_z = chunks.find(chunkZ);
+				if (iter_z == chunks.end())
+					iter_z = chunks.insert(std::pair<int, std::map<int, Chunk>>(chunkZ, std::map<int, Chunk>())).first;
 
-			std::map<int, std::map<int, Chunk>>::iterator iter_z = chunks.find(chunkZ);
-			if (iter_z == chunks.end())
-				iter_z = chunks.insert(std::pair<int, std::map<int, Chunk>>(chunkZ, std::map<int, Chunk>())).first;
-
-			std::map<int, Chunk>::iterator iter_x = iter_z->second.find(chunkX);
-			if (iter_x == iter_z->second.end())
-			{
-				Chunk new_chunk = Chunk(this);
-				iter_x = iter_z->second.insert(std::pair<int, Chunk>(chunkX, new_chunk)).first;
-			}
-			//First triangle
-			iter_x->second.AllocateIndex((z + 1) * w + x);
-			iter_x->second.AllocateIndex(z * w + x + 1);
-			iter_x->second.AllocateIndex(z * w + x);
-
-			//Second triangle
-			iter_x->second.AllocateIndex((z * w + x + 1));
-			iter_x->second.AllocateIndex((z + 1) * w + x);
-			iter_x->second.AllocateIndex((z + 1) * w + x + 1);
+				std::map<int, Chunk>::iterator iter_x = iter_z->second.find(chunkX);
+				if (iter_x == iter_z->second.end())
+				{
+					Chunk new_chunk = Chunk(this);
+					iter_x = iter_z->second.insert(std::pair<int, Chunk>(chunkX, new_chunk)).first;
+				}
+				//First triangle
+				iter_x->second.AllocateIndex(((z + 1) * w + x));
+				iter_x->second.AllocateIndex((z * w + x + 1));
+				iter_x->second.AllocateIndex((z * w + x));
+			
+				//Second triangle
+				iter_x->second.AllocateIndex((z * w + x + 1));
+				iter_x->second.AllocateIndex(((z + 1) * w + x));
+				iter_x->second.AllocateIndex(((z + 1) * w + x + 1));
+			
 		}
 	}
 
@@ -389,26 +475,25 @@ void ComponentTerrain::GenerateTexCoords()
 	int h = m_Height;
 
 	num_uvs = w * h;
-	scaled_uvs = new float2[num_uvs];
+	scaled_uvs = new float3[num_uvs];
 
 	for (int z = 0; z < h; z++)
 	{
 		for (int x = 0; x < w; x++)
 		{
-			float uv_x = ((float)x / (float)w) / texScale;
-			float uv_y = 1 - (((float)z / (float)h) / texScale);
-			scaled_uvs[z * w + x] = float2(uv_x, uv_y);
-
+			float uv_x = ((float)x / (float)w);
+			float uv_y = 1 - (((float)z / (float)h));
+			scaled_uvs[z * w + x] = float3(uv_x, uv_y, 1.0f);
 		}
 	}
 
-	uvs = new float2[num_uvs];
+	uvs = new float3[num_uvs];
 
 	for (int z = 0; z < h - 1; z++)
 	{
 		for (int x = 0; x < w - 1; x++)
 		{
-			uvs[z * w + x] = float2(((float)x / (float)w), (1 - ((float)z / (float)h)));
+			uvs[z * w + x] = float3(((float)x / (float)w), (1 - ((float)z / (float)h)), 1.0f);
 		}
 	}
 }
@@ -424,17 +509,17 @@ void ComponentTerrain::AllocateMeshBuffers()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * m_Width * m_Height, vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 
 	//SCALED UV BUFFERS
 	if (scaled_uvs != nullptr)
 	{
-		glGenBuffers(1, (GLuint*) & (scaled_uv_id));
+		glGenBuffers(1, &(scaled_uv_id));
 		glBindBuffer(GL_ARRAY_BUFFER, scaled_uv_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, scaled_uvs, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * m_Width * m_Height, scaled_uvs, GL_STATIC_DRAW);
 	
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);										
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);										
 		glEnableVertexAttribArray(1);
 		delete[] scaled_uvs;
 	}
@@ -450,17 +535,17 @@ void ComponentTerrain::AllocateMeshBuffers()
 		glEnableVertexAttribArray(2);
 	}
 
-	//UV BUFFERS
-	if (uvs != nullptr)
-	{
-		glGenBuffers(1, (GLuint*) & (uv_id));
-		glBindBuffer(GL_ARRAY_BUFFER, uv_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, uvs, GL_STATIC_DRAW);
-	
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(3);
-		delete[] uvs;
-	}
+	////UV BUFFERS
+	//if (uvs != nullptr)
+	//{
+	//	glGenBuffers(1, (GLuint*) & (uv_id));
+	//	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
+	//	glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * m_Width * m_Height, uvs, GL_STATIC_DRAW);
+	//
+	//	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	//	glEnableVertexAttribArray(3);
+	//	delete[] uvs;
+	//}
 
 
 	//INDEX BUFFERS
@@ -471,6 +556,11 @@ void ComponentTerrain::AllocateMeshBuffers()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	//glDisableVertexAttribArray(3);
 
 }
 
@@ -604,7 +694,7 @@ void ComponentTerrain::HeighMapMode()
 		if (ImGui::Button("Create Blur") && heigthmapTexture != nullptr)
 		{
 			std::string lib_path = heigthmapTexture->GetLibraryPath();
-			GenerateHeightMap(lib_path.data(), 10);
+			GenerateHeightMap(lib_path.data(), 2);
 		}
 
 

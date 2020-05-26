@@ -85,8 +85,8 @@ public:
 	uint heightmap_id = 0;
 
 
-	float3* terrainData = nullptr;
-	float3* terrainDataHeight = nullptr;
+	float* terrainData = nullptr;
+	float* terrainDataHeight = nullptr;
 	float maxHeight = 100.0f;
 
 	float texScale = 0.03f;
@@ -105,8 +105,8 @@ public:
 	uint normals_id;
 
 	//texCoords data
-	float2* uvs = nullptr;
-	float2* scaled_uvs = nullptr;
+	float3* uvs = nullptr;
+	float3* scaled_uvs = nullptr;
 	uint num_uvs;
 	uint uv_id;
 	uint scaled_uv_id;

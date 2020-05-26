@@ -52,6 +52,8 @@
 #include "ModuleUI.h"
 #include "PanelScene.h"
 #include "Alien.h"
+#include "ComponentTerrain.h"
+#include "Chunk.h"
 
 #include "Optick/include/optick.h"
 
@@ -271,6 +273,31 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
 			meshes_to_draw_transparency->push_back({ distance, this });
+		}
+
+		ComponentTerrain* terrain = GetComponent<ComponentTerrain>();
+		if (terrain != nullptr && !terrain->chunks.empty())
+		{
+			for (std::map<int, std::map<int, Chunk>>::iterator z = terrain->chunks.begin(); z != terrain->chunks.end(); z++)
+			{
+				for (std::map<int, Chunk>::iterator x = z->second.begin(); x != z->second.end(); x++)
+				{
+					if (App->renderer3D->IsInsideFrustum(camera, x->second.GetAABB()))
+					{
+						ComponentMaterial* material = GetComponent<ComponentMaterial>();
+						if (material != nullptr)
+						{
+							float3 obj_pos = transform->GetGlobalPosition();
+							float distance = camera->frustum.pos.Distance(obj_pos);
+
+							if (material->IsTransparent())
+								meshes_to_draw_transparency->push_back({ distance, this });
+							else
+								meshes_to_draw->push_back({ distance, this });
+						}
+					}
+				}
+			}
 		}
 
 		dynamic_objects->push_back(this);
