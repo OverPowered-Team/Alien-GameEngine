@@ -79,5 +79,7 @@ private:
 	bool print_icon = true;
 
 	uint renderer_id = 0;
+
+public:
 	DirLightProperties light_props;
 };

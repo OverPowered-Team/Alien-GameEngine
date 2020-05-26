@@ -54,5 +54,6 @@ private:
 
 	uint renderer_id = 0;
 
+public: 
 	PointLightProperties light_props;
 };

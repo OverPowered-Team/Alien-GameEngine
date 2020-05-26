@@ -57,5 +57,6 @@ private:
 
 	uint renderer_id = 0;
 
+public:
 	SpotLightProperties light_props;
 };
