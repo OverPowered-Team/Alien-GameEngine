@@ -175,10 +175,12 @@
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h" />
     <ClInclude Include="player_example.h" />
+    <ClInclude Include="TestFollowCurve.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Macros\dllmain.cpp" />
     <ClCompile Include="player_example.cpp" />
+    <ClCompile Include="TestFollowCurve.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
