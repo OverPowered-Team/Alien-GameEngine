@@ -402,27 +402,22 @@ void ComponentUI::Rotate()
 
 bool ComponentUI::CheckIfApplyBillboard(GameObject* parent)
 {
-	if (parent != nullptr)
-	{
-		if (canvas != nullptr && canvas->game_object_attached != nullptr && canvas->isWorld && parent == canvas->game_object_attached)
-			return true;
 
+	GameObject* to_look = parent;
+	while (to_look != nullptr) {
+
+		if (canvas != nullptr && canvas->game_object_attached != nullptr && canvas->isWorld && to_look == canvas->game_object_attached)
+			return true;
 
 		if (parent->GetComponent<ComponentUI>() != nullptr)
 			return false;
 
-		else
-		{
-			if (CheckIfApplyBillboard(parent->parent))
-				return true;
 
-			else
-				return false;
-		}
-
-
+		to_look = to_look->parent;
+	
 	}
 
+	return false;
 	
 }
 
