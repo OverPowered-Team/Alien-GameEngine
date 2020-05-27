@@ -1,13 +1,24 @@
+#include "Application.h"
 #include "Trail.h"
 #include "ComponentTransform.h"
 #include "MathGeoLib/include/Geometry/OBB.h"
 #include "ComponentTrail.h"
+#include "ModuleResources.h"
+#include "imgui/imgui_internal.h"
+
+
 Trail::Trail()
 {
 }
 
 Trail::Trail(ComponentTrail* comp, GameObject* owner) : owner(owner), trail_comp(comp)
 {
+	default_material = new ResourceMaterial();
+	default_material->SetName("Trail Material");
+	
+	SetMaterial(default_material);
+	material->SetShader(App->resources->trail_shader);
+	
 }
 
 Trail::~Trail()
@@ -16,6 +27,18 @@ Trail::~Trail()
 	{
 		delete (*iter);
 		(*iter) = nullptr;
+	}
+
+	if (material != nullptr) {
+
+		material->DecreaseReferences();
+		material = nullptr;
+	}
+
+	if (default_material) {
+		default_material->DecreaseReferences();
+		delete default_material;
+		default_material = nullptr;
 	}
 }
 
@@ -126,8 +149,41 @@ bool Trail::PostUpdate(float dt)
 
 bool Trail::Draw()
 {
-	return false;
+	
+	
+	
+	
+	
+	
+	
+	
+	return true;
+
+
 }
+
+
+void Trail::SetMaterial(ResourceMaterial* mat)
+{
+
+	if (mat == nullptr)
+		return;
+
+	if (material != nullptr)
+	{
+		material->DecreaseReferences();
+		//material = nullptr;
+	}
+
+	material = mat;
+	material->IncreaseReferences();
+}
+
+void Trail::RemoveMaterial()
+{
+	SetMaterial(default_material);
+}
+
 
 void Trail::RearrangeVertex(Trail* trail, std::list<TrailNode*>::iterator& curr, std::list<TrailNode*>::iterator& next, float& currUV, float& nextUV, math::float3& originHigh, math::float3& originLow, math::float3& destinationHigh, math::float3& destinationLow)
 {

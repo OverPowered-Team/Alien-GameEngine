@@ -9,7 +9,7 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 
 #include <vector>
-
+#include "ResourceMaterial.h"
 #define MAX_TRAIL_NODE 500
 
 struct TrailNode
@@ -56,7 +56,8 @@ private:
 
 	void RearrangeVertex(Trail* trail, std::list<TrailNode*>::iterator& curr, std::list<TrailNode*>::iterator& next, float& currUV, float& nextUV, math::float3& originHigh, math::float3& originLow, math::float3& destinationHigh, math::float3& destinationLow);
 	void GetOriginAndDest(Trail* trail, float& origin, std::list<TrailNode*>::iterator& curr, float& dest, std::list<TrailNode*>::iterator& next);
-	
+	void SetMaterial(ResourceMaterial* mat);
+	void RemoveMaterial();
 
 public:
 	void Start();
@@ -83,6 +84,9 @@ public:
 
 	GameObject* owner = nullptr;
 	ComponentTrail* trail_comp = nullptr;
+
+	ResourceMaterial* material = nullptr;
+	ResourceMaterial* default_material = nullptr;
 
 	// Vertex Array Object
 	uint vao = 0u;
