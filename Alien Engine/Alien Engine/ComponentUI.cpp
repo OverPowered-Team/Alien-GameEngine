@@ -355,7 +355,8 @@ void ComponentUI::Orientate(ComponentCamera* camera)
 	{
 		if (camera == nullptr)
 			return;
-		if (game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+
+		if (CheckIfApplyBillboard(game_object_attached->parent))
 		{
 
 			switch (canvas->bbtype)
@@ -386,14 +387,43 @@ void ComponentUI::Orientate(ComponentCamera* camera)
 
 void ComponentUI::Rotate()
 {
-	if (canvas != nullptr && canvas->isWorld && game_object_attached->parent != nullptr && game_object_attached->parent == canvas->game_object_attached)
+	if (canvas != nullptr && canvas->isWorld)
 	{
-		rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
-		rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
-		rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
+		if (CheckIfApplyBillboard(game_object_attached->parent))
+		{
+			rotation = rotation.Mul(Quat::RotateX(math::DegToRad(angle3D.x)));
+			rotation = rotation.Mul(Quat::RotateY(math::DegToRad(angle3D.y)));
+			rotation = rotation.Mul(Quat::RotateZ(math::DegToRad(angle3D.z)));
 
-		game_object_attached->transform->SetGlobalRotation(rotation);
+			game_object_attached->transform->SetGlobalRotation(rotation);
+		}
 	}
+}
+
+bool ComponentUI::CheckIfApplyBillboard(GameObject* parent)
+{
+	if (parent != nullptr)
+	{
+		if (canvas != nullptr && canvas->game_object_attached != nullptr && canvas->isWorld && parent == canvas->game_object_attached)
+			return true;
+
+
+		if (parent->GetComponent<ComponentUI>() != nullptr)
+			return false;
+
+		else
+		{
+			if (CheckIfApplyBillboard(parent->parent))
+				return true;
+
+			else
+				return false;
+		}
+
+
+	}
+
+	
 }
 
 void ComponentUI::SetSize(float width, float height)
