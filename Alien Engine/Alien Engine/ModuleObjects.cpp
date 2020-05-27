@@ -33,6 +33,7 @@
 #include "ModuleFileSystem.h"
 #include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentTrail.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -2721,6 +2722,13 @@ void ModuleObjects::CreateEffect(ComponentType type)
 		object->AddComponent(comp);
 		break;
 	}
+	case ComponentType::TRAIL:
+	{
+		object->SetName("Trail");
+		comp = new ComponentTrail(object);
+		object->AddComponent(comp);
+		break;
+	}
 	default:
 		break;
 	}
@@ -2728,6 +2736,8 @@ void ModuleObjects::CreateEffect(ComponentType type)
 	SetNewSelectedObject(object, false);
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
+
+
 
 uint ModuleObjects::GetNumOfPointLights() const
 {
