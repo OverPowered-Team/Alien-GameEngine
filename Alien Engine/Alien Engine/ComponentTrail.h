@@ -44,7 +44,11 @@ private:
 	void SaveComponent(JSONArraypack* to_save) override;
 	void LoadComponent(JSONArraypack* to_load) override;
 
-	
+public:
+	void Start();
+	void Stop();
+	math::OBB GetOBBFromObject();
+
 private:
 	Trail* trail = nullptr;
 	

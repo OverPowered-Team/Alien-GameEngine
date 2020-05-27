@@ -7,7 +7,7 @@
 ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::TRAIL;
-	trail = new Trail();
+	trail = new Trail(this, parent);
 	
 #ifndef GAME_VERSION
 	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentTrail::DrawScene, this));
@@ -28,6 +28,7 @@ void ComponentTrail::Update()
 
 void ComponentTrail::PostUpdate()
 {
+
 }
 
 void ComponentTrail::DrawScene()
@@ -62,7 +63,7 @@ void ComponentTrail::DebugDraw()
 
 void ComponentTrail::Draw()
 {
-	
+	trail->Draw();
 }
 
 void ComponentTrail::OnEnable()
@@ -102,4 +103,19 @@ void ComponentTrail::SaveComponent(JSONArraypack* to_save)
 
 void ComponentTrail::LoadComponent(JSONArraypack* to_load)
 {
+}
+
+void ComponentTrail::Start()
+{
+	trail->Start();
+}
+
+void ComponentTrail::Stop()
+{
+	trail->Stop();
+}
+
+math::OBB ComponentTrail::GetOBBFromObject()
+{
+	return game_object_attached->GetGlobalOBB();
 }
