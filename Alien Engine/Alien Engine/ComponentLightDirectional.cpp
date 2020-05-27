@@ -170,15 +170,15 @@ void ComponentLightDirectional::CalculateBakedViewMatrix()
 	float3 near_light_dir = float3((near_position.x - light_props.direction.x * distance_far_plane), (near_position.y - light_props.direction.y * distance_far_plane), (near_position.z - light_props.direction.z * distance_far_plane));
 
 	//calculate ortographic light view matrix
-	glm::mat4 centerviewMat = glm::lookAt(glm::vec3((float)center_pos.x, (float)center_pos.y, (float)center_pos.z),
+	glm::mat4 centerviewMat = glm::lookAt(glm::vec3((float)center_pos.x, (float)center_pos.y, (float)-center_pos.z),
 		glm::vec3((float)center_light_dir.x, (float)center_light_dir.y, (float)(-center_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
-	glm::mat4 farviewMat = glm::lookAt(glm::vec3((float)far_position.x, (float)far_position.y, (float)far_position.z),
+	glm::mat4 farviewMat = glm::lookAt(glm::vec3((float)far_position.x, (float)far_position.y, (float)-far_position.z),
 		glm::vec3((float)far_light_dir.x, (float)far_light_dir.y, (float)(-far_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
-	glm::mat4 nearviewMat = glm::lookAt(glm::vec3((float)near_position.x, (float)near_position.y, (float)near_position.z),
+	glm::mat4 nearviewMat = glm::lookAt(glm::vec3((float)near_position.x, (float)near_position.y, (float)-near_position.z),
 		glm::vec3((float)near_light_dir.x, (float)near_light_dir.y, (float)(-near_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
