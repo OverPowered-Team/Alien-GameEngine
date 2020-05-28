@@ -1,0 +1,31 @@
+{
+    "Tags": [
+        {
+            "Tag": "Player"
+        },
+        {
+            "Tag": "Enemy"
+        },
+        {
+            "Tag": "PlayerAttack"
+        },
+        {
+            "Tag": "EnemyAttack"
+        },
+        {
+            "Tag": "RockEnd"
+        },
+        {
+            "Tag": "VagoneteCover"
+        },
+        {
+            "Tag": "VagoneteDirection"
+        },
+        {
+            "Tag": "VagoneteDie"
+        },
+        {
+            "Tag": "VagoneteObstacle"
+        }
+    ]
+}

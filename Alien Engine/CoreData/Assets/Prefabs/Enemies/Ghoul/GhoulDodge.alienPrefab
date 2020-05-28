@@ -1,0 +1,1782 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "GhoulDodge",
+                "FamilyNumber": 1,
+                "ID": "3373556350703688792",
+                "ParentID": "15093234233693103333",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "Enemy",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            43.966041564941406,
+                            1.9073486328125e-06,
+                            29.447235107421875
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            0.12999999523162842,
+                            0.12999999523162842,
+                            0.12999999523162842
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18409658295570206143"
+                    },
+                    {
+                        "Type": 14,
+                        "ID": "14201825188946661332",
+                        "ControllerID": "13897926906647891719",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 13,
+                        "SlopeLimit": 20,
+                        "StepOffset": 0.10000000149011612,
+                        "SkinWidth": 0.10000000149011612,
+                        "MinMoveDistance": 0.0010000000474974513,
+                        "Center": [
+                            0,
+                            0.36000001430511475,
+                            0
+                        ],
+                        "CharacterRadius": 0.34999999403953552,
+                        "CharacterHeight": 0,
+                        "Gravity": 20,
+                        "ForceGravity": false,
+                        "ForceMove": false,
+                        "CollisionLayer": "Default"
+                    },
+                    {
+                        "ID": "15937091731883011660",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "4070387514",
+                        "Event": "1866221083",
+                        "PlayOnAwake": false
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "16874992152885193631",
+                        "ResourceID": "7177962350892140642",
+                        "DataName": "GhoulDodge",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 14,
+                                "Name": "ghoul_type",
+                                "enumInt": 1
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "state",
+                                "enumInt": -1
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "awake_behaviour",
+                                "enumInt": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "curve_speed",
+                                "float": 0.019999999552965164
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "wander_radius",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "wander_speed",
+                                "float": 2
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "wander_rest_time",
+                                "float": 1
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "wander_precision",
+                                "float": 0.5
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "increase_hit_animation",
+                                "float": 1
+                            },
+                            {
+                                "VarType": 9,
+                                "Name": "awake_curve",
+                                "gameobject": "0"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "2055039685509209223",
+                        "ResourceID": "12801810116240641154",
+                        "DataName": "SteeringAvoid",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 3,
+                                "Name": "avoidRange",
+                                "float": 2.5
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Hip",
+                "FamilyNumber": 2,
+                "ID": "162020087382781546",
+                "ParentID": "3373556350703688792",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.32067400217056274,
+                            5.3299999237060547,
+                            -0.12859000265598297
+                        ],
+                        "Rotation": [
+                            -0.13538056612014771,
+                            -0.29616588354110718,
+                            0.85991257429122925,
+                            -0.3930753767490387
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            0.99999988079071045,
+                            1.0000001192092896
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6683268669008365820"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "16814104661448079963",
+                        "BoneID": "2913713814675351617",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_LegTop",
+                "FamilyNumber": 3,
+                "ID": "1844576055789748647",
+                "ParentID": "162020087382781546",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.4251289367675781,
+                            0.13703300058841705,
+                            0.64678400754928589
+                        ],
+                        "Rotation": [
+                            0.18276990950107574,
+                            -0.36904314160346985,
+                            0.21842394769191742,
+                            0.88469958305358887
+                        ],
+                        "Scale": [
+                            0.99999958276748657,
+                            0.99999964237213135,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5817512446858004927"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "8483082417925160712",
+                        "BoneID": "1638274380347161505",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_Knee1",
+                "FamilyNumber": 4,
+                "ID": "7749851336238876339",
+                "ParentID": "1844576055789748647",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.1029970645904541,
+                            -0.028380999341607094,
+                            0.058359000831842422
+                        ],
+                        "Rotation": [
+                            -0.072855055332183838,
+                            0.64601439237594604,
+                            0.085152216255664825,
+                            0.7550540566444397
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            0.9999995231628418,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7144414599979486657"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "4320585050569873753",
+                        "BoneID": "9744151601818662119",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_Knee2",
+                "FamilyNumber": 5,
+                "ID": "11423855775562123506",
+                "ParentID": "7749851336238876339",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.5711009502410889,
+                            0.084037996828556061,
+                            -0.065676003694534302
+                        ],
+                        "Rotation": [
+                            0.01330453809350729,
+                            -0.72447258234024048,
+                            -0.027705838903784752,
+                            0.68861812353134155
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1.0000002384185791,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3887831574112398947"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "8323335169169874171",
+                        "BoneID": "18402080307887118558",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_Ankle",
+                "FamilyNumber": 6,
+                "ID": "8991903534263387989",
+                "ParentID": "11423855775562123506",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.444890022277832,
+                            0.095549002289772034,
+                            0.11875300109386444
+                        ],
+                        "Rotation": [
+                            0.005995193962007761,
+                            -0.19497637450695038,
+                            0.030144045129418373,
+                            0.98032629489898682
+                        ],
+                        "Scale": [
+                            0.99999982118606567,
+                            1.0000002384185791,
+                            1.0000005960464478
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16212616498453965251"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "6053651260249751014",
+                        "BoneID": "11665932736378389288",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_Feet",
+                "FamilyNumber": 7,
+                "ID": "7817920001365924830",
+                "ParentID": "8991903534263387989",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.15375499427318573,
+                            0.00095100002363324165,
+                            0.1467449963092804
+                        ],
+                        "Rotation": [
+                            0,
+                            -0.23981024324893951,
+                            0,
+                            0.97081977128982544
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            1,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17987479987193425254"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "14251422570824046658",
+                        "BoneID": "8582459034202143748",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RB_FeetTip",
+                "FamilyNumber": 8,
+                "ID": "5574077994709215771",
+                "ParentID": "7817920001365924830",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.24921999871730804,
+                            -0.0013620000099763274,
+                            -0.0018029999919235706
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17010400662080358723"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "8597986904041983686",
+                        "BoneID": "2052285207262919382",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_LegTop",
+                "FamilyNumber": 3,
+                "ID": "10989707228754203602",
+                "ParentID": "162020087382781546",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.34041899442672729,
+                            1.3906440734863281,
+                            0.64678597450256348
+                        ],
+                        "Rotation": [
+                            0.83587944507598877,
+                            0.41609141230583191,
+                            0.35054540634155273,
+                            -0.07274191826581955
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            0.99999982118606567,
+                            1.0000001192092896
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13135384936246056580"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11553903083991667394",
+                        "BoneID": "8762303715319960354",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_Knee1",
+                "FamilyNumber": 4,
+                "ID": "13050662119492191286",
+                "ParentID": "10989707228754203602",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.0260379314422607,
+                            -0.03863999992609024,
+                            -0.22728799283504486
+                        ],
+                        "Rotation": [
+                            0.80968260765075684,
+                            0.091312602162361145,
+                            0.57606899738311768,
+                            -0.064966484904289246
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1.0000002384185791,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9897956112336184503"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "11056940973523858374",
+                        "BoneID": "2316084800078199587",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_Knee2",
+                "FamilyNumber": 5,
+                "ID": "3640541475281739582",
+                "ParentID": "13050662119492191286",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.4104650020599365,
+                            0.096514999866485596,
+                            -0.17400600016117096
+                        ],
+                        "Rotation": [
+                            -0.013304560445249081,
+                            -0.72447359561920166,
+                            0.027705179527401924,
+                            0.6886170506477356
+                        ],
+                        "Scale": [
+                            0.99999946355819702,
+                            1.0000002384185791,
+                            1.0000001192092896
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3068895611007604995"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "13169076143691280262",
+                        "BoneID": "13682727144850352470",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_Ankle",
+                "FamilyNumber": 6,
+                "ID": "2323830238176891371",
+                "ParentID": "3640541475281739582",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.5106229782104492,
+                            -0.078725002706050873,
+                            -0.11307399719953537
+                        ],
+                        "Rotation": [
+                            0.0015529670054093003,
+                            0.050506852567195892,
+                            -0.030695188790559769,
+                            0.99825066328048706
+                        ],
+                        "Scale": [
+                            1.0000002384185791,
+                            1.0000002384185791,
+                            0.9999997615814209
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3551955900840488103"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "621398989359377287",
+                        "BoneID": "1456435070940629959",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_Feet",
+                "FamilyNumber": 7,
+                "ID": "6766984165339782259",
+                "ParentID": "2323830238176891371",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.18841299414634705,
+                            -0.0043170000426471233,
+                            0.14751599729061127
+                        ],
+                        "Rotation": [
+                            0,
+                            -0.46978679299354553,
+                            0,
+                            0.88277995586395264
+                        ],
+                        "Scale": [
+                            1.0000003576278687,
+                            1,
+                            1.0000003576278687
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6689620493110529595"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "4150435669306459310",
+                        "BoneID": "91956341566045829",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LB_FeetTip",
+                "FamilyNumber": 8,
+                "ID": "6324297772797573194",
+                "ParentID": "6766984165339782259",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.26665401458740234,
+                            0.0061209998093545437,
+                            -0.027348000556230545
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "1504861610578345679"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3044970925584922179",
+                        "BoneID": "3520065537233881714",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Hip2",
+                "FamilyNumber": 3,
+                "ID": "16495591064098030381",
+                "ParentID": "162020087382781546",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.29718899726867676,
+                            -0.32314398884773254,
+                            -0.3077009916305542
+                        ],
+                        "Rotation": [
+                            0.0072031854651868343,
+                            0.95940202474594116,
+                            -0.17858260869979858,
+                            -0.21818360686302185
+                        ],
+                        "Scale": [
+                            1,
+                            1.0000001192092896,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15429587755390573815"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1783669764234173648",
+                        "BoneID": "10672694739728114718",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LF_LegTop",
+                "FamilyNumber": 4,
+                "ID": "15989395689909741590",
+                "ParentID": "16495591064098030381",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.2062458992004395,
+                            -0.40364700555801392,
+                            -0.031286001205444336
+                        ],
+                        "Rotation": [
+                            0.43839418888092041,
+                            0.49416044354438782,
+                            -0.2490210086107254,
+                            0.70824038982391357
+                        ],
+                        "Scale": [
+                            1.0000004768371582,
+                            1.0000001192092896,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3528739309967640898"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "15970769644135401402",
+                        "BoneID": "6585023508346121598",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LF_Knee",
+                "FamilyNumber": 5,
+                "ID": "17112221985631706771",
+                "ParentID": "15989395689909741590",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.133497953414917,
+                            0.021958999335765839,
+                            -0.037468001246452332
+                        ],
+                        "Rotation": [
+                            -0.075522758066654205,
+                            -0.43815222382545471,
+                            -0.091087862849235535,
+                            0.8910791277885437
+                        ],
+                        "Scale": [
+                            0.99999982118606567,
+                            1.0000003576278687,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12398620988786390635"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "15318073124495382374",
+                        "BoneID": "8094795343947324732",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LF_Ankle",
+                "FamilyNumber": 6,
+                "ID": "7462873605862130362",
+                "ParentID": "17112221985631706771",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.4649438858032227,
+                            0.11215800046920776,
+                            0.15911799669265747
+                        ],
+                        "Rotation": [
+                            -0.42830869555473328,
+                            0.098980188369750977,
+                            -0.16523167490959167,
+                            0.88286638259887695
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            0.9999997615814209,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7044827059286709279"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1374928364803770855",
+                        "BoneID": "5319585684973754909",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LF_Feet",
+                "FamilyNumber": 7,
+                "ID": "2080821515597351325",
+                "ParentID": "7462873605862130362",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.36132198572158813,
+                            -0.0060580000281333923,
+                            0.12456099689006805
+                        ],
+                        "Rotation": [
+                            -0.0034350424539297819,
+                            -0.12463720142841339,
+                            0.011661806143820286,
+                            0.99212795495986938
+                        ],
+                        "Scale": [
+                            0.99999982118606567,
+                            0.99999958276748657,
+                            0.99999940395355225
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9546087498812319247"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "402482100717452970",
+                        "BoneID": "13044053783533366119",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "LF_FeetTop",
+                "FamilyNumber": 8,
+                "ID": "5294524393208776239",
+                "ParentID": "2080821515597351325",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.59479600191116333,
+                            -0.0031979999039322138,
+                            0.066515997052192688
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10834994221133686860"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1899581787074437520",
+                        "BoneID": "13463265878434986730",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RF_RegTop",
+                "FamilyNumber": 4,
+                "ID": "13597100006339922902",
+                "ParentID": "16495591064098030381",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.30045598745346069,
+                            -2.2654349803924561,
+                            -0.1856749951839447
+                        ],
+                        "Rotation": [
+                            0.68232637643814087,
+                            -0.37470567226409912,
+                            -0.62469780445098877,
+                            -0.061474565416574478
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            0.99999982118606567,
+                            1.0000001192092896
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11905393632866893543"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3722663042893428600",
+                        "BoneID": "473275284679887704",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RF_Knee",
+                "FamilyNumber": 5,
+                "ID": "1162435716902918807",
+                "ParentID": "13597100006339922902",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.9137160778045654,
+                            -0.058550000190734863,
+                            0.32401400804519653
+                        ],
+                        "Rotation": [
+                            0.85400593280792236,
+                            -0.030259167775511742,
+                            -0.50885611772537231,
+                            -0.10403735935688019
+                        ],
+                        "Scale": [
+                            0.99999982118606567,
+                            0.99999982118606567,
+                            0.99999970197677612
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11919795717415169708"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "6925755187011675494",
+                        "BoneID": "2545109499677530364",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RF_Ankle",
+                "FamilyNumber": 6,
+                "ID": "14516336840127432590",
+                "ParentID": "1162435716902918807",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.5664300918579102,
+                            0.036926001310348511,
+                            -0.37217000126838684
+                        ],
+                        "Rotation": [
+                            0.02864917553961277,
+                            -0.34384205937385559,
+                            0.077933736145496368,
+                            0.9353492259979248
+                        ],
+                        "Scale": [
+                            0.99999988079071045,
+                            0.99999988079071045,
+                            1.0000005960464478
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13041352571251261846"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "10933170165380745318",
+                        "BoneID": "16163321066878118979",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RF_Feet",
+                "FamilyNumber": 7,
+                "ID": "18150754800787538779",
+                "ParentID": "14516336840127432590",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.40240299701690674,
+                            0.0020840000361204147,
+                            0.1132270023226738
+                        ],
+                        "Rotation": [
+                            0.0034342850558459759,
+                            -0.12463948875665665,
+                            -0.011659788899123669,
+                            0.99212765693664551
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            1.0000004768371582,
+                            0.99999964237213135
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "229196207482882336"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3044260400787605648",
+                        "BoneID": "16767546060041966282",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "RF_FeetTop",
+                "FamilyNumber": 8,
+                "ID": "14963133672597678816",
+                "ParentID": "18150754800787538779",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.44681501388549805,
+                            -0.018666999414563179,
+                            -0.086892001330852509
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11996383150772804052"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3898124328657465691",
+                        "BoneID": "7885716864322165924",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Neck",
+                "FamilyNumber": 4,
+                "ID": "13011269519648498241",
+                "ParentID": "16495591064098030381",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            2.0043830871582031,
+                            -2.0748128890991211,
+                            -0.15869100391864777
+                        ],
+                        "Rotation": [
+                            -0.033738486468791962,
+                            -0.069327168166637421,
+                            -0.36929452419281006,
+                            0.92610853910446167
+                        ],
+                        "Scale": [
+                            1.0000004768371582,
+                            1.0000005960464478,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5467575261723205067"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "1175459316720522150",
+                        "BoneID": "17383931680239377252",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Head",
+                "FamilyNumber": 5,
+                "ID": "5619027433520549370",
+                "ParentID": "13011269519648498241",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.35510700941085815,
+                            0.0091420002281665802,
+                            0.16679799556732178
+                        ],
+                        "Rotation": [
+                            -0.015253758989274502,
+                            -0.47981786727905273,
+                            -0.023105576634407043,
+                            0.87693119049072266
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15947783461124588149"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "4689474620292569755",
+                        "BoneID": "12779292453864389611",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "HeadTip",
+                "FamilyNumber": 6,
+                "ID": "15485642920360817477",
+                "ParentID": "5619027433520549370",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.84099900722503662,
+                            0.0028649999294430017,
+                            -0.1033490002155304
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "4291751325272919003"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "9986735176538237304",
+                        "BoneID": "5313636721219583998",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Tail1",
+                "FamilyNumber": 3,
+                "ID": "1986928462294382762",
+                "ParentID": "162020087382781546",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.4190160036087036,
+                            1.2882109880447388,
+                            0.58824199438095093
+                        ],
+                        "Rotation": [
+                            -0.042588155716657639,
+                            0.11795484274625778,
+                            0.35580363869667053,
+                            0.92610836029052734
+                        ],
+                        "Scale": [
+                            1.0000004768371582,
+                            0.99999964237213135,
+                            1.0000001192092896
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3739794623018242382"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "17381260631630633876",
+                        "BoneID": "5012277073868192576",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Tail2",
+                "FamilyNumber": 4,
+                "ID": "6413077596441964659",
+                "ParentID": "1986928462294382762",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.81286901235580444,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.00048511978820897639,
+                            0.12783674895763397,
+                            -0.023912589997053146,
+                            0.99150681495666504
+                        ],
+                        "Scale": [
+                            1.0000001192092896,
+                            1.0000001192092896,
+                            0.99999988079071045
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10163875574794895252"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "3690423005495490373",
+                        "BoneID": "9195573028528655897",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Tail3",
+                "FamilyNumber": 5,
+                "ID": "4043757721418118445",
+                "ParentID": "6413077596441964659",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.49310600757598877,
+                            -0.012875000014901161,
+                            0.018449999392032623
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17087573597630092247"
+                    },
+                    {
+                        "Type": 28,
+                        "ID": "4175590318708592638",
+                        "BoneID": "14573187705927509266",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "Ghoul_LP",
+                "FamilyNumber": 2,
+                "ID": "9343105648068870994",
+                "ParentID": "3373556350703688792",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5543864569923291572"
+                    },
+                    {
+                        "Type": 27,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "1855355719429869678",
+                        "MeshID": "4512077240784556087",
+                        "RootBoneID": "162020087382781546",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "8910882651951395924",
+                        "HasMaterial": true,
+                        "MaterialID": "2254293598084166211",
+                        "Enabled": true
+                    }
+                ]
+            },
+            {
+                "Name": "EnemyAttack",
+                "FamilyNumber": 2,
+                "ID": "6698982157536919380",
+                "ParentID": "3373556350703688792",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "EnemyAttack",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.38958671689033508,
+                            4.537257194519043,
+                            4.8330669403076172
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            3.3333332538604736,
+                            3.3333332538604736,
+                            3.3333332538604736
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "7532010941101091015"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": true,
+                        "Bouncing": 0.5,
+                        "StaticFriction": 0.5,
+                        "DynamicFriction": 0.5,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            1,
+                            1.5,
+                            1
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Particle_Positions",
+                "FamilyNumber": 2,
+                "ID": "17411510963004620516",
+                "ParentID": "3373556350703688792",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10097778891681915833"
+                    }
+                ]
+            },
+            {
+                "Name": "Head",
+                "FamilyNumber": 3,
+                "ID": "17987516694741576542",
+                "ParentID": "17411510963004620516",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0.35510700941085815,
+                            0.0091420002281665802,
+                            0.16679799556732178
+                        ],
+                        "Rotation": [
+                            -0.015253758989274502,
+                            -0.47981786727905273,
+                            -0.023105576634407043,
+                            0.87693119049072266
+                        ],
+                        "Scale": [
+                            0.9999997615814209,
+                            1,
+                            1.0000002384185791
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15600382231825340794"
+                    }
+                ]
+            },
+            {
+                "Name": "Body",
+                "FamilyNumber": 3,
+                "ID": "12825707058222034497",
+                "ParentID": "17411510963004620516",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.49633339047431946,
+                            4.8787760734558105,
+                            0.43745994567871094
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "211619629101765782"
+                    }
+                ]
+            },
+            {
+                "Name": "Feet",
+                "FamilyNumber": 3,
+                "ID": "17521473406836359864",
+                "ParentID": "17411510963004620516",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            -0.39788061380386353,
+                            -0.72555828094482422,
+                            -1.1229114532470703
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16404425647234434251"
+                    }
+                ]
+            },
+            {
+                "Name": "Attack",
+                "FamilyNumber": 3,
+                "ID": "16378269975243142366",
+                "ParentID": "17411510963004620516",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "5072567450422952692",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            1.5258505344390869,
+                            4.9519810676574707,
+                            6.6599311828613281
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10410121467812860349"
+                    }
+                ]
+            }
+        ]
+    },
+    "Name": "GhoulDodge"
+}

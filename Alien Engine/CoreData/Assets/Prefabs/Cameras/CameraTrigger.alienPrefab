@@ -1,0 +1,392 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "CameraTrigger",
+                "FamilyNumber": 1,
+                "ID": "6042216925077181274",
+                "ParentID": "14312280510082287296",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "2795543320085999857",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11709490076419000205"
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "17908586545400316670",
+                        "ResourceID": "1885528461117586920",
+                        "DataName": "TriggerCamera",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 11,
+                                "Name": "Previous camera"
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "prev_camera.type",
+                                "enumInt": 0
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Dynamic"
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "prev_camera.distance",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "prev_camera.hor_angle",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "prev_camera.vert_angle",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "prev_camera.transition_time",
+                                "float": 2
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Static & Axis"
+                            },
+                            {
+                                "VarType": 9,
+                                "Name": "prev_camera.to_move",
+                                "gameobject": "0"
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Axis"
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "prev_camera.axis_type",
+                                "enumInt": 0
+                            },
+                            {
+                                "VarType": 12,
+                                "Name": ""
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "Next camera"
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "next_camera.type",
+                                "enumInt": 0
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Dynamic"
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "next_camera.distance",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "next_camera.hor_angle",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "next_camera.vert_angle",
+                                "float": 0
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "next_camera.transition_time",
+                                "float": 2
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Static & Axis"
+                            },
+                            {
+                                "VarType": 9,
+                                "Name": "next_camera.to_move",
+                                "gameobject": "0"
+                            },
+                            {
+                                "VarType": 11,
+                                "Name": "If Axis"
+                            },
+                            {
+                                "VarType": 14,
+                                "Name": "next_camera.axis_type",
+                                "enumInt": 0
+                            },
+                            {
+                                "VarType": 12,
+                                "Name": ""
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Enter",
+                "FamilyNumber": 2,
+                "ID": "8551607362488384680",
+                "ParentID": "6042216925077181274",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "2795543320085999857",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            -5
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12211912475309713659"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": true,
+                        "Bouncing": 0.10000000149011612,
+                        "StaticFriction": 0,
+                        "DynamicFriction": 0,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            10,
+                            10,
+                            2.5
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "422756397858757327",
+                        "ResourceID": "9621870720438282818",
+                        "DataName": "CameraEnterExit",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 0,
+                                "Name": "collider_position",
+                                "int": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Middle",
+                "FamilyNumber": 2,
+                "ID": "9754157667466366195",
+                "ParentID": "6042216925077181274",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "2795543320085999857",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2039349057155576909"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": true,
+                        "Bouncing": 0.10000000149011612,
+                        "StaticFriction": 0,
+                        "DynamicFriction": 0,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            10,
+                            10,
+                            5
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "15911110675144546998",
+                        "ResourceID": "9621870720438282818",
+                        "DataName": "CameraEnterExit",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 0,
+                                "Name": "collider_position",
+                                "int": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Exit",
+                "FamilyNumber": 2,
+                "ID": "1925736455212963450",
+                "ParentID": "6042216925077181274",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "2795543320085999857",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            5
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "15716574534598399054"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": true,
+                        "Bouncing": 0.10000000149011612,
+                        "StaticFriction": 0,
+                        "DynamicFriction": 0,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            10,
+                            10,
+                            2.5
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "16263284890815609382",
+                        "ResourceID": "9621870720438282818",
+                        "DataName": "CameraEnterExit",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 0,
+                                "Name": "collider_position",
+                                "int": 2
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "Name": "CameraTrigger"
+}

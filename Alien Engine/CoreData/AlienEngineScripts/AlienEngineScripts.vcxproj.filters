@@ -1,0 +1,760 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Macros\dllmain.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ReverbZone.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraLimits.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogueManager.cpp">
+      <Filter>Scripts\Dialogues</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogueTriggerSimple.cpp">
+      <Filter>Scripts\Dialogues</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraEnterExit.cpp">
+      <Filter>Scripts\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraLimits.cpp">
+      <Filter>Scripts\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMovement.cpp">
+      <Filter>Scripts\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Stat.cpp">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttacks.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="RelicBehaviour.cpp">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerAudioEvent.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerCamera.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerEnvironment.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerFootsteps.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="BreakableObject.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplodeChildren.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerMusicInteractive.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger_Win.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Subtitle.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="TeleportLevel.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="RockFall.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="RelicManager.cpp">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugManager.cpp">
+      <Filter>Scripts\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPoints_Manager.cpp">
+      <Filter>Scripts\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPoint.cpp">
+      <Filter>Scripts\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Head_Script.cpp">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Scale_Win.cpp">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Spawner.cpp">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="RumblerManager.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressiveFog.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerFog.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Leshen.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="RootLeshen.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowsLeshen.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="RockSpawner.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="RockDownHill.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerRocks.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicController.cpp">
+      <Filter>Scripts\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShake.cpp">
+      <Filter>Scripts\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraUltiMode.cpp">
+      <Filter>Scripts\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Subtitle.cpp">
+      <Filter>Scripts\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="FadeImages.cpp">
+      <Filter>Scripts\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveImages.cpp">
+      <Filter>Scripts\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="InGame_UI.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu_Buttons.cpp">
+      <Filter>Scripts\UI\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseMenu_Buttons.cpp">
+      <Filter>Scripts\UI\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Relic_Notification.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Char_Frame.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="UltiBar.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniGame_Revive.cpp">
+      <Filter>Scripts\Player\Revive</Filter>
+    </ClCompile>
+    <ClCompile Include="NilfgaardSoldier.cpp">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowScript.cpp">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClCompile>
+    <ClCompile Include="NilfSoldierMelee.cpp">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClCompile>
+    <ClCompile Include="NilfSoldierRange.cpp">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClCompile>
+    <ClCompile Include="NilfSoldierShield.cpp">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Ciri.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectsFactory.cpp">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Drowned.cpp">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClCompile>
+    <ClCompile Include="DrownedRange.cpp">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClCompile>
+    <ClCompile Include="Ghoul.cpp">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowsLeshen.cpp">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClCompile>
+    <ClCompile Include="Leshen.cpp">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClCompile>
+    <ClCompile Include="RootLeshen.cpp">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClCompile>
+    <ClCompile Include="GhoulDodge.cpp">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClCompile>
+    <ClCompile Include="GhoulOriginal.cpp">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClCompile>
+    <ClCompile Include="Bonfire.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockerObstacle.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Floating.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DashCollider.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectArea.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerProjectile.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CiriFightController.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="CiriOriginal.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="GhoulDodge.cpp">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClCompile>
+    <ClCompile Include="GhoulOriginal.cpp">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClCompile>
+    <ClCompile Include="Dummie.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="VagoneteMove.cpp">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClCompile>
+    <ClCompile Include="VagoneteDirection.cpp">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClCompile>
+    <ClCompile Include="VagoneteCover.cpp">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Scripts\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticlePool.cpp">
+      <Filter>Scripts\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRelease.cpp">
+      <Filter>Scripts\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="RockThrow.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="MeleeLeshen.cpp">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnEnemy.cpp">
+      <Filter>Scripts\Enemies\Spawn</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnEnemyManager.cpp">
+      <Filter>Scripts\Enemies\Spawn</Filter>
+    </ClCompile>
+    <ClCompile Include="DrownedGrab.cpp">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClCompile>
+    <ClCompile Include="Credits.cpp">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Extra_Menus.cpp">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_EndMenu.cpp">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Ultibar_Particle.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Wagonnete_UI.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="VagoneteObstacle.cpp">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyGroupLogic.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="SteeringAvoid.cpp">
+    </ClCompile>
+    <ClCompile Include="AttackTrigger.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Lifebar.cpp">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial_Intro.cpp">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial_HUD_Triggers.cpp">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial_HUD.cpp">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="Training_Zone.cpp">
+      <Filter>Scripts\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveCameraArroundObject.cpp">
+      <Filter>Scripts\Enemies</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Macros\AlienScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ReverbZone.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogueManager.h">
+      <Filter>Scripts\Dialogues</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogueTriggerSimple.h">
+      <Filter>Scripts\Dialogues</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraEnterExit.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraLimits.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMovement.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectsFunctions.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Stat.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttacks.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="RelicBehaviour.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerAudioEvent.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraLimits.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogueManager.h">
+      <Filter>Scripts\Dialogues</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerCamera.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerEnvironment.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerFootsteps.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="BreakableObject.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplodeChildren.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerMusicInteractive.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger_Win.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Subtitle.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="TeleportLevel.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="RockFall.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="RelicManager.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugManager.h">
+      <Filter>Scripts\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPoints_Manager.h">
+      <Filter>Scripts\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPoint.h">
+      <Filter>Scripts\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Head_Script.h">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Scale_Win.h">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Spawner.h">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Scores_Data.h">
+      <Filter>Scripts\UI\Win Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="RumblerManager.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressiveFog.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerFog.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Leshen.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RootLeshen.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="CrowsLeshen.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RockSpawner.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="RockDownHill.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerRocks.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicController.h">
+      <Filter>Scripts\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraShake.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraUltiMode.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraLimits.h">
+      <Filter>Scripts\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Subtitle.h">
+      <Filter>Scripts\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="FadeImages.h">
+      <Filter>Scripts\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveImages.h">
+      <Filter>Scripts\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="InGame_UI.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu_Buttons.h">
+      <Filter>Scripts\UI\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu_Buttons.h">
+      <Filter>Scripts\UI\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Relic_Notification.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Char_Frame.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="UltiBar.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="NilfgaardSoldier.h">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowScript.h">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClInclude>
+    <ClInclude Include="NilfSoldierMelee.h">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClInclude>
+    <ClInclude Include="NilfSoldierRange.h">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClInclude>
+    <ClInclude Include="NilfSoldierShield.h">
+      <Filter>Scripts\Enemies\NilfgaardSoldier</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Ciri.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectsFactory.h">
+      <Filter>Scripts\Stats and Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniGame_Revive.h">
+      <Filter>Scripts\Player\Revive</Filter>
+    </ClInclude>
+    <ClInclude Include="Drowned.h">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClInclude>
+    <ClInclude Include="DrownedRange.h">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClInclude>
+    <ClInclude Include="Ghoul.h">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClInclude>
+    <ClInclude Include="CrowsLeshen.h">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClInclude>
+    <ClInclude Include="Leshen.h">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClInclude>
+    <ClInclude Include="RootLeshen.h">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClInclude>
+    <ClInclude Include="GhoulDodge.h">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClInclude>
+    <ClInclude Include="GhoulOriginal.h">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClInclude>
+    <ClInclude Include="Bonfire.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockerObstacle.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Floating.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="DashCollider.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectArea.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerProjectile.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CiriFightController.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="CiriOriginal.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="GhoulDodge.h">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClInclude>
+    <ClInclude Include="GhoulOriginal.h">
+      <Filter>Scripts\Enemies\Ghoul</Filter>
+    </ClInclude>
+    <ClInclude Include="Dummie.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="VagoneteMove.h">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClInclude>
+    <ClInclude Include="VagoneteDirection.h">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClInclude>
+    <ClInclude Include="VagoneteCover.h">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Scripts\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticlePool.h">
+      <Filter>Scripts\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRelease.h">
+      <Filter>Scripts\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="RockThrow.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="MeleeLeshen.h">
+      <Filter>Scripts\Enemies\Leshen</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnEnemyManager.h">
+      <Filter>Scripts\Enemies\Spawn</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnEnemy.h">
+      <Filter>Scripts\Enemies\Spawn</Filter>
+    </ClInclude>
+    <ClInclude Include="DrownedGrab.h">
+      <Filter>Scripts\Enemies\Drowned</Filter>
+    </ClInclude>
+    <ClInclude Include="Credits.h">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Extra_Menus.h">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_EndMenu.h">
+      <Filter>Scripts\UI\Another Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Ultibar_Particle.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Wagonnete_UI.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="VagoneteObstacle.h">
+      <Filter>Scripts\Vagoneta</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyGroupLogic.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringAvoid.h">
+    </ClInclude>
+    <ClInclude Include="AttackTrigger.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Lifebar.h">
+      <Filter>Scripts\UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial_Intro.h">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial_HUD_Triggers.h">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial_HUD.h">
+      <Filter>Scripts\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="Training_Zone.h">
+      <Filter>Scripts\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCameraArroundObject.h">
+      <Filter>Scripts\Enemies</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{b85ddb15-4ad1-44e6-a89d-9257b5cd2371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Dialogues">
+      <UniqueIdentifier>{74d326e8-26bc-4d13-9400-d1b383afaaf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Cameras">
+      <UniqueIdentifier>{99fee0af-27f7-46a6-a63a-ba9932e11fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Stats and Effects">
+      <UniqueIdentifier>{d2d3ad90-944b-486e-bcab-0da00c662628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies">
+      <UniqueIdentifier>{1fd589ff-a8d4-412b-9a50-2a76f10596cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI">
+      <UniqueIdentifier>{4c9baa8d-c35b-4473-ada1-b4ab0ce4b9f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player">
+      <UniqueIdentifier>{e428a472-0bb0-4dce-980f-fa155964e50d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Triggers">
+      <UniqueIdentifier>{4b461c48-f228-448b-bd9b-d17cc95854aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Debug">
+      <UniqueIdentifier>{2439b081-3d52-4572-8338-780c4f33dd4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\Win Menu">
+      <UniqueIdentifier>{e666ca06-fba4-40ae-865f-204a8428f363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Intro">
+      <UniqueIdentifier>{a9f2913a-ec8a-4cd3-a704-e9b34bb307b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\HUD">
+      <UniqueIdentifier>{e1ad5f97-acb6-41ca-ab9a-0f92799d0661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\Buttons">
+      <UniqueIdentifier>{f93cdcf6-5f41-4046-8018-b95261895855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Revive">
+      <UniqueIdentifier>{546ad57c-6a02-4b53-941b-0eb50481a441}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\NilfgaardSoldier">
+      <UniqueIdentifier>{c5f096cc-8f1f-4228-93e0-09cafe4cdb34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\Drowned">
+      <UniqueIdentifier>{f55fa272-c18f-49cd-bfe0-509b57205c1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\Ghoul">
+      <UniqueIdentifier>{2af96abb-4b10-42dc-a8fb-9010c0177982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\Leshen">
+      <UniqueIdentifier>{aa9f3c92-5866-4017-810c-01715c2b2a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Vagoneta">
+      <UniqueIdentifier>{dcb11fd0-25c8-4f14-ab15-3150225c0a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Managers">
+      <UniqueIdentifier>{d5371a3f-65cb-4e5b-bf3b-3d907bc5e04d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\Spawn">
+      <UniqueIdentifier>{67ed245d-1957-4878-9f61-2616032f4c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\Another Menus">
+      <UniqueIdentifier>{6173e0cd-bf1f-4f7d-a29e-5ad7f550f311}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Enemies\Group">
+      <UniqueIdentifier>{fc469a0a-352c-43bd-b873-cc094cd829e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Tutorial">
+      <UniqueIdentifier>{39f33538-cb11-460d-ad6d-3583d805584e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Objects">
+      <UniqueIdentifier>{c5fbad49-d2c4-4e75-89d0-8646dfde0057}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
