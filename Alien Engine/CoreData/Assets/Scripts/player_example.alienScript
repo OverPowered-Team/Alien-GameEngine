@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "player_example",
-            "UsesAlien": true
-        }
-    ]
-}

@@ -1,9 +1,0 @@
-{
-    "HasData": true,
-    "DataStructure": [
-        {
-            "DataName": "trigTest",
-            "UsesAlien": true
-        }
-    ]
-}
