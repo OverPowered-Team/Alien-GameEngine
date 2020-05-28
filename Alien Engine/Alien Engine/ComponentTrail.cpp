@@ -13,7 +13,7 @@ ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 	trail = new Trail(this, parent);
 	
 #ifndef GAME_VERSION
-	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentTrail::DrawScene, this));
+	//App->objects->debug_draw_list.emplace(this, std::bind(&ComponentTrail::DrawScene, this));
 #endif // !GAME_VERSION
 }
 
