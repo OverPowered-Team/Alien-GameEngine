@@ -9,6 +9,7 @@
 #include "ModuleResources.h"
 #include "ModuleUI.h"
 #include "ComponentAnimator.h"
+#include "ComponentUI.h"
 #include "ModuleCamera3D.h"
 #include "ComponentUI.h"
 #include "Time.h"
@@ -354,6 +355,29 @@ GameObject* ResourcePrefab::ConvertToGameObjects(GameObject* parent, int list_nu
 		ComponentRigidBody* rb = (ComponentRigidBody*)(obj)->GetComponent(ComponentType::RIGID_BODY);
 		if (rb)
 			rb->SetPosition(pos);
+
+
+		ComponentUI* ui_aux = obj->GetComponent<ComponentUI>();
+		if (ui_aux != nullptr) {
+			GameObject* p = obj->parent;
+				
+			bool changed = true;
+			while (changed) {
+				if (p != nullptr) {
+					ComponentCanvas* canvas = p->GetComponent <ComponentCanvas>();
+					if (canvas != nullptr) {
+						ui_aux->SetCanvas(canvas);
+						changed = false;
+					}
+					p = p->parent;
+				}
+				else {
+					changed = false;
+					ui_aux->SetCanvas(nullptr);
+				}
+			}
+		}
+
 
 		// TODO: check this
 		/*ComponentCharacterController* character_controller = (ComponentCharacterController*)(obj)->GetComponent(ComponentType::CHARACTER_CONTROLLER);
