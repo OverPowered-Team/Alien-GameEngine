@@ -5,6 +5,7 @@
 #include "ComponentTrail.h"
 #include "ModuleResources.h"
 #include "imgui/imgui_internal.h"
+#include "ResourceShader.h"
 
 
 Trail::Trail()
@@ -18,6 +19,68 @@ Trail::Trail(ComponentTrail* comp, GameObject* owner) : owner(owner), trail_comp
 	
 	SetMaterial(default_material);
 	material->SetShader(App->resources->trail_shader);
+
+	float vertex[] =
+	{
+		// 0
+		-0.5f, 0.5f, 0.f,
+		// 1 
+		0.5f, 0.5f, 0.f,
+		// 2 
+		-0.5f, -0.5f, 0.f,
+		// 3 
+		0.5f, -0.5f, 0.f,
+	};
+
+	float uv[] =
+	{
+		// 0
+		0.0f, 1.0f,
+		// 1
+		1.0f, 1.0f,
+		// 2
+		0.0f, 0.0f,
+		// 3
+		1.0f, 0.0f,
+	};
+
+	uint index[] =
+	{
+		// First tri
+		2, 1, 0,
+		// Second tri
+		2, 3, 1
+	};
+
+
+	// VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// VERTEX BUFFER
+	glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, vertex, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
+
+	// UV BUFFER
+	glGenBuffers(1, &id_uv);
+	glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, uv, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+
+	// INDEX BUFFER
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	
 }
 
@@ -150,8 +213,50 @@ bool Trail::PostUpdate(float dt)
 bool Trail::Draw()
 {
 	
-	
-	
+	if (!trailVertex.empty())
+	{
+		float i = 0.0f;
+		float size = trailVertex.size() + 1;
+
+		for (std::list<TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
+		{
+			i++;
+			std::list<TrailNode*>::iterator next = curr;
+			++next;
+			if (next != trailVertex.end())
+			{
+
+				// Bind Trail shader
+
+				// Bind Material texture
+				material->ApplyMaterial();
+				
+				// Update Uniforms
+				float4x4 model_matrix = float4x4::identity();
+
+				float currUV = (float(i) / size);
+				float nextUV = (float(i + 1) / size);
+				math::float3 originHigh = (*curr)->originHigh;
+				math::float3 originLow = (*curr)->originLow;
+				math::float3 destinationHigh = (*next)->originHigh;
+				math::float3 destinationLow = (*next)->originLow;
+
+				UpdateUniforms(material, model_matrix, currUV, nextUV, originHigh, originLow, destinationHigh, destinationLow);
+
+				// Draw buffers
+				glBindVertexArray(vao);
+
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+				//Disable stuff
+				glBindVertexArray(0);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+				material->UnbindMaterial();
+			}
+		}
+
+	}
 	
 	
 	
@@ -161,6 +266,7 @@ bool Trail::Draw()
 
 
 }
+
 
 
 void Trail::SetMaterial(ResourceMaterial* mat)
@@ -182,6 +288,19 @@ void Trail::SetMaterial(ResourceMaterial* mat)
 void Trail::RemoveMaterial()
 {
 	SetMaterial(default_material);
+}
+
+void Trail::UpdateUniforms(ResourceMaterial* resource_material, float4x4 globalMatrix, float currUV, float nextUV, float3 originHigh, float3 originLow, float3 destHigh, float3 destLow)
+{
+	resource_material->used_shader->SetUniformMat4f("model", globalMatrix.Transposed());
+	
+	resource_material->used_shader->SetUniform1f("currUV", currUV);
+	resource_material->used_shader->SetUniform1f("nextUV", nextUV);
+
+	resource_material->used_shader->SetUniformFloat3("vertex1", originHigh);
+	resource_material->used_shader->SetUniformFloat3("vertex2", originLow);
+	resource_material->used_shader->SetUniformFloat3("vertex3", destHigh);
+	resource_material->used_shader->SetUniformFloat3("vertex4", destLow);
 }
 
 
@@ -246,4 +365,9 @@ void Trail::Start()
 void Trail::Stop()
 {
 	create = false;
+}
+
+bool Trail::isPlaying() const
+{
+	return create;
 }

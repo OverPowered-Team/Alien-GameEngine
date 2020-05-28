@@ -7,7 +7,7 @@
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/quat.h"
 #include "MathGeoLib/include/MathGeoLib.h"
-
+#include "MathGeoLib/include/Math/float4x4.h"
 #include <vector>
 #include "ResourceMaterial.h"
 #define MAX_TRAIL_NODE 500
@@ -58,10 +58,15 @@ private:
 	void GetOriginAndDest(Trail* trail, float& origin, std::list<TrailNode*>::iterator& curr, float& dest, std::list<TrailNode*>::iterator& next);
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
+	void UpdateUniforms(ResourceMaterial* resource_material, float4x4 globalMatrix, float currUV, float nextUV, float3 originHigh, float3 originLow, float3 destHigh, float3 destLow);
 
 public:
 	void Start();
 	void Stop();
+
+	bool isPlaying() const;
+
+
 	
 public:
 	std::list<TrailNode*> trailVertex;

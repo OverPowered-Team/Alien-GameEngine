@@ -48,6 +48,7 @@ public:
 	void Start();
 	void Stop();
 	math::OBB GetOBBFromObject();
+	Trail* GetTrail();
 
 private:
 	Trail* trail = nullptr;

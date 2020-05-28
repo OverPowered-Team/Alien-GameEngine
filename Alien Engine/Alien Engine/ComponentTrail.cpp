@@ -5,6 +5,7 @@
 #include "Trail.h"
 #include "imgui/imgui_internal.h"
 #include "PanelProject.h"
+#include "Time.h"
 #include "ModuleResources.h"
 ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 {
@@ -18,31 +19,26 @@ ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 
 ComponentTrail::~ComponentTrail()
 {
+	delete trail;
+	trail = nullptr;
 }
 
 void ComponentTrail::PreUpdate()
 {
+	if (trail->isPlaying())
+		trail->PreUpdate(Time::GetCurrentDT());
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 void ComponentTrail::Update()
 {
+	if(trail->isPlaying())
+		trail->Update(Time::GetCurrentDT());
 }
 
 void ComponentTrail::PostUpdate()
 {
-
+	if (trail->isPlaying())
+		trail->PostUpdate(Time::GetCurrentDT());
 }
 
 void ComponentTrail::DrawScene()
@@ -191,4 +187,9 @@ void ComponentTrail::Stop()
 math::OBB ComponentTrail::GetOBBFromObject()
 {
 	return game_object_attached->GetGlobalOBB();
+}
+
+Trail* ComponentTrail::GetTrail()
+{
+	return trail;
 }

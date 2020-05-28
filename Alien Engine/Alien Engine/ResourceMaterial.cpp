@@ -313,6 +313,7 @@ void ResourceMaterial::ApplyMaterial()
 	// Update uniforms
 	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
+	shaderInputs.trailShaderProperties.color = color;
 	shaderInputs.shieldFresnelShaderProperties.color = color;
 	shaderInputs.shieldShaderProperties.color = float3(color.x, color.y, color.z);
 
