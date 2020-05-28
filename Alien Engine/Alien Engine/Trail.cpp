@@ -93,11 +93,20 @@ Trail::Trail(ComponentTrail* comp, GameObject* owner) : owner(owner), trail_comp
 
 Trail::~Trail()
 {
+
 	for (std::list< TrailNode*>::iterator iter = trailVertex.begin(); iter != trailVertex.end(); ++iter)
 	{
 		delete (*iter);
 		(*iter) = nullptr;
 	}
+	trailVertex.clear();
+
+	glDeleteVertexArrays(1, &vao);
+
+	glDeleteBuffers(1, &id_vertex);
+	glDeleteBuffers(1, &id_index);
+	glDeleteBuffers(1, &id_uv);
+
 
 	if (material != nullptr) {
 
@@ -110,6 +119,10 @@ Trail::~Trail()
 		delete default_material;
 		default_material = nullptr;
 	}
+
+	 owner = nullptr;
+	 trail_comp = nullptr;
+
 }
 
 bool Trail::PreUpdate(float dt)
