@@ -52,6 +52,6 @@ public:
 
 private:
 	Trail* trail = nullptr;
-	int bbTypeSelected = 0;
+	int bbTypeSelected = 2;
 	
 };

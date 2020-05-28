@@ -20,6 +20,13 @@ Trail::Trail(ComponentTrail* comp, GameObject* owner) : owner(owner), trail_comp
 	SetMaterial(default_material);
 	material->SetShader(App->resources->trail_shader);
 
+	originalSpawnBox = trail_comp->GetOBBFromObject();
+	if (!originalSpawnBox.IsFinite())
+	{
+		originalSpawnBox = math::AABB::FromCenterAndSize(math::float3::zero(), math::float3::one());
+	}
+	spawnBox = _spawnBox = originalSpawnBox;
+
 	float vertex[] =
 	{
 		// 0

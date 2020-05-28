@@ -12,6 +12,8 @@ ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::TRAIL;
 	trail = new Trail(this, parent);
+
+
 	
 #ifndef GAME_VERSION
 	//App->objects->debug_draw_list.emplace(this, std::bind(&ComponentTrail::DrawScene, this));
@@ -52,9 +54,10 @@ void ComponentTrail::DrawGame()
 	OPTICK_EVENT();
 
 #ifndef GAME_VERSION
+	
 	if (App->objects->printing_scene)
 	{
-		if (game_object_attached->selected)
+		//if (game_object_attached->selected)
 			Draw();
 	}
 	else
@@ -166,7 +169,7 @@ bool ComponentTrail::DrawInspector()
 			ImGui::Spacing();
 		
 
-			if (ImGui::Checkbox("Use Custom Spawn", &trail->customSpawn))
+			if (ImGui::Checkbox("Custom Width", &trail->customSpawn))
 			{
 				if (trail->customSpawn)
 				{
@@ -201,7 +204,7 @@ bool ComponentTrail::DrawInspector()
 
 			ImGui::Text("Orientation Mode ");
 			ImGui::SameLine(200, 15);
-			if (ImGui::Combo("Billboard", &bbTypeSelected, "\0None\0\0"))
+			if (ImGui::Combo("Billboard", &bbTypeSelected, "View\0Transform Z\0None\0\0"))
 			{
 				
 			}
@@ -282,10 +285,61 @@ bool ComponentTrail::DrawInspector()
 
 void ComponentTrail::SaveComponent(JSONArraypack* to_save)
 {
+	// --------------- General Info -------------------- //
+	to_save->SetNumber("Type", (int)type);
+	to_save->SetString("ID", std::to_string(ID).data());
+
+	to_save->SetNumber("Trail.Vector", (int)trail->vector);
+	to_save->SetNumber("Trail.Time", (float)trail->time);
+	to_save->SetNumber("Trail.LifeTime", (float)trail->lifeTime);
+	to_save->SetNumber("Trail.MinDistance", (float)trail->minDistance);
+
+	to_save->SetBoolean("Trail.Emitting", trail->emitting);
+	to_save->SetBoolean("Trail.Orienting", trail->orient);
+	to_save->SetBoolean("Trail.CustomSpawn", trail->customSpawn);
+	
+	to_save->SetNumber("Trail.High", trail->high);
+	to_save->SetNumber("Trail.Low", trail->low);
+
+	if(trail->customSpawn)
+		to_save->SetFloat3("Trail.Width", trail->originalSpawnBox.Size());
+
+	to_save->SetBoolean("HasMaterial", (trail->material != nullptr) ? true : false);
+	if (trail->material != nullptr) {
+		to_save->SetString("MaterialID", std::to_string(trail->material->GetID()).data());
+	}
+
+	
 }
 
 void ComponentTrail::LoadComponent(JSONArraypack* to_load)
 {
+	// --------------- General Info -------------------- //
+	ID = std::stoull(to_load->GetString("ID"));
+
+
+	trail->vector = (TrailVector)(int)to_load->GetNumber("Trail.Vector");
+	trail->time = to_load->GetNumber("Trail.Time");
+	trail->lifeTime = to_load->GetNumber("Trail.LifeTime");
+	trail->minDistance = to_load->GetNumber("Trail.MinDistance");
+
+	trail->emitting = to_load->GetBoolean("Trail.Emitting");
+	trail->orient = to_load->GetBoolean("Trail.Orienting");
+	trail->customSpawn = to_load->GetBoolean("Trail.CustomSpawn");
+
+	trail->high = (int)to_load->GetNumber("Trail.High");
+	trail->low = (int)to_load->GetNumber("Trail.Low");
+
+	if (trail->customSpawn)
+	{
+		trail->SetSpawnSize(to_load->GetFloat3("Trail.Width"));
+	}
+		
+	if (to_load->GetBoolean("HasMaterial")) {
+		u64 ID = std::stoull(to_load->GetString("MaterialID"));
+		trail->SetMaterial((ResourceMaterial*)App->resources->GetResourceWithID(ID));
+	}
+
 }
 
 void ComponentTrail::Start()
