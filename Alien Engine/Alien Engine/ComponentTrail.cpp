@@ -7,6 +7,7 @@
 #include "PanelProject.h"
 #include "Time.h"
 #include "ModuleResources.h"
+
 ComponentTrail::ComponentTrail(GameObject* parent) : Component(parent)
 {
 	type = ComponentType::TRAIL;
@@ -101,6 +102,64 @@ bool ComponentTrail::DrawInspector()
 
 	if (ImGui::CollapsingHeader("Trail System", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::Text("Vector of creation");
+		
+		ImGui::Spacing();
+		
+		
+		if (ImGui::RadioButton("X", trail->vector == TrailVector::X))
+		{
+			trail->low = 4; trail->high = 5;
+			trail->vector = TrailVector::X;
+		} ImGui::SameLine();
+		if (ImGui::RadioButton("Y", trail->vector == TrailVector::Y))
+		{
+			trail->low = 2; trail->high = 3;
+			trail->vector = TrailVector::Y;
+		} ImGui::SameLine();
+		if (ImGui::RadioButton("Z", trail->vector == TrailVector::Z))
+		{
+			trail->low = 0; trail->high = 1;
+			trail->vector = TrailVector::Z;
+		}
+
+		ImGui::Spacing();
+		
+
+		ImGui::DragFloat("Life Time", &trail->lifeTime, 10.0f, 0, 10000);
+		
+		
+		ImGui::Spacing();
+		ImGui::DragFloat("Min Distance", &trail->minDistance, 0.01f, 0.0f, 10.0f);
+		
+		ImGui::Spacing();
+		
+
+		ImGui::Checkbox("Create trail", &trail->create);
+		ImGui::Spacing();
+		
+
+		ImGui::Checkbox("Orient trail", &trail->orient);
+		ImGui::Spacing();
+		
+
+		if (ImGui::Checkbox("Use Custom Spawn", &trail->customSpawn))
+		{
+			if (trail->customSpawn)
+			{
+				trail->originalSpawnBox = trail->_spawnBox;
+			}
+		}
+		ImGui::Spacing();
+		
+		if (trail->customSpawn)
+		{
+			math::float3 size = trail->originalSpawnBox.Size();
+			if (ImGui::DragFloat3("Spawn Size", &size.x, 1.0f, 0.0f, 0.0f, "%.0f"))
+				trail->SetSpawnSize(size);
+
+		}
+
 
 		ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "TRAIL MATERIAL: ");
 		ImGui::Spacing();

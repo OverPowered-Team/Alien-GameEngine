@@ -107,21 +107,22 @@ Trail::~Trail()
 
 bool Trail::PreUpdate(float dt)
 {
-	if (trailVertex.size() > 0)
-	{
-		// Remove old nodes
+	//if (trailVertex.size() > 0)
+	//{
+	//	// Remove old nodes
 
-		for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
-		{
-			(*curr)->current_lifeTime += dt;
+	//	for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
+	//	{
+	//		(*curr)->current_lifeTime += dt;
 
-			if ((*curr)->current_lifeTime > lifeTime)
-			{
-				(*curr)->to_delete = true;
-			}
-		}
+	//		if ((*curr)->current_lifeTime > lifeTime)
+	//		{
+	//			(*curr)->to_delete = true;
+	//		}
+	//	}
 
-	}
+	//}
+	
 	return true;
 }
 
@@ -183,28 +184,59 @@ bool Trail::Update(float dt)
 
 		//timer.Start();
 	}
+
+	if (trailVertex.size() > 0)
+	{
+		// Remove old nodes
+		
+		std::list< TrailNode*> toRemove;
+		for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
+		{
+			(*curr)->current_lifeTime += dt;
+
+			if ((*curr)->current_lifeTime > lifeTime)
+			{
+				toRemove.push_back(*curr);
+			}
+			else break;
+		}
+
+		for (std::list< TrailNode*>::iterator it = toRemove.begin(); it != toRemove.end(); ++it)
+		{
+			trailVertex.remove(*it);
+			delete* it;
+		}
+	}
+
+	
 	return true;
 }
 
 bool Trail::PostUpdate(float dt)
 {
-	if (trailVertex.size() > 0)
-	{
-		// Remove old nodes
+	//if (trailVertex.size() > 0)
+	//{
+	//	// Remove old nodes
 
-		for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
-		{
-			
-			if ((*curr)->to_delete)
-			{
-				trailVertex.remove(*curr);
-				delete* curr;
-				(*curr) = nullptr;
-			}
-		}
+	//	for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
+	//	{
+	//		
+	//		if ((*curr)->to_delete)
+	//		{
+	//			/*trailVertex.remove(*curr);
+	//			delete (*curr);
+	//			(*curr) = nullptr;*/
 
-	}
+	//			delete (*iter);
+	//			(*iter) = nullptr;
+	//			iter = particles.erase(iter);
+	//		}
+	//		else
+	//			break;
+	//	}
 
+	//}
+	
 
 
 	return true;
@@ -240,6 +272,11 @@ bool Trail::Draw()
 				math::float3 originLow = (*curr)->originLow;
 				math::float3 destinationHigh = (*next)->originHigh;
 				math::float3 destinationLow = (*next)->originLow;
+
+				if (orient)
+					RearrangeVertex(this, curr, next, currUV, nextUV, originHigh, originLow, destinationHigh, destinationLow);
+
+
 
 				UpdateUniforms(material, model_matrix, currUV, nextUV, originHigh, originLow, destinationHigh, destinationLow);
 
@@ -370,4 +407,10 @@ void Trail::Stop()
 bool Trail::isPlaying() const
 {
 	return create;
+}
+
+
+void Trail::SetSpawnSize(math::float3 size)
+{
+	_spawnBox = originalSpawnBox = math::AABB::FromCenterAndSize(math::float3::zero(), size).ToOBB();
 }

@@ -65,11 +65,12 @@ public:
 	void Stop();
 
 	bool isPlaying() const;
-
+	void SetSpawnSize(math::float3 size);
 
 	
 public:
 	std::list<TrailNode*> trailVertex;
+	
 	Timer timer;
 	TrailVector vector = TrailVector::X;
 	bool create = true;
@@ -77,7 +78,8 @@ public:
 
 
 	float minDistance = 0.05f;
-	int lifeTime = 200;
+	float lifeTime = 0.05;
+	bool orient = false;
 
 	int high = 5;
 	int low = 4;
