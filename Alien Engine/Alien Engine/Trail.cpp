@@ -128,7 +128,7 @@ bool Trail::PreUpdate(float dt)
 
 bool Trail::Update(float dt)
 {
-	if (create)
+	if (emitting)
 	{
 		// Get the new trail vertex
 		math::float3 originHigh = float3::zero();
@@ -180,6 +180,7 @@ bool Trail::Update(float dt)
 			TrailNode* node = new TrailNode(originHigh, originLow);
 
 			trailVertex.push_back(node);
+			current_time = 0;
 		}
 
 		//timer.Start();
@@ -189,24 +190,36 @@ bool Trail::Update(float dt)
 	{
 		// Remove old nodes
 		
-		std::list< TrailNode*> toRemove;
-		for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
+		if (current_time >= time)
 		{
-			(*curr)->current_lifeTime += dt;
-
-			if ((*curr)->current_lifeTime > lifeTime)
+			std::list< TrailNode*> toRemove;
+			for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
 			{
-				toRemove.push_back(*curr);
-			}
-			else break;
-		}
+				(*curr)->current_lifeTime += dt;
 
-		for (std::list< TrailNode*>::iterator it = toRemove.begin(); it != toRemove.end(); ++it)
-		{
-			trailVertex.remove(*it);
-			delete* it;
+				if ((*curr)->current_lifeTime > lifeTime)
+				{
+					toRemove.push_back(*curr);
+				}
+				else break;
+			}
+
+			for (std::list< TrailNode*>::iterator it = toRemove.begin(); it != toRemove.end(); ++it)
+			{
+				trailVertex.remove(*it);
+				delete* it;
+
+				
+					
+			}
 		}
+		else
+			current_time += dt;
+
 	}
+	
+
+	
 
 	
 	return true;
@@ -396,17 +409,17 @@ void Trail::GetOriginAndDest(Trail* trail, float& origin, std::list<TrailNode*>:
 
 void Trail::Start()
 {
-	create = true;
+	emitting = true;
 }
 
 void Trail::Stop()
 {
-	create = false;
+	emitting = false;
 }
 
 bool Trail::isPlaying() const
 {
-	return create;
+	return emitting;
 }
 
 

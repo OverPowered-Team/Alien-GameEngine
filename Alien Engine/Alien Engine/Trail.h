@@ -73,12 +73,14 @@ public:
 	
 	Timer timer;
 	TrailVector vector = TrailVector::X;
-	bool create = true;
+	bool emitting = true;
 	bool customSpawn = false;
 
 
 	float minDistance = 0.05f;
 	float lifeTime = 0.05;
+	float time = 5;
+	float current_time = 0;
 	bool orient = false;
 
 	int high = 5;

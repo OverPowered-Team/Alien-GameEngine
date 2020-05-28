@@ -102,105 +102,160 @@ bool ComponentTrail::DrawInspector()
 
 	if (ImGui::CollapsingHeader("Trail System", &not_destroy, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Vector of creation");
-		
 		ImGui::Spacing();
-		
-		
-		if (ImGui::RadioButton("X", trail->vector == TrailVector::X))
+		ImGui::Separator();
+		ImGui::Spacing();
+		if (ImGui::TreeNodeEx("Trail", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			trail->low = 4; trail->high = 5;
-			trail->vector = TrailVector::X;
-		} ImGui::SameLine();
-		if (ImGui::RadioButton("Y", trail->vector == TrailVector::Y))
-		{
-			trail->low = 2; trail->high = 3;
-			trail->vector = TrailVector::Y;
-		} ImGui::SameLine();
-		if (ImGui::RadioButton("Z", trail->vector == TrailVector::Z))
-		{
-			trail->low = 0; trail->high = 1;
-			trail->vector = TrailVector::Z;
-		}
 
-		ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text("Direction Vector ");
+		
+			ImGui::SameLine();
+			ImGui::SameLine(200, 15);
+			if (ImGui::RadioButton("X", trail->vector == TrailVector::X))
+			{
+				trail->low = 4; trail->high = 5;
+				trail->vector = TrailVector::X;
+			} ImGui::SameLine();
+			if (ImGui::RadioButton("Y", trail->vector == TrailVector::Y))
+			{
+				trail->low = 2; trail->high = 3;
+				trail->vector = TrailVector::Y;
+			} ImGui::SameLine();
+			if (ImGui::RadioButton("Z", trail->vector == TrailVector::Z))
+			{
+				trail->low = 0; trail->high = 1;
+				trail->vector = TrailVector::Z;
+			}
+
+			ImGui::Spacing();
+		
+			ImGui::Text("Time ");
+			ImGui::SameLine(200, 15);
+			ImGui::DragFloat("##Time", &trail->time, 10.0f, 0, 10000);
+		
+		
+			ImGui::Spacing();
+
+			ImGui::Text("LifeTime ");
+			ImGui::SameLine(200, 15);
+			ImGui::DragFloat("##Life Time", &trail->lifeTime, 10.0f, 0, 10000);
+
+
+			ImGui::Spacing();
+
+			ImGui::Text("Min Vertex Distance ");
+			ImGui::SameLine(200, 15);
+			ImGui::DragFloat("##Min Distance", &trail->minDistance, 0.01f, 0.0f, 10.0f);
+		
+			ImGui::Spacing();
+		
+			ImGui::Text("Emitting ");
+			ImGui::SameLine(200, 15);
+			ImGui::Checkbox("##Emitting", &trail->emitting);
+			ImGui::Spacing();
+		
+			ImGui::Text("Orienting ");
+			ImGui::SameLine(200, 15);
+			ImGui::Checkbox("##Orient trail", &trail->orient);
+			ImGui::Spacing();
 		
 
-		ImGui::DragFloat("Life Time", &trail->lifeTime, 10.0f, 0, 10000);
+			if (ImGui::Checkbox("Use Custom Spawn", &trail->customSpawn))
+			{
+				if (trail->customSpawn)
+				{
+					trail->originalSpawnBox = trail->_spawnBox;
+				}
+			}
+			ImGui::Spacing();
 		
-		
-		ImGui::Spacing();
-		ImGui::DragFloat("Min Distance", &trail->minDistance, 0.01f, 0.0f, 10.0f);
-		
-		ImGui::Spacing();
-		
-
-		ImGui::Checkbox("Create trail", &trail->create);
-		ImGui::Spacing();
-		
-
-		ImGui::Checkbox("Orient trail", &trail->orient);
-		ImGui::Spacing();
-		
-
-		if (ImGui::Checkbox("Use Custom Spawn", &trail->customSpawn))
-		{
 			if (trail->customSpawn)
 			{
-				trail->originalSpawnBox = trail->_spawnBox;
+				math::float3 size = trail->originalSpawnBox.Size();
+				if (ImGui::DragFloat3("Spawn Size", &size.x, 1.0f, 0.0f, 0.0f, "%.0f"))
+					trail->SetSpawnSize(size);
+
 			}
+			ImGui::TreePop();
+
 		}
 		ImGui::Spacing();
-		
-		if (trail->customSpawn)
+		ImGui::Separator();
+		ImGui::Spacing();
+		if (ImGui::TreeNodeEx("Renderer", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			math::float3 size = trail->originalSpawnBox.Size();
-			if (ImGui::DragFloat3("Spawn Size", &size.x, 1.0f, 0.0f, 0.0f, "%.0f"))
-				trail->SetSpawnSize(size);
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			ImGui::Spacing();
 
-		}
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "TRAIL BILLBOARD:");
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text("Orientation Mode ");
+			ImGui::SameLine(200, 15);
+			if (ImGui::Combo("Billboard", &bbTypeSelected, "\0None\0\0"))
+			{
+				
+			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "TRAIL MATERIAL: ");
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Text("Material");
+			ImGui::SameLine(200, 15);
+
+			if (trail->material != nullptr)
+				ImGui::Button(trail->material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
+			else
+				ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
 
 
-		ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "TRAIL MATERIAL: ");
-		ImGui::Spacing();
-		ImGui::Spacing();
-		ImGui::Text("Material");
-		ImGui::SameLine(200, 15);
-
-		if (trail->material != nullptr)
-			ImGui::Button(trail->material->name.data(), { ImGui::GetWindowWidth() * 0.25F , 0 });
-		else
-			ImGui::Button("none", { ImGui::GetWindowWidth() * 0.25F , 0 });
-
-
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
-			if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
-				FileNode* node = *(FileNode**)payload->Data;
-				if (node != nullptr && node->type == FileDropType::MATERIAL) {
-					std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
-					path += "_meta.alien";
-					u64 ID = App->resources->GetIDFromAlienPath(path.data());
-					if (ID != 0) {
-						ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
-						if (mat != nullptr) {
-							trail->SetMaterial(mat);
+			if (ImGui::BeginDragDropTarget()) {
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_PROJECT_NODE, ImGuiDragDropFlags_SourceNoDisableHover);
+				if (payload != nullptr && payload->IsDataType(DROP_ID_PROJECT_NODE)) {
+					FileNode* node = *(FileNode**)payload->Data;
+					if (node != nullptr && node->type == FileDropType::MATERIAL) {
+						std::string path = App->file_system->GetPathWithoutExtension(node->path + node->name);
+						path += "_meta.alien";
+						u64 ID = App->resources->GetIDFromAlienPath(path.data());
+						if (ID != 0) {
+							ResourceMaterial* mat = (ResourceMaterial*)App->resources->GetResourceWithID(ID);
+							if (mat != nullptr) {
+								trail->SetMaterial(mat);
+							}
 						}
 					}
 				}
+				ImGui::EndDragDropTarget();
 			}
-			ImGui::EndDragDropTarget();
-		}
-		ImGui::SameLine();
+			ImGui::SameLine();
 
-		if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
-		{
+			if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
+			{
 
-			if (trail->material != nullptr) {
-				trail->RemoveMaterial();
+				if (trail->material != nullptr) {
+					trail->RemoveMaterial();
+				}
 			}
+
+			ImGui::TreePop();
 		}
 
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+		
 
 		if (trail->material != nullptr) {
 
