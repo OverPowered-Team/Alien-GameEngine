@@ -65,7 +65,25 @@ public:
 	void Stop();
 
 	bool isPlaying() const;
+
+
+	void SetVector(TrailVector vec);
+	inline TrailVector GetVector() { return vector; }
+
+	void SetTime(int time);
+	inline int GetTime() { return time; }
+
+	void SetLifeTime(int lifeTime);
+	inline int GetLifeTime() { return lifeTime; }
+
+	void SetMinDistance(float minDistance);
+	inline float GetMinDistance() { return minDistance; }
+
 	void SetSpawnSize(math::float3 size);
+	inline float3 GetSpawnSize() { return originalSpawnBox.Size(); }
+
+	void SetColor(math::float4 color);
+	inline math::float4 GetColor() { return color; }
 
 	
 public:
@@ -78,6 +96,7 @@ public:
 
 
 	float minDistance = 0.05f;
+	float4 color = float4::one;
 	float lifeTime = 0.05;
 	float time = 5;
 	float current_time = 0;

@@ -196,9 +196,9 @@ bool Trail::Update(float dt)
 	if (trailVertex.size() > 0)
 	{
 		// Remove old nodes
-		
 		if (current_time >= time)
 		{
+			//Uint32 time = SDL_GetTicks();
 			std::list< TrailNode*> toRemove;
 			for (std::list< TrailNode*>::iterator curr = trailVertex.begin(); curr != trailVertex.end(); ++curr)
 			{
@@ -429,8 +429,47 @@ bool Trail::isPlaying() const
 	return emitting;
 }
 
+void Trail::SetVector(TrailVector vec)
+{
+	switch (vec)
+	{
+	case TrailVector::X:
+		low = 4; high = 5;
+		break;
+	case TrailVector::Y:
+		low = 2; high = 3;
+		break;
+	case TrailVector::Z:
+		low = 0; high = 1;
+		break;
+	default:
+		break;
+	}
+
+	vector = vec;
+}
+
+void Trail::SetTime(int time)
+{
+	this->time = time;
+}
+
+void Trail::SetLifeTime(int lifeTime)
+{
+	this->lifeTime = lifeTime;
+}
+
+void Trail::SetMinDistance(float minDistance)
+{
+	this->minDistance = minDistance;
+}
 
 void Trail::SetSpawnSize(math::float3 size)
 {
 	_spawnBox = originalSpawnBox = math::AABB::FromCenterAndSize(math::float3::zero(), size).ToOBB();
+}
+
+void Trail::SetColor(math::float4 color)
+{
+	this->color = color;
 }

@@ -185,6 +185,20 @@ bool ComponentTrail::DrawInspector()
 					trail->SetSpawnSize(size);
 
 			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			
+			if (ImGui::ColorPicker4("Color", (float*)&trail->color, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_AlphaPreview))
+			{
+				if (trail->material != nullptr)
+					trail->material->color = trail->color;
+			}
+			else
+			{
+				if (trail->material != nullptr)
+					trail->color = trail->material->color;
+			}
 			ImGui::TreePop();
 
 		}
@@ -301,6 +315,8 @@ void ComponentTrail::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Trail.High", trail->high);
 	to_save->SetNumber("Trail.Low", trail->low);
 
+	to_save->SetFloat4("Trail.Color", trail->color);
+
 	if(trail->customSpawn)
 		to_save->SetFloat3("Trail.Width", trail->originalSpawnBox.Size());
 
@@ -329,6 +345,8 @@ void ComponentTrail::LoadComponent(JSONArraypack* to_load)
 
 	trail->high = (int)to_load->GetNumber("Trail.High");
 	trail->low = (int)to_load->GetNumber("Trail.Low");
+
+	trail->color = to_load->GetFloat4("Trail.Color");
 
 	if (trail->customSpawn)
 	{
