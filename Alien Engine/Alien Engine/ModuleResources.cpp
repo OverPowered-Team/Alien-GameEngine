@@ -712,6 +712,8 @@ void ModuleResources::ReadAllMetaData()
 	skybox_shader = GetShaderByName("skybox_shader");
 	water_shader = GetShaderByName("water_shader");
 	shield_fresnel_shader = GetShaderByName("shield_fresnel_shader");
+	hdr_shader = GetShaderByName("hdr_shader");
+	hdr_shader->IncreaseReferences();
 
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
@@ -794,13 +796,14 @@ void ModuleResources::ReadAllMetaData()
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 	shield_fresnel_shader = (ResourceShader*)GetResourceWithID(5257671272918645017);
 	shield_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
+	//hdr_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
 	default_particle_shader->SetName("particle_shader");
 	default_particle_shader->TryToSetShaderType();
 	shield_fresnel_shader->SetName("shield_fresnel_shader");
 	shield_fresnel_shader->TryToSetShaderType();
 	shield_shader->SetName("shield_shader");
 	shield_shader->TryToSetShaderType();
-
+	hdr_shader->SetName("hdr_shader");
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

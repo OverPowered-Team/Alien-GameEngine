@@ -13,7 +13,7 @@
 
 FBO::FBO()
 {
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < BufferType::MAX; ++i)
 	{
 		ID[i] = 0;
 	}
@@ -66,8 +66,9 @@ void FBO::UpdateFBO(float width, float height)
 	bool fboUsed = true;
 	// Normal =====================================================================
 
-	// Texture ---------------------------------------------
+	// Textures ---------------------------------------------
 
+	// NORMAL TEXTURE
 	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE]);
 
 	{
@@ -77,7 +78,22 @@ void FBO::UpdateFBO(float width, float height)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// HDR TEXTURE
+	glBindTexture(GL_TEXTURE_2D, ID[HDR_TEXTURE]);
+
+	{
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -88,6 +104,9 @@ void FBO::UpdateFBO(float width, float height)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
+	glBindRenderbuffer(GL_RENDERBUFFER, ID[HDR_DEPTH_RBO]);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	// Frame -----------------------------------------------
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[NORMAL_FBO]);
@@ -100,6 +119,14 @@ void FBO::UpdateFBO(float width, float height)
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 		fboUsed = false;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Frame -----------------------------------------------
+
+	glBindFramebuffer(GL_FRAMEBUFFER, ID[HDR_FBO]);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[HDR_TEXTURE], 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -151,13 +178,16 @@ void FBO::GenerateFBO()
 {
 	glGenTextures(1, &ID[NORMAL_TEXTURE]);
 	glGenTextures(1, &ID[DEPTH_TEAXTURE]);
+	glGenTextures(1, &ID[HDR_TEXTURE]);
 
 	glGenFramebuffers(1, &ID[NORMAL_FBO]);
 	glGenFramebuffers(1, &ID[MULTISAMPLING_FBO]);
+	glGenFramebuffers(1, &ID[HDR_FBO]);
 
 	glGenRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
+	glGenRenderbuffers(1, &ID[HDR_DEPTH_RBO]);
 
 }
 
@@ -165,15 +195,18 @@ void FBO::DeleteFBO()
 {
 	glDeleteTextures(1, &ID[NORMAL_TEXTURE]);
 	glDeleteTextures(1, &ID[DEPTH_TEAXTURE]);
+	glDeleteTextures(1, &ID[HDR_TEXTURE]);
 
 	glDeleteFramebuffers(1, &ID[NORMAL_FBO]);
 	glDeleteFramebuffers(1, &ID[MULTISAMPLING_FBO]);
+	glDeleteFramebuffers(1, &ID[HDR_FBO]);
 
 	glDeleteRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
+	glDeleteRenderbuffers(1, &ID[HDR_DEPTH_RBO]);
 
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < BufferType::MAX; ++i)
 	{
 		ID[i] = 0;
 	}
@@ -182,6 +215,16 @@ void FBO::DeleteFBO()
 uint FBO::GetFBOTexture()
 {
 	return ID[NORMAL_TEXTURE];
+}
+
+uint FBO::GetHDRTexture()
+{
+	return ID[HDR_TEXTURE];
+}
+
+uint FBO::GetHDRFBO()
+{
+	return ID[HDR_FBO];
 }
 
 uint FBO::GetFBO()
@@ -304,9 +347,19 @@ uint Viewport::GetFBO()
 	return fbo->GetFBO();
 }
 
+uint Viewport::GetHDRFBO()
+{
+	return fbo->GetHDRFBO();
+}
+
 uint Viewport::GetTexture()
 {
 	return fbo->GetFBOTexture();
+}
+
+uint Viewport::GetHDRTexture()
+{
+	return fbo->GetHDRTexture();
 }
 
 bool Viewport::CanRender()
@@ -324,6 +377,7 @@ float2 Viewport::GetSize() const
 	float2 size = float2(width, height);
 	return size;
 }
+
 // Return if screen point is inside viewport
 
 bool Viewport::ScreenPointToViewport(float2& input_output)

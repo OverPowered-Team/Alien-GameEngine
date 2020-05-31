@@ -17,6 +17,10 @@ public:
 		MULTISAMPLING_FBO,
 		MULTISAMPLING_COLOR_RBO,
 		MULTISAMPLING_DEPTH_RBO,
+		HDR_FBO,
+		HDR_TEXTURE,
+		HDR_DEPTH_RBO,
+		MAX
 	};
 
 	FBO();
@@ -34,6 +38,10 @@ public:
 	void DeleteFBO();
 
 	uint GetFBOTexture();
+
+	uint GetHDRTexture(); 
+
+	uint GetHDRFBO();
 
 	uint GetFBO();
 
@@ -54,7 +62,7 @@ public:
 private:
 
 	bool z_buffer_mode = true;
-	uint ID[8];
+	uint ID[BufferType::MAX];
 	uint msaa = 4;
 	float2 position;
 
@@ -91,7 +99,11 @@ public:
 
 	uint GetFBO();
 
+	uint GetHDRFBO();
+
 	uint GetTexture();
+
+	uint GetHDRTexture(); 
 
 	bool ScreenPointToViewport(float2& screen_point);
 

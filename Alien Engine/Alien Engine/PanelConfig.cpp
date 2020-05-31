@@ -6,6 +6,9 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
 #include "imgui/imgui.h"
+#include "ModuleCamera3D.h"
+#include "Viewport.h"
+#include "ModuleObjects.h"
 #include "gpudetect/DeviceId.h"
 
 #include "mmgr/mmgr.h"
@@ -23,6 +26,10 @@ PanelConfig::~PanelConfig()
 void PanelConfig::PanelLogic()
 {
 	ImGui::Begin("Configuration", &enabled, ImGuiWindowFlags_NoCollapse);
+
+	ImGui::Image((ImTextureID)App->camera->scene_viewport->GetHDRTexture(), ImVec2(300, 300), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::DragFloat("Exposure", &App->objects->exposure, 0.1f, 0.0f);
+	ImGui::DragFloat("Gamma", &App->objects->gamma, 0.1f, 0.0f);
 	if (ImGui::IsWindowHovered())
 		App->camera->is_scene_hovered = false;
 	if (ImGui::CollapsingHeader("Application"))
