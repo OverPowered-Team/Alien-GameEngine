@@ -647,7 +647,7 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 	size_t name_pos;
 	while (getline(stream, line))
 	{
-		if (name_pos = line.find("name") != std::string::npos)
+		if (shader_type == SHADER_TYPE::UNKNOWN && (name_pos = line.find("name") != std::string::npos))
 		{
 			name = line.substr(name_pos + 4, line.length() - (name_pos + 1));
 			TryToSetShaderType();
