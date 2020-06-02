@@ -43,6 +43,8 @@ bool ModuleCamera3D::Start()
 	max_distance = 10;
 
 	focus_short = App->shortcut_manager->AddShortCut("Focus", SDL_SCANCODE_F, std::bind(&ModuleCamera3D::Focus, App->camera));
+	camera_zoom_speed = 2000.f;
+
 	return ret;
 }
 // -----------------------------------------------------------------
