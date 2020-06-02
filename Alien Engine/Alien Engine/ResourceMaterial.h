@@ -79,7 +79,7 @@ struct ShaderInputs
 	} shieldFresnelShaderProperties;
 
 	struct DissolveShaderProperties {
-		float burn = 1.0f;
+		float burn = 0.5f;
 	} dissolveFresnelShaderProperties;
 
 };

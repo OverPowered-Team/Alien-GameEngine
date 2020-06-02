@@ -264,8 +264,8 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	shaderInputs.standardShaderProperties.smoothness = (float)file->GetNumber("Smoothness");
 	shaderInputs.standardShaderProperties.metalness = (float)file->GetNumber("Metalness");
 	renderMode = (int)file->GetNumber("RenderMode");
-
-	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(file->GetString("ShaderID"))));
+	const char* shader_id = file->GetString("ShaderID");
+	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(shader_id)));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
 		textures[iter].first = std::stoull(file->GetString(std::to_string(iter).data()));
 		textures[iter].second = App->resources->GetTextureByID(textures[iter].first);

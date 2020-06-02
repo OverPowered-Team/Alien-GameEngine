@@ -51,6 +51,7 @@ ResourceShader::~ResourceShader()
 
 bool ResourceShader::LoadMemory()
 {
+
 	ParseAndCreateShader();
 
 	return true;
@@ -184,6 +185,7 @@ void ResourceShader::TryToSetShaderType()
 
 uint ResourceShader::ParseAndCreateShader()
 {
+	
 	SHADER_PROGRAM_SOURCE source = ParseShader(meta_data_path);
 	shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
@@ -642,9 +644,15 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 	std::stringstream ss[2]; // one for each shader type
 
 	SHADER_TYPE shader_type = SHADER_TYPE::UNKNOWN;
-
+	size_t name_pos;
 	while (getline(stream, line))
 	{
+		if (name_pos = line.find("name") != std::string::npos)
+		{
+			name = line.substr(name_pos + 4, line.length() - (name_pos + 1));
+			TryToSetShaderType();
+		}
+
 		if (line.find("shader") != std::string::npos)
 		{
 			if (line.find("vertex") != std::string::npos)
@@ -656,7 +664,7 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 				shader_type = SHADER_TYPE::FRAGMENT;
 			}
 		}
-		else
+		else if(shader_type != SHADER_TYPE::UNKNOWN)
 		{
 			ss[(int)shader_type] << line << '\n';
 		}
