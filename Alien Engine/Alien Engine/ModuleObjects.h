@@ -160,7 +160,7 @@ public:
 	void MoveComponentUp(GameObject* object, Component* component, bool top);
 	
 	// get object
-	GameObject* GetGameObjectByID(const u64& id);
+	GameObject* GetGameObjectByID(const u64 id);
 
 	//reparent object in the next preupdate
 	void ReparentGameObject(GameObject* object, GameObject* next_parent, bool to_cntrlZ = true);
@@ -338,11 +338,5 @@ private:
 
 
 	std::list<InvokeInfo*> invokes;
-
-	// Lights knowledge
-	uint num_of_dir_lights = 0u;
-	uint num_of_point_lights = 0u;
-	uint num_of_spot_lights = 0u;
-	uint num_of_area_lights = 0u;
 };
 

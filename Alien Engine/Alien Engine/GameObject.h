@@ -25,6 +25,7 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentParticleSystem;
+	friend class ComponentTrail;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
 	friend class ComponentLightPoint;
@@ -55,9 +56,10 @@ class __declspec(dllexport) GameObject
 	friend class ComponentSphereCollider;
 	friend class ComponentCapsuleCollider;
 	friend class ComponentConvexHullCollider;
-	friend class ComponentPointConstraint;
+	friend class ComponentConfigurableJoint;
 	friend class ComponentRigidBody;
 	friend class ComponentCharacterController;
+	friend class ComponentJoint;
 
 	friend class PanelHierarchy;
 	friend class PanelAnimTimeline;
@@ -264,8 +266,8 @@ private:
 
 	// find
 	GameObject* Find(const char* name);
-	GameObject* GetGameObjectByID(const u64& id);
-	GameObject* GetGameObjectByIDReverse(const u64& id);
+	GameObject* GetGameObjectByID(const u64 id);
+	GameObject* GetGameObjectByIDReverse(const u64 id);
 	GameObject* FindTag(const char* tag_to_find);
 	void FindTags(const char* tag_to_find, std::vector<GameObject*>* objects);
 

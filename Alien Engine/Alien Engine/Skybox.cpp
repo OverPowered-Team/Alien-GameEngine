@@ -128,10 +128,11 @@ uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
 	for (int i = 0; i < 6; ++i)
 	{
 		ResourceTexture* t = skybox_textures[i];
-		if (t != nullptr && t->references == 0)
-			t->IncreaseReferences();
+		
 		if (t != nullptr)
 		{
+			t->IncreaseReferences();
+
 			glBindTexture(GL_TEXTURE_2D, t->id);
 			unsigned char* data = new unsigned char[sizeof(char) * t->width * t->height * 4];
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -153,6 +154,10 @@ uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+			t->DecreaseReferences();
 
 			RELEASE_ARRAY(data);
 		}

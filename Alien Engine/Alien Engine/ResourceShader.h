@@ -32,6 +32,8 @@ enum class SHADER_TEMPLATE
 	SHADOW,
 	WATER,
 	DISSOLVE,
+	TRAIL
+
 
 };
 

@@ -25,6 +25,7 @@
 #include "ComponentAudioListener.h"
 #include "ComponentAudioEmitter.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentTrail.h"
 #include "ComponentSlider.h"
 #include "ComponentCanvas.h"
 #include "ComponentUI.h"
@@ -51,6 +52,10 @@
 #include "ComponentConvexHullCollider.h"
 #include "ComponentRigidBody.h"
 #include "ComponentCharacterController.h"
+
+#include "ComponentJoint.h"
+#include "ComponentConfigurableJoint.h"
+
 
 #include "Optick/include/optick.h"
 
@@ -524,6 +529,15 @@ void PanelInspector::ButtonAddComponent()
 					else
 						LOG_ENGINE("The selected object already has this component!");
 					break; }
+				case ComponentType::TRAIL: {
+					if (!selected->HasComponent(ComponentType::TRAIL))
+					{
+						comp = new ComponentTrail(selected);
+						selected->AddComponent(comp);
+					}
+					else
+						LOG_ENGINE("The selected object already has this component!");
+					break; }
 				case ComponentType::A_EMITTER: {
 					if (!selected->HasComponent(ComponentType::A_EMITTER))
 					{
@@ -699,6 +713,14 @@ void PanelInspector::ButtonAddComponent()
 						comp = new ComponentCharacterController(selected);
 						selected->AddComponent(comp);
 					}
+					break; }
+				case ComponentType::CHARACTER_JOINT: {
+						comp = new ComponentConfigurableJoint(selected);
+						selected->AddComponent(comp);
+					break; }
+				case ComponentType::CONFIGURABLE_JOINT: {
+						comp = new ComponentConfigurableJoint(selected);
+						selected->AddComponent(comp);
 					break; }
 				}
 

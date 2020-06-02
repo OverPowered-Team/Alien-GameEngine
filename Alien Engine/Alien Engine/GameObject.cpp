@@ -20,6 +20,7 @@
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentTrail.h"
 #include "ParticleSystem.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -48,6 +49,7 @@
 #include "ComponentConvexHullCollider.h"
 #include "ComponentCharacterController.h"
 #include "ComponentRigidBody.h"
+#include "ComponentConfigurableJoint.h"
 
 #include "ModuleUI.h"
 #include "PanelScene.h"
@@ -267,6 +269,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 			}
 		}
 		else if (GetComponent<ComponentParticleSystem>() != nullptr)
+		{
+			float3 obj_pos = transform->GetGlobalPosition();
+			float distance = camera->frustum.pos.Distance(obj_pos);
+			meshes_to_draw_transparency->push_back({ distance, this });
+		}
+		else if (GetComponent<ComponentTrail>() != nullptr)
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
@@ -936,7 +944,7 @@ void GameObject::SendAlientEventThis(void* object, AlienEventType type)
 }
 
 
-GameObject* GameObject::GetGameObjectByID(const u64 & id)
+GameObject* GameObject::GetGameObjectByID(const u64 id)
 {
 	GameObject* ret = nullptr;
 	if (id == this->ID) {
@@ -953,7 +961,7 @@ GameObject* GameObject::GetGameObjectByID(const u64 & id)
 	return ret;
 }
 
-GameObject* GameObject::GetGameObjectByIDReverse(const u64& id)
+GameObject* GameObject::GetGameObjectByIDReverse(const u64 id)
 {
 	GameObject* ret = nullptr;
 	if (id == this->ID) {
@@ -1247,6 +1255,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				particleSystem->LoadComponent(components_to_load);
 				AddComponent(particleSystem);
 				break; }
+			case (int)ComponentType::TRAIL: {
+				ComponentTrail* trail = new ComponentTrail(this);
+				trail->LoadComponent(components_to_load);
+				AddComponent(trail);
+				break; }
 			case (int)ComponentType::CANVAS: {
 				ComponentCanvas* canvas = new ComponentCanvas(this);
 				canvas->LoadComponent(components_to_load);
@@ -1286,6 +1299,16 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentCharacterController* character_controller = new ComponentCharacterController(this);
 				character_controller->LoadComponent(components_to_load);
 				AddComponent(character_controller);
+				break; }
+			case (int)ComponentType::CHARACTER_JOINT: {
+				ComponentConfigurableJoint* joint = new ComponentConfigurableJoint(this);
+				joint->LoadComponent(components_to_load);
+				AddComponent(joint);
+				break; }
+			case (int)ComponentType::CONFIGURABLE_JOINT: {
+				ComponentConfigurableJoint* joint = new ComponentConfigurableJoint(this);
+				joint->LoadComponent(components_to_load);
+				AddComponent(joint);
 				break; }
 			case (int)ComponentType::SCRIPT: {
 				ComponentScript* script = new ComponentScript(this);
@@ -1509,6 +1532,16 @@ void GameObject::CloningGameObject(GameObject* clone)
 					ComponentRigidBody* rb = new ComponentRigidBody(clone);
 					(*item)->Clone(rb);
 					clone->AddComponent(rb);
+					break; }
+				case ComponentType::CHARACTER_JOINT: {
+					ComponentConfigurableJoint* joint = new ComponentConfigurableJoint(clone);
+					(*item)->Clone(joint);
+					clone->AddComponent(joint);
+					break; }
+				case ComponentType::CONFIGURABLE_JOINT: {
+					ComponentConfigurableJoint* joint = new ComponentConfigurableJoint(clone);
+					(*item)->Clone(joint);
+					clone->AddComponent(joint);
 					break; }
 				default:
 					LOG_ENGINE("Unknown component type while loading");

@@ -10,6 +10,7 @@
 #include "ModuleObjects.h"
 #include "Viewport.h"
 #include "ComponentMesh.h"
+#include "ResourceMesh.h"
 #include "Gizmos.h"
 #include "mmgr/mmgr.h"
 
@@ -23,7 +24,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 {
 	type = ComponentType::LIGHT_DIRECTIONAL;
 	App->objects->directional_light_properites.push_back(&light_props);
-	App->objects->AddNumOfDirLights();
+
 	glGenFramebuffers(1, &light_props.depthMapFBO);
 	glGenFramebuffers(1, &light_props.bakedepthMapFBO);
 
@@ -32,6 +33,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 #ifndef GAME_VERSION
 	bulb = new ComponentMesh(game_object_attached);
 	bulb->mesh = App->resources->light_mesh;
+	bulb->mesh->IncreaseReferences();
 #endif
 
 	InitFrameBuffers();
@@ -89,8 +91,11 @@ ComponentLightDirectional::~ComponentLightDirectional()
 #endif
 
 	App->objects->directional_light_properites.remove(&light_props);
-	App->objects->ReduceNumOfDirLights();
+
 	glDeleteFramebuffers(1, &light_props.depthMapFBO);
+	glDeleteFramebuffers(1, &light_props.bakedepthMapFBO);
+	glDeleteTextures(1, &light_props.depthMap);
+	glDeleteTextures(num_of_static_shadowMap, light_props.bakedepthMap);
 
 #ifndef GAME_VERSION
 	App->objects->debug_draw_list.erase(App->objects->debug_draw_list.find(this));
@@ -165,15 +170,15 @@ void ComponentLightDirectional::CalculateBakedViewMatrix()
 	float3 near_light_dir = float3((near_position.x - light_props.direction.x * distance_far_plane), (near_position.y - light_props.direction.y * distance_far_plane), (near_position.z - light_props.direction.z * distance_far_plane));
 
 	//calculate ortographic light view matrix
-	glm::mat4 centerviewMat = glm::lookAt(glm::vec3((float)center_pos.x, (float)center_pos.y, (float)center_pos.z),
+	glm::mat4 centerviewMat = glm::lookAt(glm::vec3((float)center_pos.x, (float)center_pos.y, (float)-center_pos.z),
 		glm::vec3((float)center_light_dir.x, (float)center_light_dir.y, (float)(-center_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
-	glm::mat4 farviewMat = glm::lookAt(glm::vec3((float)far_position.x, (float)far_position.y, (float)far_position.z),
+	glm::mat4 farviewMat = glm::lookAt(glm::vec3((float)far_position.x, (float)far_position.y, (float)-far_position.z),
 		glm::vec3((float)far_light_dir.x, (float)far_light_dir.y, (float)(-far_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
-	glm::mat4 nearviewMat = glm::lookAt(glm::vec3((float)near_position.x, (float)near_position.y, (float)near_position.z),
+	glm::mat4 nearviewMat = glm::lookAt(glm::vec3((float)near_position.x, (float)near_position.y, (float)-near_position.z),
 		glm::vec3((float)near_light_dir.x, (float)near_light_dir.y, (float)(-near_light_dir.z)),
 		glm::vec3(0.0, 1.0, 0.0));
 
@@ -202,10 +207,7 @@ bool ComponentLightDirectional::DrawInspector()
 	if (ImGui::Checkbox("##CmpActive", &en)) {
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 		enabled = en;
-		if (!enabled)
-			OnDisable();
-		else
-			OnEnable();
+		light_props.enabled = enabled;
 	}
 	ImGui::PopID();
 	ImGui::SameLine();
@@ -253,14 +255,10 @@ bool ComponentLightDirectional::DrawInspector()
 
 void ComponentLightDirectional::OnEnable()
 {
-	enabled = true;
-	light_props.enabled = true;
 }
 
 void ComponentLightDirectional::OnDisable()
 {
-	enabled = false;
-	light_props.enabled = false;
 }
 
 void ComponentLightDirectional::Clone(Component* clone)
