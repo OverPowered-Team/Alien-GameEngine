@@ -26,7 +26,6 @@ enum class TextureType {
 	DIFFUSE_ROUGHNESS,
 	AMBIENT_OCCLUSION,
 	METALNESS,
-
 	MAX
 };
 
@@ -78,6 +77,10 @@ struct ShaderInputs
 		//int numHits = 1;
 
 	} shieldFresnelShaderProperties;
+
+	struct DissolveShaderProperties {
+		float burn = 0.5f;
+	} dissolveFresnelShaderProperties;
 
 };
 

@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
+#include "ResourceTexture.h"
+
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer3D.h"
@@ -49,6 +51,7 @@ ResourceShader::~ResourceShader()
 
 bool ResourceShader::LoadMemory()
 {
+
 	ParseAndCreateShader();
 
 	return true;
@@ -174,12 +177,15 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::SHIELD;
 	else if (std::strcmp(name.c_str(), "shield_fresnel_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHIELD_FRESNEL;
+	else if (std::strcmp(name.c_str(), "dissolve_shader") == 0)
+		shaderType = SHADER_TEMPLATE::DISSOLVE;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
 
 uint ResourceShader::ParseAndCreateShader()
 {
+	
 	SHADER_PROGRAM_SOURCE source = ParseShader(meta_data_path);
 	shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
@@ -246,6 +252,17 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("exponent", inputs.shieldFresnelShaderProperties.fresnel_exponent);
 		//SetUniform1i("numHits", inputs.shieldFresnelShaderProperties.numHits);
 		break; }
+	case SHADER_TEMPLATE::DISSOLVE: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
+		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
+		
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
+		SetUniform1i("alpha_noise", 3);
+		SetUniform1f("burn", inputs.dissolveFresnelShaderProperties.burn);
+		ApplyLightsUniforms();
+		break; }
 
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
@@ -307,6 +324,22 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 			SetUniform1f("gradient", camera->fogGradient);
 		}
 		break;
+
+	case SHADER_TEMPLATE::DISSOLVE:
+	{
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniformFloat3("view_pos", camera->GetCameraPosition());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		ApplyLightsUniforms();
+		break;
+	}
 
 	}
 }
@@ -611,9 +644,15 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 	std::stringstream ss[2]; // one for each shader type
 
 	SHADER_TYPE shader_type = SHADER_TYPE::UNKNOWN;
-
+	size_t name_pos;
 	while (getline(stream, line))
 	{
+		if (shader_type == SHADER_TYPE::UNKNOWN && (name_pos = line.find("name") != std::string::npos))
+		{
+			name = line.substr(name_pos + 4, line.length() - (name_pos + 1));
+			TryToSetShaderType();
+		}
+
 		if (line.find("shader") != std::string::npos)
 		{
 			if (line.find("vertex") != std::string::npos)
@@ -625,7 +664,7 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 				shader_type = SHADER_TYPE::FRAGMENT;
 			}
 		}
-		else
+		else if(shader_type != SHADER_TYPE::UNKNOWN)
 		{
 			ss[(int)shader_type] << line << '\n';
 		}
