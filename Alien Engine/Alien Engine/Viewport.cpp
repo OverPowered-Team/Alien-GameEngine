@@ -4,7 +4,8 @@
 #include "GameObject.h"
 #include "ComponentCamera.h"
 #include "ModuleObjects.h"
-
+#include "ModuleResources.h"
+#include "ResourceShader.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "glew/include/glew.h"
@@ -84,7 +85,7 @@ void FBO::UpdateFBO(float width, float height)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// HDR TEXTURE
-	glBindTexture(GL_TEXTURE_2D, ID[HDR_TEXTURE]);
+	glBindTexture(GL_TEXTURE_2D, ID[POST_PROC_TEXTURE]);
 
 	{
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -104,7 +105,7 @@ void FBO::UpdateFBO(float width, float height)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-	glBindRenderbuffer(GL_RENDERBUFFER, ID[HDR_DEPTH_RBO]);
+	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_DEPTH_RBO]);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
@@ -125,9 +126,9 @@ void FBO::UpdateFBO(float width, float height)
 
 	// HDR FBO ---------------------------------------------
 
-	glBindFramebuffer(GL_FRAMEBUFFER, ID[HDR_FBO]);
+	glBindFramebuffer(GL_FRAMEBUFFER, ID[POST_PROC_FBO]);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[HDR_TEXTURE], 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[POST_PROC_TEXTURE], 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -179,33 +180,32 @@ void FBO::GenerateFBO()
 {
 	glGenTextures(1, &ID[NORMAL_TEXTURE]);
 	glGenTextures(1, &ID[DEPTH_TEAXTURE]);
-	glGenTextures(1, &ID[HDR_TEXTURE]);
+	glGenTextures(1, &ID[POST_PROC_TEXTURE]);
 
 	glGenFramebuffers(1, &ID[NORMAL_FBO]);
 	glGenFramebuffers(1, &ID[MULTISAMPLING_FBO]);
-	glGenFramebuffers(1, &ID[HDR_FBO]);
+	glGenFramebuffers(1, &ID[POST_PROC_FBO]);
 
 	glGenRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
-	glGenRenderbuffers(1, &ID[HDR_DEPTH_RBO]);
-
+	glGenRenderbuffers(1, &ID[POST_PROC_DEPTH_RBO]);
 }
 
 void FBO::DeleteFBO()
 {
 	glDeleteTextures(1, &ID[NORMAL_TEXTURE]);
 	glDeleteTextures(1, &ID[DEPTH_TEAXTURE]);
-	glDeleteTextures(1, &ID[HDR_TEXTURE]);
+	glDeleteTextures(1, &ID[POST_PROC_TEXTURE]);
 
 	glDeleteFramebuffers(1, &ID[NORMAL_FBO]);
 	glDeleteFramebuffers(1, &ID[MULTISAMPLING_FBO]);
-	glDeleteFramebuffers(1, &ID[HDR_FBO]);
+	glDeleteFramebuffers(1, &ID[POST_PROC_FBO]);
 
 	glDeleteRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
-	glDeleteRenderbuffers(1, &ID[HDR_DEPTH_RBO]);
+	glDeleteRenderbuffers(1, &ID[POST_PROC_DEPTH_RBO]);
 
 	for (int i = 0; i < BufferType::MAX; ++i)
 	{
@@ -218,14 +218,14 @@ uint FBO::GetFBOTexture()
 	return ID[NORMAL_TEXTURE];
 }
 
-uint FBO::GetHDRTexture()
+uint FBO::GetPostProcTexture()
 {
-	return ID[HDR_TEXTURE];
+	return ID[POST_PROC_TEXTURE];
 }
 
 uint FBO::GetHDRFBO()
 {
-	return ID[HDR_FBO];
+	return ID[POST_PROC_FBO];
 }
 
 uint FBO::GetFBO()
@@ -315,6 +315,47 @@ void Viewport::EndViewport()
 
 
 	fbo->EndFBO();
+
+	ApplyPostProcessing();
+}
+
+void Viewport::ApplyPostProcessing()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetHDRFBO());
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	// ========== HDR PASS ============== 
+
+	// HDR Shader
+	App->resources->hdr_shader->Bind();
+
+	// Get Rendered Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, GetTexture());
+
+	// Set Uniforms
+	App->resources->hdr_shader->SetUniform1i("hdr", camera->hdr);
+	App->resources->hdr_shader->SetUniform1f("exposure", camera->exposure);
+	App->resources->hdr_shader->SetUniform1f("gamma", camera->gamma);
+
+	// Bind and draw Screen Quad with HDR pass 
+
+	glBindVertexArray(App->renderer3D->screen_quad_VAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbinds
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+	App->resources->hdr_shader->Unbind();
+
+
+	// Lastly create the texture correctly
+
+	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Viewport::SetPos(float2 position)
@@ -348,7 +389,7 @@ uint Viewport::GetFBO()
 	return fbo->GetFBO();
 }
 
-uint Viewport::GetHDRFBO()
+uint Viewport::GetPostProcFBO()
 {
 	return fbo->GetHDRFBO();
 }
@@ -358,9 +399,9 @@ uint Viewport::GetTexture()
 	return fbo->GetFBOTexture();
 }
 
-uint Viewport::GetHDRTexture()
+uint Viewport::GetPostProcTexture()
 {
-	return fbo->GetHDRTexture();
+	return fbo->GetPostProcTexture();
 }
 
 bool Viewport::CanRender()

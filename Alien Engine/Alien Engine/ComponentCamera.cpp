@@ -353,8 +353,6 @@ bool ComponentCamera::DrawInspector()
 		}
 
 		
-
-
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();

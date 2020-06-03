@@ -131,7 +131,7 @@ public:
 
 	// === HDR === 
 
-	bool hdr = true; 
+	bool hdr = false; 
 	float gamma = 2.2f;
 	float exposure = 1.0f;
 };

@@ -118,8 +118,11 @@ bool ModuleRenderer3D::Init()
 
 bool ModuleRenderer3D::Start()
 {
+	GenerateScreenQuadVAO();
+
 	return true;
 }
+
 
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
@@ -145,6 +148,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG_ENGINE("Destroying 3D Renderer");
+
+	DestroyScreenQuadVAO();
 
 	SDL_GL_DeleteContext(context);
 
@@ -255,6 +260,39 @@ void ModuleRenderer3D::EndDebugDraw()
 	glColor4fv(&App->renderer3D->last_color[0]);
 	glLineWidth(1.f);
 
+}
+
+void ModuleRenderer3D::GenerateScreenQuadVAO()
+{
+	float quadVertices[] = {
+		// positions        // texture Coords
+		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+	};
+
+	// Generate buffers
+	glGenVertexArrays(1, &screen_quad_VAO);
+	glGenBuffers(1, &screen_quad_VBO);
+
+	// Fill them
+	glBindVertexArray(screen_quad_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, screen_quad_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void ModuleRenderer3D::DestroyScreenQuadVAO()
+{
+	glDeleteVertexArrays(1, &screen_quad_VAO);
+	glDeleteBuffers(1, &screen_quad_VBO);
 }
 
 void ModuleRenderer3D::RenderCircleAroundZ(const float& x, const float& y, const float& z, const float& radius, const float& line_width, const int& segments)

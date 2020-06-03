@@ -17,9 +17,9 @@ public:
 		MULTISAMPLING_FBO,
 		MULTISAMPLING_COLOR_RBO,
 		MULTISAMPLING_DEPTH_RBO,
-		HDR_FBO,
-		HDR_TEXTURE,
-		HDR_DEPTH_RBO,
+		POST_PROC_FBO,
+		POST_PROC_TEXTURE,
+		POST_PROC_DEPTH_RBO,
 		MAX
 	};
 
@@ -39,7 +39,7 @@ public:
 
 	uint GetFBOTexture();
 
-	uint GetHDRTexture(); 
+	uint GetPostProcTexture(); 
 
 	uint GetHDRFBO();
 
@@ -89,6 +89,8 @@ public:
 
 	void EndViewport();
 
+	void ApplyPostProcessing();
+
 	void SetPos(float2 position);
 
 	void SetSize(float width, float height);
@@ -99,11 +101,11 @@ public:
 
 	uint GetFBO();
 
-	uint GetHDRFBO();
+	uint GetPostProcFBO();
 
 	uint GetTexture();
 
-	uint GetHDRTexture(); 
+	uint GetPostProcTexture(); 
 
 	bool ScreenPointToViewport(float2& screen_point);
 

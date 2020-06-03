@@ -27,7 +27,7 @@ void PanelConfig::PanelLogic()
 {
 	ImGui::Begin("Configuration", &enabled, ImGuiWindowFlags_NoCollapse);
 
-	ImGui::Image((ImTextureID)App->camera->scene_viewport->GetHDRTexture(), ImVec2(300, 300), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)App->camera->scene_viewport->GetPostProcTexture(), ImVec2(300, 300), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::DragFloat("Exposure", &App->objects->exposure, 0.1f, 0.0f);
 	ImGui::DragFloat("Gamma", &App->objects->gamma, 0.1f, 0.0f);
 	if (ImGui::IsWindowHovered())

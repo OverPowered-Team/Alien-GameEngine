@@ -804,6 +804,7 @@ void ModuleResources::ReadAllMetaData()
 	shield_shader->SetName("shield_shader");
 	shield_shader->TryToSetShaderType();
 	hdr_shader->SetName("hdr_shader");
+	hdr_shader->IncreaseReferences();
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

@@ -476,56 +476,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		viewport->EndViewport();
 
-		if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-			hdr = !hdr; 
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetHDRFBO());
-		glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
-		glClearColor(1, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		App->resources->hdr_shader->Bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, viewport->GetTexture());
-
-		App->resources->hdr_shader->SetUniform1i("hdr", hdr);
-		App->resources->hdr_shader->SetUniform1f("exposure", exposure);
-		App->resources->hdr_shader->SetUniform1f("gamma", gamma);
-
-		if (quadVAO == 0)
-		{
-			float quadVertices[] = {
-				// positions        // texture Coords
-				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			};
-			// setup plane VAO
-			glGenVertexArrays(1, &quadVAO);
-			glGenBuffers(1, &quadVBO);
-			glBindVertexArray(quadVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		}
-		
-		glBindVertexArray(quadVAO);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		glBindVertexArray(0);
-		App->resources->hdr_shader->Unbind();
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		glBindTexture(GL_TEXTURE_2D, viewport->GetHDRTexture());
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 #else
@@ -696,7 +646,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 	glGenFramebuffers(1, &readFboId);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
 	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		GL_TEXTURE_2D, game_viewport->GetTexture(), 0);
+		GL_TEXTURE_2D, game_viewport->GetPostProcTexture(), 0);
 	glBlitFramebuffer(0, 0, App->window->width, App->window->height,
 		0, 0, App->window->width, App->window->height,
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
