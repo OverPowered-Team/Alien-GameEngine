@@ -570,6 +570,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
 
+			std::string crange = std::string(cname).append(".range");
+			SetUniform1f(crange, (*iter)->range);
+
 			std::string cconstant = std::string(cname).append(".constant");
 			SetUniform1f(cconstant, (*iter)->constant);
 

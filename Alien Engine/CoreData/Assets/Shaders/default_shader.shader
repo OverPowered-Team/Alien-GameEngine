@@ -105,6 +105,7 @@ struct DirectionalLight
 struct PointLight
 {
     float intensity;
+    float range;
     vec3 pointLightProperties[4];
     float constant;
     float linear;
@@ -269,6 +270,9 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
     // Intensity
     float intensity = light.intensity;
 
+    // Range or Radius
+    float range_radius = light.range;
+
     // Ambient
     vec3 ambient = light.pointLightProperties[indexAmbient];
 
@@ -288,9 +292,9 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view
         specular = light.pointLightProperties[indexSpecular] * spec;
 
     // attenuation
-    float distance = length(light.pointLightProperties[indexPosition] - frag_pos);
+    float distance = length(light.pointLightProperties[indexPosition] - frag_pos) * range_radius;
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
-    
+
     return (ambient + diffuse + specular) * attenuation * vec3(intensity, intensity, intensity);
 }
 

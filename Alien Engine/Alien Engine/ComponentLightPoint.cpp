@@ -107,6 +107,7 @@ bool ComponentLightPoint::DrawInspector()
 		// Parameters ---------
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Settings:");
 		ImGui::DragFloat("Intensity", &light_props.intensity, 0.01f, 0.0f, 2.0f);
+		ImGui::DragFloat("Range", &light_props.range, 0.01f, 0.0f, 2.0f);
 		ImGui::ColorEdit3("Ambient", light_props.ambient.ptr());
 		ImGui::ColorEdit3("Diffuse", light_props.diffuse.ptr());
 		ImGui::ColorEdit3("Specular", light_props.specular.ptr());
@@ -165,6 +166,7 @@ void ComponentLightPoint::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("PrintIcon", print_icon);
 
 	to_save->SetNumber("Intensity", float(light_props.intensity));
+	to_save->SetNumber("Range", float(light_props.range));
 	to_save->SetFloat3("Position", float3(light_props.position));
 	to_save->SetFloat3("Ambient", float3(light_props.ambient));
 	to_save->SetFloat3("Diffuse", float3(light_props.diffuse));
@@ -181,6 +183,7 @@ void ComponentLightPoint::LoadComponent(JSONArraypack* to_load)
 	print_icon = to_load->GetBoolean("PrintIcon");
 
 	light_props.intensity = (float)to_load->GetNumber("Intensity");
+	light_props.range = (float)to_load->GetNumber("Range");
 	light_props.ambient = to_load->GetFloat3("Ambient");
 	light_props.diffuse = to_load->GetFloat3("Diffuse");
 	light_props.specular = to_load->GetFloat3("Specular");
