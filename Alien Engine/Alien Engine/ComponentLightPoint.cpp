@@ -67,15 +67,15 @@ void ComponentLightPoint::DrawScene()
 
 	if (this->game_object_attached->IsSelected())
 	{
-		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
-		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT);
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.range * RADIUS_INTENSITY_MULTIPLIE_POINT);
+		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.range * RADIUS_INTENSITY_MULTIPLIE_POINT);
 	}
 	else if (IsEnabled())
 	{
 		DrawIconLight();
 
-		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
-		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.intensity * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+		App->renderer3D->RenderCircleAroundZ(light_props.position.x, light_props.position.y, light_props.position.z, light_props.range * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
+		App->renderer3D->RenderCircleAroundX(light_props.position.x, light_props.position.y, light_props.position.z, light_props.range * RADIUS_INTENSITY_MULTIPLIE_POINT, 0.1f);
 	}
 }
 
