@@ -1,0 +1,75 @@
+{
+    "Name": "Point light",
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Point light",
+                "FamilyNumber": 1,
+                "ID": "4669083534000981395",
+                "ParentID": "3533168510068751700",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "8610181328499441214",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6307815271486947474"
+                    },
+                    {
+                        "Type": 5,
+                        "Enabled": true,
+                        "ID": "2749544703825459198",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Ambient": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Constant": 1,
+                        "Linear": 0.10000000149011612,
+                        "Quadratic": 0.019999999552965164
+                    }
+                ]
+            }
+        ]
+    }
+}

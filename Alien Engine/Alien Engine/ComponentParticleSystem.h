@@ -88,6 +88,7 @@ private:
 
 	bool enable_render = false;
 	bool enable_anim = false;
+	bool enable_light = false;
 	float animSpeed = 0.1f;
 	int texRows = 1;
 	int texColumns = 1;
