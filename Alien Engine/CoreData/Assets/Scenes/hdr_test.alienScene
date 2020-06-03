@@ -9,7 +9,7 @@
                 "ParentID": "17875366743875118027",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -19,15 +19,15 @@
                     {
                         "Type": 0,
                         "Position": [
-                            0,
-                            0,
-                            0
+                            6.8535871505737305,
+                            3.9692268371582031,
+                            2.6107807159423828
                         ],
                         "Rotation": [
-                            0,
-                            0,
-                            0,
-                            0
+                            0.06606697291135788,
+                            -0.680076003074646,
+                            0.070600010454654694,
+                            0.72673755884170532
                         ],
                         "Scale": [
                             1,
@@ -41,7 +41,7 @@
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 93.438819885253906,
+                        "HoritzontalFov": 91.492843627929688,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -53,7 +53,7 @@
                         "isFovHori": 0,
                         "ID": "15541887849778164923",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": false,
+                        "IsSelectedCamera": true,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -460,7 +460,7 @@
                 "ParentID": "17875366743875118027",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,

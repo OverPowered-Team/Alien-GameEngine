@@ -107,6 +107,7 @@ void FBO::UpdateFBO(float width, float height)
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[HDR_DEPTH_RBO]);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
 	// Frame -----------------------------------------------
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[NORMAL_FBO]);
@@ -122,7 +123,7 @@ void FBO::UpdateFBO(float width, float height)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Frame -----------------------------------------------
+	// HDR FBO ---------------------------------------------
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[HDR_FBO]);
 

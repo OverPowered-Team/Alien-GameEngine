@@ -796,7 +796,7 @@ void ModuleResources::ReadAllMetaData()
 	default_particle_shader = (ResourceShader*)GetResourceWithID(2017390725125490915);
 	shield_fresnel_shader = (ResourceShader*)GetResourceWithID(5257671272918645017);
 	shield_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
-	//hdr_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
+	hdr_shader = (ResourceShader*)GetResourceWithID(8647831716955899237);
 	default_particle_shader->SetName("particle_shader");
 	default_particle_shader->TryToSetShaderType();
 	shield_fresnel_shader->SetName("shield_fresnel_shader");
