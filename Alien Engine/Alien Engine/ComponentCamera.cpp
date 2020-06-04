@@ -349,6 +349,27 @@ bool ComponentCamera::DrawInspector()
 				App->renderer3D->scene_fake_camera->camera_color_background = camera_color_background;
 			}
 
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			if (ImGui::Button("Import Editor Camera HDR Preferences"))
+			{
+				this->hdr = App->renderer3D->scene_fake_camera->hdr;
+				this->exposure = App->renderer3D->scene_fake_camera->exposure;
+				this->gamma = App->renderer3D->scene_fake_camera->gamma;
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Import Editor Camera FOG Preferences"))
+			{
+				this->activeFog = App->renderer3D->scene_fake_camera->activeFog;
+				this->fogDensity = App->renderer3D->scene_fake_camera->fogDensity;
+				this->fogGradient = App->renderer3D->scene_fake_camera->fogGradient;
+				this->camera_color_background = App->renderer3D->scene_fake_camera->camera_color_background;
+			}
+
 			ImGui::TreePop();
 		}
 
