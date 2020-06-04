@@ -34,6 +34,7 @@
 #include "ModuleAudio.h"
 #include "ComponentParticleSystem.h"
 #include "ComponentTrail.h"
+#include "Trail.h"
 #include "ReturnZ.h"
 #include "Time.h"
 #include "Prefab.h"
@@ -414,12 +415,25 @@ update_status ModuleObjects::PostUpdate(float dt)
 				else
 				{
 					ComponentParticleSystem* partSystem = (*it).second->GetComponent<ComponentParticleSystem>();
-					if (partSystem == nullptr)
+					if (partSystem != nullptr)
+					{
+
+						ResourceMaterial* mat = partSystem->GetSystem()->material;
+						if (mat != nullptr)
+							wanted_shader = mat->used_shader;
+					}
+
+					ComponentTrail* trail = (*it).second->GetComponent<ComponentTrail>();
+					if (trail != nullptr)
+					{
+						ResourceMaterial* mat = trail->GetTrail()->material;
+						if (mat != nullptr)
+							wanted_shader = mat->used_shader;
+					}
+
+					if (partSystem == nullptr && trail == nullptr)
 						continue;
 
-					ResourceMaterial* mat = partSystem->GetSystem()->material;
-					if (mat != nullptr)
-						wanted_shader = mat->used_shader;
 				}
 
 				if (wanted_shader != current_used_shader)
@@ -2736,49 +2750,29 @@ void ModuleObjects::CreateEffect(ComponentType type)
 	ReturnZ::AddNewAction(ReturnZ::ReturnActions::ADD_OBJECT, object);
 }
 
-
-
 uint ModuleObjects::GetNumOfPointLights() const
 {
-	return num_of_point_lights;
+	uint lights = 0;
+	for (auto iter = point_light_properites.cbegin(); iter != point_light_properites.cend(); ++iter)
+		lights += (*iter)->isEnabled();
+
+	return lights;
 }
 
 uint ModuleObjects::GetNumOfDirLights() const
 {
-	return num_of_dir_lights;
+	uint lights = 0;
+	for (auto iter = directional_light_properites.cbegin(); iter != directional_light_properites.cend(); ++iter)
+		lights += (*iter)->light->game_object_attached->IsEnabled() && (*iter)->enabled;
+
+	return lights;
 }
 
 uint ModuleObjects::GetNumOfSpotLights() const
 {
-	return num_of_spot_lights;
-}
+	uint lights = 0;
+	for (auto iter = spot_light_properites.cbegin(); iter != spot_light_properites.cend(); ++iter)
+		lights += (*iter)->isEnabled();
 
-void ModuleObjects::AddNumOfPointLights()
-{
-	++num_of_point_lights;
-}
-
-void ModuleObjects::AddNumOfDirLights()
-{
-	++num_of_dir_lights;
-}
-
-void ModuleObjects::AddNumOfSpotLights()
-{
-	++num_of_spot_lights;
-}
-
-void ModuleObjects::ReduceNumOfPointLights()
-{
-	--num_of_point_lights;
-}
-
-void ModuleObjects::ReduceNumOfDirLights()
-{
-	--num_of_dir_lights;
-}
-
-void ModuleObjects::ReduceNumOfSpotLights()
-{
-	--num_of_spot_lights;
+	return lights;
 }

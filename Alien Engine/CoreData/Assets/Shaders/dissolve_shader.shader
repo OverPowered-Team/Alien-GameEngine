@@ -1,3 +1,5 @@
+name dissolve_shader
+
 #shader vertex
 #version 330 core
 layout(location = 0) in vec3 position;
@@ -52,14 +54,13 @@ void main()
     // --------------------------------------- 
 
     // --------------- Animation -------------
-    vec3 blendpos = vec3(0,0,0);
     if(animate == 1)
     {
-        for(int i=0; i<4; i++)
-        {
-            blendpos += vec3(gBones[BoneIDs[i]] * pos) * Weights[i];
-        }
-            pos = vec4(blendpos,1);
+          mat4 BoneTransform = gBones[BoneIDs[0]] * Weights[0];
+            BoneTransform += gBones[BoneIDs[1]] * Weights[1];
+            BoneTransform += gBones[BoneIDs[2]] * Weights[2];
+            BoneTransform += gBones[BoneIDs[3]] * Weights[3];
+            pos = BoneTransform * pos;
     }
     // --------------------------------------- 
     frag_pos = vec3(model * pos);
@@ -137,6 +138,8 @@ struct Material {
     float smoothness;
     float metalness;
 };
+uniform sampler2D alpha_noise;
+uniform float burn;
 
 // Function declarations
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMat, vec2 texCoords,vec4 lightSpaceMat);
@@ -157,7 +160,7 @@ uniform vec3 backgroundColor;
 #define MAX_SPACEMATRIX 10
 #define MAX_LIGHTS_PER_TYPE 10
 uniform DirectionalLight dir_light[MAX_LIGHTS_PER_TYPE];
-uniform PointLight point_light[100];
+uniform PointLight point_light[MAX_LIGHTS_PER_TYPE];
 uniform SpotLight spot_light[MAX_LIGHTS_PER_TYPE];
 
 // Ins
@@ -212,9 +215,17 @@ void main()
     for(int i = 0; i < max_lights.z; i++)
         result += CalculateSpotLight(spot_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);   
 
+    float alpha;
     // ----------------------------------------------------------
-
-    FragColor = vec4(result, 1.0) * objectColor;
+    if(texture2D(alpha_noise, texCoords).r > burn)
+    {
+        alpha =0;
+    }
+    else
+    {
+        alpha = 1;
+    }
+    FragColor = vec4(result, alpha) * objectColor;
 
     if(activeFog == true)
     {
@@ -348,7 +359,7 @@ float ShadowCalculation(DirectionalLight light,vec4 fragPosLightSpace, vec3 norm
     float currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
-    float shadow = currentDepth - 0.002 > closestDepth  ? 1.0 : 0.0;  
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
 
     if(projCoords.z > 1.0)
         shadow = 0.0;

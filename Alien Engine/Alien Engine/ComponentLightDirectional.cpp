@@ -24,7 +24,7 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 {
 	type = ComponentType::LIGHT_DIRECTIONAL;
 	App->objects->directional_light_properites.push_back(&light_props);
-	App->objects->AddNumOfDirLights();
+
 	glGenFramebuffers(1, &light_props.depthMapFBO);
 	glGenFramebuffers(1, &light_props.bakedepthMapFBO);
 
@@ -91,7 +91,7 @@ ComponentLightDirectional::~ComponentLightDirectional()
 #endif
 
 	App->objects->directional_light_properites.remove(&light_props);
-	App->objects->ReduceNumOfDirLights();
+
 	glDeleteFramebuffers(1, &light_props.depthMapFBO);
 	glDeleteFramebuffers(1, &light_props.bakedepthMapFBO);
 	glDeleteTextures(1, &light_props.depthMap);
@@ -207,10 +207,7 @@ bool ComponentLightDirectional::DrawInspector()
 	if (ImGui::Checkbox("##CmpActive", &en)) {
 		ReturnZ::AddNewAction(ReturnZ::ReturnActions::CHANGE_COMPONENT, this);
 		enabled = en;
-		if (!enabled)
-			OnDisable();
-		else
-			OnEnable();
+		light_props.enabled = enabled;
 	}
 	ImGui::PopID();
 	ImGui::SameLine();
@@ -258,14 +255,10 @@ bool ComponentLightDirectional::DrawInspector()
 
 void ComponentLightDirectional::OnEnable()
 {
-	enabled = true;
-	light_props.enabled = true;
 }
 
 void ComponentLightDirectional::OnDisable()
 {
-	enabled = false;
-	light_props.enabled = false;
 }
 
 void ComponentLightDirectional::Clone(Component* clone)

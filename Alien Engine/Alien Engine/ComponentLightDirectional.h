@@ -18,11 +18,12 @@ struct __declspec(dllexport) DirLightProperties
 	float3 specular = float3::one();
 
 	ComponentLightDirectional* light = nullptr;
-	uint depthMap = 0;
-	uint depthMapFBO;
 
-	uint bakedepthMap[3];
-	uint bakedepthMapFBO;
+	uint depthMap = 0;
+	uint depthMapFBO = 0;
+
+	uint bakedepthMap[3] = { 0,0,0 };
+	uint bakedepthMapFBO = 0;
 
 	float4x4 viewMat;
 	float4x4 projMat;

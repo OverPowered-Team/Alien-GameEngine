@@ -1,14 +1,14 @@
 {
-    "Name": "New_Material",
+    "Name": "dissolve",
     "Color": [
-        0.98039215803146362,
-        0.22587466239929199,
-        0.95820224285125732,
+        1,
+        1,
+        1,
         1
     ],
     "Smoothness": 32,
     "Metalness": 0.5,
-    "RenderMode": 1,
+    "RenderMode": 0,
     "ShaderID": "14990229804220861757",
     "0": "0",
     "1": "0",

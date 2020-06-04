@@ -400,12 +400,11 @@ void ComponentCamera::Reset()
 	for (int i = 0; i < 6; i++)
 	{
 		cubemap->skybox_textures[i] = App->resources->default_skybox_textures[i];
-	}
-	for (int i = 0; i < 6; i++)
-	{
 		cubemap->path_pos[i] = "Default";
+		skybox->ChangeTextureByType(Cubemap::SKYBOX_POS(i), skybox_texture_id, cubemap->skybox_textures[i]->id, cubemap->skybox_textures[i]->width, cubemap->skybox_textures[i]->height);
 	}
-	skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
+	// This can only be used once
+	//skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
 
 	vertical_fov = 60.0f;
 	frustum.verticalFov = Maths::Deg2Rad() * vertical_fov;
@@ -851,10 +850,6 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 		skybox->ChangeNegativeZ(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
-
-#ifdef GAME_VERSION
-	skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
-#endif
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;

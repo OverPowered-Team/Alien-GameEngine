@@ -508,6 +508,43 @@ void ParticleSystem::RemoveMaterial()
 	material = nullptr;*/
 }
 
+void ParticleSystem::SetLight(ResourcePrefab* prefab)
+{
+	if (prefab == nullptr)
+		return;
+
+	if (light != nullptr)
+	{
+		light->DecreaseReferences();
+	}
+
+	light = prefab;
+	light->IncreaseReferences();
+
+	GameObject* prefab_parent = nullptr;
+	prefab_parent = App->objects->GetRoot(false);
+	GameObject* go = prefab->ConvertToGameObjects(prefab_parent);
+
+	ComponentLightPoint* point = (ComponentLightPoint*)(go)->GetComponent(ComponentType::LIGHT_POINT);
+	
+	if(point != nullptr)
+	{
+		point_light = point;
+	}
+
+	go->Destroy(go);
+	
+
+}
+
+void ParticleSystem::RemoveLight()
+{
+	light->DecreaseReferences();
+	light = nullptr;
+
+	point_light = nullptr;
+}
+
 void ParticleSystem::SetMesh(ResourceMesh* m)
 {
 

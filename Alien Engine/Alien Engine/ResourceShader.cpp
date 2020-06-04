@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "ResourceShader.h"
 #include "ResourceMaterial.h"
+#include "ResourceTexture.h"
+
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer3D.h"
@@ -49,6 +51,7 @@ ResourceShader::~ResourceShader()
 
 bool ResourceShader::LoadMemory()
 {
+
 	ParseAndCreateShader();
 
 	return true;
@@ -164,6 +167,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::ILUMINATED;
 	else if (std::strcmp(name.c_str(), "particle_shader") == 0)
 		shaderType = SHADER_TEMPLATE::PARTICLE;
+	else if (std::strcmp(name.c_str(), "trail_shader") == 0)
+		shaderType = SHADER_TEMPLATE::TRAIL;
 	else if (std::strcmp(name.c_str(), "simple_depth_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHADOW;
 	else if (std::strcmp(name.c_str(), "water_shader") == 0)
@@ -172,12 +177,15 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::SHIELD;
 	else if (std::strcmp(name.c_str(), "shield_fresnel_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHIELD_FRESNEL;
+	else if (std::strcmp(name.c_str(), "dissolve_shader") == 0)
+		shaderType = SHADER_TEMPLATE::DISSOLVE;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
 
 uint ResourceShader::ParseAndCreateShader()
 {
+	
 	SHADER_PROGRAM_SOURCE source = ParseShader(meta_data_path);
 	shader_id = CreateShader(source.vertex_source, source.fragment_source);
 
@@ -212,6 +220,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
 		break; }
+	case SHADER_TEMPLATE::TRAIL: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.trailShaderProperties.color);
+		break; }
 	case SHADER_TEMPLATE::SHADOW: {
 
 		break; }
@@ -240,6 +251,17 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("shieldCooldown", inputs.shieldFresnelShaderProperties.shieldCooldown);
 		SetUniform1f("exponent", inputs.shieldFresnelShaderProperties.fresnel_exponent);
 		//SetUniform1i("numHits", inputs.shieldFresnelShaderProperties.numHits);
+		break; }
+	case SHADER_TEMPLATE::DISSOLVE: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.standardShaderProperties.diffuse_color);
+		SetUniform1f("objectMaterial.smoothness", inputs.standardShaderProperties.smoothness);
+		SetUniform1f("objectMaterial.metalness", inputs.standardShaderProperties.metalness);
+		
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
+		SetUniform1i("alpha_noise", 3);
+		SetUniform1f("burn", inputs.dissolveFresnelShaderProperties.burn);
+		ApplyLightsUniforms();
 		break; }
 
 	default:
@@ -279,6 +301,18 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		}
 		break;
 
+	case SHADER_TEMPLATE::TRAIL:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		break;
+
 	case SHADER_TEMPLATE::SHIELD_FRESNEL:
 		SetUniformMat4f("view", camera->GetViewMatrix4x4());
 		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
@@ -290,6 +324,22 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 			SetUniform1f("gradient", camera->fogGradient);
 		}
 		break;
+
+	case SHADER_TEMPLATE::DISSOLVE:
+	{
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniformFloat3("view_pos", camera->GetCameraPosition());
+		SetUniform1i("activeFog", camera->activeFog);
+		if (camera->activeFog)
+		{
+			SetUniformFloat3("backgroundColor", float3(camera->camera_color_background.r, camera->camera_color_background.g, camera->camera_color_background.b));
+			SetUniform1f("density", camera->fogDensity);
+			SetUniform1f("gradient", camera->fogGradient);
+		}
+		ApplyLightsUniforms();
+		break;
+	}
 
 	}
 }
@@ -448,14 +498,10 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 	SetUniform1i("num_space_matrix", dirLights.size());
 	for (std::list<DirLightProperties*>::const_iterator iter = dirLights.begin(); iter != dirLights.end(); iter++)
 	{
-		if ((*iter)->light->IsEnabled())
+		if ((*iter)->light->game_object_attached->IsEnabled() && (*iter)->enabled)
 		{
 			char cname[128];
 			sprintf_s(cname, tmp_name.c_str(), i);
-
-			// All uniforms
-			std::string cenabled = std::string(cname).append(".enabled");
-			SetUniform1f(cenabled, (*iter)->enabled);
 
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
@@ -466,39 +512,39 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			std::string variablesLocation = std::string(cname).append(".dirLightProperties");
 			SetUniformFloat3v(variablesLocation, variablesVec3, 5);
 
-		std::string cshadow = std::string(cname).append(".castShadow");
-		if ((*iter)->light->castShadows)
-		{
-			SetUniform1i(cshadow, 1);
-			glActiveTexture(GL_TEXTURE4);
-			glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
-			std::string cdepthmap = std::string(cname).append(".depthMap");
-			SetUniform1i(cdepthmap, 4);
+			std::string cshadow = std::string(cname).append(".castShadow");
+			if ((*iter)->light->castShadows)
+			{
+				SetUniform1i(cshadow, 1);
+				glActiveTexture(GL_TEXTURE4);
+				glBindTexture(GL_TEXTURE_2D, (*iter)->depthMap);
+				std::string cdepthmap = std::string(cname).append(".depthMap");
+				SetUniform1i(cdepthmap, 4);
 
-			(*iter)->light->BindForReading();
-			int bakedDepthMap[3] = { 5,6,7 };
-			std::string cdepthmapbaked = std::string(cname).append(".bakeShadows");
-			SetUniformIntv(cdepthmapbaked, bakedDepthMap, 3);
-		}
-		else
-			SetUniform1i(cshadow, 0);
+				(*iter)->light->BindForReading();
+				int bakedDepthMap[3] = { 5,6,7 };
+				std::string cdepthmapbaked = std::string(cname).append(".bakeShadows");
+				SetUniformIntv(cdepthmapbaked, bakedDepthMap, 3);
 
-			char clightspaceM[128];
-			sprintf_s(clightspaceM, clightSpaceMatrix.c_str(), i);
-			SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
+				char clightspaceM[128];
+				sprintf_s(clightspaceM, clightSpaceMatrix.c_str(), i);
+				SetUniformMat4f(clightspaceM, (*iter)->projMat * (*iter)->viewMat);
 
-		std::string clightPos = std::string(cname).append(".lightPos");
-		SetUniformFloat3(clightPos, (*iter)->fake_position);
+				std::string clightPos = std::string(cname).append(".lightPos");
+				SetUniformFloat3(clightPos, (*iter)->fake_position);
 
-		std::string clightPosBaked = std::string(cname).append(".lightPosBaked");
-		SetUniformFloat3v(clightPosBaked, (*iter)->fake_position_baked, 3);
-		
-		for (int it = 0; it < 3; ++it)
-		{
-			char clightspaceMB[128];
-			sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i*3 + it);
-			SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix[it]);
-		}
+				std::string clightPosBaked = std::string(cname).append(".lightPosBaked");
+				SetUniformFloat3v(clightPosBaked, (*iter)->fake_position_baked, 3);
+
+				for (int it = 0; it < 3; ++it)
+				{
+					char clightspaceMB[128];
+					sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i * 3 + it);
+					SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix[it]);
+				}
+			}
+			else
+				SetUniform1i(cshadow, 0);
 
 			++i;
 		}
@@ -514,14 +560,12 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 	tmp_name.append("[%i]");
 	for (std::list<PointLightProperties*>::const_iterator iter = pointLights.begin(); iter != pointLights.end(); iter++)
 	{
-		if ((*iter)->light->IsEnabled())
+		if ((*iter)->isEnabled())
 		{
 			char cname[128];
 			sprintf_s(cname, tmp_name.c_str(), i);
 
-			// All uniforms
-			std::string cenabled = std::string(cname).append(".enabled");
-			SetUniform1f(cenabled, (*iter)->enabled);
+			// All uniforms 
 
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
@@ -555,14 +599,12 @@ void ResourceShader::SetSpotLights(const std::string& name, const std::list<Spot
 	tmp_name.append("[%i]");
 	for (std::list<SpotLightProperties*>::const_iterator iter = spotLights.begin(); iter != spotLights.end(); iter++)
 	{
-		if ((*iter)->light->IsEnabled())
+		if ((*iter)->isEnabled())
 		{
 			char cname[128];
 			sprintf_s(cname, tmp_name.c_str(), i);
 
 			// All uniforms
-			std::string cenabled = std::string(cname).append(".enabled");
-			SetUniform1f(cenabled, (*iter)->enabled);
 
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
@@ -602,9 +644,15 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 	std::stringstream ss[2]; // one for each shader type
 
 	SHADER_TYPE shader_type = SHADER_TYPE::UNKNOWN;
-
+	size_t name_pos;
 	while (getline(stream, line))
 	{
+		if (shader_type == SHADER_TYPE::UNKNOWN && (name_pos = line.find("name") != std::string::npos))
+		{
+			name = line.substr(name_pos + 4, line.length() - (name_pos + 1));
+			TryToSetShaderType();
+		}
+
 		if (line.find("shader") != std::string::npos)
 		{
 			if (line.find("vertex") != std::string::npos)
@@ -616,7 +664,7 @@ SHADER_PROGRAM_SOURCE ResourceShader::ParseShader(const std::string& path)
 				shader_type = SHADER_TYPE::FRAGMENT;
 			}
 		}
-		else
+		else if(shader_type != SHADER_TYPE::UNKNOWN)
 		{
 			ss[(int)shader_type] << line << '\n';
 		}
