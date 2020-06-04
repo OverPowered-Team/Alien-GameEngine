@@ -52,6 +52,8 @@ struct ParticleLight
 	bool particle_color = false;
 	bool alpha_intensity = false;
 	int max_lights = 10;
+	bool casting_particles = false;
+	bool size_range = false;
 
 };
 
@@ -126,7 +128,7 @@ public:
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
 
-	void SetLight(ResourcePrefab* light);
+	void SetLight(ResourcePrefab* light, GameObject* go);
 	void RemoveLight();
 	
 	void SetMesh(ResourceMesh* mesh);
@@ -156,6 +158,7 @@ private:
 	//std::map<float, Particle*> sortedParticles;
 	std::vector<Particle*> particles;
 	uint totalParticles = 0u;
+	
 	
 
 public:
@@ -194,4 +197,7 @@ public:
 	// Animation
 	int currentFrame = 0;
 	int sheetWidth, sheetHeight;
+
+	//Lights
+	uint totalLights = 0u;
 };
