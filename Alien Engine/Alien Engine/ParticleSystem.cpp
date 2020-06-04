@@ -554,6 +554,7 @@ void ParticleSystem::RemoveLight()
 	light->DecreaseReferences();
 	light = nullptr;
 
+	delete point_light;
 	point_light = nullptr;
 }
 

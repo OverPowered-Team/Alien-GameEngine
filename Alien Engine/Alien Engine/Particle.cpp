@@ -57,7 +57,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 			}
 
 			//Range affects intensity
-			if (owner->lightProperties.size_range)
+			if (owner->lightProperties.size_range && p_light != nullptr)
 			{
 				float size = owner->emmitter.GetRadius();
 

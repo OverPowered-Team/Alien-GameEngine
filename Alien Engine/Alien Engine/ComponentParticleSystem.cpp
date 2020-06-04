@@ -126,8 +126,6 @@ void ComponentParticleSystem::DrawGame()
 	{
 		if (game_object_attached->selected)
 		{
-			
-
 			Draw();
 		}
 		
@@ -914,7 +912,7 @@ bool ComponentParticleSystem::DrawInspector()
 				if (ImGui::Button("Delete", { ImGui::GetWindowWidth() * 0.15F , 0 }))
 				{
 
-					if (particleSystem->light != nullptr) {
+					if (particleSystem->point_light != nullptr) {
 						particleSystem->RemoveLight();
 					}
 				}
@@ -1440,6 +1438,22 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 		}
 
 	}
+	// ------------------------ Light Info ------------------------ //
+
+	to_save->SetBoolean("HasLight", (particleSystem->point_light != nullptr) ? true : false);
+	if (particleSystem->point_light != nullptr)
+	{
+		to_save->SetString("PrefabLightID", std::to_string(particleSystem->light->GetID()).data());
+	}
+	to_save->SetNumber("Light.Casting", castLightSelected);
+	to_save->SetBoolean("Light.Random", particleSystem->lightProperties.random_distribution);
+	to_save->SetBoolean("Light.ColorParticle", particleSystem->lightProperties.particle_color);
+	to_save->SetBoolean("Light.Alpha", particleSystem->lightProperties.alpha_intensity);
+	to_save->SetBoolean("Light.Size", particleSystem->lightProperties.size_range);
+	to_save->SetNumber("Light.MaxLights", particleSystem->lightProperties.max_lights);
+
+
+
 
 	// --------------- Deprecated -------------------- //
 	/*to_save->SetBoolean("TextureEnabled", texture_activated);
@@ -1697,9 +1711,92 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 		particleSystem->mesh_mode = false;
 	}
 	
+	// ---------------------- Lights -------------------------- //
+	try {
+
+		if (to_load->GetBoolean("HasLight")) {
+			enable_light = true;
+			u64 ID = std::stoull(to_load->GetString("PrefabLightID"));
+
+			if (ID != 0) {
+				ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(ID);
+				particleSystem->SetLight(prefab, game_object_attached);
+
+				//Temporal stuff
+				c_ambient = particleSystem->point_light->light_props.ambient;
+				c_diffuse = particleSystem->point_light->light_props.diffuse;
+				intensity = particleSystem->point_light->light_props.intensity;
+				new_intensity = intensity * particleSystem->particleInfo.color.w;
+			}
+
+			//particleSystem->lightProperties.casting_particles = to_load->GetBoolean("Light.Casting");
+			castLightSelected = to_load->GetNumber("Light.Casting");
+
+
+			if (castLightSelected == 0) {
+				if (particleSystem->point_light != nullptr) particleSystem
+					->point_light->light_props.casting_particles = false; particleSystem
+					->point_light->light_props.enabled = true;
+			}
+
+			if (castLightSelected == 1) {
+				if (particleSystem->point_light != nullptr) particleSystem
+					->point_light->light_props.casting_particles = true; particleSystem
+					->point_light->light_props.enabled = false;
+			}
+
+			if (castLightSelected == 2) {
+				if (particleSystem->point_light != nullptr) particleSystem
+					->point_light->light_props.casting_particles = true; particleSystem
+					->point_light->light_props.enabled = true;
+			}
+
+			particleSystem->lightProperties.random_distribution = to_load->GetBoolean("Light.Random");
+			particleSystem->lightProperties.particle_color = to_load->GetBoolean("Light.ColorParticle");
+
+			if (particleSystem->lightProperties.particle_color)
+			{
+				if (particleSystem->point_light != nullptr)
+				{
+					particleSystem->point_light->light_props.ambient = particleSystem->particleInfo.color.xyz();
+					particleSystem->point_light->light_props.diffuse = particleSystem->particleInfo.color.xyz();
+				}
+			}
+			else
+			{
+				if (particleSystem->point_light != nullptr)
+				{
+					particleSystem->point_light->light_props.ambient = c_ambient;
+					particleSystem->point_light->light_props.diffuse = c_diffuse;
+				}
+			}
+
+			particleSystem->lightProperties.alpha_intensity = to_load->GetBoolean("Light.Alpha");
+			if (particleSystem->lightProperties.alpha_intensity)
+			{
+				if (particleSystem->point_light != nullptr)
+				{
+					particleSystem->point_light->light_props.intensity = new_intensity;
+				}
+			}
+			else
+			{
+				if (particleSystem->point_light != nullptr)
+				{
+					particleSystem->point_light->light_props.intensity = intensity;
+				}
+			}
+			particleSystem->lightProperties.size_range = to_load->GetBoolean("Light.Size");
+			particleSystem->lightProperties.max_lights = to_load->GetNumber("Light.MaxLights");
+
+		}
+	}
+	catch (...)
+	{
+		enable_light = false;
+	}
 
 	
-
 	
 	// ---------------------- Deprecated -------------------------- //
 	/*texture_activated = to_load->GetBoolean("TextureEnabled");
