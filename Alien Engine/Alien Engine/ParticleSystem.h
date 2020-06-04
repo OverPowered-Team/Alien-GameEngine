@@ -6,12 +6,9 @@
 #include "ResourceTexture.h"
 #include "ParticleEmitter.h"
 #include "ResourceMaterial.h"
-#include "ResourcePrefab.h"
 #include "ResourceMesh.h"
 #include "ResourceShader.h"
 #include "ComponentParticleSystem.h"
-#include "ComponentLightPoint.h"
-#include "ComponentLightSpot.h"
 #include <map>
 #include <tuple>
 #include "Particle.h"
@@ -42,18 +39,6 @@ enum class FunctionBlendType
 	ONE_MINUS_CONSTANT_COLOR,
 	CONSTANT_ALPHA,
 	ONE_MINUS_CONSTANT_ALPHA
-
-};
-
-struct ParticleLight
-{
-	float ratio = 1.0f;
-	bool random_distribution = false;
-	bool particle_color = false;
-	bool alpha_intensity = false;
-	int max_lights = 10;
-	bool casting_particles = false;
-	bool size_range = false;
 
 };
 
@@ -127,9 +112,6 @@ public:
 	// ---------------------------------------------------------------------------
 	void SetMaterial(ResourceMaterial* mat);
 	void RemoveMaterial();
-
-	void SetLight(ResourcePrefab* light, GameObject* go);
-	void RemoveLight();
 	
 	void SetMesh(ResourceMesh* mesh);
 	void SetMeshes(std::vector<ResourceMesh*> meshes);
@@ -159,7 +141,6 @@ private:
 	std::vector<Particle*> particles;
 	uint totalParticles = 0u;
 	
-	
 
 public:
 	ResourceTexture* texture = nullptr;
@@ -168,10 +149,6 @@ public:
 	//ResourceMesh* mesh = nullptr;
 	std::vector<ResourceMesh*> meshes;
 	bool mesh_mode = false;
-
-	ResourcePrefab* light = nullptr;
-	ComponentLightPoint* point_light = nullptr;
-	ParticleLight lightProperties;
 
 	EquationBlendType eqBlend = EquationBlendType::FUNC_ADD;
 	FunctionBlendType funcBlendSource = FunctionBlendType::SRC_ALPHA;
@@ -197,7 +174,4 @@ public:
 	// Animation
 	int currentFrame = 0;
 	int sheetWidth, sheetHeight;
-
-	//Lights
-	uint totalLights = 0u;
 };

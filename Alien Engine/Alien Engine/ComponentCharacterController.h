@@ -46,7 +46,6 @@ class __declspec(dllexport) ComponentCharacterController : public ComponentColli
 	friend class CompZ;
 	friend class ComponentRigidBody;
 	friend class UserControllerHitReport;
-	friend class ComponentPhysics;
 
 public:
 
@@ -85,7 +84,6 @@ public:
 
 	// translates without overlap check
 	bool SetPosition(float3 position) const;
-	bool SetFootPosition(float3 position) const;
 	float3 GetPosition() const;
 	float3 GetFootPosition() const;
 	// TODO: make own copy of collision flag to not work with physx data outside.
@@ -99,17 +97,14 @@ private:
 	void SetDefaultConf();
 
 	void OnControllerColliderHit(ControllerColliderHit hit);
+	
 
-	void LinkShapesToComponent();
-
-	void UpdateParameters(); // called when object is enabled, just in case to refresh some changed data
 
 protected:
 
 	/*void RecreateCapusle();
 
 	void Reset() {}*/
-
 	void Clone(Component* clone) {}
 	void Update();
 	void DrawScene() override;
@@ -138,13 +133,12 @@ protected:
 	// if off, any gravity needs to be implemented by the user
 	// if on, forces gravity defined on gravity field always
 	// that isGrounded is false
-	bool force_gravity = false;
-	PxController* controller = nullptr;
+	bool force_gravity = true;
 
 private:
 	PxCapsuleControllerDesc desc;
 	float min_distance;
-	
+	PxController* controller = nullptr;
 	// callbacks
 	UserControllerHitReport* report = nullptr;
 

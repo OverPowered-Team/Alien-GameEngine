@@ -299,9 +299,8 @@ void PanelBuild::CreateBuild()
 		}
 	}
 
-	exe_path = std::string(folder_location + "/Dlls/" + game_name + ".exe");
+	exe_path = std::string(folder_location + "/Dlls/" + "Alien Engine" + ".exe");
 	std::experimental::filesystem::copy(BUILD_EXE_PATH, exe_path.data(), std::experimental::filesystem::copy_options::overwrite_existing);
-	std::remove(std::string(folder_location + "/Dlls/" + "Alien Engine" + ".exe").data());
 
 	std::string direct = std::string(folder_location + "/" + game_name + ".lnk");
 	std::experimental::filesystem::copy(BUILD_DIRECT_ACCESS_PATH, direct.data(), std::experimental::filesystem::copy_options::overwrite_existing);

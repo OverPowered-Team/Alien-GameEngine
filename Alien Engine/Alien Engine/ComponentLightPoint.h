@@ -4,7 +4,6 @@
 #include "Color.h"
 #include "ComponentMesh.h"
 #include "ModuleObjects.h"
-#include "ParticleSystem.h"
 
 #define RADIUS_INTENSITY_MULTIPLIE_POINT 5
 
@@ -20,7 +19,7 @@ struct __declspec(dllexport) PointLightProperties
 	float constant = 1.0f;
 	float linear = 0.1f;
 	float quadratic = 0.02f;
-	bool casting_particles = false;
+
 	Component* light = nullptr;
 
 	bool isEnabled() const
@@ -32,12 +31,10 @@ struct __declspec(dllexport) PointLightProperties
 class __declspec(dllexport) ComponentLightPoint : public Component {
 	friend class GameObject;
 	friend class ComponentMesh;
-	friend class ParticleSystem;
 public:
 	ComponentLightPoint(GameObject* attach);
 	virtual ~ComponentLightPoint();
-	void SetPosition(float3 pos);
-	void SetProperties(PointLightProperties props);
+
 private:
 	void LightLogic();
 	void Update() override;
@@ -56,7 +53,6 @@ private:
 	void LoadComponent(JSONArraypack* to_load);
 
 	void DrawIconLight();
-
 
 private:
 	ComponentMesh* bulb = nullptr;

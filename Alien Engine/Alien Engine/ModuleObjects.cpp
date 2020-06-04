@@ -431,7 +431,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 							wanted_shader = mat->used_shader;
 					}
 
-					if (partSystem == nullptr && trail == nullptr)
+					if (partSystem && trail == nullptr)
 						continue;
 
 				}

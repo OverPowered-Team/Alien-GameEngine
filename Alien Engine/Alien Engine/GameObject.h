@@ -83,7 +83,6 @@ class __declspec(dllexport) GameObject
 	friend class ModuleImporter;
 	friend class ModuleRenderer3D;
 	friend class ModuleUI;
-	friend class ParticleSystem;
 
 	friend class GameObject;
 	friend class Prefab;

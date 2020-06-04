@@ -9,11 +9,8 @@
 #include "ComponentCamera.h"
 #include "ModuleObjects.h"
 #include "Viewport.h"
-#include "RandomHelper.h"
 #include "mmgr/mmgr.h"
 #include "ModuleResources.h"
-#include "ComponentLightPoint.h"
-
 Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo endInfo) : owner(owner), particleInfo(info), startInfo(info), endInfo(endInfo)
 {
 	owner->sourceFactor = GL_SRC_ALPHA;
@@ -27,33 +24,18 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		p_material->SetTexture(owner->material->GetTexture(TextureType::DIFFUSE));
 		p_material->color = owner->material->color;
 		p_material->shaderInputs = owner->material->shaderInputs;
-	}
+		/*p_material->shaderInputs.particleShaderProperties.color = owner->material->shaderInputs.particleShaderProperties.color;
+		p_material->shaderInputs.particleShaderProperties.start_color = owner->material->shaderInputs.particleShaderProperties.color;
+		p_material->shaderInputs.particleShaderProperties.end_color = owner->material->shaderInputs.particleShaderProperties.end_color;*/
 
-	if (owner->point_light != nullptr && owner->point_light->light_props.casting_particles)
-	{
-		if (owner->totalLights < owner->lightProperties.max_lights)
+		/*ResourceTexture* tex = (ResourceTexture*)App->resources->GetResourceWithID(p_material->texturesID[int(TextureType::DIFFUSE)]);
+
+		if (tex != nullptr)
 		{
+			sheetWidth = tex->width;
+			sheetHeight = tex->height;
+		}*/
 
-			if (owner->lightProperties.random_distribution)
-			{
-				int rand = Random::GetRandomIntBetweenTwo(0, 2);
-				
-				if (rand == 1)
-				{
-					p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
-					p_light->SetProperties(owner->point_light->light_props);
-					owner->totalLights++;
-				}
-
-			}
-			else
-			{
-				p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
-				p_light->SetProperties(owner->point_light->light_props);
-				owner->totalLights++;
-			}
-
-		}
 	}
 
 
@@ -64,13 +46,6 @@ Particle::~Particle()
 {
 	if (owner->material != nullptr)
 		delete p_material;
-
-	if (p_light != nullptr)
-	{
-		delete p_light;
-		p_light = nullptr;
-		owner->totalLights--;
-	}
 
 	currentFrame = 0;
 }
@@ -138,12 +113,6 @@ void Particle::Update(float dt)
 	//Update Speed Scale
 	particleInfo.velocityScale = particleInfo.speedScale * particleInfo.speed;
 	
-
-	//Update Lights
-	if(p_light != nullptr)
-		p_light->SetPosition(particleInfo.position);
-
-
 	//----------- Animation (Deprecated) ---------------- //
 
 	/*if (particleInfo.animation != nullptr)
