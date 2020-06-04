@@ -1,12 +1,11 @@
 {
-    "Name": "Point light",
     "Prefab": {
         "GameObjects": [
             {
                 "Name": "Point light",
                 "FamilyNumber": 1,
-                "ID": "4669083534000981395",
-                "ParentID": "3533168510068751700",
+                "ID": "6515065588048226790",
+                "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
                 "Selected": true,
@@ -28,7 +27,7 @@
                             0,
                             0,
                             0,
-                            0
+                            1
                         ],
                         "Scale": [
                             1,
@@ -36,21 +35,21 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "6307815271486947474"
+                        "ID": "40456346616251340"
                     },
                     {
                         "Type": 5,
                         "Enabled": true,
-                        "ID": "2749544703825459198",
+                        "ID": "8085844272569676652",
                         "PrintIcon": true,
-                        "Intensity": 1,
+                        "Intensity": 0.019999999552965164,
                         "Position": [
                             0,
                             0,
                             0
                         ],
                         "Ambient": [
-                            0,
+                            1,
                             0,
                             0
                         ],
@@ -64,12 +63,13 @@
                             1,
                             1
                         ],
-                        "Constant": 1,
-                        "Linear": 0.10000000149011612,
-                        "Quadratic": 0.019999999552965164
+                        "Constant": 0,
+                        "Linear": 0,
+                        "Quadratic": 0.40000000596046448
                     }
                 ]
             }
         ]
-    }
+    },
+    "Name": "Point light"
 }

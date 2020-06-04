@@ -318,6 +318,7 @@ bool ComponentParticleSystem::DrawInspector()
 			if (ImGui::RadioButton("Local", &transformSelected, 1)) { particleSystem->particleInfo.globalTransform = false; }
 
 			// Initial State || Final State
+			
 			if (ImGui::TreeNodeEx("Start State", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 
@@ -325,6 +326,9 @@ bool ComponentParticleSystem::DrawInspector()
 				{
 					if (particleSystem->material != nullptr)
 						particleSystem->material->color = particleSystem->particleInfo.color;
+
+					if(particleSystem->point_light != nullptr)
+						new_intensity = intensity * particleSystem->particleInfo.color.w;
 				}
 				else
 				{
@@ -865,10 +869,7 @@ bool ComponentParticleSystem::DrawInspector()
 					ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 				}
 
-				ImGui::Spacing();
-				ImGui::Spacing();
-
-				ImGui::TextColored(ImVec4(1.0f, 0.54f, 0.0f, 1.0f), "PARTICLE LIGHT: ");
+				
 				ImGui::Spacing();
 				ImGui::Spacing();
 				ImGui::Text("Light");
@@ -890,8 +891,14 @@ bool ComponentParticleSystem::DrawInspector()
 							u64 ID = App->resources->GetIDFromAlienPath(path.data());
 							if (ID != 0) {
 								ResourcePrefab* prefab = (ResourcePrefab*)App->resources->GetResourceWithID(ID);
-								particleSystem->SetLight(prefab);
+								particleSystem->SetLight(prefab, game_object_attached);
 								App->objects->SetNewSelectedObject(game_object_attached, false);
+
+								//Temporal stuff
+								c_ambient = particleSystem->point_light->light_props.ambient;
+								c_diffuse = particleSystem->point_light->light_props.diffuse;
+								intensity = particleSystem->point_light->light_props.intensity;
+								new_intensity = intensity * particleSystem->particleInfo.color.w;
 							}
 						}
 					}
@@ -909,17 +916,74 @@ bool ComponentParticleSystem::DrawInspector()
 
 				ImGui::Spacing();
 				ImGui::Spacing();
-				ImGui::Text("Ratio: "); ImGui::SameLine(210, 15);
-				ImGui::DragFloat("##ratio", &particleSystem->lightProperties.ratio,0.1f, 0.0f, 1.0f);
+				ImGui::Text("Casting "); ImGui::SameLine(210, 15);
+				if (ImGui::RadioButton("Emitter", &castLightSelected, 0)) {
+					if (particleSystem->point_light != nullptr) particleSystem
+						->point_light->light_props.casting_particles = false;
+				}
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Particles", &castLightSelected, 1)) {
+					if (particleSystem->point_light != nullptr) particleSystem
+						->point_light->light_props.casting_particles = true;
+				}
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Both", &castLightSelected, 2)) {
+					
+				}
+
 				ImGui::Spacing();
+				
 				ImGui::Text("Random Distribution "); ImGui::SameLine(210, 15);
 				ImGui::Checkbox("##lrandom", &particleSystem->lightProperties.random_distribution);
 				ImGui::Spacing();
+
+
 				ImGui::Text("Use Particle Color "); ImGui::SameLine(210, 15);
 				ImGui::Checkbox("##lcolor", &particleSystem->lightProperties.particle_color);
+
+				
+				if (particleSystem->lightProperties.particle_color)
+				{
+					if (particleSystem->point_light != nullptr)
+					{
+						particleSystem->point_light->light_props.ambient = particleSystem->particleInfo.color.xyz();
+						particleSystem->point_light->light_props.diffuse = particleSystem->particleInfo.color.xyz();
+					}
+				}
+				else
+				{
+					if (particleSystem->point_light != nullptr)
+					{
+						particleSystem->point_light->light_props.ambient = c_ambient;
+						particleSystem->point_light->light_props.diffuse = c_diffuse;
+					}
+				}
+				
 				ImGui::Spacing();
+				
 				ImGui::Text("Alpha Affects Intensity "); ImGui::SameLine(210, 15);
 				ImGui::Checkbox("##lalpha", &particleSystem->lightProperties.alpha_intensity);
+					
+				
+				if (particleSystem->lightProperties.alpha_intensity)
+				{
+					if (particleSystem->point_light != nullptr)
+					{
+						particleSystem->point_light->light_props.intensity = new_intensity;
+					}
+				}
+				else
+				{
+					if (particleSystem->point_light != nullptr)
+					{
+						particleSystem->point_light->light_props.intensity = intensity;
+					}
+				}
+
+				ImGui::Spacing();
+				ImGui::Text("Size Affects Range "); ImGui::SameLine(210, 15);
+				ImGui::Checkbox("##lalpha", &particleSystem->lightProperties.size_range);
+
 				ImGui::Spacing();
 				ImGui::Text("Maximum Lights "); ImGui::SameLine(210, 15);
 				ImGui::DragInt("##maxLights", &particleSystem->lightProperties.max_lights, 1.0f, 0, 100);
