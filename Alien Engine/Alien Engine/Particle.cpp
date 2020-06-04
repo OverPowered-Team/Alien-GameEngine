@@ -20,6 +20,7 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	owner->destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
 	currentFrame = owner->currentFrame;
 	
+	// Material Particle
 	if (owner->material != nullptr) 
 	{
 		p_material = new ResourceMaterial();
@@ -29,11 +30,13 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 		p_material->shaderInputs = owner->material->shaderInputs;
 	}
 
+
+	// Light Particle
 	if (owner->point_light != nullptr && owner->point_light->light_props.casting_particles)
 	{
 		if (owner->totalLights < owner->lightProperties.max_lights)
 		{
-
+			//Random distribution
 			if (owner->lightProperties.random_distribution)
 			{
 				int rand = Random::GetRandomIntBetweenTwo(0, 2);
@@ -51,6 +54,18 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 				p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
 				p_light->SetProperties(owner->point_light->light_props);
 				owner->totalLights++;
+			}
+
+			//Range affects intensity
+			if (owner->lightProperties.size_range)
+			{
+				float size = owner->emmitter.GetRadius();
+
+				if (size <= 0) // Radius is setted as 0
+					size = 0.01f;
+
+				float factor = particleInfo.size3D.x / size;
+				p_light->light_props.intensity *= factor;
 			}
 
 		}

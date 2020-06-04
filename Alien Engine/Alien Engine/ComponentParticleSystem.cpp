@@ -124,8 +124,14 @@ void ComponentParticleSystem::DrawGame()
 #ifndef GAME_VERSION
 	if (App->objects->printing_scene)
 	{
-		if(game_object_attached->selected)
+		if (game_object_attached->selected)
+		{
+			
+
 			Draw();
+		}
+		
+
 	}
 	else 
 		Draw();
@@ -149,7 +155,6 @@ void ComponentParticleSystem::DebugDraw()
 void ComponentParticleSystem::Draw()
 {
 	OPTICK_EVENT();
-
 	particleSystem->DrawParticles();
 
 }
@@ -985,8 +990,8 @@ bool ComponentParticleSystem::DrawInspector()
 				}
 
 				ImGui::Spacing();
-				ImGui::Text("Size Affects Range "); ImGui::SameLine(210, 15);
-				ImGui::Checkbox("##lalpha", &particleSystem->lightProperties.size_range);
+				ImGui::Text("Size Affects Intensity "); ImGui::SameLine(210, 15);
+				ImGui::Checkbox("##lrange", &particleSystem->lightProperties.size_range);
 
 				ImGui::Spacing();
 				ImGui::Text("Maximum Lights "); ImGui::SameLine(210, 15);

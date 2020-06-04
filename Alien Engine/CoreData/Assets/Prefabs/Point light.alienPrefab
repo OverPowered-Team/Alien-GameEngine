@@ -4,7 +4,7 @@
             {
                 "Name": "Point light",
                 "FamilyNumber": 1,
-                "ID": "9602444749938899682",
+                "ID": "1313835436765622720",
                 "ParentID": "0",
                 "Enabled": true,
                 "ParentEnabled": true,
@@ -35,14 +35,14 @@
                             1
                         ],
                         "ScaleNegative": false,
-                        "ID": "12476609921813257029"
+                        "ID": "913459550669020001"
                     },
                     {
                         "Type": 5,
                         "Enabled": true,
-                        "ID": "4553451834489926701",
+                        "ID": "6400813608438115794",
                         "PrintIcon": true,
-                        "Intensity": 0.029999999329447746,
+                        "Intensity": 0.20000000298023224,
                         "Position": [
                             0,
                             0,

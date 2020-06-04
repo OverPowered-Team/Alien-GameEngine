@@ -263,6 +263,7 @@ void ParticleSystem::DrawParticles()
 	}
 	
 	RenderLight();
+	
 
 }
 
