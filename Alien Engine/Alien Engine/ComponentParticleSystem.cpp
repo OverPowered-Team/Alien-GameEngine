@@ -919,16 +919,20 @@ bool ComponentParticleSystem::DrawInspector()
 				ImGui::Text("Casting "); ImGui::SameLine(210, 15);
 				if (ImGui::RadioButton("Emitter", &castLightSelected, 0)) {
 					if (particleSystem->point_light != nullptr) particleSystem
-						->point_light->light_props.casting_particles = false;
+						->point_light->light_props.casting_particles = false; particleSystem
+						->point_light->light_props.enabled = true;
 				}
 				ImGui::SameLine();
 				if (ImGui::RadioButton("Particles", &castLightSelected, 1)) {
 					if (particleSystem->point_light != nullptr) particleSystem
-						->point_light->light_props.casting_particles = true;
+						->point_light->light_props.casting_particles = true; particleSystem
+						->point_light->light_props.enabled = false;
 				}
 				ImGui::SameLine();
 				if (ImGui::RadioButton("Both", &castLightSelected, 2)) {
-					
+					if (particleSystem->point_light != nullptr) particleSystem
+						->point_light->light_props.casting_particles = true; particleSystem
+						->point_light->light_props.enabled = true;
 				}
 
 				ImGui::Spacing();

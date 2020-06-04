@@ -9,9 +9,11 @@
 #include "ComponentCamera.h"
 #include "ModuleObjects.h"
 #include "Viewport.h"
+#include "RandomHelper.h"
 #include "mmgr/mmgr.h"
 #include "ModuleResources.h"
 #include "ComponentLightPoint.h"
+
 Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo endInfo) : owner(owner), particleInfo(info), startInfo(info), endInfo(endInfo)
 {
 	owner->sourceFactor = GL_SRC_ALPHA;
@@ -31,11 +33,26 @@ Particle::Particle(ParticleSystem* owner, ParticleInfo info, ParticleMutableInfo
 	{
 		if (owner->totalLights < owner->lightProperties.max_lights)
 		{
-			p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
-			p_light->SetProperties(owner->point_light->light_props);
 
-			//p_light = owner->point_light;
-			owner->totalLights++;
+			if (owner->lightProperties.random_distribution)
+			{
+				int rand = Random::GetRandomIntBetweenTwo(0, 2);
+				
+				if (rand == 1)
+				{
+					p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
+					p_light->SetProperties(owner->point_light->light_props);
+					owner->totalLights++;
+				}
+
+			}
+			else
+			{
+				p_light = new ComponentLightPoint(owner->point_light->game_object_attached);
+				p_light->SetProperties(owner->point_light->light_props);
+				owner->totalLights++;
+			}
+
 		}
 	}
 
