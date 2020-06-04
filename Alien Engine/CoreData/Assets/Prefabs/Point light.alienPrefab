@@ -1,0 +1,75 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Point light",
+                "FamilyNumber": 1,
+                "ID": "9602444749938899682",
+                "ParentID": "0",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "8610181328499441214",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "12476609921813257029"
+                    },
+                    {
+                        "Type": 5,
+                        "Enabled": true,
+                        "ID": "4553451834489926701",
+                        "PrintIcon": true,
+                        "Intensity": 0.029999999329447746,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Ambient": [
+                            1,
+                            0,
+                            0
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Constant": 0,
+                        "Linear": 0,
+                        "Quadratic": 0.40000000596046448
+                    }
+                ]
+            }
+        ]
+    },
+    "Name": "Point light"
+}
