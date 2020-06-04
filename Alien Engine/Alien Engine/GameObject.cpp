@@ -105,7 +105,10 @@ GameObject::~GameObject()
 	}
 #endif
 
-	App->objects->octree.Remove(this);
+
+	if (is_static) {
+		App->objects->octree.Remove(this);
+	}
 
 	std::vector<Component*>::iterator component = components.begin();
 
