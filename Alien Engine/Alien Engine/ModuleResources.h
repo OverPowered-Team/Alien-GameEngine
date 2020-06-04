@@ -140,6 +140,7 @@ public:
 	ResourceShader* shield_fresnel_shader = nullptr;
 	ResourceShader* shield_shader = nullptr;
 	ResourceShader* hdr_shader = nullptr; 
+	ResourceShader* final_pass_shader = nullptr; 
 
 	FileNode* assets = nullptr;
 	ResourceTexture* default_skybox_textures[6] = { nullptr,nullptr,nullptr,nullptr,nullptr,nullptr };

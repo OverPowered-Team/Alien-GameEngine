@@ -714,6 +714,8 @@ void ModuleResources::ReadAllMetaData()
 	shield_fresnel_shader = GetShaderByName("shield_fresnel_shader");
 	hdr_shader = GetShaderByName("hdr_shader");
 	hdr_shader->IncreaseReferences();
+	final_pass_shader = GetShaderByName("final_pass_shader");
+	final_pass_shader->IncreaseReferences();
 
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);

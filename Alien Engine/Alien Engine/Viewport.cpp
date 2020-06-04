@@ -30,7 +30,7 @@ FBO::~FBO()
 void FBO::BeginFBO(const Color& color)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[MULTISAMPLING_FBO]);
-	glClearColor(color.r, color.g, color.b, color.a);
+	glClearColor(color.r, color.g, color.b, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
@@ -223,7 +223,7 @@ uint FBO::GetPostProcTexture()
 	return ID[POST_PROC_TEXTURE];
 }
 
-uint FBO::GetHDRFBO()
+uint FBO::GetPostProcFBO()
 {
 	return ID[POST_PROC_FBO];
 }
@@ -316,12 +316,12 @@ void Viewport::EndViewport()
 
 	fbo->EndFBO();
 
-	ApplyPostProcessing();
+	//ApplyPostProcessing();
 }
 
 void Viewport::ApplyPostProcessing()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetHDRFBO());
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcFBO());
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -353,6 +353,42 @@ void Viewport::ApplyPostProcessing()
 
 	// Lastly create the texture correctly
 
+	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Viewport::ApplyUIPass()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcFBO());
+	glViewport(0, 0, width, height);
+
+	App->resources->final_pass_shader->Bind();
+
+	// Get Rendered Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, GetTexture());
+	App->resources->final_pass_shader->SetUniform1i("uiRender", 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
+	App->resources->final_pass_shader->SetUniform1i("sceneRender", 1);
+	
+	// Bind and draw Screen Quad with HDR pass 
+
+	glBindVertexArray(App->renderer3D->screen_quad_VAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbinds
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	App->resources->final_pass_shader->Unbind();
+	glBindVertexArray(0);
+
+
+	// Lastly create the texture correctly
 	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -391,7 +427,7 @@ uint Viewport::GetFBO()
 
 uint Viewport::GetPostProcFBO()
 {
-	return fbo->GetHDRFBO();
+	return fbo->GetPostProcFBO();
 }
 
 uint Viewport::GetTexture()

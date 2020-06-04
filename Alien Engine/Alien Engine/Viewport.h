@@ -41,7 +41,7 @@ public:
 
 	uint GetPostProcTexture(); 
 
-	uint GetHDRFBO();
+	uint GetPostProcFBO();
 
 	uint GetFBO();
 
@@ -90,6 +90,8 @@ public:
 	void EndViewport();
 
 	void ApplyPostProcessing();
+
+	void ApplyUIPass();
 
 	void SetPos(float2 position);
 

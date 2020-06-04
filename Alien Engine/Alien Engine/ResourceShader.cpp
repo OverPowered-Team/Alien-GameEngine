@@ -359,6 +359,15 @@ void ResourceShader::SetUniform3i(const std::string& name, const int& v0, const 
 		glUniform3i(GetUniformLocation(name), v0, v1, v2);
 }
 
+void ResourceShader::SetUniform3f(const std::string& name, const float& v0, const float& v1, const float& v2)
+{
+	OPTICK_EVENT();
+
+	int location = GetUniformLocation(name);
+	if (location != -1)
+		glUniform3f(GetUniformLocation(name), v0, v1, v2);
+}
+
 void ResourceShader::SetUniformFloat3(const std::string& name, const float3& vec)
 {
 	OPTICK_EVENT();

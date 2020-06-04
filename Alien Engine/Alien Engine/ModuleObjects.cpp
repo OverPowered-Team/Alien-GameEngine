@@ -435,9 +435,20 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			current_used_shader->Unbind();
 
-			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 
-			
+			// Once we rendered the scene
+			// ------------------ We apply PostProcessing only to that------------------
+
+			viewport->EndViewport();
+			viewport->ApplyPostProcessing();
+
+			// ------------------ Then we draw UI on a clear buffer ------------------
+
+			viewport->BeginViewport();
+
+
+			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
+		
 			ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
 			std::vector<std::pair<float, GameObject*>>::iterator it_ui_world = ui_world.begin();
@@ -466,7 +477,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
-
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {
@@ -474,7 +484,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 		}
 
+		// And finally combine UI to our postprocessed image
 		viewport->EndViewport();
+		viewport->ApplyUIPass();
 
 	}
 
