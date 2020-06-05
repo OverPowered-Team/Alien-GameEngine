@@ -9,6 +9,7 @@ struct __declspec(dllexport) DirLightProperties
 {
 	bool enabled = true;
 	float intensity = 1.0f;
+	float shadowIntensity = 1.0f;
 	float3 position = float3::zero();
 	float3 fake_position = float3::zero();
 	float3 fake_position_baked[3];

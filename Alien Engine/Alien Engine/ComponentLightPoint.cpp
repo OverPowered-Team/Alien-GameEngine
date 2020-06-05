@@ -117,6 +117,7 @@ bool ComponentLightPoint::DrawInspector()
 		ImGui::DragFloat("Linear", &light_props.linear, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Quadratic", &light_props.quadratic, 0.01f, 0.0f, 2.0f);
 
+		ImGui::Checkbox("Interfere with shadows", &light_props.affectShadows);
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -179,6 +180,7 @@ void ComponentLightPoint::SaveComponent(JSONArraypack* to_save)
 	to_save->SetNumber("Constant", float(light_props.constant));
 	to_save->SetNumber("Linear", float(light_props.linear));
 	to_save->SetNumber("Quadratic", float(light_props.quadratic));
+	to_save->SetBoolean("InterfeWithShadows", light_props.affectShadows);
 }
 
 void ComponentLightPoint::LoadComponent(JSONArraypack* to_load)
@@ -194,6 +196,12 @@ void ComponentLightPoint::LoadComponent(JSONArraypack* to_load)
 	light_props.constant = (float)to_load->GetNumber("Constant");
 	light_props.linear = (float)to_load->GetNumber("Linear");
 	light_props.quadratic = (float)to_load->GetNumber("Quadratic");
+	try {
+		light_props.affectShadows = to_load->GetBoolean("InterfeWithShadows");
+	}
+	catch (...) {
+		light_props.affectShadows = false;
+	}
 }
 
 void ComponentLightPoint::DrawIconLight()

@@ -479,6 +479,9 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			int bakedDepthMap[3] = { 5,6,7 };
 			std::string cdepthmapbaked = std::string(cname).append(".bakeShadows");
 			SetUniformIntv(cdepthmapbaked, bakedDepthMap, 3);
+
+			std::string cshadowintensity = std::string(cname).append(".shadowIntensity");
+			SetUniform1f(cshadowintensity, (*iter)->shadowIntensity);
 		}
 		else
 			SetUniform1i(cshadow, 0);
@@ -540,6 +543,9 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 			std::string variablesLocation = std::string(cname).append(".pointLightProperties");
 			SetUniformFloat3v(variablesLocation, variablesVec3, 4);
+
+			std::string caffectShadows = std::string(cname).append(".affectShadows");
+			SetUniform1f(caffectShadows, (*iter)->affectShadows);
 
 			++i;
 		}

@@ -108,6 +108,7 @@ struct DirectionalLight
     sampler2D depthMap;
     vec3 lightPos;
 
+    float shadowIntensity;
     sampler2D bakeShadows[3];
     vec3 lightPosBaked[3];
 
@@ -121,6 +122,8 @@ struct PointLight
     float constant;
     float linear;
     float quadratic;
+
+    bool affectShadows;
 };
 
 struct SpotLight
@@ -151,7 +154,7 @@ struct Material {
 };
 
 // Function declarations
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked0, vec4 lightSpaceMatBaked1, vec4 lightSpaceMatBaked2);
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked0, vec4 lightSpaceMatBaked1, vec4 lightSpaceMatBaked2, inout float shadowIntensity);
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMat, vec2 texCoords);
 vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 frag_pos, vec3 view_dir, Material objectMat, vec2 texCoords);
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir, sampler2D depthMap);
@@ -217,20 +220,28 @@ void main()
     vec3 result = vec3(0);
     vec3 view_dir = normalize(view_pos - frag_pos);
 
+    float intensityInShadows = 1.0;
     // Light calculations
-
     for(int i = 0; i < max_lights.x; i++)
     {
         int it0 = i*3;
         int it1 = i*3 + 1;
         int it2 = i*3 + 2;
-        result += CalculateDirectionalLight(dir_light[i], normal, view_dir, objectMaterial, texCoords, FragPosLightSpace[i],FragPosLightSpaceBaked[it0], FragPosLightSpaceBaked[it1], FragPosLightSpaceBaked[it2]);
+        result += CalculateDirectionalLight(dir_light[i], normal, view_dir, objectMaterial, texCoords, FragPosLightSpace[i],FragPosLightSpaceBaked[it0], FragPosLightSpaceBaked[it1], FragPosLightSpaceBaked[it2], intensityInShadows);
     }
     for(int i = 0; i < max_lights.y; i++)
-        result += CalculatePointLight(point_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);    
+    {
+        if(!point_light[i].affectShadows)
+        {
+            result += CalculatePointLight(point_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords) * vec3(intensityInShadows);   
+        }
+        else
+        {
+            result += CalculatePointLight(point_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);
+        }
+    }
     for(int i = 0; i < max_lights.z; i++)
-        result += CalculateSpotLight(spot_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords);   
-
+        result += CalculateSpotLight(spot_light[i], normal, frag_pos, view_dir, objectMaterial, texCoords) * vec3(intensityInShadows);   
     // ----------------------------------------------------------
 
     FragColor = vec4(result, 1.0) * objectColor;
@@ -242,7 +253,7 @@ void main()
 }
 
 // Function definitions
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked0, vec4 lightSpaceMatBaked1, vec4 lightSpaceMatBaked2)
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir, Material objectMaterial, vec2 texCoords, vec4 lightSpaceMat, vec4 lightSpaceMatBaked0, vec4 lightSpaceMatBaked1, vec4 lightSpaceMatBaked2, inout float shadowIntensity)
 {
     // Intensity
     float intensity = light.intensity;
@@ -271,7 +282,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     vec3 result = vec3(0);
 
     //calculate shadows
-    if(light.castShadow == true)
+    if(light.castShadow == true && specular != vec3(0.0) && diffuse != vec3(0.0))
     {
         float shadow = ShadowCalculation(lightSpaceMat, normal, fake_lightDir, light.depthMap);
         
@@ -286,7 +297,16 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
         
         if(shadow > 1.0)
             shadow = 1.0;
-        result = (ambient + (1.0 - shadow) * (diffuse + specular)) * vec3(intensity, intensity, intensity);
+        if(shadow == 1)
+        {
+            shadowIntensity = 1.0 - light.shadowIntensity;
+            result = ambient  * vec3(light.shadowIntensity);
+        }
+        else
+        {
+            result = (ambient + diffuse + specular) * vec3(intensity, intensity, intensity);
+        }
+
     }
     else 
     {
