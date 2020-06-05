@@ -5,8 +5,9 @@
 
 using namespace std;
 typedef unsigned int uint;
+typedef ComponentCollider* Collider;
 typedef vector<RaycastHit> RaycastHits;
-typedef vector<ComponentCollider*> Colliders;
+typedef vector<Collider> Colliders;
 
 // Helper ---------------------------------------
 
@@ -28,6 +29,8 @@ public:
 	static int				GetLayerMask(vector<const char*>& layers);
 
 	// Queries -----------------------------------------
+
+
 
 	static bool				Raycast(float3 origin, float3 unit_dir, float max_distance, int layer_mask = -1);
 	static bool				Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit, int layer_mask = -1);

@@ -74,6 +74,15 @@ int Physics::GetLayerMask(vector<const char*>& layers)
 
 // Queries -----------------------------------------
 
+bool Physics::ClosestPoint(float3 point, float3& closest_point, Collider collider)
+{
+	return App->physx->ClosestPoint(point, closest_point, collider);
+}
+bool Physics::ClosestPoint(float3 point, float3& closest_point, Collider collider, float3 position, Quat rotation)
+{
+	return App->physx->ClosestPoint(point, closest_point, collider, position, rotation);
+}
+
 // ------------------ Ray ------------------------
 
 bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, int layer_mask)

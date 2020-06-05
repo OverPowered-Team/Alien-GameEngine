@@ -369,6 +369,28 @@ void ModulePhysX::EndQueryFilter()
 	this->multiple_hit = false;
 }
 
+bool ModulePhysX::ClosestPoint(float3 point, float3& closest_point,  Collider collider)
+{
+	if (collider == nullptr || collider->physics == nullptr || collider->physics->actor == nullptr) return false;
+	PxVec3 _closest_point(0.f, 0.f, 0.f);
+	PxGeometryQuery::pointDistance(F3_TO_PXVEC3(point), collider->shape->getGeometry().any(), collider->physics->actor->getGlobalPose(), &_closest_point);
+	closest_point = PXVEC3_TO_F3(_closest_point);
+	return true;
+}
+
+bool ModulePhysX::ClosestPoint(float3 point, float3& closest_point, Collider collider, float3 position, Quat rotation)
+{
+	PxTransform px_trams;
+	float4x4 trans(rotation, position);
+
+	if (! collider || ! F4X4_TO_PXTRANS(trans, px_trams)) return false;
+	PxVec3 _closest_point(0.f, 0.f, 0.f);
+	PxGeometryQuery::pointDistance(F3_TO_PXVEC3(point), collider->shape->getGeometry().any(), px_trams, &_closest_point);
+	closest_point = PXVEC3_TO_F3(_closest_point);
+
+	return true;
+}
+
 bool ModulePhysX::SweepAny(PxGeometry& geometry, float4x4& trans, float3& unit_dir, float max_dist, int layer_mask)
 {
 	PxTransform _trans;
