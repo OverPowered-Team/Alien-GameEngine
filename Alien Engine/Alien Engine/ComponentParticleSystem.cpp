@@ -14,6 +14,7 @@
 #include "ResourceMesh.h"
 #include "ResourceModel.h"
 #include "ResourcePrefab.h"
+#include "RandomHelper.h"
 #include "Optick/include/optick.h"
 #include "ComponentMaterial.h"
 #include "mmgr/mmgr.h"
@@ -309,6 +310,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 		if (ImGui::TreeNodeEx("Particle", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			
 			ImGui::Spacing();
 			ImGui::Separator();
 			ImGui::Spacing();
@@ -371,21 +373,52 @@ bool ComponentParticleSystem::DrawInspector()
 					}
 				
 				}
-
-
-				if (ImGui::Checkbox("Start 3D Rotation", &particleSystem->particleInfo.axisRot3DStart))
+				
+				
+			
+				if (random_rot)
 				{
-					particleSystem->particleInfo.angle3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angle3D.z);
-				}
-				ImGui::Spacing();
-				if (particleSystem->particleInfo.axisRot3DStart)
-				{
-					ImGui::Text("Start 3D Rotation: "); ImGui::SameLine(200, 15);
-					ImGui::DragFloat3("##rot3D", (float*)&particleSystem->particleInfo.angle3D, 0.1f, 0.0f, 360.0f);
+					if (ImGui::Checkbox("Start 3D Rotation", &particleSystem->particleInfo.axisRot3DStart))
+					{
+						particleSystem->particleInfo.angle3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angle3D.z);
+					}
+					ImGui::Spacing();
+					if (particleSystem->particleInfo.axisRot3DStart)
+					{
+						ImGui::Text("Start 3D Rotation: "); 
+						if (ImGui::DragFloat2("X", (float*)&particleSystem->particleInfo.randomAngleX, 0.1f, 0.0f, 360.0f)){ particleSystem->particleInfo.angle3D.x = CalculateRandomBetweenTwoConstants(particleSystem->particleInfo.randomAngleX); }
+
+						if (ImGui::DragFloat2("Y", (float*)&particleSystem->particleInfo.randomAngleY, 0.1f, 0.0f, 360.0f)){ particleSystem->particleInfo.angle3D.y = CalculateRandomBetweenTwoConstants(particleSystem->particleInfo.randomAngleY); }
+
+						if (ImGui::DragFloat2("Z", (float*)&particleSystem->particleInfo.randomAngleZ, 0.1f, 0.0f, 360.0f)){ particleSystem->particleInfo.angle3D.z = CalculateRandomBetweenTwoConstants(particleSystem->particleInfo.randomAngleZ); }
+					}
+					else
+					{
+						ImGui::Text("Start Rotation: "); ImGui::SameLine(200, 15);
+						if (ImGui::DragFloat2("##StartRotationRandom", (float*)&particleSystem->particleInfo.randomAngleZ, 0.1f, 0.0f, 360.0f))
+							particleSystem->particleInfo.angle3D.z = CalculateRandomBetweenTwoConstants(particleSystem->particleInfo.randomAngleZ);
+					}
 				}
 				else
-					ImGui::DragFloat("Start Rotation", (float*)&particleSystem->particleInfo.angle3D.z, 0.1f, 0.0f, 360.0f);
-
+				{
+					if (ImGui::Checkbox("Start 3D Rotation", &particleSystem->particleInfo.axisRot3DStart))
+					{
+						particleSystem->particleInfo.angle3D = math::float3(0.0f, 0.0f, particleSystem->particleInfo.angle3D.z);
+					}
+					ImGui::Spacing();
+					if (particleSystem->particleInfo.axisRot3DStart)
+					{
+						ImGui::Text("Start 3D Rotation: "); ImGui::SameLine(200, 15);
+						ImGui::DragFloat3("##rot3D", (float*)&particleSystem->particleInfo.angle3D, 0.1f, 0.0f, 360.0f);
+					}
+					else
+					{
+						ImGui::Text("Start Rotation: "); ImGui::SameLine(200, 15);
+						ImGui::DragFloat("##StartRotation", (float*)&particleSystem->particleInfo.angle3D.z, 0.1f, 0.0f, 360.0f);
+					}
+				}
+				ImGui::SameLine();
+				SetConfigurationArrow();
 
 				//ImGui::DragFloat3("Start Rotation 3D", (float*)&particleSystem->particleInfo.angle3D, 0.1f, 0.0f, 360.0f);
 				ImGui::DragFloat3("Gravity", (float*)&particleSystem->particleInfo.force);
@@ -393,6 +426,7 @@ bool ComponentParticleSystem::DrawInspector()
 
 				ImGui::TreePop();
 			}
+			
 
 			if (particleSystem->particleInfo.changeOverLifeTime)
 			{
@@ -1959,5 +1993,26 @@ void ComponentParticleSystem::SaveParticles()
 	}
 }
 
+void ComponentParticleSystem::SetConfigurationArrow()
+{
+
+	const char* options[] = { "Constant", "Random Between Two Constants" };
+
+	if (ImGui::ArrowButton("##StartRot", ImGuiDir_Down)) { ImGui::OpenPopup("Options_SatartRot"); }
+	if (ImGui::BeginPopup("Options_SatartRot"))
+	{
+		if (ImGui::Selectable(options[0])) { random_rot = false; }
+		if (ImGui::Selectable(options[1])) { random_rot = true; }
+
+		ImGui::EndPopup();
+	}
+	
+}
+
+float ComponentParticleSystem::CalculateRandomBetweenTwoConstants(float2 constants)
+{
+	float output = Random::GetRandomFloatBetweenTwo(constants.x, constants.y);
+	return output;
+}
 
 
