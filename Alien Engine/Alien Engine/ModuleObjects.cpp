@@ -440,12 +440,27 @@ update_status ModuleObjects::PostUpdate(float dt)
 			// ------------------ We apply PostProcessing only to that------------------
 
 			viewport->EndViewport();
+
+
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, viewport->GetFBO());
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, viewport->GetPostProcFBO());
+
+			glBlitFramebuffer(0, 0, viewport->GetSize().x, viewport->GetSize().y, 0, 0, viewport->GetSize().x, viewport->GetSize().y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+			glDisable(GL_DEPTH_TEST);
 			viewport->ApplyPostProcessing();
 
+			glEnable(GL_DEPTH_TEST);
+
 			// ------------------ Then we draw UI on a clear buffer ------------------
+			//viewport->BeginViewport();
+			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetPostProcFBO());
+			glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
 
-			viewport->BeginViewport();
-
+			// Default Depth Settings ----------------------------
 
 			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 		
@@ -477,6 +492,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {
@@ -485,8 +502,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 		}
 
 		// And finally combine UI to our postprocessed image
-		viewport->EndViewport();
-		viewport->ApplyUIPass();
+		//viewport->EndViewport();
+		//viewport->ApplyUIPass();
 
 	}
 

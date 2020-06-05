@@ -106,7 +106,7 @@ void FBO::UpdateFBO(float width, float height)
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_DEPTH_RBO]);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	// Frame -----------------------------------------------
@@ -129,6 +129,8 @@ void FBO::UpdateFBO(float width, float height)
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[POST_PROC_FBO]);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[POST_PROC_TEXTURE], 0);
+	// Same depth buffer as normal FBO
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, ID[POST_PROC_DEPTH_RBO]);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -323,7 +325,7 @@ void Viewport::ApplyPostProcessing()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcFBO());
 	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	// ========== HDR PASS ============== 
 
@@ -360,6 +362,7 @@ void Viewport::ApplyPostProcessing()
 
 void Viewport::ApplyUIPass()
 {
+	glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcFBO());
 	glViewport(0, 0, width, height);
 
