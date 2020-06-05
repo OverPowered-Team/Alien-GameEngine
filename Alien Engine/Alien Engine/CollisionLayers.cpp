@@ -18,7 +18,7 @@ bool CollisionLayers::GetNameByIndex(int index, string& name)
 {
 	if (index >= names.size() || index < 0) return false;
 	name = names[index];
-	return true;;
+	return true;
 }
 
 void CollisionLayers::AddLayer(std::string to_add)

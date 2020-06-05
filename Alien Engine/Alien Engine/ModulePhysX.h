@@ -40,6 +40,7 @@ public:
 	float3 GetGravity();
 
 	// Queries -----------------------------------------
+	enum QueryType { RAYCAST, SWEEPCAST, OVERLAP, NO_TYPE };
 
 	bool			Raycast(float3 origin, float3 unit_dir, float max_distance, int layer_mask);
 	bool			Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit, int layer_mask);
@@ -65,6 +66,8 @@ public:
 
 private:
 
+
+
 	bool Init();
 	bool Start();
 	update_status PreUpdate(float dt);
@@ -74,7 +77,9 @@ private:
 	// Queries -----------------------------------------
 
 	PxHitFlags GetHitFlags();
-	void BeginQueryFilter()
+	PxQueryFilterData GetFilterData(bool any_hit);
+	void BeginQueryFilter(QueryType query_type, int layer_mask,  bool generate_vector = false);
+	void EndQueryFilter();
 
 	bool SweepAny(PxGeometry& geometry, float4x4& trans, float3& unit_dir, float max_dist, int layer_mask);
 	bool Sweep(PxGeometry& geometry, float4x4& trans, float3& unit_dir, float max_dist, RaycastHit& hit,  int layer_mask);
@@ -101,9 +106,7 @@ private:
 	void UnloadPhysicsExplicitely();
 
 public:
-
-	enum QueryType {RAYCAST, SWEEPCAST, OVERLAP, NO_TYPE} 
-	query_type = QueryType::NO_TYPE;
+	QueryType query_type = QueryType::NO_TYPE;
 	
 	CollisionLayers	layers;
 	bool debug_physics = false;
@@ -111,7 +114,7 @@ public:
 	int  multiple_hit = false;
 	bool query_hit_triggers = true;
 	bool query_hit_backfaces = false;
-	bool query_initial_overlap = false;
+	bool query_initial_overlap = true;
 
 private:
 

@@ -22,7 +22,8 @@ public:
 
 	// Layers -----------------------------------------
 
-	static void				SetLayer(int layer_0, int layer_1, bool value);
+	static void				IgnoreLayerColision(int layer_0, int layer_1, bool value = true);
+	static bool				GetIgnoreLayerColision(int layer_0, int layer_1);
 	static int				GetLayerMask(const char* layer);
 	static int				GetLayerMask(vector<const char*>& layers);
 

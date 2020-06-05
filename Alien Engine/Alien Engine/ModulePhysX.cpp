@@ -101,6 +101,7 @@ bool ModulePhysX::Init()
 		controllers_manager = PxCreateControllerManager(*px_scene);
 
 
+	// Filtering --------------------------------------
 
 	layers.LoadLayers();
 
@@ -348,6 +349,13 @@ PxHitFlags ModulePhysX::GetHitFlags()
 	if (query_hit_backfaces) flags |= PxHitFlag::eMESH_BOTH_SIDES;
 	return flags;
 }
+PxQueryFilterData ModulePhysX::GetFilterData( bool any_hit)
+{
+	PxQueryFilterData fd;
+	fd.flags |= PxQueryFlag::ePREFILTER | PxQueryFlag::ePOSTFILTER;
+	if (any_hit)  fd.flags |= PxQueryFlag::eANY_HIT;
+	return fd;
+}
 void ModulePhysX::BeginQueryFilter(QueryType query_type, int layer_mask, bool generate_vector)
 {
 	this->query_type = query_type;
@@ -367,11 +375,8 @@ bool ModulePhysX::SweepAny(PxGeometry& geometry, float4x4& trans, float3& unit_d
 	if (!F4X4_TO_PXTRANS(trans, _trans)) return false;
 
 	PxSweepBuffer sweep_buffer;
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::eANY_HIT | PxQueryFlag::ePREFILTER;
-
 	BeginQueryFilter(QueryType::SWEEPCAST, layer_mask);
-	bool ret = px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), fd, px_query_filter);
+	bool ret = px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), GetFilterData(true), px_query_filter);
 	EndQueryFilter();
 
 	return ret;
@@ -382,11 +387,8 @@ bool ModulePhysX::Sweep(PxGeometry& geometry, float4x4& trans, float3& unit_dir,
 	if (!F4X4_TO_PXTRANS(trans, _trans)) return false;
 
 	PxSweepBuffer sweep_buffer;
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::ePREFILTER;
-
 	BeginQueryFilter(QueryType::SWEEPCAST, layer_mask);
-	bool ret = px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), fd, px_query_filter);
+	bool ret = px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), GetFilterData(false), px_query_filter);
 	EndQueryFilter();
 
 	if (ret) hit.SetRaycastHit(sweep_buffer.block);
@@ -396,14 +398,10 @@ void ModulePhysX::SweepAll(PxGeometry& geometry, float4x4& trans, float3& unit_d
 {
 	PxTransform _trans;
 	if (!F4X4_TO_PXTRANS(trans, _trans)) return;
-
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxSweepHit hits_buffer[BUFFER_SIZE];
 	PxSweepBuffer sweep_buffer(hits_buffer, BUFFER_SIZE);
-
 	BeginQueryFilter(QueryType::SWEEPCAST, layer_mask, true);
-	if (px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), fd, px_query_filter)) {
+	if (px_scene->sweep(geometry, _trans, F3_TO_PXVEC3(unit_dir), max_dist, sweep_buffer, GetHitFlags(), GetFilterData(false), px_query_filter)) {
 		uint size = sweep_buffer.getNbAnyHits();
 		for (uint i = 0; i < size; ++i) {
 			RaycastHit hit;
@@ -418,13 +416,10 @@ bool ModulePhysX::Check(PxGeometry& geometry, float4x4& trans, int layer_mask)
 {
 	PxTransform _trans;
 	if (!F4X4_TO_PXTRANS(trans, _trans)) return false;
-
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::eANY_HIT | PxQueryFlag::ePREFILTER;
 	PxOverlapBuffer overlap_buffer;
 
 	BeginQueryFilter(QueryType::OVERLAP, layer_mask);
-	bool ret = px_scene->overlap(geometry, _trans, overlap_buffer, fd, px_query_filter);
+	bool ret = px_scene->overlap(geometry, _trans, overlap_buffer, GetFilterData(true), px_query_filter);
 	EndQueryFilter();
 
 	return ret;
@@ -434,13 +429,11 @@ void ModulePhysX::Overlap(PxGeometry& geometry, float4x4& trans, Colliders& coll
 	PxTransform _trans;
 	if (!F4X4_TO_PXTRANS(trans, _trans)) return;
 
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxOverlapHit hits_buffer[BUFFER_SIZE];
 	PxOverlapBuffer overlap_buffer(hits_buffer, BUFFER_SIZE);
 
 	BeginQueryFilter(QueryType::OVERLAP, layer_mask, true);
-	if (px_scene->overlap(geometry, _trans, overlap_buffer, fd, px_query_filter)) {
+	if (px_scene->overlap(geometry, _trans, overlap_buffer, GetFilterData(false), px_query_filter)) {
 		for (uint i = 0; i < overlap_buffer.getNbAnyHits(); ++i) {
 			Collider col = (Collider)overlap_buffer.getAnyHit(i).shape->userData;
 			if (col) colliders.push_back(col);
@@ -453,24 +446,19 @@ void ModulePhysX::Overlap(PxGeometry& geometry, float4x4& trans, Colliders& coll
 
 bool ModulePhysX::Raycast(float3 origin, float3 unit_dir, float max_distance, int layer_mask)
 {
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::eANY_HIT | PxQueryFlag::ePREFILTER;
 	PxRaycastBuffer raycast_buffer;
 
 	BeginQueryFilter(QueryType::RAYCAST, layer_mask);
-	bool ret = px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), fd, px_query_filter);
+	bool ret = px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), GetFilterData(true), px_query_filter);
 	EndQueryFilter();
 
 	return ret;
 }
 bool ModulePhysX::Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit, int layer_mask)
 {
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxRaycastBuffer raycast_buffer;
-
 	BeginQueryFilter(QueryType::RAYCAST, layer_mask);
-	bool ret = px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), fd, px_query_filter);
+	bool ret = px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), GetFilterData(false), px_query_filter);
 	EndQueryFilter();
 
 	if (ret) hit.SetRaycastHit(raycast_buffer.block);
@@ -478,14 +466,12 @@ bool ModulePhysX::Raycast(float3 origin, float3 unit_dir, float max_distance, Ra
 }
 RaycastHits ModulePhysX::RaycastAll(float3 origin, float3 unit_dir, float max_distance, int layer_mask)
 {
-	PxQueryFilterData fd;
-	fd.flags |= PxQueryFlag::ePREFILTER;
 	PxRaycastHit hits_buffer[BUFFER_SIZE];
 	PxRaycastBuffer raycast_buffer(hits_buffer, BUFFER_SIZE);
 	RaycastHits return_hits;
 
 	BeginQueryFilter(QueryType::RAYCAST, layer_mask, true);
-	if (px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), fd, px_query_filter)) {
+	if (px_scene->raycast(F3_TO_PXVEC3(origin), F3_TO_PXVEC3(unit_dir), max_distance, raycast_buffer, GetHitFlags(), GetFilterData(false), px_query_filter)) {
 		uint size = raycast_buffer.getNbAnyHits();
 		for (uint i = 0; i < size; ++i) {
 			RaycastHit hit;

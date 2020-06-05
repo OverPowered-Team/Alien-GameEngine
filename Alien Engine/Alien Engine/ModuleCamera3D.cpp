@@ -11,6 +11,7 @@
 #include "ComponentMesh.h"
 #include "ResourceMesh.h"
 #include "Viewport.h"
+#include "Physics.h"
 #include "ComponentCurve.h"
 #include "ShortCutManager.h"
 #include "mmgr/mmgr.h"
@@ -320,9 +321,12 @@ void ModuleCamera3D::CreateRay()
 
 	// Add Physic Raycast ------------------------
 	RaycastHit physic_hit;
-	bool collider_found = App->physx->Raycast(ray.a, ray.Dir(), 1000, physic_hit, -1);
+	bool last_overlap_init = App->physx->query_initial_overlap;
+	Physics::SetQueryInitialOverlaping(false);
+	bool collider_found = Physics::Raycast(ray.a, ray.Dir(), 1000.f, physic_hit);
 	if (collider_found)
 		hits_triangle.push_back({ physic_hit.distance ,physic_hit.collider->game_object_attached });
+	Physics::SetQueryInitialOverlaping(last_overlap_init);
 
 	// Sort by distance ---------------------
 	std::sort(hits_triangle.begin(), hits_triangle.end(), ModuleCamera3D::SortByDistance);
@@ -432,7 +436,7 @@ bool ModuleCamera3D::TestTrianglesIntersections(GameObject* object, const LineSe
 	float distance = 0.f;
 	local_ray.Transform(object->transform->global_transformation.Inverted());
 
-	if (mesh != nullptr && mesh->mesh != nullptr) {
+	if (mesh != nullptr && mesh->mesh != nullptr && mesh->enabled) {
 		ComponentTransform* transform = (ComponentTransform*)object->GetComponent(ComponentType::TRANSFORM);
 
 		for (uint i = 0; i < mesh->mesh->num_index; i += 3) {

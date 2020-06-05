@@ -33,10 +33,19 @@ void Physics::SetQueryHitBackfaces(bool value)
 
 // Layers -----------------------------------------
 
-void Physics::SetLayer(int layer_0, int layer_1, bool value)
+void Physics::IgnoreLayerColision(int layer_0, int layer_1, bool value)
 {
 	App->physx->layers.SetLayers(layer_0, layer_1, value);
 }
+
+bool Physics::GetIgnoreLayerColision(int layer_0, int layer_1)
+{
+	if (App->physx->layers.GetNameByIndex(layer_0) && App->physx->layers.GetNameByIndex(layer_1)) 
+		return App->physx->layers.data[layer_0][layer_1];
+
+	return false;
+}
+
 int Physics::GetLayerMask(const char* layer)
 {
 	int index = 0;

@@ -185,8 +185,8 @@ void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 num_pairs)
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if (!App->physx->layers.data[filterData0.word0][ filterData1.word0] ||  // Check Collision Layers a-b
-		!App->physx->layers.data[filterData1.word0][filterData0.word0]  ||  // Check Collision Layers b-a
+	if (!App->physx->layers.data[filterData0.word0][filterData1.word0] ||  // Check Collision Layers a-b
+		!App->physx->layers.data[filterData1.word0][filterData0.word0] ||  // Check Collision Layers b-a
 		filterData0.word1 == filterData1.word1)                             // Check Game Object ID
 		return physx::PxFilterFlag::eSUPPRESS;
 
@@ -225,12 +225,15 @@ PxQueryHitType::Enum ControllerFilterCallback::postFilter(const PxFilterData& fi
 PxQueryHitType::Enum QueryFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
 	PxFilterData filterData1 = shape->getSimulationFilterData();
-	int value = (1<<(int)filterData1.word0);
+	int value = (1 << (int)filterData1.word0);
 	int layer_mask = App->physx->layer_mask;
-	
-	if ( App->physx->layer_mask == -1 || (value & layer_mask) != 0 ) 
+
+	if (App->physx->layer_mask == -1 || (value & layer_mask) != 0)
 	{
-		return (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
+		if (!App->physx->query_hit_triggers && shape->userData != nullptr && ((ComponentCollider*)shape->userData)->is_trigger)
+			return PxQueryHitType::Enum::eNONE;
+		else
+			return (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
 	}
 	else
 		return PxQueryHitType::Enum::eNONE;
@@ -238,18 +241,17 @@ PxQueryHitType::Enum QueryFilterCallback::preFilter(const PxFilterData& filterDa
 
 PxQueryHitType::Enum QueryFilterCallback::postFilter(const PxFilterData& filterData, const PxQueryHit& hit)
 {
-	//PxRaycastHit& raycast_hit =  (PxRaycastHit&) hit;
-	//bool r = raycast_hit.hadInitialOverlap();
+	bool valid_hit = true;
 
+	if (!App->physx->query_initial_overlap && App->physx->query_type == ModulePhysX::RAYCAST || App->physx->query_type == ModulePhysX::SWEEPCAST) {
+		PxLocationHit& location_hit = (PxLocationHit&)hit;
+		valid_hit = !location_hit.hadInitialOverlap();
+	}
 
-	//if (App->physx->layer_mask == -1 || (value & layer_mask) != 0)
-	//{
-	//	return (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
-	//}
-	//else
-	//	return PxQueryHitType::Enum::eNONE;
-
-	return PxQueryHitType::Enum::eTOUCH;
+	if (valid_hit)
+		return (App->physx->multiple_hit) ? PxQueryHitType::Enum::eTOUCH : PxQueryHitType::Enum::eBLOCK;
+	else
+		return PxQueryHitType::Enum::eNONE;
 }
 
 LayerChangedData::LayerChangedData(int layer_0, int layer_1) : layer_0(layer_0), layer_1(layer_1) {}
