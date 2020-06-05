@@ -19,16 +19,16 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 
-uniform sampler2D uiRender;
-uniform sampler2D sceneRender;
+uniform sampler2D sceneColor;
 
 void main()
 {             
+    FragColor = vec4(texture(sceneColor,TexCoords).rgb, 1.0);
     // UI Texture
-    vec4 uiColor = texture(uiRender, TexCoords).rgba;
-    // Postprocessed Scene Texture
-    vec3 sceneColor = texture(sceneRender, TexCoords).rgb;
+    // vec4 uiColor = texture(uiRender, TexCoords).rgba;
+    // // Postprocessed Scene Texture
+    // vec3 sceneColor = texture(sceneRender, TexCoords).rgb;
 
-    // Blend both images depending on alpha UI 
-    FragColor = mix(vec4(sceneColor,1.0), uiColor, uiColor.a);
+    // // Blend both images depending on alpha UI 
+    // FragColor = mix(vec4(sceneColor,1.0), uiColor, uiColor.a);
 }

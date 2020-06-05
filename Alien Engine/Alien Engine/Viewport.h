@@ -20,6 +20,9 @@ public:
 		POST_PROC_FBO,
 		POST_PROC_TEXTURE,
 		POST_PROC_DEPTH_RBO,
+		POST_PROC_MULTISAMPLING_FBO,
+		POST_PROC_MULTISAMPLING_COLOR,
+		POST_PROC_MULTISAMPLING_DEPTH,
 		MAX
 	};
 
@@ -42,6 +45,7 @@ public:
 	uint GetPostProcTexture(); 
 
 	uint GetPostProcFBO();
+	uint GetPostProcMSAAFBO();
 
 	uint GetFBO();
 
@@ -71,7 +75,6 @@ private:
 
 
 class ComponentCamera;
-class FBO;
 
 class Viewport
 {
@@ -104,6 +107,7 @@ public:
 	uint GetFBO();
 
 	uint GetPostProcFBO();
+	uint GetPostProcMSAAFBO();
 
 	uint GetTexture();
 

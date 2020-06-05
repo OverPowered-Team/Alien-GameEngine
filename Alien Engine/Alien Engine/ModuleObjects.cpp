@@ -443,21 +443,22 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, viewport->GetFBO());
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, viewport->GetPostProcFBO());
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, viewport->GetPostProcMSAAFBO());
 
-			glBlitFramebuffer(0, 0, viewport->GetSize().x, viewport->GetSize().y, 0, 0, viewport->GetSize().x, viewport->GetSize().y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+			glBlitFramebuffer(0, 0, viewport->GetSize().x, viewport->GetSize().y, 0, 0, viewport->GetSize().x, viewport->GetSize().y, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 			glDisable(GL_DEPTH_TEST);
+
 			viewport->ApplyPostProcessing();
 
 			glEnable(GL_DEPTH_TEST);
 
 			// ------------------ Then we draw UI on a clear buffer ------------------
 			//viewport->BeginViewport();
-			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetPostProcFBO());
+			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetPostProcMSAAFBO());
 			glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
 
 			// Default Depth Settings ----------------------------
@@ -503,7 +504,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		// And finally combine UI to our postprocessed image
 		//viewport->EndViewport();
-		//viewport->ApplyUIPass();
+		viewport->ApplyUIPass();
 
 	}
 
