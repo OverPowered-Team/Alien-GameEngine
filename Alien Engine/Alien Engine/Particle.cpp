@@ -200,9 +200,10 @@ void Particle::Update(float dt)
 void Particle::PostUpdate(float dt)
 {
 	if (particleInfo.changeOverLifeTime) {
+		currentLerpTime += dt;
 
-		InterpolateValues(dt);
-		
+		if(currentLerpTime >= particleInfo.changedStartTime)
+			InterpolateValues(dt);
 	}
 }
 

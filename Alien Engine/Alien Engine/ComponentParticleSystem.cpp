@@ -489,9 +489,13 @@ bool ComponentParticleSystem::DrawInspector()
 				{
 					ImGui::Spacing();
 					ImGui::Spacing();
-					ImGui::Text("Final Time "); ImGui::SameLine(200, 15);
-					ImGui::DragFloat("##Final Time", &particleSystem->particleInfo.changedTime, 0.1f, 0.0f, particleSystem->particleInfo.maxLifeTime);
+					ImGui::Text("Start LerpTime "); ImGui::SameLine(200, 15);
+					ImGui::DragFloat("##Start Time", &particleSystem->particleInfo.changedStartTime, 0.1f, 0.0f, particleSystem->particleInfo.maxLifeTime);
 
+					ImGui::Text("Final LerpTime "); ImGui::SameLine(200, 15);
+					ImGui::DragFloat("##Final Time", &particleSystem->particleInfo.changedTime, 0.1f, 0.0f, particleSystem->particleInfo.maxLifeTime);
+					ImGui::Spacing();
+					ImGui::Spacing();
 					ImGui::Text("Speed "); ImGui::SameLine(200, 15);
 					ImGui::DragFloat("##Speed", &particleSystem->endInfo.speed, 0.2f);
 
@@ -1394,6 +1398,8 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Start.RotateOverLifeTime", particleSystem->particleInfo.rotateOverTime);
 
 	// ----------------- Particle System End Info -------------------- //
+	// Start Time
+	to_save->SetNumber("End.StartTime", particleSystem->particleInfo.changedStartTime);
 	// Final Time
 	to_save->SetNumber("End.FinalTime", particleSystem->particleInfo.changedTime);
 	// Speed
@@ -1632,10 +1638,12 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	// ----------------- Particle System End Info -------------------- //
 	try {
 	// Final Time
+		particleSystem->particleInfo.changedStartTime = to_load->GetNumber("End.StartTime");
 		particleSystem->particleInfo.changedTime = to_load->GetNumber("End.FinalTime");
 	}
 	catch (...)
 	{
+		particleSystem->particleInfo.changedTime = 2;
 		particleSystem->particleInfo.changedTime = 5;
 	}
 	try {
