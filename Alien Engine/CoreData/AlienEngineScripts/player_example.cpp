@@ -9,24 +9,32 @@ player_example::~player_example()
 {
 }
 
+void player_example::OnDrawGizmos()
+{
+	RaycastHit hit;
+	float4x4 trans = transform->GetGlobalMatrix();
+	float3 origin = trans.TranslatePart();
+	float3 dir = -trans.WorldY();
+	float dist = 10.f;
+	int player_mask = 0;
+	vector<const char*> layers;
+	layers.push_back("Player");
+	layers.push_back("Ground");
+	int layer_mask = Physics::GetLayerMask(layers);
+
+	if (Physics::Raycast(origin, dir, 10.f, hit, layer_mask))
+	{
+		Gizmos::DrawLine(origin, hit.point, Color(1.f, 0.f, 0.f));
+		float rest_dist = dist - origin.Distance(hit.point);
+		Gizmos::DrawLine(hit.point, hit.point + hit.normal * rest_dist, Color(1.f, 0.f, 1.f));
+	}
+	else
+	{
+		Gizmos::DrawLine(origin, origin + dir * dist, Color(1.f, 0.f, 0.f));
+	}
+}
+
 void player_example::Update()
 {
-	if (Input::GetKeyRepeat(SDL_SCANCODE_3)) {
-		ComponentBar* bar = GetComponent<ComponentBar>();
-		float value = bar->GetBarValue();
-		value += Time::GetDT();
-		if (value > 100) {
-			value = 100;
-		}
-		bar->SetBarValue(value);
-	}
-	if (Input::GetKeyRepeat(SDL_SCANCODE_4)) {
-		ComponentBar* bar = GetComponent<ComponentBar>();
-		float value = bar->GetBarValue();
-		value -= Time::GetDT();
-		if (value < 0) {
-			value = 0;
-		}
-		bar->SetBarValue(value);
-	}
+
 }

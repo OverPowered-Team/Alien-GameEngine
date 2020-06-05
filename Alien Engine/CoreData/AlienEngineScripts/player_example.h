@@ -9,7 +9,7 @@ public:
 
 	player_example();
 	virtual ~player_example();
-
+	void OnDrawGizmos();
 	void Update();
 
 public:
