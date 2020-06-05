@@ -74,6 +74,15 @@ int Physics::GetLayerMask(vector<const char*>& layers)
 
 // Queries -----------------------------------------
 
+bool Physics::ClosestPoint(float3 point, float3& closest_point, Collider collider)
+{
+	return App->physx->ClosestPoint(point, closest_point, collider);
+}
+bool Physics::ClosestPoint(float3 point, float3& closest_point, Collider collider, float3 position, Quat rotation)
+{
+	return App->physx->ClosestPoint(point, closest_point, collider, position, rotation);
+}
+
 // ------------------ Ray ------------------------
 
 bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, int layer_mask)
@@ -84,7 +93,7 @@ bool Physics::Raycast(float3 origin, float3 unit_dir, float max_dist, RaycastHit
 {
 	return  App->physx->Raycast(origin, unit_dir, max_dist, hit, layer_mask);
 }
-RaycastHits Physics::RaycastAll(float3 origin, float3 unit_dir, float max_dist, int layer_mask)
+const RaycastHits& Physics::RaycastAll(float3 origin, float3 unit_dir, float max_dist, int layer_mask)
 {
 	static RaycastHits ret;
 	ret = App->physx->RaycastAll(origin, unit_dir, max_dist, layer_mask);
@@ -105,13 +114,13 @@ bool Physics::BoxCast(float4x4& trans, float half_size, float3 unit_dir, float m
 {
 	return App->physx->BoxCast(trans, half_size, unit_dir, max_dist, hit, layer_mask);
 }
-RaycastHits Physics::BoxCastAll(float4x4 trans, float half_size, float3 unit_dir, float max_dist, int layer_mask)
+const RaycastHits& Physics::BoxCastAll(float4x4 trans, float half_size, float3 unit_dir, float max_dist, int layer_mask)
 {
 	static RaycastHits ret;
 	ret = App->physx->BoxCastAll(trans, half_size, unit_dir, max_dist, layer_mask);
 	return ret;
 }
-Colliders Physics::OverlapBox(float4x4& trans, float half_size, int layer_mask)
+const Colliders& Physics::OverlapBox(float4x4& trans, float half_size, int layer_mask)
 {
 	static Colliders ret;
 	ret = App->physx->OverlapBox(trans, half_size, layer_mask);
@@ -132,13 +141,13 @@ bool Physics::SphereCast(float3 center, float radius, float3 unit_dir, float max
 {
 	return  App->physx->SphereCast(center, radius, unit_dir, max_dist, hit, layer_mask);
 }
-RaycastHits Physics::SphereCastAll(float3 center, float radius, float3 unit_dir, float max_dist, int layer_mask)
+const RaycastHits& Physics::SphereCastAll(float3 center, float radius, float3 unit_dir, float max_dist, int layer_mask)
 {
 	static RaycastHits ret;
 	ret = App->physx->SphereCastAll(center, radius, unit_dir, max_dist, layer_mask);
 	return ret;
 }
-Colliders Physics::OverlapSphere(float3 center, float radius, int layer_mask)
+const Colliders& Physics::OverlapSphere(float3 center, float radius, int layer_mask)
 {
 	static Colliders ret;
 	ret = App->physx->OverlapSphere(center, radius, layer_mask);
@@ -159,13 +168,13 @@ bool Physics::CapsuleCast(float4x4& trans, float height, float radius, float3 un
 {
 	return App->physx->CapsuleCast(trans, height, radius, unit_dir, max_dist, hit, layer_mask);
 }
-RaycastHits Physics::CapsuleCastAll(float4x4 trans, float height, float radius, float3 unit_dir, float max_dist, int layer_mask)
+const RaycastHits& Physics::CapsuleCastAll(float4x4 trans, float height, float radius, float3 unit_dir, float max_dist, int layer_mask)
 {
 	static RaycastHits ret;
 	ret = App->physx->CapsuleCastAll(trans, height, radius, unit_dir, max_dist, layer_mask);
 	return ret;
 }
-Colliders Physics::OverlapCapsule(float4x4& trans, float height, float radius, int layer_mask)
+const Colliders& Physics::OverlapCapsule(float4x4& trans, float height, float radius, int layer_mask)
 {
 	static Colliders ret;
 	ret = App->physx->OverlapCapsule(trans, height, radius, layer_mask);

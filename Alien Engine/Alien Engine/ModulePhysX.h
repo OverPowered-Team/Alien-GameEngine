@@ -7,7 +7,7 @@
 using namespace physx;
 typedef ComponentCollider* Collider;
 typedef vector<RaycastHit> RaycastHits;
-typedef vector<ComponentCollider*> Colliders;
+typedef vector<Collider> Colliders;
 
 #define BUFFER_SIZE 64
 #define DEFAULT_LAYER_MASK -1
@@ -41,6 +41,9 @@ public:
 
 	// Queries -----------------------------------------
 	enum QueryType { RAYCAST, SWEEPCAST, OVERLAP, NO_TYPE };
+
+	bool			ClosestPoint(float3 point, float3& closest_point, Collider collider);
+	bool 			ClosestPoint(float3 point , float3& closest_point, Collider collider, float3 position, Quat rotation);
 
 	bool			Raycast(float3 origin, float3 unit_dir, float max_distance, int layer_mask);
 	bool			Raycast(float3 origin, float3 unit_dir, float max_distance, RaycastHit& hit, int layer_mask);
