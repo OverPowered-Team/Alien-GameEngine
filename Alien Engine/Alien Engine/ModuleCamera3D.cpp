@@ -320,13 +320,26 @@ void ModuleCamera3D::CreateRay()
 	}
 
 	// Add Physic Raycast ------------------------
-	RaycastHit physic_hit;
-	bool last_overlap_init = App->physx->query_initial_overlap;
-	Physics::SetQueryInitialOverlaping(false);
-	bool collider_found = Physics::Raycast(ray.a, ray.Dir(), 1000.f, physic_hit);
-	if (collider_found)
-		hits_triangle.push_back({ physic_hit.distance ,physic_hit.collider->game_object_attached });
-	Physics::SetQueryInitialOverlaping(last_overlap_init);
+
+	bool collider_found = false;
+
+	if (App->physx->mouse_pick_colliders)
+	{
+		RaycastHit physic_hit;
+		bool last_overlap_init = App->physx->query_initial_overlap;
+		bool last_pick_triggers = App->physx->query_hit_triggers;
+		Physics::SetQueryInitialOverlaping(false);
+		Physics::SetQueryHitTriggers(App->physx->mouse_pick_triggers);
+
+		if (Physics::Raycast(ray.a, ray.Dir(), 1000.f, physic_hit)) {
+			collider_found = true;
+			hits_triangle.push_back({ physic_hit.distance ,physic_hit.collider->game_object_attached });
+		}
+			
+		Physics::SetQueryInitialOverlaping(last_overlap_init);
+		Physics::SetQueryHitTriggers(last_pick_triggers);
+	}
+
 
 	// Sort by distance ---------------------
 	std::sort(hits_triangle.begin(), hits_triangle.end(), ModuleCamera3D::SortByDistance);

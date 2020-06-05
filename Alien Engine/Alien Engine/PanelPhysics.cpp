@@ -32,6 +32,19 @@ void PanelPhysics::PanelLogic()
 		ImGui::Spacing();
 		ImGui::Title("Gravity");	if (ImGui::DragFloat3("##gravity", current_gravity.ptr(), 0.05f)) { physics->SetGravity(current_gravity); }
 		ImGui::Title("Debug All");	ImGui::Checkbox("##debug_all_physics", &App->physx->debug_physics);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Title("Mouse Pick "); ImGui::Checkbox("##mouse_pick_colliders", &App->physx->mouse_pick_colliders);
+		
+		if (App->physx->mouse_pick_colliders)
+		{
+			ImGui::Spacing();
+			ImGui::Title("  Triggers", 2);		ImGui::Checkbox("##mouse_pick_triggers", &App->physx->mouse_pick_triggers);
+		}
+	
+		ImGui::Spacing();
+		ImGui::Spacing();
 		ImGui::Title("Query Hits");			ImGui::Text("");
 		ImGui::Spacing();
 		ImGui::Title("  Triggers", 2);		ImGui::Checkbox("##query_hit_triggers", &App->physx->query_hit_triggers);

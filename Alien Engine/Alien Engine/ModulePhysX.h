@@ -110,6 +110,9 @@ public:
 	
 	CollisionLayers	layers;
 	bool debug_physics = false;
+	bool mouse_pick_colliders = true;
+	bool mouse_pick_triggers = true;
+
 	int	layer_mask = DEFAULT_LAYER_MASK;
 	int  multiple_hit = false;
 	bool query_hit_triggers = true;
