@@ -32,6 +32,9 @@ void player_example::OnDrawGizmos()
 	{
 		Gizmos::DrawLine(origin, origin + dir * dist, Color(1.f, 0.f, 0.f));
 	}
+
+	//Physics::OverlapSphere(float3(0.f, 0.f, 0.f), 2.f);
+	Physics::RaycastAll(origin, dir, 10.f, layer_mask);
 }
 
 void player_example::Update()
