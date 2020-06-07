@@ -848,9 +848,9 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	fogDensity = (float)to_load->GetNumber("Density");
 	fogGradient = (float)to_load->GetNumber("Gradient");
 
-	hdr = to_load->GetBoolean("HDR");
-	exposure = (float)to_load->GetNumber("Exposure");
-	gamma = (float)to_load->GetNumber("Gamma");
+	hdr = to_load->GetBoolean("HDR", false);
+	exposure = (float)to_load->GetNumber("Exposure", 1.0f);
+	gamma = (float)to_load->GetNumber("Gamma", 0.0f);
 
 	ResourceTexture* tex_pos = nullptr;
 	std::string path_pos;
