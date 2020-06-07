@@ -314,6 +314,7 @@ void ResourceMaterial::ApplyMaterial()
 	shaderInputs.standardShaderProperties.diffuse_color = color;
 	shaderInputs.particleShaderProperties.color = color;
 	shaderInputs.shieldFresnelShaderProperties.color = color;
+	shaderInputs.CartoonWaterProperties.color = color;
 	shaderInputs.shieldShaderProperties.color = float3(color.x, color.y, color.z);
 
 	used_shader->UpdateUniforms(shaderInputs);
@@ -617,6 +618,28 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::InputInt("##numhits", &shaderInputs.shieldFresnelShaderProperties.numHits);*/
 
 		break; }
+
+	case SHADER_TEMPLATE::CARTOON_WATER:
+	{
+		ImGui::ColorEdit4("Albedo", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+
+		// Diffuse 
+		ImGui::Text("Diffuse:");
+		InputTexture(TextureType::DIFFUSE);
+		ImGui::Spacing();
+
+		ImGui::Text("NORMAL MAP:");
+		InputTexture(TextureType::NORMALS);
+		ImGui::Spacing();
+
+		ImGui::Text("Speed:"); ImGui::SameLine();
+		ImGui::SliderFloat("##speed", &shaderInputs.CartoonWaterProperties.speed, 0.01f, 1.0f);
+		ImGui::Spacing();
+
+		ImGui::Text("waves strength:"); ImGui::SameLine();
+		ImGui::SliderFloat("##strength", &shaderInputs.CartoonWaterProperties.waveStrength, -1.0f, 1.0f);
+
+	}
 
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");

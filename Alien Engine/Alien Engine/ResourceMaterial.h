@@ -73,6 +73,13 @@ struct ShaderInputs
 
 	} shieldFresnelShaderProperties;
 
+	struct ShieldCartoonWater {
+		float4 color = float4(0.f, 0.3f, 0.6f, 1.f);
+		float speed = 1.0f;
+		float waveStrength = 0.02;
+
+	}CartoonWaterProperties;
+
 };
 
 class ResourceShader; 

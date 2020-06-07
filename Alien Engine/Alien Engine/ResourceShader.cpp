@@ -18,6 +18,7 @@
 #include "ComponentLightPoint.h"
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
+#include "Time.h"
 
 #include "Optick/include/optick.h"
 
@@ -172,6 +173,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::SHIELD;
 	else if (std::strcmp(name.c_str(), "shield_fresnel_shader") == 0)
 		shaderType = SHADER_TEMPLATE::SHIELD_FRESNEL;
+	else if (std::strcmp(name.c_str(), "cartoon_water_shader") == 0)
+		shaderType = SHADER_TEMPLATE::CARTOON_WATER;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -242,6 +245,14 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		//SetUniform1i("numHits", inputs.shieldFresnelShaderProperties.numHits);
 		break; }
 
+	case SHADER_TEMPLATE::CARTOON_WATER: {
+		SetUniform1f("moveFactor", inputs.CartoonWaterProperties.speed * Time::GetTimeSinceStart());
+		SetUniform4f("water_color", inputs.CartoonWaterProperties.color);
+		SetUniform1f("waveStrength", inputs.CartoonWaterProperties.waveStrength);
+		break;
+
+	}
+
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
@@ -289,6 +300,10 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 			SetUniform1f("density", camera->fogDensity);
 			SetUniform1f("gradient", camera->fogGradient);
 		}
+		break;
+	case SHADER_TEMPLATE::CARTOON_WATER:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 		break;
 
 	}
@@ -454,8 +469,8 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 			sprintf_s(cname, tmp_name.c_str(), i);
 
 			// All uniforms
-			std::string cenabled = std::string(cname).append(".enabled");
-			SetUniform1f(cenabled, (*iter)->enabled);
+			/*std::string cenabled = std::string(cname).append(".enabled");
+			SetUniform1f(cenabled, (*iter)->enabled);*/
 
 			std::string cintensity = std::string(cname).append(".intensity");
 			SetUniform1f(cintensity, (*iter)->intensity);
