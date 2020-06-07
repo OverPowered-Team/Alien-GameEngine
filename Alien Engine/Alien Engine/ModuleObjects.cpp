@@ -435,33 +435,23 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 			current_used_shader->Unbind();
 
-
-			// Once we rendered the scene
-			// ------------------ We apply PostProcessing only to that------------------
-
 			viewport->EndViewport();
 
+			// Once we rendered the scene
 
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, viewport->GetFBO());
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, viewport->GetPostProcMSAAFBO());
+			// ------------------ We apply PostProcessing only to that------------------
 
-			glBlitFramebuffer(0, 0, viewport->GetSize().x, viewport->GetSize().y, 0, 0, viewport->GetSize().x, viewport->GetSize().y, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-			glDisable(GL_DEPTH_TEST);
-
+			// Draw Plane with postprocessing on MSAA PostProc FBO
 			viewport->ApplyPostProcessing();
 
-			glEnable(GL_DEPTH_TEST);
 
-			// ------------------ Then we draw UI on a clear buffer ------------------
-			//viewport->BeginViewport();
-			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetPostProcMSAAFBO());
+			// ------------------ Then we draw UI on top of the post processing FBO ------------------
+
+			glBindFramebuffer(GL_FRAMEBUFFER, viewport->GetPostProcFBO());
 			glViewport(0, 0, viewport->GetSize().x, viewport->GetSize().y);
 
-			// Default Depth Settings ----------------------------
+			// Enable Depth Test for UI In-World
+			glEnable(GL_DEPTH_TEST);
 
 			UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 		
@@ -494,6 +484,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 			
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDisable(GL_DEPTH_TEST);
 
 			if (printing_scene)
 				OnDrawGizmos();
@@ -502,10 +493,9 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 		}
 
-		// And finally combine UI to our postprocessed image
+		// And finally draw all into the final PostProcFBO's Texture
+		viewport->FinalPass();
 		//viewport->EndViewport();
-		viewport->ApplyUIPass();
-
 	}
 
 #else
@@ -635,6 +625,23 @@ update_status ModuleObjects::PostUpdate(float dt)
 
 		current_used_shader->Unbind();
 
+		game_viewport->EndViewport();
+
+		// Once we rendered the scene
+
+		// ------------------ We apply PostProcessing only to that------------------
+
+		// Draw Plane with postprocessing on MSAA PostProc FBO
+		game_viewport->ApplyPostProcessing();
+
+		// ------------------ Then we draw UI on the post processing FBO ------------------
+
+		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetPostProcFBO());
+		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
+		
+		// Default Depth Settings ----------------------------
+		glEnable(GL_DEPTH_TEST);
+
 		UIOrdering(&to_draw_ui, &ui_2d, &ui_world);
 
 		ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
@@ -665,12 +672,15 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 		}
 		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
 
 		OnPostRender(game_viewport->GetCamera());
 
 	}
 
-	game_viewport->EndViewport();
+	game_viewport->FinalPass();
+	//game_viewport->EndViewport();
 
 	GLuint readFboId = 0;
 	glGenFramebuffers(1, &readFboId);

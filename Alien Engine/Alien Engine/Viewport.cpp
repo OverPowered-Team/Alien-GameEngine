@@ -99,18 +99,15 @@ void FBO::UpdateFBO(float width, float height)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+
+	
+	// ----------------------------------------------- NORMAL FBO -----------------------------------------------
+
 	// Depth & Stencil -------------------------------------
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[NORMAL_DEPTH_RBO]);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_DEPTH_RBO]);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-
-	// Frame -----------------------------------------------
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[NORMAL_FBO]);
 
@@ -125,10 +122,10 @@ void FBO::UpdateFBO(float width, float height)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// HDR FBO ---------------------------------------------
+	//----------------------------------------------- HDR MULTISAMPLE FBO ---------------------------------------------
 
 
-	// Multisampling -------------------------------------
+	// Multisampling HDR -------------------------------------
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_MULTISAMPLING_COLOR]);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGBA8, width, height);
@@ -145,19 +142,18 @@ void FBO::UpdateFBO(float width, float height)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ID[POST_PROC_MULTISAMPLING_DEPTH]);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	 
+	//----------------------------------------------- HDR Normal FBO ------------------------------------------
 
-	// Normal FBO ------------------------------------------
+	// Depth & Stencil -------------------------------------
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[POST_PROC_FBO]);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[POST_PROC_TEXTURE], 0);
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ID[POST_PROC_DEPTH_RBO]);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	
-
-	// Multisample ================================================================
+	//----------------------------------------------- Multisample FBO -----------------------------------------------
 
 	// Color -----------------------------------------------
 
@@ -215,7 +211,6 @@ void FBO::GenerateFBO()
 	glGenRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glGenRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
-	glGenRenderbuffers(1, &ID[POST_PROC_DEPTH_RBO]);
 	glGenRenderbuffers(1, &ID[POST_PROC_MULTISAMPLING_COLOR]);
 	glGenRenderbuffers(1, &ID[POST_PROC_MULTISAMPLING_DEPTH]);
 }
@@ -234,7 +229,6 @@ void FBO::DeleteFBO()
 	glDeleteRenderbuffers(1, &ID[NORMAL_DEPTH_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_COLOR_RBO]);
 	glDeleteRenderbuffers(1, &ID[MULTISAMPLING_DEPTH_RBO]);
-	glDeleteRenderbuffers(1, &ID[POST_PROC_DEPTH_RBO]);
 	glDeleteRenderbuffers(1, &ID[POST_PROC_MULTISAMPLING_COLOR]);
 	glDeleteRenderbuffers(1, &ID[POST_PROC_MULTISAMPLING_DEPTH]);
 
@@ -254,7 +248,7 @@ uint FBO::GetPostProcTexture()
 	return ID[POST_PROC_TEXTURE];
 }
 
-uint FBO::GetPostProcFBO()
+uint FBO::GetPostProcFinalFBO()
 {
 	return ID[POST_PROC_FBO];
 }
@@ -349,15 +343,21 @@ void Viewport::EndViewport()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_STENCIL_TEST);
 
-
 	fbo->EndFBO();
-
-	//ApplyPostProcessing();
 }
 
 void Viewport::ApplyPostProcessing()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcMSAAFBO());
+	// First copy depth and stencil from Normal MSAA FBO onto Post processing MSAA FBO 
+
+	BlitFboToFbo(GetFBO(), GetPostProcFBO(), false, true, true);
+
+	// ---------------------  Then draw Plane with  the HDR --------------------- 
+
+	// This plane doesnt need to be "placed" in the space so no depth testing
+	glDisable(GL_DEPTH_TEST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, GetPostProcFBO());
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -385,53 +385,18 @@ void Viewport::ApplyPostProcessing()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 	App->resources->hdr_shader->Unbind();
-
-
-	// Lastly create the texture correctly
-
-	/*glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 0);*/
 }
 
-void Viewport::ApplyUIPass()
+void Viewport::FinalPass()
 {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, GetPostProcMSAAFBO());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GetPostProcFBO());
-
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo->GetPostProcFBO());
-	glViewport(0, 0, width, height);
-	//glClear(GL_COLOR_BUFFER_BIT);
-
-	App->resources->final_pass_shader->Bind();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());	
-
-	// Bind and draw Screen Quad with HDR pass 
-
-	glBindVertexArray(App->renderer3D->screen_quad_VAO);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	// Unbinds
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	App->resources->final_pass_shader->Unbind();
-	glBindVertexArray(0);
-
+	// Copy only color from PostProcMSAA FBO to the final PostProc texture
+	BlitFboToFbo(GetPostProcFBO(), GetPostProcFinalFBO());
 
 	// Lastly create the texture correctly
 	glBindTexture(GL_TEXTURE_2D, GetPostProcTexture());
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Viewport::SetPos(float2 position)
@@ -465,12 +430,12 @@ uint Viewport::GetFBO()
 	return fbo->GetFBO();
 }
 
-uint Viewport::GetPostProcFBO()
+uint Viewport::GetPostProcFinalFBO()
 {
-	return fbo->GetPostProcFBO();
+	return fbo->GetPostProcFinalFBO();
 }
 
-uint Viewport::GetPostProcMSAAFBO()
+uint Viewport::GetPostProcFBO()
 {
 	return fbo->GetPostProcMSAAFBO();
 }
@@ -483,6 +448,24 @@ uint Viewport::GetTexture()
 uint Viewport::GetPostProcTexture()
 {
 	return fbo->GetPostProcTexture();
+}
+
+void Viewport::BlitFboToFbo(uint from, uint to, bool color, bool depth, bool stencil)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, from);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, to);
+
+	if(color)
+		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	if(depth)
+		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+	if(stencil)
+		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_STENCIL_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
 bool Viewport::CanRender()

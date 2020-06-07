@@ -19,7 +19,6 @@ public:
 		MULTISAMPLING_DEPTH_RBO,
 		POST_PROC_FBO,
 		POST_PROC_TEXTURE,
-		POST_PROC_DEPTH_RBO,
 		POST_PROC_MULTISAMPLING_FBO,
 		POST_PROC_MULTISAMPLING_COLOR,
 		POST_PROC_MULTISAMPLING_DEPTH,
@@ -44,7 +43,7 @@ public:
 
 	uint GetPostProcTexture(); 
 
-	uint GetPostProcFBO();
+	uint GetPostProcFinalFBO();
 	uint GetPostProcMSAAFBO();
 
 	uint GetFBO();
@@ -94,7 +93,7 @@ public:
 
 	void ApplyPostProcessing();
 
-	void ApplyUIPass();
+	void FinalPass();
 
 	void SetPos(float2 position);
 
@@ -106,13 +105,18 @@ public:
 
 	uint GetFBO();
 
+	// PostProc FBO with MSAA, depth buffer
 	uint GetPostProcFBO();
-	uint GetPostProcMSAAFBO();
+
+	// Final fbo with only a colored mesh, that is what the player sees
+	uint GetPostProcFinalFBO();
 
 	uint GetTexture();
 
 	uint GetPostProcTexture(); 
 
+	void BlitFboToFbo(uint from, uint to, bool color = true, bool depth = false, bool stencil = false);
+	
 	bool ScreenPointToViewport(float2& screen_point);
 
 	bool CanRender();
