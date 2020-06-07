@@ -819,6 +819,9 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetBoolean("Fog", activeFog);
 	to_save->SetNumber("Density", fogDensity);
 	to_save->SetNumber("Gradient", fogGradient);
+	to_save->SetBoolean("HDR", hdr);
+	to_save->SetNumber("Exposure", exposure);
+	to_save->SetNumber("Gamma", gamma);
 
 	/* Save skybox (Library File) */
 	std::string path = cubemap->path_pos[0];
@@ -859,6 +862,9 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	fogDensity = (float)to_load->GetNumber("Density");
 	fogGradient = (float)to_load->GetNumber("Gradient");
 
+	hdr = to_load->GetBoolean("HDR");
+	exposure = (float)to_load->GetNumber("Exposure");
+	gamma = (float)to_load->GetNumber("Gamma");
 
 	ResourceTexture* tex_pos = nullptr;
 	std::string path_pos;
