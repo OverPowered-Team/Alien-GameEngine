@@ -1,0 +1,397 @@
+{
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "Canvas",
+                "FamilyNumber": 1,
+                "ID": "10175572488739720410",
+                "ParentID": "15248124858768391119",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "13273110501915357378",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "2611281951842899895"
+                    },
+                    {
+                        "Enabled": true,
+                        "isWorld": false,
+                        "Type": 19,
+                        "BBType": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Button",
+                "FamilyNumber": 2,
+                "ID": "13017876002836020524",
+                "ParentID": "10175572488739720410",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "13273110501915357378",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "8666472000610050451"
+                    },
+                    {
+                        "Width": 10,
+                        "Height": 10,
+                        "Enabled": true,
+                        "Type": 30,
+                        "UIType": 21,
+                        "ColorCurrent": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorIdle": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorHover": [
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "ColorClicked": [
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            1
+                        ],
+                        "ColorPressed": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "ColorDisabled": [
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            1
+                        ],
+                        "ClickEvent": "CLICK",
+                        "MoveEvent": "ENTER",
+                        "LoopIdle": true,
+                        "AnimSpeedIdle": 1,
+                        "LoopHover": true,
+                        "AnimSpeedHover": 1,
+                        "LoopClicked": true,
+                        "AnimSpeedClicked": 1,
+                        "LoopPressed": true,
+                        "AnimSpeedPressed": 1,
+                        "LoopDisabled": true,
+                        "AnimSpeedDisabled": 1,
+                        "HasAnimatedIdleImages": false,
+                        "HasAnimatedHoverImages": false,
+                        "HasAnimatedClickedImages": false,
+                        "HasAnimatedPressedImages": false,
+                        "HasAnimatedDisabledImages": false,
+                        "HasListenersOnClick": false,
+                        "HasListenersOnHover": false,
+                        "HasListenersOnClickRepeat": false,
+                        "HasListenersOnRelease": false,
+                        "HasListenersOnExit": false,
+                        "HasListenersOnEnter": false,
+                        "SelectOnUp": "17405239576379891432",
+                        "SelectOnDown": "18446744073709551615",
+                        "SelectOnRight": "18446744073709551615",
+                        "SelectOnLeft": "18446744073709551615"
+                    },
+                    {
+                        "ID": "10297330300095362310",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "0",
+                        "Event": "0",
+                        "PlayOnAwake": true
+                    }
+                ]
+            },
+            {
+                "Name": "Text",
+                "FamilyNumber": 3,
+                "ID": "5628804730865279355",
+                "ParentID": "13017876002836020524",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "13273110501915357378",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "17762306514680805453"
+                    },
+                    {
+                        "Type": 30,
+                        "ID": "17407153281595410876",
+                        "Text": "Hola",
+                        "UIType": 22,
+                        "FontID": "6090935666492539845",
+                        "Enabled": true,
+                        "Color": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "Width": 200,
+                        "Interlineal": 1.5,
+                        "Align": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Button2",
+                "FamilyNumber": 2,
+                "ID": "17405239576379891432",
+                "ParentID": "10175572488739720410",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "13273110501915357378",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5294000953350759992"
+                    },
+                    {
+                        "Width": 10,
+                        "Height": 10,
+                        "Enabled": true,
+                        "Type": 30,
+                        "UIType": 21,
+                        "ColorCurrent": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorIdle": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "ColorHover": [
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "ColorClicked": [
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            0.69999998807907104,
+                            1
+                        ],
+                        "ColorPressed": [
+                            0.75,
+                            0.75,
+                            0.75,
+                            1
+                        ],
+                        "ColorDisabled": [
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            0.30000001192092896,
+                            1
+                        ],
+                        "ClickEvent": "CLICK",
+                        "MoveEvent": "ENTER",
+                        "LoopIdle": true,
+                        "AnimSpeedIdle": 1,
+                        "LoopHover": true,
+                        "AnimSpeedHover": 1,
+                        "LoopClicked": true,
+                        "AnimSpeedClicked": 1,
+                        "LoopPressed": true,
+                        "AnimSpeedPressed": 1,
+                        "LoopDisabled": true,
+                        "AnimSpeedDisabled": 1,
+                        "HasAnimatedIdleImages": false,
+                        "HasAnimatedHoverImages": false,
+                        "HasAnimatedClickedImages": false,
+                        "HasAnimatedPressedImages": false,
+                        "HasAnimatedDisabledImages": false,
+                        "HasListenersOnClick": false,
+                        "HasListenersOnHover": false,
+                        "HasListenersOnClickRepeat": false,
+                        "HasListenersOnRelease": false,
+                        "HasListenersOnExit": false,
+                        "HasListenersOnEnter": false,
+                        "SelectOnUp": "13017876002836020524",
+                        "SelectOnDown": "18446744073709551615",
+                        "SelectOnRight": "18446744073709551615",
+                        "SelectOnLeft": "17405239576379891432"
+                    },
+                    {
+                        "ID": "10732059959287393342",
+                        "Type": 16,
+                        "Enabled": true,
+                        "Volume": 1,
+                        "Mute": false,
+                        "Bank": "0",
+                        "Event": "0",
+                        "PlayOnAwake": true
+                    }
+                ]
+            },
+            {
+                "Name": "Text",
+                "FamilyNumber": 3,
+                "ID": "18391915544785998024",
+                "ParentID": "17405239576379891432",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": true,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "13273110501915357378",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "5004771051829978972"
+                    },
+                    {
+                        "Type": 30,
+                        "ID": "14552193820352860098",
+                        "Text": "Hola",
+                        "UIType": 22,
+                        "FontID": "6090935666492539845",
+                        "Enabled": true,
+                        "Color": [
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            0.80000001192092896,
+                            1
+                        ],
+                        "Width": 200,
+                        "Interlineal": 1.5,
+                        "Align": 0
+                    }
+                ]
+            }
+        ]
+    },
+    "Name": "Canvas"
+}

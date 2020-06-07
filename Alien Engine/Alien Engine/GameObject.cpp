@@ -20,6 +20,7 @@
 #include "ModuleObjects.h"
 #include "ComponentCamera.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentTrail.h"
 #include "ParticleSystem.h"
 #include "ComponentImage.h"
 #include "ComponentBar.h"
@@ -104,7 +105,10 @@ GameObject::~GameObject()
 	}
 #endif
 
-	App->objects->octree.Remove(this);
+
+	if (is_static) {
+		App->objects->octree.Remove(this);
+	}
 
 	std::vector<Component*>::iterator component = components.begin();
 
@@ -268,6 +272,12 @@ void GameObject::SetDrawList(std::vector<std::pair<float, GameObject*>>* meshes_
 			}
 		}
 		else if (GetComponent<ComponentParticleSystem>() != nullptr)
+		{
+			float3 obj_pos = transform->GetGlobalPosition();
+			float distance = camera->frustum.pos.Distance(obj_pos);
+			meshes_to_draw_transparency->push_back({ distance, this });
+		}
+		else if (GetComponent<ComponentTrail>() != nullptr)
 		{
 			float3 obj_pos = transform->GetGlobalPosition();
 			float distance = camera->frustum.pos.Distance(obj_pos);
@@ -728,8 +738,7 @@ GameObject* GameObject::Instantiate(const Prefab& prefab, const float3& position
 	if (prefab.prefabID != 0) {
 		ResourcePrefab* r_prefab = (ResourcePrefab*)App->resources->GetResourceWithID(prefab.prefabID);
 		if (r_prefab != nullptr && App->StringCmp(prefab.prefab_name.data(), r_prefab->GetName())) {
-			r_prefab->ConvertToGameObjects((parent == nullptr) ? App->objects->GetRoot(true) : parent, -1, position, check_child, false);
-			return (parent == nullptr) ? App->objects->GetRoot(true)->children.back() : parent->children.back();
+			return r_prefab->ConvertToGameObjects((parent == nullptr) ? App->objects->GetRoot(true) : parent, -1, position, check_child, false);
 		}
 		else {
 			return nullptr;
@@ -743,8 +752,7 @@ GameObject* GameObject::Instantiate(const char* prefab, const float3& position, 
 	OPTICK_EVENT();
 	for (auto item = App->resources->resources.begin(); item != App->resources->resources.end(); ++item) {
 		if ((*item)->GetType() == ResourceType::RESOURCE_PREFAB && strcmp(prefab, (*item)->GetName()) == 0) {
-			dynamic_cast<ResourcePrefab*>(*item)->ConvertToGameObjects((parent == nullptr) ? App->objects->GetRoot(true) : parent, -1, position, check_child, false);
-			return (parent == nullptr) ? App->objects->GetRoot(true)->children.back() : parent->children.back();
+			return dynamic_cast<ResourcePrefab*>(*item)->ConvertToGameObjects((parent == nullptr) ? App->objects->GetRoot(true) : parent, -1, position, check_child, false);
 		}
 	}
 	return nullptr;
@@ -1247,6 +1255,11 @@ void GameObject::LoadObject(JSONArraypack* to_load, GameObject* parent, bool for
 				ComponentParticleSystem* particleSystem = new ComponentParticleSystem(this);
 				particleSystem->LoadComponent(components_to_load);
 				AddComponent(particleSystem);
+				break; }
+			case (int)ComponentType::TRAIL: {
+				ComponentTrail* trail = new ComponentTrail(this);
+				trail->LoadComponent(components_to_load);
+				AddComponent(trail);
 				break; }
 			case (int)ComponentType::CANVAS: {
 				ComponentCanvas* canvas = new ComponentCanvas(this);

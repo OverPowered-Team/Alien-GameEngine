@@ -203,8 +203,29 @@
                             },
                             {
                                 "ControlPoint": [
-                                    -7.2307062149047852,
-                                    11.270865440368652,
+                                    -8.6611690521240234,
+                                    6.5180635452270508,
+                                    -1.623283863067627
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -6.811368465423584,
+                                    10.040226936340332,
+                                    -1.6232846975326538
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -5.2293157577514648,
+                                    11.067448616027832,
+                                    -1.6232848167419434
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -2.6303548812866211,
+                                    11.287045478820801,
                                     -1.6232837438583374
                                 ]
                             },
@@ -217,8 +238,8 @@
                             },
                             {
                                 "ControlPoint": [
-                                    7.5173959732055664,
-                                    10.449358940124512,
+                                    3.1414012908935547,
+                                    10.794407844543457,
                                     -1.6232837438583374
                                 ]
                             },
@@ -248,6 +269,13 @@
                             {
                                 "NormalPoint": [
                                     0,
+                                    0,
+                                    1
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
                                     -1,
                                     0
                                 ]
@@ -258,6 +286,112 @@
                                     0,
                                     0
                                 ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Cube",
+                "FamilyNumber": 1,
+                "ID": "1695297535789776269",
+                "ParentID": "11197954530399474530",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "10093195106889063124"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "12102421597579553693",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 0,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "6841901743135143850",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0.5,
+                        "StaticFriction": 0.5,
+                        "DynamicFriction": 0.5,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "4331207258858978001",
+                        "ResourceID": "12126849256197869747",
+                        "DataName": "TestFollowCurve",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 9,
+                                "Name": "curve",
+                                "gameobject": "11401237302778182650"
+                            },
+                            {
+                                "VarType": 3,
+                                "Name": "speed",
+                                "float": 5
+                            },
+                            {
+                                "VarType": 7,
+                                "Name": "reset",
+                                "bool": 0
                             }
                         ]
                     }

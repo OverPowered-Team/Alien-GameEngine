@@ -35,6 +35,7 @@ class __declspec(dllexport) ComponentUI :public Component {
 	friend class ComponentImage;
 	friend class ModuleObjects;
 	friend class Component;
+	friend class ResourcePrefab;
 	friend class ReturnZ;
 	friend class CompZ;
 public:
@@ -78,6 +79,7 @@ private:
 	void CheckFirstSelected();
 	void Orientate(ComponentCamera* camera);
 	void Rotate();
+	bool CheckIfApplyBillboard(GameObject* parent);
 	
 	
 public:
@@ -92,7 +94,7 @@ protected:
 	ResourceTexture* texture = nullptr;
 
 	float3 vertices[4]{ {-1,1,0},{-1,-1,0},{1,-1,0},{1,1,0} }; 
-	float2 uv[4]{ {-1,-1},{-1,0},{0,0},{0,-1} };
+	float2 uv[4]{ {0,0},{0,1},{1,1},{1,0} };
 	uint index[6]{ 0,1,2,2,3,0 };
 	uint indexID = 0;
 	uint verticesID = 0;

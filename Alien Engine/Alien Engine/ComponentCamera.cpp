@@ -64,18 +64,7 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 
 	/* Create skybox */
 	cubemap = new Cubemap();
-	skybox = new Skybox();
-
-	for (int i = 0; i < 6; i++)
-	{
-		cubemap->skybox_textures[i] = App->resources->default_skybox_textures[i];
-	}
-	for (int i = 0; i < 6; i++)
-	{
-		cubemap->path_pos[i] = "Default";
-	}
-	skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
-	skybox->SetBuffers();
+	skybox = new Skybox(cubemap);
 
 	skybox_shader = App->resources->skybox_shader;
 	if (skybox_shader != nullptr)
@@ -135,8 +124,6 @@ ComponentCamera::~ComponentCamera()
 #ifndef GAME_VERSION
 	delete mesh_camera;
 #endif
-
-	glDeleteTextures(1, &skybox_texture_id);
 
 	RELEASE(skybox);
 	RELEASE(cubemap);
@@ -428,7 +415,7 @@ bool ComponentCamera::DrawInspector()
 								texture_dropped->IncreaseReferences();
 								cubemap->skybox_textures[i] = texture_dropped;
 								cubemap->path_pos[i].assign(texture_dropped->GetLibraryPath());
-								skybox->ChangeTextureByType((Cubemap::SKYBOX_POS)i, skybox_texture_id, texture_dropped->id, texture_dropped->width, texture_dropped->height);
+								skybox->ChangeTextureByType((Cubemap::SKYBOX_POS)i, texture_dropped->id, texture_dropped->width, texture_dropped->height);
 								texture_dropped->DecreaseReferences();
 							}
 						}
@@ -486,12 +473,11 @@ void ComponentCamera::Reset()
 	for (int i = 0; i < 6; i++)
 	{
 		cubemap->skybox_textures[i] = App->resources->default_skybox_textures[i];
-	}
-	for (int i = 0; i < 6; i++)
-	{
 		cubemap->path_pos[i] = "Default";
+		skybox->ChangeTextureByType(Cubemap::SKYBOX_POS(i), cubemap->skybox_textures[i]->id, cubemap->skybox_textures[i]->width, cubemap->skybox_textures[i]->height);
 	}
-	skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
+	// This can only be used once
+	//skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
 
 	vertical_fov = 60.0f;
 	frustum.verticalFov = Maths::Deg2Rad() * vertical_fov;
@@ -694,7 +680,7 @@ void ComponentCamera::DrawSkybox()
 	
 		glBindVertexArray(skybox->vao);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture_id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->skybox_texture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
@@ -877,7 +863,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::POSITIVE_X] = tex_pos;
-		skybox->ChangePositiveX(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangePositiveX(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
 	tex_pos = nullptr;
@@ -890,7 +876,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::NEGATIVE_X] = tex_pos;
-		skybox->ChangeNegativeX(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangeNegativeX(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 
 	}
@@ -904,7 +890,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::POSITIVE_Y] = tex_pos;
-		skybox->ChangePositiveY(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangePositiveY(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
 
@@ -916,7 +902,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::NEGATIVE_Y] = tex_pos;
-		skybox->ChangeNegativeY(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangeNegativeY(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
 
@@ -928,7 +914,7 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::POSITIVE_Z] = tex_pos;
-		skybox->ChangePositiveZ(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangePositiveZ(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
 
@@ -940,13 +926,9 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 	{
 		tex_pos->IncreaseReferences();
 		cubemap->skybox_textures[Cubemap::NEGATIVE_Z] = tex_pos;
-		skybox->ChangeNegativeZ(skybox_texture_id, tex_pos->id, tex_pos->width, tex_pos->height);
+		skybox->ChangeNegativeZ(tex_pos->id, tex_pos->width, tex_pos->height);
 		tex_pos->DecreaseReferences();
 	}
-
-#ifdef GAME_VERSION
-	skybox_texture_id = skybox->GenereteCubeMapFromTextures(cubemap->skybox_textures);
-#endif
 
 	frustum.nearPlaneDistance = near_plane;
 	frustum.farPlaneDistance = far_plane;

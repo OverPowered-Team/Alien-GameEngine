@@ -5,12 +5,14 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="player_example.cpp" />
+    <ClCompile Include="TestFollowCurve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Macros\AlienScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="player_example.h" />
+    <ClInclude Include="TestFollowCurve.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

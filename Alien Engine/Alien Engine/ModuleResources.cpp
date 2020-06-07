@@ -93,6 +93,7 @@ bool ModuleResources::Start()
 
 	camera_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/camera.FBX");
 	light_mesh = App->importer->LoadEngineModels("Configuration/Engine Models/bulb.fbx");
+	
 
 	assets = new FileNode();
 	assets->is_file = false;
@@ -109,6 +110,7 @@ bool ModuleResources::Start()
 	default_skybox_textures[3] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxbottom.png");
 	default_skybox_textures[4] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxback.png");
 	default_skybox_textures[5] = App->importer->LoadEngineTexture("Configuration/EngineTextures/Skybox/skyboxfront.png");
+	alpha_noise_texture		= App->importer->LoadEngineTexture("Configuration/EngineTextures/alphanoise.png");
 
 	// Load Primitives as resource
 	cube = new ResourceMesh();
@@ -712,6 +714,7 @@ void ModuleResources::ReadAllMetaData()
 	skybox_shader = GetShaderByName("skybox_shader");
 	water_shader = GetShaderByName("water_shader");
 	shield_fresnel_shader = GetShaderByName("shield_fresnel_shader");
+	trail_shader = GetShaderByName("trail_shader");
 	hdr_shader = GetShaderByName("hdr_shader");
 	hdr_shader->IncreaseReferences();
 
@@ -797,14 +800,18 @@ void ModuleResources::ReadAllMetaData()
 	shield_fresnel_shader = (ResourceShader*)GetResourceWithID(5257671272918645017);
 	shield_shader = (ResourceShader*)GetResourceWithID(15018513288750837760);
 	hdr_shader = (ResourceShader*)GetResourceWithID(8647831716955899237);
+	trail_shader = (ResourceShader*)GetResourceWithID(7102128801140120336);
 	default_particle_shader->SetName("particle_shader");
 	default_particle_shader->TryToSetShaderType();
 	shield_fresnel_shader->SetName("shield_fresnel_shader");
 	shield_fresnel_shader->TryToSetShaderType();
 	shield_shader->SetName("shield_shader");
 	shield_shader->TryToSetShaderType();
+	trail_shader->SetName("trail_shader");
+	trail_shader->TryToSetShaderType();
 	hdr_shader->SetName("hdr_shader");
 	hdr_shader->IncreaseReferences();
+
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

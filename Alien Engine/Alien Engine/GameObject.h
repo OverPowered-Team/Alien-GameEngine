@@ -25,6 +25,7 @@ class __declspec(dllexport) GameObject
 	friend class Component;
 	friend class ComponentCamera;
 	friend class ComponentParticleSystem;
+	friend class ComponentTrail;
 	friend class ComponentLightDirectional;
 	friend class ComponentLightSpot;
 	friend class ComponentLightPoint;
@@ -82,6 +83,7 @@ class __declspec(dllexport) GameObject
 	friend class ModuleImporter;
 	friend class ModuleRenderer3D;
 	friend class ModuleUI;
+	friend class ParticleSystem;
 
 	friend class GameObject;
 	friend class Prefab;

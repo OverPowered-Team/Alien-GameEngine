@@ -121,7 +121,6 @@ public:
 	Skybox* skybox = nullptr;
 	Cubemap* cubemap = nullptr;
 	ResourceShader* skybox_shader = nullptr;
-	uint skybox_texture_id = 0u;
 	
 	// === FOG === 
 
