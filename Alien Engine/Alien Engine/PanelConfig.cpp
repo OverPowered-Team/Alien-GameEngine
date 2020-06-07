@@ -6,7 +6,6 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
 #include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
 #include "ModuleCamera3D.h"
 #include "Viewport.h"
 #include "ModuleObjects.h"
@@ -210,66 +209,6 @@ void PanelConfig::PanelLogic()
 	{
 		App->camera->PanelConfigOption();
 		ImGui::Separator();
-		ImGui::ColorEdit3("Background Color", &App->renderer3D->scene_fake_camera->camera_color_background, ImGuiColorEditFlags_Float);
-		if (ImGui::TreeNodeEx("Post Processing", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-
-			ImGui::Spacing();
-
-			ImGui::Checkbox("HDR", &App->renderer3D->scene_fake_camera->hdr);
-
-			if (!App->renderer3D->scene_fake_camera->hdr)
-			{
-				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			}
-
-			ImGui::DragFloat("Exposure", &App->renderer3D->scene_fake_camera->exposure, 0.01f, 0.0f, 10.f);
-			ImGui::Spacing();
-			ImGui::Spacing();
-			ImGui::DragFloat("Gamma", &App->renderer3D->scene_fake_camera->gamma, 0.01f, 0.0f, 10.f);
-
-			if (!App->renderer3D->scene_fake_camera->hdr)
-			{
-				ImGui::PopItemFlag();
-				ImGui::PopStyleVar();
-			}
-
-
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-
-			ImGui::Checkbox("Active Fog", &App->renderer3D->scene_fake_camera->activeFog);
-
-			if (!App->renderer3D->scene_fake_camera->activeFog)
-			{
-				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			}
-
-			ImGui::DragFloat("Density", &App->renderer3D->scene_fake_camera->fogDensity, 0.001f, 0.0f, 10.f);
-			ImGui::DragFloat("Gradient", &App->renderer3D->scene_fake_camera->fogGradient, 0.02f, 0.0f, 10.f);
-
-
-			if (!App->renderer3D->scene_fake_camera->activeFog)
-			{
-				ImGui::PopItemFlag();
-				ImGui::PopStyleVar();
-			}
-
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-
-			ImGui::TreePop();
-		}
-		if (ImGui::Button("Reset Camera Properties"))
-			App->renderer3D->scene_fake_camera->Reset();
-
 		App->renderer3D->PanelConfigOption();
 	}
 

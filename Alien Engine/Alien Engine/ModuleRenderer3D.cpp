@@ -15,6 +15,7 @@
 #include "Viewport.h"
 #include "mmgr/mmgr.h"
 #include "Optick/include/optick.h"
+#include "imgui/imgui_internal.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -492,11 +493,61 @@ void ModuleRenderer3D::DebugDrawMesh(const float4x4& transform, float* vertices,
 void ModuleRenderer3D::PanelConfigOption()
 {
 	ImGui::ColorEdit3("Background Color", &scene_fake_camera->camera_color_background, ImGuiColorEditFlags_Float);
-	ImGui::Checkbox("Camera Fog", &scene_fake_camera->activeFog);
-	if (scene_fake_camera->activeFog)
+	if (ImGui::TreeNodeEx("Post Processing", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::DragFloat("Fog Density", &scene_fake_camera->fogDensity, 0.001f, 0.0f, 10.f);
-		ImGui::DragFloat("Fog Gradient", &scene_fake_camera->fogGradient, 0.02f, 0.0f, 10.f);
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Spacing();
+
+		ImGui::Checkbox("HDR", &scene_fake_camera->hdr);
+
+		if (!scene_fake_camera->hdr)
+		{
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+		}
+
+		ImGui::DragFloat("Exposure", &scene_fake_camera->exposure, 0.01f, 0.0f, 10.f);
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::DragFloat("Gamma", &scene_fake_camera->gamma, 0.01f, 0.0f, 10.f);
+
+		if (!scene_fake_camera->hdr)
+		{
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Checkbox("Active Fog", &scene_fake_camera->activeFog);
+
+		if (!scene_fake_camera->activeFog)
+		{
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+		}
+
+		ImGui::DragFloat("Density", &scene_fake_camera->fogDensity, 0.001f, 0.0f, 10.f);
+		ImGui::DragFloat("Gradient", &scene_fake_camera->fogGradient, 0.02f, 0.0f, 10.f);
+
+
+		if (!scene_fake_camera->activeFog)
+		{
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::TreePop();
 	}
 	if (ImGui::Button("Reset Camera Properties"))
 		scene_fake_camera->Reset();
