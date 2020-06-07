@@ -128,7 +128,7 @@ void FBO::UpdateFBO(float width, float height)
 	// Multisampling HDR -------------------------------------
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_MULTISAMPLING_COLOR]);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGBA8, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGBA16F, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[POST_PROC_MULTISAMPLING_DEPTH]);
@@ -158,7 +158,7 @@ void FBO::UpdateFBO(float width, float height)
 	// Color -----------------------------------------------
 
 	glBindRenderbuffer(GL_RENDERBUFFER, ID[MULTISAMPLING_COLOR_RBO]);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGBA8, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGBA16F, width, height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	// Depth & Stencil -------------------------------------
