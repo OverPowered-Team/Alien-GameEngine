@@ -253,6 +253,10 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 		file->SetString(std::to_string(iter).data(), std::to_string(textures[iter].first).data());
 	}
 
+	//save water shader
+	file->SetNumber("speed", shaderInputs.CartoonWaterProperties.speed);
+	file->SetNumber("waterstrength", shaderInputs.CartoonWaterProperties.waveStrength);
+
 	file->FinishSave();
 }
 
@@ -270,6 +274,9 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 		textures[iter].first = std::stoull(file->GetString(std::to_string(iter).data()));
 		textures[iter].second = App->resources->GetTextureByID(textures[iter].first);
 	}
+
+	shaderInputs.CartoonWaterProperties.speed = (float)file->GetNumber("speed");
+	shaderInputs.CartoonWaterProperties.waveStrength = (float)file->GetNumber("waterstrength");
 }
 
 void ResourceMaterial::ApplyMaterial()
