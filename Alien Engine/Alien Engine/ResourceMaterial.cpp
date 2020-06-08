@@ -645,7 +645,7 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		ImGui::Text("waves strength:"); ImGui::SameLine();
 		ImGui::SliderFloat("##strength", &shaderInputs.CartoonWaterProperties.waveStrength, -1.0f, 1.0f);
-
+		break;
 	}
 
 	default:
