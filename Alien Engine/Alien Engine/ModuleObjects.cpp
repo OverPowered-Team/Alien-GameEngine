@@ -2840,15 +2840,13 @@ static int loadSceneInBackground(void* ptr)
 	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->back_context);
 
 	App->objects->loading_in_background = true;
-
-	// TODO: TEST, re link context on main thread to continue rendering
 	
-	App->objects->LoadScene(App->objects->scene_to_backload.c_str(), false);
+	App->objects->LoadScene(App->objects->scene_to_backload.c_str(), true);
 
 	GLsync fenceId = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	GLenum result;
 
-	while (true) // TODO: REMOVE
+	while (true)
 	{
 		result = glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); // 5 seconds
 		if (result != GL_TIMEOUT_EXPIRED) break;
@@ -2856,10 +2854,8 @@ static int loadSceneInBackground(void* ptr)
 
 	SDL_AtomicIncRef(&App->objects->dataIsReady);
 
-	//glFinish();
 	SDL_GL_MakeCurrent(App->window->window, NULL);
 
-	
 	return 0;
 }
 
