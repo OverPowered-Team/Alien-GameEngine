@@ -100,6 +100,9 @@ public:
 	void ChangePositiveZ(const uint& id_texture, const uint& width, const uint& height);
 	void ChangeNegativeZ(const uint& id_texture, const uint& width, const uint& height);
 
+	void SetBuffersNOVAO();
+	void RelinkVAO();
+
 public:
 
 	std::vector<std::string> textures[6];

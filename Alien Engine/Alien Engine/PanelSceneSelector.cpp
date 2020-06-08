@@ -223,10 +223,11 @@ void PanelSceneSelector::LoadScene()
 		std::string name = filename;
 		App->file_system->NormalizePath(name);
 
-		App->objects->LoadScene(App->file_system->GetBaseFileName(name.data()).data());
+		App->objects->RequestSceneToLoad(App->file_system->GetBaseFileName(name.data()).data());
+		//App->objects->LoadScene(App->file_system->GetBaseFileName(name.data()).data());
 
 		// last of all, refresh nodes because I have no idea if the user has created folders or moved things in the explorer. Users are bad people creating folders without using the alien engine explorer :(
-		App->ui->panel_project->RefreshAllNodes();
+		//App->ui->panel_project->RefreshAllNodes(); // TODO
 	}
 	else {
 		SetCurrentDirectoryA(curr_dir);

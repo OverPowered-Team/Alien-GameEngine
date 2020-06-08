@@ -1,0 +1,210 @@
+{
+    "Scene": {
+        "Name": "monkey_thread",
+        "GameObjects": [
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "4884693356367443278",
+                "ParentID": "17735385879351446717",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6777479421408645010"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 6,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 86.511734008789063,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "13853821251909723071",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ],
+                        "Fog": false,
+                        "Density": 0.035000000149011612,
+                        "Gradient": 1.3500000238418579,
+                        "HDR": false,
+                        "Exposure": 1,
+                        "Gamma": 0,
+                        "Skybox_PositiveX": "Default",
+                        "Skybox_NegativeX": "Default",
+                        "Skybox_PositiveY": "Default",
+                        "Skybox_NegativeY": "Default",
+                        "Skybox_PositiveZ": "Default",
+                        "Skybox_NegativeZ": "Default"
+                    }
+                ]
+            },
+            {
+                "Name": "Directional Light",
+                "FamilyNumber": 1,
+                "ID": "16565097280236588077",
+                "ParentID": "17735385879351446717",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.2798481285572052,
+                            -0.36470523476600647,
+                            0.115916907787323,
+                            0.88047623634338379
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "11863781357389325257"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "11370712805210011097",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            -0.57735037803649902,
+                            -0.57735025882720947,
+                            0.57735025882720947
+                        ],
+                        "Ambient": [
+                            0.75999999046325684,
+                            0.75999999046325684,
+                            0.75999999046325684
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "CastShadows": true,
+                        "SizeBakedShadow": 153
+                    }
+                ]
+            },
+            {
+                "Name": "Suzanne",
+                "FamilyNumber": 1,
+                "ID": "11324576526642009581",
+                "ParentID": "17735385879351446717",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            2.3735356330871582,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.7071068286895752,
+                            0,
+                            0,
+                            0.70710670948028564
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "16303582201580588290"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "12568526565296965974",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "5940742120571163544",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "14469355840090827309",
+                        "HasMaterial": true,
+                        "MaterialID": "14944912524255581112",
+                        "Enabled": true
+                    }
+                ]
+            }
+        ]
+    }
+}

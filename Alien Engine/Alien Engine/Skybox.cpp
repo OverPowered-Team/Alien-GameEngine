@@ -88,10 +88,17 @@ uint Skybox::GenereteCubeMapFromTextures(ResourceTexture* skybox_textures[6])
 
 void Skybox::SetBuffers()
 {
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
+	if (App->objects->loading_in_background)
+	{
+		SetBuffersNOVAO();
+		return;
+	}
 
+	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+	
+	glGenBuffers(1, &vbo);
+	
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
@@ -102,6 +109,26 @@ void Skybox::SetBuffers()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+}
+
+void Skybox::SetBuffersNOVAO()
+{
+	App->objects->to_init_vaos_vector.push_back(std::bind(&Skybox::RelinkVAO, this));
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Skybox::RelinkVAO()
+{
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Skybox::ChangeTextureByType(Cubemap::SKYBOX_POS type, const uint& id_texture, const uint& width, const uint& height)

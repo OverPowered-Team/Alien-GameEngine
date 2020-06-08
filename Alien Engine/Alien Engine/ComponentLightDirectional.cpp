@@ -36,7 +36,10 @@ ComponentLightDirectional::ComponentLightDirectional(GameObject* attach) : Compo
 	bulb->mesh->IncreaseReferences();
 #endif
 
-	InitFrameBuffers();
+	if(App->objects->loading_in_background)
+		App->objects->to_init_vaos_vector.push_back(std::bind(&ComponentLightDirectional::InitFrameBuffers, this));
+	else
+		InitFrameBuffers();
 }
 
 void ComponentLightDirectional::InitFrameBuffers()

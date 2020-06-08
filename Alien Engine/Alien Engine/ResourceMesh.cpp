@@ -407,6 +407,14 @@ bool ResourceMesh::DeleteMetaData()
 
 void ResourceMesh::InitBuffers()
 {
+
+	// check current context/etc to load or not with vao data
+	if (App->objects->loading_in_background)
+	{
+		InitBuffersNoVAO();
+		return;
+	}
+
 	// VAO
 	glGenVertexArrays(1, &vao);
 
@@ -469,6 +477,127 @@ void ResourceMesh::InitBuffers()
 	glGenBuffers(1, &id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * num_index, index, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void ResourceMesh::InitBuffersNoVAO()
+{
+	App->objects->to_init_vaos_vector.push_back(std::bind(&ResourceMesh::RelinkDataWithVAO, this));
+
+	// Vertex 
+	glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, vertex, GL_STATIC_DRAW);
+
+	// UVS 
+	if (uv_cords != nullptr) {
+		// UV
+		glGenBuffers(1, &id_uv);
+		glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, uv_cords, GL_STATIC_DRAW);	// This should be size 2
+
+	}
+
+	// Normals
+	if (normals != nullptr) {
+		// normals
+		glGenBuffers(1, &id_normals);
+		glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, normals, GL_STATIC_DRAW);
+
+	}
+
+	// Tangents
+	if (tangents != nullptr)
+	{
+		glGenBuffers(1, &id_tangents);
+		glBindBuffer(GL_ARRAY_BUFFER, id_tangents);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, tangents, GL_STATIC_DRAW);
+	}
+
+		// Bitangents
+	if (biTangents != nullptr)
+	{
+		glGenBuffers(1, &id_biTangents);
+		glBindBuffer(GL_ARRAY_BUFFER, id_biTangents);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, biTangents, GL_STATIC_DRAW);
+	}
+
+	// index
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * num_index, index, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+}
+
+void ResourceMesh::RelinkDataWithVAO()
+{
+	// VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Vertex 
+	//glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, vertex, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(0);
+
+	// UVS 
+	if (uv_cords != nullptr) {
+		// UV
+		//glGenBuffers(1, &id_uv);
+		glBindBuffer(GL_ARRAY_BUFFER, id_uv);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, uv_cords, GL_STATIC_DRAW);	// This should be size 2
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);										// This should be size 2
+		glEnableVertexAttribArray(1);
+	}
+
+	// Normals
+	if (normals != nullptr) {
+		// normals
+		//glGenBuffers(1, &id_normals);
+		glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, normals, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(2);
+	}
+
+	// Tangents
+	if (tangents != nullptr)
+	{
+		//glGenBuffers(1, &id_tangents);
+		glBindBuffer(GL_ARRAY_BUFFER, id_tangents);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, tangents, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(5);
+	}
+
+	// Bitangents
+	if (biTangents != nullptr)
+	{
+		//glGenBuffers(1, &id_biTangents);
+		glBindBuffer(GL_ARRAY_BUFFER, id_biTangents);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertex * 3, biTangents, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(6);
+	}
+
+	// index
+	//glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * num_index, index, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -122,8 +122,17 @@ void ComponentMesh::DrawPolygon()
 	material->ApplyMaterial();
 	SetUniforms(material);
 
+	
 	// Uniforms --------------
 	glBindVertexArray(mesh->vao);
+	//Check for error
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		LOG_ENGINE("OpenGL: Error VAO | %s\n", gluErrorString(error));
+		return;
+	}
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, NULL);
 

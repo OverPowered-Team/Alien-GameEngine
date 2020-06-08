@@ -31,6 +31,11 @@ public:
 
 	void Reset();
 
+private:
+
+	void InitBuffersNoVAO();
+	void RelinkDataWithVAO();
+
 public:
 	// Vertex Array Object
 	uint vao = 0u;

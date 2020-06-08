@@ -71,6 +71,7 @@
 ModuleObjects::ModuleObjects(bool start_enabled) :Module(start_enabled)
 {
 	name.assign("ModuleObject");
+	SDL_AtomicSet(&dataIsReady, 0);
 }
 
 ModuleObjects::~ModuleObjects()
@@ -166,6 +167,21 @@ bool ModuleObjects::Start()
 update_status ModuleObjects::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
+
+	// check if scene is loading on background
+	if (loading_in_background)
+	{
+		if (SDL_AtomicGet(&dataIsReady) == 1)
+		{
+			ResetBackgroundLoad();
+
+			for (uint i = 0; i < to_init_vaos_vector.size(); ++i)
+				to_init_vaos_vector[i]();
+
+			to_init_vaos_vector.clear();
+			
+		}
+	}
 
 	if (!sceneNameToChange.empty()) {
 		LoadScene(sceneNameToChange.data());
@@ -2816,4 +2832,75 @@ uint ModuleObjects::GetNumOfSpotLights() const
 		lights += (*iter)->isEnabled();
 
 	return lights;
+}
+
+
+static int loadSceneInBackground(void* ptr)
+{
+	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->back_context);
+
+	App->objects->loading_in_background = true;
+
+	// TODO: TEST, re link context on main thread to continue rendering
+	
+	App->objects->LoadScene(App->objects->scene_to_backload.c_str(), false);
+
+	GLsync fenceId = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+	GLenum result;
+
+	while (true) // TODO: REMOVE
+	{
+		result = glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); // 5 seconds
+		if (result != GL_TIMEOUT_EXPIRED) break;
+	}
+
+	SDL_AtomicIncRef(&App->objects->dataIsReady);
+
+	//glFinish();
+	SDL_GL_MakeCurrent(App->window->window, NULL);
+
+	
+	return 0;
+}
+
+void ModuleObjects::RequestSceneToLoad(std::string basename)
+{
+	scene_to_backload = basename;
+
+	backload_thread = SDL_CreateThread(loadSceneInBackground, "testing", (void*)NULL);
+
+	/*while (true)
+	{
+		if (SDL_AtomicGet(&dataIsReady) == 1)
+		{
+			ResetBackgroundLoad();
+			break;
+		}
+	}
+
+	if (backload_thread != nullptr)
+		loading_in_background = true;*/
+	//else return;
+
+}
+
+bool ModuleObjects::ResetBackgroundLoad()
+{
+	//ResourceScene* to_load = App->resources->GetSceneByName(scene_to_backload.c_str());
+	//if (to_load)
+	//{
+	//	scene_to_backload.clear();
+
+	//	//current_scenes.clear();
+	//	//current_scenes.push_back(to_load);
+
+	//}
+	//else
+	//	LOG_ENGINE("ERROR: scene resource not found");
+
+	//SDL_GL_MakeCurrent(App->window->window, App->renderer3D->context);
+	loading_in_background = false;
+	SDL_AtomicSet(&dataIsReady, 0);
+
+	return true;
 }

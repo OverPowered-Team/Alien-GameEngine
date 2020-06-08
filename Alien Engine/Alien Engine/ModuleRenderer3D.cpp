@@ -22,7 +22,6 @@
 #pragma comment (lib, "glew/glew32.lib") 
 
 
-
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled)
 {
 	name.assign("Renderer3D");
@@ -40,6 +39,7 @@ bool ModuleRenderer3D::Init()
 	bool ret = true;
 
 	//Create context
+	back_context = SDL_GL_CreateContext(App->window->window); // first create secondary context, sdl_createcontext makes current too
 	context = SDL_GL_CreateContext(App->window->window);
 	if (context == NULL)
 	{
@@ -153,6 +153,7 @@ bool ModuleRenderer3D::CleanUp()
 	DestroyScreenQuadVAO();
 
 	SDL_GL_DeleteContext(context);
+	SDL_GL_DeleteContext(back_context);
 
 	return true;
 }
@@ -173,6 +174,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 void ModuleRenderer3D::RenderGrid()
 {
 	OPTICK_EVENT();
+	
+	
 	//TODO: Change this to buffers
 	glLineWidth(line_grid_width);
 	glColor3f(grid_color.r, grid_color.g, grid_color.b);

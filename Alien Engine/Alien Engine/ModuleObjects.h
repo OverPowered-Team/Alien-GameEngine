@@ -16,6 +16,7 @@
 #include <functional>
 #include <map>
 #include <string>
+#include "SDL/include/SDL_thread.h"
 
 class ReturnZ;
 class ResourcePrefab;
@@ -91,7 +92,7 @@ public:
 	void HandleAlienEvent(const AlienEvent& alien_event);
 	void HandleEvent(EventType eventType) override;
 
-
+	void RequestSceneToLoad(std::string basename);
 
 	// primitives
 	void CreateBasePrimitive(PrimitiveType type);
@@ -210,6 +211,8 @@ private:
 	void UIOrdering(std::vector<std::pair<float, GameObject*>>* current, std::vector<std::pair<float, GameObject*>>* ui_2d, std::vector<std::pair<float, GameObject*>>* ui_world);
 
 	void CompareName(std::vector<std::pair<std::string, std::function<void()>>>* listeners, const std::vector<ComponentScript*>& scriptsVec);
+
+	bool ResetBackgroundLoad();
 
 public:
 	bool inPrefabCreation = false;
@@ -332,6 +335,13 @@ public:
 	float exposure = 1.0f;
 	float gamma = 1.0f;
 	bool hdr = true;
+
+	// background scene loading
+	std::string scene_to_backload;
+	bool loading_in_background = false;
+	SDL_Thread* backload_thread = nullptr;
+	SDL_atomic_t dataIsReady;
+	std::vector<std::function<void()>> to_init_vaos_vector;
 
 private:
 	// root
