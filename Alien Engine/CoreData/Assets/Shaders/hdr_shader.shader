@@ -31,7 +31,7 @@ void main()
 {             
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
     vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
-    vec3 result = vec3(0);
+    vec3 result = hdrColor;
 
     if(hdr)
     {
@@ -50,10 +50,9 @@ void main()
     }
     else
     {
-        result = hdrColor; 
         if(gamma != 0)
              result = pow(result, vec3(1.0 / gamma));
              
-        FragColor = vec4(bloomColor, 1.0);
+        FragColor = vec4(result, 1.0);
     }
 }

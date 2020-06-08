@@ -151,6 +151,7 @@ uniform ivec3 max_lights;
 
 uniform vec3 view_pos;
 
+uniform float bloom_threshold;
 uniform bool activeFog;
 uniform vec3 backgroundColor;
 
@@ -223,7 +224,7 @@ void main()
     }
 
     // Write in the 2nd color buffer if the output color is higher than a threshold
-    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    float brightness = dot(FragColor.rgb * bloom_threshold, vec3(vec3(0.2126, 0.7152, 0.0722)));
     if(brightness > 1.0)
         BrightColor = vec4(FragColor.rgb, 1.0);
     else

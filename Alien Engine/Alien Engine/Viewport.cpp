@@ -453,7 +453,7 @@ void Viewport::ApplyPostProcessing()
 	App->resources->hdr_shader->SetUniform1i("bloomBlur", 1);
 
 	// Set Uniforms
-	App->resources->hdr_shader->SetUniform1i("bloom", true);
+	App->resources->hdr_shader->SetUniform1i("bloom", camera->bloom);
 	App->resources->hdr_shader->SetUniform1i("hdr", camera->hdr);
 	App->resources->hdr_shader->SetUniform1f("exposure", camera->exposure);
 	App->resources->hdr_shader->SetUniform1f("gamma", camera->gamma);
@@ -474,10 +474,9 @@ void Viewport::BlurImage()
 {
 	bool first_iteration = true; 
 	bool horizontal = true; 
-	uint amount = 10; 
 	App->resources->blur_shader->Bind(); 
 
-	for (uint i = 0; i < amount; ++i)
+	for (uint i = 0; i < camera->blur_iters; ++i)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo->pingPongFBO[horizontal]);
 		App->resources->blur_shader->SetUniform1i("horizontal", horizontal);

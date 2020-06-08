@@ -286,6 +286,9 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 			SetUniform1f("density", camera->fogDensity);
 			SetUniform1f("gradient", camera->fogGradient);
 		}
+		if(camera->bloom)
+			SetUniform1f("bloom_threshold", camera->threshold);
+
 		ApplyLightsUniforms();
 		break;
 
