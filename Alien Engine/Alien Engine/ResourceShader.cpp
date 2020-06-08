@@ -551,6 +551,10 @@ void ResourceShader::SetDirectionalLights(const std::string& name, const std::li
 					sprintf_s(clightspaceMB, clightSpaceMatrixBaked.c_str(), i * 3 + it);
 					SetUniformMat4f(clightspaceMB, (*iter)->light->projMatrix * (*iter)->light->viewMatrix[it]);
 				}
+
+				std::string cintensity = std::string(cname).append(".shadowIntensity");
+				SetUniform1f(cintensity, (*iter)->shadowIntensity
+				);
 			}
 			else
 				SetUniform1i(cshadow, 0);
@@ -593,6 +597,10 @@ void ResourceShader::SetPointLights(const std::string& name, const std::list<Poi
 
 			std::string variablesLocation = std::string(cname).append(".pointLightProperties");
 			SetUniformFloat3v(variablesLocation, variablesVec3, 4);
+
+			std::string caffectShadow = std::string(cname).append(".affectShadows");
+			SetUniform1i(caffectShadow, (*iter)->affect_shadows);
+
 
 			++i;
 		}
