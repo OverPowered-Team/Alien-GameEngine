@@ -168,7 +168,8 @@ in mat3 TBN;
 in float visibility;
 in vec4 FragPosLightSpace[MAX_SPACEMATRIX];
 // Outs
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 void main()
 {
@@ -220,6 +221,14 @@ void main()
     {
         FragColor = mix(vec4(backgroundColor, 1.0), FragColor, visibility);
     }
+
+    // Write in the 2nd color buffer if the output color is higher than a threshold
+    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        BrightColor = vec4(FragColor.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+
 }
 
 // Function definitions

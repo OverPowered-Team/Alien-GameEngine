@@ -717,6 +717,8 @@ void ModuleResources::ReadAllMetaData()
 	trail_shader = GetShaderByName("trail_shader");
 	hdr_shader = GetShaderByName("hdr_shader");
 	hdr_shader->IncreaseReferences();
+	blur_shader = GetShaderByName("blur_shader");
+	blur_shader->IncreaseReferences();
 
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
