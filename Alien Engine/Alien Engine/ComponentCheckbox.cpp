@@ -1018,6 +1018,9 @@ bool ComponentCheckbox::OnClick()
 		current_color = clicked_color;
 		checkbox_current_color = checkbox_clicked_color;
 
+		if(!App->objects->inputUiGamePad)
+			clicked = !clicked;
+
 		CallListeners(&listenersOnClick);
 	}
 	return true;
@@ -1038,11 +1041,16 @@ bool ComponentCheckbox::OnRelease()
 {
 	if (active)
 	{ 
-		clicked = !clicked;
-		current_color = hover_color;
-		checkbox_current_color = checkbox_hover_color;
+		if (App->objects->inputUiGamePad)
+		{
+			clicked = !clicked;
+			current_color = hover_color;
+			checkbox_current_color = checkbox_hover_color;
+		}
+
 		CallListeners(&listenersOnRelease);
 	}
+	
 	return true;
 }
 

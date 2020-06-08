@@ -204,6 +204,7 @@ private:
 	void CreateJsonScript(GameObject* obj, JSONArraypack* to_save);
 	void ReAssignScripts(JSONArraypack* to_load);
 	void DeleteReturns();
+	void UpdateUIInput();
 	void UpdateGamePadInput();
 	u64 SetNewSelected(std::string neightbour, u64 selected_neightbour);
 	ComponentCanvas* GetCanvas();
@@ -327,6 +328,8 @@ public:
 
 	WaterFrameBuffers* wfbos = nullptr;
 
+	bool inputUiGamePad = true;
+
 private:
 	// root
 	GameObject* base_game_object = nullptr;
@@ -338,5 +341,6 @@ private:
 
 
 	std::list<InvokeInfo*> invokes;
+
 };
 
