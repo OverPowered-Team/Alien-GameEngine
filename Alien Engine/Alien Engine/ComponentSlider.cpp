@@ -60,7 +60,7 @@ bool ComponentSlider::DrawInspector()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 
-		ImGui::Button((texture == nullptr) ? "NULL" : std::string(texture->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+		ImGui::Button((texture == nullptr || App->resources->GetResourceWithID(texture->GetID()) == nullptr) ? "NULL" : std::string(texture->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
 
 		if (ImGui::IsItemClicked() && texture != nullptr) {
 			App->ui->panel_project->SelectFile(texture->GetAssetsPath(), App->resources->assets);
@@ -109,7 +109,7 @@ bool ComponentSlider::DrawInspector()
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_ButtonActive, { 0.16f, 0.29F, 0.5, 1 });
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 
-		ImGui::Button((sliderTexture == nullptr) ? "NULL" : std::string(sliderTexture->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
+		ImGui::Button((sliderTexture == nullptr || App->resources->GetResourceWithID(sliderTexture->GetID()) == nullptr) ? "NULL" : std::string(sliderTexture->GetName()).data(), { ImGui::GetWindowWidth() * 0.55F , 0 });
 
 		if (ImGui::IsItemClicked() && sliderTexture != nullptr) {
 			App->ui->panel_project->SelectFile(sliderTexture->GetAssetsPath(), App->resources->assets);
