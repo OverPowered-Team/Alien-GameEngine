@@ -272,6 +272,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 	file->SetFloat4("Color", color);
 	file->SetNumber("Smoothness", shaderInputs.standardShaderProperties.smoothness);
 	file->SetNumber("Metalness", shaderInputs.standardShaderProperties.metalness);
+	file->SetBoolean("Emissive", shaderInputs.standardShaderProperties.emissive);
 
 	file->SetNumber("RenderMode", renderMode);
 	file->SetString("ShaderID", std::to_string(used_shader_ID).data());
@@ -289,7 +290,9 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	color = file->GetFloat4("Color");
 	shaderInputs.standardShaderProperties.smoothness = (float)file->GetNumber("Smoothness");
 	shaderInputs.standardShaderProperties.metalness = (float)file->GetNumber("Metalness");
+	shaderInputs.standardShaderProperties.emissive = file->GetBoolean("Emissive", true);
 	renderMode = (int)file->GetNumber("RenderMode");
+	
 	const char* shader_id = file->GetString("ShaderID");
 	SetShader((ResourceShader*)App->resources->GetResourceWithID(std::stoull(shader_id)));
 	for (uint iter = 0; iter != (uint)TextureType::MAX; ++iter) {
@@ -557,6 +560,8 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::SliderFloat("Smoothness", &shaderInputs.standardShaderProperties.smoothness, 16.f, 128.f);
 		ImGui::SetCursorPosX(posX);
 		if (ImGui::Button("Reset Smoothness"))  shaderInputs.standardShaderProperties.smoothness = DEFAULT_SMOOTHNESS;
+		ImGui::SetCursorPosX(posX);
+		ImGui::Checkbox("Emissive", &shaderInputs.standardShaderProperties.emissive);
 
 		// Normal Map
 		ImGui::Text("Normal Map:");
