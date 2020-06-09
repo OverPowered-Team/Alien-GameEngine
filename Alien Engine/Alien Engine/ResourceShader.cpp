@@ -179,6 +179,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::SHIELD_FRESNEL;
 	else if (std::strcmp(name.c_str(), "dissolve_shader") == 0)
 		shaderType = SHADER_TEMPLATE::DISSOLVE;
+	else if (std::strcmp(name.c_str(), "ocean_water_shader") == 0)
+		shaderType = SHADER_TEMPLATE::OCEAN_SHADER;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -264,6 +266,13 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		ApplyLightsUniforms();
 		break; }
 
+	case SHADER_TEMPLATE::OCEAN_SHADER: {
+		SetUniform4f("objectMaterial.diffuse_color", inputs.oceanShaderProperties.diffuse_color);
+		SetUniform1f("iTime", inputs.oceanShaderProperties.speed * Time::GetTimeSinceStart());
+
+
+		break; }
+
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
@@ -341,6 +350,13 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		break;
 	}
 
+	case SHADER_TEMPLATE::OCEAN_SHADER:
+	{
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		
+		break;
+	}
 	}
 }
 

@@ -682,7 +682,17 @@ void ResourceMaterial::ShaderInputsSegment()
 		InputTexture(TextureType::NORMALS);
 		break;
 	}
+	case SHADER_TEMPLATE::OCEAN_SHADER:
+	{
+		ImGui::SliderFloat("Speed", &shaderInputs.oceanShaderProperties.speed, 0.f, 10.f);
 
+		// Diffuse 
+		ImGui::Text("Diffuse:");
+		InputTexture(TextureType::DIFFUSE);
+		ImGui::SameLine();
+		ImGui::ColorEdit4("color", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+		break;
+	}
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;

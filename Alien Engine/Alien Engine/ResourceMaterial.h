@@ -82,6 +82,10 @@ struct ShaderInputs
 		float burn = 0.5f;
 	} dissolveFresnelShaderProperties;
 
+	struct OceanShaderProperties {
+		float speed = 0.5f;
+		float4 diffuse_color = { 0.0,0.0,0.0,1.0 };
+	} oceanShaderProperties;
 };
 
 class ResourceShader; 

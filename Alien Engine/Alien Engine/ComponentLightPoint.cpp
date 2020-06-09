@@ -146,6 +146,7 @@ void ComponentLightPoint::Clone(Component* clone)
 	ComponentLightPoint* light = (ComponentLightPoint*)clone;
 	light->renderer_id = renderer_id;
 	light->print_icon = print_icon;
+	light->light_props = light_props;
 }
 
 void ComponentLightPoint::Reset()
