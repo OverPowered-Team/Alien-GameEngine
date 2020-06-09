@@ -561,7 +561,14 @@ update_status ModuleObjects::PostUpdate(float dt)
 		glViewport(0, 0, game_viewport->GetSize().x, game_viewport->GetSize().y);
 		glBindFramebuffer(GL_FRAMEBUFFER, game_viewport->GetFBO());
 
+		// Disable to draw on bloom texture, otherwise skybox draws are bloomed
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
 		game_viewport->GetCamera()->DrawSkybox();
+
+		// Enable to draw on bloom texture
+		uint bloom_attach[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		glDrawBuffers(2, bloom_attach);
 
 		// Draw Solid Meshes 
 		ResourceShader* current_used_shader = App->resources->default_shader;
