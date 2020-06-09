@@ -179,7 +179,7 @@ update_status ModuleObjects::PreUpdate(float dt)
 				to_init_vaos_vector[i]();
 
 			to_init_vaos_vector.clear();
-			
+			ChangeToSceneAsync();
 		}
 	}
 
@@ -1656,6 +1656,68 @@ void ModuleObjects::LoadScene(const char* name, bool change_scene)
 	}
 }
 
+void ModuleObjects::LoadSceneAsync(const char* scene_name)
+{
+	paralel_scene = App->resources->GetSceneByName(scene_name);
+	if (paralel_scene != nullptr) {
+		JSON_Value* value = json_parse_file(paralel_scene->GetLibraryPath());
+		JSON_Object* object = json_value_get_object(value);
+
+		if (value != nullptr && object != nullptr)
+		{
+			paralel_scene_root = new GameObject();
+			paralel_scene_root->ID = paralel_scene->GetID();
+			paralel_scene_root->SetName(scene_name);
+			paralel_scene_root->is_static = true;
+
+			JSONfilepack* scene = new JSONfilepack(paralel_scene->GetLibraryPath(), object, value);
+
+			JSONArraypack* game_objects = scene->GetArray("Scene.GameObjects");
+
+			if (game_objects != nullptr) {
+				std::vector<std::tuple<uint, u64, uint>> objects_to_create;
+
+				for (uint i = 0; i < game_objects->GetArraySize(); ++i) {
+					GameObject* obj = new GameObject(true);
+					u64 parentID = std::stoull(game_objects->GetString("ParentID"));
+					if (parentID != paralel_scene_root->ID) {
+						std::vector<GameObject*>::iterator object = objects.begin();
+						for (; object != objects.end(); ++object) {
+							if ((*object)->ID == parentID) {
+								obj->LoadObject(game_objects, *object);
+								break;
+							}
+						}
+					}
+					else {
+						obj->LoadObject(game_objects, paralel_scene_root);
+					}
+					objects.push_back(obj);
+					game_objects->GetAnotherNode();
+				}
+				for each (GameObject * obj in objects) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+				{
+					ComponentDeformableMesh* def_mesh = obj->GetComponent<ComponentDeformableMesh>();
+					if (def_mesh)
+						def_mesh->AttachSkeleton();
+				}
+				ReAttachUIScriptEvents();
+				delete scene;
+
+				if (!to_add.empty()) {
+					auto item = to_add.begin();
+					for (; item != to_add.end(); ++item) {
+						GameObject* found = paralel_scene_root->GetGameObjectByID((*item).first);
+						if (found != nullptr) {
+							*(*item).second = found;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 void ModuleObjects::OpenCoScene(const char* name)
 {
 	OPTICK_EVENT();
@@ -1746,6 +1808,43 @@ void ModuleObjects::CreateEmptyScene()
 	light->SetName("Directional Light");
 	light->AddComponent(new ComponentLightDirectional(light));
 	light->transform->SetGlobalRotation(math::Quat::LookAt(float3::unitZ(), float3(-0.5f, -0.5f, 0.5f), float3::unitY(), float3::unitY()));
+}
+
+void ModuleObjects::ChangeToSceneAsync()
+{
+	if (Time::IsInGameState()) {
+		CleanUpScriptsOnStop();
+	}
+	DeselectObjects();
+	App->CastEvent(EventType::ON_UNLOAD_SCENE);
+	octree.Clear();
+	Gizmos::ClearAllCurrentGizmos();
+	delete base_game_object;
+	game_objects_selected.clear();
+	base_game_object = new GameObject();
+	base_game_object->ID = 0;
+	base_game_object->is_static = true;
+
+	current_scripts.clear();
+
+	paralel_scene_root->parent = base_game_object;
+	base_game_object->AddChild(paralel_scene_root);
+
+
+	current_scripts = paralel_scripts;
+	paralel_scripts.clear();
+	if (!current_scripts.empty() && Time::IsInGameState()) {
+		OnPlay();
+		for each (GameObject * obj in objects) //not sure where to place this, need to link skeletons to meshes after all go's have been created
+		{
+			ComponentAnimator* anim = obj->GetComponent<ComponentAnimator>();
+			if (anim != nullptr) {
+				anim->OnPlay();
+			}
+		}
+	}
+	objects.clear();
+	scene_active = paralel_scene->GetID();
 }
 
 void ModuleObjects::SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number)
@@ -2841,7 +2940,7 @@ static int loadSceneInBackground(void* ptr)
 
 	App->objects->loading_in_background = true;
 	
-	App->objects->LoadScene(App->objects->scene_to_backload.c_str(), true);
+	App->objects->LoadSceneAsync(App->objects->scene_to_backload.c_str());
 
 	GLsync fenceId = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	GLenum result;

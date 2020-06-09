@@ -107,14 +107,6 @@ public:
 	uint GetNumOfPointLights() const;
 	uint GetNumOfDirLights() const;
 	uint GetNumOfSpotLights() const;
-	
-	void AddNumOfPointLights();
-	void AddNumOfDirLights();
-	void AddNumOfSpotLights();
-	
-	void ReduceNumOfPointLights();
-	void ReduceNumOfDirLights();
-	void ReduceNumOfSpotLights();
 
 	// poly options
 	void ChangeWireframeMode();
@@ -169,8 +161,10 @@ public:
 	// scenes
 	void SaveScene(ResourceScene* scene, const char* force_with_path = nullptr);
 	void LoadScene(const char * name, bool change_scene = true);
+	void LoadSceneAsync(const char* name);
 	void OpenCoScene(const char* name);
 	void CreateEmptyScene();
+	void ChangeToSceneAsync();
 
 	static bool SortByFamilyNumber(std::tuple<uint, u64, uint> pair1, std::tuple<uint, u64, uint> pair2);
 	void SaveGameObject(GameObject* obj, JSONArraypack* to_save, const uint& family_number);
@@ -346,12 +340,18 @@ public:
 private:
 	// root
 	GameObject* base_game_object = nullptr;
+	
 	std::list<GameObject*> game_objects_selected;
 	std::vector< std::tuple<GameObject*, GameObject*, bool>> to_reparent;
 
 	std::stack<ReturnZ*> save_return_actions;
 	std::stack<ReturnZ*> save_fordward_actions;
 
+
+	std::list<Alien*> paralel_scripts;
+	GameObject* paralel_scene_root = nullptr;
+	ResourceScene* paralel_scene = nullptr;
+	std::vector<GameObject*> objects;
 
 	std::list<InvokeInfo*> invokes;
 };
