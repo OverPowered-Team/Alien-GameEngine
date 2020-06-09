@@ -7,6 +7,9 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleObjects.h"
 #include "imgui/imgui.h"
+#include "ModuleCamera3D.h"
+#include "Viewport.h"
+#include "ModuleObjects.h"
 #include "gpudetect/DeviceId.h"
 
 #include "mmgr/mmgr.h"
@@ -24,6 +27,7 @@ PanelConfig::~PanelConfig()
 void PanelConfig::PanelLogic()
 {
 	ImGui::Begin("Configuration", &enabled, ImGuiWindowFlags_NoCollapse);
+
 	if (ImGui::IsWindowHovered())
 		App->camera->is_scene_hovered = false;
 	if (ImGui::CollapsingHeader("Application"))

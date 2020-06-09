@@ -329,6 +329,11 @@ public:
 	WaterFrameBuffers* wfbos = nullptr;
 
 	bool inputUiGamePad = true;
+	uint quadVAO = 0;
+	uint quadVBO = 0;
+	float exposure = 1.0f;
+	float gamma = 1.0f;
+	bool hdr = true;
 
 private:
 	// root

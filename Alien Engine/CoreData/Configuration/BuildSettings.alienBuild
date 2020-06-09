@@ -1,6 +1,6 @@
 {
     "Build": {
-        "FirstScene": "Assets\/Scenes\/skyboxTest.alienScene",
-        "GameName": "TheWitcherABT"
+        "FirstScene": "Assets\/Scenes\/hdr_test.alienScene",
+        "GameName": "THEWITCHERBITCH"
     }
 }
