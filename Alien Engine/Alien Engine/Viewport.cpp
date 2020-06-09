@@ -32,6 +32,10 @@ void FBO::BeginFBO(const Color& color)
 	glBindFramebuffer(GL_FRAMEBUFFER, ID[MULTISAMPLING_FBO]);
 	glClearColor(color.r, color.g, color.b, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	float black[] = { 0.0f, 0.0f, 0.0f ,0.0f };
+	glClearBufferfv(GL_COLOR, 1, black);
+
 }
 
 void FBO::EndFBO()
@@ -51,17 +55,16 @@ void FBO::EndFBO()
 
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	// Generate Mipmap --------------------------------------------------------
 
-	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE1]);
+	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE]);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
-	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE2]);
+	glBindTexture(GL_TEXTURE_2D, ID[BLOOM_TEXTURE]);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -83,7 +86,7 @@ void FBO::UpdateFBO(float width, float height)
 	// Textures ---------------------------------------------
 
 	// NORMAL TEXTURE
-	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE1]);
+	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE]);
 
 	{
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -98,7 +101,7 @@ void FBO::UpdateFBO(float width, float height)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// NORMAL TEXTURE 2nd Attachment
-	glBindTexture(GL_TEXTURE_2D, ID[NORMAL_TEXTURE2]);
+	glBindTexture(GL_TEXTURE_2D, ID[BLOOM_TEXTURE]);
 
 	{
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -141,12 +144,9 @@ void FBO::UpdateFBO(float width, float height)
 
 	// Attachment ------------------------------------------
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[NORMAL_TEXTURE1], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, ID[NORMAL_TEXTURE2], 0); // Bloom attachment
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID[NORMAL_TEXTURE], 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, ID[BLOOM_TEXTURE], 0); // Bloom attachment
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ID[NORMAL_DEPTH_RBO]);
-
-	uint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -234,8 +234,8 @@ void FBO::UpdateFBO(float width, float height)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_RENDERBUFFER, ID[MULTISAMPLING_COLOR_RBO2]);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ID[MULTISAMPLING_DEPTH_RBO]);
 
-	unsigned int attachments2[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments2);
+	uint bloom_attach[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, bloom_attach);
 
 	GLenum status_2 = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status_2 != GL_FRAMEBUFFER_COMPLETE)
@@ -258,8 +258,8 @@ void FBO::UpdateFBO(float width, float height)
 
 void FBO::GenerateFBO()
 {
-	glGenTextures(1, &ID[NORMAL_TEXTURE1]);
-	glGenTextures(1, &ID[NORMAL_TEXTURE2]);
+	glGenTextures(1, &ID[NORMAL_TEXTURE]);
+	glGenTextures(1, &ID[BLOOM_TEXTURE]);
 	glGenTextures(1, &ID[DEPTH_TEAXTURE]);
 	glGenTextures(1, &ID[POST_PROC_TEXTURE]);
 	glGenTextures(2, pingPongTex);
@@ -280,8 +280,8 @@ void FBO::GenerateFBO()
 
 void FBO::DeleteFBO()
 {
-	glDeleteTextures(1, &ID[NORMAL_TEXTURE1]);
-	glDeleteTextures(1, &ID[NORMAL_TEXTURE2]);
+	glDeleteTextures(1, &ID[NORMAL_TEXTURE]);
+	glDeleteTextures(1, &ID[BLOOM_TEXTURE]);
 	glDeleteTextures(1, &ID[DEPTH_TEAXTURE]);
 	glDeleteTextures(1, &ID[POST_PROC_TEXTURE]);
 	glDeleteTextures(2, pingPongTex);
@@ -307,12 +307,12 @@ void FBO::DeleteFBO()
 
 uint FBO::GetFBOTexture()
 {
-	return ID[NORMAL_TEXTURE1];
+	return ID[NORMAL_TEXTURE];
 }
 
 uint FBO::GetSecondTextureAttachment()
 {
-	return ID[NORMAL_TEXTURE2];
+	return ID[BLOOM_TEXTURE];
 }
 
 uint FBO::GetPostProcTexture()
@@ -465,6 +465,8 @@ void Viewport::ApplyPostProcessing()
 
 	// Unbinds
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 	App->resources->hdr_shader->Unbind();
@@ -493,8 +495,11 @@ void Viewport::BlurImage()
 			first_iteration = false;
 	}
 
+
+	glBindVertexArray(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	App->resources->blur_shader->Unbind();
 }
 
 void Viewport::FinalPass()

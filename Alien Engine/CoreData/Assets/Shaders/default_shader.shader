@@ -151,7 +151,7 @@ uniform ivec3 max_lights;
 
 uniform vec3 view_pos;
 
-uniform float bloom_threshold;
+uniform float bloom_threshold = 1;
 uniform bool activeFog;
 uniform vec3 backgroundColor;
 
