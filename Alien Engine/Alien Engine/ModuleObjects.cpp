@@ -245,7 +245,7 @@ update_status ModuleObjects::Update(float dt)
 		}
 		functions_to_call.clear();
 	}
-	UpdateGamePadInput();
+	UpdateUIInput();
 	ScriptsUpdate();
 
 	return UPDATE_CONTINUE;
@@ -498,14 +498,16 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glDisable(GL_DEPTH_TEST);
+			
 
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {
 				OnPostRender(viewport->GetCamera());
 			}
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDisable(GL_DEPTH_TEST);
+
 		}
 
 		// And finally draw all into the final PostProcFBO's Texture
@@ -2190,6 +2192,13 @@ void ModuleObjects::DeleteReturns()
 			return_actions.pop();
 		}
 	}
+}
+
+void ModuleObjects::UpdateUIInput()
+{
+
+	if (inputUiGamePad)
+		UpdateGamePadInput();
 }
 
 void ModuleObjects::UpdateGamePadInput()

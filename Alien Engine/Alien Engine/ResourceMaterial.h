@@ -95,7 +95,7 @@ class ResourceShader;
 class ResourceTexture; 
 class JSONfilepack;
 
-class ResourceMaterial : public Resource {
+class __declspec(dllexport) ResourceMaterial : public Resource {
 
 public:
 

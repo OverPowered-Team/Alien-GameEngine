@@ -54,6 +54,7 @@ struct ParticleLight
 	int max_lights = 10;
 	bool casting_particles = false;
 	bool size_range = false;
+	bool emitting = false;
 
 };
 
@@ -196,6 +197,7 @@ public:
 
 	// Animation
 	int currentFrame = 0;
+	float animationTime = 0.f;
 	int sheetWidth, sheetHeight;
 
 	//Lights
