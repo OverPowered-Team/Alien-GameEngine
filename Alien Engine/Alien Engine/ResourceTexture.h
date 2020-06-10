@@ -31,4 +31,5 @@ public:
 	float alpha_test = 0.1f;
 
 	int wrap_type = 0;
+	int texture_filter = 0;
 };

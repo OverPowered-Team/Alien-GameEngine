@@ -181,8 +181,9 @@ void ResourceTexture::DisplayTextureOnInspector()
 {
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Combo("Texture parametres", &wrap_type, "ClampToEdge\0repeat\0");
-
+		ImGui::Combo("Texture parametres", &wrap_type, "ClampToEdge\0Repeat\0MirroredRepeat\0ClampToBorder\0");
+		ImGui::Combo("Texture filter", &wrap_type, "Nearest\0Arroundir\0NearestMipMapNearest\0LinearMipMapNearest\0NearestMipMapLinear\0LinearMipMapLinear\0");
+		ImGui::Text("References : %i", references);
 	}
 }
 

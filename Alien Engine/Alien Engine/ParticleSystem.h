@@ -131,6 +131,10 @@ public:
 
 	void SetLight(ResourcePrefab* light, GameObject* go);
 	void RemoveLight();
+
+	void StartLight();
+
+	void StopLight();
 	
 	void SetMesh(ResourceMesh* mesh);
 	void SetMeshes(std::vector<ResourceMesh*> meshes);
