@@ -245,7 +245,7 @@ update_status ModuleObjects::Update(float dt)
 		}
 		functions_to_call.clear();
 	}
-	UpdateGamePadInput();
+	UpdateUIInput();
 	ScriptsUpdate();
 
 	return UPDATE_CONTINUE;
@@ -506,6 +506,7 @@ update_status ModuleObjects::PostUpdate(float dt)
 			if (isGameCamera) {
 				OnPostRender(viewport->GetCamera());
 			}
+
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -2199,6 +2200,13 @@ void ModuleObjects::DeleteReturns()
 			return_actions.pop();
 		}
 	}
+}
+
+void ModuleObjects::UpdateUIInput()
+{
+
+	if (inputUiGamePad)
+		UpdateGamePadInput();
 }
 
 void ModuleObjects::UpdateGamePadInput()
