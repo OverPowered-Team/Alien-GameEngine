@@ -196,6 +196,7 @@ public:
 
 	// Animation
 	int currentFrame = 0;
+	float animationTime = 0.f;
 	int sheetWidth, sheetHeight;
 
 	//Lights
