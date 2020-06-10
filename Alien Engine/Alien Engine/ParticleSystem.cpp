@@ -584,15 +584,15 @@ void ParticleSystem::RemoveLight()
 	point_light = nullptr;
 }
 
-void ParticleSystem::StartLight()
-{
-	lightProperties.emitting = true;
-}
-
-void ParticleSystem::StopLight()
-{
-	lightProperties.emitting = false;
-}
+//void ParticleSystem::StartLight()
+//{
+//	lightProperties.emitting = true;
+//}
+//
+//void ParticleSystem::StopLight()
+//{
+//	lightProperties.emitting = false;
+//}
 
 void ParticleSystem::SetMesh(ResourceMesh* m)
 {
