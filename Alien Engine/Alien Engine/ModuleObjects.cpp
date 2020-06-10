@@ -501,9 +501,6 @@ update_status ModuleObjects::PostUpdate(float dt)
 				}
 			}
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glDisable(GL_DEPTH_TEST);
-
 			if (printing_scene)
 				OnDrawGizmos();
 			if (isGameCamera) {
@@ -511,6 +508,8 @@ update_status ModuleObjects::PostUpdate(float dt)
 			}
 		}
 
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
 		// And finally draw all into the final PostProcFBO's Texture
 		viewport->FinalPass();
 		//viewport->EndViewport();

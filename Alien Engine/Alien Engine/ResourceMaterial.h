@@ -31,12 +31,13 @@ enum class TextureType {
 
 struct ShaderInputs
 {
+	bool emissive = true;
+
 	struct StandardShaderProperties
 	{
 		float4 diffuse_color = float4::one;
 		float smoothness = DEFAULT_SMOOTHNESS;
 		float metalness = DEFAULT_METALNESS;
-		bool emissive = true; 
 	} standardShaderProperties;
 
 	struct WaveShaderProperties

@@ -272,7 +272,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 	file->SetFloat4("Color", color);
 	file->SetNumber("Smoothness", shaderInputs.standardShaderProperties.smoothness);
 	file->SetNumber("Metalness", shaderInputs.standardShaderProperties.metalness);
-	file->SetBoolean("Emissive", shaderInputs.standardShaderProperties.emissive);
+	file->SetBoolean("Emissive", shaderInputs.emissive);
 
 	file->SetNumber("RenderMode", renderMode);
 	file->SetString("ShaderID", std::to_string(used_shader_ID).data());
@@ -290,7 +290,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	color = file->GetFloat4("Color");
 	shaderInputs.standardShaderProperties.smoothness = (float)file->GetNumber("Smoothness");
 	shaderInputs.standardShaderProperties.metalness = (float)file->GetNumber("Metalness");
-	shaderInputs.standardShaderProperties.emissive = file->GetBoolean("Emissive", true);
+	shaderInputs.emissive = file->GetBoolean("Emissive", true);
 	renderMode = (int)file->GetNumber("RenderMode");
 	
 	const char* shader_id = file->GetString("ShaderID");
@@ -561,7 +561,7 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::SetCursorPosX(posX);
 		if (ImGui::Button("Reset Smoothness"))  shaderInputs.standardShaderProperties.smoothness = DEFAULT_SMOOTHNESS;
 		ImGui::SetCursorPosX(posX);
-		ImGui::Checkbox("Emissive", &shaderInputs.standardShaderProperties.emissive);
+		ImGui::Checkbox("Emissive", &shaderInputs.emissive);
 
 		// Normal Map
 		ImGui::Text("Normal Map:");
@@ -595,6 +595,8 @@ void ResourceMaterial::ShaderInputsSegment()
 		ImGui::SameLine(120,15);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 		ImGui::ColorEdit3("Albedo",color.ptr(), ImGuiColorEditFlags_Float);
+		ImGui::Checkbox("Emissive", &shaderInputs.emissive);
+
 		break; }
 
 	case SHADER_TEMPLATE::TRAIL: {
