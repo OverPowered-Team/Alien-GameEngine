@@ -268,9 +268,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::OCEAN_SHADER: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.oceanShaderProperties.diffuse_color);
-		SetUniform1f("iTime", inputs.oceanShaderProperties.speed * Time::GetTimeSinceStart());
-
-
+		SetUniform1f("iTime", inputs.oceanShaderProperties.water_move * Time::GetTimeSinceStart());
+		SetUniform1f("speed", inputs.oceanShaderProperties.speed * Time::GetTimeSinceStart());
+		SetUniform1i("water_texture_size", inputs.oceanShaderProperties.reduce_water_tex);
 		break; }
 
 	default:

@@ -84,7 +84,10 @@ struct ShaderInputs
 
 	struct OceanShaderProperties {
 		float speed = 0.5f;
+		float water_move = 1.0f;
 		float4 diffuse_color = { 0.0,0.0,0.0,1.0 };
+		int reduce_water_tex = 4;
+
 	} oceanShaderProperties;
 };
 

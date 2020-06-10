@@ -279,6 +279,11 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 		file->SetString(std::to_string(iter).data(), std::to_string(textures[iter].first).data());
 	}
 
+	//water values
+	file->SetNumber("water_speed", shaderInputs.oceanShaderProperties.speed);
+	file->SetNumber("water_move", shaderInputs.oceanShaderProperties.water_move);
+	file->SetNumber("reduce_water_tex", shaderInputs.oceanShaderProperties.reduce_water_tex);
+
 	file->FinishSave();
 }
 
@@ -296,6 +301,10 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 		textures[iter].first = std::stoull(file->GetString(std::to_string(iter).data()));
 		textures[iter].second = App->resources->GetTextureByID(textures[iter].first);
 	}
+	//water values
+	shaderInputs.oceanShaderProperties.speed = file->GetNumber("water_speed");
+	shaderInputs.oceanShaderProperties.water_move = file->GetNumber("water_move");
+	shaderInputs.oceanShaderProperties.reduce_water_tex = file->GetNumber("reduce_water_tex");
 }
 
 void ResourceMaterial::ApplyMaterial()
@@ -341,6 +350,7 @@ void ResourceMaterial::ApplyMaterial()
 	shaderInputs.particleShaderProperties.color = color;
 	shaderInputs.trailShaderProperties.color = color;
 	shaderInputs.shieldFresnelShaderProperties.color = color;
+	shaderInputs.oceanShaderProperties.diffuse_color = color;
 	shaderInputs.shieldShaderProperties.color = float3(color.x, color.y, color.z);
 
 	used_shader->UpdateUniforms(shaderInputs);
@@ -685,12 +695,15 @@ void ResourceMaterial::ShaderInputsSegment()
 	case SHADER_TEMPLATE::OCEAN_SHADER:
 	{
 		ImGui::SliderFloat("Speed", &shaderInputs.oceanShaderProperties.speed, 0.f, 10.f);
+		ImGui::SliderFloat("water movement", &shaderInputs.oceanShaderProperties.water_move, 0.f, 10.f);
+		ImGui::InputInt("Reduce water texture", &shaderInputs.oceanShaderProperties.reduce_water_tex);
 
 		// Diffuse 
 		ImGui::Text("Diffuse:");
 		InputTexture(TextureType::DIFFUSE);
 		ImGui::SameLine();
 		ImGui::ColorEdit4("color", color.ptr(), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar /*|ImGuiColorEditFlags_NoInputs | */);
+
 		break;
 	}
 	default:

@@ -1,0 +1,47 @@
+{
+    "Meta": {
+        "ID": "16713685896191453687",
+        "NumMeshes": 1,
+        "Name": "cubeuv",
+        "NumBones": 0,
+        "NumAnimations": 0,
+        "Animations": [],
+        "NumMaterials": 1,
+        "PathMeshes": [
+            "Library\/Meshes\/12083180239019002118.alienMesh"
+        ],
+        "PathAnimations": [],
+        "PathBones": [],
+        "PathMaterials": [
+            "Library\/Materials\/7811508594000269563.material"
+        ]
+    },
+    "Nodes": [
+        {
+            "pos": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                50,
+                50,
+                50
+            ],
+            "rot": [
+                -0.7071068286895752,
+                0,
+                0,
+                0.70710670948028564
+            ],
+            "nodeNum": 2,
+            "parentNum": 1,
+            "nodeName": "Cube",
+            "parentName": "cubeuv",
+            "meshIndex": 0,
+            "materialIndex": 0,
+            "numBones": 0,
+            "bonesIndex": []
+        }
+    ]
+}

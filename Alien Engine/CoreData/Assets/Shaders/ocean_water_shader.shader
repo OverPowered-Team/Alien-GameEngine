@@ -12,43 +12,39 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform float iTime;
+uniform float speed;
 
+uniform int positionOrUV;
+
+uniform float max_distance;
+uniform float actual_distance;
+
+uniform int water_texture_size;
 out vec2 textureCoords;
 
-vec3 water(vec2 uv, vec3 cdir)
-{
-    uv *= vec2(0.25);
-    
+vec2 waterTextureMovment(vec2 uv, vec3 cdir)
+{    
     // Parallax height distortion with two directional waves at
     // slightly different angles.
-    vec2 a = 0.025 * cdir.xz / cdir.y; // Parallax offset
+    uv *= water_texture_size;
+    vec2 a = 0.02 * cdir.xz / cdir.y; // Parallax offset
     float h = sin(uv.x + iTime); // Height at UV
     uv += a * h;
     h = sin(0.841471 * uv.x - 0.540302 * uv.y + iTime);
     uv += a * h;
-    
-    // Texture distortion
-    float d1 = mod(uv.x + uv.y, 6.283185307);
-    float d2 = mod((uv.x + uv.y + 0.25) * 1.3, 18.84955592);
-    d1 = iTime * 0.07 + d1;
-    d2 = iTime * 0.5 + d2;
-    vec2 dist = vec2(
-    	sin(d1) * 0.15 + sin(d2) * 0.05,
-    	cos(d1) * 0.15 + cos(d2) * 0.05
-    );
 
-    vec2 dist = vec2(0.0);
-    
-    vec3 ret = mix(WATER_COL, WATER2_COL, waterlayer(uv + dist.xy));
-    ret = mix(ret, FOAM_COL, waterlayer(vec2(1.0) - uv - dist.yx));
-    return ret;
+
+    return uv;
 }
 
 void main() {
-    vec4 pos = vec4(position.x, 0.0, position.y, 1.0f);
-    textureCoords = vec2(position.x/2.0 + 0.5, position.y/2.0 + 0.5) * tiling;
+    //float posz = sin(iTime + position.y) * 0.1;
+    vec4 pos = vec4(position.x, position.y, 0.0, 1.0f);
+    vec3 dir = normalize(position);
+    textureCoords = waterTextureMovment(vec2(uvs.x, uvs.y), dir);
+    textureCoords.x += speed * 0.2;
 
-    gl_Position = projection * view * model * vec4(water(textureCoords, position),1.0);
+    gl_Position = projection * view * model * pos;
 };
 
 
@@ -60,6 +56,9 @@ struct Material {
 
     sampler2D diffuseTexture;
     bool hasDiffuseTexture;
+
+    sampler2D normalMap;
+    bool hasNormalMap;
 };
 
 uniform Material objectMaterial;
@@ -71,7 +70,9 @@ out vec4 FragColor;
 void main()
 {
     if(objectMaterial.hasDiffuseTexture == true){
-        FragColor = texture(objectMaterial.diffuseTexture,textureCoords);
+        FragColor = texture(objectMaterial.diffuseTexture, textureCoords);
+
+        FragColor = mix(FragColor, objectMaterial.diffuse_color, 0.5);
     }
     else{
         FragColor = objectMaterial.diffuse_color;

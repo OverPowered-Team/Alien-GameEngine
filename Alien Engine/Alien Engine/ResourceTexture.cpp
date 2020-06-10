@@ -16,6 +16,7 @@ ResourceTexture::ResourceTexture(const char* path, const uint& id, const uint& w
 	this->height = height;
 	name = App->file_system->GetBaseFileName(path);
 	type = ResourceType::RESOURCE_TEXTURE;
+
 }
 
 ResourceTexture::ResourceTexture(const char* path)
@@ -23,6 +24,7 @@ ResourceTexture::ResourceTexture(const char* path)
 	name = App->file_system->GetBaseFileName(path); 
 	this->path = std::string(path); 
 	type = ResourceType::RESOURCE_TEXTURE;
+
 }
 
 ResourceTexture::~ResourceTexture()
@@ -173,6 +175,16 @@ bool ResourceTexture::DeleteMetaData()
 	delete this;
 
 	return true;
+}
+
+void ResourceTexture::DisplayTextureOnInspector()
+{
+	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		wrap_type = wrap_type;
+		ImGui::Combo("Texture parametres", &wrap_type, "ClampToEdge\0repeat\0");
+
+	}
 }
 
 
