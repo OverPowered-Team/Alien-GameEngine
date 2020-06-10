@@ -567,8 +567,9 @@ void ParticleSystem::SetLight(ResourcePrefab* prefab, GameObject* go)
 	{
 		point_light = new ComponentLightPoint(go);
 		point_light->SetProperties(point->light_props);
+		point_light->light_props.enabled = lightProperties.emitting;
 	}
-
+	
 	obj->Destroy(obj);
 	point = nullptr;
 	prefab_parent = nullptr;
@@ -581,6 +582,16 @@ void ParticleSystem::RemoveLight()
 
 	delete point_light;
 	point_light = nullptr;
+}
+
+void ParticleSystem::StartLight()
+{
+	lightProperties.emitting = true;
+}
+
+void ParticleSystem::StopLight()
+{
+	lightProperties.emitting = false;
 }
 
 void ParticleSystem::SetMesh(ResourceMesh* m)

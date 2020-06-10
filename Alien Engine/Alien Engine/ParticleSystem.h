@@ -54,6 +54,7 @@ struct ParticleLight
 	int max_lights = 10;
 	bool casting_particles = false;
 	bool size_range = false;
+	bool emitting = false;
 
 };
 

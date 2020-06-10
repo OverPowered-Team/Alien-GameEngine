@@ -239,4 +239,6 @@ void ComponentLightPoint::SetProperties(PointLightProperties props)
 	light_props.quadratic = props.quadratic;
 	light_props.casting_particles = props.casting_particles;
 
+	light_props.enabled = props.enabled;
+
 }
