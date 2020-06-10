@@ -181,7 +181,6 @@ void ResourceTexture::DisplayTextureOnInspector()
 {
 	if (ImGui::CollapsingHeader(GetName(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		wrap_type = wrap_type;
 		ImGui::Combo("Texture parametres", &wrap_type, "ClampToEdge\0repeat\0");
 
 	}
