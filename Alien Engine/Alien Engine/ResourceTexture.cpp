@@ -182,10 +182,7 @@ void ResourceTexture::IncreaseReferences()
 	}
 	else {
 		if (references == 0) {
-			if (!LoadMemory())
-			{
-				LOG_ENGINE("Couldn't load from memory %s", this->name.c_str());
-			}
+			LoadMemory();
 		}
 		if (App->objects->enable_instancies) {
 			++references;

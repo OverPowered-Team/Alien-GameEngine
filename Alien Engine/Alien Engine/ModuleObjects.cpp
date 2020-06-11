@@ -168,6 +168,19 @@ update_status ModuleObjects::PreUpdate(float dt)
 {
 	OPTICK_EVENT();
 
+	//if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+	//	SceneManager::LoadSceneAsync("Lvl_1");
+	//}
+
+	//if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+	//	if (SceneManager::IsSceneAsyncReady()) {
+	//		SceneManager::ChangeToAsyncScene();
+	//	}
+	//	else {
+	//		LOG_ENGINE("NOTNOTNOTNOT");
+	//	}
+	//}
+
 	if (!sceneNameToChange.empty()) {
 		LoadScene(sceneNameToChange.data());
 		sceneNameToChange.clear();
@@ -1677,15 +1690,20 @@ void ModuleObjects::LoadSceneAsync(const char* name)
 
 			JSONArraypack* textures = scene->GetArray("Scene.Textures");
 			for (uint i = 0; i < textures->GetArraySize(); ++i) {
-				u64 textureID = std::stoull(textures->GetString("TextureID"));
-				if (textureID != 0) {
-					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
-					if (texture != nullptr) {
-						texture->IncreaseReferences();
-						texture->ignore_next_increase = true;
+				try {
+					u64 textureID = 0;
+					stringstream s(textures->GetString("TextureID"));
+					s >> textureID;
+					if (textureID != 0) {
+						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+						if (texture != nullptr) {
+							texture->IncreaseReferences();
+							texture->ignore_next_increase = true;
+						}
 					}
+					textures->GetAnotherNode();
 				}
-				textures->GetAnotherNode();
+				catch (...) {}
 			}
 
 			delete scene;
@@ -1697,6 +1715,7 @@ void ModuleObjects::ChangeToAsyncScene()
 {
 	LoadScene(toLoad.data());
 	toLoad.clear();
+	changeToAsync = false;
 }
 
 void ModuleObjects::OpenCoScene(const char* name)

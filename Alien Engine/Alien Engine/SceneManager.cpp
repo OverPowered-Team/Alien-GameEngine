@@ -22,6 +22,19 @@ void SceneManager::LoadScene(const char* scene_name, FadeToBlackType ftb_type, f
 	}
 }
 
+static int loadSceneInBackground(void* ptr)
+{
+	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->back_context);
+
+	App->objects->LoadSceneAsync(App->objects->toLoad.data());
+
+	SDL_GL_MakeCurrent(App->window->window, NULL);
+
+	SDL_AtomicIncRef(&App->objects->dataIsReady);
+	return 0;
+}
+
+
 void SceneManager::LoadSceneAsync(const char* scene_name)
 {
 	App->objects->toLoad = scene_name;
@@ -39,18 +52,6 @@ void SceneManager::ChangeToAsyncScene()
 		App->objects->changeToAsync = true;
 		SDL_AtomicSet(&App->objects->dataIsReady, 0);
 	}
-}
-
-static int loadSceneInBackground(void* ptr)
-{
-	SDL_GL_MakeCurrent(App->window->window, App->renderer3D->back_context);
-
-	App->objects->LoadSceneAsync(App->objects->toLoad.data());
-
-	SDL_GL_MakeCurrent(App->window->window, NULL);
-
-	SDL_AtomicIncRef(&App->objects->dataIsReady);
-	return 0;
 }
 
 int SceneManager::ScenesLoaded()

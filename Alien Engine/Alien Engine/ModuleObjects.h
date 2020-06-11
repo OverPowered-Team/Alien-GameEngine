@@ -15,6 +15,7 @@
 #include <stack>
 #include <functional>
 #include <map>
+#include "SDL/include/SDL_thread.h"
 #include <string>
 
 class ReturnZ;
