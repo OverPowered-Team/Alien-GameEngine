@@ -49,6 +49,7 @@ struct ShaderInputs
 	struct EmeraldShaderProperties
 	{
 		float speed = 1.0f;
+		float movement = 1.0f;
 	} emeraldShaderProperties;
 
 	struct IluminatedShaderProperties {

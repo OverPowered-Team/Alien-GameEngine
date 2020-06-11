@@ -278,7 +278,8 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		break; }
 
 	case SHADER_TEMPLATE::EMERALD: {
-		SetUniform1f("mult_time", inputs.emeraldShaderProperties.speed);
+		SetUniform1f("speed", inputs.emeraldShaderProperties.speed);
+		SetUniform1f("movement", inputs.emeraldShaderProperties.movement * Time::GetTimeSinceStart());
 		break; }
 
 	default:
