@@ -369,6 +369,14 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		
 		break;
 	}
+
+	case SHADER_TEMPLATE::EMERALD:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniformFloat3("view_pos", camera->GetCameraPosition());
+
+		ApplyLightsUniforms();
+		break;
 	}
 }
 
