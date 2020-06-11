@@ -280,6 +280,10 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 	case SHADER_TEMPLATE::EMERALD: {
 		SetUniform1f("speed", inputs.emeraldShaderProperties.speed);
 		SetUniform1f("movement", inputs.emeraldShaderProperties.movement * Time::GetTimeSinceStart());
+
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
+		SetUniform1i("t_channel", 4);
 		break; }
 
 	default:
