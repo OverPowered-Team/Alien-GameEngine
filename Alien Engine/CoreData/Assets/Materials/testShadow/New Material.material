@@ -8,6 +8,7 @@
     ],
     "Smoothness": 32,
     "Metalness": 0.5,
+    "Emissive": true,
     "RenderMode": 0,
     "ShaderID": "16282947269019170318",
     "0": "18020213482227002879",

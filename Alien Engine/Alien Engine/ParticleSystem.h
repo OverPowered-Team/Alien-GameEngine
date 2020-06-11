@@ -133,9 +133,8 @@ public:
 	void RemoveLight();
 
 	void StartLight();
-
 	void StopLight();
-	
+
 	void SetMesh(ResourceMesh* mesh);
 	void SetMeshes(std::vector<ResourceMesh*> meshes);
 	void RemoveMesh();

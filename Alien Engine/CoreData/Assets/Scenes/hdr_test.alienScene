@@ -64,6 +64,9 @@
                         "Fog": false,
                         "Density": 0.035000000149011612,
                         "Gradient": 1.3500000238418579,
+                        "HDR": true,
+                        "Exposure": 1,
+                        "Gamma": 0,
                         "Skybox_PositiveX": "Default",
                         "Skybox_NegativeX": "Default",
                         "Skybox_PositiveY": "Default",
@@ -300,7 +303,8 @@
                         ],
                         "Constant": 1,
                         "Linear": 0.10999999940395355,
-                        "Quadratic": 0.029999999329447746
+                        "Quadratic": 0.029999999329447746,
+                        "InteractWithShadows": true
                     }
                 ]
             },
@@ -449,7 +453,8 @@
                         ],
                         "Constant": 1,
                         "Linear": 0.10000000149011612,
-                        "Quadratic": 0.019999999552965164
+                        "Quadratic": 0.019999999552965164,
+                        "InteractWithShadows": true
                     }
                 ]
             },

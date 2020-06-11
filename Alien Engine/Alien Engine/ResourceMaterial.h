@@ -31,6 +31,8 @@ enum class TextureType {
 
 struct ShaderInputs
 {
+	bool emissive = true;
+
 	struct StandardShaderProperties
 	{
 		float4 diffuse_color = float4::one;
