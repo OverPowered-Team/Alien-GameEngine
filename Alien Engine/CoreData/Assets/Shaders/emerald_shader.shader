@@ -98,8 +98,8 @@ void main()
 	
 	float rz = flow(p);
 
-	vec3 col = vec3(0.5, 0.75, 0.01) / rz;
-	//vec3 col = vec3(.2,0.07,0.01) / rz;
+	//vec3 col = vec3(0.5, 0.75, 0.01) / rz;
+	vec3 col = vec3(.2,0.07,0.01) / rz;
 
 	col = pow(col, vec3(1.4));
 	FragColor = vec4(col, 1.0);
