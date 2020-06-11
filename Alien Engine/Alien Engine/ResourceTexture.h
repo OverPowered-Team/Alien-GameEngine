@@ -20,6 +20,8 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
+	void IncreaseReferences() override;
+
 public:
 
 	bool is_custom = true;
@@ -28,4 +30,5 @@ public:
 	uint width = 0;
 	uint id = 0;
 	float alpha_test = 0.1f;
+	bool ignore_next_increase = false;
 };

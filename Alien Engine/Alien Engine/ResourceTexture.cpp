@@ -175,4 +175,22 @@ bool ResourceTexture::DeleteMetaData()
 	return true;
 }
 
+void ResourceTexture::IncreaseReferences()
+{
+	if (ignore_next_increase) {
+		ignore_next_increase = false;
+	}
+	else {
+		if (references == 0) {
+			if (!LoadMemory())
+			{
+				LOG_ENGINE("Couldn't load from memory %s", this->name.c_str());
+			}
+		}
+		if (App->objects->enable_instancies) {
+			++references;
+		}
+	}
+}
+
 

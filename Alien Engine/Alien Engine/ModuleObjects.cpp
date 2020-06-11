@@ -71,6 +71,7 @@
 ModuleObjects::ModuleObjects(bool start_enabled) :Module(start_enabled)
 {
 	name.assign("ModuleObject");
+	SDL_AtomicSet(&dataIsReady, 0);
 }
 
 ModuleObjects::~ModuleObjects()
@@ -170,6 +171,10 @@ update_status ModuleObjects::PreUpdate(float dt)
 	if (!sceneNameToChange.empty()) {
 		LoadScene(sceneNameToChange.data());
 		sceneNameToChange.clear();
+	}
+
+	if (changeToAsync) {
+		ChangeToAsyncScene();
 	}
 
 	// delete objects
@@ -1661,6 +1666,37 @@ void ModuleObjects::LoadScene(const char* name, bool change_scene)
 
 void ModuleObjects::LoadSceneAsync(const char* name)
 {
+	ResourceScene* to_load = App->resources->GetSceneByName(name);
+	if (to_load != nullptr) {
+		JSON_Value* value = json_parse_file(to_load->GetLibraryPath());
+		JSON_Object* object = json_value_get_object(value);
+
+		if (value != nullptr && object != nullptr)
+		{
+			JSONfilepack* scene = new JSONfilepack(to_load->GetLibraryPath(), object, value);
+
+			JSONArraypack* textures = scene->GetArray("Scene.Textures");
+			for (uint i = 0; i < textures->GetArraySize(); ++i) {
+				u64 textureID = std::stoull(textures->GetString("TextureID"));
+				if (textureID != 0) {
+					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+					if (texture != nullptr) {
+						texture->IncreaseReferences();
+						texture->ignore_next_increase = true;
+					}
+				}
+				textures->GetAnotherNode();
+			}
+
+			delete scene;
+		}
+	}
+}
+
+void ModuleObjects::ChangeToAsyncScene()
+{
+	LoadScene(toLoad.data());
+	toLoad.clear();
 }
 
 void ModuleObjects::OpenCoScene(const char* name)
