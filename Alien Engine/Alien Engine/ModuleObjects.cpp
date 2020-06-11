@@ -1690,20 +1690,18 @@ void ModuleObjects::LoadSceneAsync(const char* name)
 
 			JSONArraypack* textures = scene->GetArray("Scene.Textures");
 			for (uint i = 0; i < textures->GetArraySize(); ++i) {
-				try {
-					u64 textureID = 0;
-					stringstream s(textures->GetString("TextureID"));
-					s >> textureID;
-					if (textureID != 0) {
-						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
-						if (texture != nullptr) {
-							texture->IncreaseReferences();
-							texture->ignore_next_increase = true;
-						}
+				static char f[MAX_PATH] = { 0 };
+				strcpy(f, textures->GetString("TextureID"));
+				char* end = nullptr;
+				u64 textureID = strtoull(f, &end, 10);
+				if (textureID != 0) {
+					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+					if (texture != nullptr) {
+						texture->IncreaseReferences();
+						texture->ignore_next_increase = true;
 					}
-					textures->GetAnotherNode();
 				}
-				catch (...) {}
+				textures->GetAnotherNode();
 			}
 
 			delete scene;
@@ -1833,9 +1831,17 @@ GameObject* ModuleObjects::GetRoot(bool ignore_prefab)
 			return base_game_object->children.back();
 	}
 	else {
-		for (auto item = base_game_object->children.begin(); item != base_game_object->children.end(); ++item) {
-			if ((*item)->ID == scene_active) {
-				return *item;
+		if (base_game_object->children.empty()) {
+			return base_game_object;
+		}
+		else if (base_game_object->children.size() == 1) {
+			return base_game_object->children.back();
+		}
+		else {
+			for (auto item = base_game_object->children.begin(); item != base_game_object->children.end(); ++item) {
+				if ((*item)->ID == scene_active) {
+					return *item;
+				}
 			}
 		}
 		return nullptr;
