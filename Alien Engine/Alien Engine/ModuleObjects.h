@@ -168,6 +168,7 @@ public:
 	// scenes
 	void SaveScene(ResourceScene* scene, const char* force_with_path = nullptr);
 	void LoadScene(const char * name, bool change_scene = true);
+	void LoadSceneAsync(const char* name);
 	void OpenCoScene(const char* name);
 	void CreateEmptyScene();
 

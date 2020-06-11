@@ -1503,6 +1503,15 @@ void ModuleObjects::SaveScene(ResourceScene* to_load_scene, const char* force_wi
 		}
 
 		if (!scene_root->children.empty()) { // if scene_root has children, save them
+
+			JSONArraypack* textures = scene->InitNewArray("Scene.Textures");
+			for (auto item = App->resources->resources.begin(); item != App->resources->resources.end(); ++item) {
+				if ((*item)->GetType() == ResourceType::RESOURCE_TEXTURE && (*item)->references > 0 && (*item)->GetID() != 0) {
+					textures->SetAnotherNode();
+					textures->SetString("TextureID", std::to_string((*item)->GetID()).data());
+				}
+			}
+			
 			JSONArraypack* game_objects = scene->InitNewArray("Scene.GameObjects");
 
 			game_objects->SetAnotherNode();
@@ -1648,6 +1657,10 @@ void ModuleObjects::LoadScene(const char* name, bool change_scene)
 			LOG_ENGINE("Error loading scene %s", path.data());
 		}
 	}
+}
+
+void ModuleObjects::LoadSceneAsync(const char* name)
+{
 }
 
 void ModuleObjects::OpenCoScene(const char* name)
