@@ -3,7 +3,6 @@
 #include "Resource_.h"
 #include <vector>
 
-
 class ResourceTexture : public Resource {
 
 public:
@@ -20,7 +19,10 @@ public:
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
 
+	void DisplayTextureOnInspector();
+
 	void IncreaseReferences() override;
+
 
 public:
 
@@ -30,5 +32,10 @@ public:
 	uint width = 0;
 	uint id = 0;
 	float alpha_test = 0.1f;
+
+	int wrap_type = 0;
+	int texture_filter = 0;
+
 	bool ignore_next_increase = false;
+
 };

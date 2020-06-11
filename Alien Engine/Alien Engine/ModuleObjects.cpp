@@ -1690,20 +1690,18 @@ void ModuleObjects::LoadSceneAsync(const char* name)
 
 			JSONArraypack* textures = scene->GetArray("Scene.Textures");
 			for (uint i = 0; i < textures->GetArraySize(); ++i) {
-				try {
-					u64 textureID = 0;
-					stringstream s(textures->GetString("TextureID"));
-					s >> textureID;
-					if (textureID != 0) {
-						ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
-						if (texture != nullptr) {
-							texture->IncreaseReferences();
-							texture->ignore_next_increase = true;
-						}
+				static char f[MAX_PATH] = { 0 };
+				strcpy(f, textures->GetString("TextureID"));
+				char* end = nullptr;
+				u64 textureID = strtoull(f, &end, 10);
+				if (textureID != 0) {
+					ResourceTexture* texture = (ResourceTexture*)App->resources->GetResourceWithID(textureID);
+					if (texture != nullptr) {
+						texture->IncreaseReferences();
+						texture->ignore_next_increase = true;
 					}
-					textures->GetAnotherNode();
 				}
-				catch (...) {}
+				textures->GetAnotherNode();
 			}
 
 			delete scene;
