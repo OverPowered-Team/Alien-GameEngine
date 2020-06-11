@@ -181,6 +181,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::DISSOLVE;
 	else if (std::strcmp(name.c_str(), "ocean_water_shader") == 0)
 		shaderType = SHADER_TEMPLATE::OCEAN_SHADER;
+	else if (std::strcmp(name.c_str(), "emerald_shader") == 0)
+		shaderType = SHADER_TEMPLATE::EMERALD;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -273,6 +275,10 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("iTime", inputs.oceanShaderProperties.water_move * Time::GetTimeSinceStart());
 		SetUniform1f("speed", inputs.oceanShaderProperties.speed * Time::GetTimeSinceStart());
 		SetUniform1i("water_texture_size", inputs.oceanShaderProperties.reduce_water_tex);
+		break; }
+
+	case SHADER_TEMPLATE::EMERALD: {
+		SetUniform1f("mult_time", inputs.emeraldShaderProperties.speed);
 		break; }
 
 	default:

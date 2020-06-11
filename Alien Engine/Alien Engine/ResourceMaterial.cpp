@@ -713,12 +713,17 @@ void ResourceMaterial::ShaderInputsSegment()
 
 		break;
 	}
+	case SHADER_TEMPLATE::EMERALD:
+	{
+		ImGui::SliderFloat("Speed", (float*)&shaderInputs.emeraldShaderProperties.speed, 0.0f, 10.0f);
+		break;
+	}
+
 	default:
 		LOG_ENGINE("We currently don't support editing this type of uniform...");
 		break;
 	}
 	ImGui::Spacing();
-
 }
 
 void ResourceMaterial::InputTexture(TextureType texType)
