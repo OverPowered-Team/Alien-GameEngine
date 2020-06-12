@@ -288,6 +288,7 @@ bool ComponentCamera::DrawInspector()
 				float bottom = -far_plane_shadows;
 				projectionMatrixByShadows.Set(&glm::ortho(left, right, bottom, top, -(float)far_plane_shadows, (float)far_plane_shadows)[0][0]);
 			}
+			ImGui::TreePop();
 		}
 		ImGui::Separator();
 		ImGui::Spacing();

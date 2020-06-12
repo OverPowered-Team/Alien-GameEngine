@@ -1,0 +1,383 @@
+{
+    "Scene": {
+        "Name": "christian_curves",
+        "Textures": [
+            {
+                "TextureID": "15714234206396395482"
+            }
+        ],
+        "GameObjects": [
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "4178859688218782945",
+                "ParentID": "9053939489517356368",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            17.599260330200195,
+                            -44.786998748779297
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13163951142135251277"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 6,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 91.492843627929688,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "782067764246326859",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": true,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ],
+                        "Fog": false,
+                        "Density": 0.035000000149011612,
+                        "Gradient": 1.3500000238418579,
+                        "HDR": false,
+                        "Exposure": 1,
+                        "Gamma": 0,
+                        "Skybox_PositiveX": "Default",
+                        "Skybox_NegativeX": "Default",
+                        "Skybox_PositiveY": "Default",
+                        "Skybox_NegativeY": "Default",
+                        "Skybox_PositiveZ": "Default",
+                        "Skybox_NegativeZ": "Default"
+                    }
+                ]
+            },
+            {
+                "Name": "Directional Light",
+                "FamilyNumber": 1,
+                "ID": "13684616572646664238",
+                "ParentID": "9053939489517356368",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.2798481285572052,
+                            -0.36470523476600647,
+                            0.115916907787323,
+                            0.88047623634338379
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14732949907173889136"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "8764958655021508060",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            -0.57735037803649902,
+                            -0.57735025882720947,
+                            0.57735025882720947
+                        ],
+                        "Ambient": [
+                            0.75999999046325684,
+                            0.75999999046325684,
+                            0.75999999046325684
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "CastShadows": true,
+                        "SizeBakedShadow": 153,
+                        "sadowIntensity": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Empty GameObject",
+                "FamilyNumber": 1,
+                "ID": "1182101960282396069",
+                "ParentID": "9053939489517356368",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "14324944731535471326"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 31,
+                        "Tensors": true,
+                        "Normals": true,
+                        "OnSelected": false,
+                        "Detail": 50,
+                        "ControlPoints": [
+                            {
+                                "ControlPoint": [
+                                    -10,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    -6.3361830711364746,
+                                    8.1323690414428711,
+                                    3.5955154089606367e-06
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    0.88715481758117676,
+                                    17.511844635009766,
+                                    -6.025087095906656e-09
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    10,
+                                    0,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    12.682333946228027,
+                                    14.981938362121582,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    21.569765090942383,
+                                    3.8196535110473633,
+                                    0
+                                ]
+                            },
+                            {
+                                "ControlPoint": [
+                                    20,
+                                    0,
+                                    0
+                                ]
+                            }
+                        ],
+                        "NormalsPoints": [
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    1,
+                                    0
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    0,
+                                    0,
+                                    -1
+                                ]
+                            },
+                            {
+                                "NormalPoint": [
+                                    1,
+                                    0,
+                                    0
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Cube",
+                "FamilyNumber": 1,
+                "ID": "7819441089377457078",
+                "ParentID": "9053939489517356368",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "6945191379523329726"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "2346771154807335750",
+                        "HasMesh": true,
+                        "IsPrimitive": true,
+                        "PrimType": 0,
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "12356603426561608993",
+                        "HasMaterial": true,
+                        "MaterialID": "0",
+                        "Enabled": true
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 7,
+                        "Center": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "IsTrigger": false,
+                        "Bouncing": 0.5,
+                        "StaticFriction": 0.5,
+                        "DynamicFriction": 0.5,
+                        "CollisionLayer": "Default",
+                        "Size": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    {
+                        "Type": 29,
+                        "ID": "10486527428159676946",
+                        "ResourceID": "17897913862360762398",
+                        "DataName": "Test_curves",
+                        "HasInspector": true,
+                        "Inspector": [
+                            {
+                                "VarType": 3,
+                                "Name": "speed",
+                                "float": 5
+                            },
+                            {
+                                "VarType": 9,
+                                "Name": "gocurve",
+                                "gameobject": "1182101960282396069"
+                            },
+                            {
+                                "VarType": 7,
+                                "Name": "reset",
+                                "bool": 0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
