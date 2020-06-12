@@ -757,9 +757,9 @@ void ModuleObjects::CalculateShadows(std::vector<GameObject*>& dynamic_to_draw, 
 			if ((*it) != nullptr && (*it)->cast_shadow) {
 				if (!printing_scene)
 				{
-					(*iter)->light->sizefrustrum = viewport->GetCamera()->frustum.farPlaneDistance * 0.5f;
-					float3 camera_pos = viewport->GetCamera()->frustum.CenterPoint() / (*iter)->light->sizefrustrum;
-					float halfFarPlaneD = (*iter)->light->sizefrustrum * 0.5f;
+					(*iter)->light->sizefrustrum = viewport->GetCamera()->far_plane_shadows;
+					float3 camera_pos = viewport->GetCamera()->GetCameraPosition() / (*iter)->light->sizefrustrum;
+					float halfFarPlaneD = (*iter)->light->sizefrustrum * 0.25f;
 					float3 light_pos = float3((camera_pos.x - (*iter)->direction.x * halfFarPlaneD), (camera_pos.y - (*iter)->direction.y * halfFarPlaneD), (camera_pos.z - (*iter)->direction.z * halfFarPlaneD));
 
 					glm::mat4 viewMatrix = glm::lookAt(glm::vec3((float)camera_pos.x, (float)camera_pos.y, (float)-camera_pos.z),
@@ -770,7 +770,7 @@ void ModuleObjects::CalculateShadows(std::vector<GameObject*>& dynamic_to_draw, 
 
 					(*iter)->fake_position = camera_pos;
 
-					(*it)->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);
+					(*it)->PreDrawGame(viewport->GetCamera(), (*iter)->viewMat, viewport->GetCamera()->projectionMatrixByShadows, (*iter)->fake_position);
 				}
 				/*else
 				(*it).second->PreDrawScene(viewport->GetCamera(), (*iter)->viewMat, (*iter)->projMat, (*iter)->fake_position);*/

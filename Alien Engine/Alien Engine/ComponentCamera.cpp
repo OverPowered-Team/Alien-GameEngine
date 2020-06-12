@@ -27,6 +27,11 @@
 #include "mmgr/mmgr.h"
 #include "Viewport.h"
 
+
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+
 #include "Optick/include/optick.h"
 
 ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
@@ -73,6 +78,13 @@ ComponentCamera::ComponentCamera(GameObject* attach): Component(attach)
 	skybox_shader->Bind();
 	skybox_shader->SetUniform1i("skybox", 0);
 	skybox_shader->Unbind();
+
+	//create proj matrix by shadows
+	float left = -far_plane_shadows;
+	float right = far_plane_shadows;
+	float top = far_plane_shadows;
+	float bottom = -far_plane_shadows;
+	projectionMatrixByShadows.Set(&glm::ortho(left, right, bottom, top, -(float)far_plane_shadows, (float)far_plane_shadows)[0][0]);
 
 #ifndef GAME_VERSION
 	if(attach != nullptr)
@@ -386,8 +398,17 @@ bool ComponentCamera::DrawInspector()
 
 			ImGui::TreePop();
 		}
+		ImGui::Spacing();
+		ImGui::Separator();
 
-		
+		if (ImGui::DragFloat("Shadow Far Plane", &far_plane_shadows, 1, near_plane + 0.1f, 1000, "%.1f"))
+		{
+			float left = -far_plane_shadows;
+			float right = far_plane_shadows;
+			float top = far_plane_shadows;
+			float bottom = -far_plane_shadows;
+			projectionMatrixByShadows.Set(&glm::ortho(left, right,bottom,top,-(float)far_plane_shadows,(float)far_plane_shadows)[0][0]);
+		}
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -909,6 +930,9 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 	to_save->SetString("Skybox_PositiveZ", path.c_str());
 	path = cubemap->path_pos[5];
 	to_save->SetString("Skybox_NegativeZ", path.c_str());
+
+	//save projection matrix by shadows
+	to_save->SetNumber("shadow_far_plane", far_plane_shadows);
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
@@ -1028,5 +1052,19 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 		frustum.front = transform->GetLocalRotation().WorldZ();
 		frustum.up = transform->GetLocalRotation().WorldY();
 	}
+	try {
+		//save projection matrix by shadows
+		far_plane_shadows = to_load->GetNumber("shadow_far_plane");
+	}
+	catch (...) {
+		far_plane_shadows = 60.0;
+	}
+	//create proj matrix by shadows
+	float left = -far_plane_shadows;
+	float right = far_plane_shadows;
+	float top = far_plane_shadows;
+	float bottom = -far_plane_shadows;
+	projectionMatrixByShadows.Set(&glm::ortho(left, right, bottom, top, -(float)far_plane_shadows, (float)far_plane_shadows)[0][0]);
+
 }
 

@@ -159,4 +159,8 @@ public:
 	float threshold = 1.0f; 
 	int blur_iters = 10;
 
+	//shadows
+	float4x4 projectionMatrixByShadows = float4x4::identity();
+	float far_plane_shadows = 60.0;
+
 };
