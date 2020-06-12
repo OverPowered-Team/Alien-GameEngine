@@ -286,7 +286,7 @@ void ResourceMaterial::SaveMaterialValues(JSONfilepack* file)
 	file->SetNumber("reduce_water_tex", shaderInputs.oceanShaderProperties.reduce_water_tex);
 
 	// emerald values
-	file->SetNumber("emerald_speed", shaderInputs.emeraldShaderProperties.speed);
+	//file->SetNumber("emerald_speed", shaderInputs.emeraldShaderProperties.speed);
 
 	file->FinishSave();
 }
@@ -314,7 +314,7 @@ void ResourceMaterial::ReadMaterialValues(JSONfilepack* file)
 	shaderInputs.oceanShaderProperties.reduce_water_tex = file->GetNumber("reduce_water_tex");
 
 	// emerald values
-	shaderInputs.oceanShaderProperties.speed = file->GetNumber("emerald_speed");
+	//shaderInputs.oceanShaderProperties.speed = file->GetNumber("emerald_speed");
 }
 
 void ResourceMaterial::ApplyMaterial()
