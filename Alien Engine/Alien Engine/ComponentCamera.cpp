@@ -401,6 +401,7 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Separator();
 
+		ImGui::Combo("Base Frustum", &base_frustum, "fake_frustum\0Camera\0");
 		if (ImGui::DragFloat("Shadow Far Plane", &far_plane_shadows, 1, near_plane + 0.1f, 1000, "%.1f"))
 		{
 			float left = -far_plane_shadows;
@@ -933,6 +934,7 @@ void ComponentCamera::SaveComponent(JSONArraypack* to_save)
 
 	//save projection matrix by shadows
 	to_save->SetNumber("shadow_far_plane", far_plane_shadows);
+	to_save->SetNumber("frustum_to_generate", base_frustum);
 }
 
 void ComponentCamera::LoadComponent(JSONArraypack* to_load)
@@ -1053,11 +1055,13 @@ void ComponentCamera::LoadComponent(JSONArraypack* to_load)
 		frustum.up = transform->GetLocalRotation().WorldY();
 	}
 	try {
-		//save projection matrix by shadows
-		far_plane_shadows = to_load->GetNumber("shadow_far_plane");
+		//load projection matrix by shadows
+		far_plane_shadows = (float)to_load->GetNumber("shadow_far_plane");
+		base_frustum = (int)to_load->GetNumber("frustum_to_generate");
 	}
 	catch (...) {
 		far_plane_shadows = 60.0;
+		base_frustum = 0;
 	}
 	//create proj matrix by shadows
 	float left = -far_plane_shadows;

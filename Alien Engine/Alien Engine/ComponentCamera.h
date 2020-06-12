@@ -162,5 +162,6 @@ public:
 	//shadows
 	float4x4 projectionMatrixByShadows = float4x4::identity();
 	float far_plane_shadows = 60.0;
+	int base_frustum = 0;
 
 };
