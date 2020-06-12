@@ -18,7 +18,8 @@ void Test_curves::Update()
 {
 	if (!first_frame) {
 		transform->SetGlobalPosition(curve->curve.ValueAtDistance(actual_pos));
-
+		float3 normal = curve->curve.NormalAtDistance(actual_pos);
+		transform->SetGlobalRotation(Quat::RotateFromTo(transform->up, normal) * transform->GetGlobalRotation());
 		actual_pos += Time::GetDT() / math::Abs(transform->GetGlobalPosition().Distance(curve->curve.ValueAtDistance(actual_pos + speed * Time::GetDT())));
 	}
 	else

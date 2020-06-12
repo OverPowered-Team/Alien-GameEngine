@@ -363,14 +363,13 @@ float3 Curve::ValueAt(float at)
 	int current_segment = at / ratio_segments + 1;
 	int indexControl = (current_segment - 1) * 3;
 
-	if (indexControl >= segments_length.size())
+	if (current_segment > segments_length.size())
 		CalculateSegmentsLength();
 	
-	//float time = Maths::Map(at, ratio_segments * (current_segment - 1), ratio_segments * current_segment, 0.0F, segments_length[indexControl]); // TODO: Make it inline
-	float time = (at - (ratio_segments * (current_segment - 1))) * (segments_length[indexControl] - 0.f) / ((ratio_segments * current_segment) - (ratio_segments * (current_segment - 1)));
+	float time = (at - (ratio_segments * (current_segment - 1))) * segments_length[current_segment-1] / ((ratio_segments * current_segment) - (ratio_segments * (current_segment - 1)));
 	
 	return CubicCurve(control_points[indexControl], control_points[indexControl + 1], 
-		control_points[indexControl + 2], control_points[indexControl + 3], time/ segments_length[indexControl]);
+		control_points[indexControl + 2], control_points[indexControl + 3], time/ segments_length[current_segment-1]);
 }
 
 float3 Curve::ValueAtDistance(float dst) {
@@ -390,11 +389,21 @@ float3 Curve::NormalAt(float at)
 
 	int num_segments = (control_points.size() - 1) / 3;
 	int indexControl = at / (1.f / (float)num_segments);
+
+	
+	float ratio_segments = 1 / (float)num_segments;
+	int current_segment = at / ratio_segments + 1;
+	
+
+	if (current_segment > segments_length.size())
+		CalculateSegmentsLength();
+
+	float time = (at - (ratio_segments * (current_segment - 1))) * segments_length[current_segment - 1] / ((ratio_segments * current_segment) - (ratio_segments * (current_segment - 1)));
 	
 	return Quat::SlerpVector(
 		control_points_normals[indexControl].Normalized(), 
 		control_points_normals[indexControl + 1].Normalized(), 
-		at * (float)num_segments - indexControl // t in Slerp must be from 0 to 1 in that segment so we have to multiply the global t with the number of segments and substract the index of the point
+		time / segments_length[current_segment - 1]
 	).Normalized();
 }
 

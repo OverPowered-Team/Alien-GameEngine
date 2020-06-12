@@ -1,0 +1,9 @@
+{
+    "HasData": true,
+    "DataStructure": [
+        {
+            "DataName": "Test_curves",
+            "UsesAlien": true
+        }
+    ]
+}

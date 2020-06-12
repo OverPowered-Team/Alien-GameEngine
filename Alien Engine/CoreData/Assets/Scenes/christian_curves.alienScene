@@ -1,7 +1,11 @@
 {
     "Scene": {
         "Name": "christian_curves",
-        "Textures": [],
+        "Textures": [
+            {
+                "TextureID": "15714234206396395482"
+            }
+        ],
         "GameObjects": [
             {
                 "Name": "Main Camera",
@@ -10,7 +14,7 @@
                 "ParentID": "9053939489517356368",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": false,
+                "Selected": true,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -22,7 +26,7 @@
                         "Position": [
                             0,
                             17.599260330200195,
-                            -69.286537170410156
+                            -44.786998748779297
                         ],
                         "Rotation": [
                             0,
@@ -42,7 +46,7 @@
                         "Enabled": true,
                         "Type": 6,
                         "VerticalFov": 60.000003814697266,
-                        "HoritzontalFov": 91.67401123046875,
+                        "HoritzontalFov": 91.492843627929688,
                         "BackCol": [
                             0.10000000149011612,
                             0.10000000149011612,
@@ -54,7 +58,7 @@
                         "isFovHori": 0,
                         "ID": "782067764246326859",
                         "IsGameCamera": true,
-                        "IsSelectedCamera": false,
+                        "IsSelectedCamera": true,
                         "PrintIcon": true,
                         "IconColor": [
                             0.85000002384185791,
@@ -253,14 +257,14 @@
                             {
                                 "NormalPoint": [
                                     0,
-                                    1,
-                                    0
+                                    0,
+                                    -1
                                 ]
                             },
                             {
                                 "NormalPoint": [
-                                    0,
                                     1,
+                                    0,
                                     0
                                 ]
                             }
@@ -275,7 +279,7 @@
                 "ParentID": "9053939489517356368",
                 "Enabled": true,
                 "ParentEnabled": true,
-                "Selected": true,
+                "Selected": false,
                 "ParentSelected": false,
                 "IsStatic": false,
                 "IsPrefab": false,
@@ -350,8 +354,8 @@
                     },
                     {
                         "Type": 29,
-                        "ID": "7032889755344243213",
-                        "ResourceID": "3145817864397271556",
+                        "ID": "10486527428159676946",
+                        "ResourceID": "17897913862360762398",
                         "DataName": "Test_curves",
                         "HasInspector": true,
                         "Inspector": [
