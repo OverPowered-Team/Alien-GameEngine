@@ -31,8 +31,6 @@ out float visibility;
 out vec4 FragPosLightSpace[MAX_SPACEMATRIX];
 //out float visibility;
 
-uniform vec4 clip_plane;
-
 void main()
 {
     // --------------- OUTS ---------------
@@ -46,9 +44,6 @@ void main()
 
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
-    // ------------------------
-    gl_ClipDistance[0] = dot(worldPos, clip_plane);
-    //gl_ClipDistance[0] = -1;
     // --------------------------------------- 
 
     // --------------- Animation -------------
@@ -214,8 +209,10 @@ void main()
 
     // ----------------------------------------------------------
 
+    // Final Color 
     FragColor = vec4(result, 1.0) * objectColor;
 
+    // Fog
     if(activeFog == true)
     {
         FragColor = mix(vec4(backgroundColor, 1.0), FragColor, visibility);
