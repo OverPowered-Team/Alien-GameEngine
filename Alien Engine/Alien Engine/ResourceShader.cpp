@@ -147,6 +147,7 @@ bool ResourceShader::ReadBaseInfo(const char* assets_path)
 
 	App->resources->AddResource(this);
 
+
 	return ret;
 }
 
@@ -224,7 +225,6 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
-		SetUniform1i("objectMaterial.emissive", inputs.emissive);
 		break; }
 	case SHADER_TEMPLATE::TRAIL: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.trailShaderProperties.color);

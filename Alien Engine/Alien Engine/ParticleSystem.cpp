@@ -277,6 +277,8 @@ void ParticleSystem::DrawParticles()
 	ComponentCamera* mainCamera = App->renderer3D->GetCurrentMainCamera();
 
 
+	material->used_shader->SetUniform1i("objectMaterial.emissive", material->shaderInputs.emissive);
+
 	//-------------------------- DRAW PARTICLES FAR TO NEAR ------------------
 	for (std::vector<Particle*>::reverse_iterator iter = particles.rbegin(); iter != particles.rend(); ++iter)
 	{
