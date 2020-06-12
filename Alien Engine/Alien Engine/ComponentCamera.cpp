@@ -276,6 +276,23 @@ bool ComponentCamera::DrawInspector()
 		ImGui::Separator();
 		ImGui::Spacing();
 
+
+		if (ImGui::TreeNodeEx("Frustum Shadow", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Combo("Base Frustum", &base_frustum, "fake_frustum\0Camera\0");
+			if (ImGui::DragFloat("Shadow Far Plane", &far_plane_shadows, 1, near_plane + 0.1f, 1000, "%.1f"))
+			{
+				float left = -far_plane_shadows;
+				float right = far_plane_shadows;
+				float top = far_plane_shadows;
+				float bottom = -far_plane_shadows;
+				projectionMatrixByShadows.Set(&glm::ortho(left, right, bottom, top, -(float)far_plane_shadows, (float)far_plane_shadows)[0][0]);
+			}
+		}
+		ImGui::Separator();
+		ImGui::Spacing();
+		ImGui::Separator();
+
 		if (ImGui::TreeNodeEx("Post Processing", ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Spacing();
@@ -398,18 +415,7 @@ bool ComponentCamera::DrawInspector()
 
 			ImGui::TreePop();
 		}
-		ImGui::Spacing();
-		ImGui::Separator();
 
-		ImGui::Combo("Base Frustum", &base_frustum, "fake_frustum\0Camera\0");
-		if (ImGui::DragFloat("Shadow Far Plane", &far_plane_shadows, 1, near_plane + 0.1f, 1000, "%.1f"))
-		{
-			float left = -far_plane_shadows;
-			float right = far_plane_shadows;
-			float top = far_plane_shadows;
-			float bottom = -far_plane_shadows;
-			projectionMatrixByShadows.Set(&glm::ortho(left, right,bottom,top,-(float)far_plane_shadows,(float)far_plane_shadows)[0][0]);
-		}
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
