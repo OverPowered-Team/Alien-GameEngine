@@ -181,6 +181,8 @@ void ResourceShader::TryToSetShaderType()
 		shaderType = SHADER_TEMPLATE::DISSOLVE;
 	else if (std::strcmp(name.c_str(), "ocean_water_shader") == 0)
 		shaderType = SHADER_TEMPLATE::OCEAN_SHADER;
+	else if (std::strcmp(name.c_str(), "emerald_shader") == 0)
+		shaderType = SHADER_TEMPLATE::EMERALD;
 	else 
 		shaderType = SHADER_TEMPLATE::NO_TEMPLATE;
 }
@@ -240,7 +242,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1i("dudv_map", 3);
 		SetUniform1f("move_factor", Time::GetTimeSinceStart() * 0.075f);
 		SetUniformFloat3("camera_position", App->renderer3D->actual_game_camera->GetCameraPosition());
-		ApplyLightsUniforms();
+		//ApplyLightsUniforms();
 		break; }
 
 	case SHADER_TEMPLATE::SHIELD: {
@@ -265,7 +267,7 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
 		SetUniform1i("alpha_noise", 3);
 		SetUniform1f("burn", inputs.dissolveFresnelShaderProperties.burn);
-		ApplyLightsUniforms();
+		//ApplyLightsUniforms();
 		break; }
 
 	case SHADER_TEMPLATE::OCEAN_SHADER: {
@@ -273,6 +275,15 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("iTime", inputs.oceanShaderProperties.water_move * Time::GetTimeSinceStart());
 		SetUniform1f("speed", inputs.oceanShaderProperties.speed * Time::GetTimeSinceStart());
 		SetUniform1i("water_texture_size", inputs.oceanShaderProperties.reduce_water_tex);
+		break; }
+
+	case SHADER_TEMPLATE::EMERALD: {
+		SetUniform1f("speed", inputs.emeraldShaderProperties.speed);
+		SetUniform1f("movement", inputs.emeraldShaderProperties.movement * Time::GetTimeSinceStart());
+
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
+		SetUniform1i("t_channel", 4);
 		break; }
 
 	default:
@@ -362,6 +373,14 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		
 		break;
 	}
+
+	case SHADER_TEMPLATE::EMERALD:
+		SetUniformMat4f("view", camera->GetViewMatrix4x4());
+		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
+		SetUniformFloat3("view_pos", camera->GetCameraPosition());
+
+		ApplyLightsUniforms();
+		break;
 	}
 }
 

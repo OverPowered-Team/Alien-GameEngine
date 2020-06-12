@@ -193,7 +193,7 @@ bool ParticleSystem::Update(float dt)
 					currentFrame = particleInfo.currentAnimation.startFrame;
 				}
 				else
-					currentFrame = particleInfo.currentAnimation.endFrame;
+					currentFrame = particleInfo.currentAnimation.endFrame-1;
 
 			}
 
@@ -421,6 +421,7 @@ void ParticleSystem::Stop()
 
 void ParticleSystem::ResetSystem()
 {
+	currentFrame = 0;
 	// Reset Emmitter
 	emmitter.Reset();
 	emmitter.current_delay = 0.f;
