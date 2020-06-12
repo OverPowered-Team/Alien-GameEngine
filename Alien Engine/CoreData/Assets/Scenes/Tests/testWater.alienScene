@@ -1,0 +1,219 @@
+{
+    "Scene": {
+        "Name": "testWater",
+        "Textures": [
+            {
+                "TextureID": "15714234206396395482"
+            },
+            {
+                "TextureID": "8915427602677670968"
+            }
+        ],
+        "GameObjects": [
+            {
+                "Name": "Main Camera",
+                "FamilyNumber": 1,
+                "ID": "2688959127055372556",
+                "ParentID": "3432588331908499138",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            7.0084009170532227,
+                            0
+                        ],
+                        "Rotation": [
+                            0.25515282154083252,
+                            0,
+                            0,
+                            0.96690076589584351
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "9967798383156210600"
+                    },
+                    {
+                        "Enabled": true,
+                        "Type": 6,
+                        "VerticalFov": 60.000003814697266,
+                        "HoritzontalFov": 91.492843627929688,
+                        "BackCol": [
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            0.10000000149011612,
+                            1
+                        ],
+                        "FarPlane": 200,
+                        "NearPlane": 0.10000000149011612,
+                        "isFovHori": 0,
+                        "ID": "8727500957032575817",
+                        "IsGameCamera": true,
+                        "IsSelectedCamera": false,
+                        "PrintIcon": true,
+                        "IconColor": [
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            0.85000002384185791,
+                            1
+                        ],
+                        "Fog": false,
+                        "Density": 0.035000000149011612,
+                        "Gradient": 1.3500000238418579,
+                        "HDR": false,
+                        "Exposure": 1,
+                        "Gamma": 0,
+                        "Skybox_PositiveX": "Default",
+                        "Skybox_NegativeX": "Default",
+                        "Skybox_PositiveY": "Default",
+                        "Skybox_NegativeY": "Default",
+                        "Skybox_PositiveZ": "Default",
+                        "Skybox_NegativeZ": "Default"
+                    }
+                ]
+            },
+            {
+                "Name": "Directional Light",
+                "FamilyNumber": 1,
+                "ID": "10901170522476724605",
+                "ParentID": "3432588331908499138",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": false,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0.2798481285572052,
+                            -0.36470523476600647,
+                            0.115916907787323,
+                            0.88047623634338379
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            0.99999994039535522
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "3536540015903246382"
+                    },
+                    {
+                        "Type": 3,
+                        "Enabled": true,
+                        "ID": "3874579583789234892",
+                        "PrintIcon": true,
+                        "Intensity": 1,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Direction": [
+                            -0.57735037803649902,
+                            -0.57735025882720947,
+                            0.57735025882720947
+                        ],
+                        "Ambient": [
+                            0.75999999046325684,
+                            0.75999999046325684,
+                            0.75999999046325684
+                        ],
+                        "Diffuse": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "Specular": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "CastShadows": true,
+                        "SizeBakedShadow": 153,
+                        "sadowIntensity": 0
+                    }
+                ]
+            },
+            {
+                "Name": "Cube",
+                "FamilyNumber": 1,
+                "ID": "17287026819068602234",
+                "ParentID": "3432588331908499138",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": false,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            -0.7071068286895752,
+                            0,
+                            0,
+                            0.70710670948028564
+                        ],
+                        "Scale": [
+                            50,
+                            50,
+                            50
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "13805888703614552591"
+                    },
+                    {
+                        "Type": 1,
+                        "ViewMesh": false,
+                        "Wireframe": false,
+                        "ViewVertexNormals": false,
+                        "ViewFaceNormals": false,
+                        "DrawAABB": false,
+                        "DrawOBB": false,
+                        "ID": "8965502993294253803",
+                        "HasMesh": true,
+                        "IsPrimitive": false,
+                        "MeshID": "12083180239019002118",
+                        "Enabled": true
+                    },
+                    {
+                        "Type": 2,
+                        "ID": "9611590474861263645",
+                        "HasMaterial": true,
+                        "MaterialID": "332790745863824124",
+                        "Enabled": true
+                    }
+                ]
+            }
+        ]
+    }
+}

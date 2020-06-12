@@ -141,6 +141,7 @@ public:
 	ResourceShader* shield_shader = nullptr;
 	ResourceShader* hdr_shader = nullptr; 
 	ResourceShader* blur_shader = nullptr; 
+	ResourceShader* ocean_water_shader = nullptr;
 	ResourceTexture* alpha_noise_texture = nullptr;
 	ResourceShader* trail_shader = nullptr;
 

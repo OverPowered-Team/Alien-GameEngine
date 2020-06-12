@@ -719,6 +719,7 @@ void ModuleResources::ReadAllMetaData()
 	hdr_shader->IncreaseReferences();
 	blur_shader = GetShaderByName("blur_shader");
 	blur_shader->IncreaseReferences();
+	ocean_water_shader = GetShaderByName("ocean_water_shader");
 
 	// Init Materials
 	App->file_system->DiscoverFiles(MATERIALS_FOLDER, files, directories);
@@ -804,6 +805,7 @@ void ModuleResources::ReadAllMetaData()
 	hdr_shader = (ResourceShader*)GetResourceWithID(8647831716955899237);
 	trail_shader = (ResourceShader*)GetResourceWithID(7102128801140120336);
 	blur_shader = (ResourceShader*)GetResourceWithID(5115047997303984257);
+	ocean_water_shader = (ResourceShader*)GetResourceWithID(16282947269019170318);
 	default_particle_shader->SetName("particle_shader");
 	default_particle_shader->TryToSetShaderType();
 	shield_fresnel_shader->SetName("shield_fresnel_shader");
@@ -816,6 +818,10 @@ void ModuleResources::ReadAllMetaData()
 	hdr_shader->IncreaseReferences();
 	blur_shader->SetName("blur_shader");
 	blur_shader->IncreaseReferences();
+	ocean_water_shader->SetName("ocean_water_shader");
+	ocean_water_shader->TryToSetShaderType();
+	ocean_water_shader->IncreaseReferences();
+	
 	// materials
 	App->file_system->DiscoverFiles(LIBRARY_MATERIALS_FOLDER, files, directories, true);
 	for (uint i = 0; i < files.size(); ++i) {

@@ -3,6 +3,7 @@
 #include "Resource_.h"
 #include <vector>
 
+class JSONfilepack;
 class ResourceTexture : public Resource {
 
 public:
@@ -18,6 +19,9 @@ public:
 	bool ReadBaseInfo(const char* assets_path);
 	void ReadLibrary(const char* meta_data);
 	bool DeleteMetaData();
+
+	void SaveTextureValues(JSONfilepack* file);
+	void ReadTextureValues(JSONfilepack* file);
 
 	void DisplayTextureOnInspector();
 
