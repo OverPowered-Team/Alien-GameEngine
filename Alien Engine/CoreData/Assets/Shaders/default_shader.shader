@@ -213,7 +213,6 @@ void main()
 
     // ----------------------------------------------------------
 
-
     // Final Color 
     FragColor = vec4(result, 1.0) * objectColor;
 
