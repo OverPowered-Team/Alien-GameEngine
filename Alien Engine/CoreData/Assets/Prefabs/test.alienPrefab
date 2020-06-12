@@ -1,0 +1,229 @@
+{
+    "Name": "test",
+    "Prefab": {
+        "GameObjects": [
+            {
+                "Name": "test",
+                "FamilyNumber": 1,
+                "ID": "831958529540354576",
+                "ParentID": "7904866712410978865",
+                "Enabled": true,
+                "ParentEnabled": true,
+                "Selected": true,
+                "ParentSelected": false,
+                "IsStatic": false,
+                "IsPrefab": true,
+                "PrefabLocked": false,
+                "Tag": "UnTagged",
+                "PrefabID": "4696512891531601296",
+                "Components": [
+                    {
+                        "Type": 0,
+                        "Position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "Rotation": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "Scale": [
+                            1,
+                            1,
+                            1
+                        ],
+                        "ScaleNegative": false,
+                        "ID": "18379065776528257311"
+                    },
+                    {
+                        "Type": 15,
+                        "ID": "15639797761734576427",
+                        "Billboard": 0,
+                        "Start": {
+                            "Position": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "Rotation": [
+                                0,
+                                0,
+                                0,
+                                1
+                            ],
+                            "Global": true,
+                            "Velocity": [
+                                0.99563467502593994,
+                                -0.054065454751253128,
+                                0.076083078980445862
+                            ],
+                            "Force": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "Speed": 1,
+                            "Color": [
+                                1,
+                                1,
+                                1,
+                                1
+                            ],
+                            "SizeStart3D": false,
+                            "Size": 1,
+                            "Size3D": [
+                                1,
+                                1,
+                                1
+                            ],
+                            "LightColor": [
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "MaxLifeTime": 5,
+                            "AxisRotationStart": false,
+                            "Angle3D": [
+                                0,
+                                0,
+                                180
+                            ],
+                            "Random": false,
+                            "RandomAngleZ": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "RandomAngleY": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "RandomAngleX": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "ChangeOverLifeTime": false,
+                            "RotateOverLifeTime": false
+                        },
+                        "End": {
+                            "StartTime": 2,
+                            "FinalTime": 5,
+                            "Speed": 1,
+                            "Color": [
+                                1,
+                                1,
+                                1,
+                                1
+                            ],
+                            "Size": 1,
+                            "Size3D": [
+                                1,
+                                1,
+                                1
+                            ],
+                            "LightColor": [
+                                -1.5816464369601856e+38,
+                                -1.5816464369601856e+38,
+                                -1.5816464369601856e+38,
+                                -1.5816464369601856e+38
+                            ],
+                            "Force": [
+                                0,
+                                -10,
+                                0
+                            ],
+                            "AxisRotation": false,
+                            "AngularVelocity": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "AngularAcceleration": [
+                                0,
+                                0,
+                                0
+                            ]
+                        },
+                        "Emmitter": {
+                            "Shape": 0,
+                            "Zone": 0,
+                            "Distance": 20,
+                            "Radius": 5,
+                            "OutRadius": 10,
+                            "CubeSize": [
+                                10,
+                                5,
+                                10
+                            ],
+                            "MaxLife": 5,
+                            "CurrentLife": 5.0039997100830078,
+                            "SpawnRate": 20,
+                            "Delay": 0,
+                            "Loop": false,
+                            "Position": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "RelativePosition": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "Rotation": [
+                                -0,
+                                0,
+                                -0
+                            ],
+                            "RelativeRotation": [
+                                -0,
+                                0,
+                                -0
+                            ],
+                            "Scale": [
+                                0,
+                                0,
+                                0
+                            ]
+                        },
+                        "Bursts": {
+                            "Size": 0
+                        },
+                        "Blending": {
+                            "Source": 6,
+                            "Destination": 7,
+                            "Equation": 0
+                        },
+                        "HasMaterial": true,
+                        "MaterialID": "7474382780713914222",
+                        "HasAnimation": true,
+                        "Animation": {
+                            "AnimSpeed": 0.10000000149011612,
+                            "Rows": 4,
+                            "Columns": 8,
+                            "StartFrame": 0,
+                            "EndFrame": 31
+                        },
+                        "HasMesh": false,
+                        "HasLight": false,
+                        "Light": {
+                            "Emitting": false,
+                            "Casting": 0,
+                            "Random": false,
+                            "ColorParticle": false,
+                            "Alpha": false,
+                            "Size": false,
+                            "MaxLights": 10
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
