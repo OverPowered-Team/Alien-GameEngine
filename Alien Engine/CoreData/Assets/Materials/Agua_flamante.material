@@ -8,6 +8,7 @@
     ],
     "Smoothness": 32,
     "Metalness": 0.5,
+    "Emissive": true,
     "RenderMode": 0,
     "ShaderID": "0",
     "0": "0",
@@ -24,7 +25,8 @@
     "11": "0",
     "12": "0",
     "13": "0",
-    "water_speed": 0.5,
+    "water_speed": 1,
     "water_move": 1,
-    "reduce_water_tex": 4
+    "reduce_water_tex": 4,
+    "emerald_speed": 1
 }
