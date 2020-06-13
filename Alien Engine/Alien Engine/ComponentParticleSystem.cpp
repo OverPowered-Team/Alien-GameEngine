@@ -26,6 +26,14 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	particleSystem = new ParticleSystem();
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+
+	particleSystem->emmitter.obb = particleSystem->emmitter.localAABB;
+	particleSystem->emmitter.obb.Transform(transform->GetGlobalMatrix());
+
+	particleSystem->emmitter.globalAABB.SetNegativeInfinity();
+	particleSystem->emmitter.globalAABB.Enclose(particleSystem->emmitter.obb);
+
+	
 	
 #ifndef GAME_VERSION
 	App->objects->debug_draw_list.emplace(this, std::bind(&ComponentParticleSystem::DrawScene, this));
@@ -116,6 +124,7 @@ void ComponentParticleSystem::DrawScene()
 	if (game_object_attached->selected)
 	{
 		DebugDraw();
+		
 	}
 }
 
@@ -149,6 +158,9 @@ void ComponentParticleSystem::DebugDraw()
 
 	if (drawEmmitter) 
 		particleSystem->DrawEmmitter();
+
+	if(drawAABB)
+		particleSystem->emmitter.DrawGlobalAABB();
 
 }
 
@@ -255,6 +267,39 @@ bool ComponentParticleSystem::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 
+			if (ImGui::CollapsingHeader("Bounding Box", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+
+				ImGui::Spacing();
+				ImGui::Text("Debug AABB "); ImGui::SameLine(200, 15);
+				ImGui::Checkbox("##Draw AABB", &drawAABB);
+				ImGui::Spacing();
+				ImGui::Spacing();
+				if (drawAABB)
+				{
+					//particleSystem->emmitter.DrawGlobalAABB();
+					sizeAABB = particleSystem->emmitter.localAABB.Size();
+
+					ImGui::Text("Size AABB "); ImGui::SameLine(200, 15);
+					if (ImGui::DragFloat3("##SizeAABB", &sizeAABB.x, 1.0f, 0.0f, 0.0f, "%.0f"))
+					{
+						particleSystem->emmitter.localAABB.SetFromCenterAndSize(posAABB, sizeAABB);
+						ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+						particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+					}
+
+					ImGui::Text("Position AABB "); ImGui::SameLine(200, 15);
+					if (ImGui::DragFloat3("##PosAABB", &posAABB.x, 1.0f, 0.0f, 0.0f, "%.0f"))
+					{
+						particleSystem->emmitter.localAABB.SetFromCenterAndSize(posAABB, sizeAABB);
+						ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+						particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+						
+					}
+
+				}
+				
+			}
 
 			if (ImGui::CollapsingHeader("Shape", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -1467,6 +1512,12 @@ void ComponentParticleSystem::SaveComponent(JSONArraypack* to_save)
 	to_save->SetFloat3("Emmitter.RelativeRotation", particleSystem->emmitter.GetRelativeRotation());
 	// Scale
 	to_save->SetFloat3("Emmitter.Scale", particleSystem->emmitter.GetScale());
+	// AABB
+	to_save->SetBoolean("Emmitter.ActiveAABB", drawAABB);
+	// Position AABB
+	to_save->SetFloat3("Emmitter.PositionAABB", posAABB);
+	// Size AABB
+	to_save->SetFloat3("Emmitter.SizeAABB", sizeAABB);
 
 	// ------------------------ Burst Info --------------------------- //
 
@@ -1724,6 +1775,26 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 	particleSystem->emmitter.SetRelativeRotation(to_load->GetFloat3("Emmitter.RelativeRotation"));
 	// Scale
 	particleSystem->emmitter.SetScale(to_load->GetFloat3("Emmitter.Scale"));
+
+	try
+	{
+		// AABB
+		drawAABB = to_load->GetBoolean("Emmitter.ActiveAABB");
+		// Position AABB
+		posAABB = to_load->GetFloat3("Emmitter.PositionAABB");
+		// Size AABB
+		sizeAABB = to_load->GetFloat3("Emmitter.SizeAABB");
+
+		particleSystem->emmitter.localAABB.SetFromCenterAndSize(posAABB, sizeAABB);
+		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+		particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+	}
+	catch (...)
+	{
+		drawAABB = false;
+		float3 sizeAABB = float3::zero();
+		float3 posAABB = float3::zero();
+	}
 
 	// ------------------------ Burst Info --------------------------- //
 

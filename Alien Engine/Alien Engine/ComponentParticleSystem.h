@@ -69,6 +69,8 @@ public:
 private:
 
 	bool drawEmmitter = false;
+	bool drawAABB = false;
+
 	int shapeSelected = 0;
 	int bbTypeSelected = 0;
 	int meshTypeSelected = 8; // 8 - None mesh
@@ -101,6 +103,10 @@ private:
 	int texColumns = 1;
 	int startFrame = 0;
 	int endFrame = (texRows * texColumns) - 1;
+
+	//Bounding Box
+	float3 sizeAABB = float3::zero();
+	float3 posAABB = float3::zero();
 	
 	//Temporal stuff
 	bool random_rot = false;
