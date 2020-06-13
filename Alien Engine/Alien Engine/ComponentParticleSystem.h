@@ -48,6 +48,7 @@ private:
 
 	void SetConfigurationArrow();
 	float CalculateRandomBetweenTwoConstants(float2 constants);
+	
 
 public: 
 

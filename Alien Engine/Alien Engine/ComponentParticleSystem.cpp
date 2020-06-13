@@ -26,6 +26,7 @@ ComponentParticleSystem::ComponentParticleSystem(GameObject* parent) : Component
 	particleSystem = new ParticleSystem();
 
 	ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+	particleSystem->owner = transform;
 
 	particleSystem->emmitter.obb = particleSystem->emmitter.localAABB;
 	particleSystem->emmitter.obb.Transform(transform->GetGlobalMatrix());
@@ -98,6 +99,7 @@ void ComponentParticleSystem::PreUpdate()
 
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
+	//particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
 
 	if(particleSystem->isPlaying())
 		particleSystem->PreUpdate(Time::GetCurrentDT());
@@ -2175,5 +2177,6 @@ float ComponentParticleSystem::CalculateRandomBetweenTwoConstants(float2 constan
 	float output = Random::GetRandomFloatBetweenTwo(constants.x, constants.y);
 	return output;
 }
+
 
 
