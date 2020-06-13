@@ -27,6 +27,5 @@
     "13": "0",
     "water_speed": 1,
     "water_move": 1,
-    "reduce_water_tex": 4,
-    "emerald_speed": 1
+    "reduce_water_tex": 4
 }
