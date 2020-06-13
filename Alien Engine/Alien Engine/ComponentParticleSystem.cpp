@@ -99,7 +99,7 @@ void ComponentParticleSystem::PreUpdate()
 
 	particleSystem->emmitter.SetPosition(transform->GetGlobalPosition());
 	particleSystem->emmitter.SetRotation(transform->GetGlobalRotation());
-	//particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+	particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
 
 	if(particleSystem->isPlaying())
 		particleSystem->PreUpdate(Time::GetCurrentDT());
@@ -1787,15 +1787,18 @@ void ComponentParticleSystem::LoadComponent(JSONArraypack* to_load)
 		// Size AABB
 		sizeAABB = to_load->GetFloat3("Emmitter.SizeAABB");
 
-		particleSystem->emmitter.localAABB.SetFromCenterAndSize(posAABB, sizeAABB);
-		ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
-		particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+		if (!sizeAABB.Equals(float3::zero()))
+		{
+			particleSystem->emmitter.localAABB.SetFromCenterAndSize(posAABB, sizeAABB);
+			ComponentTransform* transform = (ComponentTransform*)game_object_attached->GetComponent(ComponentType::TRANSFORM);
+			particleSystem->emmitter.RecalculateAABB(transform->GetGlobalMatrix());
+		}
 	}
 	catch (...)
 	{
-		drawAABB = false;
+		/*drawAABB = false;
 		float3 sizeAABB = float3::zero();
-		float3 posAABB = float3::zero();
+		float3 posAABB = float3::zero();*/
 	}
 
 	// ------------------------ Burst Info --------------------------- //
