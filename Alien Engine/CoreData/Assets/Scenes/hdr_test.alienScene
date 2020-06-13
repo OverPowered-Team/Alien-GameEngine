@@ -1,6 +1,7 @@
 {
     "Scene": {
         "Name": "hdr_test",
+        "Textures": [],
         "GameObjects": [
             {
                 "Name": "Main Camera",
@@ -72,7 +73,9 @@
                         "Skybox_PositiveY": "Default",
                         "Skybox_NegativeY": "Default",
                         "Skybox_PositiveZ": "Default",
-                        "Skybox_NegativeZ": "Default"
+                        "Skybox_NegativeZ": "Default",
+                        "shadow_far_plane": 0,
+                        "frustum_to_generate": 0
                     }
                 ]
             },

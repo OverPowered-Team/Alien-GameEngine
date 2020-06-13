@@ -147,6 +147,7 @@ bool ResourceShader::ReadBaseInfo(const char* assets_path)
 
 	App->resources->AddResource(this);
 
+
 	return ret;
 }
 
@@ -224,7 +225,6 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 
 	case SHADER_TEMPLATE::PARTICLE: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.particleShaderProperties.color);
-		SetUniform1i("objectMaterial.emissive", inputs.emissive);
 		break; }
 	case SHADER_TEMPLATE::TRAIL: {
 		SetUniform4f("objectMaterial.diffuse_color", inputs.trailShaderProperties.color);
@@ -281,9 +281,9 @@ void ResourceShader::UpdateUniforms(ShaderInputs inputs)
 		SetUniform1f("speed", inputs.emeraldShaderProperties.speed);
 		SetUniform1f("movement", inputs.emeraldShaderProperties.movement * Time::GetTimeSinceStart());
 
-		glActiveTexture(GL_TEXTURE4);
+		/*glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, App->resources->alpha_noise_texture->id);
-		SetUniform1i("t_channel", 4);
+		SetUniform1i("t_channel", 4);*/
 		break; }
 
 	default:
@@ -378,8 +378,6 @@ void ResourceShader::ApplyCurrentShaderGlobalUniforms(ComponentCamera* camera)
 		SetUniformMat4f("view", camera->GetViewMatrix4x4());
 		SetUniformMat4f("projection", camera->GetProjectionMatrix4f4());
 		SetUniformFloat3("view_pos", camera->GetCameraPosition());
-
-		ApplyLightsUniforms();
 		break;
 	}
 }

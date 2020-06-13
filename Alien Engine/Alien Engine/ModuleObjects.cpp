@@ -77,8 +77,6 @@ ModuleObjects::ModuleObjects(bool start_enabled) :Module(start_enabled)
 ModuleObjects::~ModuleObjects()
 {
 	DeleteReturns();
-
-	RELEASE(wfbos);
 }
 
 bool ModuleObjects::Init()
@@ -117,8 +115,6 @@ bool ModuleObjects::Start()
 
 
 	game_viewport = new Viewport(nullptr);
-
-	wfbos = new WaterFrameBuffers();
 
 #ifndef GAME_VERSION
 	GameObject* scene_root = new GameObject();
