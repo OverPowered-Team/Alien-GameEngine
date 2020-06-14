@@ -16,7 +16,7 @@ void player_example::OnDrawGizmos()
 
 void player_example::Update()
 {
-	if (Input::GetKeyDown(SDL_SCANCODE_H)) {
-		GameObject::Instantiate("Cube", float3::zero());
+	if (Input::GetKeyDown(SDL_SCANCODE_SPACE)) {
+		Destroy(game_object);
 	}
 }
